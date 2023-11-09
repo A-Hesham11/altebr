@@ -108,15 +108,16 @@ export const SellingTableInputData = ({
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("classification")} </span>,
-        accessorKey: "category_name",
-        cell: (info) => info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`  ,
-      },
-      {
         header: () => <span>{t("category")}</span>,
         accessorKey: "classification_name",
         cell: (info) => info.getValue() || "---",
       },
+      {
+        header: () => <span>{t("classification")} </span>,
+        accessorKey: "category_name",
+        cell: (info) => info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`  ,
+      },
+
       {
         header: () => <span>{t("weight")} </span>,
         accessorKey: "weight",
