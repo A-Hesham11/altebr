@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const NavBar = ({ isInSelling = false }: { isInSelling?: boolean }) => {
   const { logOutHandler, isLoggingOut, userData } = useContext(authCtx);
+  console.log("🚀 ~ file: NavBar.tsx:12 ~ NavBar ~ userData:", userData)
   const navigate = useNavigate();
 
   const isRTL = useIsRTL();
@@ -53,7 +54,7 @@ const NavBar = ({ isInSelling = false }: { isInSelling?: boolean }) => {
            10
          </span>
        </div> */}
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-3">
           <Button
             type="button"
             className="animate_from_top  animation_delay-3 bg-mainGreen hover:bg-emerald-900 transition-all duration-200 text-base w-8 h-8 py-[1px] px-[4px] rounded-md font-normal"
@@ -79,7 +80,7 @@ const NavBar = ({ isInSelling = false }: { isInSelling?: boolean }) => {
           </div>
           <h6 className="m-0 text-mainGreen">
             <span className="font-bold text-black">{t("branch")}</span>:
-            {userData?.branch_name}
+            {userData?.branch?.name}
           </h6>
           {/* <IoIosArrowDown className="h-4 w-4 fill-mainBlack" /> */}
           <Button

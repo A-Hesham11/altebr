@@ -645,6 +645,7 @@
   "bill date": "تاريخ الفاتورة",
   "bill no": "فاتورة رقم",
   "price includes tax": "السعر يشمل الضريبة",
+  "The price does not include tax":"السعر لا يشمل الضريبة",
   "daily gold price": "سعر الذهب اليومي",
   "client": "العميل",
   "client name": "إسم العميل",
@@ -838,6 +839,7 @@
   "Retrieval restrictions": "قيود الاسترجاع",
   "select category": "اختر الصنف",
   "select karat": "اختر العيار",
+  "The lot is sold out":"تم بيع القطعة بالكامل",
   "total approximate cost": "اجمالي التكلفة التقديرية",
   "must be less than prepaid cash": "لا يمكن رد اكثر من المبلغ المدفوع مسبقا",
   "there are no restriction to this bond": "لا يوجد قيد لهذا السند",
@@ -863,5 +865,6 @@
   "weight details":"الاوزان التفصيلية",
   "loading data":"جاري تحميل البيانات",
   "invoice restrictions":"قيود الفاتورة",
+  "Add a chain":"إضافة سلسال",
   "total amount": "المبلغ الكلي"
 }

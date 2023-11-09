@@ -555,7 +555,10 @@ export const GoldItemCodingForm = ({
               <div className="w-full">
                 <p className="font-semibold text-lg text-center mb-5">{t("This item already exists")}</p>
                 <div className="w-full flex justify-center">
-                  <img src={modalNumber?.images[0]?.preview} className="w-[80%] h-[250px]"/>
+                  {modalNumber?.images[0]?.preview 
+                    ? (<img src={modalNumber?.images[0]?.preview} className="w-[80%] h-[250px]"/>)
+                    : ""
+                  }
                 </div>
                 <div className="flex items-center justify-between mt-10 mx-auto w-1/2">
                   <p className="font-semibold">{t("Id number")} : <span className="text-mainGreen font-semibold">{modalNumber?.hwya}</span></p>

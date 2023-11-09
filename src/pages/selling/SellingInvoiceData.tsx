@@ -18,6 +18,7 @@ type CreateHonestSanadProps_TP = {
   clientData: ClientData_TP;
   invoiceNumber: any;
   selectedItemDetails: any;
+  sellingItemsOfWeigth: any;
 };
 const SellingInvoiceData = ({
   setStage,
@@ -26,6 +27,7 @@ const SellingInvoiceData = ({
   clientData,
   invoiceNumber,
   selectedItemDetails,
+  sellingItemsOfWeigth
 }: CreateHonestSanadProps_TP) => {
   console.log(
     "🚀 ~ file: SellingInvoiceData.tsx:31 ~ sellingItemsData:",
@@ -108,7 +110,7 @@ const SellingInvoiceData = ({
           //     )
           // );
           const finalCategoriesNames = info.row.original.itemDetails?.map((category) => category.category_name).join("-");
-          return  info.row.original.itemDetails.length ? finalCategoriesNames : info.getValue();
+          return  info.row.original.itemDetails.length ? finalCategoriesNames : (info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`);
         },
       },
       {
@@ -219,6 +221,8 @@ const SellingInvoiceData = ({
         vat: costTaxes,
         total: +costItem + +costTaxes,
         kitSellingItems: item.itemDetails,
+        selsal: sellingItemsOfWeigth,
+        has_selsal: item.has_selsal,
       };
     });
     const card = paymentData.reduce((acc, curr) => {
