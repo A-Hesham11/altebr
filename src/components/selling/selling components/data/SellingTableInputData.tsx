@@ -24,8 +24,6 @@ import { Selling_TP } from "../../../../pages/selling/PaymentSellingPage";
 import SelectKarat from "../../../templates/reusableComponants/karats/select/SelectKarat";
 import { DeleteIcon, EditIcon, ViewIcon } from "../../../atoms/icons";
 import { Header } from "../../../atoms/Header";
-import SellingTableInputWeight from "./SellingTableInputWeight";
-import { HiOutlineViewGridAdd, HiViewGridAdd } from "react-icons/hi";
 
 type SellingTableInputData_TP = {
   dataSource: Selling_TP;
@@ -34,10 +32,6 @@ type SellingTableInputData_TP = {
   setSellingItemsData: any;
   setClientData: any;
   rowsData: Selling_TP;
-  selectedItemDetails: any;
-  setSelectedItemDetails: any;
-  sellingItemsOfWeigth: any;
-  setSellingItemsOfWeight: any;
 };
 
 export const SellingTableInputData = ({
@@ -47,24 +41,27 @@ export const SellingTableInputData = ({
   setSellingItemsData,
   selectedItemDetails,
   setSelectedItemDetails,
-  sellingItemsOfWeigth,
-  setSellingItemsOfWeight
+  setClientData,
+  rowsData,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ file: SellingTableInputData.tsx:53 ~ sellingItemsData:", sellingItemsData)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:53 ~ dataSource:", dataSource)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:47 ~ sellingItemsData:", sellingItemsData)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:47 ~ selectedItemDetails:", selectedItemDetails)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:47 ~ dataSource:", dataSource)
 
   const [search, setSearch] = useState(""); 
+
+  const [open, setOpen] = useState<boolean>(false)
   const [openDetails, setOpenDetails] = useState<boolean>(false);
-  const [openSelsal, setOpenSelsal] = useState<boolean>(false);
-  const { userData } = useContext(authCtx)
 
   const { values, setFieldValue, resetForm , isSubmitting } = useFormikContext<any>();
+  console.log("🚀 ~ file: SellingTableInputData.tsx:59 ~ values:", values)
 
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
 
   const { formatGram, formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
 
-  const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
+  const { refetch, isSuccess, isLoading, isFetching, isRefetching } = useFetch({
     queryKey: ["branch-all-accepted-selling"],
     endpoint:
       search === ""
@@ -76,24 +73,17 @@ export const SellingTableInputData = ({
   });
 
   const priceWithCommissionRate =
-    dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
-  
-  const priceWithCommissionCash = dataSource && (+dataSource[0]?.cost + +dataSource[0]?.min_selling);
-  
+    dataSource &&
+    +dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) +
+      dataSource[0]?.cost;
+
+  const priceWithCommissionCash =
+    dataSource && +dataSource[0]?.cost + +dataSource[0]?.min_selling;
+
   const priceWithSellingPolicy =
-  dataSource && dataSource[0]?.min_selling_type === "نسبة"
-  ? priceWithCommissionRate
-  : priceWithCommissionCash;
-
-  // const calcOfSelsalWeight = sellingItemsOfWeigth.reduce((acc, item) => {
-  //   acc += +item.weight
-  //   return acc
-  // }, 0)
-
-  // const calcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
-  //   acc += +item.cost
-  //   return acc
-  // }, 0)
+    dataSource && dataSource[0]?.min_selling_type === "نسبة"
+      ? priceWithCommissionRate
+      : priceWithCommissionCash;
 
   const { data: karatValues } = useFetch<KaratValues_TP[]>({
     endpoint: "classification/api/v1/allkarats",
@@ -110,7 +100,7 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{t("classification")} </span>,
         accessorKey: "category_name",
-        cell: (info) => info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`  ,
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("category")}</span>,
@@ -225,19 +215,19 @@ export const SellingTableInputData = ({
     setSellingItemsData(newData);
   };
 
-    useEffect(() => {
-      const { client_id, bond_date, client_value, client_name, ...restValues } = values;
-      Object.keys(restValues).map((key) => {
-        if (dataSource?.length === 1) {
-          setFieldValue(key, dataSource[0][key]);
-          setFieldValue("taklfa", priceWithSellingPolicy.toFixed(2));
-          setFieldValue(
-            "taklfa_after_tax",
-            (priceWithSellingPolicy * 0.15 + priceWithSellingPolicy).toFixed(2)
-          );
-        }
-      });
-    }, [dataSource, search]);
+  useEffect(() => {
+    const { client_id, bond_date, client_value, client_name, ...restValues } = values;
+    Object.keys(restValues).map((key) => {
+      if (dataSource?.length === 1) {
+        setFieldValue(key, dataSource[0][key]);
+        setFieldValue("taklfa", priceWithSellingPolicy.toFixed(2));
+        setFieldValue(
+          "taklfa_after_tax",
+          (priceWithSellingPolicy * 0.15 + priceWithSellingPolicy).toFixed(2)
+        );
+      }
+    });
+  }, [dataSource, search]);
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
@@ -378,41 +368,12 @@ export const SellingTableInputData = ({
                 name="weight"
                 type="text"
                 required
+                value={values?.weight}
                 onChange={(e) => {
-                  
-                const remainingWeight = +dataSource[0]?.weight - +e.target.value
-
-                const costItem = (+values.karat_price + +values.wage) * values.weight
-
-                const priceWithCommissionRate = +costItem * (+values?.min_selling * 0.01) + +costItem;
-                const priceWithCommissionCash = +costItem + +values?.min_selling;
-            
-                const priceWithSellingPolicy =
-                values?.min_selling_type === "نسبة"
-                  ? priceWithCommissionRate
-                  : priceWithCommissionCash;
-                
-                  const taklfaAfterTax = (priceWithSellingPolicy * 0.15) + priceWithSellingPolicy
-
-                 if (values.weight > +dataSource[0]?.weight) {
-                    notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي")
-                  } else {
-                    setFieldValue("weight", +values.weight)
-                    
-                    setFieldValue("remaining_weight", +remainingWeight)
-
-                    setFieldValue("cost", +costItem.toFixed(3))
-                    
-                    setFieldValue("taklfa", +priceWithSellingPolicy.toFixed(3))
-                    
-                    setFieldValue("taklfa_after_tax", +taklfaAfterTax.toFixed(3))
-
-                    setOpenDetails(false);
-                  }
-
+                  setFieldValue("weight", values.weight);
                 }}
-                className={`${!isSuccess || (dataSource && dataSource[0]?.has_selsal === 1) && "bg-mainDisabled"} text-center`}
-                disabled={!isSuccess || (dataSource && dataSource[0]?.has_selsal === 1)}
+                className={`${!isSuccess && "bg-mainDisabled"} text-center`}
+                disabled={!isSuccess}
               />
             </td>
             <td>
@@ -460,6 +421,7 @@ export const SellingTableInputData = ({
                 id="cost"
                 name="cost"
                 type="text"
+                // value="2000"
                 onChange={(e) => {
                   setFieldValue("cost", values.value);
                 }}
@@ -530,19 +492,6 @@ export const SellingTableInputData = ({
                   </Button>
                 )
               }
-              {dataSource?.length == 1 && dataSource[0]?.has_selsal === 1
-                && (
-                  <Button
-                    loading={values.hwya && isFetching}
-                    action={() => {
-                        setOpenSelsal(true)
-                    }}
-                    className="bg-transparent px-2"
-                  >
-                    <HiViewGridAdd className="fill-mainGreen w-6 h-6" />
-                  </Button>
-                )
-              }
             <Button
               loading={values.hwya && isFetching}
               action={() => {
@@ -558,11 +507,6 @@ export const SellingTableInputData = ({
 
                 if (pieceCheck !== -1) {
                   notify("info", `${t("item exists")}`);
-                  return;
-                }
-
-                if (values.weight == 0) {
-                  notify("info", `${t("The lot is sold out")}`);
                   return;
                 }
 
@@ -655,6 +599,7 @@ export const SellingTableInputData = ({
                                 disabled={item.weight != 0}
                                 className={`${item.weight != 0 && "bg-mainDisabled"}`}
                                 onChange={(e) => {
+                                console.log("🚀 ~ file: SellingTableInputData.tsx:607 ~ {dataSource[0]?.weightitems?.map ~ e.target.value:", e.target.value)
 
                                   setSelectedItemDetails((prev: any) => {
                                     const index = prev.findIndex((prevItem) => item?.category_id === prevItem?.category_id);
@@ -786,20 +731,6 @@ export const SellingTableInputData = ({
           </div>
       </Modal>
       
-      <Modal isOpen={openSelsal} onClose={() => setOpenSelsal(false)}>
-          <div className="flex flex-col gap-8 justify-center items-center">
-            <Header
-              header={t("Add a chain")}
-            />
-              <SellingTableInputWeight
-                handleDeleteRow={handleDeleteRow}
-                sellingItemsOfWeigth={sellingItemsOfWeigth}
-                setSellingItemsOfWeight={setSellingItemsOfWeight}
-                dataSource={dataSource}
-                setOpenSelsal={setOpenSelsal}
-              />
-          </div>
-      </Modal>
     </Form>
   );
 };

@@ -15,7 +15,6 @@ const AddSellingInvoice = () => {
     const [stage, setStage] = useState<number>(1)
     const [clientData, setClientData] = useState<ClientData_TP>();
     const [sellingItemsData, setSellingItemsData] = useState([]);
-    const [sellingItemsOfWeigth, setSellingItemsOfWeight] = useState([]);
     const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
     const [invoiceNumber, setInvoiceNumber] = useState([]);
     const [selectedItemDetails, setSelectedItemDetails] = useState([]);
@@ -32,7 +31,6 @@ const AddSellingInvoice = () => {
         classification_name: "",
         category_name: "" ,
         weight: "" ,
-        has_selsal: 0,
         remaining_weight: "" ,
         karat_id: "",
         gold_price:[],
@@ -98,8 +96,6 @@ const AddSellingInvoice = () => {
                     setClientData={setClientData}
                     selectedItemDetails={selectedItemDetails}
                     setSelectedItemDetails={setSelectedItemDetails}
-                    sellingItemsOfWeigth={sellingItemsOfWeigth}
-                    setSellingItemsOfWeight={setSellingItemsOfWeight}
                 />
             }
             {
@@ -120,7 +116,6 @@ const AddSellingInvoice = () => {
                     clientData={clientData} 
                     setStage={setStage} 
                     selectedItemDetails={selectedItemDetails}
-                    sellingItemsOfWeigth={sellingItemsOfWeigth}
                 />
             }
         </>
