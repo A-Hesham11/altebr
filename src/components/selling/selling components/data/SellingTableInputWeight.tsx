@@ -14,6 +14,7 @@ import { Button } from '../../../atoms';
 import { DeleteIcon, EditIcon } from '../../../atoms/icons';
 import { notify } from '../../../../utils/toast';
 import { IoMdAdd } from 'react-icons/io';
+import { Loading } from '../../../organisms/Loading';
 
 type SellingTableInputWeight_TP = {
     sellingItemsOfWeigth: any;
@@ -35,6 +36,7 @@ const SellingTableInputWeight = ({
     const { userData } = useContext(authCtx);
     const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
     const { formatGram, formatReyal } = numberContext();
+    const [page, setPage] = useState<number>(1)
 
   const { values, setFieldValue, resetForm , isSubmitting } = useFormikContext<any>();
 
@@ -113,11 +115,11 @@ const SellingTableInputWeight = ({
         getPaginationRowModel: getPaginationRowModel(),
     });
 
-    const { refetch, isFetching, isSuccess } = useFetch({
+    const { refetch, isFetching, isSuccess, isLoading, isRefetching } = useFetch({
         queryKey: ["branch-all-accepted-weight-selling"],
         endpoint:
         searchWeight === ""
-            ? `/branchManage/api/v1/all-accepted-weight/${userData?.branch_id}?per_page=10000`
+            ? `/branchManage/api/v1/all-accepted-weight/${userData?.branch_id}`
             : `${searchWeight}`,
         onSuccess: (data) => {
           setItemsOfWeight(data);
@@ -155,6 +157,14 @@ const SellingTableInputWeight = ({
     useEffect(() => {
         refetch();
     }, [searchWeight]);
+    
+    useEffect(() => {
+        if (page == 1) {
+            refetch()
+        } else {
+            setPage(1)
+        }
+    }, [searchWeight])
 
     const calcOfSelsalWeight = sellingItemsOfWeigth.reduce((acc, item) => {
         acc += +item.weight
@@ -173,7 +183,6 @@ const SellingTableInputWeight = ({
         setFieldValue("taklfa_after_tax", (priceWithSellingPolicy * 0.15 + priceWithSellingPolicy).toFixed(2));
     }
     
-
   return (
     <Formik 
         initialValues={initialValuesWeight}
