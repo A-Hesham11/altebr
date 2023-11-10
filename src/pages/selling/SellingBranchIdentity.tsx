@@ -184,6 +184,10 @@ export const SellingBranchIdentity = () => {
     ]
 
     useEffect(() => {
+        refetch()
+    }, [page])
+
+    useEffect(() => {
         if (page == 1) {
             refetch()
         } else {

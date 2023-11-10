@@ -110,7 +110,7 @@ const SellingInvoiceData = ({
           //     )
           // );
           const finalCategoriesNames = info.row.original.itemDetails?.map((category) => category.category_name).join("-");
-          return  info.row.original.itemDetails.length ? finalCategoriesNames : (info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`);
+          return  info.row.original.itemDetails.length ? (info.row.original.has_selsal === 0 ? finalCategoriesNames : `${finalCategoriesNames} مع سلسال`) : (info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`);
         },
       },
       {
@@ -232,10 +232,10 @@ const SellingInvoiceData = ({
         Number(curr.commission_tax);
       return acc;
     }, {});
-    mutate({
-        endpointName: '/selling/api/v1/add_Invoice',
-        values: { invoice, items, card }
-    })
+    // mutate({
+    //     endpointName: '/selling/api/v1/add_Invoice',
+    //     values: { invoice, items, card }
+    // })
     console.log("🚀 ~ file: SellingInvoiceData.tsx:237 ~ posSellingDataHandler ~ { invoice, items, card }:", { invoice, items, card })
   };
 

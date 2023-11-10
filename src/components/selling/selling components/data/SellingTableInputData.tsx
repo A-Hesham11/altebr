@@ -26,6 +26,7 @@ import { DeleteIcon, EditIcon, ViewIcon } from "../../../atoms/icons";
 import { Header } from "../../../atoms/Header";
 import SellingTableInputWeight from "./SellingTableInputWeight";
 import { HiOutlineViewGridAdd, HiViewGridAdd } from "react-icons/hi";
+import { Loading } from "../../../organisms/Loading";
 
 type SellingTableInputData_TP = {
   dataSource: Selling_TP;
@@ -57,6 +58,7 @@ export const SellingTableInputData = ({
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
   const { userData } = useContext(authCtx)
+  const [page, setPage] = useState<number>(1)
 
   const { values, setFieldValue, resetForm , isSubmitting } = useFormikContext<any>();
 
@@ -64,11 +66,11 @@ export const SellingTableInputData = ({
 
   const { formatGram, formatReyal } = numberContext();
 
-  const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
+  const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
     queryKey: ["branch-all-accepted-selling"],
     endpoint:
       search === ""
-        ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}?per_page=10000`
+        ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}`
         : `${search}`,
     onSuccess: (data) => {
       setDataSource(data);
@@ -108,15 +110,16 @@ export const SellingTableInputData = ({
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("classification")} </span>,
-        accessorKey: "category_name",
-        cell: (info) => info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`  ,
-      },
-      {
         header: () => <span>{t("category")}</span>,
         accessorKey: "classification_name",
         cell: (info) => info.getValue() || "---",
       },
+      {
+        header: () => <span>{t("classification")} </span>,
+        accessorKey: "category_name",
+        cell: (info) => info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`  ,
+      },
+
       {
         header: () => <span>{t("weight")} </span>,
         accessorKey: "weight",
@@ -281,6 +284,14 @@ export const SellingTableInputData = ({
   useEffect(() => {
     refetch();
   }, [search]);
+
+  useEffect(() => {
+      if (page == 1) {
+          refetch()
+      } else {
+          setPage(1)
+      }
+  }, [search])
 
   return (
     <Form>
@@ -572,7 +583,7 @@ export const SellingTableInputData = ({
                 ].reverse());
 
                 handleAddItemsToSelling()
-                setDataSource([]);
+                // setDataSource([]);
                 setSearch("");
                 setSelectedItemDetails([])
 
