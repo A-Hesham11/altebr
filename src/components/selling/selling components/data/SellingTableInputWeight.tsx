@@ -74,13 +74,13 @@ const SellingTableInputWeight = ({
         cell: (info) => info.getValue() || "---",
         },
         {
-        header: () => <span>{t("classification")} </span>,
-        accessorKey: "category_name",
+        header: () => <span>{t("category")}</span>,
+        accessorKey: "classification_name",
         cell: (info) => info.getValue() || "---",
         },
         {
-        header: () => <span>{t("category")}</span>,
-        accessorKey: "classification_name",
+        header: () => <span>{t("classification")} </span>,
+        accessorKey: "category_name",
         cell: (info) => info.getValue() || "---",
         },
         {
@@ -238,25 +238,6 @@ const SellingTableInputWeight = ({
                                         disabled={!isSuccess}
                                     />
                                 </td>
-                                <td className="border-l-2 border-l-flatWhite">
-                                    <SelectCategory
-                                        name="category_name"
-                                        noMb={true}
-                                        placement="top"
-                                        all={true}
-                                        value={{
-                                        value: values?.category_id,
-                                        label: values?.category_name || t("classification"),
-                                        id: values?.category_id,
-                                        }}
-                                        onChange={(option) => {
-                                        setFieldValue("category_name", option!.value);
-                                        }}
-                                        showItems={true}
-                                        // disabled={!String(values.item_id).startsWith('0000')}
-                                        disabled={!isCategoryDisabled}
-                                    />
-                                </td>
                                 <td>
                                 {!isCategoryDisabled ? (
                                     <BaseInputField
@@ -279,6 +260,25 @@ const SellingTableInputWeight = ({
                                 ) : (
                                     <SelectClassification field="value" name="classification_id" />
                                 )}
+                                </td>
+                                <td className="border-l-2 border-l-flatWhite">
+                                    <SelectCategory
+                                        name="category_name"
+                                        noMb={true}
+                                        placement="top"
+                                        all={true}
+                                        value={{
+                                        value: values?.category_id,
+                                        label: values?.category_name || t("classification"),
+                                        id: values?.category_id,
+                                        }}
+                                        onChange={(option) => {
+                                        setFieldValue("category_name", option!.value);
+                                        }}
+                                        showItems={true}
+                                        // disabled={!String(values.item_id).startsWith('0000')}
+                                        disabled={!isCategoryDisabled}
+                                    />
                                 </td>
                                 <td>
                                     <BaseInputField

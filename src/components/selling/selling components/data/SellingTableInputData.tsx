@@ -119,7 +119,6 @@ export const SellingTableInputData = ({
         accessorKey: "category_name",
         cell: (info) => info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`  ,
       },
-
       {
         header: () => <span>{t("weight")} </span>,
         accessorKey: "weight",
@@ -340,25 +339,6 @@ export const SellingTableInputData = ({
                 disabled={!isSuccess}
               />
             </td>
-            <td className="border-l-2 border-l-flatWhite">
-              <SelectCategory
-                name="category_name"
-                noMb={true}
-                placement="top"
-                all={true}
-                value={{
-                  value: values?.category_id,
-                  label: values?.category_name || t("classification"),
-                  id: values?.category_id,
-                }}
-                onChange={(option) => {
-                  setFieldValue("category_name", option!.value);
-                }}
-                showItems={true}
-                // disabled={!String(values.item_id).startsWith('0000')}
-                disabled={!isCategoryDisabled}
-              />
-            </td>
             <td>
               {!isCategoryDisabled ? (
                 <BaseInputField
@@ -381,6 +361,25 @@ export const SellingTableInputData = ({
               ) : (
                 <SelectClassification field="value" name="classification_id" />
               )}
+            </td>
+            <td className="border-l-2 border-l-flatWhite">
+              <SelectCategory
+                name="category_name"
+                noMb={true}
+                placement="top"
+                all={true}
+                value={{
+                  value: values?.category_id,
+                  label: values?.category_name || t("classification"),
+                  id: values?.category_id,
+                }}
+                onChange={(option) => {
+                  setFieldValue("category_name", option!.value);
+                }}
+                showItems={true}
+                // disabled={!String(values.item_id).startsWith('0000')}
+                disabled={!isCategoryDisabled}
+              />
             </td>
             <td>
               <BaseInputField
@@ -579,13 +578,14 @@ export const SellingTableInputData = ({
 
                 setSellingItemsData((prev) => [
                   ...prev,
-                  {...values, itemDetails: selectedItemDetails},
+                  {...values, itemDetails: selectedItemDetails, selsal: sellingItemsOfWeigth},
                 ].reverse());
 
                 handleAddItemsToSelling()
-                // setDataSource([]);
+                setDataSource([]);
                 setSearch("");
                 setSelectedItemDetails([])
+                setSellingItemsOfWeight([])
 
               }}
               className="bg-transparent px-2 m-auto"
