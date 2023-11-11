@@ -221,7 +221,7 @@ const SellingInvoiceData = ({
         vat: costTaxes,
         total: +costItem + +costTaxes,
         kitSellingItems: item.itemDetails,
-        selsal: sellingItemsOfWeigth,
+        selsal: item.selsal,
         has_selsal: item.has_selsal,
       };
     });
