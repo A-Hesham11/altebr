@@ -232,10 +232,10 @@ const SellingInvoiceData = ({
         Number(curr.commission_tax);
       return acc;
     }, {});
-    // mutate({
-    //     endpointName: '/selling/api/v1/add_Invoice',
-    //     values: { invoice, items, card }
-    // })
+    mutate({
+        endpointName: '/selling/api/v1/add_Invoice',
+        values: { invoice, items, card }
+    })
     console.log("🚀 ~ file: SellingInvoiceData.tsx:237 ~ posSellingDataHandler ~ { invoice, items, card }:", { invoice, items, card })
   };
 

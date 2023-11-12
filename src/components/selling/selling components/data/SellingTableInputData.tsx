@@ -51,6 +51,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ file: SellingTableInputData.tsx:54 ~ selectedItemDetails:", selectedItemDetails)
   console.log("🚀 ~ file: SellingTableInputData.tsx:53 ~ sellingItemsData:", sellingItemsData)
   console.log("🚀 ~ file: SellingTableInputData.tsx:53 ~ dataSource:", dataSource)
 
@@ -61,6 +62,7 @@ export const SellingTableInputData = ({
   const [page, setPage] = useState<number>(1)
 
   const { values, setFieldValue, resetForm , isSubmitting } = useFormikContext<any>();
+  console.log("🚀 ~ file: SellingTableInputData.tsx:65 ~ values:", values)
 
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
 
@@ -154,6 +156,7 @@ export const SellingTableInputData = ({
   );
 
   const [kitDetails, setKitDetails] = useState([])
+  console.log("🚀 ~ file: SellingTableInputData.tsx:159 ~ kitDetails:", kitDetails)
 
   useEffect(() => {
     if (dataSource?.length) {
@@ -174,7 +177,9 @@ export const SellingTableInputData = ({
                 name="selectedItem" 
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setSelectedItemDetails((prev) => [...prev, {...info.row.original, index:info.row.index, hwya: values?.hwya }]);
+                    console.log("🚀 ~ file: SellingTableInputData.tsx:177 ~ info.row.original:", info.row.original)
+                    console.log("🚀 ~ file: SellingTableInputData.tsx:180 ~ e.target.checked:", e.target.checked)
+                    setSelectedItemDetails((prev) => [...prev, {...info.row.original, index:info.row.index}]);
                   } else {
                     setSelectedItemDetails((prev) => prev.filter((item) => item.index !== info.row.index));
                   }
