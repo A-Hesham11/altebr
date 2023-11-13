@@ -397,7 +397,7 @@ export const SellingTableInputData = ({
                   
                 const remainingWeight = +dataSource[0]?.weight - +e.target.value
 
-                const costItem = (+values.karat_price + +values.wage) * values.weight
+                const costItem = (+values.karat_price + +values.wage) * +e.target.value
 
                 const priceWithCommissionRate = +costItem * (+values?.min_selling * 0.01) + +costItem;
                 const priceWithCommissionCash = +costItem + +values?.min_selling;
@@ -409,10 +409,10 @@ export const SellingTableInputData = ({
                 
                   const taklfaAfterTax = (priceWithSellingPolicy * 0.15) + priceWithSellingPolicy
 
-                 if (values.weight > +dataSource[0]?.weight) {
+                 if (+e.target.value > +dataSource[0]?.weight) {
                     notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي")
                   } else {
-                    setFieldValue("weight", +values.weight)
+                    setFieldValue("weight", +e.target.value)
                     
                     setFieldValue("remaining_weight", +remainingWeight)
 
@@ -426,8 +426,8 @@ export const SellingTableInputData = ({
                   }
 
                 }}
-                className={`${!isSuccess || (dataSource && dataSource[0]?.has_selsal === 1) && "bg-mainDisabled"} text-center`}
-                disabled={!isSuccess || (dataSource && dataSource[0]?.has_selsal === 1)}
+                className={`${!isSuccess && "bg-mainDisabled"} text-center`}
+                disabled={!isSuccess}
               />
             </td>
             <td>
