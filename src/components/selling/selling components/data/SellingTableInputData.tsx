@@ -59,6 +59,7 @@ export const SellingTableInputData = ({
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
   const { userData } = useContext(authCtx)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:62 ~ userData:", userData)
   const [page, setPage] = useState<number>(1)
 
   const { values, setFieldValue, resetForm , isSubmitting } = useFormikContext<any>();
@@ -133,7 +134,7 @@ export const SellingTableInputData = ({
       },
       {
         header: () => <span>{t("karat value")} </span>,
-        accessorKey: "karat_name",
+        accessorKey: values.classification_id === 1 ?  "karat_name" : "karatmineral_name",
         cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
       },
       {
@@ -196,8 +197,8 @@ export const SellingTableInputData = ({
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("weight")} </span>,
-        accessorKey: "weight",
+        header: () => <span>{values.classification_id === 1 ? `${t("weight")}`  : `${t("cost")}` }  </span>,
+        accessorKey: values.classification_id === 1 ? "weight" : "selling_price",
         cell: (info) => info.getValue() || "---",
       },
     ],
@@ -237,6 +238,11 @@ export const SellingTableInputData = ({
       Object.keys(restValues).map((key) => {
         if (dataSource?.length === 1) {
           setFieldValue(key, dataSource[0][key]);
+          if (values.classification_id === 1) {
+            setFieldValue("karat_name", dataSource[0]?.karat_name)
+          } else {
+            setFieldValue("karatmineral_name", dataSource[0]?.karatmineral_name);
+          }
           setFieldValue("taklfa", priceWithSellingPolicy.toFixed(2));
           setFieldValue(
             "taklfa_after_tax",
@@ -449,7 +455,7 @@ export const SellingTableInputData = ({
             <td className="border-l-2 border-l-flatWhite">
               <SelectKarat
                 field="id"
-                name="karat_name"
+                name={values.classification_id === 1 ? "karat_name" : "karatmineral_name"}
                 noMb={true}
                 placement="top"
                 onChange={(option) => {
@@ -758,9 +764,17 @@ export const SellingTableInputData = ({
                           return acc
                       }, 0)
 
+                      const clacSelectedCost = selectedItemDetails.reduce((acc, item) => {
+                        acc += +item.selling_price
+                        return acc
+                    }, 0)
+                      console.log("🚀 ~ file: SellingTableInputData.tsx:766 ~ clacSelectedCost ~ clacSelectedCost:", clacSelectedCost)
+
                       const remainingWeight = +dataSource[0]?.weight - +clacSelectedWeight
 
-                      const costItem = (+values.karat_price + +values.wage) * clacSelectedWeight
+                      // const costItem =  (+values.karat_price + +values.wage) * clacSelectedWeight
+
+                      const costItem = values.classification_id === 1 ?  (+values.karat_price + +values.wage) * clacSelectedWeight : +clacSelectedCost
 
                       const priceWithCommissionRate = +costItem * (+values?.min_selling * 0.01) + +costItem;
                       const priceWithCommissionCash = +costItem + +values?.min_selling;
