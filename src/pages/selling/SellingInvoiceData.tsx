@@ -121,7 +121,7 @@ const SellingInvoiceData = ({
       {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
-        cell: (info) => info.getValue() || "---",
+        cell: (info: any) => info.row.original.classification_id === 1 ?  formatReyal(Number(info.getValue())) : formatGram(Number(info.row.original.karatmineral_name)),
       },
       {
         header: () => <span>{t("weight")}</span>,

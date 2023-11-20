@@ -9,6 +9,7 @@ import { Payment_TP } from '../data/PaymentProcessing';
 import * as Yup from "yup";
 import { useFetch } from '../../../../hooks';
 import { authCtx } from '../../../../context/auth-and-perm/auth';
+import { notify } from '../../../../utils/toast';
 
 const AddSellingInvoice = () => {
     const [dataSource, setDataSource] = useState<Selling_TP[]>();
@@ -29,6 +30,7 @@ const AddSellingInvoice = () => {
         min_selling_type:"",
         classification_id: "",
         category_id: "" ,
+        category_selling_type:"",
         classification_name: "",
         category_name: "" ,
         weight: "" ,
@@ -81,7 +83,7 @@ const AddSellingInvoice = () => {
   return (
     <Formik
         initialValues={initialValues}
-        // validationSchema={validationSchema}
+        validationSchema={validationSchema}
         onSubmit={(values) => {
 
         }}

@@ -192,6 +192,7 @@ export const DiamondTableForm = ({
   })) || []
   // categories options
   const categories = queryClient.getQueryData(['categories_all'])
+
   const categoriesOptionsCache = categories && categories.filter(item=>!item.items)?.map(option => ({
     id: option.id,
     value: option.name,
@@ -216,10 +217,10 @@ export const DiamondTableForm = ({
       }))
     },
   })
+  
   useEffect(() => {
     refetch()
   }, [values?.mineral_id])
-
 
   return (
     <>
@@ -512,7 +513,7 @@ export const DiamondTableForm = ({
                 <td className="border-l-2 border-l-flatWhite">
                   <SelectCategory
                     name="category_id"
-                    noMb={true}
+                    // noMb={true}
                     placement="top"
                     onChange={(option) => {
                       setFieldValue("category_value", option!.value)
@@ -526,7 +527,7 @@ export const DiamondTableForm = ({
                         t("categories"),
                       id: values.category_id || values.category_id,
                     }}
-                    showItems={true}
+                    showItemsDiamond={true}
                   />
                 </td>
                 <td className="border-l-2 border-l-flatWhite" style={{ minWidth: "150px"}}>

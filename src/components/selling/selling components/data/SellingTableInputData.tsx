@@ -66,6 +66,7 @@ export const SellingTableInputData = ({
   console.log("🚀 ~ file: SellingTableInputData.tsx:65 ~ values:", values)
 
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
+  const sellingPrice = (values.cost * .05) + values.cost
 
   const { formatGram, formatReyal } = numberContext();
 
@@ -134,8 +135,8 @@ export const SellingTableInputData = ({
       },
       {
         header: () => <span>{t("karat value")} </span>,
-        accessorKey: values.classification_id === 1 ?  "karat_name" : "karatmineral_name",
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        accessorKey: "karat_name",
+        cell: (info: any) => info.row.original.classification_id === 1 ?  formatReyal(Number(info.getValue())) : formatGram(Number(info.row.original.karatmineral_name)),
       },
       {
         header: () => <span>{t("cost")} </span>,
@@ -199,7 +200,7 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{values.classification_id === 1 ? `${t("weight")}`  : `${t("cost")}` }  </span>,
         accessorKey: values.classification_id === 1 ? "weight" : "selling_price",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => !info.row.original.selling_price ? Number(info.row.original.weight) : (+info.row.original.selling_price),
       },
     ],
     []
@@ -432,8 +433,8 @@ export const SellingTableInputData = ({
                   }
 
                 }}
-                className={`${!isSuccess && "bg-mainDisabled"} text-center`}
-                disabled={!isSuccess}
+                className={`${!isSuccess || values.category_selling_type !== "all" && "bg-mainDisabled"} text-center`}
+                disabled={!isSuccess || values.category_selling_type !== "all"}
               />
             </td>
             <td>
@@ -459,7 +460,7 @@ export const SellingTableInputData = ({
                 noMb={true}
                 placement="top"
                 onChange={(option) => {
-                  setFieldValue("karat_name", option!.value);
+                  setFieldValue("karat_name" || "karatmineral_name", option!.value);
                   setFieldValue(
                     "stock",
                     karatValues!.find(
@@ -468,9 +469,9 @@ export const SellingTableInputData = ({
                   );
                 }}
                 value={{
-                  id: values.karat_id,
-                  value: values.karat_id,
-                  label: values.karat_name || t("karat value"),
+                  id: values.karat_id !== 0 ? values.karat_id : values.karatmineral_id,
+                  value: values.karat_id !== 0 ? values.karat_id : values.karatmineral_id,
+                  label: values.karat_name || values.karatmineral_name || t("karat value"),
                 }}
                 disabled={!isCategoryDisabled}
               />
@@ -504,7 +505,7 @@ export const SellingTableInputData = ({
                     (+e.target.value * 0.15 + +e.target.value).toFixed(2)
                   );
                 }}
-                className={`${!isSuccess && "bg-mainDisabled"} text-center`}
+                className={`${!isSuccess ? "bg-mainDisabled" : +values?.taklfa < +sellingPrice ? "bg-red-100" : ""} text-center`}
                 disabled={!isSuccess}
               />
             </td>
@@ -587,9 +588,22 @@ export const SellingTableInputData = ({
                   return;
                 }
 
+                if (!selectedItemDetails.length) {
+                  const kitAllDetails = kitDetails.filter((item) => item.status !== 1)
+  
+                  selectedItemDetails.push(kitAllDetails)
+                }
+
+                const sellingPrice = (values.cost * .05) + values.cost
+
+                if (+values?.taklfa < +sellingPrice) {
+                  notify("info", `${t("The selling price may not be less than the minimum")}`)
+                  return
+                }
+
                 setSellingItemsData((prev) => [
                   ...prev,
-                  {...values, itemDetails: selectedItemDetails, selsal: sellingItemsOfWeigth},
+                  {...values, itemDetails: selectedItemDetails.flat(Infinity), selsal: sellingItemsOfWeigth},
                 ].reverse());
 
                 handleAddItemsToSelling()
@@ -771,8 +785,6 @@ export const SellingTableInputData = ({
                       console.log("🚀 ~ file: SellingTableInputData.tsx:766 ~ clacSelectedCost ~ clacSelectedCost:", clacSelectedCost)
 
                       const remainingWeight = +dataSource[0]?.weight - +clacSelectedWeight
-
-                      // const costItem =  (+values.karat_price + +values.wage) * clacSelectedWeight
 
                       const costItem = values.classification_id === 1 ?  (+values.karat_price + +values.wage) * clacSelectedWeight : +clacSelectedCost
 

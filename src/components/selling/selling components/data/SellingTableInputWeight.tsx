@@ -101,7 +101,7 @@ const SellingTableInputWeight = ({
         {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => formatReyal(Number(info.getValue()).toFixed(3)) || "---",
         },
     ],
     []
@@ -178,8 +178,8 @@ const SellingTableInputWeight = ({
 
     const handleAddSelsalToPieces = () => {
         setFieldValue("weight", +values.weight + +calcOfSelsalWeight)
-        setFieldValue("cost", +values.cost + +calcOfSelsalCost)
-        setFieldValue("taklfa", +priceWithSellingPolicy.toFixed(3))
+        setFieldValue("cost", (+values.cost + +calcOfSelsalCost).toFixed(2))
+        setFieldValue("taklfa", +priceWithSellingPolicy.toFixed(2))
         setFieldValue("taklfa_after_tax", (priceWithSellingPolicy * 0.15 + priceWithSellingPolicy).toFixed(2));
     }
     
@@ -231,8 +231,6 @@ const SellingTableInputWeight = ({
                                         onChange={(e) => {
                                             setFieldValue("hwya", e.target.value);
                                             getSearchResultsWeight({ hwya: e.target.value });
-
-                                        //   handleInputChange(e);
                                         }}
                                         className={`${!isSuccess && "bg-mainDisabled"} text-center`}
                                         disabled={!isSuccess}
@@ -290,24 +288,13 @@ const SellingTableInputWeight = ({
                                         className='text-center'
                                         onChange={(e) => {
                                         
-                                        const remainingWeight = +itemsOfWeight[0]?.weight - +e.target.value
+                                            const remainingWeight = +itemsOfWeight[0]?.weight - +e.target.value
 
-                                        const costItem = (+values.karat_price + +values.wage) * +e.target.value
+                                            const costItem = (+values.karat_price + +values.wage) * +e.target.value
 
-                                        setFieldValue("cost", +costItem.toFixed(3))
+                                            setFieldValue("cost", +costItem.toFixed(3))
 
-                                        setFieldValue("remaining_weight", +remainingWeight)
-                                        // const priceWithCommissionRate = +costItem * (+values?.min_selling * 0.01) + +costItem;
-                                        // const priceWithCommissionCash = +costItem + +values?.min_selling;
-                                    
-                                        // const priceWithSellingPolicy =
-                                        // values?.min_selling_type === "نسبة"
-                                        //   ? priceWithCommissionRate
-                                        //   : priceWithCommissionCash;
-                                        
-                                        //   const taklfaAfterTax = (priceWithSellingPolicy * 0.15) + priceWithSellingPolicy
-
-                                    
+                                            setFieldValue("remaining_weight", +remainingWeight)
 
                                         }}
                                         // className={`${!isSuccess && "bg-mainDisabled"} text-center`}
@@ -336,15 +323,6 @@ const SellingTableInputWeight = ({
                                         name="karat_name"
                                         noMb={true}
                                         placement="top"
-                                        // onChange={(option) => {
-                                        //   setFieldValue("karat_name", option!.value);
-                                        //   setFieldValue(
-                                        //     "stock",
-                                        //     karatValues!.find(
-                                        //       (item) => item.karat === values.karat_value
-                                        //     )?.value
-                                        //   );
-                                        // }}
                                         value={{
                                         id: values.karat_id,
                                         value: values.karat_id,
@@ -360,7 +338,7 @@ const SellingTableInputWeight = ({
                                         name="cost"
                                         type="text"
                                         onChange={(e) => {
-                                        setFieldValue("cost", values.value);
+                                        setFieldValue("cost", (values.value).toFixed(3));
                                         }}
                                         disabled={!isCategoryDisabled}
                                         className={`${
@@ -396,7 +374,6 @@ const SellingTableInputWeight = ({
                                                 ...prev, values
                                             ].reverse());
 
-                                            // handleAddItemsToSelling()
                                             Object.keys(values).forEach((key) => {
                                                 setFieldValue(key, "");
                                             });
