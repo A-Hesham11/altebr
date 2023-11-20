@@ -27,14 +27,36 @@ const SellingSecondpage = ({
   setStage
 }: SellingSecondpage_TP) => {
 
+  const totalPriceInvoice = sellingItemsData?.reduce((total, item) => +total + +item.taklfa_after_tax, 0)
+  console.log("🚀 ~ file: PaymentProcessing.tsx:82 ~ PaymentProcessing ~ totalPriceInvoice:", totalPriceInvoice)
+
+  const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax ,0)
+  console.log("🚀 ~ file: PaymentProcessing.tsx:85 ~ PaymentProcessing ~ amountRemaining:", amountRemaining)
+
+  const costRemaining = totalPriceInvoice - amountRemaining
+  console.log("🚀 ~ file: PaymentProcessing.tsx:80 ~ PaymentProcessing ~ costRemaining:", costRemaining)
+
    const handleSeccessedData = () => {
+    // if (paymentData.length === 0) {
+    //   notify('info','fill fields first')
+    // } else {
+    //   setStage(3)
+    //   notify('success')
+
+    // }
+
     if (paymentData.length === 0) {
       notify('info','fill fields first')
-    } else {
-      setStage(3)
-      notify('success')
-
+      return;
     }
+
+    if (costRemaining !== 0) {
+      notify('info','ffff')
+      return;
+    }
+
+    setStage(3)
+    notify('success')
 };
 
   return (

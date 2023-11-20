@@ -25,6 +25,7 @@ type SelectCategory_TP = {
   value?:{[x:string]:string}
   all?: boolean
   showItems?: boolean
+  showItemsDiamond?: boolean
   disabled?: boolean
 }
 
@@ -39,6 +40,7 @@ const SelectCategory = ({
   value,
   all = false,
   showItems = false,
+  showItemsDiamond = false,
   disabled
 }: SelectCategory_TP) => {
   ///
@@ -54,6 +56,14 @@ const SelectCategory = ({
     select: (categories) => {
       if(showItems){
         return categories.filter(item=>!item.items).map((category) => ({
+          ...category,
+          id: category.id,
+          label: category.name,
+          value: category.name,
+        }))
+      }
+      if(showItemsDiamond){
+        return categories.filter(item=>item.type !== "multi" && item.selling_type !== "all" ).map((category) => ({
           ...category,
           id: category.id,
           label: category.name,
@@ -80,7 +90,6 @@ const SelectCategory = ({
         }))
       },
     })
-
     
   return (
     <Select
