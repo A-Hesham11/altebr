@@ -100,6 +100,7 @@ const SellingInvoiceData = ({
         header: () => <span>{t("category")} </span>,
         accessorKey: "category_name",
         cell: (info) => {
+          console.log("🚀 ~ file: SellingInvoiceData.tsx:103 ~ info:", info.row.original)
           // const selectedItemDetailsData = sellingItemsData.find(
           //   (item) => info.row.original.hwya === item.hwya
           // ).weightitems;
@@ -115,7 +116,7 @@ const SellingInvoiceData = ({
       },
       {
         header: () => <span>{t("stone weight")} </span>,
-        accessorKey: "supplier_name",
+        accessorKey: "stone_weight",
         cell: (info) => info.getValue() || "---",
       },
       {

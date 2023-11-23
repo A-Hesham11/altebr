@@ -195,6 +195,7 @@ const SellingTableInputWeight = ({
                 Object.keys(values).map((key) => {
                     if (itemsOfWeight?.length === 1) {
                         setFieldValue(key, itemsOfWeight[0][key]); 
+                        setFieldValue("weight", itemsOfWeight[0]?.remaining_weight); 
                     }
                 });
             }, [itemsOfWeight, searchWeight]);
@@ -288,7 +289,7 @@ const SellingTableInputWeight = ({
                                         className='text-center'
                                         onChange={(e) => {
                                         
-                                            const remainingWeight = +itemsOfWeight[0]?.weight - +e.target.value
+                                            const remainingWeight = +itemsOfWeight[0]?.remaining_weight - +e.target.value
 
                                             const costItem = (+values.karat_price + +values.wage) * +e.target.value
 

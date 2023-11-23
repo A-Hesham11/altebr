@@ -66,7 +66,6 @@ export const SellingTableInputData = ({
   console.log("🚀 ~ file: SellingTableInputData.tsx:65 ~ values:", values)
 
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
-  const sellingPrice = (values.cost * .05) + values.cost
 
   const { formatGram, formatReyal } = numberContext();
 
@@ -82,14 +81,21 @@ export const SellingTableInputData = ({
   });
 
   const priceWithCommissionRate =
-    dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
+  dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
+  console.log("🚀 ~ file: SellingTableInputData.tsx:86 ~ priceWithCommissionRate:", priceWithCommissionRate)
   
   const priceWithCommissionCash = dataSource && (+dataSource[0]?.cost + +dataSource[0]?.min_selling);
+  console.log("🚀 ~ file: SellingTableInputData.tsx:90 ~ priceWithCommissionCash:", priceWithCommissionCash)
   
   const priceWithSellingPolicy =
   dataSource && dataSource[0]?.min_selling_type === "نسبة"
   ? priceWithCommissionRate
   : priceWithCommissionCash;
+
+  // const sellingPrice = priceWithSellingPolicy
+  // console.log("🚀 ~ file: SellingTableInputData.tsx:70 ~ sellingPrice:", sellingPrice)
+
+
 
   // const calcOfSelsalWeight = sellingItemsOfWeigth.reduce((acc, item) => {
   //   acc += +item.weight
@@ -198,10 +204,20 @@ export const SellingTableInputData = ({
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{values.classification_id === 1 ? `${t("weight")}`  : `${t("cost")}` }  </span>,
-        accessorKey: values.classification_id === 1 ? "weight" : "selling_price",
-        cell: (info) => !info.row.original.selling_price ? Number(info.row.original.weight) : (+info.row.original.selling_price),
+        header: () => <span>{t("weight")}</span>,
+        accessorKey: "weight",
+        cell: (info) => info.getValue() || "---",
       },
+      {
+        header: () => <span>{t("cost")}</span>,
+        accessorKey: "selling_price",
+        cell: (info) => info.getValue() || "---",
+      },
+      // {
+      //   header: () => <span>{values.classification_id === 1 ? `${t("weight")}`  : `${t("cost")}` }  </span>,
+      //   accessorKey: values.classification_id === 1 ? "weight" : "selling_price",
+      //   cell: (info) => !info.row.original.selling_price ? Number(info.row.original.weight) : (+info.row.original.selling_price),
+      // },
     ],
     []
   );
@@ -239,11 +255,15 @@ export const SellingTableInputData = ({
       Object.keys(restValues).map((key) => {
         if (dataSource?.length === 1) {
           setFieldValue(key, dataSource[0][key]);
+
+          setFieldValue("weight", dataSource[0]?.remaining_weight);
+          
           if (values.classification_id === 1) {
             setFieldValue("karat_name", dataSource[0]?.karat_name)
           } else {
             setFieldValue("karatmineral_name", dataSource[0]?.karatmineral_name);
           }
+
           setFieldValue("taklfa", priceWithSellingPolicy.toFixed(2));
           setFieldValue(
             "taklfa_after_tax",
@@ -402,7 +422,8 @@ export const SellingTableInputData = ({
                 required
                 onChange={(e) => {
                   
-                const remainingWeight = +dataSource[0]?.weight - +e.target.value
+                const remainingWeight = +dataSource[0]?.remaining_weight - +e.target.value
+                console.log("🚀 ~ file: SellingTableInputData.tsx:417 ~ remainingWeight:", remainingWeight)
 
                 const costItem = (+values.karat_price + +values.wage) * +e.target.value
 
@@ -419,8 +440,10 @@ export const SellingTableInputData = ({
                  if (+e.target.value > +dataSource[0]?.weight) {
                     notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي")
                   } else {
-                    setFieldValue("weight", +e.target.value)
+                    // setFieldValue("remaining_weight", +e.target.value)
                     
+                    // setFieldValue("weight", +values?.remaining_weight)
+
                     setFieldValue("remaining_weight", +remainingWeight)
 
                     setFieldValue("cost", +costItem.toFixed(3))
@@ -443,9 +466,9 @@ export const SellingTableInputData = ({
                 id="remaining_weight"
                 name="remaining_weight"
                 type="text"
-                value={values.remaining_id}
+                // value={values.remaining_id}
                 onChange={(e) => {
-                  setFieldValue("remaining_weight", values.remaining_weight);
+                  // setFieldValue("remaining_weight", values.remaining_weight);
                 }}
                 disabled={!isCategoryDisabled}
                 className={`${
@@ -505,7 +528,7 @@ export const SellingTableInputData = ({
                     (+e.target.value * 0.15 + +e.target.value).toFixed(2)
                   );
                 }}
-                className={`${!isSuccess ? "bg-mainDisabled" : +values?.taklfa < +sellingPrice ? "bg-red-100" : ""} text-center`}
+                className={`${!isSuccess ? "bg-mainDisabled" : (values?.taklfa && +values?.taklfa < +priceWithSellingPolicy) ? "bg-red-100" : ""} text-center`}
                 disabled={!isSuccess}
               />
             </td>
@@ -594,16 +617,30 @@ export const SellingTableInputData = ({
                   selectedItemDetails.push(kitAllDetails)
                 }
 
-                const sellingPrice = (values.cost * .05) + values.cost
+                // const sellingPrice = (+values.cost * .05) + +values.cost
 
-                if (+values?.taklfa < +sellingPrice) {
+                if (+values?.taklfa < +priceWithSellingPolicy) {
                   notify("info", `${t("The selling price may not be less than the minimum")}`)
                   return
                 }
 
+                const weight_percentage = +values.remaining_weight * 0.05
+                // console.log("🚀 ~ file: SellingTableInputData.tsx:628 ~ weight_percentage:", weight_percentage)
+                const stone_weight_percentage =  (dataSource && values.classification_id === 1)  
+                  ? dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.weight 
+                  : dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.diamondWeight
+                  
+                console.log("🚀 ~ file: SellingTableInputData.tsx:630 ~ stone_weight_percentage:", stone_weight_percentage)
+                const stoneWeitgh = (values.classification_id === (2 || 3) || +stone_weight_percentage > +weight_percentage) ? +stone_weight_percentage : "v"
+                console.log("🚀 ~ file: SellingTableInputData.tsx:632 ~ stoneWeitgh:", stoneWeitgh)
+
+                if (values.classification_id === 1) {
+
+                }
+
                 setSellingItemsData((prev) => [
                   ...prev,
-                  {...values, itemDetails: selectedItemDetails.flat(Infinity), selsal: sellingItemsOfWeigth},
+                  {...values, itemDetails: selectedItemDetails.flat(Infinity), selsal: sellingItemsOfWeigth, stone_weight: +stoneWeitgh},
                 ].reverse());
 
                 handleAddItemsToSelling()
