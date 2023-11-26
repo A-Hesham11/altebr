@@ -22,6 +22,7 @@ import AddBankCardsData from "../../components/templates/bankCards/AddBankCardsD
 import AddSellingPolicies from "../../components/templates/sellingPolicies/AddSellingPolicies"
 import AddExcludedItems from "../../components/templates/excludedItems/AddExcludedItems"
 import AddInvoiceData from "../../components/templates/invoiceData/AddInvoiceData"
+import AddTaxPolicy from "../../components/templates/sellingPolicies/AddTaxPolicy"
 ///
 /////////// Types
 ///
@@ -52,7 +53,8 @@ export const System = ({ title }: SystemProps_TP) => {
     add_accountBank: false,
     selling_policies: false,
     excluded_items: false,
-    invoice_data: false
+    invoice_data: false,
+    Tax_Policy: false
   })
   const systemCards: Card_TP<FormNames_TP>[] = [
     {
@@ -182,6 +184,15 @@ export const System = ({ title }: SystemProps_TP) => {
       addComponent: <AddSellingPolicies title={`${t("add selling policy")}`} />,
       viewLabel: `${t("view selling policies")}`,
       viewHandler: () => navigate("/system/policiesSelling"),
+    },
+    {
+      id: crypto.randomUUID(),
+      title: t("Tax policy"),
+      name: "Tax_Policy",
+      addLabel: `${t("Add Tax Policy")}`,
+      addComponent: <AddTaxPolicy title={`${t("Add Tax Policy")}`} />,
+      viewLabel: `${t("View Tax Policy")}`,
+      viewHandler: () => navigate("/system/TaxPolicy"),
     },
     {
       id: crypto.randomUUID(),

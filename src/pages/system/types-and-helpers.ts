@@ -24,6 +24,7 @@ export type FormNames_TP =
   | "selling_policies"
   | "excluded_items"
   | "invoice_data"
+  | "Tax_Policy"
 
 export type GlobalFormNames_TP =
   | "countries"

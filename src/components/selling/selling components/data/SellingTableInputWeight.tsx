@@ -14,7 +14,6 @@ import { Button } from '../../../atoms';
 import { DeleteIcon, EditIcon } from '../../../atoms/icons';
 import { notify } from '../../../../utils/toast';
 import { IoMdAdd } from 'react-icons/io';
-import { Loading } from '../../../organisms/Loading';
 
 type SellingTableInputWeight_TP = {
     sellingItemsOfWeigth: any;
@@ -29,10 +28,8 @@ const SellingTableInputWeight = ({
     dataSource,
     setOpenSelsal
 }: SellingTableInputWeight_TP) => {
-    console.log("🚀 ~ file: SellingTableInputWeight.tsx:23 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth)
     const [searchWeight, setSearchWeight] = useState(""); 
     const [itemsOfWeight, setItemsOfWeight] = useState([]); 
-    console.log("🚀 ~ file: SellingTableInputWeight.tsx:30 ~ itemsOfWeight:", itemsOfWeight)
     const { userData } = useContext(authCtx);
     const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
     const { formatGram, formatReyal } = numberContext();
@@ -275,7 +272,6 @@ const SellingTableInputWeight = ({
                                         setFieldValue("category_name", option!.value);
                                         }}
                                         showItems={true}
-                                        // disabled={!String(values.item_id).startsWith('0000')}
                                         disabled={!isCategoryDisabled}
                                     />
                                 </td>
@@ -298,8 +294,6 @@ const SellingTableInputWeight = ({
                                             setFieldValue("remaining_weight", +remainingWeight)
 
                                         }}
-                                        // className={`${!isSuccess && "bg-mainDisabled"} text-center`}
-                                        // disabled={!isSuccess}
                                     />
                                 </td>
                                 <td>

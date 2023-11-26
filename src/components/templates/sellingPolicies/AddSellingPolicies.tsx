@@ -1,19 +1,15 @@
 import { t } from 'i18next'
-import { ChangeEvent, useContext, useEffect, useState } from 'react'
-import { useFetch, useIsRTL, useMutate } from '../../../hooks'
-import { numberFormatterCtx } from '../../../context/settings/number-formatter'
+import { useContext, useEffect, useState } from 'react'
+import { useIsRTL, useMutate } from '../../../hooks'
 import { notify } from '../../../utils/toast'
 import { authCtx } from '../../../context/auth-and-perm/auth'
 import { Form, Formik } from 'formik'
 import * as Yup from "yup"
 import { useQueryClient } from '@tanstack/react-query'
 import { mutateData } from '../../../utils/mutateData'
-import { SelectOption_TP } from '../../../types'
-import { SingleValue } from 'react-select'
 import { requiredTranslation } from '../../../utils/helpers'
 import { BaseInputField, OuterFormLayout, Select } from '../../molecules'
 import { Button } from '../../atoms'
-import { SelectRole } from '../reusableComponants/roles/SelectRole'
 import RadioGroup from '../../molecules/RadioGroup'
 import { SelectBranches } from '../reusableComponants/branches/SelectBranches'
 
@@ -40,7 +36,6 @@ type SellingPoliciesProps_TP = {
 }
 
 const AddSellingPolicies = ({
-    title,
     editData,
 }: SellingPoliciesProps_TP) => {
 
@@ -308,23 +303,4 @@ const AddSellingPolicies = ({
 
 export default AddSellingPolicies
 
-
-
-// import { ToWords } from 'to-words';
-// function NumberToText() {
-
-//     function NumberToArabicText({ number }) {
-//         // const toWords = new ToWords();
-//         const toWords = new ToWords();
-//         let words = toWords.convert(number, {ignoreDecimal: true, language: 'ar' });
-//         return <div>{words}</div>;
-//     }
-//   return (
-//     <div>
-//         <NumberToArabicText number={1700} />
-//     </div>
-//   );
-// }
-
-// export default NumberToText;
 

@@ -88,6 +88,8 @@ import AddSellingInvoice from "../components/selling/selling components/sellingW
 import ViewSellingInvoice from "../components/selling/selling components/sellingWrapper/ViewSellingInvoice"
 import SellingRestrictionsInvoice from "../pages/selling/sellingRestrictionsInvoice"
 import { PiecesSoldPage } from "../pages/selling/PiecesSoldPage"
+import AddTaxPolicy from "../components/templates/sellingPolicies/AddTaxPolicy"
+import ViewTaxPolicy from "../components/templates/sellingPolicies/ViewTaxPolicy"
 
 
 export const AllRoutesProvider = () => {
@@ -172,6 +174,11 @@ export const AllRoutesProvider = () => {
           <Route
             path="/system/policiesSelling"
             element={<ViewSellingPolicies />}
+          />
+
+          <Route
+            path="/system/TaxPolicy"
+            element={<ViewTaxPolicy />}
           />
 
         <Route

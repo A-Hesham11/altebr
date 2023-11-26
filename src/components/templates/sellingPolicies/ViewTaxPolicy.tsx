@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useFetch, useIsRTL, useMutate } from '../../../hooks'
 import { useNavigate } from 'react-router-dom'
 import { CImageFile_TP } from '../../../types'
@@ -9,7 +9,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import { t } from 'i18next'
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
 import { Back } from '../../../utils/utils-components/Back'
-import { authCtx } from '../../../context/auth-and-perm/auth'
 import { EditIcon } from '../../atoms/icons'
 import { SvgDelete } from '../../atoms/icons/SvgDelete'
 import { AddButton } from '../../molecules/AddButton'
@@ -17,9 +16,8 @@ import { Loading } from '../../organisms/Loading'
 import { Table } from '../reusableComponants/tantable/Table'
 import { Button } from '../../atoms'
 import { Modal } from '../../molecules'
-import AddAccountsBank from '../accountsBank/AddAccountsBank'
-import AddSellingPolicies from './AddSellingPolicies'
 import { Header } from '../../atoms/Header'
+import AddTaxPolicy from './AddTaxPolicy'
 
 export type Cards_Props_TP = {
   title:string
@@ -38,7 +36,7 @@ export type Cards_Props_TP = {
 
 }
 
-const ViewSellingPolicies = () => {
+const ViewTaxPolicy = () => {
 
   const isRTL = useIsRTL()
   const navigate = useNavigate()
@@ -53,90 +51,69 @@ const ViewSellingPolicies = () => {
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
   const [page, setPage] = useState<number>(1)
-  const { userData } = useContext(authCtx)
-
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
-      {
-        header: () => <span>{t("Sequence")} </span>,
-        accessorKey: "index",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("job title")} </span>,
-        accessorKey: "job_type",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("branch")} </span>,
-        accessorKey: "branch_name",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("minimum sale type")} </span>,
-        accessorKey: "min_selling_type",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{`${t("minimum selling")}`}</span>,
-        accessorKey: "min_discount_rate" || "min_discount_cash",
-        cell: (info) => info.row.original.min_discount_rate ? `${info.row.original.min_discount_rate} %` : info.row.original.min_discount_cash ,
-      },
-      {
-        header: () => <span>{t("number of days response")} </span>,
-        accessorKey: "return_days",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("discount upon sale return")} </span>,
-        accessorKey: "sales_return",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("actions")}</span>,
-        accessorKey: "action",
-        cell: (info) => {
-          return (
-            <div className="flex items-center justify-center gap-4">
-              <EditIcon
-                action={() => {
-                  setOpen((prev) => !prev)
-                  setEditData(info.row.original)
-                  setAction({
-                    edit: true,
-                    delete: false,
-                    view: false,
-                  })
-                  setModel(false)
-                }}
-                className='fill-mainGreen'
-              />
-              <SvgDelete
-                action={() => {
-                  setOpen((prev) => !prev)
-                  setDeleteData(info.row.original)
-                  setAction({
-                    delete: true,
-                    view: false,
-                    edit: false,
-                  })
-                  setModel(false)
-                }}
-                stroke="#ef4444"
-              />
-            </div>
-          )
+        {
+            header: () => <span>{t("branch")} </span>,
+            accessorKey: "branch_name",
+            cell: (info) => info.getValue(),
         },
-      },
+        {
+            header: () => <span>{t("tax rate")} </span>,
+            accessorKey: "tax_rate",
+            cell: (info) => `${info.row.original.tax_rate} %`,
+        },
+
+        {
+            header: () => <span>{t("Tax policy")} </span>,
+            accessorKey: "include_tax_value",
+            cell: (info) => info.getValue(),
+        },
+        {
+            header: () => <span>{t("actions")}</span>,
+            accessorKey: "action",
+            cell: (info) => {
+            return (
+                <div className="flex items-center justify-center gap-4">
+                <EditIcon
+                    action={() => {
+                    setOpen((prev) => !prev)
+                    setEditData(info.row.original)
+                    setAction({
+                        edit: true,
+                        delete: false,
+                        view: false,
+                    })
+                    setModel(false)
+                    }}
+                    className='fill-mainGreen'
+                />
+                <SvgDelete
+                    action={() => {
+                    setOpen((prev) => !prev)
+                    setDeleteData(info.row.original)
+                    setAction({
+                        delete: true,
+                        view: false,
+                        edit: false,
+                    })
+                    setModel(false)
+                    }}
+                    stroke="#ef4444"
+                />
+                </div>
+            )
+            },
+        },
     ],
     []
   )
 
   const { data, isSuccess, isLoading, isError, error, isRefetching, refetch, isFetching } =
   useFetch<Cards_Props_TP[]>({
-    endpoint:`/selling/api/v1/minimum_selling`,
-    queryKey: ["allMinimum_Selling"],
+    endpoint:`/selling/api/v1/tax_includes`,
+    queryKey: ["allTax_Selling"],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data)
@@ -160,7 +137,7 @@ const ViewSellingPolicies = () => {
   } = useMutate<Cards_Props_TP>({
     mutationFn: mutateData,
     onSuccess: () => {
-      queryClient.refetchQueries(["allMinimum_Selling"])
+      queryClient.refetchQueries(["allTax_Selling"])
       setOpen(false)
       notify("success")
     },
@@ -168,7 +145,7 @@ const ViewSellingPolicies = () => {
 
   const handleDelete = () => {
     mutate({
-      endpointName: `/selling/api/v1/delete_minimum_selling/${deleteData?.id}`,
+      endpointName: `/selling/api/v1/delete_tax_includes/${deleteData?.id}`,
       method: "delete",
     })
   }
@@ -176,7 +153,7 @@ const ViewSellingPolicies = () => {
   return (
     <div className=''>
       <div className='flex justify-between items-center mb-8'>
-        <p className='font-semibold text-lg'>{t("view selling policies")}</p>
+        <p className='font-semibold text-lg'>{t("View Tax Policy")}</p>
         <div className="flex gap-2">
             <AddButton
               action={() => {
@@ -248,7 +225,7 @@ const ViewSellingPolicies = () => {
 
       <Modal isOpen={open} onClose={() => setOpen(false)}>
         {action.edit && (
-          <AddSellingPolicies
+          <AddTaxPolicy
             editData={editData}
             setDataSource={setDataSource}
             setShow={setOpen}
@@ -259,7 +236,7 @@ const ViewSellingPolicies = () => {
           />
         )}
         {model && (
-          <AddSellingPolicies
+          <AddTaxPolicy
             editData={editData}
             isFetching={isFetching}
             setDataSource={setDataSource}
@@ -272,7 +249,7 @@ const ViewSellingPolicies = () => {
         {action.delete && (
           <div className="flex flex-col gap-8 justify-center items-center">
             <Header
-              header={` حذف : ${deleteData?.job_type}`}
+              header={` حذف : ${deleteData?.branch_name}`}
             />
             <div className="flex gap-4 justify-center items-cent">
               <Button
@@ -291,4 +268,4 @@ const ViewSellingPolicies = () => {
   )
 }
 
-export default ViewSellingPolicies
+export default ViewTaxPolicy
