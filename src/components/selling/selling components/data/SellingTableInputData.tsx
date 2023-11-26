@@ -6,14 +6,13 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Form, Formik, useFormikContext } from "formik";
+import { Form, useFormikContext } from "formik";
 import { t } from "i18next";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { BiXCircle } from "react-icons/bi";
 import { IoMdAdd } from "react-icons/io";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { numberContext } from "../../../../context/settings/number-formatter";
-import { useFetch, useIsRTL } from "../../../../hooks";
+import { useFetch } from "../../../../hooks";
 import { KaratValues_TP } from "../../../../types";
 import { notify } from "../../../../utils/toast";
 import { Button, Spinner } from "../../../atoms";
@@ -22,11 +21,10 @@ import SelectCategory from "../../../templates/reusableComponants/categories/sel
 import SelectClassification from "../../../templates/reusableComponants/classifications/select/SelectClassification";
 import { Selling_TP } from "../../../../pages/selling/PaymentSellingPage";
 import SelectKarat from "../../../templates/reusableComponants/karats/select/SelectKarat";
-import { DeleteIcon, EditIcon, ViewIcon } from "../../../atoms/icons";
+import { DeleteIcon, EditIcon } from "../../../atoms/icons";
 import { Header } from "../../../atoms/Header";
 import SellingTableInputWeight from "./SellingTableInputWeight";
-import { HiOutlineViewGridAdd, HiViewGridAdd } from "react-icons/hi";
-import { Loading } from "../../../organisms/Loading";
+import { HiViewGridAdd } from "react-icons/hi";
 
 type SellingTableInputData_TP = {
   dataSource: Selling_TP;
@@ -58,16 +56,28 @@ export const SellingTableInputData = ({
   const [search, setSearch] = useState(""); 
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
-  const { userData } = useContext(authCtx)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:62 ~ userData:", userData)
+  const [kitDetails, setKitDetails] = useState([]);
+  const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
   const [page, setPage] = useState<number>(1)
+  const { formatGram, formatReyal } = numberContext();
+
+  const { userData } = useContext(authCtx)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ userData:", userData)
+
+  const TaxRateOfBranch = userData?.tax_rate / 100 ;
+  
+  const priceWithCommissionRate =
+  dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
+  
+  const priceWithCommissionCash = dataSource && (+dataSource[0]?.cost + +dataSource[0]?.min_selling);
+  
+  const priceWithSellingPolicy =
+  dataSource && dataSource[0]?.min_selling_type === "نسبة"
+  ? priceWithCommissionRate
+  : priceWithCommissionCash;
 
   const { values, setFieldValue, resetForm , isSubmitting } = useFormikContext<any>();
   console.log("🚀 ~ file: SellingTableInputData.tsx:65 ~ values:", values)
-
-  const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
-
-  const { formatGram, formatReyal } = numberContext();
 
   const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
     queryKey: ["branch-all-accepted-selling"],
@@ -79,33 +89,6 @@ export const SellingTableInputData = ({
       setDataSource(data);
     }, 
   });
-
-  const priceWithCommissionRate =
-  dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
-  console.log("🚀 ~ file: SellingTableInputData.tsx:86 ~ priceWithCommissionRate:", priceWithCommissionRate)
-  
-  const priceWithCommissionCash = dataSource && (+dataSource[0]?.cost + +dataSource[0]?.min_selling);
-  console.log("🚀 ~ file: SellingTableInputData.tsx:90 ~ priceWithCommissionCash:", priceWithCommissionCash)
-  
-  const priceWithSellingPolicy =
-  dataSource && dataSource[0]?.min_selling_type === "نسبة"
-  ? priceWithCommissionRate
-  : priceWithCommissionCash;
-
-  // const sellingPrice = priceWithSellingPolicy
-  // console.log("🚀 ~ file: SellingTableInputData.tsx:70 ~ sellingPrice:", sellingPrice)
-
-
-
-  // const calcOfSelsalWeight = sellingItemsOfWeigth.reduce((acc, item) => {
-  //   acc += +item.weight
-  //   return acc
-  // }, 0)
-
-  // const calcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
-  //   acc += +item.cost
-  //   return acc
-  // }, 0)
 
   const { data: karatValues } = useFetch<KaratValues_TP[]>({
     endpoint: "classification/api/v1/allkarats",
@@ -163,9 +146,6 @@ export const SellingTableInputData = ({
     []
   );
 
-  const [kitDetails, setKitDetails] = useState([])
-  console.log("🚀 ~ file: SellingTableInputData.tsx:159 ~ kitDetails:", kitDetails)
-
   useEffect(() => {
     if (dataSource?.length) {
       setKitDetails(dataSource?.find(item=> item.weightitems)?.weightitems)
@@ -213,11 +193,6 @@ export const SellingTableInputData = ({
         accessorKey: "selling_price",
         cell: (info) => info.getValue() || "---",
       },
-      // {
-      //   header: () => <span>{values.classification_id === 1 ? `${t("weight")}`  : `${t("cost")}` }  </span>,
-      //   accessorKey: values.classification_id === 1 ? "weight" : "selling_price",
-      //   cell: (info) => !info.row.original.selling_price ? Number(info.row.original.weight) : (+info.row.original.selling_price),
-      // },
     ],
     []
   );
@@ -267,7 +242,7 @@ export const SellingTableInputData = ({
           setFieldValue("taklfa", priceWithSellingPolicy.toFixed(2));
           setFieldValue(
             "taklfa_after_tax",
-            (priceWithSellingPolicy * 0.15 + priceWithSellingPolicy).toFixed(2)
+            (priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy).toFixed(2)
           );
         }
       });
@@ -423,7 +398,6 @@ export const SellingTableInputData = ({
                 onChange={(e) => {
                   
                 const remainingWeight = +dataSource[0]?.remaining_weight - +e.target.value
-                console.log("🚀 ~ file: SellingTableInputData.tsx:417 ~ remainingWeight:", remainingWeight)
 
                 const costItem = (+values.karat_price + +values.wage) * +e.target.value
 
@@ -435,14 +409,11 @@ export const SellingTableInputData = ({
                   ? priceWithCommissionRate
                   : priceWithCommissionCash;
                 
-                  const taklfaAfterTax = (priceWithSellingPolicy * 0.15) + priceWithSellingPolicy
+                  const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
 
                  if (+e.target.value > +dataSource[0]?.weight) {
                     notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي")
                   } else {
-                    // setFieldValue("remaining_weight", +e.target.value)
-                    
-                    // setFieldValue("weight", +values?.remaining_weight)
 
                     setFieldValue("remaining_weight", +remainingWeight)
 
@@ -453,10 +424,11 @@ export const SellingTableInputData = ({
                     setFieldValue("taklfa_after_tax", +taklfaAfterTax.toFixed(3))
 
                     setOpenDetails(false);
+                    
                   }
 
                 }}
-                className={`${!isSuccess || values.category_selling_type !== "all" && "bg-mainDisabled"} text-center`}
+                className={`${(!isSuccess || values.category_selling_type !== "all") && "bg-mainDisabled"} text-center`}
                 disabled={!isSuccess || values.category_selling_type !== "all"}
               />
             </td>
@@ -466,10 +438,6 @@ export const SellingTableInputData = ({
                 id="remaining_weight"
                 name="remaining_weight"
                 type="text"
-                // value={values.remaining_id}
-                onChange={(e) => {
-                  // setFieldValue("remaining_weight", values.remaining_weight);
-                }}
                 disabled={!isCategoryDisabled}
                 className={`${
                   !isCategoryDisabled && "bg-mainDisabled"
@@ -525,11 +493,11 @@ export const SellingTableInputData = ({
                   setFieldValue("taklfa", values?.taklfa);
                   setFieldValue(
                     "taklfa_after_tax",
-                    (+e.target.value * 0.15 + +e.target.value).toFixed(2)
+                    (+e.target.value * TaxRateOfBranch + +e.target.value).toFixed(2)
                   );
                 }}
-                className={`${!isSuccess ? "bg-mainDisabled" : (values?.taklfa && +values?.taklfa < +priceWithSellingPolicy) ? "bg-red-100" : ""} text-center`}
-                disabled={!isSuccess}
+                className={`${!isSuccess || userData?.include_tax === "1" ? "bg-mainDisabled" : (values?.taklfa && +values?.taklfa < +priceWithSellingPolicy) ? "bg-red-100" : ""} text-center`}
+                disabled={!isSuccess || userData?.include_tax === "1"}
               />
             </td>
             <td>
@@ -539,10 +507,8 @@ export const SellingTableInputData = ({
                 name="taklfa_after_tax"
                 type="text"
                 required
-                disabled
-                className={`${
-                  !isCategoryDisabled && "bg-mainDisabled"
-                } text-center`}
+                disabled={userData?.include_tax === "0"}
+                className={`${!isCategoryDisabled && userData?.include_tax === "0" && "bg-mainDisabled"} text-center`}
               />
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
@@ -617,22 +583,18 @@ export const SellingTableInputData = ({
                   selectedItemDetails.push(kitAllDetails)
                 }
 
-                // const sellingPrice = (+values.cost * .05) + +values.cost
-
                 if (+values?.taklfa < +priceWithSellingPolicy) {
                   notify("info", `${t("The selling price may not be less than the minimum")}`)
                   return
                 }
 
-                const weight_percentage = +values.remaining_weight * 0.05
-                // console.log("🚀 ~ file: SellingTableInputData.tsx:628 ~ weight_percentage:", weight_percentage)
+                const weight_percentage = +values.remaining_weight * 0.05;
+
                 const stone_weight_percentage =  (dataSource && values.classification_id === 1)  
                   ? dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.weight 
                   : dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.diamondWeight
                   
-                console.log("🚀 ~ file: SellingTableInputData.tsx:630 ~ stone_weight_percentage:", stone_weight_percentage)
                 const stoneWeitgh = (values.classification_id === (2 || 3) || +stone_weight_percentage > +weight_percentage) ? +stone_weight_percentage : "v"
-                console.log("🚀 ~ file: SellingTableInputData.tsx:632 ~ stoneWeitgh:", stoneWeitgh)
 
                 if (values.classification_id === 1) {
 
@@ -819,7 +781,6 @@ export const SellingTableInputData = ({
                         acc += +item.selling_price
                         return acc
                     }, 0)
-                      console.log("🚀 ~ file: SellingTableInputData.tsx:766 ~ clacSelectedCost ~ clacSelectedCost:", clacSelectedCost)
 
                       const remainingWeight = +dataSource[0]?.weight - +clacSelectedWeight
 
@@ -833,7 +794,7 @@ export const SellingTableInputData = ({
                       ? priceWithCommissionRate
                       : priceWithCommissionCash;
                     
-                      const taklfaAfterTax = (priceWithSellingPolicy * 0.15) + priceWithSellingPolicy
+                      const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
 
                       const checkedFromWeight = selectedItemDetails?.every((item) => item.weight !== "")
 

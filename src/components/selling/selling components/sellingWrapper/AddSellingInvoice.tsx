@@ -9,7 +9,6 @@ import { Payment_TP } from '../data/PaymentProcessing';
 import * as Yup from "yup";
 import { useFetch } from '../../../../hooks';
 import { authCtx } from '../../../../context/auth-and-perm/auth';
-import { notify } from '../../../../utils/toast';
 
 const AddSellingInvoice = () => {
     const [dataSource, setDataSource] = useState<Selling_TP[]>();
