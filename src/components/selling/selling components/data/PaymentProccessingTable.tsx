@@ -78,6 +78,8 @@ const PaymentProccessingTable = ({paymentData, setEditData, setPaymentData }) =>
         getPaginationRowModel: getPaginationRowModel(),
     });
 
+    
+
   return (
     <div>
     <p className='text-base font-bold'>{`${t("payments")} : ${paymentData?.length === 0 ? t("none") : paymentData?.length}`}</p>

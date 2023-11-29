@@ -424,7 +424,7 @@ export const SellingTableInputData = ({
                     setFieldValue("taklfa_after_tax", +taklfaAfterTax.toFixed(3))
 
                     setOpenDetails(false);
-                    
+
                   }
 
                 }}

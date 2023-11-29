@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { Payment_TP } from './PaymentProccessingToManagement';
 import { DeleteIcon, EditIcon } from '../../components/atoms/icons';
 
-const PaymentProccessingTableToManagement = ({paymentData, setEditData, setPaymentData }) => {
+const PaymentProccessingTableToManagement = ({ paymentData, setEditData, setPaymentData }) => {
 
     const [editingRowId, setEditingRowId] = useState<string | undefined>(null);
 
