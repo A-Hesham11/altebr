@@ -2,6 +2,8 @@ import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginat
 import { t } from "i18next"
 import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord"
 import { numberContext } from "../../../context/settings/number-formatter"
+import { useContext } from "react"
+import { authCtx } from "../../../context/auth-and-perm/auth"
 interface ReactTableProps<T extends object> {
     data: T[]
     columns: ColumnDef<T>[]
@@ -20,6 +22,10 @@ const InvoiceTable = <T extends object>({ data,
     })
 
     const { formatGram, formatReyal } = numberContext();
+
+    const { userData } = useContext(authCtx)
+  
+    const TaxRateOfBranch = userData?.tax_rate / 100 ;
 
     const totalWeight = data.reduce((acc, curr) => {
         acc += +curr.weight
@@ -40,22 +46,22 @@ const InvoiceTable = <T extends object>({ data,
         acc += +card.commission_tax
         return acc
     }, 0)
-    const totalFinalCost = totalCost + totalCommissionRatio + totalCost * .15 + totalCommissionTaxes
+    const totalFinalCost = totalCost + totalCommissionRatio + totalCost * TaxRateOfBranch + totalCommissionTaxes
 
     const locationPath = location.pathname 
 
     const totalFinalCostIntoArabic = convertNumToArWord(Math.round(locationPath === "/selling" ? costDataAsProps?.totalFinalCost : totalFinalCost))
 
-    const totalItemsTax = +(costDataAsProps?.totalItemsTaxes)?.toFixed(2) + costDataAsProps?.totalCommissionTaxes
-    const totalItemsCost = costDataAsProps?.totalCommissionRatio + costDataAsProps?.totalCost
+    // const totalItemsTax = +(costDataAsProps?.totalItemsTaxes)?.toFixed(2) + costDataAsProps?.totalCommissionTaxes
+    // const totalItemsCost = costDataAsProps?.totalCommissionRatio + costDataAsProps?.totalCost
 
     const resultTable = [
         {
             number: t('totals'),
             weight: totalWeight,
-            cost: costDataAsProps ? formatReyal(Number(totalItemsCost)) : formatReyal(Number((totalCost + totalCommissionRatio))),
-            vat: costDataAsProps ? formatReyal(Number(totalItemsTax)) : formatReyal(Number((totalCost * .15 + totalCommissionTaxes))),
-            total: costDataAsProps ? formatReyal(Number(totalItemsCost + totalItemsTax)) : formatReyal(Number(totalFinalCost))
+            cost: costDataAsProps ? formatReyal(Number(costDataAsProps?.totalCost)) : formatReyal(Number((totalCost + totalCommissionRatio))),
+            vat: costDataAsProps ? formatReyal(Number(costDataAsProps?.totalItemsTaxes)) : formatReyal(Number((totalCost * TaxRateOfBranch + totalCommissionTaxes))),
+            total: costDataAsProps ? formatReyal(Number(costDataAsProps?.totalFinalCost)) : formatReyal(Number(totalFinalCost))
         }
     ]
 

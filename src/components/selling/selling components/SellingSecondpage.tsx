@@ -1,18 +1,8 @@
 import { t } from "i18next"
-import BillCard from './bill/BillCard'
-import SellingTableData from './data/SellingTableData'
-import SellingBoxes from './data/SellingBoxes'
 import { Button } from '../../atoms'
-import { Back } from '../../../utils/utils-components/Back'
-import { useNavigate } from 'react-router-dom'
 import PaymentBoxes from "./data/paymentBoxs"
-import PaymentCard from "./data/PaymentCard"
 import PaymentProcessing, { Payment_TP } from "./data/PaymentProcessing"
-import { SetStateAction, useState } from "react"
 import { notify } from "../../../utils/toast"
-import { useFetch } from "../../../hooks"
-import { Cards_Props_TP } from "../../templates/bankCards/ViewBankCardsData"
-import BillPaymentCard from "./bill/BillPaymentCard"
 
 type SellingSecondpage_TP = {
   paymentData: Payment_TP[]
@@ -27,14 +17,29 @@ const SellingSecondpage = ({
   setStage
 }: SellingSecondpage_TP) => {
 
+  const totalPriceInvoice = sellingItemsData?.reduce((total, item) => +total + +item.taklfa_after_tax, 0)
+  console.log("🚀 ~ file: PaymentProcessing.tsx:82 ~ PaymentProcessing ~ totalPriceInvoice:", totalPriceInvoice)
+
+  const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax ,0)
+  console.log("🚀 ~ file: PaymentProcessing.tsx:85 ~ PaymentProcessing ~ amountRemaining:", amountRemaining)
+
+  const costRemaining = totalPriceInvoice.toFixed(1) - amountRemaining.toFixed(1)
+  console.log("🚀 ~ file: PaymentProcessing.tsx:80 ~ PaymentProcessing ~ costRemaining:", costRemaining)
+
    const handleSeccessedData = () => {
+
     if (paymentData.length === 0) {
       notify('info','fill fields first')
-    } else {
-      setStage(3)
-      notify('success')
-
+      return;
     }
+
+    if (costRemaining !== 0) {
+      notify('info','برجاء دفع المبلغ بالكامل')
+      return;
+    }
+
+    setStage(3)
+    notify('success')
 };
 
   return (

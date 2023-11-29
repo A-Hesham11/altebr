@@ -22,8 +22,7 @@ import AddBankCardsData from "../../components/templates/bankCards/AddBankCardsD
 import AddSellingPolicies from "../../components/templates/sellingPolicies/AddSellingPolicies"
 import AddExcludedItems from "../../components/templates/excludedItems/AddExcludedItems"
 import AddInvoiceData from "../../components/templates/invoiceData/AddInvoiceData"
-import AddBuyingPolicies from "../../components/templates/buyingPolicies/AddBuyingPolicies"
-import GoldPrice from "../../components/templates/goldPrice/GoldPrice"
+import AddTaxPolicy from "../../components/templates/sellingPolicies/AddTaxPolicy"
 ///
 /////////// Types
 ///
@@ -56,7 +55,8 @@ export const System = ({ title }: SystemProps_TP) => {
     buying_policies: false,
     gold_price: false,
     excluded_items: false,
-    invoice_data: false
+    invoice_data: false,
+    Tax_Policy: false
   })
   const systemCards: Card_TP<FormNames_TP>[] = [
     {
@@ -189,21 +189,12 @@ export const System = ({ title }: SystemProps_TP) => {
     },
     {
       id: crypto.randomUUID(),
-      title: t("buying policies"),
-      name: "buying_policies",
-      addLabel: `${t("add buying policy")}`,
-      addComponent: <AddBuyingPolicies title={`${t("add buying policy")}`} />,
-      viewLabel: `${t("view buying policies")}`,
-      viewHandler: () => navigate("/system/policiesBuying"),
-    },
-    {
-      id: crypto.randomUUID(),
-      title: t("gold price"),
-      name: "gold_price",
-      addLabel: `${t("add the price of 24 karat gold")}`,
-      addComponent: <GoldPrice title={`${t("gold price")}`} />,
-      // viewLabel: `${t("view buying policies")}`,
-      // viewHandler: () => navigate("/system/policiesBuying"),
+      title: t("Tax policy"),
+      name: "Tax_Policy",
+      addLabel: `${t("Add Tax Policy")}`,
+      addComponent: <AddTaxPolicy title={`${t("Add Tax Policy")}`} />,
+      viewLabel: `${t("View Tax Policy")}`,
+      viewHandler: () => navigate("/system/TaxPolicy"),
     },
     {
       id: crypto.randomUUID(),

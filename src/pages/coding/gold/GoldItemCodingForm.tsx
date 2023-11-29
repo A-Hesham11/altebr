@@ -60,7 +60,6 @@ export const GoldItemCodingForm = ({
   setActiveBand,
   setEditWage
 }: ItemCodingFormProps_TP) => {
-  console.log("🚀 ~ file: GoldItemCodingForm.tsx:63 ~ activeBand:", activeBand)
   /////////// VARIABLES
   ///
   // const selectedBandLeftWeight =  selectedSanad.items.find((item)=>item?.number === activeBand?.number)?.leftWeight
@@ -74,10 +73,8 @@ export const GoldItemCodingForm = ({
 
   const [openPopup, setOpenPopup] = useState(false)
   const [dataSource, setDataSource] = useState([])
-  console.log("🚀 ~ file: GoldItemCodingForm.tsx:76 ~ dataSource:", dataSource)
 
   const [modalNumberChange, setModalNumberChange] = useState("")
-  console.log("🚀 ~ file: GoldItemCodingForm.tsx:79 ~ modalNumberChange:", modalNumberChange)
   
 
   const { refetch, isSuccess, isLoading, isFetching, isRefetching } = useFetch({
@@ -89,8 +86,6 @@ export const GoldItemCodingForm = ({
   });
 
   const modalNumber = dataSource.find((item) => (item.model_number ===  modalNumberChange && item.twred_status === "inedara"))
-  console.log("🚀 ~ file: GoldItemCodingForm.tsx:92 ~ modalNumber:", modalNumber)
-
   
 
   // const awzanItems = activeBand.category.items
@@ -122,7 +117,6 @@ export const GoldItemCodingForm = ({
 
   const { values, setFieldValue , isSubmitting } =
   useFormikContext<GoldCodingSanad_initialValues_TP>()
-  console.log("🚀 ~ file: GoldItemCodingForm.tsx:101 ~ values:", values)
   ///
   /////////// STATES
   ///
@@ -269,7 +263,6 @@ export const GoldItemCodingForm = ({
           const modalNumber = dataSource?.find((item) => (item.model_number ==  e.target.value && item.twred_status === "inedara"))
 
           if (modalNumber && modalNumber?.category_id === values.category_id  && modalNumber?.karat_value == values.karat_value && modalNumber?.category.selling_type === "all" ) {
-            console.log("🚀 ~ file: GoldItemCodingForm.tsx:272 ~ modalNumber:", modalNumber)
             setOpenPopup(true)
           }
         }}
@@ -555,7 +548,10 @@ export const GoldItemCodingForm = ({
               <div className="w-full">
                 <p className="font-semibold text-lg text-center mb-5">{t("This item already exists")}</p>
                 <div className="w-full flex justify-center">
-                  <img src={modalNumber?.images[0]?.preview} className="w-[80%] h-[250px]"/>
+                  {modalNumber?.images[0]?.preview 
+                    ? (<img src={modalNumber?.images[0]?.preview} className="w-[80%] h-[250px]"/>)
+                    : ""
+                  }
                 </div>
                 <div className="flex items-center justify-between mt-10 mx-auto w-1/2">
                   <p className="font-semibold">{t("Id number")} : <span className="text-mainGreen font-semibold">{modalNumber?.hwya}</span></p>
