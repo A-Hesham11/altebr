@@ -1,7 +1,7 @@
 import { FormikSharedConfig, useFormikContext } from "formik";
 import { useContext, useEffect, useState } from "react";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
-import { useFetch } from "../../../../hooks";
+import { useFetch, useIsRTL } from "../../../../hooks";
 import { Cards_Props_TP } from "../../../templates/bankCards/ViewBankCards";
 // import Slider from "react-slick";
 import { t } from "i18next";
@@ -26,6 +26,7 @@ type Payment_TP = {
   setSellingFrontKey?:any
   setCardId?: any
   setCardDiscountPercentage?: any
+  setSelectedCardName?: any
 };
 
 const PaymentCard = ({
@@ -33,40 +34,125 @@ const PaymentCard = ({
   selectedCardId,
   setSelectedCardId,
   fetchShowMainCards,
-  setCardDataSelect,
   editData,
   setCardFronKey,
   setCardFrontKeyAccept,
   setSellingFrontKey,
   setCardDiscountPercentage,
-  setCardId
+  setCardId,
+  setSelectedCardName
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
+  console.log("🚀 ~ file: PaymentCard.tsx:47 ~ bankAccountCards:", bankAccountCards)
   const [slidesToShow, setSlidesToShow] = useState(2);
 
-  const cardCash = {
-    front_key: "cash",
-    name_ar: "كاش",
-    name_en: "cash",
-    discount_percentage: 0,
-    card: {
-      id: 1,
+  const isRTL = useIsRTL();
+
+  const cardOfCash = [
+    {
+      front_key: "cash",
       name_ar: "كاش",
       name_en: "cash",
+      discount_percentage: 0,
+      card: {
+        id: 1,
+        name_ar: "كاش",
+        name_en: "cash",
+        front_key: "cash",
+        images: [{ preview: "/src/assets/cash.png" }],
+      },
+    }
+  ];
+
+  const cardReimbursement = [
+    {
       front_key: "cash",
-      images: [{ preview: "/src/assets/cash.png" }],
+      name_ar: "كاش",
+      name_en: "cash",
+      discount_percentage: 0,
+      id: 10005,
+      card: {
+        id: 10005,
+        name_ar: "كاش",
+        name_en: "cash",
+        front_key: "cash",
+        images: [{ preview: "/src/assets/cash.png" }],
+      },
     },
-  };
+    {
+      front_key: "18",
+      name_ar: "صندوق ذهب عيار 18",
+      name_en: "gold box 18 karat",
+      karat: 18,
+      discount_percentage: 0,
+      id: 10001,
+      card: {
+        id: 10001,
+        name_ar: "صندوق ذهب عيار 18",
+        name_en: "gold box 18 karat",
+        front_key: "18",
+        images: [{ preview: "/src/assets/Frame 26085625.svg" }],
+      },
+    },
+    {
+      front_key: "21",
+      name_ar: "صندوق ذهب عيار 21",
+      name_en: "gold box 21 karat",
+      karat: 21,
+      discount_percentage: 0,
+      id: 10002,
+      card: {
+        id: 10002,
+        name_ar: "صندوق ذهب عيار 21",
+        name_en: "gold box 21 karat",
+        front_key: "21",
+        images: [{ preview: "/src/assets/Frame 26085625.svg" }],
+      },
+    },
+    {
+      front_key: "22",
+      name_ar: "صندوق ذهب عيار 22",
+      name_en: "gold box 22 karat",
+      discount_percentage: 0,
+      karat: 22,
+      id: 10003,
+      card: {
+        id: 10003,
+        name_ar: "صندوق ذهب عيار 22",
+        name_en: "gold box 22 karat",
+        front_key: "22",
+        images: [{ preview: "/src/assets/Frame 26085625.svg" }],
+      },
+    },
+    {
+      front_key: "24",
+      name_ar: "صندوق ذهب عيار 24",
+      name_en: "gold box 24 karat",
+      discount_percentage: 0,
+      karat: 24,
+      id: 10004,
+      card: {
+        id: 10004,
+        name_ar: "صندوق ذهب عيار 24",
+        name_en: "gold box 24 karat",
+        front_key: "24",
+        images: [{ preview: "/src/assets/Frame 26085625.svg" }],
+      },
+    },
+  ];
+
+  const locationPath = location.pathname;
+
+  const cardCash = locationPath === "/selling/reimbursement" ? cardReimbursement : cardOfCash
+
+  const bankscard = locationPath === "/selling/reimbursement" ? "" : dataSource
 
   const cardsData = fetchShowMainCards
   ? [...dataSource].reverse()
-  : [...dataSource, ...bankAccountCards, cardCash].reverse();
+  : [...bankscard, ...bankAccountCards, ...cardCash].reverse();
   
-  console.log("🚀 ~ file: PaymentCard.tsx:63 ~ cardsData:", cardsData)
   const { userData } = useContext(authCtx);
-
-  const locationPath = location.pathname
 
   const { setFieldValue } = useFormikContext<FormikSharedConfig>();
 
@@ -79,6 +165,7 @@ const PaymentCard = ({
         (item) => item?.front_key === frontKey
       );
       setCardId?.(selectNewCard[0]?.id);
+      setSelectedCardName?.(isRTL ? selectNewCard[0]?.name_ar : selectNewCard[0]?.name_en);
       setSelectedCardId(frontKey);
       setFieldValue(
         "discount_percentage",
@@ -209,7 +296,7 @@ const PaymentCard = ({
                   key={item.id}
                   className={`flex flex-col h-28 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
                   onClick={() => {
-                    handleChooseCard(item?.front_key)
+                    handleChooseCard(item?.front_key, item.id)
                     setCardDiscountPercentage?.(item?.discount_percentage)
                   }}
                 >

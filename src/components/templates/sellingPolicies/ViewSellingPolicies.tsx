@@ -17,7 +17,6 @@ import { Loading } from '../../organisms/Loading'
 import { Table } from '../reusableComponants/tantable/Table'
 import { Button } from '../../atoms'
 import { Modal } from '../../molecules'
-import AddAccountsBank from '../accountsBank/AddAccountsBank'
 import AddSellingPolicies from './AddSellingPolicies'
 import { Header } from '../../atoms/Header'
 

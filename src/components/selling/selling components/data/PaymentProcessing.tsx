@@ -40,7 +40,6 @@ const validationSchema = () =>
 
 
 const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData }: Payment_TP) => {
-console.log("🚀 ~ file: PaymentProcessing.tsx:41 ~ PaymentProcessing ~ paymentData:", paymentData)
 
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
@@ -76,17 +75,11 @@ console.log("🚀 ~ file: PaymentProcessing.tsx:41 ~ PaymentProcessing ~ payment
     add_commission_ratio: "no",
   };
 
-
-
   const totalPriceInvoice = sellingItemsData?.reduce((total, item) => +total + +item.taklfa_after_tax, 0)
-  console.log("🚀 ~ file: PaymentProcessing.tsx:82 ~ PaymentProcessing ~ totalPriceInvoice:", totalPriceInvoice)
 
   const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax ,0)
-  console.log("🚀 ~ file: PaymentProcessing.tsx:85 ~ PaymentProcessing ~ amountRemaining:", amountRemaining)
 
   const costRemaining = totalPriceInvoice - amountRemaining
-  console.log("🚀 ~ file: PaymentProcessing.tsx:80 ~ PaymentProcessing ~ costRemaining:", costRemaining)
-
 
   return (
     <>
