@@ -22,6 +22,10 @@ type SellingFirstPage_TP = {
   clientData: ClientData_TP
   setClientData: any
   invoiceNumber: any
+  selectedItemDetails: any;
+  setSelectedItemDetails: any;
+  sellingItemsOfWeigth: any;
+  setSellingItemsOfWeight: any;
 }
 const SellingFirstPage = ({
   invoiceNumber,
@@ -33,7 +37,9 @@ const SellingFirstPage = ({
   selectedItemDetails,
   setSelectedItemDetails,
   clientData, 
-  setClientData
+  setClientData,
+  sellingItemsOfWeigth,
+  setSellingItemsOfWeight
 }: SellingFirstPage_TP) => {
 
   const { values } = useFormikContext()
@@ -63,6 +69,8 @@ const SellingFirstPage = ({
                       setClientData={setClientData}
                       selectedItemDetails={selectedItemDetails}
                       setSelectedItemDetails={setSelectedItemDetails}
+                      sellingItemsOfWeigth={sellingItemsOfWeigth}
+                      setSellingItemsOfWeight={setSellingItemsOfWeight}
                     />
                     <div className='border-t-2 border-mainGray pt-12 py-5'>
                       <h2 className='mb-4 text-base font-bold'>{t("total bill")}</h2>

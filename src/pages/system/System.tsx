@@ -24,6 +24,7 @@ import AddExcludedItems from "../../components/templates/excludedItems/AddExclud
 import AddInvoiceData from "../../components/templates/invoiceData/AddInvoiceData"
 import AddBuyingPolicies from "../../components/templates/buyingPolicies/AddBuyingPolicies"
 import GoldPrice from "../../components/templates/goldPrice/GoldPrice"
+import AddTaxPolicy from "../../components/templates/sellingPolicies/AddTaxPolicy"
 ///
 /////////// Types
 ///
@@ -56,7 +57,8 @@ export const System = ({ title }: SystemProps_TP) => {
     buying_policies: false,
     gold_price: false,
     excluded_items: false,
-    invoice_data: false
+    invoice_data: false,
+    Tax_Policy: false
   })
   const systemCards: Card_TP<FormNames_TP>[] = [
     {
@@ -204,6 +206,15 @@ export const System = ({ title }: SystemProps_TP) => {
       addComponent: <GoldPrice title={`${t("gold price")}`} />,
       // viewLabel: `${t("view buying policies")}`,
       // viewHandler: () => navigate("/system/policiesBuying"),
+     },
+    {
+      id: crypto.randomUUID(),
+      title: t("Tax policy"),
+      name: "Tax_Policy",
+      addLabel: `${t("Add Tax Policy")}`,
+      addComponent: <AddTaxPolicy title={`${t("Add Tax Policy")}`} />,
+      viewLabel: `${t("View Tax Policy")}`,
+      viewHandler: () => navigate("/system/TaxPolicy"),
     },
     {
       id: crypto.randomUUID(),

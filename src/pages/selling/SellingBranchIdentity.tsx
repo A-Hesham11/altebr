@@ -15,7 +15,6 @@ import { ViewIcon } from "../../components/atoms/icons"
 import { BaseInputField, Modal } from "../../components/molecules"
 import { Loading } from "../../components/organisms/Loading"
 import { ItemDetailsTable } from "../../components/selling/recieve items/ItemDetailsTable"
-import SelectCategory from "../../components/templates/reusableComponants/categories/select/SelectCategory"
 import { SelectMineralKarat } from "../../components/templates/reusableComponants/minerals/SelectMineralKarat"
 import { Table } from "../../components/templates/reusableComponants/tantable/Table"
 import { authCtx } from "../../context/auth-and-perm/auth"
@@ -182,6 +181,10 @@ export const SellingBranchIdentity = () => {
             value: total18,
         },
     ]
+
+    useEffect(() => {
+        refetch()
+    }, [page])
 
     useEffect(() => {
         if (page == 1) {

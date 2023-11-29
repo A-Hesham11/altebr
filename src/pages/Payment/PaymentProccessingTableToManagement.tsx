@@ -2,19 +2,20 @@ import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginat
 import { FormikSharedConfig, useFormikContext } from 'formik';
 import { t } from 'i18next';
 import { useMemo, useState } from 'react';
-import { DeleteIcon, EditIcon } from '../../../atoms/icons';
-import { Payment_TP } from './PaymentProcessing';
+import { Payment_TP } from './PaymentProccessingToManagement';
+import { DeleteIcon, EditIcon } from '../../components/atoms/icons';
 
-const PaymentProccessingTable = ({paymentData, setEditData, setPaymentData }) => {
+const PaymentProccessingTableToManagement = ({paymentData, setEditData, setPaymentData }) => {
 
     const [editingRowId, setEditingRowId] = useState<string | undefined>(null);
 
     const { setFieldValue } = useFormikContext<FormikSharedConfig>()
 
+
     const paymentCols = useMemo<ColumnDef<Payment_TP>[]>(
         () => [
           {
-            header: () => <span>{t("card type")}</span>,
+            header: () => <span>{t("Type of payment method")}</span>,
             accessorKey: "card",
             cell: (info) =>  info.row.original.card,
           },
@@ -24,19 +25,9 @@ const PaymentProccessingTable = ({paymentData, setEditData, setPaymentData }) =>
             cell: (info) => info.row.original.amount || "---",
           },
           {
-            header: () => <span>{t("commission percentage")} </span>,
-            accessorKey: "discount_percentage",
-            cell: (info) => `${info.row.original.discount_percentage} %` || "---" ,
-          },
-          {
-            header: () => <span>{t("commission riyals")} </span>,
-            accessorKey: "commission_riyals",
-            cell: (info) => info.row.original.commission_riyals || "---",
-          },
-          {
-            header: () => <span>{t("commission tax")} </span>,
-            accessorKey: "commission_tax",
-            cell: (info) => info.row.original.commission_tax || "---",
+            header: () => <span>{t("Gold (in grams)")} </span>,
+            accessorKey: "weight",
+            cell: (info) => info.row.original.weight ? `${info.row.original.weight} ${t("gram")}` : "---" ,
           },
           {
             header: () => <span>{t("actions")}</span>,
@@ -49,8 +40,7 @@ const PaymentProccessingTable = ({paymentData, setEditData, setPaymentData }) =>
                             setEditData(info.row.original)
                             setEditingRowId(info.row.original.id);  
                             setFieldValue("amount", info.row.original.amount)
-                            setFieldValue("commission_riyals", info.row.original.commission_riyals)
-                            setFieldValue("discount_percentage", info.row.original.discount_percentage)
+                            setFieldValue("weight", info.row.original.weight)
                         }}
                         className="fill-mainGreen w-6 h-6 mb-[2px]"
                     />
@@ -80,7 +70,7 @@ const PaymentProccessingTable = ({paymentData, setEditData, setPaymentData }) =>
 
   return (
     <div>
-    <p className='text-base font-bold'>{`${t("payments")} : ${paymentData?.length === 0 ? t("none") : paymentData?.length}`}</p>
+    <p className='text-base font-bold'>{`${t("Payment operations")} : ${paymentData?.length === 0 ? t("none") : paymentData?.length}`}</p>
     {paymentData?.length > 0 
         && (
             
@@ -131,4 +121,4 @@ const PaymentProccessingTable = ({paymentData, setEditData, setPaymentData }) =>
   )
 }
 
-export default PaymentProccessingTable
+export default PaymentProccessingTableToManagement

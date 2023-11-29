@@ -6,14 +6,13 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Form, Formik, useFormikContext } from "formik";
+import { Form, useFormikContext } from "formik";
 import { t } from "i18next";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { BiXCircle } from "react-icons/bi";
 import { IoMdAdd } from "react-icons/io";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { numberContext } from "../../../../context/settings/number-formatter";
-import { useFetch, useIsRTL } from "../../../../hooks";
+import { useFetch } from "../../../../hooks";
 import { KaratValues_TP } from "../../../../types";
 import { notify } from "../../../../utils/toast";
 import { Button, Spinner } from "../../../atoms";
@@ -22,8 +21,10 @@ import SelectCategory from "../../../templates/reusableComponants/categories/sel
 import SelectClassification from "../../../templates/reusableComponants/classifications/select/SelectClassification";
 import { Selling_TP } from "../../../../pages/selling/PaymentSellingPage";
 import SelectKarat from "../../../templates/reusableComponants/karats/select/SelectKarat";
-import { DeleteIcon, EditIcon, ViewIcon } from "../../../atoms/icons";
+import { DeleteIcon, EditIcon } from "../../../atoms/icons";
 import { Header } from "../../../atoms/Header";
+import SellingTableInputWeight from "./SellingTableInputWeight";
+import { HiViewGridAdd } from "react-icons/hi";
 
 type SellingTableInputData_TP = {
   dataSource: Selling_TP;
@@ -32,6 +33,10 @@ type SellingTableInputData_TP = {
   setSellingItemsData: any;
   setClientData: any;
   rowsData: Selling_TP;
+  selectedItemDetails: any;
+  setSelectedItemDetails: any;
+  sellingItemsOfWeigth: any;
+  setSellingItemsOfWeight: any;
 };
 
 export const SellingTableInputData = ({
@@ -41,49 +46,49 @@ export const SellingTableInputData = ({
   setSellingItemsData,
   selectedItemDetails,
   setSelectedItemDetails,
-  setClientData,
-  rowsData,
+  sellingItemsOfWeigth,
+  setSellingItemsOfWeight
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ file: SellingTableInputData.tsx:47 ~ sellingItemsData:", sellingItemsData)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:47 ~ selectedItemDetails:", selectedItemDetails)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:47 ~ dataSource:", dataSource)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:54 ~ selectedItemDetails:", selectedItemDetails)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:53 ~ sellingItemsData:", sellingItemsData)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:53 ~ dataSource:", dataSource)
 
   const [search, setSearch] = useState(""); 
-
-  const [open, setOpen] = useState<boolean>(false)
   const [openDetails, setOpenDetails] = useState<boolean>(false);
+  const [openSelsal, setOpenSelsal] = useState<boolean>(false);
+  const [kitDetails, setKitDetails] = useState([]);
+  const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
+  const [page, setPage] = useState<number>(1)
+  const { formatGram, formatReyal } = numberContext();
+
+  const { userData } = useContext(authCtx)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ userData:", userData)
+
+  const TaxRateOfBranch = userData?.tax_rate / 100 ;
+  
+  const priceWithCommissionRate =
+  dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
+  
+  const priceWithCommissionCash = dataSource && (+dataSource[0]?.cost + +dataSource[0]?.min_selling);
+  
+  const priceWithSellingPolicy =
+  dataSource && dataSource[0]?.min_selling_type === "نسبة"
+  ? priceWithCommissionRate
+  : priceWithCommissionCash;
 
   const { values, setFieldValue, resetForm , isSubmitting } = useFormikContext<any>();
-  console.log("🚀 ~ file: SellingTableInputData.tsx:59 ~ values:", values)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:65 ~ values:", values)
 
-  const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
-
-  const { formatGram, formatReyal } = numberContext();
-  const { userData } = useContext(authCtx);
-
-  const { refetch, isSuccess, isLoading, isFetching, isRefetching } = useFetch({
+  const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
     queryKey: ["branch-all-accepted-selling"],
     endpoint:
       search === ""
-        ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}?per_page=10000`
+        ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}`
         : `${search}`,
     onSuccess: (data) => {
       setDataSource(data);
     }, 
   });
-
-  const priceWithCommissionRate =
-    dataSource &&
-    +dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) +
-      dataSource[0]?.cost;
-
-  const priceWithCommissionCash =
-    dataSource && +dataSource[0]?.cost + +dataSource[0]?.min_selling;
-
-  const priceWithSellingPolicy =
-    dataSource && dataSource[0]?.min_selling_type === "نسبة"
-      ? priceWithCommissionRate
-      : priceWithCommissionCash;
 
   const { data: karatValues } = useFetch<KaratValues_TP[]>({
     endpoint: "classification/api/v1/allkarats",
@@ -98,14 +103,14 @@ export const SellingTableInputData = ({
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("classification")} </span>,
-        accessorKey: "category_name",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
         header: () => <span>{t("category")}</span>,
         accessorKey: "classification_name",
         cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("classification")} </span>,
+        accessorKey: "category_name",
+        cell: (info) => info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`  ,
       },
       {
         header: () => <span>{t("weight")} </span>,
@@ -120,7 +125,7 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info: any) => info.row.original.classification_id === 1 ?  formatReyal(Number(info.getValue())) : formatGram(Number(info.row.original.karatmineral_name)),
       },
       {
         header: () => <span>{t("cost")} </span>,
@@ -141,8 +146,6 @@ export const SellingTableInputData = ({
     []
   );
 
-  const [kitDetails, setKitDetails] = useState([])
-
   useEffect(() => {
     if (dataSource?.length) {
       setKitDetails(dataSource?.find(item=> item.weightitems)?.weightitems)
@@ -162,7 +165,9 @@ export const SellingTableInputData = ({
                 name="selectedItem" 
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setSelectedItemDetails((prev) => [...prev, {...info.row.original, index:info.row.index, hwya: values?.hwya }]);
+                    console.log("🚀 ~ file: SellingTableInputData.tsx:177 ~ info.row.original:", info.row.original)
+                    console.log("🚀 ~ file: SellingTableInputData.tsx:180 ~ e.target.checked:", e.target.checked)
+                    setSelectedItemDetails((prev) => [...prev, {...info.row.original, index:info.row.index}]);
                   } else {
                     setSelectedItemDetails((prev) => prev.filter((item) => item.index !== info.row.index));
                   }
@@ -179,8 +184,13 @@ export const SellingTableInputData = ({
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("weight")} </span>,
+        header: () => <span>{t("weight")}</span>,
         accessorKey: "weight",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("cost")}</span>,
+        accessorKey: "selling_price",
         cell: (info) => info.getValue() || "---",
       },
     ],
@@ -215,19 +225,28 @@ export const SellingTableInputData = ({
     setSellingItemsData(newData);
   };
 
-  useEffect(() => {
-    const { client_id, bond_date, client_value, client_name, ...restValues } = values;
-    Object.keys(restValues).map((key) => {
-      if (dataSource?.length === 1) {
-        setFieldValue(key, dataSource[0][key]);
-        setFieldValue("taklfa", priceWithSellingPolicy.toFixed(2));
-        setFieldValue(
-          "taklfa_after_tax",
-          (priceWithSellingPolicy * 0.15 + priceWithSellingPolicy).toFixed(2)
-        );
-      }
-    });
-  }, [dataSource, search]);
+    useEffect(() => {
+      const { client_id, bond_date, client_value, client_name, ...restValues } = values;
+      Object.keys(restValues).map((key) => {
+        if (dataSource?.length === 1) {
+          setFieldValue(key, dataSource[0][key]);
+
+          setFieldValue("weight", dataSource[0]?.remaining_weight);
+          
+          if (values.classification_id === 1) {
+            setFieldValue("karat_name", dataSource[0]?.karat_name)
+          } else {
+            setFieldValue("karatmineral_name", dataSource[0]?.karatmineral_name);
+          }
+
+          setFieldValue("taklfa", priceWithSellingPolicy.toFixed(2));
+          setFieldValue(
+            "taklfa_after_tax",
+            (priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy).toFixed(2)
+          );
+        }
+      });
+    }, [dataSource, search]);
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
@@ -271,6 +290,14 @@ export const SellingTableInputData = ({
   useEffect(() => {
     refetch();
   }, [search]);
+
+  useEffect(() => {
+      if (page == 1) {
+          refetch()
+      } else {
+          setPage(1)
+      }
+  }, [search])
 
   return (
     <Form>
@@ -319,25 +346,6 @@ export const SellingTableInputData = ({
                 disabled={!isSuccess}
               />
             </td>
-            <td className="border-l-2 border-l-flatWhite">
-              <SelectCategory
-                name="category_name"
-                noMb={true}
-                placement="top"
-                all={true}
-                value={{
-                  value: values?.category_id,
-                  label: values?.category_name || t("classification"),
-                  id: values?.category_id,
-                }}
-                onChange={(option) => {
-                  setFieldValue("category_name", option!.value);
-                }}
-                showItems={true}
-                // disabled={!String(values.item_id).startsWith('0000')}
-                disabled={!isCategoryDisabled}
-              />
-            </td>
             <td>
               {!isCategoryDisabled ? (
                 <BaseInputField
@@ -361,6 +369,25 @@ export const SellingTableInputData = ({
                 <SelectClassification field="value" name="classification_id" />
               )}
             </td>
+            <td className="border-l-2 border-l-flatWhite">
+              <SelectCategory
+                name="category_name"
+                noMb={true}
+                placement="top"
+                all={true}
+                value={{
+                  value: values?.category_id,
+                  label: values?.category_name || t("classification"),
+                  id: values?.category_id,
+                }}
+                onChange={(option) => {
+                  setFieldValue("category_name", option!.value);
+                }}
+                showItems={true}
+                // disabled={!String(values.item_id).startsWith('0000')}
+                disabled={!isCategoryDisabled}
+              />
+            </td>
             <td>
               <BaseInputField
                 placeholder={`${t("weight")}`}
@@ -368,12 +395,41 @@ export const SellingTableInputData = ({
                 name="weight"
                 type="text"
                 required
-                value={values?.weight}
                 onChange={(e) => {
-                  setFieldValue("weight", values.weight);
+                  
+                const remainingWeight = +dataSource[0]?.remaining_weight - +e.target.value
+
+                const costItem = (+values.karat_price + +values.wage) * +e.target.value
+
+                const priceWithCommissionRate = +costItem * (+values?.min_selling * 0.01) + +costItem;
+                const priceWithCommissionCash = +costItem + +values?.min_selling;
+            
+                const priceWithSellingPolicy =
+                values?.min_selling_type === "نسبة"
+                  ? priceWithCommissionRate
+                  : priceWithCommissionCash;
+                
+                  const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
+
+                 if (+e.target.value > +dataSource[0]?.weight) {
+                    notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي")
+                  } else {
+
+                    setFieldValue("remaining_weight", +remainingWeight)
+
+                    setFieldValue("cost", +costItem.toFixed(3))
+                    
+                    setFieldValue("taklfa", +priceWithSellingPolicy.toFixed(3))
+                    
+                    setFieldValue("taklfa_after_tax", +taklfaAfterTax.toFixed(3))
+
+                    setOpenDetails(false);
+                    
+                  }
+
                 }}
-                className={`${!isSuccess && "bg-mainDisabled"} text-center`}
-                disabled={!isSuccess}
+                className={`${(!isSuccess || values.category_selling_type !== "all") && "bg-mainDisabled"} text-center`}
+                disabled={!isSuccess || values.category_selling_type !== "all"}
               />
             </td>
             <td>
@@ -382,10 +438,6 @@ export const SellingTableInputData = ({
                 id="remaining_weight"
                 name="remaining_weight"
                 type="text"
-                value={values.remaining_id}
-                onChange={(e) => {
-                  setFieldValue("remaining_weight", values.remaining_weight);
-                }}
                 disabled={!isCategoryDisabled}
                 className={`${
                   !isCategoryDisabled && "bg-mainDisabled"
@@ -395,11 +447,11 @@ export const SellingTableInputData = ({
             <td className="border-l-2 border-l-flatWhite">
               <SelectKarat
                 field="id"
-                name="karat_name"
+                name={values.classification_id === 1 ? "karat_name" : "karatmineral_name"}
                 noMb={true}
                 placement="top"
                 onChange={(option) => {
-                  setFieldValue("karat_name", option!.value);
+                  setFieldValue("karat_name" || "karatmineral_name", option!.value);
                   setFieldValue(
                     "stock",
                     karatValues!.find(
@@ -408,9 +460,9 @@ export const SellingTableInputData = ({
                   );
                 }}
                 value={{
-                  id: values.karat_id,
-                  value: values.karat_id,
-                  label: values.karat_name || t("karat value"),
+                  id: values.karat_id !== 0 ? values.karat_id : values.karatmineral_id,
+                  value: values.karat_id !== 0 ? values.karat_id : values.karatmineral_id,
+                  label: values.karat_name || values.karatmineral_name || t("karat value"),
                 }}
                 disabled={!isCategoryDisabled}
               />
@@ -421,7 +473,6 @@ export const SellingTableInputData = ({
                 id="cost"
                 name="cost"
                 type="text"
-                // value="2000"
                 onChange={(e) => {
                   setFieldValue("cost", values.value);
                 }}
@@ -442,11 +493,11 @@ export const SellingTableInputData = ({
                   setFieldValue("taklfa", values?.taklfa);
                   setFieldValue(
                     "taklfa_after_tax",
-                    (+e.target.value * 0.15 + +e.target.value).toFixed(2)
+                    (+e.target.value * TaxRateOfBranch + +e.target.value).toFixed(2)
                   );
                 }}
-                className={`${!isSuccess && "bg-mainDisabled"} text-center`}
-                disabled={!isSuccess}
+                className={`${!isSuccess || userData?.include_tax === "1" ? "bg-mainDisabled" : (values?.taklfa && +values?.taklfa < +priceWithSellingPolicy) ? "bg-red-100" : ""} text-center`}
+                disabled={!isSuccess || userData?.include_tax === "1"}
               />
             </td>
             <td>
@@ -456,10 +507,8 @@ export const SellingTableInputData = ({
                 name="taklfa_after_tax"
                 type="text"
                 required
-                disabled
-                className={`${
-                  !isCategoryDisabled && "bg-mainDisabled"
-                } text-center`}
+                disabled={userData?.include_tax === "0"}
+                className={`${!isCategoryDisabled && userData?.include_tax === "0" && "bg-mainDisabled"} text-center`}
               />
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
@@ -492,6 +541,19 @@ export const SellingTableInputData = ({
                   </Button>
                 )
               }
+              {dataSource?.length == 1 && dataSource[0]?.has_selsal === 1
+                && (
+                  <Button
+                    loading={values.hwya && isFetching}
+                    action={() => {
+                        setOpenSelsal(true)
+                    }}
+                    className="bg-transparent px-2"
+                  >
+                    <HiViewGridAdd className="fill-mainGreen w-6 h-6" />
+                  </Button>
+                )
+              }
             <Button
               loading={values.hwya && isFetching}
               action={() => {
@@ -510,15 +572,44 @@ export const SellingTableInputData = ({
                   return;
                 }
 
+                if (values.weight == 0) {
+                  notify("info", `${t("The lot is sold out")}`);
+                  return;
+                }
+
+                if (!selectedItemDetails.length) {
+                  const kitAllDetails = kitDetails.filter((item) => item.status !== 1)
+  
+                  selectedItemDetails.push(kitAllDetails)
+                }
+
+                if (+values?.taklfa < +priceWithSellingPolicy) {
+                  notify("info", `${t("The selling price may not be less than the minimum")}`)
+                  return
+                }
+
+                const weight_percentage = +values.remaining_weight * 0.05;
+
+                const stone_weight_percentage =  (dataSource && values.classification_id === 1)  
+                  ? dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.weight 
+                  : dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.diamondWeight
+                  
+                const stoneWeitgh = (values.classification_id === (2 || 3) || +stone_weight_percentage > +weight_percentage) ? +stone_weight_percentage : "v"
+
+                if (values.classification_id === 1) {
+
+                }
+
                 setSellingItemsData((prev) => [
                   ...prev,
-                  {...values, itemDetails: selectedItemDetails},
+                  {...values, itemDetails: selectedItemDetails.flat(Infinity), selsal: sellingItemsOfWeigth, stone_weight: +stoneWeitgh},
                 ].reverse());
 
                 handleAddItemsToSelling()
                 setDataSource([]);
                 setSearch("");
                 setSelectedItemDetails([])
+                setSellingItemsOfWeight([])
 
               }}
               className="bg-transparent px-2 m-auto"
@@ -599,7 +690,6 @@ export const SellingTableInputData = ({
                                 disabled={item.weight != 0}
                                 className={`${item.weight != 0 && "bg-mainDisabled"}`}
                                 onChange={(e) => {
-                                console.log("🚀 ~ file: SellingTableInputData.tsx:607 ~ {dataSource[0]?.weightitems?.map ~ e.target.value:", e.target.value)
 
                                   setSelectedItemDetails((prev: any) => {
                                     const index = prev.findIndex((prevItem) => item?.category_id === prevItem?.category_id);
@@ -687,9 +777,14 @@ export const SellingTableInputData = ({
                           return acc
                       }, 0)
 
+                      const clacSelectedCost = selectedItemDetails.reduce((acc, item) => {
+                        acc += +item.selling_price
+                        return acc
+                    }, 0)
+
                       const remainingWeight = +dataSource[0]?.weight - +clacSelectedWeight
 
-                      const costItem = (+values.karat_price + +values.wage) * clacSelectedWeight
+                      const costItem = values.classification_id === 1 ?  (+values.karat_price + +values.wage) * clacSelectedWeight : +clacSelectedCost
 
                       const priceWithCommissionRate = +costItem * (+values?.min_selling * 0.01) + +costItem;
                       const priceWithCommissionCash = +costItem + +values?.min_selling;
@@ -699,7 +794,7 @@ export const SellingTableInputData = ({
                       ? priceWithCommissionRate
                       : priceWithCommissionCash;
                     
-                      const taklfaAfterTax = (priceWithSellingPolicy * 0.15) + priceWithSellingPolicy
+                      const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
 
                       const checkedFromWeight = selectedItemDetails?.every((item) => item.weight !== "")
 
@@ -731,6 +826,20 @@ export const SellingTableInputData = ({
           </div>
       </Modal>
       
+      <Modal isOpen={openSelsal} onClose={() => setOpenSelsal(false)}>
+          <div className="flex flex-col gap-8 justify-center items-center">
+            <Header
+              header={t("Add a chain")}
+            />
+              <SellingTableInputWeight
+                handleDeleteRow={handleDeleteRow}
+                sellingItemsOfWeigth={sellingItemsOfWeigth}
+                setSellingItemsOfWeight={setSellingItemsOfWeight}
+                dataSource={dataSource}
+                setOpenSelsal={setOpenSelsal}
+              />
+          </div>
+      </Modal>
     </Form>
   );
 };
