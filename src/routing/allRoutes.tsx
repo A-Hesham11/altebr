@@ -58,7 +58,7 @@ import { GoldCoding } from "../pages/coding/gold/GoldCoding"
 import { GoldCodingWrapper } from "../pages/coding/gold/GoldCodingWrapper"
 import { Employees } from "../pages/employees/Employees"
 import { OneEmployee } from "../pages/employees/OneEmployee"
-import { Home } from "../pages/home/Home"
+// import { Home } from "../pages/home/Home"
 import { Operation } from "../pages/operation/Operation"
 import { AllPartner } from "../pages/partner/AllPartner"
 import { OnePartner } from "../pages/partner/OnePartner"
@@ -90,6 +90,9 @@ import SellingRestrictionsInvoice from "../pages/selling/sellingRestrictionsInvo
 import { PiecesSoldPage } from "../pages/selling/PiecesSoldPage"
 import AddTaxPolicy from "../components/templates/sellingPolicies/AddTaxPolicy"
 import ViewTaxPolicy from "../components/templates/sellingPolicies/ViewTaxPolicy"
+import PaymentToManagement from "../pages/Payment/PaymentToManagement"
+import { Home } from "../pages/home/Home"
+import PaymentRestrictions from "../pages/Payment/PaymentRestrictions"
 
 
 export const AllRoutesProvider = () => {
@@ -365,7 +368,7 @@ export const AllRoutesProvider = () => {
             element={<ReservePiece />}
           />
           <Route path="/selling/payoff" element={<Payoff />} />
-          <Route path="/selling/reimbursement" element={<>reimbursement</>} />
+          {/* <Route path="/selling/reimbursement" element={<>reimbursement</>} /> */}
           {/* neighbors start */}
           <Route path="/selling/neighbors" element={<NeighborsPage />} />
           <Route path="/selling/neighbors/loaning" element={<>loaning</>} />
@@ -470,7 +473,7 @@ export const AllRoutesProvider = () => {
             element={<ReservePiece />}
           />
           <Route path="/selling/payoff" element={<Payoff />} />
-          <Route path="/selling/reimbursement" element={<>reimbursement</>} />
+          <Route path="/selling/reimbursement" element={<PaymentToManagement/>} />
           {/* neighbors start */}
           <Route path="/selling/neighbors" element={<NeighborsPage />} />
           <Route path="/selling/neighbors/loaning" element={<>loaning</>} />
@@ -550,6 +553,10 @@ export const AllRoutesProvider = () => {
           <Route
             path="/selling/payoff/supply-payoff"
             element={<PayoffEntryScreen />}
+          />
+          <Route
+            path="/selling/payment/restrictions"
+            element={<PaymentRestrictions />}
           />
         </Route>
         <Route
