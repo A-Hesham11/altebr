@@ -93,7 +93,14 @@ import ViewTaxPolicy from "../components/templates/sellingPolicies/ViewTaxPolicy
 import PaymentToManagement from "../pages/Payment/PaymentToManagement"
 import { Home } from "../pages/home/Home"
 import PaymentRestrictions from "../pages/Payment/PaymentRestrictions"
-
+import { PiecesSoldPage } from "../pages/selling/PiecesSoldPage";
+import CodedIdentities from "../pages/coding/coded_identities/CodedIdentities";
+import BranchBondsReact from "../pages/coding/branch_bonds_react/BranchBondsReact";
+import ReturnBondsReact from "../pages/coding/ReturnBondsReact/ReturnBondsReact";
+import BuyingPage from "../pages/Buying/BuyingPage";
+import ViewBuyingPolicies from "../components/templates/buyingPolicies/ViewBuyingPolicies";
+import BuyingInvoice from "../pages/Buying/BuyingInvoice";
+import WeightAdjustment from "../pages/Buying/WeightAdjustment/WeightAdjustment";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -114,6 +121,22 @@ export const AllRoutesProvider = () => {
             path="/branch-bonds"
             element={<BranchBonds title={t("branch bonds")} />}
           />
+          {/* REACT */}
+          <Route
+            path="/coding-react"
+            element={
+              <CodedIdentities title={t("identity and numbering management")} />
+            }
+          />
+          <Route
+            path="/branch-bonds-react"
+            element={<BranchBondsReact title={t("branch bonds")} />}
+          />
+          <Route
+            path="/return-bonds-react"
+            element={<ReturnBondsReact title={t("return bonds")} />}
+          />
+          {/* REACT */}
           <Route
             path="/coding/gold"
             element={<GoldCoding title={t("gold coding")} />}
@@ -178,7 +201,12 @@ export const AllRoutesProvider = () => {
             path="/system/policiesSelling"
             element={<ViewSellingPolicies />}
           />
+          <Route
+            path="/system/policiesBuying"
+            element={<ViewBuyingPolicies />}
+          />
 
+          <Route path="/system/excludedItems" element={<ViewExcludedItems />} />
           <Route
             path="/system/TaxPolicy"
             element={<ViewTaxPolicy />}
@@ -193,7 +221,7 @@ export const AllRoutesProvider = () => {
           path="/system/invoiceData"
           element={<ViewInvoiceData />}
         />
-
+          <Route path="/system/invoiceData" element={<ViewInvoiceData />} />
 
           <Route
             path="/system/branches/:branchesID"
@@ -355,7 +383,7 @@ export const AllRoutesProvider = () => {
             path="/selling/finalPreview"
             element={<SellingFinalPreview />}
           />
-          <Route path="/selling/buying" element={<>buying</>} />
+          <Route path="/selling/buying" element={<BuyingPage />} />
           <Route path="/selling/management" element={<Management />} />
           <Route path="/selling/exchange" element={<>exchange</>} />
           <Route path="/selling/clients" element={<Clients />} />
@@ -419,10 +447,7 @@ export const AllRoutesProvider = () => {
             path="/selling/branch-identity"
             element={<SellingBranchIdentity />}
           />
-          <Route
-            path="/selling/Pieces-Sold"
-            element={<PiecesSoldPage />}
-          />
+          <Route path="/selling/Pieces-Sold" element={<PiecesSoldPage />} />
           <Route
             path="/selling/management/receive-money"
             element={<>receive-money</>}
@@ -448,10 +473,12 @@ export const AllRoutesProvider = () => {
 
           {/* المبعات */}
 
-
           <Route path="/selling" element={<PaymentSellingPage />} />
           <Route path="/payment" element={<SellingSecondpage />} />
-          <Route path="/selling/invoice-restrictions" element={<SellingRestrictionsInvoice />} />
+          <Route
+            path="/selling/invoice-restrictions"
+            element={<SellingRestrictionsInvoice />}
+          />
           <Route
             path="selling/clients/customersData/addClients"
             element={<AddClients />}
@@ -460,7 +487,7 @@ export const AllRoutesProvider = () => {
             path="/selling/finalPreview"
             element={<SellingFinalPreview />}
           />
-          <Route path="/selling/buying" element={<>buying</>} />
+          {/* <Route path="/selling/buying/test" element={<>butingh</>} /> */}
           <Route path="/selling/management" element={<Management />} />
           <Route path="/selling/exchange" element={<>exchange</>} />
           <Route path="/selling/clients" element={<Clients />} />
@@ -549,10 +576,15 @@ export const AllRoutesProvider = () => {
             path="/selling/branchSetting"
             element={<BranchSettingPage />}
           />
+          {/* BUYING START */}
+          <Route path="/buying/purchaseInvoice" element={<BuyingInvoice />} />
+          <Route path="/buying/weightAdjustment" element={<WeightAdjustment />} />
+          {/* BUYING END */}
           <Route path="/system/cardsData" element={<ViewBankCardsData />} />
           <Route
             path="/selling/payoff/supply-payoff"
             element={<PayoffEntryScreen />}
+            />
           />
           <Route
             path="/selling/payment/restrictions"

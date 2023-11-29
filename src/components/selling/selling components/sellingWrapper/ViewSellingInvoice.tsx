@@ -151,7 +151,7 @@ const ViewSellingInvoice = () => {
           <Form className="w-full flex">
             <div className="flex w-full justify-between items-end gap-3">
               <div className="flex items-end gap-3">
-                <div className="animate_from_top">
+                <div className="">
                   <BaseInputField
                     id="invoice_number"
                     name="invoice_number"
@@ -161,7 +161,7 @@ const ViewSellingInvoice = () => {
                     type="text"
                   />
                 </div>
-                <div className="animate_from_bottom animation_delay-3">
+                <div className="">
                   <DateInputField
                     label={`${t("invoice date")}`}
                     placeholder={`${t("invoice date")}`}
@@ -172,19 +172,19 @@ const ViewSellingInvoice = () => {
                 <Button
                   type="submit"
                   disabled={isRefetching}
-                  className="flex h-[38px] mx-4 animate_from_left animation_delay-5 hover:bg-emerald-900 duration-300 transition-all"
+                  className="flex h-[38px] mx-4 hover:bg-emerald-900 duration-300 transition-all"
                 >
                   {t("search")}
                 </Button>
               </div>
-              <Back className="animate_from_right animation_delay-7 hover:bg-slate-50 transition-all duration-300" />
+              <Back className="hover:bg-slate-50 transition-all duration-300" />
             </div>
           </Form>
         </Formik>
       </div>
 
       {/* 2) TABLE */}
-      <div className="animate_scale animation_delay-11">
+      <div className="">
         <Table data={dataSource || []} columns={tableColumn}>
           <div className="mt-3 flex items-center justify-center gap-5 p-2">
             <div className="flex items-center gap-2 font-bold">
