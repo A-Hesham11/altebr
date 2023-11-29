@@ -87,7 +87,6 @@ import ViewInvoiceData from "../components/templates/invoiceData/viewInvoiceData
 import AddSellingInvoice from "../components/selling/selling components/sellingWrapper/AddSellingInvoice"
 import ViewSellingInvoice from "../components/selling/selling components/sellingWrapper/ViewSellingInvoice"
 import SellingRestrictionsInvoice from "../pages/selling/sellingRestrictionsInvoice"
-import { PiecesSoldPage } from "../pages/selling/PiecesSoldPage"
 import AddTaxPolicy from "../components/templates/sellingPolicies/AddTaxPolicy"
 import ViewTaxPolicy from "../components/templates/sellingPolicies/ViewTaxPolicy"
 import PaymentToManagement from "../pages/Payment/PaymentToManagement"
@@ -584,7 +583,6 @@ export const AllRoutesProvider = () => {
           <Route
             path="/selling/payoff/supply-payoff"
             element={<PayoffEntryScreen />}
-            />
           />
           <Route
             path="/selling/payment/restrictions"
