@@ -116,6 +116,14 @@ export const sideBarItems: MenuItem_TP[] = [
         link: "/coding",
         icon: RiVipCrownLine,
       },
+      // REACT
+      {
+        id: crypto.randomUUID(),
+        label: 'coded identities 2',
+        link: "/coding-react",
+        icon: RiVipCrownLine,
+      },
+      // REACT
       {
         id: crypto.randomUUID(),
         label: 'gold coding',
@@ -148,6 +156,20 @@ export const sideBarItems: MenuItem_TP[] = [
             link: "/branch-bonds",
             icon: CiExport,
           },
+          // REACT
+          {
+            id: crypto.randomUUID(),
+            label: 'branch bonds 2',
+            link: "/branch-bonds-react",
+            icon: CiExport,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: 'return bonds 2',
+            link: "/return-bonds-react",
+            icon: CiExport,
+          },
+          // REACT
         ]
   },
 

@@ -1,94 +1,100 @@
-import { t } from "i18next"
-import { useContext } from "react"
-import { Route, Routes } from "react-router-dom"
-import { AddClients } from "../components/selling/clients/AddClients"
-import ClientsData from "../components/selling/clients/ClientsData"
-import ReservePiece from "../components/selling/clients/reservePiece"
-import { AllHonestBonds } from "../components/selling/honest/AllHonestBonds"
-import { AllRetrieveHonestBonds } from "../components/selling/honest/AllRetrieveHonestBonds"
-import { HonestBondAccountingRestriction } from "../components/selling/honest/HonestBondAccountingRestriction"
-import { NewHonest } from "../components/selling/honest/NewHonest"
-import { RetrieveHonestEntryScreen } from "../components/selling/honest/RetrieveHonestEntryScreen"
-import { ReturnHonestRestriction } from "../components/selling/honest/ReturnHonestRestriction"
-import PayoffEntryScreen from "../components/selling/payoff/PayoffentryScreen"
-import RecieveItems from "../components/selling/recieve items/RecieveItems"
-import BranchAccountingTree from "../components/selling/reports/BranchAccountingTree"
-import { SellingFinalPreview } from "../components/selling/selling components/SellingFinalPreview"
-import SellingSecondpage from "../components/selling/selling components/SellingSecondpage"
-import ViewBankCards from "../components/templates/bankCards/ViewBankCards"
-import ViewBankCardsData from "../components/templates/bankCards/ViewBankCardsData"
-import ViewExcludedItems from "../components/templates/excludedItems/ViewExcludedItems"
-import { OneBranches } from "../components/templates/reusableComponants/branches/OneBranches"
-import { ViewBranches } from "../components/templates/reusableComponants/branches/ViewBranches"
-import { ViewStoneColor } from "../components/templates/reusableComponants/stones/view/ViewStoneColor"
-import { ViewStoneNature } from "../components/templates/reusableComponants/stones/view/ViewStoneNature"
-import { ViewStonePurity } from "../components/templates/reusableComponants/stones/view/ViewStonePurity"
-import { ViewStoneQuality } from "../components/templates/reusableComponants/stones/view/ViewStoneQuality"
-import { ViewStoneShape } from "../components/templates/reusableComponants/stones/view/ViewStoneShape"
-import { ViewStoneType } from "../components/templates/reusableComponants/stones/view/ViewStoneType"
-import ViewSellingPolicies from "../components/templates/sellingPolicies/ViewSellingPolicies"
-import AccountingTree from "../components/templates/systemEstablishment/AccountingTree/view/AccountingTree"
-import { ViewCompanyDetails } from "../components/templates/systemEstablishment/partners/ViewCompanyDetails"
-import { ViewMinerals } from "../components/templates/systemEstablishment/view/Diamond/ViewMinerals"
-import { ViewMineralsKarats } from "../components/templates/systemEstablishment/view/Diamond/ViewMineralsKarats"
-import { ViewCategories } from "../components/templates/systemEstablishment/view/ViewCategories"
-import { ViewCities } from "../components/templates/systemEstablishment/view/ViewCities"
-import { ViewClassifications } from "../components/templates/systemEstablishment/view/ViewClassifications"
-import { ViewCountries } from "../components/templates/systemEstablishment/view/ViewCountries"
-import { ViewDistricts } from "../components/templates/systemEstablishment/view/ViewDistricts"
-import { ViewMarkets } from "../components/templates/systemEstablishment/view/ViewMarkets"
-import { ViewNationalities } from "../components/templates/systemEstablishment/view/ViewNationalities"
-import { ViewSizes } from "../components/templates/systemEstablishment/view/ViewSizes"
-import { ViewKarats } from "../components/templates/systemEstablishment/view/Viewkarats"
-import { authCtx } from "../context/auth-and-perm/auth"
-import { PermissionCtxProvider } from "../context/auth-and-perm/permissions"
-import Management from "../pages//selling/Management"
-import { Login } from "../pages/Login"
-import { Settings } from "../pages/Settings"
-import { AdministrativeStructure } from "../pages/administrativeStructure/AdministrativeStructure"
-import { OneAdminRoles } from "../pages/administrativeStructure/OneAdminRoles"
-import BranchSettingPage from "../pages/branchSetting/BranchSettingPage"
-import { BranchBonds } from "../pages/coding/BranchBonds"
-import { Coding } from "../pages/coding/Coding"
-import { AccessoriesCoding } from "../pages/coding/accessories/AccessoriesCoding"
-import { AccessoriesCodingWrapper } from "../pages/coding/accessories/AccessoriesCodingWrapper"
-import { DiamondCoding } from "../pages/coding/diamond/DiamondCoding"
-import { DiamondCodingWrapper } from "../pages/coding/diamond/DiamondCodingWrapper"
-import { GoldCoding } from "../pages/coding/gold/GoldCoding"
-import { GoldCodingWrapper } from "../pages/coding/gold/GoldCodingWrapper"
-import { Employees } from "../pages/employees/Employees"
-import { OneEmployee } from "../pages/employees/OneEmployee"
-import { Home } from "../pages/home/Home"
-import { Operation } from "../pages/operation/Operation"
-import { AllPartner } from "../pages/partner/AllPartner"
-import { OnePartner } from "../pages/partner/OnePartner"
-import Clients from "../pages/selling/Clients"
-import Honest from "../pages/selling/Honest"
-import ItemInformation from "../pages/selling/ItemInformation"
-import { NeighborsPage } from "../pages/selling/NeighborsPage"
-import PaymentSellingPage from "../pages/selling/PaymentSellingPage"
-import Payoff from "../pages/selling/Payoff"
-import Reports from "../pages/selling/Reports"
-import { SellingBranchIdentity } from "../pages/selling/SellingBranchIdentity"
-import { AllSuppliers } from "../pages/suppliers/AllSuppliers"
-import { OneSupplier } from "../pages/suppliers/OneSupplier"
-import { Bond } from "../pages/supply/Bond"
-import { Bonds } from "../pages/supply/Bonds"
-import { Supply } from "../pages/supply/Supply"
-import { GlobalAndStones } from "../pages/system/GlobalAndStones"
-import { System } from "../pages/system/System"
-import { ErrorPage } from "./ErrorPage"
-import { Root } from "./Root"
-import ViewAccountsBank from "../components/templates/accountsBank/ViewAccountsBank"
-import ViewBanks from "../components/templates/banks/ViewBanks"
-import { AllRetrievalRestrictions } from "../components/selling/honest/AllRetrievalRestrictions"
-import { OneRetrievalRestrictions } from "../components/selling/honest/OneRetrievalRestrictions"
-import ViewInvoiceData from "../components/templates/invoiceData/viewInvoiceData"
-import AddSellingInvoice from "../components/selling/selling components/sellingWrapper/AddSellingInvoice"
-import ViewSellingInvoice from "../components/selling/selling components/sellingWrapper/ViewSellingInvoice"
-import SellingRestrictionsInvoice from "../pages/selling/sellingRestrictionsInvoice"
-import { PiecesSoldPage } from "../pages/selling/PiecesSoldPage"
-
+import { t } from "i18next";
+import { useContext } from "react";
+import { Route, Routes } from "react-router-dom";
+import { AddClients } from "../components/selling/clients/AddClients";
+import ClientsData from "../components/selling/clients/ClientsData";
+import ReservePiece from "../components/selling/clients/reservePiece";
+import { AllHonestBonds } from "../components/selling/honest/AllHonestBonds";
+import { AllRetrieveHonestBonds } from "../components/selling/honest/AllRetrieveHonestBonds";
+import { HonestBondAccountingRestriction } from "../components/selling/honest/HonestBondAccountingRestriction";
+import { NewHonest } from "../components/selling/honest/NewHonest";
+import { RetrieveHonestEntryScreen } from "../components/selling/honest/RetrieveHonestEntryScreen";
+import { ReturnHonestRestriction } from "../components/selling/honest/ReturnHonestRestriction";
+import PayoffEntryScreen from "../components/selling/payoff/PayoffentryScreen";
+import RecieveItems from "../components/selling/recieve items/RecieveItems";
+import BranchAccountingTree from "../components/selling/reports/BranchAccountingTree";
+import { SellingFinalPreview } from "../components/selling/selling components/SellingFinalPreview";
+import SellingSecondpage from "../components/selling/selling components/SellingSecondpage";
+import ViewBankCards from "../components/templates/bankCards/ViewBankCards";
+import ViewBankCardsData from "../components/templates/bankCards/ViewBankCardsData";
+import ViewExcludedItems from "../components/templates/excludedItems/ViewExcludedItems";
+import { OneBranches } from "../components/templates/reusableComponants/branches/OneBranches";
+import { ViewBranches } from "../components/templates/reusableComponants/branches/ViewBranches";
+import { ViewStoneColor } from "../components/templates/reusableComponants/stones/view/ViewStoneColor";
+import { ViewStoneNature } from "../components/templates/reusableComponants/stones/view/ViewStoneNature";
+import { ViewStonePurity } from "../components/templates/reusableComponants/stones/view/ViewStonePurity";
+import { ViewStoneQuality } from "../components/templates/reusableComponants/stones/view/ViewStoneQuality";
+import { ViewStoneShape } from "../components/templates/reusableComponants/stones/view/ViewStoneShape";
+import { ViewStoneType } from "../components/templates/reusableComponants/stones/view/ViewStoneType";
+import ViewSellingPolicies from "../components/templates/sellingPolicies/ViewSellingPolicies";
+import AccountingTree from "../components/templates/systemEstablishment/AccountingTree/view/AccountingTree";
+import { ViewCompanyDetails } from "../components/templates/systemEstablishment/partners/ViewCompanyDetails";
+import { ViewMinerals } from "../components/templates/systemEstablishment/view/Diamond/ViewMinerals";
+import { ViewMineralsKarats } from "../components/templates/systemEstablishment/view/Diamond/ViewMineralsKarats";
+import { ViewCategories } from "../components/templates/systemEstablishment/view/ViewCategories";
+import { ViewCities } from "../components/templates/systemEstablishment/view/ViewCities";
+import { ViewClassifications } from "../components/templates/systemEstablishment/view/ViewClassifications";
+import { ViewCountries } from "../components/templates/systemEstablishment/view/ViewCountries";
+import { ViewDistricts } from "../components/templates/systemEstablishment/view/ViewDistricts";
+import { ViewMarkets } from "../components/templates/systemEstablishment/view/ViewMarkets";
+import { ViewNationalities } from "../components/templates/systemEstablishment/view/ViewNationalities";
+import { ViewSizes } from "../components/templates/systemEstablishment/view/ViewSizes";
+import { ViewKarats } from "../components/templates/systemEstablishment/view/Viewkarats";
+import { authCtx } from "../context/auth-and-perm/auth";
+import { PermissionCtxProvider } from "../context/auth-and-perm/permissions";
+import Management from "../pages//selling/Management";
+import { Login } from "../pages/Login";
+import { Settings } from "../pages/Settings";
+import { AdministrativeStructure } from "../pages/administrativeStructure/AdministrativeStructure";
+import { OneAdminRoles } from "../pages/administrativeStructure/OneAdminRoles";
+import BranchSettingPage from "../pages/branchSetting/BranchSettingPage";
+import { BranchBonds } from "../pages/coding/BranchBonds";
+import { Coding } from "../pages/coding/Coding";
+import { AccessoriesCoding } from "../pages/coding/accessories/AccessoriesCoding";
+import { AccessoriesCodingWrapper } from "../pages/coding/accessories/AccessoriesCodingWrapper";
+import { DiamondCoding } from "../pages/coding/diamond/DiamondCoding";
+import { DiamondCodingWrapper } from "../pages/coding/diamond/DiamondCodingWrapper";
+import { GoldCoding } from "../pages/coding/gold/GoldCoding";
+import { GoldCodingWrapper } from "../pages/coding/gold/GoldCodingWrapper";
+import { Employees } from "../pages/employees/Employees";
+import { OneEmployee } from "../pages/employees/OneEmployee";
+import { Home } from "../pages/home/Home";
+import { Operation } from "../pages/operation/Operation";
+import { AllPartner } from "../pages/partner/AllPartner";
+import { OnePartner } from "../pages/partner/OnePartner";
+import Clients from "../pages/selling/Clients";
+import Honest from "../pages/selling/Honest";
+import ItemInformation from "../pages/selling/ItemInformation";
+import { NeighborsPage } from "../pages/selling/NeighborsPage";
+import PaymentSellingPage from "../pages/selling/PaymentSellingPage";
+import Payoff from "../pages/selling/Payoff";
+import Reports from "../pages/selling/Reports";
+import { SellingBranchIdentity } from "../pages/selling/SellingBranchIdentity";
+import { AllSuppliers } from "../pages/suppliers/AllSuppliers";
+import { OneSupplier } from "../pages/suppliers/OneSupplier";
+import { Bond } from "../pages/supply/Bond";
+import { Bonds } from "../pages/supply/Bonds";
+import { Supply } from "../pages/supply/Supply";
+import { GlobalAndStones } from "../pages/system/GlobalAndStones";
+import { System } from "../pages/system/System";
+import { ErrorPage } from "./ErrorPage";
+import { Root } from "./Root";
+import ViewAccountsBank from "../components/templates/accountsBank/ViewAccountsBank";
+import ViewBanks from "../components/templates/banks/ViewBanks";
+import { AllRetrievalRestrictions } from "../components/selling/honest/AllRetrievalRestrictions";
+import { OneRetrievalRestrictions } from "../components/selling/honest/OneRetrievalRestrictions";
+import ViewInvoiceData from "../components/templates/invoiceData/viewInvoiceData";
+import AddSellingInvoice from "../components/selling/selling components/sellingWrapper/AddSellingInvoice";
+import ViewSellingInvoice from "../components/selling/selling components/sellingWrapper/ViewSellingInvoice";
+import SellingRestrictionsInvoice from "../pages/selling/sellingRestrictionsInvoice";
+import { PiecesSoldPage } from "../pages/selling/PiecesSoldPage";
+import CodedIdentities from "../pages/coding/coded_identities/CodedIdentities";
+import BranchBondsReact from "../pages/coding/branch_bonds_react/BranchBondsReact";
+import ReturnBondsReact from "../pages/coding/ReturnBondsReact/ReturnBondsReact";
+import BuyingPage from "../pages/Buying/BuyingPage";
+import ViewBuyingPolicies from "../components/templates/buyingPolicies/ViewBuyingPolicies";
+import BuyingInvoice from "../pages/Buying/BuyingInvoice";
+import WeightAdjustment from "../pages/Buying/WeightAdjustment/WeightAdjustment";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -109,6 +115,22 @@ export const AllRoutesProvider = () => {
             path="/branch-bonds"
             element={<BranchBonds title={t("branch bonds")} />}
           />
+          {/* REACT */}
+          <Route
+            path="/coding-react"
+            element={
+              <CodedIdentities title={t("identity and numbering management")} />
+            }
+          />
+          <Route
+            path="/branch-bonds-react"
+            element={<BranchBondsReact title={t("branch bonds")} />}
+          />
+          <Route
+            path="/return-bonds-react"
+            element={<ReturnBondsReact title={t("return bonds")} />}
+          />
+          {/* REACT */}
           <Route
             path="/coding/gold"
             element={<GoldCoding title={t("gold coding")} />}
@@ -173,17 +195,14 @@ export const AllRoutesProvider = () => {
             path="/system/policiesSelling"
             element={<ViewSellingPolicies />}
           />
+          <Route
+            path="/system/policiesBuying"
+            element={<ViewBuyingPolicies />}
+          />
 
-        <Route
-          path="/system/excludedItems"
-          element={<ViewExcludedItems />}
-        />
+          <Route path="/system/excludedItems" element={<ViewExcludedItems />} />
 
-        <Route
-          path="/system/invoiceData"
-          element={<ViewInvoiceData />}
-        />
-
+          <Route path="/system/invoiceData" element={<ViewInvoiceData />} />
 
           <Route
             path="/system/branches/:branchesID"
@@ -345,7 +364,7 @@ export const AllRoutesProvider = () => {
             path="/selling/finalPreview"
             element={<SellingFinalPreview />}
           />
-          <Route path="/selling/buying" element={<>buying</>} />
+          <Route path="/selling/buying" element={<BuyingPage />} />
           <Route path="/selling/management" element={<Management />} />
           <Route path="/selling/exchange" element={<>exchange</>} />
           <Route path="/selling/clients" element={<Clients />} />
@@ -409,10 +428,7 @@ export const AllRoutesProvider = () => {
             path="/selling/branch-identity"
             element={<SellingBranchIdentity />}
           />
-          <Route
-            path="/selling/Pieces-Sold"
-            element={<PiecesSoldPage />}
-          />
+          <Route path="/selling/Pieces-Sold" element={<PiecesSoldPage />} />
           <Route
             path="/selling/management/receive-money"
             element={<>receive-money</>}
@@ -438,10 +454,12 @@ export const AllRoutesProvider = () => {
 
           {/* المبعات */}
 
-
           <Route path="/selling" element={<PaymentSellingPage />} />
           <Route path="/payment" element={<SellingSecondpage />} />
-          <Route path="/selling/invoice-restrictions" element={<SellingRestrictionsInvoice />} />
+          <Route
+            path="/selling/invoice-restrictions"
+            element={<SellingRestrictionsInvoice />}
+          />
           <Route
             path="selling/clients/customersData/addClients"
             element={<AddClients />}
@@ -450,7 +468,7 @@ export const AllRoutesProvider = () => {
             path="/selling/finalPreview"
             element={<SellingFinalPreview />}
           />
-          <Route path="/selling/buying" element={<>buying</>} />
+          {/* <Route path="/selling/buying/test" element={<>butingh</>} /> */}
           <Route path="/selling/management" element={<Management />} />
           <Route path="/selling/exchange" element={<>exchange</>} />
           <Route path="/selling/clients" element={<Clients />} />
@@ -539,11 +557,15 @@ export const AllRoutesProvider = () => {
             path="/selling/branchSetting"
             element={<BranchSettingPage />}
           />
+          {/* BUYING START */}
+          <Route path="/buying/purchaseInvoice" element={<BuyingInvoice />} />
+          <Route path="/buying/weightAdjustment" element={<WeightAdjustment />} />
+          {/* BUYING END */}
           <Route path="/system/cardsData" element={<ViewBankCardsData />} />
           <Route
             path="/selling/payoff/supply-payoff"
             element={<PayoffEntryScreen />}
-          />
+            />
         </Route>
         <Route
           errorElement={<ErrorPage />}
