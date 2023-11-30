@@ -36,6 +36,8 @@ const BuyingInvoice = () => {
     stones_name: "",
     piece_per_gram: "",
     value: "",
+    total_value: "", 
+    value_added_tax: ""
   };
 
   const validationSchema = () =>

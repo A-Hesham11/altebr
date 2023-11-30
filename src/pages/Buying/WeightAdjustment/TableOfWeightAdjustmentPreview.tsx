@@ -98,7 +98,8 @@ const TableOfWeightAdjustmentPreview = ({
       // QueryClient.refetchQueries(["thwel-api"]);
     },
     onError: (error) => {
-      notify("error", error.response.data.msg);
+      console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:101 ~ error:", error)
+      notify("error", error.response.data.errors.msg);
     },
   });
 

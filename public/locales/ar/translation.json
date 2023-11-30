@@ -990,5 +990,9 @@
   "pieces with stones": "قطع مع احجار",
   "pieces without stones": "قطع بدون احجار",
   "karat difference": "فرق العيار",
-  "Add a chain":"إضافة سلسال"
+  "Add a chain":"إضافة سلسال",
+  "weight before edit": "الوزن قبل التعديل",
+  "edit weight": "تعديل الوزن",
+  "value greater than buying policy": "القيمة اكبر من سياسة الشراء",
+  "value added tax": "ضريبة القيمة المضافة"
 }

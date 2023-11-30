@@ -1,21 +1,15 @@
 import { t } from "i18next";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { useFetch, useIsRTL, useMutate } from "../../../hooks";
-import { numberFormatterCtx } from "../../../context/settings/number-formatter";
 import { notify } from "../../../utils/toast";
 import { authCtx } from "../../../context/auth-and-perm/auth";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikContext, useFormikContext } from "formik";
 import * as Yup from "yup";
 import { useQueryClient } from "@tanstack/react-query";
 import { mutateData } from "../../../utils/mutateData";
-import { SelectOption_TP } from "../../../types";
-import { SingleValue } from "react-select";
 import { requiredTranslation } from "../../../utils/helpers";
 import { BaseInputField, OuterFormLayout, Select } from "../../molecules";
 import { Button } from "../../atoms";
-import { SelectRole } from "../reusableComponants/roles/SelectRole";
-import RadioGroup from "../../molecules/RadioGroup";
-import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
 
 type PoliciesProps_TP = {
   title: string;
@@ -38,8 +32,9 @@ type BuyingPoliciesProps_TP = {
   editData?: PoliciesProps_TP;
 };
 
-const GoldPrice = ({ title, editData }: BuyingPoliciesProps_TP) => {
+const GoldPrice = ({ title }: BuyingPoliciesProps_TP) => {
   const [goldType, setGoldType] = useState();
+  const [editData, setEditData] = useState();
 
   const queryClient = useQueryClient();
   const isRTL = useIsRTL();
@@ -57,11 +52,6 @@ const GoldPrice = ({ title, editData }: BuyingPoliciesProps_TP) => {
       gold_price: Yup.string().trim(),
     });
 
-  const initialValues = {
-    gold_type: editData?.gold_type || "",
-    gold_price: editData?.gold_price || "",
-  };
-
   const {
     mutate,
     isLoading: editLoading,
@@ -72,6 +62,7 @@ const GoldPrice = ({ title, editData }: BuyingPoliciesProps_TP) => {
     mutationFn: mutateData,
     mutationKey: ["gold_price"],
     onSuccess: (data) => {
+      console.log("🚀 ~ file: GoldPrice.tsx:77 ~ GoldPrice ~ data:", data);
       notify("success");
       queryClient.refetchQueries(["all_gold_price"]);
     },
@@ -80,6 +71,7 @@ const GoldPrice = ({ title, editData }: BuyingPoliciesProps_TP) => {
       notify("error");
     },
   });
+  console.log("🚀 ~ file: GoldPrice.tsx:71 ~ GoldPrice ~ data:", data);
 
   function PostNewCard(values: PoliciesProps_TP) {
     mutate({
@@ -89,24 +81,30 @@ const GoldPrice = ({ title, editData }: BuyingPoliciesProps_TP) => {
     });
   }
 
-//   const PostCardEdit = (values: PoliciesProps_TP) => {
-//     mutate({
-//       endpointName: `/buyingUsedGold/api/v1/maximum_buying/${editData?.id}`,
-//       values: {
-//         ...values,
-//         _method: "put",
-//       },
-//     });
-//   };
+  const {
+    data: goldPriceData,
+    isLoading,
+    isFetching,
+    isRefetching,
+    refetch,
+    isSuccess
+  } = useFetch({
+    queryKey: ["static-price"],
+    endpoint: "/buyingUsedGold/api/v1/show-gold-price",
+    onSuccess: (data) => {
+      setEditData(data);
+    },
+  });
 
   useEffect(() => {
     const best = {
       id: editData?.gold_type || "",
       value: editData?.gold_type || "",
-      label: editData?.gold_type || `${t("gold type")}`,
+      label: editData?.gold_type || t("type"),
     };
     setGoldType(best);
-  }, []);
+
+  }, [editData]);
 
   const goldTypeOption = [
     {
@@ -121,6 +119,11 @@ const GoldPrice = ({ title, editData }: BuyingPoliciesProps_TP) => {
     },
   ];
 
+  const initialValues = {
+    gold_type: editData?.gold_type || "",
+    gold_price: editData?.gold_price,
+  };
+
   return (
     <>
       <OuterFormLayout header={t("gold price")}>
@@ -128,19 +131,9 @@ const GoldPrice = ({ title, editData }: BuyingPoliciesProps_TP) => {
           validationSchema={() => cardsValidatingSchema()}
           initialValues={initialValues}
           onSubmit={(values, { resetForm }) => {
-            console.log("🚀 ~ file: GoldPrice.tsx:131 ~ GoldPrice ~ values:", values)
             PostNewCard({
-                ...values,
-              });
-            // if (editData) {
-            //   PostCardEdit({
-            //     ...values,
-            //   });
-            // } else {
-            //   PostNewCard({
-            //     ...values,
-            //   });
-            // }
+              ...values,
+            });
           }}
         >
           {({ values, setFieldValue, resetForm }) => (
@@ -166,7 +159,7 @@ const GoldPrice = ({ title, editData }: BuyingPoliciesProps_TP) => {
                   name="gold_price"
                   type="text"
                   label={`${t("gold price")}`}
-                  placeholder={`${t("gold price")} (${t("monetary")})`}
+                  placeholder={editData ? editData?.gold_price : `${t("gold price")} (${t("monetary")})`}
                   onChange={() => {
                     setFieldValue("gold_price", values?.gold_price);
                   }}
@@ -187,20 +180,3 @@ const GoldPrice = ({ title, editData }: BuyingPoliciesProps_TP) => {
 
 export default GoldPrice;
 
-// import { ToWords } from 'to-words';
-// function NumberToText() {
-
-//     function NumberToArabicText({ number }) {
-//         // const toWords = new ToWords();
-//         const toWords = new ToWords();
-//         let words = toWords.convert(number, {ignoreDecimal: true, language: 'ar' });
-//         return <div>{words}</div>;
-//     }
-//   return (
-//     <div>
-//         <NumberToArabicText number={1700} />
-//     </div>
-//   );
-// }
-
-// export default NumberToText;

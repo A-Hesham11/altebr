@@ -200,10 +200,6 @@ export const AllRoutesProvider = () => {
             path="/system/policiesSelling"
             element={<ViewSellingPolicies />}
           />
-          <Route
-            path="/system/policiesBuying"
-            element={<ViewBuyingPolicies />}
-          />
 
           <Route path="/system/excludedItems" element={<ViewExcludedItems />} />
           <Route
@@ -577,6 +573,7 @@ export const AllRoutesProvider = () => {
           />
           {/* BUYING START */}
           <Route path="/buying/purchaseInvoice" element={<BuyingInvoice />} />
+          <Route path="/system/policiesBuying" element={<ViewBuyingPolicies />} />
           <Route path="/buying/weightAdjustment" element={<WeightAdjustment />} />
           {/* BUYING END */}
           <Route path="/system/cardsData" element={<ViewBankCardsData />} />

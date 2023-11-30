@@ -16,6 +16,7 @@ const TableOfWeightAdjustment = ({
   setOperationTypeSelect,
   setCheckboxChecked,
   checkboxChecked,
+  weightAdjustmentData,
   endpoint
 }) => {
   console.log("🚀 ~ file: TableOfWeightAdjustment.tsx:20 ~ dataSource:", dataSource)
@@ -35,9 +36,9 @@ const TableOfWeightAdjustment = ({
           return (
             <input
               // checked={checkboxChecked}
-              disabled={+dataSource.has_stones == 0}
+              disabled={endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/" ? true : false}
               type="checkbox"
-              // className={`${endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/" && "bg-mainGray border-mainGray"}`}
+              className={`${endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/" ? "bg-mainGray border-mainGray" : ""}`}
               onChange={(e) => {
                 // setCheckboxChecked(!checkboxChecked)
 
@@ -127,7 +128,7 @@ const TableOfWeightAdjustment = ({
               {t("page")}
               <span className=" text-mainGreen">{page}</span>
               {t("from")}
-              {<span className=" text-mainGreen">{dataSource?.total}</span>}
+              {<span className=" text-mainGreen">{weightAdjustmentData?.total}</span>}
             </div>
             <div className="flex items-center gap-2 ">
               <Button
@@ -145,7 +146,7 @@ const TableOfWeightAdjustment = ({
               <Button
                 className="rounded bg-mainGreen p-[.18rem]"
                 action={() => setPage((prev: any) => prev + 1)}
-                disabled={page == dataSource?.pages}
+                disabled={page == weightAdjustmentData?.pages}
               >
                 {isRTL ? (
                   <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />

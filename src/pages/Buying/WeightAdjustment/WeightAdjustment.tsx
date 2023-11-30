@@ -11,6 +11,7 @@ import { BoxesData } from "../../../components/molecules/card/BoxesData";
 import { Modal } from "../../../components/molecules";
 import TableOfWeightAdjustmentPreview from "./TableOfWeightAdjustmentPreview";
 import { notify } from "../../../utils/toast";
+import { Loading } from "../../../components/organisms/Loading";
 
 const WeightAdjustment = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -19,6 +20,8 @@ const WeightAdjustment = () => {
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [search, setSearch] = useState("");
   const [activeCheckout, setActiveCheckout] = useState(false);
+  const [lengthAhgar, setLengthAhgar] = useState("");
+  const [lengthNotAhgar, setLengthNotAhgar] = useState("");
   const [inputWeight, setInputWeight] = useState([]);
   console.log(
     "🚀 ~ file: WeightAdjustment.tsx:22 ~ WeightAdjustment ~ inputWeight:",
@@ -26,7 +29,7 @@ const WeightAdjustment = () => {
   );
   const [weightModal, setWeightModal] = useState(false);
   const [endpoint, setEndPoint] = useState(
-    `/buyingUsedGold/api/v1/buying_invoices/`
+    `/buyingUsedGold/api/v1/items_has_stones/`
   );
 
   const { userData } = useContext(authCtx);
@@ -82,6 +85,7 @@ const WeightAdjustment = () => {
     if (weightAdjustmentData) {
       setDataSource(weightAdjustmentData.data);
     }
+
   }, [weightAdjustmentData]);
 
   useEffect(() => {
@@ -91,11 +95,11 @@ const WeightAdjustment = () => {
   useEffect(() => {
     if (page == 1) {
       refetch();
-    } else {
-      setPage(1);
     }
   }, [search]);
 
+  if (isRefetching || isLoading || isFetching)
+    return <Loading mainTitle={t("loading items")} />;
 
   return (
     <div className="relative h-full p-10">
@@ -103,25 +107,37 @@ const WeightAdjustment = () => {
         {t("weight adjustment")}
       </h2>
 
-      <div className="flex items-center justify-center  gap-4">
+      <div className="flex items-center justify-center gap-4">
         <li
           onClick={() =>
             setEndPoint("/buyingUsedGold/api/v1/items_has_stones/")
           }
-          className="flex cursor-pointer flex-col h-20 rounded-xl text-center text-sm font-bold shadow-md"
+          className="flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md"
         >
-          <p className="bg-mainGreen p-2 flex items-center justify-center h-full rounded-xl text-white">
+          <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
             {t(`pieces with stones`)}
+          </p>
+          <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
+            {endpoint === "/buyingUsedGold/api/v1/items_has_stones/"
+              ? weightAdjustmentData?.total
+              : 0}{" "}
+            <span>{t(`piece`)}</span>
           </p>
         </li>
         <li
           onClick={() =>
             setEndPoint("/buyingUsedGold/api/v1/items_hasnot_stones/")
           }
-          className="flex cursor-pointer flex-col h-20 rounded-xl text-center text-sm font-bold shadow-md"
+          className="flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md"
         >
-          <p className="bg-mainGreen p-2 flex items-center justify-center h-full rounded-xl text-white">
+          <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
             {t(`pieces without stones`)}
+          </p>
+          <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
+            {endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/"
+              ? weightAdjustmentData?.total
+              : 0}{" "}
+            <span>{t(`piece`)}</span>
           </p>
         </li>
       </div>
@@ -131,9 +147,6 @@ const WeightAdjustment = () => {
         onSubmit={(values) => {
           getSearchResults({
             ...values,
-            // invoice_date: values.invoice_date
-            //   ? formatDate(getDayAfter(new Date(values.invoice_date)))
-            //   : "",
           });
         }}
       >
@@ -151,6 +164,7 @@ const WeightAdjustment = () => {
               checkboxChecked={checkboxChecked}
               setCheckboxChecked={setCheckboxChecked}
               endpoint={endpoint}
+              weightAdjustmentData={weightAdjustmentData}
             />
 
             <div className="flex gap-4 items-center self-end mr-auto my-6">
