@@ -36,17 +36,24 @@ export const BuyingTable = ({
   setDataSource,
   sellingItemsData,
   setSellingItemsData,
+  goldPrice,
 }: SellingTableInputData_TP) => {
-  console.log(
-    "🚀 ~ file: BuyingTable.tsx:40 ~ sellingItemsData:",
-    sellingItemsData
-  );
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
-  const [data, setData] = useState("")
+  const [data, setData] = useState("");
   const { values, setFieldValue } = useFormikContext();
-  console.log("🚀 ~ file: BuyingTable.tsx:46 ~ values:", values)
 
+  const totalValues = (+values.piece_per_gram * +values?.weight) 
+
+  const priceWithCommissionRate = (totalValues * (+userData?.max_buy * 0.01) + totalValues);
+
+  const priceWithCommissionCash = (totalValues + +userData?.max_buy);
+  
+  const priceWithSellingPolicy =
+  userData?.max_buy_type === "نسبة"
+  ? priceWithCommissionRate
+  : priceWithCommissionCash;
+  
   const stonesOption = [
     {
       id: 0,
@@ -62,42 +69,16 @@ export const BuyingTable = ({
     },
   ];
 
-  //   const { refetch, isSuccess, isLoading, isFetching, isRefetching } = useFetch({
-  //     queryKey: ["branch-all-accepted-selling"],
-  //     endpoint:
-  //       search === ""
-  //         ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}?per_page=10000`
-  //         : `${search}`,
-  //     onSuccess: (data) => {
-  //       setDataSource(data);
-  //     },
-  //   });
-
-    // const { data: goldPrice } = useFetch({
-    //   endpoint: "/buyingUsedGold/api/v1/get-gold-price",
-    //   queryKey: ["get_gold_price"],
-    // });
-    // console.log("🚀 ~ file: BuyingTable.tsx:78 ~ goldPrice:", goldPrice)
-
-    // const {
-    //   data: goldPrice,
-    //   isLoading,
-    //   isFetching,
-    // } = useFetch({
-    //   queryKey: ["get-price"],
-    //   endpoint: "/buyingUsedGold/api/v1/get-gold-price",
-    //   onSuccess(data) {
-    //     console.log("🚀 ~ file: BuyingTable.tsx:89 ~ onSuccess ~ data:", data)
-    //   }
-    // });
-
-
-
- const sellingCols = useMemo<ColumnDef<Selling_TP>[]>(
+  const sellingCols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
       {
         header: () => <span>{t("classification")} </span>,
         accessorKey: "category_name",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("stones")}</span>,
+        accessorKey: "stones_name",
         cell: (info) => info.getValue() || "---",
       },
       {
@@ -119,16 +100,20 @@ export const BuyingTable = ({
         header: () => <span>{t("value")} </span>,
         accessorKey: "value",
         cell: (info) => {
-          //   console.log(info.getValue());
-          //   setTotalValues(() => [...info.getValue()]);
           return formatReyal(Number(info.getValue())) || "---";
         },
       },
       {
-        header: () => <span>{t("stones")}</span>,
-        accessorKey: "stones_name",
-        cell: (info) => info.getValue() || "---",
+        header: () => <span>{t("value added tax")} </span>,
+        accessorKey: "value_added_tax",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
       },
+      {
+        header: () => <span>{t("total value")} </span>,
+        accessorKey: "total_value",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      },
+      
     ],
     []
   );
@@ -163,15 +148,6 @@ export const BuyingTable = ({
 
   return (
     <>
-      {/* <p className="font-semibold text-center text-lg text-mainGreen">
-        {isRefetching ||
-          (isFetching && (
-            <div className="flex items-center justify-center gap-3">
-              {t("loading data")}
-              <Spinner />
-            </div>
-          ))}
-      </p> */}
       <table className="mt-8 w-[1180px]">
         <thead className="bg-mainGreen text-white">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -194,7 +170,7 @@ export const BuyingTable = ({
         </thead>
         <tbody>
           <tr className="text-center table-shadow last:shadow-0">
-            <td className="border-l-2 border-l-flatWhite w-40">
+            <td className="border-l-2 border-l-flatWhite w-32">
               <SelectCategory
                 name="category_id"
                 noMb={true}
@@ -209,7 +185,24 @@ export const BuyingTable = ({
                   setFieldValue("category_name", option!.value);
                 }}
                 showItems={true}
-                // disabled={!String(values.item_id).startsWith('0000')}
+              />
+            </td>
+            <td>
+              <Select
+                placeholder={`${t("stones")}`}
+                id="stones_id"
+                className="text-center text-black w-32"
+                name="stones_id"
+                options={stonesOption}
+                onChange={(option) => {
+                  setFieldValue("stones_name", option!.value);
+                  setFieldValue("stones_id", option!.id);
+                }}
+                value={{
+                  id: values.stones_id,
+                  value: values.stones_id,
+                  label: values.stones_name || t("stones"),
+                }}
               />
             </td>
             <td>
@@ -220,18 +213,9 @@ export const BuyingTable = ({
                 type="text"
                 required
                 className={`text-center`}
-                onChange={(e) => {
-                  setFieldValue("value", +e.target.value * 10);
-                }}
-                // onChange={() =>
-                //   setFieldValue(
-                //     "value",
-                //     Number(values?.weight) * Number(values?.piece_per_gram)
-                //   )
-                // }
               />
             </td>
-            <td className="border-l-2 border-l-flatWhite w-48">
+            <td className="border-l-2 border-l-flatWhite w-40">
               <SelectKarat
                 field="id"
                 name="karat_id"
@@ -239,12 +223,21 @@ export const BuyingTable = ({
                 placement="top"
                 onChange={(option) => {
                   setFieldValue("karat_name", option!.value);
-                  //   setFieldValue(
-                  //     "stock",
-                  //     karatValues!.find(
-                  //       (item) => item.karat === values.karat_value
-                  //     )?.value
-                  //   );
+                  setFieldValue("piece_per_gram", goldPrice[option.value].toFixed(2));
+
+                  const totalValues = (+goldPrice[option.value].toFixed(2) * +values?.weight)
+                  const priceWithCommissionRate = (totalValues * (+userData?.max_buy * 0.01) + totalValues);
+                
+                  const priceWithCommissionCash = (totalValues + +userData?.max_buy);
+                  
+                  const priceWithSellingPolicy =
+                  userData?.max_buy_type === "نسبة"
+                  ? priceWithCommissionRate
+                  : priceWithCommissionCash;
+
+                  setFieldValue("value", +priceWithSellingPolicy);
+                  setFieldValue("value_added_tax", +priceWithSellingPolicy * +userData?.tax_rate * 0.01);
+                  setFieldValue("total_value", (+priceWithSellingPolicy * +userData?.tax_rate * 0.01) + +priceWithSellingPolicy);
                 }}
                 value={{
                   id: values.karat_id,
@@ -260,15 +253,6 @@ export const BuyingTable = ({
                 name="piece_per_gram"
                 type="text"
                 className="text-center"
-                onChange={(e) => {
-                  setFieldValue("value", +e.target.value * +values?.weight);
-                }}
-                // onChange={() => setFieldValue("value", (Number(values?.weight) * Number(values?.piece_per_gram)) )}
-
-                // value="2000"
-                // onChange={(e) => {
-                //   setFieldValue("piece_per_gram", values.value);
-                // }}
               />
             </td>
             <td>
@@ -277,56 +261,43 @@ export const BuyingTable = ({
                 id="value"
                 name="value"
                 type="text"
-                className="text-center"
+                className={(values?.value && +values?.value > +priceWithSellingPolicy) ? "bg-red-100 text-center" : "text-center"}
                 required
-                className="bg-mainDisabled text-center"
-                // value={(Number(values?.weight) * Number(values?.piece_per_gram))}
-                disabled
-                // onBlur={(e) => setFieldValue(e.target.value)}
-                // onChange={(e) => {
-                //   setFieldValue("value", +values?.weight * +values?.piece_per_gram);
-                // }}
+                onChange={(e) => {
+                  setFieldValue("value", +priceWithSellingPolicy);
+                  setFieldValue("value_added_tax", +e.target.value * +userData?.tax_rate * 0.01);
+                  setFieldValue("total_value", +e.target.value + (e.target.value * +userData?.tax_rate * 0.01));
+                }}
               />
             </td>
             <td>
-              <Select
-                placeholder={`${t("stones")}`}
-                id="stones_id"
-                className="text-center text-black w-40"
-                name="stones_id"
-                options={stonesOption}
-                onChange={(option) => {
-                  setFieldValue("stones_name", option!.value);
-                  setFieldValue("stones_id", option!.id);
-                }}
-                value={{
-                  id: values.stones_id,
-                  value: values.stones_id,
-                  label: values.stones_name || t("stones"),
-                }}
+              <BaseInputField
+                placeholder={`${t("value added tax")}`}
+                id="value_added_tax"
+                name="value_added_tax"
+                type="text"
+                disabled
+                className="bg-mainDisabled text-center"
+                value={+values.value * +userData?.tax_rate * 0.01}
+                required
               />
             </td>
-            <td className="bg-lightGreen w-max border border-[#C4C4C4] flex items-center">
+            <td>
+              <BaseInputField
+                placeholder={`${t("total value")}`}
+                id="total_value"
+                name="total_value"
+                type="text"
+                disabled
+                className="bg-mainDisabled text-center"
+              />
+            </td>
+            
+            <td className="bg-lightGreen justify-center border border-[#C4C4C4] flex items-center">
               {dataSource?.length == 1 &&
                 dataSource[0]?.category_type === "multi" && (
                   <Button
                     action={() => {
-                      //   if (
-                      //     (values.value &&
-                      //       values.piece_per_gram &&
-                      //       values.stones &&
-                      //       values.karat_name &&
-                      //       values.weight &&
-                      //       values.category_name) === ""
-                      //   ) {
-                      //     notify("info", `${t("add piece first")}`);
-                      //     return;
-                      //   }
-                      // if (pieceCheck !== -1) {
-                      //   notify("info", `${t("item exists")}`);
-                      //   return;
-                      // }
-                      // setOpenDetails(true);
                     }}
                     className="bg-transparent px-2"
                   >
@@ -346,10 +317,10 @@ export const BuyingTable = ({
                     return;
                   }
 
-                  // if (pieceCheck !== -1) {
-                  //   notify("info", `${t("item exists")}`);
-                  //   return;
-                  // }
+                  if (+values?.value > +priceWithSellingPolicy) {
+                    notify("info", `${t("value greater than buying policy")}`);
+                    return;
+                  }
 
                   setSellingItemsData((prev) =>
                     [

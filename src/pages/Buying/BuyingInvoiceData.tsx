@@ -29,34 +29,16 @@ const BuyingInvoiceData = ({
   invoiceNumber,
   selectedItemDetails,
 }: CreateHonestSanadProps_TP) => {
-  console.log(
-    "🚀 ~ file: BuyingInvoiceData.tsx:31 ~ sellingItemsData:",
-    sellingItemsData
-  );
-  console.log(
-    "🚀 ~ file: BuyingInvoiceData.tsx:31 ~ selectedItemDetails:",
-    selectedItemDetails
-  );
-
   const { formatGram, formatReyal } = numberContext();
 
   const totalCost = sellingItemsData.reduce((acc, curr) => {
     acc += +curr.value;
     return acc;
   }, 0);
-  console.log("🚀 ~ file: BuyingInvoiceData.tsx:51 ~ totalCost ~ totalCost:", totalCost)
-
-
-
-  // // gather cost data to pass it to SellingFinalPreview as props
 
   const costDataAsProps = {
     totalCost,
   };
-
-  // const xx = selectedItemDetailsData.map((item) => {
-  //     return item
-  // })
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -70,23 +52,6 @@ const BuyingInvoiceData = ({
         accessorKey: "stones_name",
         cell: (info) => info.getValue() || "---",
       },
-      // {
-      //   header: () => <span>{t("category")} </span>,
-      //   accessorKey: "category_name",
-      //   cell: (info) => {
-      //     // const selectedItemDetailsData = sellingItemsData.find(
-      //     //   (item) => info.row.original.hwya === item.hwya
-      //     // ).weightitems;
-      //     // const selectedCategoriesData = selectedItemDetailsData.filter(
-      //     //   (item) =>
-      //     //     selectedItemDetails.some(
-      //     //       (detail) => detail.category_id === item.category_id
-      //     //     )
-      //     // );
-      //     // const finalCategoriesNames = info.row.original.itemDetails?.map((category) => category.category_name).join("-");
-      //     // return  info.row.original.itemDetails.length ? finalCategoriesNames : info.getValue();
-      //   },
-      // },
       {
         header: () => <span>{t("weight")}</span>,
         accessorKey: "weight",
@@ -107,43 +72,16 @@ const BuyingInvoiceData = ({
         accessorKey: "value",
         cell: (info) => info.getValue() || "---",
       },
-      // {
-      //   header: () => <span>{t("totals")} </span>,
-      //   accessorKey: "totals",
-      //   cell: (info) => info.getValue() || "---",
-      // },
-
-      // {
-      //   header: () => <span>{t("cost")} </span>,
-      //   accessorKey: "cost",
-      //   cell: (info: any) => {
-      //     const rowData = +info.row.original.taklfa + +ratioForOneItem;
-      //     return <div>{formatReyal(Number(rowData.toFixed(2)))}</div>;
-      //   },
-      // },
-      // {
-      //   header: () => <span>{t("VAT")} </span>,
-      //   accessorKey: "VAT",
-      //   cell: (info: any) => {
-      //     const rowData =
-      //       +info.row.original.taklfa * 0.15 + +ratioForOneItemTaxes;
-      //     return <div>{formatReyal(Number(rowData.toFixed(2)))}</div>;
-      //   },
-      // },
-      // {
-      //   header: () => <span>{t("total")} </span>,
-      //   accessorKey: "total",
-      //   cell: (info: any) => {
-      //     const rowData = +info.row.original.taklfa + ratioForOneItem;
-      //     const rowDataTaxes =
-      //       +info.row.original.taklfa * 0.15 + ratioForOneItemTaxes;
-      //     return (
-      //       <div>
-      //         {formatReyal(Number((rowData + rowDataTaxes).toFixed(2)))}
-      //       </div>
-      //     );
-      //   },
-      // },
+      {
+        header: () => <span>{t("value added tax")} </span>,
+        accessorKey: "value_added_tax",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      },
+      {
+        header: () => <span>{t("total value")} </span>,
+        accessorKey: "total_value",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      },
     ],
     []
   );
@@ -172,45 +110,26 @@ const BuyingInvoiceData = ({
 
   const posSellingDataHandler = () => {
     const invoice = {
-      // employee_name: userData?.name,
       employee_id: userData?.id,
       branch_id: userData?.branch_id,
       client_id: clientData.client_id,
-      // client_value: clientData.client_value,
       invoice_date: clientData.bond_date,
       invoice_number: invoiceNumber.length + 1,
       count: sellingItemsData.length,
-      // total_vat: totalItemsTax,
-      // karat_price: sellingItemsData[0].gold_price,
     };
 
     const items = sellingItemsData.map((item) => {
-    //   // const costItem = (+item.taklfa + +ratioForOneItem).toFixed(2);
-    //   // const costTaxes = (+item.taklfa * 0.15 + +ratioForOneItemTaxes).toFixed(
-    //   //   2
-    //   // );
-
       return {
         category_id: item.category_id,
-        // category_name: item.category_name,
-        // classification_id: item.classification_id,
-        // classification_name: item.classification_name,
-        // hwya: item.hwya,
-        // branch_id: userData?.branch_id,
-        // item_id: item.item_id,
         karat_id: item.karat_id,
         edited: "0",
         branch_id: userData?.branch_id,
-        // karat_name: item.karat_name,
         gram_price: item.piece_per_gram,
-        // wage: item.wage,
-        // wage_total: item.wage_total,
+        value_added_tax: item.value_added_tax,
+        total_value: item.total_value,
         weight: item.weight,
-        // cost: costItem,
-        // vat: costTaxes,
         value: item.value,
         has_stones: `${item.stones_id}`,
-        // kitSellingItems: item.itemDetails,
       };
     });
 
@@ -218,7 +137,6 @@ const BuyingInvoiceData = ({
         endpointName: '/buyingUsedGold/api/v1/add_buying_Invoice',
         values: { invoice, items }
     })
-    console.log("🚀 ~ file: BuyingInvoiceData.tsx:237 ~ posSellingDataHandler ~ { invoice, items, card }:", { invoice, items })
   };
 
   return (

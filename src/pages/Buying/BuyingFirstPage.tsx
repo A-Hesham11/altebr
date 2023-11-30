@@ -15,6 +15,7 @@ import { SellingTableInputData } from "../../components/selling/selling componen
 import BuyingHeader from "../../components/atoms/UI/BuyingHeader";
 import { BuyingTable } from "./BuyingTable";
 import { numberContext } from "../../context/settings/number-formatter";
+import { useFetch } from "../../hooks";
 
 type SellingFirstPage_TP = {
   sellingItemsData: Selling_TP;
@@ -46,6 +47,10 @@ const BuyingFirstPage = ({
     (acc, curr) => Number(acc) + Number(curr?.value),
     0
   );
+  const valueAddedTax = sellingItemsData.reduce(
+    (acc, curr) => Number(acc) + Number(curr?.value_added_tax),
+    0
+  );
   const totalGrossWeight = sellingItemsData.reduce(
     (acc, curr) => Number(acc) + Number(curr?.weight),
     0
@@ -56,9 +61,15 @@ const BuyingFirstPage = ({
 
   const tarqimBoxes = [
     {
-      account: "total value",
+      account: "value",
       id: 0,
       value: formatReyal(totalValues),
+      unit: "ryal",
+    },
+    {
+      account: "value added tax",
+      id: 0,
+      value: formatReyal(valueAddedTax),
       unit: "ryal",
     },
     {
@@ -80,6 +91,12 @@ const BuyingFirstPage = ({
       unit: "gram",
     },
   ];
+
+  const { data: goldPrice } = useFetch<ClientData_TP>({
+    endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
+    queryKey: ["get-gold-price"],
+  });
+  console.log("🚀 ~ file: BuyingFirstPage.tsx:91 ~ goldPrice:", goldPrice)
 
   return (
     <Form>
@@ -108,13 +125,14 @@ const BuyingFirstPage = ({
                 setClientData={setClientData}
                 selectedItemDetails={selectedItemDetails}
                 setSelectedItemDetails={setSelectedItemDetails}
+                goldPrice={goldPrice}
               />
               <div className="border-t-2 border-mainGray pt-12 py-5">
                 <h2 className="mb-4 text-base font-bold">
                   {t("total invoice")}
                 </h2>
                 <div>
-                  <div className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  <div className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
                     {tarqimBoxes?.map((data: any) => (
                       <li
                         key={data.id}

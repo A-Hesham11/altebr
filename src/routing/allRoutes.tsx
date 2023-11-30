@@ -87,13 +87,19 @@ import ViewInvoiceData from "../components/templates/invoiceData/viewInvoiceData
 import AddSellingInvoice from "../components/selling/selling components/sellingWrapper/AddSellingInvoice"
 import ViewSellingInvoice from "../components/selling/selling components/sellingWrapper/ViewSellingInvoice"
 import SellingRestrictionsInvoice from "../pages/selling/sellingRestrictionsInvoice"
-import { PiecesSoldPage } from "../pages/selling/PiecesSoldPage"
 import AddTaxPolicy from "../components/templates/sellingPolicies/AddTaxPolicy"
 import ViewTaxPolicy from "../components/templates/sellingPolicies/ViewTaxPolicy"
 import PaymentToManagement from "../pages/Payment/PaymentToManagement"
 import { Home } from "../pages/home/Home"
 import PaymentRestrictions from "../pages/Payment/PaymentRestrictions"
-
+import { PiecesSoldPage } from "../pages/selling/PiecesSoldPage";
+import CodedIdentities from "../pages/coding/coded_identities/CodedIdentities";
+import BranchBondsReact from "../pages/coding/branch_bonds_react/BranchBondsReact";
+import ReturnBondsReact from "../pages/coding/ReturnBondsReact/ReturnBondsReact";
+import BuyingPage from "../pages/Buying/BuyingPage";
+import ViewBuyingPolicies from "../components/templates/buyingPolicies/ViewBuyingPolicies";
+import BuyingInvoice from "../pages/Buying/BuyingInvoice";
+import WeightAdjustment from "../pages/Buying/WeightAdjustment/WeightAdjustment";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -195,6 +201,7 @@ export const AllRoutesProvider = () => {
             element={<ViewSellingPolicies />}
           />
 
+          <Route path="/system/excludedItems" element={<ViewExcludedItems />} />
           <Route
             path="/system/TaxPolicy"
             element={<ViewTaxPolicy />}
@@ -209,7 +216,7 @@ export const AllRoutesProvider = () => {
           path="/system/invoiceData"
           element={<ViewInvoiceData />}
         />
-
+          <Route path="/system/invoiceData" element={<ViewInvoiceData />} />
 
           <Route
             path="/system/branches/:branchesID"
@@ -566,13 +573,14 @@ export const AllRoutesProvider = () => {
           />
           {/* BUYING START */}
           <Route path="/buying/purchaseInvoice" element={<BuyingInvoice />} />
+          <Route path="/system/policiesBuying" element={<ViewBuyingPolicies />} />
           <Route path="/buying/weightAdjustment" element={<WeightAdjustment />} />
           {/* BUYING END */}
           <Route path="/system/cardsData" element={<ViewBankCardsData />} />
           <Route
             path="/selling/payoff/supply-payoff"
             element={<PayoffEntryScreen />}
-            />
+          />
           <Route
             path="/selling/payment/restrictions"
             element={<PaymentRestrictions />}

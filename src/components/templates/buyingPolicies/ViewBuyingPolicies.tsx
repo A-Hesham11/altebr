@@ -138,7 +138,7 @@ const ViewBuyingPolicies = () => {
   const { data, isSuccess, isLoading, isError, error, isRefetching, refetch, isFetching } =
   useFetch<Cards_Props_TP[]>({
     endpoint:`/buyingUsedGold/api/v1/maximum_buying`,
-    queryKey: ["allMaximum_buying"],
+    queryKey: ["allMaximum_Buying"],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data)
@@ -162,7 +162,7 @@ const ViewBuyingPolicies = () => {
   } = useMutate<Cards_Props_TP>({
     mutationFn: mutateData,
     onSuccess: () => {
-      queryClient.refetchQueries(["allMaximum_buying"])
+      queryClient.refetchQueries(["allMaximum_Buying"])
       setOpen(false)
       notify("success")
     },
@@ -174,10 +174,6 @@ const ViewBuyingPolicies = () => {
       method: "delete",
     })
   }
-
-  // useEffect(() => {
-  //   refetch()
-  // }, [mutate])
 
   return (
     <div className=''>

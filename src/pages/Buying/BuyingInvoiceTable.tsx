@@ -44,6 +44,15 @@ const BuyingInvoiceTable = <T extends object>({
     return acc;
   }, 0);
 
+  const valueAddedTax = data.reduce((acc, curr) => {
+    acc += +curr.value_added_tax;
+    return acc;
+  }, 0);
+  const totalValue = data.reduce((acc, curr) => {
+    acc += +curr.total_value;
+    return acc;
+  }, 0);
+
   const locationPath = location.pathname;
 
   const totalFinalCostIntoArabic = convertNumToArWord(
@@ -60,6 +69,8 @@ const BuyingInvoiceTable = <T extends object>({
     {
         number: t("totals"),
         cost: totalCost,
+        value_added_tax: valueAddedTax,
+        total_value: totalValue,
     },
   ];
 
