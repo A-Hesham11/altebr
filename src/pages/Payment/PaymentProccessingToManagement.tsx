@@ -59,8 +59,6 @@ const PaymentProccessingToManagement = ({
     selectedCardName,
     setSelectedCardName
  }: Payment_TP) => {
-    console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:57 ~ cardId:", cardId)
-    console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:53 ~ selectedCardId:", selectedCardId)
 
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
@@ -69,7 +67,6 @@ const PaymentProccessingToManagement = ({
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("")
-  const { formatGram, formatReyal } = numberContext();
 
   const handleCardSelection = (
     selectedCardType: string,
@@ -103,22 +100,23 @@ const {
     refetch,
     isFetching,
     isLoading,
-    isSuccess
+    isSuccess,
+    isRefetching
 } = useFetch ({
-    endpoint: `/sdad/api/v1/show/${cardId}` ,
+    endpoint:  `/sdad/api/v1/show/${cardId || 0}`,
     queryKey: ["showValueOfCards"],
     onSuccess(data) {
       return data.data
     },
 });
 
-console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:103 ~ data:", data)
+console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:102 ~ data:", data)
 
-useEffect(() => {
-    if (cardId !== null) {
-        refetch();
-    }
-}, [cardId])
+  useEffect(() => {
+      if (cardId !== null) {
+          refetch();
+      }
+  }, [cardId])
 
   return (
     <>
@@ -170,6 +168,15 @@ useEffect(() => {
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
+            useEffect(() => {
+              if (cardId === 10001 || cardId === 10002 || cardId === 10003 || cardId === 10004) {
+                setFieldValue("amount", "")
+                setFieldValue("value", (data?.value)?.toFixed(2))
+              } else {
+                setFieldValue("weight", "")
+                setFieldValue("value", (data?.value)?.toFixed(2))
+              }
+            }, [cardId])
           return (
             <Form>
               <div>
@@ -192,7 +199,7 @@ useEffect(() => {
                     type="text"
                     label={selectedCardName ? selectedCardName : t("Fund totals")}
                     placeholder={selectedCardName ? selectedCardName : t("Fund totals")}
-                    value={data?.value}
+                    value={(data?.value)?.toFixed(2)}
                     disabled
                     className={`bg-mainDisabled text-mainGreen ${selectedCardName && "font-semibold"}`}
                 />
@@ -208,7 +215,7 @@ useEffect(() => {
                                 placeholder={`${t("Gold value (in grams)")}`}
                             />
                         </div>
-                    )
+                   )
                     : (
                         <div className="relative">
                             <BaseInputField
@@ -219,14 +226,13 @@ useEffect(() => {
                                 placeholder={`${t("amount")}`}
                             />
                         </div>
-                    )
-                    
-                }
+                     )
+                } 
                 <Button
                   type="submit"
                   className="animate_from_left animation_delay-11 hover:bg-orange-600 transition-all duration-300 bg-mainOrange h-10"
                 >
-                  {t("Reducing balance")}
+                  {t("Addition")}
                 </Button>
               </div>
               <PaymentProccessingTableToManagement
