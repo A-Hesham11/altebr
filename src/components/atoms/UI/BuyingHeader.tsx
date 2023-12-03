@@ -5,6 +5,7 @@ import { useFetch } from '../../../hooks';
 
 
 const BuyingHeader = ({invoiceNumber} : any) => {
+console.log("🚀 ~ file: BuyingHeader.tsx:8 ~ BuyingHeader ~ invoiceNumber:", invoiceNumber)
 
   const {
     data: goldPriceData,

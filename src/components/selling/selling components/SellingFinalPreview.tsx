@@ -96,7 +96,7 @@ export const SellingFinalPreview = ({
                 {t("phone")}: {userData?.phone}
               </p>
               <p>
-                {t("email")}: {userData?.email}
+              {t("email")}: {userData?.email}
               </p>
             </div>
           </div>

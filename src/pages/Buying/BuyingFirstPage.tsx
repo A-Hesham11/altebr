@@ -1,21 +1,19 @@
-import React, { useState } from "react";
 import { t } from "i18next";
-import SellingTableData from "../../components/selling/selling components/data/SellingTableData";
-import SellingBoxes from "../../components/selling/selling components/data/SellingBoxes";
 import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
-import { useNavigate } from "react-router-dom";
 import { notify } from "../../utils/toast";
-import { Form, Formik, useFormikContext } from "formik";
+import { Form, useFormikContext } from "formik";
 import BillHeader from "../../components/selling/selling components/bill/BillHeader";
-import BillInputs from "../../components/selling/selling components/bill/BillInputs";
 import BillButtons from "../../components/selling/selling components/bill/BillButtons";
 import { ClientData_TP, Selling_TP } from "./PaymentSellingPage";
 import { SellingTableInputData } from "../../components/selling/selling components/data/SellingTableInputData";
-import BuyingHeader from "../../components/atoms/UI/BuyingHeader";
 import { BuyingTable } from "./BuyingTable";
-import { numberContext } from "../../context/settings/number-formatter";
 import { useFetch } from "../../hooks";
+import BuyingHeader from "../../components/atoms/UI/BuyingHeader";
+import BillInputs from "../../components/selling/selling components/bill/BillInputs";
+import { numberContext } from "../../context/settings/number-formatter";
+import { authCtx } from "../../context/auth-and-perm/auth";
+import { useContext } from "react";
 
 type SellingFirstPage_TP = {
   sellingItemsData: Selling_TP;
@@ -42,6 +40,8 @@ const BuyingFirstPage = ({
 }: SellingFirstPage_TP) => {
   const { values } = useFormikContext();
   const { formatGram, formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
+
 
   const totalValues = sellingItemsData.reduce(
     (acc, curr) => Number(acc) + Number(curr?.value),
@@ -66,12 +66,12 @@ const BuyingFirstPage = ({
       value: formatReyal(totalValues),
       unit: "ryal",
     },
-    {
-      account: "value added tax",
-      id: 0,
-      value: formatReyal(valueAddedTax),
-      unit: "ryal",
-    },
+    // {
+    //   account: "value added tax",
+    //   id: 0,
+    //   value: formatReyal(valueAddedTax),
+    //   unit: "ryal",
+    // },
     {
       account: "total gross weight",
       id: 1,
@@ -96,10 +96,9 @@ const BuyingFirstPage = ({
     endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
     queryKey: ["get-gold-price"],
   });
-  console.log("🚀 ~ file: BuyingFirstPage.tsx:91 ~ goldPrice:", goldPrice)
 
   return (
-    <Form>
+    <Form className="overflow-hidden">
       <div className="relative h-full p-10">
         <h2 className="mb-4 text-base font-bold">{t("purchase")}</h2>
         <div className="bg-lightGreen rounded-lg sales-shadow px-6 py-5">
@@ -132,7 +131,7 @@ const BuyingFirstPage = ({
                   {t("total invoice")}
                 </h2>
                 <div>
-                  <div className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+                  <div className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {tarqimBoxes?.map((data: any) => (
                       <li
                         key={data.id}
@@ -176,7 +175,7 @@ const BuyingFirstPage = ({
               setStage(2);
             }}
           >
-            {t("payment")}
+            {t("purchase")}
           </Button>
         </div>
       </div>

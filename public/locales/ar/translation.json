@@ -996,5 +996,7 @@
   "edit weight": "تعديل الوزن",
   "value greater than buying policy": "القيمة اكبر من سياسة الشراء",
   "value added tax": "ضريبة القيمة المضافة",
-  "daily gram price": "سعر الذهب اليومي"
+  "daily gram price": "سعر الجرام اليومي",
+  "daily kilo price": "سعر الكيلو اليومي",
+  "total edited weight": "اجمالي الوزن المعدل",
 }

@@ -93,7 +93,7 @@ const TableOfWeightAdjustment = ({
       {
         cell: (info: any) => info.getValue() || "-",
         accessorKey: "weight",
-        header: () => <span>{t("weight before edit")}</span>,
+        header: () => <span>{t("weight")}</span>,
       },
       {
         cell: (info: any) => info.getValue() || "-",

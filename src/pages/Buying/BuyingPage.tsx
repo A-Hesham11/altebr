@@ -1,12 +1,5 @@
-import React, { useState } from "react";
-import SellingFirstPage from "./SellingFirstPage";
-import SellingSecondpage from "../../components/selling/selling components/SellingSecondpage";
-import { SellingFinalPreview } from "../../components/selling/selling components/SellingFinalPreview";
-import { Payment_TP } from "../../components/selling/selling components/data/PaymentProcessing";
 import { ClientData_TP } from "../../components/selling/SellingClientForm";
-import { Formik } from "formik";
 import * as Yup from "yup";
-import SellingInvoiceData from "./SellingInvoiceData";
 import { useIsRTL } from "../../hooks";
 import SellingSubCard from "../../components/selling/SellingSubCard";
 import { Back } from "../../utils/utils-components/Back";
@@ -75,15 +68,12 @@ const BuyingPage = () => {
         <div className="p-8 absolute top-0 left-5">
           <Back />
         </div>
-        {/* <div>
-          <h2 className="text-white text-xl font-bold mt-8">{t("Buying")}</h2>
-        </div> */}
         {data.map((item) => (
           <SellingSubCard
             icon={item.icon}
             title={isRTL ? item.title_ar : item.title_en}
             route={item.route}
-            // underCardInfo={item.underCardInfo}
+            underCardInfo={item.underCardInfo}
             key={crypto.randomUUID()}
           />
         ))}

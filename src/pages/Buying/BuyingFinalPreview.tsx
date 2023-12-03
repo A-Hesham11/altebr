@@ -1,5 +1,4 @@
 import { useContext } from "react";
-
 import { t } from "i18next";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import FinalPreviewBillData from "../../components/selling/selling components/bill/FinalPreviewBillData";
@@ -34,29 +33,12 @@ export const BuyingFinalPreview = ({
   costDataAsProps,
   sellingItemsData
 }: SellingFinalPreviewProps_TP) => {
-  console.log("🚀 ~ file: SellingFinalPreview.tsx:38 ~ ItemsTableContent:", ItemsTableContent)
-  // const [printStatus, setPrintStatus] = useState("block")
-  // const handlePrint = () => {
-  //     window.print();
-  // };
-
-  // const [printContent, setPrintContent] = useState(null);
-
-  // const handlePrintClick = () => {
-  //   const contentToPrint = document.getElementsByName('content-to-print');
-  //   // setPrintContent(contentToPrint.innerHTML);
-  //   window.print();
-  // };
-  // get client data
-  // const { client_value, client_id, client_name } = clientData;
-
   const { userData } = useContext(authCtx);
 
   const { data } = useFetch<Client_TP>({
     endpoint: `/selling/api/v1/get_sentence`,
     queryKey: ["sentence"],
   });
-  
 
   return (
     <div className="relative h-full p-10 bg-flatWhite ">
@@ -75,7 +57,7 @@ export const BuyingFinalPreview = ({
           </div>
           <div className="text-center">
             <p className="my-4 py-1 border-y border-mainOrange">
-              {data && data[0]?.sentence}
+              {data && data?.sentence}
             </p>
             <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
               <p>

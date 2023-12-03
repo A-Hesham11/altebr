@@ -55,13 +55,30 @@ const BuyingInvoice = () => {
       client_value: Yup.string(),
     });
 
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}?per_page=10000`,
-    queryKey: ["invoices_data"],
+  // // FIXING (INVOICE NUMBER)
+  // const { data } = useFetch<ClientData_TP>({
+  //   endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}?per_page=10000`,
+  //   queryKey: ["invoices_data"],
+  //   onSuccess(data) {
+  //     setInvoiceNumber(data);
+  //   },
+  // });
+
+  
+  const { data: buyingInvoice } = useFetch<ClientData_TP>({
+    endpoint: `buyingUsedGold/api/v1/buying_invoices/${userData?.branch_id}`,
+    queryKey: ["get_buying_invoice"],
     onSuccess(data) {
       setInvoiceNumber(data);
     },
   });
+
+  // const { data: test } = useFetch<ClientData_TP>({
+  //   endpoint: `/buyingUsedGold/api/v1/get-nadya-box`,
+  //   queryKey: ["test"],
+  // });
+  // console.log("🚀 ~ file: BuyingFirstPage.tsx:109 ~ test:", test)
+  console.log("🚀 ~ file: BuyingFirstPage.tsx:100 ~ buyingInvoice:", buyingInvoice)
 
   return (
     <Formik

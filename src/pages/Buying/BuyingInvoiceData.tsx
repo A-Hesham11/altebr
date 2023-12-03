@@ -72,16 +72,17 @@ const BuyingInvoiceData = ({
         accessorKey: "value",
         cell: (info) => info.getValue() || "---",
       },
-      {
-        header: () => <span>{t("value added tax")} </span>,
-        accessorKey: "value_added_tax",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
-      },
-      {
-        header: () => <span>{t("total value")} </span>,
-        accessorKey: "total_value",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
-      },
+      // FIXING 
+      // {
+      //   header: () => <span>{t("value added tax")} </span>,
+      //   accessorKey: "value_added_tax",
+      //   cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      // },
+      // {
+      //   header: () => <span>{t("total value")} </span>,
+      //   accessorKey: "total_value",
+      //   cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      // },
     ],
     []
   );
