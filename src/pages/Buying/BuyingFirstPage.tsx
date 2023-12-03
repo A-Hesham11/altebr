@@ -38,6 +38,7 @@ const BuyingFirstPage = ({
   clientData,
   setClientData,
 }: SellingFirstPage_TP) => {
+
   const { values } = useFormikContext();
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
