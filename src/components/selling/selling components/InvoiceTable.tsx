@@ -27,26 +27,26 @@ const InvoiceTable = <T extends object>({ data,
   
     const TaxRateOfBranch = userData?.tax_rate / 100 ;
 
-    const totalWeight = data.reduce((acc, curr) => {
+    const totalWeight = data?.reduce((acc, curr) => {
         acc += +curr.weight
         return acc
     }, 0)
 
-    const totalCost = data.reduce((acc, curr) => {
+    const totalCost = data?.reduce((acc, curr) => {
         acc += +curr.cost
         return acc
     }, 0)
 
-    const totalCommissionRatio = paymentData.reduce((acc, card) => {
+    const totalCommissionRatio = paymentData?.reduce((acc, card) => {
         acc += +card.commission_riyals
         return acc
     }, 0)
 
-    const totalCommissionTaxes = paymentData.reduce((acc, card) => {
+    const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
         acc += +card.commission_tax
         return acc
     }, 0)
-    const totalFinalCost = totalCost + totalCommissionRatio + totalCost * TaxRateOfBranch + totalCommissionTaxes
+    const totalFinalCost = +totalCost + +totalCommissionRatio + +totalCost * +TaxRateOfBranch + +totalCommissionTaxes
 
     const locationPath = location.pathname 
 
@@ -114,7 +114,7 @@ const InvoiceTable = <T extends object>({ data,
                         <tr className='text-center'>
                             {Object.keys(resultTable[0]).map((key, index) => {
                                 return (
-                                    <td className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
+                                    <td key={key} className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                                         colSpan={index === 0 ? 5 : 1}
                                     >
                                         {resultTable[0][key]}

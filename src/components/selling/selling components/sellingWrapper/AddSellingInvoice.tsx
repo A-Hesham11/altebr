@@ -78,6 +78,7 @@ const AddSellingInvoice = () => {
             setInvoiceNumber(data)
         }
     });
+    console.log("🚀 ~ file: AddSellingInvoice.tsx:81 ~ AddSellingInvoice ~ data:", data)
 
   return (
     <Formik

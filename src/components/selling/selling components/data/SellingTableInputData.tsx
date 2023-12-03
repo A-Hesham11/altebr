@@ -62,7 +62,6 @@ export const SellingTableInputData = ({
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ userData:", userData)
 
   const TaxRateOfBranch = userData?.tax_rate / 100 ;
   
@@ -76,7 +75,7 @@ export const SellingTableInputData = ({
   ? priceWithCommissionRate
   : priceWithCommissionCash;
 
-  const { values, setFieldValue, resetForm , isSubmitting } = useFormikContext<any>();
+  const { values, setFieldValue } = useFormikContext<any>();
   console.log("🚀 ~ file: SellingTableInputData.tsx:65 ~ values:", values)
 
   const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
@@ -507,6 +506,9 @@ export const SellingTableInputData = ({
                 name="taklfa_after_tax"
                 type="text"
                 required
+                onChange={(e) => {
+                  setFieldValue("taklfa", (+e.target.value / 1.15).toFixed(2));
+                }}
                 disabled={userData?.include_tax === "0"}
                 className={`${!isCategoryDisabled && userData?.include_tax === "0" && "bg-mainDisabled"} text-center`}
               />

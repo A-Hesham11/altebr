@@ -12,12 +12,13 @@ type Client_TP = {
     employee_id: number
     employee_value: string
     id: number
+    invoiceNumber: number
   }
   mobile: number
   identity: number
 }
 
-const FinalPreviewBillData = ({ clientData }: Client_TP) => {
+const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   
   const {  client_id, client_value } = clientData
 
@@ -31,7 +32,7 @@ const FinalPreviewBillData = ({ clientData }: Client_TP) => {
   return (
     <div className='flex justify-between'>
       <div className='flex flex-col gap-1 mt-6'>
-        <p className='text-xs font-bold'>{t("bill no")} : <span className='font-medium'>0003</span> </p>
+        <p className='text-xs font-bold'>{t("bill no")} : <span className='font-medium'>{invoiceNumber.length + 1}</span> </p>
         <p className='text-xs font-bold'>{t("bill date")} : <span className='font-medium'>{formatDate(new Date)}</span> </p>
       </div>
       <div className='flex flex-col gap-1 items-center'>

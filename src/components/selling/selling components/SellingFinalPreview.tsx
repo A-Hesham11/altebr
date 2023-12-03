@@ -25,7 +25,8 @@ type SellingFinalPreviewProps_TP = {
   paymentData: never[];
   clientData: Client_TP;
   costDataAsProps: any;
-  sellingItemsData: any
+  sellingItemsData: any;
+  invoiceNumber: any;
 };
 export const SellingFinalPreview = ({
   ItemsTableContent,
@@ -33,7 +34,8 @@ export const SellingFinalPreview = ({
   paymentData,
   clientData,
   costDataAsProps,
-  sellingItemsData
+  sellingItemsData,
+  invoiceNumber
 }: SellingFinalPreviewProps_TP) => {
   // const [printStatus, setPrintStatus] = useState("block")
   // const handlePrint = () => {
@@ -65,7 +67,10 @@ export const SellingFinalPreview = ({
       <div className="print-section">
         <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
           <div className="mx-6 bill-shadow rounded-md p-6">
-            <FinalPreviewBillData clientData={clientData} />
+            <FinalPreviewBillData 
+              clientData={clientData}
+              invoiceNumber={invoiceNumber}
+            />
           </div>
           {ItemsTableContent}
           <div className="mx-6 bill-shadow rounded-md p-6 my-9">
@@ -77,7 +82,7 @@ export const SellingFinalPreview = ({
           </div>
           <div className="text-center">
             <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-              {data && data}
+              {data && data?.sentence}
             </p>
             <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
               <p>
