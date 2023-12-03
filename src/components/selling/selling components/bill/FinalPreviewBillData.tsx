@@ -19,6 +19,7 @@ type Client_TP = {
 }
 
 const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
+  console.log("🚀 ~ file: FinalPreviewBillData.tsx:22 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber)
   
   const {  client_id, client_value } = clientData
 
@@ -32,7 +33,7 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   return (
     <div className='flex justify-between'>
       <div className='flex flex-col gap-1 mt-6'>
-        <p className='text-xs font-bold'>{t("bill no")} : <span className='font-medium'>{invoiceNumber.length + 1}</span> </p>
+        <p className='text-xs font-bold'>{t("bill no")} : <span className='font-medium'>{invoiceNumber?.length + 1}</span> </p>
         <p className='text-xs font-bold'>{t("bill date")} : <span className='font-medium'>{formatDate(new Date)}</span> </p>
       </div>
       <div className='flex flex-col gap-1 items-center'>
