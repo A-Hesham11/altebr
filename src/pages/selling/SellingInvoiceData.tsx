@@ -29,6 +29,7 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ file: SellingInvoiceData.tsx:32 ~ clientData:", clientData)
   console.log("🚀 ~ file: SellingInvoiceData.tsx:31 ~ sellingItemsData:",sellingItemsData );
 
   const { formatGram, formatReyal } = numberContext();
@@ -291,6 +292,7 @@ const SellingInvoiceData = ({
           </Button>
         </div>
       </div>
+     
       <SellingFinalPreview
         ItemsTableContent={<SellingTableComp />}
         setStage={setStage}
@@ -298,7 +300,8 @@ const SellingInvoiceData = ({
         clientData={clientData}
         sellingItemsData={sellingItemsData}
         costDataAsProps={costDataAsProps}
-      />
+        invoiceNumber={invoiceNumber}
+      /> 
     </div>
   );
 };
