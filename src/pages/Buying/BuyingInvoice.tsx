@@ -1,16 +1,12 @@
 import { Formik } from "formik";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { Selling_TP } from "../data/SellingTableData";
 import { ClientData_TP } from "../../SellingClientForm";
 import { Payment_TP } from "../data/PaymentProcessing";
 import * as Yup from "yup";
-import SellingFirstPage from "../selling/SellingFirstPage";
-import SellingSecondpage from "../../components/selling/selling components/SellingSecondpage";
-import SellingInvoiceData from "../selling/SellingInvoiceData";
 import { useFetch } from "../../hooks";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import BuyingFirstPage from "./BuyingFirstPage";
-import BuyingSecondpage from "./BuyingSecondPage";
 import BuyingInvoiceData from "./BuyingInvoiceData";
 
 const BuyingInvoice = () => {

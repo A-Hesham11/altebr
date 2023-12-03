@@ -17,16 +17,19 @@ const TableOfWeightAdjustment = ({
   setCheckboxChecked,
   checkboxChecked,
   weightAdjustmentData,
-  endpoint
+  endpoint,
+  ahgaring,
+  notAhgaring,
 }) => {
-  console.log("🚀 ~ file: TableOfWeightAdjustment.tsx:20 ~ dataSource:", dataSource)
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustment.tsx:20 ~ dataSource:",
+    dataSource
+  );
 
   // STATE
   const isRTL = useIsRTL();
   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
-
-
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -36,9 +39,17 @@ const TableOfWeightAdjustment = ({
           return (
             <input
               // checked={checkboxChecked}
-              disabled={endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/" ? true : false}
+              disabled={
+                endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/"
+                  ? true
+                  : false
+              }
               type="checkbox"
-              className={`${endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/" ? "bg-mainGray border-mainGray" : ""}`}
+              className={`${
+                endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/"
+                  ? "bg-mainGray border-mainGray"
+                  : ""
+              }`}
               onChange={(e) => {
                 // setCheckboxChecked(!checkboxChecked)
 
@@ -128,7 +139,13 @@ const TableOfWeightAdjustment = ({
               {t("page")}
               <span className=" text-mainGreen">{page}</span>
               {t("from")}
-              {<span className=" text-mainGreen">{weightAdjustmentData?.total}</span>}
+              {
+                <span className=" text-mainGreen">
+                  {endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/"
+                    ? notAhgaring?.pages
+                    : ahgaring?.pages}
+                </span>
+              }
             </div>
             <div className="flex items-center gap-2 ">
               <Button

@@ -45,15 +45,16 @@ export const BuyingTable = ({
 
   const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2) 
 
-  const priceWithCommissionRate = (totalValues * (+userData?.max_buy * 0.01) + totalValues);
+  const priceWithCommissionRate = (+totalValues * (+userData?.max_buy * 0.01) + +totalValues);
 
-  const priceWithCommissionCash = (totalValues + +userData?.max_buy);
+  const priceWithCommissionCash = (+totalValues + +userData?.max_buy);
   
   const priceWithSellingPolicy =
   userData?.max_buy_type === "نسبة"
-  ? priceWithCommissionRate
-  : priceWithCommissionCash;
+  ? +priceWithCommissionRate
+  : +priceWithCommissionCash;
   
+  console.log("🚀 ~ file: BuyingTable.tsx:53 ~ priceWithSellingPolicy:", priceWithSellingPolicy)
   const stonesOption = [
     {
       id: 0,
@@ -252,7 +253,8 @@ export const BuyingTable = ({
                 id="piece_per_gram"
                 name="piece_per_gram"
                 type="text"
-                className="text-center"
+                className="bg-mainDisabled text-center"
+                disabled
               />
             </td>
             <td>
@@ -267,6 +269,8 @@ export const BuyingTable = ({
                   setFieldValue("value", +priceWithSellingPolicy);
                   setFieldValue("value_added_tax", +e.target.value * +userData?.tax_rate * 0.01);
                   setFieldValue("total_value", +e.target.value + (e.target.value * +userData?.tax_rate * 0.01));
+
+                  
                 }}
               />
             </td>
