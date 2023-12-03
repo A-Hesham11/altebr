@@ -23,7 +23,7 @@ const SellingSecondpage = ({
   const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax ,0)
   console.log("🚀 ~ file: PaymentProcessing.tsx:85 ~ PaymentProcessing ~ amountRemaining:", amountRemaining)
 
-  const costRemaining = totalPriceInvoice.toFixed(1) - amountRemaining.toFixed(1)
+  const costRemaining = +totalPriceInvoice.toFixed(1) - +amountRemaining.toFixed(1)
   console.log("🚀 ~ file: PaymentProcessing.tsx:80 ~ PaymentProcessing ~ costRemaining:", costRemaining)
 
    const handleSeccessedData = () => {
