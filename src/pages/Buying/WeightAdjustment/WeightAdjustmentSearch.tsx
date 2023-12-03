@@ -33,13 +33,13 @@ const WeightAdjustmentSearch = () => {
             />
           </div>
           <DateInputField
-            label={`${t("date")}`}
-            placeholder={`${t("date")}`}
-            name="date"
+            label={`${t("invoice date")}`}
+            placeholder={`${t("invoice date")}`}
+            name="invoice_date"
             labelProps={{ className: "mt--10" }}
           />
 
-          <Button className="bg-mainOrange text-white w-max">
+          <Button type="submit" className="bg-mainOrange text-white w-max">
             بحث
           </Button>
         </div>

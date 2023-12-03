@@ -70,7 +70,7 @@ const BuyingInvoiceTable = <T extends object>({
         number: t("totals"),
         cost: totalCost,
         value_added_tax: valueAddedTax,
-        total_value: totalValue,
+        total_value: totalValue.toFixed(2),
     },
   ];
 

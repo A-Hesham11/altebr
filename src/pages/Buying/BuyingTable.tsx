@@ -43,7 +43,7 @@ export const BuyingTable = ({
   const [data, setData] = useState("");
   const { values, setFieldValue } = useFormikContext();
 
-  const totalValues = (+values.piece_per_gram * +values?.weight) 
+  const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2) 
 
   const priceWithCommissionRate = (totalValues * (+userData?.max_buy * 0.01) + totalValues);
 
@@ -100,7 +100,7 @@ export const BuyingTable = ({
         header: () => <span>{t("value")} </span>,
         accessorKey: "value",
         cell: (info) => {
-          return formatReyal(Number(info.getValue())) || "---";
+          return formatReyal(Number(info.getValue()).toFixed(2)) || "---";
         },
       },
       {

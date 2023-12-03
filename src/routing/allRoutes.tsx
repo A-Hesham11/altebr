@@ -100,6 +100,7 @@ import BuyingPage from "../pages/Buying/BuyingPage";
 import ViewBuyingPolicies from "../components/templates/buyingPolicies/ViewBuyingPolicies";
 import BuyingInvoice from "../pages/Buying/BuyingInvoice";
 import WeightAdjustment from "../pages/Buying/WeightAdjustment/WeightAdjustment";
+import BuyingRestrictionsInvoice from "../pages/Buying/BuyingRestrictionsInvoice"
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -575,6 +576,10 @@ export const AllRoutesProvider = () => {
           <Route path="/buying/purchaseInvoice" element={<BuyingInvoice />} />
           <Route path="/system/policiesBuying" element={<ViewBuyingPolicies />} />
           <Route path="/buying/weightAdjustment" element={<WeightAdjustment />} />
+          <Route
+            path="/buying/invoice-restrictions"
+            element={<BuyingRestrictionsInvoice />}
+          />
           {/* BUYING END */}
           <Route path="/system/cardsData" element={<ViewBankCardsData />} />
           <Route

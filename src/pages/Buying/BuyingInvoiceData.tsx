@@ -104,7 +104,7 @@ const BuyingInvoiceData = ({
     mutationFn: mutateData,
     onSuccess: (data) => {
       // navigate(`/selling/honesty/return-honest/${data.bond_id}`)
-      navigate(`/selling/invoice-restrictions`);
+      navigate(`/buying/invoice-restrictions`);
     },
   });
 

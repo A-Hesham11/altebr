@@ -51,15 +51,15 @@ const BuyingPage = () => {
       title_ar: "فاتورة الشراء",
       title_en: "purchase invoice",
       route: "/buying/purchaseInvoice/",
-      // underCardInfo: (
-      //   <Link
-      //     to="/selling/invoice-restrictions"
-      //     className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
-      //   >
-      //     <FaCubes className="text-mainGreen" size={25} />
-      //     <p className="text-mainGreen">{t("invoice restrictions")}</p>
-      //   </Link>
-      // ),
+      underCardInfo: (
+        <Link
+          to="/buying/invoice-restrictions"
+          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+        >
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("invoice restrictions")}</p>
+        </Link>
+      ),
     },
     {
       icon: receiveitem,
