@@ -18,11 +18,24 @@ const WeightAdjustment = () => {
   const [page, setPage] = useState(1);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
+  const [activeTab, setActiveTab] = useState(1);
+
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ file: WeightAdjustment.tsx:22 ~ WeightAdjustment ~ search:", search)
+  console.log(
+    "🚀 ~ file: WeightAdjustment.tsx:22 ~ WeightAdjustment ~ search:",
+    search
+  );
   const [activeCheckout, setActiveCheckout] = useState(false);
   const [lengthAhgar, setLengthAhgar] = useState("");
+  console.log(
+    "🚀 ~ file: WeightAdjustment.tsx:28 ~ WeightAdjustment ~ lengthAhgar:",
+    lengthAhgar
+  );
   const [lengthNotAhgar, setLengthNotAhgar] = useState("");
+  console.log(
+    "🚀 ~ file: WeightAdjustment.tsx:30 ~ WeightAdjustment ~ lengthNotAhgar:",
+    lengthNotAhgar
+  );
   const [inputWeight, setInputWeight] = useState([]);
   console.log(
     "🚀 ~ file: WeightAdjustment.tsx:22 ~ WeightAdjustment ~ inputWeight:",
@@ -43,6 +56,26 @@ const WeightAdjustment = () => {
     weight_input: "",
   };
 
+  const { data: ahgaring } = useFetch({
+    queryKey: ["ahgaring"],
+    endpoint: `/buyingUsedGold/api/v1/items_has_stones/${userData?.branch_id}`,
+    pagination: true,
+  });
+  console.log(
+    "🚀 ~ file: WeightAdjustment.tsx:61 ~ WeightAdjustment ~ ahgaring:",
+    ahgaring
+  );
+
+  const { data: notAhgaring } = useFetch({
+    queryKey: ["notAhgaring"],
+    endpoint: `/buyingUsedGold/api/v1/items_hasnot_stones/${userData?.branch_id}`,
+    pagination: true,
+  });
+  console.log(
+    "🚀 ~ file: WeightAdjustment.tsx:67 ~ WeightAdjustment ~ notAhgaring:",
+    notAhgaring
+  );
+
   // FETCHING DATA FROM API
   const {
     data: weightAdjustmentData,
@@ -58,6 +91,11 @@ const WeightAdjustment = () => {
         ? `${endpoint}${userData?.branch_id}?page=${page}`
         : `${search}`,
     pagination: true,
+    onSuccess: () => {
+      // if (endpoint === "/buyingUsedGold/api/v1/items_has_stones/")
+      //   setLengthAhgar(weightAdjustmentData?.length);
+      // else setLengthNotAhgar(weightAdjustmentData.length);
+    },
   });
   console.log(
     "🚀 ~ file: WeightAdjustment.tsx:28 ~ WeightAdjustment ~ weightAdjustmentData:",
@@ -86,7 +124,6 @@ const WeightAdjustment = () => {
     if (weightAdjustmentData) {
       setDataSource(weightAdjustmentData.data);
     }
-
   }, [weightAdjustmentData]);
 
   useEffect(() => {
@@ -102,6 +139,11 @@ const WeightAdjustment = () => {
   if (isRefetching || isLoading || isFetching)
     return <Loading mainTitle={t("loading items")} />;
 
+  const setEndPointAndSetActiveTab = (endpoint, tabNumber) => {
+    setEndPoint(endpoint);
+    setActiveTab(tabNumber);
+  };
+
   return (
     <div className="relative h-full p-10">
       <h2 className="mb-6 text-xl font-bold text-slate-700">
@@ -111,33 +153,35 @@ const WeightAdjustment = () => {
       <div className="flex items-center justify-center gap-4">
         <li
           onClick={() =>
-            setEndPoint("/buyingUsedGold/api/v1/items_has_stones/")
+            setEndPointAndSetActiveTab(
+              "/buyingUsedGold/api/v1/items_has_stones/",
+              1
+            )
           }
-          className="flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md"
+          className={`cursor-pointer flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
         >
-          <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
+          <p className={`${activeTab === 2 ? "bg-mainGreen text-white" : "bg-white text-black"}  p-2 flex items-center justify-center h-[65%] rounded-t-xl`}>
             {t(`pieces with stones`)}
           </p>
-          <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-            {endpoint === "/buyingUsedGold/api/v1/items_has_stones/"
-              ? weightAdjustmentData?.total
-              : 0}{" "}
+          <p className={` ${activeTab === 2 ? "bg-white text-black" : "bg-mainGreen text-white"}  px-2 py-2 h-[35%] rounded-b-xl`}>
+            {ahgaring?.total}
             <span>{t(`piece`)}</span>
           </p>
         </li>
         <li
           onClick={() =>
-            setEndPoint("/buyingUsedGold/api/v1/items_hasnot_stones/")
+            setEndPointAndSetActiveTab(
+              "/buyingUsedGold/api/v1/items_hasnot_stones/",
+              2
+            )
           }
-          className="flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md"
+          className={`cursor-pointer flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
         >
-          <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
+          <p className={`${activeTab === 1 ? "bg-mainGreen text-white" : "bg-white text-black"}  p-2 flex items-center justify-center h-[65%] rounded-t-xl`}>
             {t(`pieces without stones`)}
           </p>
-          <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-            {endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/"
-              ? weightAdjustmentData?.total
-              : 0}{" "}
+          <p className={` ${activeTab === 1 ? "bg-white text-black" : "bg-mainGreen text-white"}  px-2 py-2 h-[35%] rounded-b-xl`}>
+            {notAhgaring?.total}
             <span>{t(`piece`)}</span>
           </p>
         </li>
@@ -166,6 +210,8 @@ const WeightAdjustment = () => {
               setCheckboxChecked={setCheckboxChecked}
               endpoint={endpoint}
               weightAdjustmentData={weightAdjustmentData}
+              ahgaring={ahgaring}
+              notAhgaring={notAhgaring}
             />
 
             <div className="flex gap-4 items-center self-end mr-auto my-6">
