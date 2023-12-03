@@ -3,7 +3,7 @@ import WeightAdjustmentSearch from "./WeightAdjustmentSearch";
 import { t } from "i18next";
 import { useContext, useEffect, useState } from "react";
 import TableOfWeightAdjustment from "./TableOfWeightAdjustment";
-import { useFetch } from "../../../hooks";
+import { useFetch, useMutate } from "../../../hooks";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { Back } from "../../../utils/utils-components/Back";
 import { Button } from "../../../components/atoms";
@@ -12,6 +12,8 @@ import { Modal } from "../../../components/molecules";
 import TableOfWeightAdjustmentPreview from "./TableOfWeightAdjustmentPreview";
 import { notify } from "../../../utils/toast";
 import { Loading } from "../../../components/organisms/Loading";
+import { useQueryClient } from "@tanstack/react-query";
+import { mutateData } from "../../../utils/mutateData";
 
 const WeightAdjustment = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -21,26 +23,7 @@ const WeightAdjustment = () => {
   const [activeTab, setActiveTab] = useState(1);
 
   const [search, setSearch] = useState("");
-  console.log(
-    "🚀 ~ file: WeightAdjustment.tsx:22 ~ WeightAdjustment ~ search:",
-    search
-  );
-  const [activeCheckout, setActiveCheckout] = useState(false);
-  const [lengthAhgar, setLengthAhgar] = useState("");
-  console.log(
-    "🚀 ~ file: WeightAdjustment.tsx:28 ~ WeightAdjustment ~ lengthAhgar:",
-    lengthAhgar
-  );
-  const [lengthNotAhgar, setLengthNotAhgar] = useState("");
-  console.log(
-    "🚀 ~ file: WeightAdjustment.tsx:30 ~ WeightAdjustment ~ lengthNotAhgar:",
-    lengthNotAhgar
-  );
   const [inputWeight, setInputWeight] = useState([]);
-  console.log(
-    "🚀 ~ file: WeightAdjustment.tsx:22 ~ WeightAdjustment ~ inputWeight:",
-    inputWeight
-  );
   const [weightModal, setWeightModal] = useState(false);
   const [endpoint, setEndPoint] = useState(
     `/buyingUsedGold/api/v1/items_has_stones/`
@@ -61,20 +44,12 @@ const WeightAdjustment = () => {
     endpoint: `/buyingUsedGold/api/v1/items_has_stones/${userData?.branch_id}`,
     pagination: true,
   });
-  console.log(
-    "🚀 ~ file: WeightAdjustment.tsx:61 ~ WeightAdjustment ~ ahgaring:",
-    ahgaring
-  );
 
   const { data: notAhgaring } = useFetch({
     queryKey: ["notAhgaring"],
     endpoint: `/buyingUsedGold/api/v1/items_hasnot_stones/${userData?.branch_id}`,
     pagination: true,
   });
-  console.log(
-    "🚀 ~ file: WeightAdjustment.tsx:67 ~ WeightAdjustment ~ notAhgaring:",
-    notAhgaring
-  );
 
   // FETCHING DATA FROM API
   const {
@@ -91,16 +66,24 @@ const WeightAdjustment = () => {
         ? `${endpoint}${userData?.branch_id}?page=${page}`
         : `${search}`,
     pagination: true,
-    onSuccess: () => {
-      // if (endpoint === "/buyingUsedGold/api/v1/items_has_stones/")
-      //   setLengthAhgar(weightAdjustmentData?.length);
-      // else setLengthNotAhgar(weightAdjustmentData.length);
-    },
   });
   console.log(
     "🚀 ~ file: WeightAdjustment.tsx:28 ~ WeightAdjustment ~ weightAdjustmentData:",
     weightAdjustmentData
   );
+
+  const queryClient = useQueryClient();
+  const {
+    mutate,
+    error: mutateError,
+    isLoading: mutateLoading,
+  } = useMutate({
+    mutationFn: mutateData,
+    onSuccess: () => {
+      queryClient.refetchQueries(["wegiht_table"]);
+      notify("success");
+    },
+  });
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
@@ -128,13 +111,17 @@ const WeightAdjustment = () => {
 
   useEffect(() => {
     refetch();
-  }, [page, endpoint]);
+  }, [page, endpoint, weightAdjustmentData]);
 
   useEffect(() => {
     if (page == 1) {
       refetch();
     }
   }, [search]);
+
+  useEffect(() => {
+    setOperationTypeSelect([]);
+  }, [endpoint]);
 
   if (isRefetching || isLoading || isFetching)
     return <Loading mainTitle={t("loading items")} />;
@@ -158,14 +145,20 @@ const WeightAdjustment = () => {
               1
             )
           }
-          className={`cursor-pointer flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
+          className={`transition-all duration-300 cursor-pointer flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
         >
-          <p className={`${activeTab === 2 ? "bg-mainGreen text-white" : "bg-white text-black"}  p-2 flex items-center justify-center h-[65%] rounded-t-xl`}>
+          <p
+            className={`${
+              activeTab === 1
+                ? "bg-mainGreen text-white"
+                : "bg-white text-black"
+            }  p-2 flex items-center justify-center h-[65%] rounded-t-xl`}
+          >
             {t(`pieces with stones`)}
           </p>
-          <p className={` ${activeTab === 2 ? "bg-white text-black" : "bg-mainGreen text-white"}  px-2 py-2 h-[35%] rounded-b-xl`}>
-            {ahgaring?.total}
-            <span>{t(`piece`)}</span>
+          <p className={` bg-white text-black  px-2 py-2 h-[35%] rounded-b-xl`}>
+            {ahgaring?.total} 
+            <span> {t(`piece`)}</span>
           </p>
         </li>
         <li
@@ -175,14 +168,20 @@ const WeightAdjustment = () => {
               2
             )
           }
-          className={`cursor-pointer flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
+          className={`transition-all duration-300 cursor-pointer flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
         >
-          <p className={`${activeTab === 1 ? "bg-mainGreen text-white" : "bg-white text-black"}  p-2 flex items-center justify-center h-[65%] rounded-t-xl`}>
+          <p
+            className={`${
+              activeTab === 2
+                ? "bg-mainGreen text-white"
+                : "bg-white text-black"
+            }  p-2 flex items-center justify-center h-[65%] rounded-t-xl`}
+          >
             {t(`pieces without stones`)}
           </p>
-          <p className={` ${activeTab === 1 ? "bg-white text-black" : "bg-mainGreen text-white"}  px-2 py-2 h-[35%] rounded-b-xl`}>
-            {notAhgaring?.total}
-            <span>{t(`piece`)}</span>
+          <p className={`bg-white text-black px-2 py-2 h-[35%] rounded-b-xl`}>
+            {notAhgaring?.total} 
+            <span> {t(`piece`)}</span>
           </p>
         </li>
       </div>
@@ -217,7 +216,9 @@ const WeightAdjustment = () => {
             <div className="flex gap-4 items-center self-end mr-auto my-6">
               <Back className="w-32" />
               <Button
-                onClick={() => setWeightModal(true)}
+                onClick={() => {
+                  return setWeightModal(true);
+                }}
                 className="bg-mainGreen text-white"
               >
                 {t("weight adjustment")}
@@ -229,6 +230,7 @@ const WeightAdjustment = () => {
                 inputWeight={inputWeight}
                 setInputWeight={setInputWeight}
                 item={operationTypeSelect}
+                setWeightModal={setWeightModal}
               />
             </Modal>
           </Form>

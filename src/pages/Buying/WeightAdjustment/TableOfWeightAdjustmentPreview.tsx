@@ -1,22 +1,42 @@
 import { t } from "i18next";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { Button } from "../../../components/atoms";
 import { Form } from "formik";
 import { useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { useReactTable } from "@tanstack/react-table";
 
 const TableOfWeightAdjustmentPreview = ({
   item,
   setInputWeight,
   inputWeight,
+  setWeightModal,
 }) => {
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:4 ~ TableOfWeightAdjustmentPreview ~ item:",
-    item
-  );
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:18 ~ item:", item)
+  const queryClient = useQueryClient();
 
+const totalEditedWeight = item.reduce(
+  (acc, cur) => acc + Number(cur.weight),
+  0
+  )
+  const [inputValue, setInputValue] = useState(totalEditedWeight);
+  const weightDifference = Math.abs(totalEditedWeight - inputValue);
+  const weightDifferencePerWeight = weightDifference / item.length;
+  const [inputValue2, setInputValue2] = useState();
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:29 ~ inputValue2:", inputValue2)
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:28 ~ weightDifferencePerWeight:", weightDifferencePerWeight)
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:27 ~ weightDifference:", weightDifference)
+
+
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:27 ~ inputValue:", inputValue)
+
+console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:25 ~ totalEditedWeight:", totalEditedWeight)
+useEffect(() => {
+  setInputValue2(weightDifferencePerWeight)
+}, [inputValue])
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [
@@ -38,7 +58,7 @@ const TableOfWeightAdjustmentPreview = ({
       {
         cell: (info: any) => info.getValue() || "-",
         accessorKey: "weight",
-        header: () => <span>{t("weight before edit")}</span>,
+        header: () => <span>{t("weight")}</span>,
       },
       {
         cell: (info: any) => {
@@ -52,10 +72,11 @@ const TableOfWeightAdjustmentPreview = ({
               <input
                 type="number"
                 className="w-20 rounded-md h-10 text-center"
-                min="1"
+                min="1" 
                 max={info.row.original.weight}
                 name="weight_input"
                 id="weight_input"
+                value={inputValue2}
                 onBlur={(e) => {
                   setInputWeight((prev) => {
                     // Check if the object with the same id exists in the array
@@ -79,6 +100,7 @@ const TableOfWeightAdjustmentPreview = ({
                     }
                   });
                 }}
+                onChange={(e) => setInputValue2(+e.target.value) }
               />
             </>
           );
@@ -95,10 +117,9 @@ const TableOfWeightAdjustmentPreview = ({
     mutationKey: ["edit_items-api"],
     onSuccess: (data) => {
       notify("success");
-      // QueryClient.refetchQueries(["thwel-api"]);
+      queryClient.refetchQueries(["wegiht_table"]);
     },
     onError: (error) => {
-      console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:101 ~ error:", error)
       notify("error", error.response.data.errors.msg);
     },
   });
@@ -120,7 +141,14 @@ const TableOfWeightAdjustmentPreview = ({
           {t("specified invoice")}
         </h2>
         <Table data={item} columns={tableColumn}></Table>
-
+        
+        <div className="flex items-center gap-4 mt-4">
+          <h2>{t("total edited weight")}</h2>
+          <input type="number" value={inputValue} 
+          onChange={(e) => {
+            setInputValue(e.target.value)
+            } } className="rounded-md h-10 text-center"/>
+        </div>
         <Button
           type="submit"
           action={() => {
@@ -141,6 +169,8 @@ const TableOfWeightAdjustmentPreview = ({
                 };
               }),
             });
+
+            setWeightModal(false);
           }}
           className="bg-mainGreen text-white self-end"
         >

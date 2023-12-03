@@ -53,8 +53,7 @@ const BuyingInvoiceTable = <T extends object>({
     return acc;
   }, 0);
 
-  const locationPath = location.pathname;
-
+  // FIXINGTOTAL VALUES AFTER TAX
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(costDataAsProps?.totalCost)
   );
@@ -69,8 +68,8 @@ const BuyingInvoiceTable = <T extends object>({
     {
         number: t("totals"),
         cost: totalCost,
-        value_added_tax: valueAddedTax,
-        total_value: totalValue.toFixed(2),
+        // value_added_tax: valueAddedTax,
+        // total_value: totalValue.toFixed(2),
     },
   ];
 

@@ -45,16 +45,15 @@ export const BuyingTable = ({
 
   const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2) 
 
-  const priceWithCommissionRate = (+totalValues * (+userData?.max_buy * 0.01) + +totalValues);
+  const priceWithCommissionRate = (+totalValues - +totalValues * (+userData?.max_buy * 0.01));
 
-  const priceWithCommissionCash = (+totalValues + +userData?.max_buy);
+  const priceWithCommissionCash = (+totalValues - +userData?.max_buy);
   
   const priceWithSellingPolicy =
   userData?.max_buy_type === "نسبة"
   ? +priceWithCommissionRate
   : +priceWithCommissionCash;
   
-  console.log("🚀 ~ file: BuyingTable.tsx:53 ~ priceWithSellingPolicy:", priceWithSellingPolicy)
   const stonesOption = [
     {
       id: 0,
@@ -104,17 +103,17 @@ export const BuyingTable = ({
           return formatReyal(Number(info.getValue()).toFixed(2)) || "---";
         },
       },
-      {
-        header: () => <span>{t("value added tax")} </span>,
-        accessorKey: "value_added_tax",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
-      },
-      {
-        header: () => <span>{t("total value")} </span>,
-        accessorKey: "total_value",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
-      },
-      
+      // {
+      //   header: () => <span>{t("value added tax")} </span>,
+      //   accessorKey: "value_added_tax",
+      //   cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      // },
+      // {
+      //   header: () => <span>{t("total value")} </span>,
+      //   accessorKey: "total_value",
+      //   cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      // },
+ 
     ],
     []
   );
@@ -149,7 +148,7 @@ export const BuyingTable = ({
 
   return (
     <>
-      <table className="mt-8 w-[1180px]">
+      <table className="mt-8 min-w[800px]">
         <thead className="bg-mainGreen text-white">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="py-4 px-2">
@@ -227,9 +226,9 @@ export const BuyingTable = ({
                   setFieldValue("piece_per_gram", goldPrice[option.value].toFixed(2));
 
                   const totalValues = (+goldPrice[option.value].toFixed(2) * +values?.weight)
-                  const priceWithCommissionRate = (totalValues * (+userData?.max_buy * 0.01) + totalValues);
+                  const priceWithCommissionRate = (totalValues - totalValues * (+userData?.max_buy * 0.01));
                 
-                  const priceWithCommissionCash = (totalValues + +userData?.max_buy);
+                  const priceWithCommissionCash = (totalValues - +userData?.max_buy);
                   
                   const priceWithSellingPolicy =
                   userData?.max_buy_type === "نسبة"
@@ -274,7 +273,8 @@ export const BuyingTable = ({
                 }}
               />
             </td>
-            <td>
+            {/* WILL CHANGE AGAIN FIXING */}
+            {/* <td>
               <BaseInputField
                 placeholder={`${t("value added tax")}`}
                 id="value_added_tax"
@@ -295,7 +295,7 @@ export const BuyingTable = ({
                 disabled
                 className="bg-mainDisabled text-center"
               />
-            </td>
+            </td> */}
             
             <td className="bg-lightGreen justify-center border border-[#C4C4C4] flex items-center">
               {dataSource?.length == 1 &&
