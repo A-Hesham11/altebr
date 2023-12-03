@@ -19,6 +19,7 @@ const WeightAdjustment = () => {
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [search, setSearch] = useState("");
+  console.log("🚀 ~ file: WeightAdjustment.tsx:22 ~ WeightAdjustment ~ search:", search)
   const [activeCheckout, setActiveCheckout] = useState(false);
   const [lengthAhgar, setLengthAhgar] = useState("");
   const [lengthNotAhgar, setLengthNotAhgar] = useState("");
@@ -38,7 +39,7 @@ const WeightAdjustment = () => {
     invoice_number: "",
     karat_id: "",
     bond_id: "",
-    date: "",
+    invoice_date: "",
     weight_input: "",
   };
 
@@ -70,10 +71,10 @@ const WeightAdjustment = () => {
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
         if (first) {
-          url += `?${key}[eq]=${req[key]}`;
+          url += `?${key}=${req[key]}`;
           first = false;
         } else {
-          url += `&${key}[eq]=${req[key]}`;
+          url += `&${key}=${req[key]}`;
         }
       }
     });
