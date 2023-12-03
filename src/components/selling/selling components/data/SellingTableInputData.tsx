@@ -300,7 +300,7 @@ export const SellingTableInputData = ({
   }, [search])
 
   return (
-    <Form>
+    <Form className="overflow-auto">
       <p className="font-semibold text-center text-lg text-mainGreen">
         {isRefetching || isFetching && (
           <div className="flex items-center justify-center gap-3">
@@ -309,7 +309,7 @@ export const SellingTableInputData = ({
           </div>
         )}
       </p>
-      <table className="mt-8 w-[815px] lg:w-full">
+      <table className="mt-8 min-w-[815px] lg:w-full">
         <thead className="bg-mainGreen text-white">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="py-4 px-2 w-full">
