@@ -570,7 +570,7 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/payoff/payoff" element={<Payoff />} />
           <Route
             path="/selling/branchSetting"
-            element={<BranchSettingPage />}
+            element={<BranchSettingPage />}   
           />
           {/* BUYING START */}
           <Route path="/buying/purchaseInvoice" element={<BuyingInvoice />} />
