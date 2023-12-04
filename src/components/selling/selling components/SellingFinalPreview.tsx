@@ -59,7 +59,12 @@ export const SellingFinalPreview = ({
     endpoint: `/selling/api/v1/get_sentence`,
     queryKey: ["sentence"],
   });
-  console.log("🚀 ~ file: SellingFinalPreview.tsx:60 ~ data:", data)
+
+  const { data: companyData } = useFetch<Client_TP>({
+    endpoint: `/companySettings/api/v1/companies`,
+    queryKey: ["Mineral_license"],
+  });
+  console.log("🚀 ~ file: SellingFinalPreview.tsx:60 ~ companyData:", companyData)
   
 
   return (
@@ -91,13 +96,10 @@ export const SellingFinalPreview = ({
                 {userData?.branch?.city?.name} ,{" "}
                 {userData?.branch?.district?.name}
               </p>
-              {/* <p>رقم المحل</p> */}
-              <p>
-                {t("phone")}: {userData?.phone}
-              </p>
-              <p>
-              {t("email")}: {userData?.email}
-              </p>
+              <p>{t("phone")}: {userData?.phone}</p>
+              <p>{t("email")}: {userData?.email}</p>
+              <p>{t("tax number")}: {companyData && companyData[0]?.taxRegisteration}</p>
+              <p>{t("Mineral license")}: {companyData && companyData[0]?.mineralLicence}</p>
             </div>
           </div>
         </div>

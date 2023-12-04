@@ -299,7 +299,7 @@ export const SellingTableInputData = ({
   }, [search])
 
   return (
-    <Form className="overflow-auto">
+    <Form className="overflow-y-auto">
       <p className="font-semibold text-center text-lg text-mainGreen">
         {isRefetching || isFetching && (
           <div className="flex items-center justify-center gap-3">

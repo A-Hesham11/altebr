@@ -101,6 +101,8 @@ import ViewBuyingPolicies from "../components/templates/buyingPolicies/ViewBuyin
 import BuyingInvoice from "../pages/Buying/BuyingInvoice";
 import WeightAdjustment from "../pages/Buying/WeightAdjustment/WeightAdjustment";
 import BuyingRestrictionsInvoice from "../pages/Buying/BuyingRestrictionsInvoice"
+import PaymentToManagementPage from "../pages/Payment/PaymentToManagementPage"
+import VeiwPaymentToManagement from "../pages/Payment/VeiwPaymentToManagement"
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -496,7 +498,9 @@ export const AllRoutesProvider = () => {
             element={<ReservePiece />}
           />
           <Route path="/selling/payoff" element={<Payoff />} />
+          <Route path="/selling/payment" element={<PaymentToManagementPage/>} />
           <Route path="/selling/reimbursement" element={<PaymentToManagement/>} />
+          <Route path="/selling/viewPayment" element={<VeiwPaymentToManagement />} />
           {/* neighbors start */}
           <Route path="/selling/neighbors" element={<NeighborsPage />} />
           <Route path="/selling/neighbors/loaning" element={<>loaning</>} />
