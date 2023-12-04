@@ -149,7 +149,6 @@ export const BuyingTable = ({
   return (
     <>
       <table className="mt-8 min-w[800px]">
-      <table className="mt-8 ">
         <thead className="bg-mainGreen text-white">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="py-4 px-2">

@@ -2,7 +2,7 @@ import { t } from "i18next";
 import React, { useEffect, useMemo, useState } from "react";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { Button } from "../../../components/atoms";
-import { Form } from "formik";
+import { Form, Formik, useFormikContext } from "formik";
 import { useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
@@ -15,28 +15,52 @@ const TableOfWeightAdjustmentPreview = ({
   inputWeight,
   setWeightModal,
 }) => {
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:18 ~ item:", item)
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:18 ~ inputWeight:",
+    inputWeight
+  );
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:18 ~ item:", item);
   const queryClient = useQueryClient();
 
-const totalEditedWeight = item.reduce(
-  (acc, cur) => acc + Number(cur.weight),
-  0
-  )
+  const totalEditedWeight = item.reduce(
+    (acc, cur) => acc + Number(cur.weight),
+    0
+  );
+
   const [inputValue, setInputValue] = useState(totalEditedWeight);
-  const weightDifference = Math.abs(totalEditedWeight - inputValue);
-  const weightDifferencePerWeight = weightDifference / item.length;
+  const weightDifference = +inputValue - +totalEditedWeight;
+  const weightDifferencePerWeight = (+weightDifference / item.length).toFixed(
+    2
+  );
+  
   const [inputValue2, setInputValue2] = useState();
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:29 ~ inputValue2:", inputValue2)
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:28 ~ weightDifferencePerWeight:", weightDifferencePerWeight)
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:27 ~ weightDifference:", weightDifference)
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:32 ~ inputValue2:",
+    inputValue2
+    );
+    const test = item.map((item) => +item.weight + +weightDifferencePerWeight);
+     console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:36 ~ test:", test)
 
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:28 ~ weightDifferencePerWeight:",
+    weightDifferencePerWeight
+  );
 
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:27 ~ inputValue:", inputValue)
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:27 ~ weightDifference:",
+    weightDifference
+  );
 
-console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:25 ~ totalEditedWeight:", totalEditedWeight)
-useEffect(() => {
-  setInputValue2(weightDifferencePerWeight)
-}, [inputValue])
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:27 ~ inputValue:",
+    inputValue
+  );
+
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:25 ~ totalEditedWeight:",
+    totalEditedWeight
+  );
+
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [
@@ -68,41 +92,38 @@ useEffect(() => {
             info.row.original
           );
           return (
-            <>
-              <input
-                type="number"
-                className="w-20 rounded-md h-10 text-center"
-                min="1" 
-                max={info.row.original.weight}
-                name="weight_input"
-                id="weight_input"
-                value={inputValue2}
-                onBlur={(e) => {
-                  setInputWeight((prev) => {
-                    // Check if the object with the same id exists in the array
-                    const existingItemIndex = prev.findIndex(
-                      (item) => item.id === info.row.original.id
-                    );
+            <input
+              type="number"
+              className="w-20 rounded-md h-10 text-center"
+              min="1"
+              name="weight_input"
+              id="weight_input"
+              onBlur={(e) => {
+                setInputWeight((prev) => {
+                  const existingItemIndex = prev.findIndex(
+                    (item) => item.id === info.row.original.id
+                  );
 
-                    if (existingItemIndex !== -1) {
-                      // If the object exists, update its value
-                      return prev.map((item, index) =>
-                        index === existingItemIndex
-                          ? { ...item, value: e.target.value }
-                          : item
-                      );
-                    } else {
-                      // If the object doesn't exist, add a new one
-                      return [
-                        ...prev,
-                        { value: e.target.value, id: info.row.original.id },
-                      ];
-                    }
-                  });
-                }}
-                onChange={(e) => setInputValue2(+e.target.value) }
-              />
-            </>
+                  if (existingItemIndex !== -1) {
+                    return prev.map((item, index) =>
+                      index === existingItemIndex
+                        ? { ...item, value: e.target.value }
+                        : item
+                    );
+                  } else {
+                    return [
+                      ...prev,
+                      { value: e.target.value, id: info.row.original.id },
+                    ];
+                  }
+                });
+              }}
+              // onChange={(e) =>
+              //   setInputValue2(
+              //     Math.abs(totalEditedWeight - inputValue) / item.length
+              //   )
+              // }
+            />
           );
         },
         accessorKey: "edit_weight",
@@ -141,32 +162,62 @@ useEffect(() => {
           {t("specified invoice")}
         </h2>
         <Table data={item} columns={tableColumn}></Table>
-        
+
         <div className="flex items-center gap-4 mt-4">
           <h2>{t("total edited weight")}</h2>
-          <input type="number" value={inputValue} 
-          onChange={(e) => {
-            setInputValue(e.target.value)
-            } } className="rounded-md h-10 text-center"/>
+          <input
+            type="number"
+            value={inputValue}
+            onChange={(e) => {
+              setInputValue(e.target.value);
+              if (+weightDifferencePerWeight !== 0) {
+                setInputValue2(
+                  (e.target.value - totalEditedWeight) / item.length
+                );
+              }
+            }}
+            className="rounded-md h-10 text-center"
+          />
+          {/* <p>{inputValue2}</p> */}
         </div>
         <Button
           type="submit"
           action={() => {
             console.log({
               items: item.map((el, i) => {
-                return {
-                  id: el.id,
-                  weight: Number(inputWeight[i].value),
-                };
+                if (inputValue !== totalEditedWeight) {
+                  return {
+                    id: el.id,
+                    // weight: Number(inputWeight[i].value),
+                    weight: test[i],
+                  };
+                } else {
+                  return {
+                    id: el.id,
+                    // weight: Number(inputWeight[i].value),
+                    weight: Number(inputWeight[i].value),
+                  };
+
+                }
               }),
             });
 
             PostNewValue({
               items: item.map((el, i) => {
-                return {
-                  id: el.id,
-                  weight: Number(inputWeight[i].value),
-                };
+                if (inputValue !== totalEditedWeight) {
+                  return {
+                    id: el.id,
+                    // weight: Number(inputWeight[i].value),
+                    weight: test[i],
+                  };
+                } else {
+                  return {
+                    id: el.id,
+                    // weight: Number(inputWeight[i].value),
+                    weight: Number(inputWeight[i].value),
+                  };
+
+                }
               }),
             });
 

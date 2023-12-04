@@ -959,6 +959,7 @@
   "no combined pieces were selected for separation": "لم يتم اختيار قطع مدمجة لفصلها",
   "pieces details": "تفاصيل القطع",
   "there are no stones": "لا يوجد احجار",
+  "there are stones": "يوجد احجار",
   "piece detail:": "تفاصيل القطعة:",
   "there is no image data to display": "لا توجد بيانات صور للعرض",
   "certificate number": "رقم شهادة الحجر",
@@ -999,4 +1000,8 @@
   "daily gram price": "سعر الجرام اليومي",
   "daily kilo price": "سعر الكيلو اليومي",
   "total edited weight": "اجمالي الوزن المعدل",
+  "total values is greater than the value in the cash": "القيمة الاجمالية اكبر من المتاح في صندوق النقدية",
+  "select only a similar karat": "قم باختيار العيارات المتشابهه فقط",
+  "purchase bonds": "سندات الشراء",
+  "wegith adjustment bonds": "سندات تعديل الوزن"
 }

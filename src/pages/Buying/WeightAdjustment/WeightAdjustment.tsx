@@ -14,6 +14,7 @@ import { notify } from "../../../utils/toast";
 import { Loading } from "../../../components/organisms/Loading";
 import { useQueryClient } from "@tanstack/react-query";
 import { mutateData } from "../../../utils/mutateData";
+import { formatDate, getDayAfter } from "../../../utils/date";
 
 const WeightAdjustment = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -23,6 +24,7 @@ const WeightAdjustment = () => {
   const [activeTab, setActiveTab] = useState(1);
 
   const [search, setSearch] = useState("");
+  console.log("🚀 ~ file: WeightAdjustment.tsx:27 ~ WeightAdjustment ~ search:", search)
   const [inputWeight, setInputWeight] = useState([]);
   const [weightModal, setWeightModal] = useState(false);
   const [endpoint, setEndPoint] = useState(
@@ -37,19 +39,20 @@ const WeightAdjustment = () => {
     bond_id: "",
     invoice_date: "",
     weight_input: "",
+    stones_type: "",
   };
 
-  const { data: ahgaring } = useFetch({
-    queryKey: ["ahgaring"],
-    endpoint: `/buyingUsedGold/api/v1/items_has_stones/${userData?.branch_id}`,
-    pagination: true,
-  });
+  // const { data: ahgaring } = useFetch({
+  //   queryKey: ["ahgaring"],
+  //   endpoint: `/buyingUsedGold/api/v1/items_has_stones/${userData?.branch_id}`,
+  //   pagination: true,
+  // });
 
-  const { data: notAhgaring } = useFetch({
-    queryKey: ["notAhgaring"],
-    endpoint: `/buyingUsedGold/api/v1/items_hasnot_stones/${userData?.branch_id}`,
-    pagination: true,
-  });
+  // const { data: notAhgaring } = useFetch({
+  //   queryKey: ["notAhgaring"],
+  //   endpoint: `/buyingUsedGold/api/v1/items_hasnot_stones/${userData?.branch_id}`,
+  //   pagination: true,
+  // });
 
   // FETCHING DATA FROM API
   const {
@@ -61,9 +64,10 @@ const WeightAdjustment = () => {
   } = useFetch({
     queryKey: ["wegiht_table"],
     endpoint:
-      search === `${endpoint}${userData?.branch_id}?page=${page}` ||
+      search ===
+        `/buyingUsedGold/api/v1/buying_invoices/${userData?.branch_id}?page=${page}` ||
       search === ""
-        ? `${endpoint}${userData?.branch_id}?page=${page}`
+        ? `/buyingUsedGold/api/v1/buying_invoices/${userData?.branch_id}?page=${page}`
         : `${search}`,
     pagination: true,
   });
@@ -87,7 +91,7 @@ const WeightAdjustment = () => {
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
-    let url = `${endpoint}${userData?.branch_id}?`;
+    let url = `/buyingUsedGold/api/v1/buying_invoices/${userData?.branch_id}?`;
     let first = false;
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
@@ -105,22 +109,17 @@ const WeightAdjustment = () => {
   // EFFECTS
   useEffect(() => {
     if (weightAdjustmentData) {
-      setDataSource(weightAdjustmentData.data);
+      setDataSource(weightAdjustmentData);
     }
   }, [weightAdjustmentData]);
 
   useEffect(() => {
     refetch();
-  }, [page, endpoint, weightAdjustmentData]);
-
-  useEffect(() => {
-    if (page == 1) {
-      refetch();
-    }
-  }, [search]);
+  }, [page, endpoint, search]);
 
   useEffect(() => {
     setOperationTypeSelect([]);
+    setSearch("");
   }, [endpoint]);
 
   if (isRefetching || isLoading || isFetching)
@@ -131,13 +130,31 @@ const WeightAdjustment = () => {
     setActiveTab(tabNumber);
   };
 
+  const hasDifferenceKarat = () => {
+    if (operationTypeSelect.length <= 1) return false;
+
+    const firstKarat = operationTypeSelect[0].karat_name;
+
+    for (let i = 1; i < operationTypeSelect.length; i++) {
+      if (operationTypeSelect[i].karat_name !== firstKarat) {
+        return true; // There is a difference
+      }
+    }
+
+    return false;
+  };
+  console.log(
+    "🚀 ~ file: WeightAdjustment.tsx:145 ~ hasDifferenceKarat ~ hasDifferenceKarat:",
+    hasDifferenceKarat()
+  );
+
   return (
     <div className="relative h-full p-10">
       <h2 className="mb-6 text-xl font-bold text-slate-700">
         {t("weight adjustment")}
       </h2>
 
-      <div className="flex items-center justify-center gap-4">
+      {/* <div className="flex items-center justify-center gap-4">
         <li
           onClick={() =>
             setEndPointAndSetActiveTab(
@@ -157,7 +174,7 @@ const WeightAdjustment = () => {
             {t(`pieces with stones`)}
           </p>
           <p className={` bg-white text-black  px-2 py-2 h-[35%] rounded-b-xl`}>
-            {ahgaring?.total} 
+            {ahgaring?.total}
             <span> {t(`piece`)}</span>
           </p>
         </li>
@@ -180,17 +197,33 @@ const WeightAdjustment = () => {
             {t(`pieces without stones`)}
           </p>
           <p className={`bg-white text-black px-2 py-2 h-[35%] rounded-b-xl`}>
-            {notAhgaring?.total} 
+            {notAhgaring?.total}
             <span> {t(`piece`)}</span>
           </p>
         </li>
-      </div>
+      </div> */}
 
       <Formik
         initialValues={initailSearchValues}
         onSubmit={(values) => {
+          const stones = {
+            has_stones: values.stones_type == 1 ? 1 : 0,
+            edited: values.stones_type == 2 ? 1 : 0,
+          };
           getSearchResults({
             ...values,
+            ...stones,
+            // invoice_date: values.invoice_date
+            //   ? formatDate(getDayAfter(new Date(values.invoice_date)))
+            //   : "",
+          });
+
+          console.log({
+            ...values,
+            ...stones,
+            // invoice_date: values.invoice_date
+            //   ? formatDate(getDayAfter(new Date(values.invoice_date)))
+            //   : "",
           });
         }}
       >
@@ -209,15 +242,19 @@ const WeightAdjustment = () => {
               setCheckboxChecked={setCheckboxChecked}
               endpoint={endpoint}
               weightAdjustmentData={weightAdjustmentData}
-              ahgaring={ahgaring}
-              notAhgaring={notAhgaring}
+              // ahgaring={ahgaring}
+              // notAhgaring={notAhgaring}
             />
 
             <div className="flex gap-4 items-center self-end mr-auto my-6">
               <Back className="w-32" />
               <Button
                 onClick={() => {
-                  return setWeightModal(true);
+                  if (hasDifferenceKarat() === true) {
+                    notify("info", t("select only a similar karat"));
+                  } else {
+                    setWeightModal(true);
+                  }
                 }}
                 className="bg-mainGreen text-white"
               >

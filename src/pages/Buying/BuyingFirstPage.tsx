@@ -42,7 +42,6 @@ const BuyingFirstPage = ({
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
 
-
   const totalValues = sellingItemsData.reduce(
     (acc, curr) => Number(acc) + Number(curr?.value),
     0
@@ -96,6 +95,12 @@ const BuyingFirstPage = ({
     endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
     queryKey: ["get-gold-price"],
   });
+
+  const { data: naqdya } = useFetch<ClientData_TP>({
+    endpoint: `/buyingUsedGold/api/v1/get-nadya-box`,
+    queryKey: ["naqdya"],
+  });
+  console.log("🚀 ~ file: BuyingFirstPage.tsx:105 ~ naqdya:", naqdya);
 
   return (
     <Form className="overflow-hidden">
@@ -169,6 +174,14 @@ const BuyingFirstPage = ({
               }
               if (!values?.client_id) {
                 notify("info", `${t("choose client's name first")}`);
+                return;
+              }
+
+              if (+totalValues.toFixed(2) > naqdya.toFixed(2)) {
+                notify(
+                  "info",
+                  `${t("total values is greater than the value in the cash")}`
+                );
                 return;
               }
 
