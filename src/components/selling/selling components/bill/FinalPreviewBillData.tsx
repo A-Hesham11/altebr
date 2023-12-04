@@ -19,6 +19,7 @@ type Client_TP = {
 }
 
 const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
+  console.log("🚀 ~ file: FinalPreviewBillData.tsx:22 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber)
   
   const {  client_id, client_value } = clientData
 

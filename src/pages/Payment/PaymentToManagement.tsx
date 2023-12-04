@@ -75,20 +75,22 @@ const PaymentToManagement = () => {
             postPaymentData.push(keyValueObject);
         })
 
-        mutate({
-            endpointName: "/sdad/api/v1/store",
-            values: {payment: postPaymentData},
-            method: "post",
-        });
+        console.log("🚀 ~ file: PaymentToManagement.tsx:68 ~ handleSeccessedData ~ postPaymentData:", postPaymentData)
+
+        // mutate({
+        //     endpointName: "/sdad/api/v1/store",
+        //     values: {payment: postPaymentData},
+        //     method: "post",
+        // });
 
         if (paymentData.length === 0) {
             notify('info','fill fields first')
             return;
         }
 
-        notify('success')
+        // notify('success')
 
-        navigate("/selling/payment/restrictions")
+        // navigate("/selling/payment/restrictions")
 
     };
 

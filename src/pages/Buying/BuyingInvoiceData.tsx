@@ -167,6 +167,7 @@ const BuyingInvoiceData = ({
         clientData={clientData}
         sellingItemsData={sellingItemsData}
         costDataAsProps={costDataAsProps}
+        invoiceNumber={invoiceNumber}
       />
     </div>
   );

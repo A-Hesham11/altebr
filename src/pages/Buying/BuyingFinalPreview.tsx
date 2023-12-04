@@ -24,6 +24,7 @@ type SellingFinalPreviewProps_TP = {
   clientData: Client_TP;
   costDataAsProps: any;
   sellingItemsData: any
+  invoiceNumber: any
 };
 export const BuyingFinalPreview = ({
   ItemsTableContent,
@@ -31,7 +32,8 @@ export const BuyingFinalPreview = ({
   paymentData,
   clientData,
   costDataAsProps,
-  sellingItemsData
+  sellingItemsData,
+  invoiceNumber
 }: SellingFinalPreviewProps_TP) => {
   const { userData } = useContext(authCtx);
 
@@ -45,7 +47,7 @@ export const BuyingFinalPreview = ({
       <div className="print-section">
         <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
           <div className="mx-6 bill-shadow rounded-md p-6">
-            <FinalPreviewBillData clientData={clientData} />
+            <FinalPreviewBillData clientData={clientData} invoiceNumber={invoiceNumber} />
           </div>
           {ItemsTableContent}
           <div className="mx-6 bill-shadow rounded-md p-6 my-9">

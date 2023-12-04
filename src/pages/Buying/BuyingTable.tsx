@@ -148,14 +148,14 @@ export const BuyingTable = ({
 
   return (
     <>
-      <table className="mt-8 min-w[800px]">
+      <table className="mt-8 ">
         <thead className="bg-mainGreen text-white">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="py-4 px-2">
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="py-4 px-2 text-sm font-medium text-white border w-[12.5%]"
+                  className="py-4 px-2 text-sm font-medium text-white border w-[16.6%]"
                 >
                   {header.isPlaceholder
                     ? null
@@ -170,7 +170,7 @@ export const BuyingTable = ({
         </thead>
         <tbody>
           <tr className="text-center table-shadow last:shadow-0">
-            <td className="border-l-2 border-l-flatWhite w-32">
+            <td className="border-l-2 border-l-flatWhite">
               <SelectCategory
                 name="category_id"
                 noMb={true}
@@ -215,7 +215,7 @@ export const BuyingTable = ({
                 className={`text-center`}
               />
             </td>
-            <td className="border-l-2 border-l-flatWhite w-40">
+            <td className="border-l-2 border-l-flatWhite">
               <SelectKarat
                 field="id"
                 name="karat_id"
