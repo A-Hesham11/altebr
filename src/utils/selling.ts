@@ -54,7 +54,7 @@ export const sellingCards = [
     icon: sadad,
     title_en: "reimbursement",
     title_ar: "السداد",
-    route: "/selling/reimbursement",
+    route: "/selling/payment",
   },
   {
     icon: neighbors,
