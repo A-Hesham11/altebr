@@ -580,6 +580,8 @@ export const AllRoutesProvider = () => {
           <Route path="/buying/purchaseInvoice" element={<BuyingInvoice />} />
           <Route path="/system/policiesBuying" element={<ViewBuyingPolicies />} />
           <Route path="/buying/weightAdjustment" element={<WeightAdjustment />} />
+          <Route path="/buying/purchaseBonds" element={<PurchaseBonds />} />
+          <Route path="/buying/weightAdjustmentBonds" element={<WeightAdjustmentBonds />} />
           <Route
             path="/buying/invoice-restrictions"
             element={<BuyingRestrictionsInvoice />}

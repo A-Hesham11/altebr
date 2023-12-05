@@ -18,8 +18,6 @@ const TableOfWeightAdjustment = ({
   checkboxChecked,
   weightAdjustmentData,
   endpoint,
-  ahgaring,
-  notAhgaring,
 }) => {
   console.log(
     "🚀 ~ file: TableOfWeightAdjustment.tsx:20 ~ dataSource:",
@@ -39,16 +37,11 @@ const TableOfWeightAdjustment = ({
           return (
             <input
               // checked={checkboxChecked}
-              disabled={
-                endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/"
-                  ? true
-                  : false
-              }
+              disabled={info.row.original.has_stones == 0}
               type="checkbox"
               className={`${
-                endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/"
-                  ? "bg-mainGray border-mainGray"
-                  : ""
+                info.row.original.has_stones == 0 &&
+                "bg-mainGray border-mainGray"
               }`}
               onChange={(e) => {
                 // setCheckboxChecked(!checkboxChecked)
@@ -133,19 +126,13 @@ const TableOfWeightAdjustment = ({
   return (
     <>
       <div className="">
-        <Table data={dataSource || []} columns={tableColumn}>
+        <Table data={dataSource.data || []} columns={tableColumn}>
           <div className="mt-3 flex items-center justify-center gap-5 p-2">
             <div className="flex items-center gap-2 font-bold">
               {t("page")}
               <span className=" text-mainGreen">{page}</span>
               {t("from")}
-              {
-                <span className=" text-mainGreen">
-                  {endpoint === "/buyingUsedGold/api/v1/items_hasnot_stones/"
-                    ? notAhgaring?.pages
-                    : ahgaring?.pages}
-                </span>
-              }
+              {<span className=" text-mainGreen">{dataSource?.total}</span>}
             </div>
             <div className="flex items-center gap-2 ">
               <Button
@@ -163,7 +150,7 @@ const TableOfWeightAdjustment = ({
               <Button
                 className="rounded bg-mainGreen p-[.18rem]"
                 action={() => setPage((prev: any) => prev + 1)}
-                disabled={page == weightAdjustmentData?.pages}
+                disabled={page == dataSource?.pages}
               >
                 {isRTL ? (
                   <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />

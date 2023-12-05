@@ -46,19 +46,37 @@ const BuyingPage = () => {
       route: "/buying/purchaseInvoice/",
       underCardInfo: (
         <Link
-          to="/buying/invoice-restrictions"
+          to="/buying/purchaseBonds/"
           className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
         >
           <FaCubes className="text-mainGreen" size={25} />
-          <p className="text-mainGreen">{t("invoice restrictions")}</p>
+          <p className="text-mainGreen">{t("purchase bonds")}</p>
         </Link>
       ),
+      // underCardInfo: (
+      //   <Link
+      //     to="/buying/invoice-restrictions"
+      //     className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+      //   >
+      //     <FaCubes className="text-mainGreen" size={25} />
+      //     <p className="text-mainGreen">{t("invoice restrictions")}</p>
+      //   </Link>
+      // ),
     },
     {
       icon: receiveitem,
       title_ar: "تعديل الوزن",
       title_en: "weight adjustment",
       route: "/buying/weightAdjustment/",
+      underCardInfo: (
+        <Link
+          to="/buying/weightAdjustmentBonds/"
+          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+        >
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("wegith adjustment bonds")}</p>
+        </Link>
+      ),
     },
   ];
 
@@ -68,15 +86,17 @@ const BuyingPage = () => {
         <div className="p-8 absolute top-0 left-5">
           <Back />
         </div>
-        {data.map((item) => (
-          <SellingSubCard
-            icon={item.icon}
-            title={isRTL ? item.title_ar : item.title_en}
-            route={item.route}
-            underCardInfo={item.underCardInfo}
-            key={crypto.randomUUID()}
-          />
-        ))}
+        <div className="flex flex-wrap justify-center items-center gap-5">
+          {data.map((item) => (
+              <SellingSubCard
+                icon={item.icon}
+                title={isRTL ? item.title_ar : item.title_en}
+                route={item.route}
+                underCardInfo={item.underCardInfo}
+                key={crypto.randomUUID()}
+              />
+          ))}
+        </div>
       </div>
     </>
   );
