@@ -10,44 +10,53 @@ const WeightInvoiceBondsPreview = ({ item }: { item?: {} }) => {
   const tableColumn = useMemo<any>(
     () => [
       {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "hwya",
-        header: () => <span>{t("hwya")}</span>,
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "invoice_number",
+        header: () => <span>{t("buying invoice number")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
+        cell: (info: any) => info.getValue() || "-",
         accessorKey: "category_name",
-        header: () => <span>{t("category")}</span>,
-      },
-      {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "classification_name",
         header: () => <span>{t("classification")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
+        cell: (info: any) => {
+          return <span>{t("there are no stones")}</span>;
+        },
+        accessorKey: "has_stones",
+        header: () => <span>{t("stones")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "old_weight",
+        header: () => <span>{t("weight")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "weight",
+        header: () => <span>{t("weight after editing")}</span>,
+      },
+      // {
+      //   cell: (info: any) => {
+      //     return info.row.original.old_weight - info.row.original.weight;
+      //   },
+      //   accessorKey: "#",
+      //   header: () => <span>{t("weight difference")}</span>,
+      // },
+      {
+        cell: (info: any) => formatReyal(Number(info.renderValue())) || "-",
         accessorKey: "karat_name",
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "weight",
-        header: () => <span>{t("weight")}</span>,
+        cell: (info: any) => info.renderValue() || "-",
+        accessorKey: "hadr_ahgar",
+        header: () => <span>{t("lose stones")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(Number(info.renderValue())),
-        accessorKey: "cost",
-        header: () => <span>{t("cost")}</span>,
-      },
-      {
-        cell: (info: any) => formatReyal(Number(info.renderValue())),
-        accessorKey: "vat",
-        header: () => <span>{t("vat")}</span>,
-      },
-      {
-        cell: (info: any) => formatReyal(Number(info.renderValue()).toFixed(2)),
-        accessorKey: "total",
-        header: () => <span>{t("total")}</span>,
+        cell: (info: any) => info.renderValue() || "-",
+        accessorKey: "added_ahgar",
+        header: () => <span>{t("increase weight")}</span>,
       },
     ],
     []

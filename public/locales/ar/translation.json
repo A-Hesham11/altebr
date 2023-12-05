@@ -1005,5 +1005,9 @@
   "total values is greater than the value in the cash": "القيمة الاجمالية اكبر من المتاح في صندوق النقدية",
   "select only a similar karat": "قم باختيار العيارات المتشابهه فقط",
   "purchase bonds": "سندات الشراء",
-  "wegith adjustment bonds": "سندات تعديل الوزن"
+  "wegith adjustment bonds": "سندات تعديل الوزن",
+  "lose stones": "هدر احجار",
+  "increase weight": "زيادة وزن",
+  "weight after editing": "الوزن بعد التعديل",
+  "buying invoice number": "رقم فاتورة الشراء"
 }

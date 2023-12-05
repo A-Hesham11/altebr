@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { Button } from "../../../components/atoms";
 import { Form, Formik, useFormikContext } from "formik";
@@ -8,12 +8,15 @@ import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useReactTable } from "@tanstack/react-table";
+import { formatDate } from "../../../utils/date";
+import { authCtx } from "../../../context/auth-and-perm/auth";
 
 const TableOfWeightAdjustmentPreview = ({
   item,
   setInputWeight,
   inputWeight,
   setWeightModal,
+  setOperationTypeSelect,
 }) => {
   console.log(
     "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:18 ~ inputWeight:",
@@ -27,19 +30,25 @@ const TableOfWeightAdjustmentPreview = ({
     0
   );
 
+  const { userData } = useContext(authCtx);
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:34 ~ userData:",
+    userData
+  );
+
   const [inputValue, setInputValue] = useState(totalEditedWeight);
   const weightDifference = +inputValue - +totalEditedWeight;
   const weightDifferencePerWeight = (+weightDifference / item.length).toFixed(
     2
   );
-  
+
   const [inputValue2, setInputValue2] = useState();
   console.log(
     "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:32 ~ inputValue2:",
     inputValue2
-    );
-    const test = item.map((item) => +item.weight + +weightDifferencePerWeight);
-     console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:36 ~ test:", test)
+  );
+  const test = item.map((item) => +item.weight + +weightDifferencePerWeight);
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:36 ~ test:", test);
 
   console.log(
     "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:28 ~ weightDifferencePerWeight:",
@@ -184,6 +193,13 @@ const TableOfWeightAdjustmentPreview = ({
           type="submit"
           action={() => {
             console.log({
+              invoice: {
+                branch_id: userData?.branch_id,
+                invoice_date: formatDate(new Date()),
+                count: item?.length,
+                employee_id: item[0]?.employee_id,
+                invoice_number: 1,
+              },
               items: item.map((el, i) => {
                 if (inputValue !== totalEditedWeight) {
                   return {
@@ -197,12 +213,18 @@ const TableOfWeightAdjustmentPreview = ({
                     // weight: Number(inputWeight[i].value),
                     weight: Number(inputWeight[i].value),
                   };
-
                 }
               }),
             });
 
             PostNewValue({
+              invoice: {
+                branch_id: userData?.branch_id,
+                invoice_date: formatDate(new Date()),
+                count: item?.length,
+                employee_id: item[0]?.employee_id,
+                invoice_number: 1,
+              },
               items: item.map((el, i) => {
                 if (inputValue !== totalEditedWeight) {
                   return {
@@ -216,12 +238,13 @@ const TableOfWeightAdjustmentPreview = ({
                     // weight: Number(inputWeight[i].value),
                     weight: Number(inputWeight[i].value),
                   };
-
                 }
               }),
             });
 
             setWeightModal(false);
+            setOperationTypeSelect([]);
+            setInputWeight([]);
           }}
           className="bg-mainGreen text-white self-end"
         >

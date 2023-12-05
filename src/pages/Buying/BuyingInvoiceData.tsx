@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { ClientData_TP, Selling_TP } from "./PaymentSellingPage";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import { authCtx } from "../../context/auth-and-perm/auth";
-import { useMutate } from "../../hooks";
+import { useFetch, useMutate } from "../../hooks";
 import { mutateData } from "../../utils/mutateData";
 import { Button } from "../../components/atoms";
 import { SellingFinalPreview } from "../../components/selling/selling components/SellingFinalPreview";
@@ -123,11 +123,11 @@ const BuyingInvoiceData = ({
       return {
         category_id: item.category_id,
         karat_id: item.karat_id,
-        edited: "0",
+        // edited: "0",
         branch_id: userData?.branch_id,
         gram_price: item.piece_per_gram,
-        value_added_tax: item.value_added_tax,
-        total_value: item.total_value,
+        // value_added_tax: item.value_added_tax,
+        // total_value: item.total_value,
         weight: item.weight,
         value: item.value,
         has_stones: `${item.stones_id}`,
@@ -140,6 +140,14 @@ const BuyingInvoiceData = ({
     })
   };
 
+  // const {
+  //   data: test
+  // } = useFetch({
+  //   queryKey: ["test"],
+  //   endpoint: "/buyingUsedGold/api/v1/add_buying_Invoice",
+  // });
+
+  // console.log("🚀 ~ file: BuyingInvoiceData.tsx:145 ~ test:", test)
   return (
     <div>
       <div className="flex items-center justify-between mx-8 mt-8">

@@ -103,6 +103,8 @@ import WeightAdjustment from "../pages/Buying/WeightAdjustment/WeightAdjustment"
 import BuyingRestrictionsInvoice from "../pages/Buying/BuyingRestrictionsInvoice"
 import PaymentToManagementPage from "../pages/Payment/PaymentToManagementPage"
 import VeiwPaymentToManagement from "../pages/Payment/VeiwPaymentToManagement"
+import PurchaseBonds from "../pages/Buying/Bonds/PurchaseBonds"
+import WeightAdjustmentBonds from "../pages/Buying/Bonds/WeightAdjustmentBonds"
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);

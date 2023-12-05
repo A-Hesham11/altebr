@@ -27,8 +27,8 @@ const PurchaseInvoiceBondsPreview = ({ item }: { item?: {} }) => {
       },
       {
         cell: (info: any) => info.getValue() || "-",
-        accessorKey: "old_weight",
-        // accessorKey: "weight",
+        // accessorKey: "old_weight",
+        accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
       {
