@@ -132,7 +132,7 @@ const TableOfWeightAdjustment = ({
               {t("page")}
               <span className=" text-mainGreen">{page}</span>
               {t("from")}
-              {<span className=" text-mainGreen">{dataSource?.total}</span>}
+              {<span className=" text-mainGreen">{dataSource?.pages}</span>}
             </div>
             <div className="flex items-center gap-2 ">
               <Button

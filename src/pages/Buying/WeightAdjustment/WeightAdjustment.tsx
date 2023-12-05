@@ -267,6 +267,7 @@ const WeightAdjustment = () => {
                 inputWeight={inputWeight}
                 setInputWeight={setInputWeight}
                 item={operationTypeSelect}
+                setOperationTypeSelect={setOperationTypeSelect}
                 setWeightModal={setWeightModal}
               />
             </Modal>

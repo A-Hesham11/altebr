@@ -17,6 +17,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import PurchaseInvoiceBondsPreview from "./PurchaseInvoiceBondsPreview";
 import { Loading } from "../../../components/organisms/Loading";
 import { Weight } from "../../../components/atoms/icons/Weight";
+import WeightInvoiceBondsPreview from "./WeightInvoiceBondsPreview";
 
 const WeightAdjustmentBonds = () => {
   // STATE
@@ -41,11 +42,11 @@ const WeightAdjustmentBonds = () => {
     isRefetching,
     refetch,
   } = useFetch({
-    queryKey: ["selling-invoice"],
+    queryKey: ["weight-bonds-invoice"],
     endpoint:
-      search === `selling/api/v1/invoices_per_branch/${userData?.branch_id}?` ||
+      search === `/buyingUsedGold/api/v1/list_edited_invoices/${userData?.branch_id}?` ||
       search === ""
-        ? `selling/api/v1/invoices_per_branch/${userData?.branch_id}?page=${page}`
+        ? `/buyingUsedGold/api/v1/list_edited_invoices/${userData?.branch_id}?page=${page}`
         : `${search}`,
     pagination: true,
   });
@@ -67,11 +68,6 @@ const WeightAdjustmentBonds = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "invoice_date",
         header: () => <span>{t("date")}</span>,
-      },
-      {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "client_name",
-        header: () => <span>{t("client name")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
@@ -117,7 +113,7 @@ const WeightAdjustmentBonds = () => {
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
-    let url = `selling/api/v1/invoices_per_branch/${userData?.branch_id}?`;
+    let url = `/buyingUsedGold/api/v1/list_edited_invoices/${userData?.branch_id}?`;
     let first = false;
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
@@ -187,7 +183,7 @@ const WeightAdjustmentBonds = () => {
       </div>
 
       {/* 2) TABLE */}
-      {/* <div className="">
+      <div className="">
          <Table data={dataSource || []} columns={tableColumn}>
            <div className="mt-3 flex items-center justify-center gap-5 p-2">
              <div className="flex items-center gap-2 font-bold">
@@ -196,7 +192,7 @@ const WeightAdjustmentBonds = () => {
                  {invoiceData?.current_page}
                </span>
                {t("from")}
-               {<span className=" text-mainGreen">{invoiceData?.total}</span>}
+               {<span className=" text-mainGreen">{invoiceData?.pages}</span>}
              </div>
              <div className="flex items-center gap-2 ">
                <Button
@@ -225,11 +221,11 @@ const WeightAdjustmentBonds = () => {
              </div>
            </div>
          </Table>
-       </div> */}
+       </div>
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
-        <WeightAdjustmentBonds item={selectedItem} />
+        <WeightInvoiceBondsPreview item={selectedItem} />
       </Modal>
     </div>
   );
