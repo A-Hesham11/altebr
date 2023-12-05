@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { Button } from "../../../components/atoms";
 import { Form, Formik, useFormikContext } from "formik";
-import { useMutate } from "../../../hooks";
+import { useFetch, useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
@@ -31,10 +31,6 @@ const TableOfWeightAdjustmentPreview = ({
   );
 
   const { userData } = useContext(authCtx);
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:34 ~ userData:",
-    userData
-  );
 
   const [inputValue, setInputValue] = useState(totalEditedWeight);
   const weightDifference = +inputValue - +totalEditedWeight;
@@ -163,6 +159,15 @@ const TableOfWeightAdjustmentPreview = ({
     });
   }
 
+  const { data: listEditedInvoice } = useFetch({
+    queryKey: ["list_edited_invoice"],
+    endpoint: `/buyingUsedGold/api/v1/list_edited_invoices/${userData?.branch_id}`,
+  });
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:164 ~ listEditedInvoice:",
+    listEditedInvoice
+  );
+
   return (
     <div>
       {/* TABLE */}
@@ -198,7 +203,7 @@ const TableOfWeightAdjustmentPreview = ({
                 invoice_date: formatDate(new Date()),
                 count: item?.length,
                 employee_id: item[0]?.employee_id,
-                invoice_number: 1,
+                invoice_number: listEditedInvoice?.length,
               },
               items: item.map((el, i) => {
                 if (inputValue !== totalEditedWeight) {
@@ -223,7 +228,7 @@ const TableOfWeightAdjustmentPreview = ({
                 invoice_date: formatDate(new Date()),
                 count: item?.length,
                 employee_id: item[0]?.employee_id,
-                invoice_number: 1,
+                invoice_number: listEditedInvoice?.length,
               },
               items: item.map((el, i) => {
                 if (inputValue !== totalEditedWeight) {

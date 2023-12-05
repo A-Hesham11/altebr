@@ -6,7 +6,6 @@ import FinalPreviewBuyingPayment from "./FinalPreviewBuyingPayment";
 import { useFetch } from "../../hooks";
 import { Button } from "../../components/atoms";
 
-
 type Client_TP = {
   amount: number;
   bond_date: string;
@@ -23,8 +22,8 @@ type SellingFinalPreviewProps_TP = {
   paymentData: never[];
   clientData: Client_TP;
   costDataAsProps: any;
-  sellingItemsData: any
-  invoiceNumber: any
+  sellingItemsData: any;
+  invoiceNumber: any;
 };
 export const BuyingFinalPreview = ({
   ItemsTableContent,
@@ -33,8 +32,13 @@ export const BuyingFinalPreview = ({
   clientData,
   costDataAsProps,
   sellingItemsData,
-  invoiceNumber
+  invoiceNumber,
 }: SellingFinalPreviewProps_TP) => {
+  console.log(
+    "🚀 ~ file: BuyingFinalPreview.tsx:37 ~ sellingItemsData:",
+    sellingItemsData
+  );
+
   const { userData } = useContext(authCtx);
 
   const { data } = useFetch<Client_TP>({
@@ -42,12 +46,24 @@ export const BuyingFinalPreview = ({
     queryKey: ["sentence"],
   });
 
+  const { data: companyData } = useFetch<Client_TP>({
+    endpoint: `/companySettings/api/v1/companies`,
+    queryKey: ["Mineral_license"],
+  });
+  console.log(
+    "🚀 ~ file: SellingFinalPreview.tsx:60 ~ companyData:",
+    companyData
+  );
+
   return (
     <div className="relative h-full p-10 bg-flatWhite ">
       <div className="print-section">
         <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
           <div className="mx-6 bill-shadow rounded-md p-6">
-            <FinalPreviewBillData clientData={clientData} invoiceNumber={invoiceNumber} />
+            <FinalPreviewBillData
+              clientData={clientData}
+              invoiceNumber={invoiceNumber}
+            />
           </div>
           {ItemsTableContent}
           <div className="mx-6 bill-shadow rounded-md p-6 my-9">
@@ -75,6 +91,14 @@ export const BuyingFinalPreview = ({
               <p>
                 {t("email")}: {userData?.email}
               </p>
+              <p>
+                {t("tax number")}:{" "}
+                {companyData && companyData[0]?.taxRegisteration}
+              </p>
+              <p>
+                {t("Mineral license")}:{" "}
+                {companyData && companyData[0]?.mineralLicence}
+              </p>
             </div>
           </div>
         </div>
@@ -82,9 +106,9 @@ export const BuyingFinalPreview = ({
       {/* {printContent && <div style={{ display: 'none' }}>{printContent}</div>}    */}
 
       <div className="flex gap-3 justify-end mt-14">
-          <Button bordered action={() => setStage(1)}>
-            {t("back")}
-          </Button>
+        <Button bordered action={() => setStage(1)}>
+          {t("back")}
+        </Button>
       </div>
     </div>
   );
