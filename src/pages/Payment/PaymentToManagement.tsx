@@ -32,14 +32,11 @@ type SellingSecondpage_TP = {
 const PaymentToManagement = () => {
 
     const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
-    console.log("🚀 ~ file: PaymentToManagement.tsx:33 ~ PaymentToManagement ~ paymentData:", paymentData )
     const [sellingItemsData, setSellingItemsData] = useState([]);
     const [stage, setStage] = useState<number>(1);
     const [selectedCardId, setSelectedCardId] = useState(null);
     const [selectedCardName, setSelectedCardName] = useState(null);
     const [cardId, setCardId] = useState("");
-    console.log("🚀 ~ file: PaymentToManagement.tsx:37 ~ PaymentToManagement ~ cardId:", cardId)
-    console.log("🚀 ~ file: PaymentToManagement.tsx:36 ~ PaymentToManagement ~ selectedCardId:", selectedCardId)
     const { userData } = useContext(authCtx)
     const navigate = useNavigate()
 
@@ -53,33 +50,80 @@ const PaymentToManagement = () => {
         },
     });
 
-    const { mutate, isLoading } = useMutate({
+    const {
+        data: invoiceDataNumber,
+      } = useFetch({
+        queryKey: ["payment-invoice"],
+        endpoint: `/sdad/api/v1/sdadbonds/${userData?.branch_id}?per_page=10000`,
+        onSuccess(data) {
+            return data.data
+        },
+      });
+
+      console.log("🚀 ~ file: PaymentToManagement.tsx:55 ~ PaymentToManagement ~ invoiceDataNumber:", invoiceDataNumber) 
+
+
+    const {mutate: mutatePaymentsData } = useMutate({
         mutationFn: mutateData,
         onSuccess: (data) => {
-        //   navigate(`/selling/invoice-restrictions`);
+          navigate(`/selling/viewPayment`);
         },
     });
 
-    
+    const {mutate: mutateAllPaymentsData } = useMutate({
+        mutationFn: mutateData,
+        onSuccess: (data) => {
+          navigate(`/selling/viewPayment`);
+        },
+    });
     
     const handleSeccessedData = () => {
   
         const postPaymentData: any = [];
+        const postPaymentAllData: any = [];
 
         Object.keys(paymentData).forEach((key) => {
             const keyValueObject = {
                 id: paymentData[key]?.id,
-                value:  paymentData[key]?.amount || paymentData[key]?.weight,
+                value: paymentData[key]?.amount || paymentData[key]?.weight,
+            };
+
+            const keyAllValueObject = {
+                card_id: paymentData[key]?.id,
+                value_reyal: paymentData[key]?.amount,
+                value_gram: paymentData[key]?.weight,
+                card_name: paymentData[key]?.card,
             };
 
             postPaymentData.push(keyValueObject);
+            postPaymentAllData.push(keyAllValueObject)
         })
+        
+        console.log("🚀 ~ file: PaymentToManagement.tsx:100 ~ Object.keys ~ xxxxxxxxx:", {
+                    invoice_number: invoiceDataNumber.length + 1,
+                    payment_date: new Date(),
+                    employee_id: userData?.id,
+                    branch_id: userData?.branch_id,
+                    payment: postPaymentAllData,
+                })
 
-        console.log("🚀 ~ file: PaymentToManagement.tsx:68 ~ handleSeccessedData ~ postPaymentData:", postPaymentData)
-
-        // mutate({
+        // mutatePaymentsData({
         //     endpointName: "/sdad/api/v1/store",
-        //     values: {payment: postPaymentData},
+        //     values: {
+        //         payment: postPaymentData,
+        //     },
+        //     method: "post",
+        // });
+
+        // mutateAllPaymentsData({
+        //     endpointName: "/sdad/api/v1/create",
+        //     values: {
+        //         invoice_number: invoiceDataNumber.length + 1,
+        //         payment_date: new Date(),
+        //         employee_id: userData?.id,
+        //         branch_id: userData?.branch_id,
+        //         payment: postPaymentAllData,
+        //     },
         //     method: "post",
         // });
 
@@ -90,7 +134,7 @@ const PaymentToManagement = () => {
 
         // notify('success')
 
-        // navigate("/selling/payment/restrictions")
+        // navigate("/selling/viewPayment")
 
     };
 
