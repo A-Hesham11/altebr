@@ -12,7 +12,6 @@ import { BaseInputField, DateInputField, Modal } from "../../components/molecule
 import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
-import SellingInvoiceTablePreview from "../../components/selling/selling components/sellingWrapper/SellingInvoiceTablePreview";
 import PaymentToManagementTable from "./PaymentToManagementTable";
 
 const VeiwPaymentToManagement = () => {
@@ -38,19 +37,11 @@ const VeiwPaymentToManagement = () => {
     isRefetching,
     refetch,
   } = useFetch({
-    queryKey: ["selling-invoice"],
-    endpoint:
-      search === `selling/api/v1/invoices_per_branch/${userData?.branch_id}?` ||
-      search === ""
-        ? `selling/api/v1/invoices_per_branch/${userData?.branch_id}?page=${page}`
-        : `${search}`,
+    queryKey: ["payment-invoice"],
+    endpoint: `/sdad/api/v1/sdadbonds/${userData?.branch_id}?per_page=10000`,
     pagination: true,
   });
 
-  console.log(
-    "🚀 ~ file: ViewSellingInvoice.tsx:15 ~ ViewSellingInvoice ~ invoiceData:",
-    invoiceData
-  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -62,7 +53,7 @@ const VeiwPaymentToManagement = () => {
       },
       {
         cell: (info: any) => info.getValue(),
-        accessorKey: "invoice_date",
+        accessorKey: "payment_date",
         header: () => <span>{t("date")}</span>,
       },
       {
@@ -181,41 +172,40 @@ const VeiwPaymentToManagement = () => {
       {/* 2) TABLE */}
       <div className="">
         <Table data={dataSource || []} columns={tableColumn}>
-          <div className="mt-3 flex items-center justify-center gap-5 p-2">
-            <div className="flex items-center gap-2 font-bold">
-              {t("page")}
-              <span className=" text-mainGreen">
-                {invoiceData?.current_page}
-              </span>
-              {t("from")}
-              {<span className=" text-mainGreen">{invoiceData?.total}</span>}
+            <div className="mt-3 flex items-center justify-end gap-5 p-2">
+              <div className="flex items-center gap-2 font-bold">
+                {t("page")}
+                <span className=" text-mainGreen">
+                  {page}
+                </span>
+                {t("from")}
+                <span className=" text-mainGreen">{invoiceData.pages}</span>
+              </div>
+              <div className="flex items-center gap-2 ">
+                <Button
+                  className=" rounded bg-mainGreen p-[.18rem] "
+                  action={() => setPage((prev) => prev - 1)}
+                  disabled={page == 1}
+                >
+                  {isRTL ? (
+                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                  ) : (
+                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                  )}
+                </Button>
+                <Button
+                  className=" rounded bg-mainGreen p-[.18rem] "
+                  action={() => setPage((prev) => prev + 1)}
+                  disabled={page == invoiceData.pages}
+                >
+                  {isRTL ? (
+                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                  ) : (
+                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                  )}
+                </Button>
+              </div>
             </div>
-            <div className="flex items-center gap-2 ">
-              <Button
-                className=" rounded bg-mainGreen p-[.18rem]"
-                action={() => setPage((prev) => prev - 1)}
-                disabled={page == 1}
-              >
-                {isRTL ? (
-                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                ) : (
-                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                )}
-              </Button>
-
-              <Button
-                className="rounded bg-mainGreen p-[.18rem]"
-                action={() => setPage((prev) => prev + 1)}
-                disabled={page == invoiceData?.pages}
-              >
-                {isRTL ? (
-                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                ) : (
-                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                )}
-              </Button>
-            </div>
-          </div>
         </Table>
       </div>
 
