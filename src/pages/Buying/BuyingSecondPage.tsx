@@ -12,12 +12,14 @@ type SellingSecondpage_TP = {
   setStage: any;
   sellingItemsData: any;
 };
+
 const BuyingSecondpage = ({
   paymentData,
   setPaymentData,
   sellingItemsData,
   setStage,
 }: SellingSecondpage_TP) => {
+
   const handleSeccessedData = () => {
     if (paymentData.length === 0) {
       notify("info", "fill fields first");

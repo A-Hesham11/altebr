@@ -3,14 +3,15 @@ import { t } from "i18next";
 import { BsDatabase } from "react-icons/bs";
 import { useFetch } from "../../../hooks";
 
+/**
+ * 
+ * @param invoiceNumber invoiceNumber - {invoiceNumber}
+ * @returns jsx
+ */
 const BuyingHeader = ({ invoiceNumber }: any) => {
+  // GOLD PRICE DATA FOR KILO OR GRAM API
   const {
     data: goldPriceData,
-    isLoading,
-    isFetching,
-    isRefetching,
-    refetch,
-    isSuccess,
   } = useFetch({
     queryKey: ["static-price"],
     endpoint: "/buyingUsedGold/api/v1/show-gold-price",
@@ -18,15 +19,10 @@ const BuyingHeader = ({ invoiceNumber }: any) => {
       console.log(data);
     },
   });
-  console.log(
-    "🚀 ~ file: BuyingHeader.tsx:11 ~ BuyingHeader ~ goldPriceData:",
-    goldPriceData
-  );
 
   return (
     <div className="flex items-center gap-8 lg:gap-16">
       <div className="flex items-center gap-5">
-        {/* <h2>{t("bill number")} - {`${invoiceNumber.length + 1}`}</h2> */}
         <h2>
           {t("bill number")} - {`${invoiceNumber.length + 1}`}
         </h2>

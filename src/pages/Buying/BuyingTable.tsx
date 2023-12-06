@@ -29,6 +29,7 @@ type SellingTableInputData_TP = {
   setSellingItemsData: any;
   setClientData: any;
   rowsData: Selling_TP;
+  goldPrice: any
 };
 
 export const BuyingTable = ({
@@ -39,21 +40,20 @@ export const BuyingTable = ({
   goldPrice,
 }: SellingTableInputData_TP) => {
   const { formatGram, formatReyal } = numberContext();
+  const { values, setFieldValue } = useFormikContext();
   const { userData } = useContext(authCtx);
   const [data, setData] = useState("");
-  const { values, setFieldValue } = useFormikContext();
 
+  // FORMULA
   const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2) 
-
   const priceWithCommissionRate = (+totalValues - +totalValues * (+userData?.max_buy * 0.01));
-
   const priceWithCommissionCash = (+totalValues - +userData?.max_buy);
-  
   const priceWithSellingPolicy =
   userData?.max_buy_type === "نسبة"
   ? +priceWithCommissionRate
   : +priceWithCommissionCash;
-  
+
+  // STONES OPTION SELECT
   const stonesOption = [
     {
       id: 0,
@@ -69,7 +69,8 @@ export const BuyingTable = ({
     },
   ];
 
-  const sellingCols = useMemo<ColumnDef<Selling_TP>[]>(
+  // COLUMN FOR TABLES
+  const buyingColumns = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
       {
         header: () => <span>{t("classification")} </span>,
@@ -113,34 +114,35 @@ export const BuyingTable = ({
       //   accessorKey: "total_value",
       //   cell: (info) => formatReyal(Number(info.getValue())) || "---",
       // },
- 
     ],
     []
   );
 
+  // TABLE FUNCTIONALITY TO DELETE AND ADD
   const table = useReactTable({
     data: sellingItemsData,
-    columns: sellingCols,
+    columns: buyingColumns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const handleDeleteRow = (itemId) => {
-    sellingItemsData?.findIndex((item) => {
+  const handleDeleteRow = (itemId: string | number) => {
+    sellingItemsData?.findIndex((item: any) => {
       return item.item_id == itemId;
     });
 
-    const newData = sellingItemsData?.filter((item) => {
+    const newData = sellingItemsData?.filter((item: any) => {
       return item.item_id !== itemId;
     });
 
     setSellingItemsData(newData);
   };
 
-  const handleAddItemsToSelling = () => {
+  const handleAddItemsToBuying = () => {
     const { client_id, bond_date, client_value, client_name, ...restValues } =
-      values;
+      values;      
+
     Object.keys(restValues).forEach((key) => {
       setFieldValue(key, "");
     });
@@ -176,6 +178,7 @@ export const BuyingTable = ({
                 noMb={true}
                 placement="top"
                 all={true}
+                showItems={true}
                 value={{
                   value: values?.category_id,
                   label: values?.category_name || t("classification"),
@@ -184,7 +187,6 @@ export const BuyingTable = ({
                 onChange={(option) => {
                   setFieldValue("category_name", option!.value);
                 }}
-                showItems={true}
               />
             </td>
             <td>
@@ -226,10 +228,8 @@ export const BuyingTable = ({
                   setFieldValue("piece_per_gram", goldPrice[option.value].toFixed(2));
 
                   const totalValues = (+goldPrice[option.value].toFixed(2) * +values?.weight)
-                  const priceWithCommissionRate = (totalValues - totalValues * (+userData?.max_buy * 0.01));
-                
-                  const priceWithCommissionCash = (totalValues - +userData?.max_buy);
-                  
+                  const priceWithCommissionRate = (+totalValues - +totalValues * (+userData?.max_buy * 0.01));
+                  const priceWithCommissionCash = (+totalValues - +userData?.max_buy);
                   const priceWithSellingPolicy =
                   userData?.max_buy_type === "نسبة"
                   ? priceWithCommissionRate
@@ -333,7 +333,7 @@ export const BuyingTable = ({
                     ].reverse()
                   );
 
-                  handleAddItemsToSelling();
+                  handleAddItemsToBuying();
                   setDataSource([]);
                 }}
                 className="bg-transparent px-2"
@@ -363,9 +363,11 @@ export const BuyingTable = ({
                           client_value,
                           ...restValues
                         } = values;
+
                         Object.keys(restValues).map((key) => {
                           setFieldValue(key, row?.original[key]);
                         });
+
                         handleDeleteRow(row?.original?.item_id);
                       }}
                       className="bg-transparent px-2"

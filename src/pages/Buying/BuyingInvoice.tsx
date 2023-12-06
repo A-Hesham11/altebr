@@ -10,6 +10,9 @@ import BuyingFirstPage from "./BuyingFirstPage";
 import BuyingInvoiceData from "./BuyingInvoiceData";
 
 const BuyingInvoice = () => {
+  const { userData } = useContext(authCtx);
+
+  // STATE
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
   const [stage, setStage] = useState<number>(1);
   const [clientData, setClientData] = useState<ClientData_TP>();
@@ -18,7 +21,6 @@ const BuyingInvoice = () => {
   const [invoiceNumber, setInvoiceNumber] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
 
-  const { userData } = useContext(authCtx);
 
   const initialValues: Selling_TP = {
     client_id: "",
@@ -38,31 +40,20 @@ const BuyingInvoice = () => {
 
   const validationSchema = () =>
     Yup.object({
-      hwya: Yup.string(),
-      classification_id: Yup.string(),
-      category_id: Yup.string(),
-      remaining_id: Yup.string(),
-      weight: Yup.string(),
-      karat_id: Yup.string(),
-      cost: Yup.string(),
-      selling_price: Yup.string(),
-      taklfa: Yup.string(),
-      wage_total: Yup.string(),
-      wage: Yup.string(),
-
-      dateField: Yup.date().required("Date is required"),
-      client_id: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
-      client_value: Yup.string(),
+      client_id: Yup.string().required("اسم العميل مطلوب"),
+      bond_date: Yup.date().default(() => new Date()), // Assuming the default value is the current date
+      category_name: Yup.string().required("الصنف مطلوب"),
+      category_id: Yup.string().required("الصنف مطلوب"),
+      weight: Yup.number().required("الوزن مطلوب"),
+      karat_name: Yup.string().required("العيار مطلوب"),
+      karat_id: Yup.string().required("العيار مطلوب"),
+      stones_id: Yup.string().required("نوع الحجر مطلوب"),
+      stones_name: Yup.string().required("نوع الحجر مطلوب"),
+      piece_per_gram: Yup.number().required("سعر الجرام مطلوب"),
+      value: Yup.number().required("القيمة مطلوبة"),
+      total_value: Yup.number().required("القيمة الإجمالية مطلوبة"),
+      value_added_tax: Yup.number().required("ضريبة القيمة المضافة مطلوبة"),
     });
-
-  // // FIXING (INVOICE NUMBER)
-  // const { data } = useFetch<ClientData_TP>({
-  //   endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}?per_page=10000`,
-  //   queryKey: ["invoices_data"],
-  //   onSuccess(data) {
-  //     setInvoiceNumber(data);
-  //   },
-  // });
 
   const { data: buyingInvoice } = useFetch<ClientData_TP>({
     endpoint: `/buyingUsedGold/api/v1/list-buying-invoice/${userData?.branch_id}?per_page=10000`,
@@ -71,20 +62,6 @@ const BuyingInvoice = () => {
       setInvoiceNumber(data);
     },
   });
-  console.log(
-    "🚀 ~ file: BuyingInvoice.tsx:75 ~ BuyingInvoice ~ buyingInvoice:",
-    buyingInvoice
-  );
-
-  // const { data: test } = useFetch<ClientData_TP>({
-  //   endpoint: `/buyingUsedGold/api/v1/get-nadya-box`,
-  //   queryKey: ["test"],
-  // });
-  // console.log("🚀 ~ file: BuyingFirstPage.tsx:109 ~ test:", test)
-  // console.log(
-  //   "🚀 ~ file: BuyingFirstPage.tsx:100 ~ buyingInvoice:",
-  //   buyingInvoice
-  // );
 
   return (
     <Formik

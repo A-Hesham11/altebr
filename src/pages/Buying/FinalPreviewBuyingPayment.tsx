@@ -1,16 +1,23 @@
 import { t } from "i18next";
 import QRCodeGen from "../../components/atoms/QRCode";
+import { numberContext } from "../../context/settings/number-formatter";
+
+type FinalPreviewBuyingPayment_TP = {
+  paymentData: never[];
+  costDataAsProps: any;
+  sellingItemsData: any;
+}
 
 const FinalPreviewBuyingPayment = ({
   paymentData,
   costDataAsProps,
   sellingItemsData,
-}: {
-  paymentData: never[];
-  costDataAsProps: any;
-}) => {
+}: FinalPreviewBuyingPayment_TP) => {
+  const {formatReyal} = numberContext()
+
+  // FORMULA TO CALC THE TOTAL VALUE OF ITEMS
   const totalValueOfItems = sellingItemsData.reduce((acc, curr) => {
-    return acc + curr.value;
+    return +acc + +curr.value;
   }, 0);
 
   return (
@@ -35,7 +42,7 @@ const FinalPreviewBuyingPayment = ({
                 className="w-full h-full"
               />
             </div>
-            <p className="mt-3">{totalValueOfItems}</p>
+            <p className="mt-3">{formatReyal(totalValueOfItems)}</p>
           </div>
         </div>
       </div>

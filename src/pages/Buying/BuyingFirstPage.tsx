@@ -3,10 +3,7 @@ import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
 import { notify } from "../../utils/toast";
 import { Form, useFormikContext } from "formik";
-import BillHeader from "../../components/selling/selling components/bill/BillHeader";
-import BillButtons from "../../components/selling/selling components/bill/BillButtons";
 import { ClientData_TP, Selling_TP } from "./PaymentSellingPage";
-import { SellingTableInputData } from "../../components/selling/selling components/data/SellingTableInputData";
 import { BuyingTable } from "./BuyingTable";
 import { useFetch } from "../../hooks";
 import BuyingHeader from "../../components/atoms/UI/BuyingHeader";
@@ -24,6 +21,8 @@ type SellingFirstPage_TP = {
   clientData: ClientData_TP;
   setClientData: any;
   invoiceNumber: any;
+  selectedItemDetails: any;
+  setSelectedItemDetails: any;
 };
 
 const BuyingFirstPage = ({
@@ -38,27 +37,30 @@ const BuyingFirstPage = ({
   clientData,
   setClientData,
 }: SellingFirstPage_TP) => {
-
-  const { values } = useFormikContext();
   const { formatGram, formatReyal } = numberContext();
-  const { userData } = useContext(authCtx);
+  const { values } = useFormikContext();
 
+  // FORMULA FOR RESULT
   const totalValues = sellingItemsData.reduce(
-    (acc, curr) => Number(acc) + Number(curr?.value),
+    (acc: number, curr: any) => Number(acc) + Number(curr?.value),
     0
   );
+
   const valueAddedTax = sellingItemsData.reduce(
-    (acc, curr) => Number(acc) + Number(curr?.value_added_tax),
+    (acc: number, curr: any) => Number(acc) + Number(curr?.value_added_tax),
     0
   );
+
   const totalGrossWeight = sellingItemsData.reduce(
-    (acc, curr) => Number(acc) + Number(curr?.weight),
+    (acc: number, curr: any) => Number(acc) + Number(curr?.weight),
     0
   );
-  const totalNetWeight = sellingItemsData.reduce((acc, curr) => {
+
+  const totalNetWeight = sellingItemsData.reduce((acc: number, curr: any) => {
     return Number(acc) + (Number(curr?.weight) * Number(curr?.karat_name)) / 24;
   }, 0);
 
+  // BOXES IN BUYING FIRST BAGE
   const tarqimBoxes = [
     {
       account: "value",
@@ -92,16 +94,17 @@ const BuyingFirstPage = ({
     },
   ];
 
+  // TODAY GOLD PRICE API
   const { data: goldPrice } = useFetch<ClientData_TP>({
     endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
     queryKey: ["get-gold-price"],
   });
 
+  // CASH VALUE API
   const { data: naqdya } = useFetch<ClientData_TP>({
     endpoint: `/buyingUsedGold/api/v1/get-nadya-box`,
     queryKey: ["naqdya"],
   });
-  console.log("🚀 ~ file: BuyingFirstPage.tsx:105 ~ naqdya:", naqdya);
 
   return (
     <Form className="overflow-hidden">
@@ -157,6 +160,7 @@ const BuyingFirstPage = ({
             </>
           </div>
         </div>
+
         <div className="flex gap-3 justify-end mt-12 pb-8">
           <Back />
           <Button
@@ -173,6 +177,7 @@ const BuyingFirstPage = ({
                 notify("info", `${t("please add data first")}`);
                 return;
               }
+
               if (!values?.client_id) {
                 notify("info", `${t("choose client's name first")}`);
                 return;
@@ -180,8 +185,8 @@ const BuyingFirstPage = ({
 
               if (+totalValues.toFixed(2) > naqdya.toFixed(2)) {
                 notify(
-                  "info",
-                  `${t("total values is greater than the value in the cash")}`
+                  "error",
+                  `${t(`total values is greater than the value in the cash / available =`)}  ${formatReyal(naqdya.toFixed(2))}`
                 );
                 return;
               }

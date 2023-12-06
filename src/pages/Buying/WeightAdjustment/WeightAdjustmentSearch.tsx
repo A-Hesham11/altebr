@@ -1,15 +1,14 @@
-import React from "react";
 import { Button } from "../../../components/atoms";
 import {
   BaseInputField,
   DateInputField,
   Select,
 } from "../../../components/molecules";
-
 import { t } from "i18next";
 import SelectKarat from "../../../components/templates/reusableComponants/karats/select/SelectKarat";
 
 const WeightAdjustmentSearch = () => {
+  // AHGAR OPTION SELECT
   const stoneTypeOption = [
     { id: 1, label: "قطع مع احجار", name: "قطع مع احجار", value: 1 },
     {
@@ -40,7 +39,6 @@ const WeightAdjustmentSearch = () => {
             options={stoneTypeOption}
             noMb
           />
-
           <BaseInputField
             id="invoice_number"
             label={`${t("invoice number")}`}

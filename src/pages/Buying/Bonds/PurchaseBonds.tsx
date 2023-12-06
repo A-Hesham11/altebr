@@ -1,17 +1,21 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { useFetch, useIsRTL } from '../../../hooks';
-import { authCtx } from '../../../context/auth-and-perm/auth';
-import { t } from 'i18next';
-import { BsEye } from 'react-icons/bs';
-import { Formik, Form } from 'formik';
-import { formatDate, getDayAfter } from '../../../utils/date';
-import { BaseInputField, DateInputField, Modal } from '../../../components/molecules';
-import { Button } from '../../../components/atoms';
-import { Back } from '../../../utils/utils-components/Back';
-import { Table } from '../../../components/templates/reusableComponants/tantable/Table';
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
-import PurchaseInvoiceBondsPreview from './PurchaseInvoiceBondsPreview';
-import { Loading } from '../../../components/organisms/Loading';
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useFetch, useIsRTL } from "../../../hooks";
+import { authCtx } from "../../../context/auth-and-perm/auth";
+import { t } from "i18next";
+import { BsEye } from "react-icons/bs";
+import { Formik, Form } from "formik";
+import { formatDate, getDayAfter } from "../../../utils/date";
+import {
+  BaseInputField,
+  DateInputField,
+  Modal,
+} from "../../../components/molecules";
+import { Button } from "../../../components/atoms";
+import { Back } from "../../../utils/utils-components/Back";
+import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import PurchaseInvoiceBondsPreview from "./PurchaseInvoiceBondsPreview";
+import { Loading } from "../../../components/organisms/Loading";
 
 const PurchaseBonds = () => {
   // STATE
@@ -28,7 +32,7 @@ const PurchaseBonds = () => {
     invoice_date: "",
   };
 
-  // FETCHING DATA FROM API
+  // FETCHING INVOICES DATA FROM API
   const {
     data: invoiceData,
     isLoading,
@@ -38,17 +42,13 @@ const PurchaseBonds = () => {
   } = useFetch({
     queryKey: ["purchase-bonds-invoice"],
     endpoint:
-      search === `/buyingUsedGold/api/v1/list-buying-invoice/${userData?.branch_id}?` ||
+      search ===
+        `/buyingUsedGold/api/v1/list-buying-invoice/${userData?.branch_id}?` ||
       search === ""
         ? `/buyingUsedGold/api/v1/list-buying-invoice/${userData?.branch_id}?page=${page}`
         : `${search}`,
     pagination: true,
   });
-
-  console.log(
-    "🚀 ~ file: ViewSellingInvoice.tsx:15 ~ ViewSellingInvoice ~ invoiceData:",
-    invoiceData
-  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -72,6 +72,11 @@ const PurchaseBonds = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "employee_name",
         header: () => <span>{t("employee name")}</span>,
+      },
+      {
+        cell: (info: any) => info.row.original.items.length,
+        accessorKey: "count",
+        header: () => <span>{t("pieces count")}</span>,
       },
       {
         cell: (info: any) => (
@@ -184,41 +189,47 @@ const PurchaseBonds = () => {
       {/* 2) TABLE */}
       <div className="">
         <Table data={dataSource || []} columns={tableColumn}>
-          <div className="mt-3 flex items-center justify-center gap-5 p-2">
-            <div className="flex items-center gap-2 font-bold">
-              {t("page")}
-              <span className=" text-mainGreen">
-                {invoiceData?.current_page}
-              </span>
-              {t("from")}
-              {<span className=" text-mainGreen">{invoiceData?.pages}</span>}
-            </div>
-            <div className="flex items-center gap-2 ">
-              <Button
-                className=" rounded bg-mainGreen p-[.18rem]"
-                action={() => setPage((prev) => prev - 1)}
-                disabled={page == 1}
-              >
-                {isRTL ? (
-                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                ) : (
-                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                )}
-              </Button>
+          {dataSource?.length === 0 ? (
+            <p className="text-center text-xl text-mainGreen font-bold">
+              {t("there is no pieces available")}
+            </p>
+          ) : (
+            <div className="mt-3 flex items-center justify-center gap-5 p-2">
+              <div className="flex items-center gap-2 font-bold">
+                {t("page")}
+                <span className=" text-mainGreen">
+                  {invoiceData?.current_page}
+                </span>
+                {t("from")}
+                {<span className=" text-mainGreen">{invoiceData?.pages}</span>}
+              </div>
+              <div className="flex items-center gap-2 ">
+                <Button
+                  className=" rounded bg-mainGreen p-[.18rem]"
+                  action={() => setPage((prev) => prev - 1)}
+                  disabled={page == 1}
+                >
+                  {isRTL ? (
+                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                  ) : (
+                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                  )}
+                </Button>
 
-              <Button
-                className="rounded bg-mainGreen p-[.18rem]"
-                action={() => setPage((prev) => prev + 1)}
-                disabled={page == invoiceData?.pages}
-              >
-                {isRTL ? (
-                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                ) : (
-                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                )}
-              </Button>
+                <Button
+                  className="rounded bg-mainGreen p-[.18rem]"
+                  action={() => setPage((prev) => prev + 1)}
+                  disabled={page == invoiceData?.pages}
+                >
+                  {isRTL ? (
+                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                  ) : (
+                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                  )}
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
         </Table>
       </div>
 
@@ -228,6 +239,6 @@ const PurchaseBonds = () => {
       </Modal>
     </div>
   );
-}
+};
 
-export default PurchaseBonds
+export default PurchaseBonds;

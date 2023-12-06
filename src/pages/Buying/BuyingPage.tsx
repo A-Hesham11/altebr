@@ -38,6 +38,7 @@ export type ClientData_TP = {
 
 const BuyingPage = () => {
   const isRTL = useIsRTL();
+
   const data = [
     {
       icon: receiveMoney,
