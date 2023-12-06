@@ -209,7 +209,7 @@ const SellingInvoiceData = ({
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      navigate(`/selling/invoice-restrictions`);
+      navigate(`/selling/viewInvoice/`);
     },
   });
 
