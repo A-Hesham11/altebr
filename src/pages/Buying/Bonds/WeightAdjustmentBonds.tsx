@@ -14,7 +14,6 @@ import { Button } from "../../../components/atoms";
 import { Back } from "../../../utils/utils-components/Back";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import PurchaseInvoiceBondsPreview from "./PurchaseInvoiceBondsPreview";
 import { Loading } from "../../../components/organisms/Loading";
 import { Weight } from "../../../components/atoms/icons/Weight";
 import WeightInvoiceBondsPreview from "./WeightInvoiceBondsPreview";
@@ -34,7 +33,7 @@ const WeightAdjustmentBonds = () => {
     invoice_date: "",
   };
 
-  // FETCHING DATA FROM API
+  // FETCHING INVOICES DATA FROM API
   const {
     data: invoiceData,
     isLoading,
@@ -44,17 +43,13 @@ const WeightAdjustmentBonds = () => {
   } = useFetch({
     queryKey: ["weight-bonds-invoice"],
     endpoint:
-      search === `/buyingUsedGold/api/v1/list_edited_invoices/${userData?.branch_id}?` ||
+      search ===
+        `/buyingUsedGold/api/v1/list_edited_invoices/${userData?.branch_id}?` ||
       search === ""
         ? `/buyingUsedGold/api/v1/list_edited_invoices/${userData?.branch_id}?page=${page}`
         : `${search}`,
     pagination: true,
   });
-
-  console.log(
-    "🚀 ~ file: ViewSellingInvoice.tsx:15 ~ ViewSellingInvoice ~ invoiceData:",
-    invoiceData
-  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -73,6 +68,11 @@ const WeightAdjustmentBonds = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "employee_name",
         header: () => <span>{t("employee name")}</span>,
+      },
+      {
+        cell: (info: any) => info.row.original.items.length,
+        accessorKey: "count",
+        header: () => <span>{t("pieces count")}</span>,
       },
       {
         cell: (info: any) => (
@@ -184,44 +184,50 @@ const WeightAdjustmentBonds = () => {
 
       {/* 2) TABLE */}
       <div className="">
-         <Table data={dataSource || []} columns={tableColumn}>
-           <div className="mt-3 flex items-center justify-center gap-5 p-2">
-             <div className="flex items-center gap-2 font-bold">
-               {t("page")}
-               <span className=" text-mainGreen">
-                 {invoiceData?.current_page}
-               </span>
-               {t("from")}
-               {<span className=" text-mainGreen">{invoiceData?.pages}</span>}
-             </div>
-             <div className="flex items-center gap-2 ">
-               <Button
-                 className=" rounded bg-mainGreen p-[.18rem]"
-                 action={() => setPage((prev) => prev - 1)}
-                 disabled={page == 1}
-               >
-                 {isRTL ? (
-                   <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                 ) : (
-                   <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                 )}
-               </Button>
- 
-               <Button
-                 className="rounded bg-mainGreen p-[.18rem]"
-                 action={() => setPage((prev) => prev + 1)}
-                 disabled={page == invoiceData?.pages}
-               >
-                 {isRTL ? (
-                   <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                 ) : (
-                   <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                 )}
-               </Button>
-             </div>
-           </div>
-         </Table>
-       </div>
+        <Table data={dataSource || []} columns={tableColumn}>
+          {dataSource?.length === 0 ? (
+            <p className="text-center text-xl text-mainGreen font-bold">
+              {t("there is no pieces available")}
+            </p>
+          ) : (
+            <div className="mt-3 flex items-center justify-center gap-5 p-2">
+              <div className="flex items-center gap-2 font-bold">
+                {t("page")}
+                <span className=" text-mainGreen">
+                  {invoiceData?.current_page}
+                </span>
+                {t("from")}
+                {<span className=" text-mainGreen">{invoiceData?.pages}</span>}
+              </div>
+              <div className="flex items-center gap-2 ">
+                <Button
+                  className=" rounded bg-mainGreen p-[.18rem]"
+                  action={() => setPage((prev) => prev - 1)}
+                  disabled={page == 1}
+                >
+                  {isRTL ? (
+                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                  ) : (
+                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                  )}
+                </Button>
+
+                <Button
+                  className="rounded bg-mainGreen p-[.18rem]"
+                  action={() => setPage((prev) => prev + 1)}
+                  disabled={page == invoiceData?.pages}
+                >
+                  {isRTL ? (
+                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                  ) : (
+                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+        </Table>
+      </div>
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>

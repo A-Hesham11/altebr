@@ -23,7 +23,9 @@ const BuyingInvoiceTable = <T extends object>({
   paymentData,
   costDataAsProps,
 }: ReactTableProps<T>) => {
-  console.log("🚀 ~ file: BuyingInvoiceTable.tsx:14 ~ data:", data);
+  const { formatGram, formatReyal } = numberContext();
+
+  // CUSTOM CONFIGURE FOR TABLE
   const table = useReactTable({
     data,
     columns,
@@ -32,28 +34,27 @@ const BuyingInvoiceTable = <T extends object>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const { formatGram, formatReyal } = numberContext();
 
-  const totalWeight = data.reduce((acc, curr) => {
+// FORMULA TO CALC TOTAL COST, VALUE ADDED TAX, TOTAL VALUE
+  const totalWeight = data.reduce((acc: number, curr: any) => {
     acc += +curr.weight;
     return acc;
   }, 0);
 
-  const totalCost = data.reduce((acc, curr) => {
+  const totalCost = data.reduce((acc: number, curr: any) => {
     acc += +curr.value;
     return acc;
   }, 0);
 
-  const valueAddedTax = data.reduce((acc, curr) => {
+  const valueAddedTax = data.reduce((acc: number, curr: any) => {
     acc += +curr.value_added_tax;
     return acc;
   }, 0);
-  const totalValue = data.reduce((acc, curr) => {
+  const totalValue = data.reduce((acc: number, curr: any) => {
     acc += +curr.total_value;
     return acc;
   }, 0);
 
-  // FIXINGTOTAL VALUES AFTER TAX
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(costDataAsProps?.totalCost)
   );
@@ -61,13 +62,14 @@ const BuyingInvoiceTable = <T extends object>({
   const totalItemsTax =
     +costDataAsProps?.totalItemsTaxes?.toFixed(2) +
     costDataAsProps?.totalCommissionTaxes;
+
   const totalItemsCost =
     costDataAsProps?.totalCommissionRatio + costDataAsProps?.totalCost;
 
   const resultTable = [
     {
         number: t("totals"),
-        cost: totalCost,
+        cost: formatReyal(totalCost),
         // value_added_tax: valueAddedTax,
         // total_value: totalValue.toFixed(2),
     },

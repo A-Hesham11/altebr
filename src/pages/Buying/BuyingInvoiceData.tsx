@@ -3,12 +3,10 @@ import { t } from "i18next";
 import { useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ClientData_TP, Selling_TP } from "./PaymentSellingPage";
-import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useFetch, useMutate } from "../../hooks";
 import { mutateData } from "../../utils/mutateData";
 import { Button } from "../../components/atoms";
-import { SellingFinalPreview } from "../../components/selling/selling components/SellingFinalPreview";
 import { numberContext } from "../../context/settings/number-formatter";
 import BuyingInvoiceTable from "./BuyingInvoiceTable";
 import { BuyingFinalPreview } from "./BuyingFinalPreview";
@@ -30,8 +28,11 @@ const BuyingInvoiceData = ({
   selectedItemDetails,
 }: CreateHonestSanadProps_TP) => {
   const { formatGram, formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
+  const navigate = useNavigate();
 
-  const totalCost = sellingItemsData.reduce((acc, curr) => {
+  // FORMULA TO CALC THE TOTAL COST OF BUYING INVOICE
+  const totalCost = sellingItemsData.reduce((acc: number, curr: any) => {
     acc += +curr.value;
     return acc;
   }, 0);
@@ -72,7 +73,6 @@ const BuyingInvoiceData = ({
         accessorKey: "value",
         cell: (info) => info.getValue() || "---",
       },
-      // FIXING 
       // {
       //   header: () => <span>{t("value added tax")} </span>,
       //   accessorKey: "value_added_tax",
@@ -96,10 +96,6 @@ const BuyingInvoiceData = ({
     ></BuyingInvoiceTable>
   );
 
-  //
-  const navigate = useNavigate();
-  // user data
-  const { userData } = useContext(authCtx);
   // api
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
@@ -123,9 +119,9 @@ const BuyingInvoiceData = ({
       return {
         category_id: item.category_id,
         karat_id: item.karat_id,
-        // edited: "0",
         branch_id: userData?.branch_id,
         gram_price: item.piece_per_gram,
+        // edited: "0",
         // value_added_tax: item.value_added_tax,
         // total_value: item.total_value,
         weight: item.weight,
@@ -140,14 +136,6 @@ const BuyingInvoiceData = ({
     })
   };
 
-  // const {
-  //   data: test
-  // } = useFetch({
-  //   queryKey: ["test"],
-  //   endpoint: "/buyingUsedGold/api/v1/add_buying_Invoice",
-  // });
-
-  // console.log("🚀 ~ file: BuyingInvoiceData.tsx:145 ~ test:", test)
   return (
     <div>
       <div className="flex items-center justify-between mx-8 mt-8">

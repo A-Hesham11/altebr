@@ -36,13 +36,6 @@ const WeightInvoiceBondsPreview = ({ item }: { item?: {} }) => {
         accessorKey: "weight",
         header: () => <span>{t("weight after editing")}</span>,
       },
-      // {
-      //   cell: (info: any) => {
-      //     return info.row.original.old_weight - info.row.original.weight;
-      //   },
-      //   accessorKey: "#",
-      //   header: () => <span>{t("weight difference")}</span>,
-      // },
       {
         cell: (info: any) => formatReyal(Number(info.renderValue())) || "-",
         accessorKey: "karat_name",

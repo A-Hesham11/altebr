@@ -25,6 +25,7 @@ type SellingFinalPreviewProps_TP = {
   sellingItemsData: any;
   invoiceNumber: any;
 };
+
 export const BuyingFinalPreview = ({
   ItemsTableContent,
   setStage,
@@ -34,26 +35,19 @@ export const BuyingFinalPreview = ({
   sellingItemsData,
   invoiceNumber,
 }: SellingFinalPreviewProps_TP) => {
-  console.log(
-    "🚀 ~ file: BuyingFinalPreview.tsx:37 ~ sellingItemsData:",
-    sellingItemsData
-  );
-
   const { userData } = useContext(authCtx);
 
+  // SENTENCE API
   const { data } = useFetch<Client_TP>({
     endpoint: `/selling/api/v1/get_sentence`,
     queryKey: ["sentence"],
   });
 
+  // COMPANY DATA API
   const { data: companyData } = useFetch<Client_TP>({
     endpoint: `/companySettings/api/v1/companies`,
     queryKey: ["Mineral_license"],
   });
-  console.log(
-    "🚀 ~ file: SellingFinalPreview.tsx:60 ~ companyData:",
-    companyData
-  );
 
   return (
     <div className="relative h-full p-10 bg-flatWhite ">

@@ -10,6 +10,15 @@ import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useReactTable } from "@tanstack/react-table";
 import { formatDate } from "../../../utils/date";
 import { authCtx } from "../../../context/auth-and-perm/auth";
+import { useNavigate } from "react-router-dom";
+
+type TableOfWeightAdjustmentPreview_TP = {
+  item: any;
+  setInputWeight: any;
+  inputWeight: any;
+  setWeightModal: any;
+  setOperationTypeSelect: any;
+};
 
 const TableOfWeightAdjustmentPreview = ({
   item,
@@ -17,20 +26,16 @@ const TableOfWeightAdjustmentPreview = ({
   inputWeight,
   setWeightModal,
   setOperationTypeSelect,
-}) => {
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:18 ~ inputWeight:",
-    inputWeight
-  );
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:18 ~ item:", item);
+}: TableOfWeightAdjustmentPreview_TP) => {
   const queryClient = useQueryClient();
+  const { userData } = useContext(authCtx);
+  const navigate = useNavigate();
 
+  // FORMULA FOR EDITED TOTAL WEIGHT
   const totalEditedWeight = item.reduce(
-    (acc, cur) => acc + Number(cur.weight),
+    (acc: number, cur: any) => acc + Number(cur.weight),
     0
   );
-
-  const { userData } = useContext(authCtx);
 
   const [inputValue, setInputValue] = useState(totalEditedWeight);
   const weightDifference = +inputValue - +totalEditedWeight;
@@ -39,31 +44,8 @@ const TableOfWeightAdjustmentPreview = ({
   );
 
   const [inputValue2, setInputValue2] = useState();
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:32 ~ inputValue2:",
-    inputValue2
-  );
-  const test = item.map((item) => +item.weight + +weightDifferencePerWeight);
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:36 ~ test:", test);
-
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:28 ~ weightDifferencePerWeight:",
-    weightDifferencePerWeight
-  );
-
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:27 ~ weightDifference:",
-    weightDifference
-  );
-
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:27 ~ inputValue:",
-    inputValue
-  );
-
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:25 ~ totalEditedWeight:",
-    totalEditedWeight
+  const test = item.map(
+    (item: any) => +item.weight + +weightDifferencePerWeight
   );
 
   // COLUMNS FOR THE TABLE
@@ -150,6 +132,7 @@ const TableOfWeightAdjustmentPreview = ({
     },
   });
 
+  // POSTING EDITED WEIGHT
   function PostNewValue(value: any) {
     mutate({
       endpointName: "/buyingUsedGold/api/v1/edit_items_weight",
@@ -159,14 +142,11 @@ const TableOfWeightAdjustmentPreview = ({
     });
   }
 
+  // GET THE EDITED INVOICES API
   const { data: listEditedInvoice } = useFetch({
     queryKey: ["list_edited_invoice"],
-    endpoint: `/buyingUsedGold/api/v1/list_edited_invoices/${userData?.branch_id}`,
+    endpoint: `/buyingUsedGold/api/v1/list_edited_invoices/${userData?.branch_id}?per_page=10000`,
   });
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:164 ~ listEditedInvoice:",
-    listEditedInvoice
-  );
 
   return (
     <div>
@@ -192,36 +172,10 @@ const TableOfWeightAdjustmentPreview = ({
             }}
             className="rounded-md h-10 text-center"
           />
-          {/* <p>{inputValue2}</p> */}
         </div>
         <Button
           type="submit"
           action={() => {
-            console.log({
-              invoice: {
-                branch_id: userData?.branch_id,
-                invoice_date: formatDate(new Date()),
-                count: item?.length,
-                employee_id: item[0]?.employee_id,
-                invoice_number: listEditedInvoice?.length,
-              },
-              items: item.map((el, i) => {
-                if (inputValue !== totalEditedWeight) {
-                  return {
-                    id: el.id,
-                    // weight: Number(inputWeight[i].value),
-                    weight: test[i],
-                  };
-                } else {
-                  return {
-                    id: el.id,
-                    // weight: Number(inputWeight[i].value),
-                    weight: Number(inputWeight[i].value),
-                  };
-                }
-              }),
-            });
-
             PostNewValue({
               invoice: {
                 branch_id: userData?.branch_id,
@@ -250,6 +204,7 @@ const TableOfWeightAdjustmentPreview = ({
             setWeightModal(false);
             setOperationTypeSelect([]);
             setInputWeight([]);
+            navigate("/buying/weightAdjustmentBonds/");
           }}
           className="bg-mainGreen text-white self-end"
         >

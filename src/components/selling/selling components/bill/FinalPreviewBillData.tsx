@@ -18,9 +18,7 @@ type Client_TP = {
   identity: number
 }
 
-const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
-  console.log("🚀 ~ file: FinalPreviewBillData.tsx:22 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber)
-  
+const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {  
   const {  client_id, client_value } = clientData
 
   const { data } = useFetch<Client_TP>({

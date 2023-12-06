@@ -7,7 +7,6 @@ import { useFetch, useMutate } from "../../../hooks";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { Back } from "../../../utils/utils-components/Back";
 import { Button } from "../../../components/atoms";
-import { BoxesData } from "../../../components/molecules/card/BoxesData";
 import { Modal } from "../../../components/molecules";
 import TableOfWeightAdjustmentPreview from "./TableOfWeightAdjustmentPreview";
 import { notify } from "../../../utils/toast";
@@ -21,20 +20,12 @@ const WeightAdjustment = () => {
   const [page, setPage] = useState(1);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
-  const [activeTab, setActiveTab] = useState(1);
-
   const [search, setSearch] = useState("");
-  console.log(
-    "🚀 ~ file: WeightAdjustment.tsx:27 ~ WeightAdjustment ~ search:",
-    search
-  );
   const [inputWeight, setInputWeight] = useState([]);
   const [weightModal, setWeightModal] = useState(false);
-  const [endpoint, setEndPoint] = useState(
-    `/buyingUsedGold/api/v1/items_has_stones/`
-  );
 
   const { userData } = useContext(authCtx);
+  const queryClient = useQueryClient();
 
   const initailSearchValues = {
     invoice_number: "",
@@ -45,19 +36,7 @@ const WeightAdjustment = () => {
     stones_type: "",
   };
 
-  // const { data: ahgaring } = useFetch({
-  //   queryKey: ["ahgaring"],
-  //   endpoint: `/buyingUsedGold/api/v1/items_has_stones/${userData?.branch_id}`,
-  //   pagination: true,
-  // });
-
-  // const { data: notAhgaring } = useFetch({
-  //   queryKey: ["notAhgaring"],
-  //   endpoint: `/buyingUsedGold/api/v1/items_hasnot_stones/${userData?.branch_id}`,
-  //   pagination: true,
-  // });
-
-  // FETCHING DATA FROM API
+  // ALL BUYING INVOICES WITH NOT AHGAR, AHGAR, EDITED API
   const {
     data: weightAdjustmentData,
     isLoading,
@@ -74,12 +53,6 @@ const WeightAdjustment = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log(
-    "🚀 ~ file: WeightAdjustment.tsx:28 ~ WeightAdjustment ~ weightAdjustmentData:",
-    weightAdjustmentData
-  );
-
-  const queryClient = useQueryClient();
 
   const {
     mutate,
@@ -119,21 +92,12 @@ const WeightAdjustment = () => {
 
   useEffect(() => {
     refetch();
-  }, [page, endpoint, search]);
-
-  useEffect(() => {
-    setOperationTypeSelect([]);
-    setSearch("");
-  }, [endpoint]);
+  }, [page, search]);
 
   if (isRefetching || isLoading || isFetching)
     return <Loading mainTitle={t("loading items")} />;
 
-  const setEndPointAndSetActiveTab = (endpoint, tabNumber) => {
-    setEndPoint(endpoint);
-    setActiveTab(tabNumber);
-  };
-
+  // FUNCTIONALITY TO CHECK IF THE KARAT IS THE SAME OR NOT
   const hasDifferenceKarat = () => {
     if (operationTypeSelect.length <= 1) return false;
 
@@ -147,10 +111,6 @@ const WeightAdjustment = () => {
 
     return false;
   };
-  console.log(
-    "🚀 ~ file: WeightAdjustment.tsx:145 ~ hasDifferenceKarat ~ hasDifferenceKarat:",
-    hasDifferenceKarat()
-  );
 
   return (
     <div className="relative h-full p-10">
@@ -158,62 +118,18 @@ const WeightAdjustment = () => {
         {t("weight adjustment")}
       </h2>
 
-      {/* <div className="flex items-center justify-center gap-4">
-        <li
-          onClick={() =>
-            setEndPointAndSetActiveTab(
-              "/buyingUsedGold/api/v1/items_has_stones/",
-              1
-            )
-          }
-          className={`transition-all duration-300 cursor-pointer flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
-        >
-          <p
-            className={`${
-              activeTab === 1
-                ? "bg-mainGreen text-white"
-                : "bg-white text-black"
-            }  p-2 flex items-center justify-center h-[65%] rounded-t-xl`}
-          >
-            {t(`pieces with stones`)}
-          </p>
-          <p className={` bg-white text-black  px-2 py-2 h-[35%] rounded-b-xl`}>
-            {ahgaring?.total}
-            <span> {t(`piece`)}</span>
-          </p>
-        </li>
-        <li
-          onClick={() =>
-            setEndPointAndSetActiveTab(
-              "/buyingUsedGold/api/v1/items_hasnot_stones/",
-              2
-            )
-          }
-          className={`transition-all duration-300 cursor-pointer flex flex-col h-28 w-60 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
-        >
-          <p
-            className={`${
-              activeTab === 2
-                ? "bg-mainGreen text-white"
-                : "bg-white text-black"
-            }  p-2 flex items-center justify-center h-[65%] rounded-t-xl`}
-          >
-            {t(`pieces without stones`)}
-          </p>
-          <p className={`bg-white text-black px-2 py-2 h-[35%] rounded-b-xl`}>
-            {notAhgaring?.total}
-            <span> {t(`piece`)}</span>
-          </p>
-        </li>
-      </div> */}
-
       <Formik
         initialValues={initailSearchValues}
         onSubmit={(values) => {
-          const stones = {
-            has_stones: values.stones_type == 1 ? 1 : 0,
-            edited: values.stones_type == 2 ? 1 : 0,
-          };
+          let stones;
+
+          if (values.stones_type !== "") {
+            stones = {
+              has_stones: values.stones_type == 1 ? 1 : 0,
+              edited: values.stones_type == 2 ? 1 : 0,
+            };
+          }
+
           getSearchResults({
             ...values,
             ...stones,
@@ -244,7 +160,6 @@ const WeightAdjustment = () => {
               setOperationTypeSelect={setOperationTypeSelect}
               checkboxChecked={checkboxChecked}
               setCheckboxChecked={setCheckboxChecked}
-              endpoint={endpoint}
               weightAdjustmentData={weightAdjustmentData}
               // ahgaring={ahgaring}
               // notAhgaring={notAhgaring}
