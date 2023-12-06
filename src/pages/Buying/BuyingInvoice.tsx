@@ -32,8 +32,8 @@ const BuyingInvoice = () => {
     stones_name: "",
     piece_per_gram: "",
     value: "",
-    total_value: "", 
-    value_added_tax: ""
+    total_value: "",
+    value_added_tax: "",
   };
 
   const validationSchema = () =>
@@ -64,27 +64,35 @@ const BuyingInvoice = () => {
   //   },
   // });
 
-  
   const { data: buyingInvoice } = useFetch<ClientData_TP>({
-    endpoint: `buyingUsedGold/api/v1/buying_invoices/${userData?.branch_id}`,
+    endpoint: `/buyingUsedGold/api/v1/list-buying-invoice/${userData?.branch_id}?per_page=10000`,
     queryKey: ["get_buying_invoice"],
     onSuccess(data) {
       setInvoiceNumber(data);
     },
   });
+  console.log(
+    "🚀 ~ file: BuyingInvoice.tsx:75 ~ BuyingInvoice ~ buyingInvoice:",
+    buyingInvoice
+  );
 
   // const { data: test } = useFetch<ClientData_TP>({
   //   endpoint: `/buyingUsedGold/api/v1/get-nadya-box`,
   //   queryKey: ["test"],
   // });
   // console.log("🚀 ~ file: BuyingFirstPage.tsx:109 ~ test:", test)
-  console.log("🚀 ~ file: BuyingFirstPage.tsx:100 ~ buyingInvoice:", buyingInvoice)
+  // console.log(
+  //   "🚀 ~ file: BuyingFirstPage.tsx:100 ~ buyingInvoice:",
+  //   buyingInvoice
+  // );
 
   return (
     <Formik
       initialValues={initialValues}
       // validationSchema={validationSchema}
-      onSubmit={(values) => {console.log(values)}}
+      onSubmit={(values) => {
+        console.log(values);
+      }}
     >
       <>
         {stage === 1 && (

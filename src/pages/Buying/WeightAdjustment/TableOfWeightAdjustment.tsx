@@ -91,7 +91,7 @@ const TableOfWeightAdjustment = ({
       {
         cell: (info: any) => info.getValue() || "-",
         accessorKey: "employee_name",
-        header: () => <span>{t("buyer")}</span>,
+        header: () => <span>{t("buyer name")}</span>,
       },
       {
         cell: (info: any) => info.getValue() || "-",

@@ -24,7 +24,10 @@ const WeightAdjustment = () => {
   const [activeTab, setActiveTab] = useState(1);
 
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ file: WeightAdjustment.tsx:27 ~ WeightAdjustment ~ search:", search)
+  console.log(
+    "🚀 ~ file: WeightAdjustment.tsx:27 ~ WeightAdjustment ~ search:",
+    search
+  );
   const [inputWeight, setInputWeight] = useState([]);
   const [weightModal, setWeightModal] = useState(false);
   const [endpoint, setEndPoint] = useState(
@@ -77,6 +80,7 @@ const WeightAdjustment = () => {
   );
 
   const queryClient = useQueryClient();
+
   const {
     mutate,
     error: mutateError,
