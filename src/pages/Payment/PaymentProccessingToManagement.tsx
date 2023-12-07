@@ -98,10 +98,6 @@ const PaymentProccessingToManagement = ({
 const {
     data,
     refetch,
-    isFetching,
-    isLoading,
-    isSuccess,
-    isRefetching
 } = useFetch ({
     endpoint:  `/sdad/api/v1/show/${cardId || 0}`,
     queryKey: ["showValueOfCards"],
@@ -109,8 +105,6 @@ const {
       return data.data
     },
 });
-
-console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:102 ~ data:", data)
 
   useEffect(() => {
       if (cardId !== null) {
@@ -152,6 +146,11 @@ console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:102 ~ data:", data)
                   frontKeyAccept: frontKeyAccept,
                   sellingFrontKey: sellingFrontKey,
                 };
+
+                if (+data?.value === 0 || +values.amount > +data?.value || +values.weight > +data?.value) {
+                  notify("info", `${t("value is greater than the value in box")}`);
+                  return
+                }
                 setPaymentData((prevData) => [newItem, ...prevData]);
                 setSelectedCardId(null);
                 setCardFronKey("");

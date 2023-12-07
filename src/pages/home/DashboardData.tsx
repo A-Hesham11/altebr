@@ -96,7 +96,6 @@ export const DashboardData = () => {
         setBondAccessoriesTotal(data.total);
       },
     });
-  console.log(bondGoldTotal);
 
   {
     /* Coding */

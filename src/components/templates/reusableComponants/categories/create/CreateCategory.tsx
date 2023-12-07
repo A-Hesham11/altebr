@@ -245,7 +245,6 @@ const CreateCategory = ({
       has_size: values.has_size,
       category_sizes: typeof sendNewSizesIds === 'object' ? sendNewSizesIds : [sendNewSizesIds]
     }
-    console.log("🚀 ~ file: CreateCategory.tsx:248 ~ send ~ singleValues:", singleValues)
     const categorySizes =
       sendNewSizesIds?.id === backSizesIds?.id
         ? { ...singleValues }

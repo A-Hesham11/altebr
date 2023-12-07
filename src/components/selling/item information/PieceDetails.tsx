@@ -181,7 +181,6 @@ const PieceDetails = ({dataSource, setSearchId, isSuccess, isLoading, searchId, 
             }}
         >
         {({ setFieldValue, values, setValues, resetForm }) => {
-            // console.log("🚀 ~ file: PieceDetails.tsx:167 ~ values:", values)
             
             return (
                 <Form>

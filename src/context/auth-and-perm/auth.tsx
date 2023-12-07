@@ -90,7 +90,6 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
         }
       },
       // onError: (err) => {
-      //   console.log(`AuthCtxProvider ~ err:`, err)
       //   notify("error")
       // },
     })
@@ -198,7 +197,6 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     updateLocalPermissions("REMOVE")
     // login=false & notify & navigate
     setIsLoggedIn(false)
-    console.log('xxxxx')
 
     notify("success", "Good bye, Waiting for you!")
     navigate("/login")

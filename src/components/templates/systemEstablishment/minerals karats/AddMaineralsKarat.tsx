@@ -45,7 +45,6 @@ const AddMineralsKarats = ({
   setShow,
   title,
 }: AddMineralsKaratsProps_TP) => {
-  console.log("🚀 ~ file: AddMaineralsKarat.tsx:48 ~ editData:", editData)
   ///
   /////////// HELPER VARIABLES & FUNCTIONS
   ///

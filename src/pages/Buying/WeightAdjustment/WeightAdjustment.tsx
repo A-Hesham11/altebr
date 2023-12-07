@@ -138,13 +138,6 @@ const WeightAdjustment = () => {
             //   : "",
           });
 
-          console.log({
-            ...values,
-            ...stones,
-            // invoice_date: values.invoice_date
-            //   ? formatDate(getDayAfter(new Date(values.invoice_date)))
-            //   : "",
-          });
         }}
       >
         {(formik) => (

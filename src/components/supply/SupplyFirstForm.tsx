@@ -63,7 +63,6 @@ export const SupplyFirstForm = ({
       endpoint: "/supplier/api/v1/suppliers?per_page=10000",
       queryKey: ["suppliers"],
       onSuccess(data) {
-        // console.log(data)
       },
       select: (suppliers) => suppliers.map((supplier) => {
         return {

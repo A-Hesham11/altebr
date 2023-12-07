@@ -128,7 +128,6 @@ export const AdministrativeStructure = ({
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   const handleSubmit = () => {
-    console.log(deleteData?.id)
     mutate({
       endpointName: `administrative/api/v1/roles/${deleteData?.id}`,
       method: "delete",

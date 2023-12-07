@@ -26,7 +26,6 @@ export const mutateData = async <T>(
     if (dataType === "formData") {
         // let data = OTF(values)
 
-        // console.log("values", values)
         
 
         return await request<T>({

@@ -42,7 +42,6 @@ export const CreateBranch = ({
 }: CreateBranchProps_TP) => {
   /////////// VARIABLES
   ///
-  console.log("branch editData", editData)
   const initialValues = {
     name_ar: editData ? editData.name_ar : "",
     name_en: editData ? editData.name_en : "",
@@ -167,7 +166,6 @@ export const CreateBranch = ({
               }
             if (docsFormValues.length === editData.document.length)
               editedValues = editedValuesWithoutDocument
-            console.log("editedValues", editedValues)
             mutate({
               endpointName: `branch/api/v1/branches/${editData.id}`,
               values: editedValues,
@@ -181,7 +179,6 @@ export const CreateBranch = ({
               dataType: "formData",
             })
           }
-          console.log("values", editedValues)
         }}
         validationSchema={validationSchema}
       >

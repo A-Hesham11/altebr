@@ -21,7 +21,6 @@ export const Breadcrumbs = () => {
   /////////// CUSTOM HOOKS
   ///
   const breadcrumbs = useBreadcrumbs()
-  //   console.log("🚀 ~ file: Breadcrumbs .tsx:24 ~ Breadcrumbs ~ breadcrumbs:", breadcrumbs)
 
   ///
   /////////// STATES

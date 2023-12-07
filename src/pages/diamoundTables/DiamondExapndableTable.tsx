@@ -51,7 +51,6 @@ export function DiamondExapndableTable({
   setSelectedSanad?: SetState_TP<GoldSanad_TP | undefined>
   selectedSanad?:GoldSanad_TP
 }) {
-  console.log("🚀 ~ file: DiamondExapndableTable.tsx:54 ~ addedPieces:", addedPieces)
   const { sanadId } = useParams()
 
   const [addedPiecesLocal, setAddedPiecesLocal] = useLocalStorage<

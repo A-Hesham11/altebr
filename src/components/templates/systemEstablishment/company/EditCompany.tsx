@@ -41,10 +41,6 @@ export const EditCompany = ({
   valuesData,
   setEditCompanyOpen,
 }: EditCompany_TP) => {
-  console.log(
-    "🚀 ~ file: EditCompany.tsx:36 ~ EditCompany ~ valuesData:",
-    valuesData
-  );
 
   /////////// VARIABLES
   ///
@@ -98,10 +94,6 @@ export const EditCompany = ({
         id: item.id,
       }))
     : [];
-  console.log(
-    "🚀 ~ file: EditCompany.tsx:81 ~ incomingData ~ incomingData:",
-    incomingData
-  );
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -120,10 +112,6 @@ export const EditCompany = ({
       notify("success");
     },
     onError: (error) => {
-      console.log(
-        "🚀 ~ file: EmployeeCard.tsx:46 ~ EmployeeCard ~ error:",
-        error
-      );
       notify("error");
     },
   });
@@ -133,10 +121,6 @@ export const EditCompany = ({
   const [docsFormValues, setDocsFormValues] = useState<allDocs_TP[]>([
     ...incomingData,
   ]);
-  console.log(
-    "🚀 ~ file: EditCompany.tsx:105 ~ EditCompany ~ docsFormValues:",
-    docsFormValues
-  );
 
   const [docData, setDocData] = useState<allDocs_TP[]>([]);
 
@@ -154,10 +138,6 @@ export const EditCompany = ({
   // const filesData = docsFormValues.map((el) => el.files)
 
   const updateHandler = (values: InitialValues_TP) => {
-    console.log(
-      "🚀 ~ file: EditCompany.tsx:126 ~ updateHandler ~ values:",
-      values
-    );
     const document = docsFormValues.map(({ id, ...rest }) => ({
       ...rest,
       // docType: rest.docType.id,
@@ -209,7 +189,6 @@ export const EditCompany = ({
            editWithFormData: true,
          })
        } else {
-         console.log("editedValues=>", editedValues)
          mutate({
            endpointName: `companySettings/api/v1/companies/1`,
            values: editedValues,
@@ -236,7 +215,6 @@ export const EditCompany = ({
         // validationSchema={companyValidatingSchema}
         onSubmit={(values: InitialValues_TP) => {
           updateHandler(values)
-          console.log("ششش", { ...values, ...docsFormValues })
         }}
       >
         <Form>

@@ -49,10 +49,6 @@ export const EmployeeMainData = ({
   setModalOpen,
   modalOpen,
 }: EmployeeMainDataProps_TP) => {
-  console.log(
-    "🚀 ~ file: EmployeeMainData.tsx:48 ~ isSuccessPost:",
-    isSuccessPost
-  )
   /////////// VARIABLES
   /////
 

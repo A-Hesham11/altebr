@@ -106,7 +106,6 @@ export const ViewStoneQuality = () => {
     queryKey: ['view_stones_qualities'],
     pagination: true,
     onSuccess(data) {
-      console.log(data)
       setDataSource(data.data)
     },
     select(data) {
@@ -132,7 +131,6 @@ export const ViewStoneQuality = () => {
     }
   })
   const handleSubmit = () => {
-    console.log(deleteData?.id)
     mutate({
       endpointName: `stones/api/v1/qualities/${deleteData?.id}`,
       method: "delete",

@@ -13,7 +13,6 @@ type CodedIdentitiesProps_TP = {
 
 const BranchBondsReact = ({ title }: CodedIdentitiesProps_TP) => {
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ file: BranchBondsReact.tsx:16 ~ BranchBondsReact ~ dataSource:", dataSource)
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 

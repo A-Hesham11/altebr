@@ -74,10 +74,6 @@ const TableOfWeightAdjustmentPreview = ({
       {
         cell: (info: any) => {
           // setRowWage(info.row.original.wage);
-          console.log(
-            "🚀 ~ file: TableOfTransformBranch.tsx:87 ~ info.row.original:",
-            info.row.original
-          );
           return (
             <input
               type="number"

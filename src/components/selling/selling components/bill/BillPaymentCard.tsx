@@ -22,7 +22,6 @@ const BillPaymentCard = ({
 }: Payment_TP ) => {
 
     const [dataSource, setDataSource] = useState([])
-    console.log("🚀 ~ file: BillPaymentCard.tsx:28 ~ dataSource:", dataSource)
     const handleChooseCard = (itemId: number) => {
         if (selectedCardId === itemId) {
             setSelectedCardId(null); 
@@ -79,7 +78,6 @@ const BillPaymentCard = ({
 
 
     // const handleChooseCard = (dataId: number) => {
-    //     console.log("🚀 ~ file: PaymentCard.tsx:38 ~ handleChooseCard ~ dataId:", dataId)
     //     setCardId(dataId)
     // };
 

@@ -71,13 +71,11 @@ export const AccessoriesCodingSanadFormHandler = ({
   const itemsCount = addedPieces.filter(piece=> piece?.band_id === activeBand?.id)
   /////////// VARIABLES
   ///
-  console.log(selectedSanad);
   
   const { sanadId } = useParams()
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
-    console.log(selectedSanadLocal);
     
   const columns: Column[] = [
     {

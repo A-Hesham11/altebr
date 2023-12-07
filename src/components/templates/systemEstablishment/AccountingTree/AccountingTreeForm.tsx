@@ -108,7 +108,6 @@ export const AccountingTreeForm = ({
   ///
   useEffect(() => {
     if (secondLevel) {
-      console.log("first")
       setNewValue(null)
       setSecondNewValue(null)
       // setTree_id({ id: "", label: "" })

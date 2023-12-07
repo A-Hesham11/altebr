@@ -46,7 +46,6 @@ export const AddCountry = ({
   setDataSource,
   setShow,
 }: AddCountriesProps_TP) => {
-  console.log("🚀 ~ file: AddCountry.tsx:49 ~ editData:", editData)
   /////////// VARIABLES
   ///
   const isRTL = useIsRTL()
@@ -62,7 +61,6 @@ export const AddCountry = ({
   ///
   /////////// CUSTOM HOOKS
   ///
-console.log("co",initialValues)
 
   const queryClient = useQueryClient()
   const {
@@ -100,7 +98,6 @@ console.log("co",initialValues)
       }
     },
     onError: (error) => {
-      console.log(error)
       notify("error")
     },
   })
@@ -120,8 +117,6 @@ console.log("co",initialValues)
   /////////// FUNCTIONS & EVENTS
   ///
   function PostNewValue(values: InitialValues_TP) {
-console.log("co", values)
-
     mutate({
       endpointName: editData
         ? `/governorate/api/v1/countries/${editData.id}`

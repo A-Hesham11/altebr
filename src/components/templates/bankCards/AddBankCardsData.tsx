@@ -56,7 +56,6 @@ const AddBankCardsData = ({
   const [accountNumberId, setAccountNumberId] = useState();
 
   const [card, setCard] = useState("");
-  console.log("🚀 ~ file: AddBankCardsData.tsx:59 ~ card:", card);
 
   const [cardId, setCardId] = useState("");
 
@@ -187,19 +186,7 @@ const AddBankCardsData = ({
             validationSchema={() => cardsValidatingSchema()}
             initialValues={initialValues}
             onSubmit={(values, { resetForm }) => {
-              console.log(
-                "🚀 ~ file: AddBankCardsData.tsx:190 ~ values:",
-                values
-              );
-              // console.log("🚀 ~ file: AddBankCardsData.tsx:178 ~ AddBankCardsData ~ values:", {
-              //   ...values,
-              //   card_id: cardId,
-              //   discount_percentage: values.discount_percentage/100,
-              // })
-              console.log(
-                "🚀 ~ file: AddBankCardsData.tsx:55 ~ AddBankCardsData ~ card:",
-                cardId
-              );
+ 
               if (cardId === "") notify("info", "please select a card");
 
               // if (editData) {

@@ -18,8 +18,6 @@ type EmployeeDocsDataProps_TP = {
 export const EmployeeDocsData = ({
   employeeDocsData,
 }: EmployeeDocsDataProps_TP) => {
-  console.log("🚀 ~ file: EmployeeDocsData.tsx:21 ~ employeeDocsData:", employeeDocsData?.files)
-
   let images: any = employeeDocsData?.files.filter((file: any) => pdfOrImage(file) === 'image')
   let pdfs: any = employeeDocsData?.files.filter((file: any) => pdfOrImage(file) === 'pdf')
 

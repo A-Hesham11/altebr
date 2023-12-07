@@ -85,10 +85,6 @@ const TableOfTransformBranch = ({
       {
         cell: (info: any) => {
           setRowWage(info.row.original.wage);
-          console.log(
-            "🚀 ~ file: TableOfTransformBranch.tsx:87 ~ info.row.original:",
-            info.row.original
-          );
 
           if (info.row.original.check_input_weight === 1) {
             return (

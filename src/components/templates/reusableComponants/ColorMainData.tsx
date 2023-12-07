@@ -31,8 +31,6 @@ export const ColorMainData = ({
   isSuccessPost,
   resetData,
 }: ColorMainDataProps_TP) => {
-  console.log("🚀 ~ file: ColorMainData.tsx:33 ~ isSuccessPost:", isSuccessPost)
-
   /////////// VARIABLES
   ///
 

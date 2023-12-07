@@ -87,7 +87,6 @@ export const OperationDetails = ({ operationId, lock }: OperationDetails_TP) => 
         numeric_system,
       })),
     })
-    console.log("🚀 ~ file: OperationDetails.tsx:77 ~ OperationDetails ~ operation:", operation)
 
   const debtorList = useMemo(
     () => operation?.accounts?.filter((acc) => acc.nature === "debtor"),

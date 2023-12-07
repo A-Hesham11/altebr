@@ -9,7 +9,6 @@ import { GrNext, GrPrevious } from "react-icons/gr";
 import Slider from "react-slick";
 
 type Payment_TP = {
-
   onSelectCard?: any
   selectedCardId?: any
   setSelectedCardId?: any
@@ -44,7 +43,6 @@ const PaymentCard = ({
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
-  console.log("🚀 ~ file: PaymentCard.tsx:47 ~ bankAccountCards:", bankAccountCards)
   const [slidesToShow, setSlidesToShow] = useState(2);
 
   const isRTL = useIsRTL();

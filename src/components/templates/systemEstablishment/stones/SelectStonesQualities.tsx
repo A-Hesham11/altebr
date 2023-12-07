@@ -41,10 +41,6 @@ export const SelectStonesQualities = ({ name }: StonesQualitiesProps) => {
         }
       }),
   })
-  console.log(
-    "🚀 ~ file: SelectStonesQualities.tsx:31 ~ SelectStonesQualities ~ qualityOptions:",
-    qualityOptions
-  )
 
   ///
   /////////// STATES

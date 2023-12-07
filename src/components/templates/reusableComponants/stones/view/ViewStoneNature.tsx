@@ -131,7 +131,6 @@ export const ViewStoneNature = () => {
   })
 
   const handleSubmit = () => {
-    console.log(deleteData?.id)
     mutate({
       endpointName: `stones/api/v1/natures/${deleteData?.id}`,
       method: "delete",

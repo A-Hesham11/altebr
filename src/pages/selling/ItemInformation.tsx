@@ -49,10 +49,8 @@ export type ItemInformation_TP = {
 const ItemInformation = () => {
 
     const [dataSource, setDataSource] = useState<ItemInformation_TP[]>([]);
-    console.log("🚀 ~ file: ItemInformation.tsx:44 ~ ItemInformation ~ dataSource:", dataSource)
 
     const [searchId, setSearchId] = useState<string>("");
-    console.log("🚀 ~ file: ItemInformation.tsx:55 ~ ItemInformation ~ searchId:", searchId)
 
     const { data, isSuccess, refetch, isRefetching, isLoading, isFetching } =
     useFetch({

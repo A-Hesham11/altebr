@@ -52,7 +52,6 @@ export const EmployeeCard = ({ id, img, name , setEditEmployeeData , rest , edit
          notify('success',`${t('deleted successfully')}`)
       },
       onError:(error) => {
-        console.log("🚀 ~ file: EmployeeCard.tsx:46 ~ EmployeeCard ~ error:", error)
           notify("error")
       }
   })

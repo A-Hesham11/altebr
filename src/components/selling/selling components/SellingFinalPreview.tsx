@@ -53,7 +53,6 @@ export const SellingFinalPreview = ({
   // const { client_value, client_id, client_name } = clientData;
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ file: SellingFinalPreview.tsx:54 ~ userData:", userData)
 
   const { data } = useFetch<Client_TP>({
     endpoint: `/selling/api/v1/get_sentence`,
@@ -64,7 +63,6 @@ export const SellingFinalPreview = ({
     endpoint: `/companySettings/api/v1/companies`,
     queryKey: ["Mineral_license"],
   });
-  console.log("🚀 ~ file: SellingFinalPreview.tsx:60 ~ companyData:", companyData)
   
 
   return (

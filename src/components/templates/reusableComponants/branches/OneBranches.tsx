@@ -73,7 +73,6 @@ export const OneBranches = ({ title = "branch" }) => {
       endpoint: `/branch/api/v1/branches/${branchesID}`,
       queryKey: ["branches", branchesID!],
     })
-  console.log(data)
 
   ///
   return (

@@ -55,8 +55,6 @@ export const PartnerMainData = ({
   /////////// STATES
   ///
   const { resetForm, setFieldValue , values } = useFormikContext<FormikSharedConfig>()
-  console.log("🚀 ~ file: PartnerMainData.tsx:59 ~ values:", values)
-
   ///
   /////////// SIDE EFFECTS
   ///
