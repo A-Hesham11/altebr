@@ -118,7 +118,6 @@ export const AddCities = ({
       }
     },
     onError: (error) => {
-      console.log(error)
       notify("error")
     },
   })
@@ -141,8 +140,6 @@ export const AddCities = ({
   ///
 
   const handleSubmit = (values: InitialValues_TP) => {
-    console.log("cities", values)
-
     mutate({
       endpointName: editData
         ? `governorate/api/v1/cities/${editData.id}`

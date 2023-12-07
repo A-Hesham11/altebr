@@ -21,7 +21,6 @@ import { FilesPreviewOutFormik } from '../../components/molecules/files/FilesPre
 
 ///
 export const AccessoriesStoneTable = ({ subTableData }: any) => {
-  console.log("🚀 ~ file: DiamondStoneTable.tsx:23 ~ DiamondStoneTable ~ subTableData:", subTableData)
   const isRTL = useIsRTL()
   const columnHelper = createColumnHelper<any>()
 
@@ -73,7 +72,6 @@ export const AccessoriesStoneTable = ({ subTableData }: any) => {
   const selectedRow = subTableData.data.filter(
     (item) => item.index === subTableData.index
   )
-  console.log("🚀 ~ file: AccessoriesStoneTable.tsx:76 ~ AccessoriesStoneTable ~ selectedRow:", selectedRow)
   const queryClient = useQueryClient()
   const [queryData, setQueryData] = useState<StoneRow_TP[] | undefined>()
   //@ts-ignore

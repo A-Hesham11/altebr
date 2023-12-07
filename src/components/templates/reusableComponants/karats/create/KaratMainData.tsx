@@ -27,7 +27,6 @@ export const KaratMainData = ({
   isLoading,
   isSuccessPost,
 }: KaratMainDataProps_TP) => {
-  console.log("🚀 ~ file: KaratMainData.tsx:29 ~ isSuccessPost:", isSuccessPost)
   /////////// VARIABLES
   ///
 

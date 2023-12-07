@@ -90,7 +90,6 @@ const SearchFilter = ({ getSearchResults }) => {
         value: karat?.id,
       })),
   });
-  console.log("🚀 ~ file: SearchFilter.tsx:93 ~ SearchFilter ~ karatMineralsOption:", karatMineralsOption)
 
   const handleResetForm = (formik) => {
     formik.resetForm();
@@ -104,10 +103,6 @@ const SearchFilter = ({ getSearchResults }) => {
       <Formik
         initialValues={initailSearchValues}
         onSubmit={(values) => {
-          console.log(
-            "🚀 ~ file: SearchFilter.tsx:81 ~ SearchFilter ~ values:",
-            values
-          );
           getSearchResults(values);
         }}
       >

@@ -87,14 +87,13 @@ const AddSellingPolicies = ({
       queryClient.refetchQueries(["allMinimum_Selling"])
     },
     onError: (error) => {
-      console.log(error);
-      notify("error");
+      notify("info", error?.response?.data?.errors?.msg);
     },
   });
 
   function PostNewCard(values: PoliciesProps_TP) {
     mutate({
-      endpointName: "/selling/api/v1/minimum_selling",
+      endpointName: "/selling/api/v1/create_minimum_selling",
       values,
       method: "post",
     });

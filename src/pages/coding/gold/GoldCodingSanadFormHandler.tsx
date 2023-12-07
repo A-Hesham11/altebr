@@ -67,8 +67,6 @@ export const GoldCodingSanadFormHandler = ({
   setActiveBand,
   isSuccess
 }: GoldCodingSanadFormHandlerProps_TP) => {
-  console.log("🚀 ~ file: GoldCodingSanadFormHandler.tsx:69 ~ addedPieces:", addedPieces) 
-console.log("🚀 ~ file: GoldCodingSanadFormHandler.tsx:47 ~ activeBand:", activeBand)
 
   /////////// VARIABLES
   ///
@@ -82,7 +80,6 @@ console.log("🚀 ~ file: GoldCodingSanadFormHandler.tsx:47 ~ activeBand:", acti
   const totalLeftWeight = selectedSanad?.items.map(item => item?.leftWeight)?.reduce((acc, curr) => {
     return acc + curr
   }, 0)
-  console.log("🚀 ~ file: GoldCodingSanadFormHandler.tsx:81 ~ totalLeftWeight ~ totalLeftWeight:", totalLeftWeight)
 
   const columns: Column[] = [
     {

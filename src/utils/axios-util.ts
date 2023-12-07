@@ -37,12 +37,10 @@ export const request = async <T>(options: AxiosRequestConfig, pagination?: boole
   } catch (error) {
     // 👁️ i will handle unauthorized in useFetch and useMutate because i can't use useContext here
     // const axiosError = error as CError_TP;
-    // console.log(`request ~ the error:`, axiosError)
     // // handle error responses
     // if (axiosError.response) {
     //   const responseError = axiosError.response
     //   if (responseError.status === HttpStatusCode.Unauthorized) {
-    //     console.log(`request ~ Unauthorized:`, "Unauthorized")
     //     // unauthorized => logout
     //     // notify('error', "You need to login again")
     //   }
@@ -51,7 +49,6 @@ export const request = async <T>(options: AxiosRequestConfig, pagination?: boole
     //   }
     //   // handle request errors
     // } else if (axiosError.request) {
-    //   console.log(`request ~ error in the request`, axiosError.request)
     // } else {
     //   // handle other errors
     // }

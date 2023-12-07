@@ -68,7 +68,6 @@ const NewMarketOptionComponent = ({
   const { mutate, error, isLoading } = useMutate<MarketsMutate_TP>({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      console.log("onSuccess marketData", data)
       queryClient.setQueryData([`market/${districtId}`], (old: any) => {
         console.log("data", data)
         if (old && !old.markets) {
@@ -213,7 +212,6 @@ export const Markets = ({
         "اختر الحي اولا ",
     })
   }, [])
-  // console.log("MARKET EDIT editData", editData)
   ///
   return (
     <div className="flex flex-col gap-1 justify-center">

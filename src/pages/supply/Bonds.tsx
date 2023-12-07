@@ -70,7 +70,6 @@ export const Bonds = ({ title }: BondsProps_TP) => {
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data)
-      console.log(data.data)
     },
     select(data) {
       return {

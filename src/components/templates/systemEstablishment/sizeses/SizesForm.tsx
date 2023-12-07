@@ -67,7 +67,6 @@ type TypesMutate_TP = {
 //     },
 //   })
 //   const handleSubmit = (values: FormikValues) => {
-//     console.log(values)
 
 //     mutate({
 //       endpointName: "",

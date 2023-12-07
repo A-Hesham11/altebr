@@ -63,7 +63,6 @@ export const OnePartner = ({ title }: OnePartnerProps_TP) => {
     endpoint: `partner/api/v1/partners/${partnerID}`,
     queryKey: ["partners", partnerID!],
   })
-  console.log("🚀 ~ file: OnePartner.tsx:52 ~ OnePartner ~ partner:", partner)
 
   /////////// STATES
   ///

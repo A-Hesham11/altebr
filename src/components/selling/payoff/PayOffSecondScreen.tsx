@@ -27,7 +27,6 @@ type PayOffSecondScreen_TP = {
 }
 ///
 export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOffSecondScreen_TP) => {
-  console.log("🚀 ~ file: PayOffSecondScreen.tsx:30 ~ PayOffSecondScreen ~ selectedItem:", selectedItem)
   /////////// VARIABLES
   ///
   const [openModal, setOpenModal] = useState(false)
@@ -45,7 +44,6 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
   const [disableSelectedCheckAfterSendById, setDisableSelectedCheckAfterSendById] = useState([])
   const [selectAll, setSelectAll] = useState(false)
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0)
-  console.log("🚀 ~ file: PayOffSecondScreen.tsx:48 ~ PayOffSecondScreen ~ selectedRowDetailsId:", selectedRowDetailsId)
 
   const isRTL = useIsRTL()
   const { data, isLoading, isSuccess, isRefetching, refetch } = useFetch({
@@ -158,7 +156,6 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
         action={() => {
           setOpenDetailsModal(true)
           setSelectedRowDetailsId(info.row.original.id)
-          console.log("🚀 ~ file: PayOffSecondScreen.tsx:154 ~ PayOffSecondScreen ~ info.row.original.id:", info.row.original.id)
         }}
         className="text-mainGreen mx-auto"
       />,

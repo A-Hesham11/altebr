@@ -26,7 +26,6 @@ export function TableWithForm<DATA_TP>({
 }: TableWithFormProps_TP<DATA_TP>) {
   /////////// VARIABLES
   ///
-  // console.log(data[0].)
 
   ///
   /////////// CUSTOM HOOKS

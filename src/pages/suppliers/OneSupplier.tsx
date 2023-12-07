@@ -37,10 +37,6 @@ export const OneSupplier = ({ title }: OneSupplierProps_TP) => {
   /////////// VARIABLES
   ///
   const { supplierID } = useParams()
-  console.log(
-    "🚀 ~ file: OneSupplier.tsx:20 ~ OneSupplier ~ supplierID:",
-    supplierID
-  )
   const navigate = useNavigate()
   ///
 
@@ -54,10 +50,6 @@ export const OneSupplier = ({ title }: OneSupplierProps_TP) => {
     endpoint: `supplier/api/v1/suppliers/${supplierID}`,
     queryKey: ["suppliers", supplierID!],
   })
-  console.log(
-    "🚀 ~ file: OneSupplier.tsx:39 ~ OneSupplier ~ supplier:",
-    supplier
-  )
 
   /////////// STATES
   ///

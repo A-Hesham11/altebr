@@ -22,6 +22,7 @@ import { authCtx } from "../../context/auth-and-perm/auth";
 import { useFetch, useMutate } from "../../hooks";
 import { mutateData } from "../../utils/mutateData";
 import { useNavigate } from "react-router-dom";
+import { formatDate } from "../../utils/date";
 
 type SellingSecondpage_TP = {
   paymentData: Payment_TP[]
@@ -53,15 +54,12 @@ const PaymentToManagement = () => {
     const {
         data: invoiceDataNumber,
       } = useFetch({
-        queryKey: ["payment-invoice"],
+        queryKey: ["payment-sdadbonds"],
         endpoint: `/sdad/api/v1/sdadbonds/${userData?.branch_id}?per_page=10000`,
         onSuccess(data) {
             return data.data
         },
       });
-
-      console.log("🚀 ~ file: PaymentToManagement.tsx:55 ~ PaymentToManagement ~ invoiceDataNumber:", invoiceDataNumber) 
-
 
     const {mutate: mutatePaymentsData } = useMutate({
         mutationFn: mutateData,
@@ -87,6 +85,7 @@ const PaymentToManagement = () => {
                 id: paymentData[key]?.id,
                 value: paymentData[key]?.amount || paymentData[key]?.weight,
             };
+            postPaymentData.push(keyValueObject);
 
             const keyAllValueObject = {
                 card_id: paymentData[key]?.id,
@@ -94,47 +93,37 @@ const PaymentToManagement = () => {
                 value_gram: paymentData[key]?.weight,
                 card_name: paymentData[key]?.card,
             };
-
-            postPaymentData.push(keyValueObject);
             postPaymentAllData.push(keyAllValueObject)
         })
-        
-        console.log("🚀 ~ file: PaymentToManagement.tsx:100 ~ Object.keys ~ xxxxxxxxx:", {
-                    invoice_number: invoiceDataNumber.length + 1,
-                    payment_date: new Date(),
-                    employee_id: userData?.id,
-                    branch_id: userData?.branch_id,
-                    payment: postPaymentAllData,
-                })
 
-        // mutatePaymentsData({
-        //     endpointName: "/sdad/api/v1/store",
-        //     values: {
-        //         payment: postPaymentData,
-        //     },
-        //     method: "post",
-        // });
+        mutatePaymentsData({
+            endpointName: "/sdad/api/v1/store",
+            values: {
+                payment: postPaymentData,
+            },
+            method: "post",
+        });
 
-        // mutateAllPaymentsData({
-        //     endpointName: "/sdad/api/v1/create",
-        //     values: {
-        //         invoice_number: invoiceDataNumber.length + 1,
-        //         payment_date: new Date(),
-        //         employee_id: userData?.id,
-        //         branch_id: userData?.branch_id,
-        //         payment: postPaymentAllData,
-        //     },
-        //     method: "post",
-        // });
+        mutateAllPaymentsData({
+            endpointName: "/sdad/api/v1/create",
+            values: {
+                invoice_number: invoiceDataNumber.length + 1,
+                payment_date: new Date()?.toISOString().slice(0, 10),
+                employee_id: userData?.id,
+                branch_id: userData?.branch_id,
+                payment: postPaymentAllData,
+            },
+            method: "post",
+        });
 
         if (paymentData.length === 0) {
             notify('info','fill fields first')
             return;
         }
 
-        // notify('success')
+        notify('success')
 
-        // navigate("/selling/viewPayment")
+        navigate("/selling/viewPayment")
 
     };
 

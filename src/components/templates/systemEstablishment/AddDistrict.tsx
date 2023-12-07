@@ -117,7 +117,6 @@ export const AddDistrict = ({
       }
     },
     onError: (error) => {
-      console.log(error)
       notify("error")
     },
   })

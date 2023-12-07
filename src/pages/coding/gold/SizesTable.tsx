@@ -21,7 +21,6 @@ type SizesTableProps_TP = {
 
 ///
 export const SizesTable = ({ sizes, setSizes }: SizesTableProps_TP) => {
-  console.log("🚀 ~ file: SizesTable.tsx:24 ~ SizesTable ~ sizes:", sizes)
   /////////// VARIABLES
   ///
 

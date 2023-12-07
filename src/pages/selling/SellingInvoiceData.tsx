@@ -29,8 +29,6 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ file: SellingInvoiceData.tsx:32 ~ clientData:", clientData)
-  console.log("🚀 ~ file: SellingInvoiceData.tsx:31 ~ sellingItemsData:",sellingItemsData );
 
   const { formatGram, formatReyal } = numberContext();
 
@@ -91,7 +89,6 @@ const SellingInvoiceData = ({
     totalFinalCost,
     totalCost,
   };
-  console.log("🚀 ~ file: SellingInvoiceData.tsx:85 ~ costDataAsProps:", costDataAsProps)
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -269,7 +266,6 @@ const SellingInvoiceData = ({
         endpointName: '/selling/api/v1/add_Invoice',
         values: { invoice, items, card }
     })
-    console.log("🚀 ~ file: SellingInvoiceData.tsx:237 ~ posSellingDataHandler ~ { invoice, items, card }:", { invoice, items, card })
   };
 
   return (

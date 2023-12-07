@@ -144,12 +144,10 @@ export const AccountingTree = () => {
   } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      console.log("first", data)
       notify("success")
     },
     onError: (err) => {
       notify("error")
-      console.log(err)
     },
   })
 
@@ -157,7 +155,6 @@ export const AccountingTree = () => {
     // level1
     if (level === 1) {
       const { tree_id, account_id, parent_id, ...filteredValues } = values
-      console.log("1", filteredValues)
       accountingTreeMutate({
         endpointName: "/accounting/api/v1/add_account",
         values: filteredValues,
@@ -167,7 +164,6 @@ export const AccountingTree = () => {
     // level2
     if (level === 2) {
       const { account_id, parent_id, ...filteredValues } = values
-      console.log("2", filteredValues)
       accountingTreeMutate({
         endpointName: "/accounting/api/v1/add_account",
         values: filteredValues,
@@ -177,7 +173,6 @@ export const AccountingTree = () => {
     // level3
     if (level === 3) {
       const { tree_id, parent_id, ...filteredValues } = values
-      console.log("3", filteredValues)
       accountingTreeMutate({
         endpointName: "/accounting/api/v1/add_account",
         values: filteredValues,
@@ -187,7 +182,6 @@ export const AccountingTree = () => {
     // level4
     if (level === 4) {
       const { tree_id, account_id, ...filteredValues } = values
-      console.log("4", filteredValues)
       accountingTreeMutate({
         endpointName: "/accounting/api/v1/add_account",
         values: filteredValues,

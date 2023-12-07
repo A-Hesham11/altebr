@@ -30,6 +30,18 @@ const VeiwPaymentToManagement = () => {
   };
 
   // FETCHING DATA FROM API
+  // const {
+  //   data: invoiceData,
+  //   isLoading,
+  //   isFetching,
+  //   isRefetching,
+  //   refetch,
+  // } = useFetch({
+  //   queryKey: ["payment-invoice"],
+  //   endpoint: `/sdad/api/v1/sdadbonds/${userData?.branch_id}?per_page=10000`,
+  //   pagination: true,
+  // });
+
   const {
     data: invoiceData,
     isLoading,
@@ -38,10 +50,12 @@ const VeiwPaymentToManagement = () => {
     refetch,
   } = useFetch({
     queryKey: ["payment-invoice"],
-    endpoint: `/sdad/api/v1/sdadbonds/${userData?.branch_id}?per_page=10000`,
+    endpoint:
+      search === ""
+        ? `/sdad/api/v1/sdadbonds/${userData?.branch_id}?page=${page}`
+        : `${search}`,
     pagination: true,
   });
-
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -88,7 +102,7 @@ const VeiwPaymentToManagement = () => {
 
   useEffect(() => {
     refetch();
-  }, [page]);
+  }, [page, invoiceData]);
 
   useEffect(() => {
     if (page == 1) {
@@ -100,7 +114,7 @@ const VeiwPaymentToManagement = () => {
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
-    let url = `selling/api/v1/invoices_per_branch/${userData?.branch_id}?`;
+    let url = `/sdad/api/v1/sdadbonds/${userData?.branch_id}?`;
     let first = false;
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
@@ -128,9 +142,7 @@ const VeiwPaymentToManagement = () => {
           onSubmit={(values) => {
             getSearchResults({
               ...values,
-              invoice_date: values.invoice_date
-                ? formatDate(getDayAfter(new Date(values.invoice_date)))
-                : "",
+              invoice_date: values.invoice_date ? formatDate(getDayAfter(new Date(values.invoice_date))) : "",
             });
           }}
         >

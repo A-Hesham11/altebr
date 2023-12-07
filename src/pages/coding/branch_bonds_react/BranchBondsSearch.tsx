@@ -26,7 +26,6 @@ const BranchBondsSearch = ({ getSearchResults }) => {
       <Formik
         initialValues={initailSearchValues}
         onSubmit={(values) => {
-          console.log(values);
           getSearchResults(values);
         }}
       >

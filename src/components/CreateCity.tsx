@@ -89,7 +89,6 @@ export const CreateCity = ({ value, onAdd }: CreateCity_TP) => {
   ///
 
   function PostNewValue(values: InitialValues_TP) {
-    console.log("🚀 ~ file: CreateCity.tsx:81 ~ PostNewValue ~ values:", values)
 
     mutate({
       endpointName: "/governorate/api/v1/cities",

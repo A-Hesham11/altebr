@@ -95,7 +95,6 @@ export const AccessoriesItemCodingForm = ({
 
   const { values, setFieldValue } =
   useFormikContext<GoldCodingSanad_initialValues_TP>()
-  console.log(values);
   
   ///
   /////////// STATES
@@ -175,7 +174,6 @@ export const AccessoriesItemCodingForm = ({
     if (finalSumLeftWeight == 0)
       notify("info", `تم تغيير سطر الترقيم لان السطر السابق انتهي`)
   }, [activeBand])
-  console.log("🚀 ~ file: AccessoriesItemCodingForm.tsx:177 ~ activeBand:", activeBand)
   
   
 

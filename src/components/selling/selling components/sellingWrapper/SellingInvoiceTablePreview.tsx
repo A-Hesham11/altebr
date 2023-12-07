@@ -4,7 +4,6 @@ import { Table } from "../../../templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../../../context/settings/number-formatter";
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ file: SellingInvoiceTablePreview.tsx:7 ~ SellingInvoiceTablePreview ~ item:", item)
   const { formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE

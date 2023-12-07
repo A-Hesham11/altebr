@@ -207,7 +207,6 @@ export const AddClients = ({
         initialValues={initialValues}
         validationSchema={() => employeeValidatingSchema()}
         onSubmit={(values) => {
-          console.log("🚀 ~ file: AddClients.tsx:188 ~ AddClients ~ values:", values)
           if (editClientsData) {
             PostClientNewData(values)
           } else if (showClientsData) {
@@ -220,8 +219,6 @@ export const AddClients = ({
         }}
     >
         {({ resetForm, values }) => {
-          console.log("🚀 ~ file: AddClients.tsx:223 ~ values:", values)
-          
             return (
                 <Form>
                     <div className="relative h-full px-3">

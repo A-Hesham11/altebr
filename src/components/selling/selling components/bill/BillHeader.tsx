@@ -5,7 +5,6 @@ import { authCtx } from '../../../../context/auth-and-perm/auth'
 
 
 const BillHeader = ({invoiceNumber} : any) => {
-console.log("🚀 ~ file: BillHeader.tsx:8 ~ BillHeader ~ invoiceNumber:", invoiceNumber)
 
   const { userData } = useContext(authCtx)
 

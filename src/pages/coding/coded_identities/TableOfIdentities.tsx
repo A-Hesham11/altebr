@@ -136,7 +136,6 @@ const TableOfIdentities = ({
         cell: (info: any) => (
           <BsEye
             onClick={() => {
-              console.log(info.row.original)
               setOpenIdentitiesModal(true);
               setSelectedItem(info.row.original);
             }}

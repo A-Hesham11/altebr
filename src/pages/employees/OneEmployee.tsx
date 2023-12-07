@@ -66,10 +66,6 @@ export const OneEmployee = ({ title }: OneEmployeeProps_TP) => {
     endpoint: `employee/api/v1/employees/${employeeID}`,
     queryKey: ["employees", employeeID!],
   })
-  console.log(
-    "🚀 ~ file: OneEmployee.tsx:38 ~ OneEmployee ~ employee:",
-    employee
-  )
 
   /////////// STATES
   ///

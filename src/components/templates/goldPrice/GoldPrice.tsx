@@ -62,7 +62,6 @@ const GoldPrice = ({ title }: BuyingPoliciesProps_TP) => {
     mutationFn: mutateData,
     mutationKey: ["gold_price"],
     onSuccess: (data) => {
-      console.log("🚀 ~ file: GoldPrice.tsx:77 ~ GoldPrice ~ data:", data);
       notify("success");
       queryClient.refetchQueries(["all_gold_price"]);
     },
@@ -71,7 +70,6 @@ const GoldPrice = ({ title }: BuyingPoliciesProps_TP) => {
       notify("error");
     },
   });
-  console.log("🚀 ~ file: GoldPrice.tsx:71 ~ GoldPrice ~ data:", data);
 
   function PostNewCard(values: PoliciesProps_TP) {
     mutate({

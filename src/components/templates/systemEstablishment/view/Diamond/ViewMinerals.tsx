@@ -128,7 +128,6 @@ export const ViewMinerals = () => {
   /////////// VARIABLES
   ///
   ///
-  console.log("🚀 ~ file: ViewMinerals.tsx:106 ~ ViewMinerals ~ data:", data)
 
   ///
   /////////// STATES

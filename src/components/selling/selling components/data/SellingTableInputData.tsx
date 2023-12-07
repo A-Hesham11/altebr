@@ -49,9 +49,6 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ file: SellingTableInputData.tsx:54 ~ selectedItemDetails:", selectedItemDetails)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:53 ~ sellingItemsData:", sellingItemsData)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:53 ~ dataSource:", dataSource)
 
   const [search, setSearch] = useState(""); 
   const [openDetails, setOpenDetails] = useState<boolean>(false);
@@ -76,7 +73,6 @@ export const SellingTableInputData = ({
   : priceWithCommissionCash;
 
   const { values, setFieldValue } = useFormikContext<any>();
-  console.log("🚀 ~ file: SellingTableInputData.tsx:65 ~ values:", values)
 
   const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
     queryKey: ["branch-all-accepted-selling"],
@@ -164,8 +160,6 @@ export const SellingTableInputData = ({
                 name="selectedItem" 
                 onChange={(e) => {
                   if (e.target.checked) {
-                    console.log("🚀 ~ file: SellingTableInputData.tsx:177 ~ info.row.original:", info.row.original)
-                    console.log("🚀 ~ file: SellingTableInputData.tsx:180 ~ e.target.checked:", e.target.checked)
                     setSelectedItemDetails((prev) => [...prev, {...info.row.original, index:info.row.index}]);
                   } else {
                     setSelectedItemDetails((prev) => prev.filter((item) => item.index !== info.row.index));

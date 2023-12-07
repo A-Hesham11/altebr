@@ -226,7 +226,6 @@ export const AddPartners = ({
               JSON.stringify(editData.national_image)
             )
               delete editedValues.national_image
-            console.log("editedValues---->", editedValues)
             mutate({
               endpointName: `partner/api/v1/partners/${editData.id}`,
               values: editedValues,

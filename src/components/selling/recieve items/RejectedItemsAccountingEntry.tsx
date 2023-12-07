@@ -126,7 +126,6 @@ export const RejectedItemsAccountingEntry = ({ sanadId, isInPopup, setStage }: R
     //         setDataSource(data.data)
     //     },
     // })
-    //     console.log("🚀 ~ file: RejectedItemsAccountingEntry.tsx:104 ~ RejectedItemsAccountingEntry ~ data:", data)
     const {
         data: contract,
         isLoading: contractIsLoading,

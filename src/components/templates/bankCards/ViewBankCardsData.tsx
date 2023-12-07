@@ -52,7 +52,6 @@ const ViewBankCardsData = () => {
   const [editData, setEditData] = useState<Cards_Props_TP>()
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
-  console.log("🚀 ~ file: ViewBankCardsData.tsx:59 ~ ViewBankCardsData ~ dataSource:", dataSource)
   const [page, setPage] = useState<number>(1)
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(

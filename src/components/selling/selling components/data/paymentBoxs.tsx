@@ -9,7 +9,6 @@ import { authCtx } from '../../../../context/auth-and-perm/auth'
 
 
 const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => {
-console.log("🚀 ~ file: paymentBoxs.tsx:12 ~ PaymentBoxes ~ paymentData:", paymentData)
 
   const { formatGram, formatReyal } = numberContext();
 
@@ -29,9 +28,7 @@ console.log("🚀 ~ file: paymentBoxs.tsx:12 ~ PaymentBoxes ~ paymentData:", pay
   const totalPaymentByKarat24 = paymentData.filter((item) => item.id === 10004)[0]?.weight || 0; 
 
   const totalpaymentByGram = +totalPaymentByKarat18 + +totalPaymentByKarat21 + +totalPaymentByKarat22 + +totalPaymentByKarat24
-  console.log("🚀 ~ file: paymentBoxs.tsx:32 ~ PaymentBoxes ~ totalpaymentByGram:", totalpaymentByGram)
   const paymentByGram = (+totalPaymentByKarat18 * 18 / 24) + (+totalPaymentByKarat21 * 21 / 24 ) + (+totalPaymentByKarat22 * 22 / 24 ) + (+totalPaymentByKarat24 * 24 / 24 )
-  console.log("🚀 ~ file: paymentBoxs.tsx:32 ~ PaymentBoxes ~ paymentByGram:", paymentByGram)
   
   const karatDifference = totalpaymentByGram - paymentByGram
 

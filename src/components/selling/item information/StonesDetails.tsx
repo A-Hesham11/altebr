@@ -117,7 +117,6 @@ const StonesDetails = ({ dataSource }) => {
                 </thead>
                 <tbody>
                   {table.getRowModel()?.rows?.map((row) =>{ 
-                    // console.log("🚀 ~ file: StonesDetails.tsx:158 ~ {table.getRowModel ~ row:", row)
                     return(
                     <>
                       <tr key={row.id} className="text-center">

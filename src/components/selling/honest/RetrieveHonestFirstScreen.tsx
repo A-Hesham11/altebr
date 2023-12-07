@@ -118,7 +118,6 @@ export const RetrieveHonestFirstScreen = ({
       },
       // {
       //     cell: (info: any) => {
-      //         // console.log("🚀 ~ file: RetrieveHonestFirstScreen.tsx:114 ~ RetrieveHonestFirstScreen ~ info:", info.row.original.status ,info.row.original.id )
 
       //         return (
       //             <select id="itemStatusOptions"
@@ -141,7 +140,6 @@ export const RetrieveHonestFirstScreen = ({
       //     },
       // {
       //     const media = info?.row?.original?.items?.map(item=>item.images?.map(image=>image))
-      //     console.log("🚀 ~ file: RetrieveHonestFirstScreen.tsx:151 ~ media ~ media:", media.flat(1))
       //   return(
       //   <div className="w-12 mx-auto">
       //     <FilesPreviewOutFormik images={[]} preview pdfs={[]}/>

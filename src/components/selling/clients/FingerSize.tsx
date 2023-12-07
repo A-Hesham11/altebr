@@ -455,7 +455,6 @@ export default FingerSize;
   placeholder="المقاس"
   id="select-size-number"
   options={selectedCategory.category_sizes
-                        console.log("🚀 ~ file: FingerSize.tsx:359 ~ FingerSize ~ option:", option)
     ?.find((size) => size.id === selectedSizeTypeOption?.id)
     ?.units.map((unit) => ({
       ...unit,
