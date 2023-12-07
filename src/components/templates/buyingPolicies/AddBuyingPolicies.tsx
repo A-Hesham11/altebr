@@ -1,20 +1,15 @@
 import { t } from 'i18next'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useFetch, useIsRTL, useMutate } from '../../../hooks'
-import { numberFormatterCtx } from '../../../context/settings/number-formatter'
 import { notify } from '../../../utils/toast'
 import { authCtx } from '../../../context/auth-and-perm/auth'
 import { Form, Formik } from 'formik'
 import * as Yup from "yup"
 import { useQueryClient } from '@tanstack/react-query'
 import { mutateData } from '../../../utils/mutateData'
-import { SelectOption_TP } from '../../../types'
-import { SingleValue } from 'react-select'
 import { requiredTranslation } from '../../../utils/helpers'
 import { BaseInputField, OuterFormLayout, Select } from '../../molecules'
 import { Button } from '../../atoms'
-import { SelectRole } from '../reusableComponants/roles/SelectRole'
-import RadioGroup from '../../molecules/RadioGroup'
 import { SelectBranches } from '../reusableComponants/branches/SelectBranches'
 
 
@@ -48,9 +43,9 @@ const AddBuyingPolicies = ({
     const [maxBuyingType, setmaxBuyingType] = useState();
 
     const queryClient = useQueryClient()
+    const {userData} = useContext(authCtx)
     const isRTL = useIsRTL()
 
-    const {userData} = useContext(authCtx)
 
     useEffect(() => {
         document.documentElement.dir = isRTL ? "rtl" : "ltr"
@@ -89,13 +84,13 @@ const AddBuyingPolicies = ({
     },
     onError: (error) => {
       console.log(error);
-      notify("error");
+      notify("error", error?.response?.data?.errors?.msg);
     },
   });
 
   function PostNewCard(values: PoliciesProps_TP) {
     mutate({
-      endpointName: "/buyingUsedGold/api/v1/maximum_buying",
+      endpointName: "/buyingUsedGold/api/v1/create_maximum_buying",
       values,
       method: "post",
     });
