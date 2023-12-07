@@ -64,14 +64,14 @@ const PaymentToManagement = () => {
     const {mutate: mutatePaymentsData } = useMutate({
         mutationFn: mutateData,
         onSuccess: (data) => {
-          navigate(`/selling/viewPayment`);
+        //   navigate(`/selling/viewPayment`);
         },
     });
 
     const {mutate: mutateAllPaymentsData } = useMutate({
         mutationFn: mutateData,
         onSuccess: (data) => {
-          navigate(`/selling/viewPayment`);
+        //   navigate(`/selling/viewPayment`);
         },
     });
     

@@ -42,11 +42,15 @@ export const BuyingTable = ({
   const { formatGram, formatReyal } = numberContext();
   const { values, setFieldValue } = useFormikContext();
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ file: BuyingTable.tsx:45 ~ userData:", userData)
   const [data, setData] = useState("");
 
   // FORMULA
   const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2) 
-  const priceWithCommissionRate = (+totalValues - +totalValues * (+userData?.max_buy * 0.01));
+  console.log("🚀 ~ file: BuyingTable.tsx:49 ~ totalValues:", totalValues)
+  const priceWithCommissionRate = (+totalValues - +totalValues * +(+userData?.max_buy * 0.01));
+  console.log("🚀 ~ file: BuyingTable.tsx:51 ~ +userData?.max_buy:", +userData?.max_buy)
+  console.log("🚀 ~ file: BuyingTable.tsx:51 ~ priceWithCommissionRate:", priceWithCommissionRate)
   const priceWithCommissionCash = (+totalValues - +userData?.max_buy);
   const priceWithSellingPolicy =
   userData?.max_buy_type === "نسبة"

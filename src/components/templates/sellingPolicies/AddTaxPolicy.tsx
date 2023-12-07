@@ -68,13 +68,13 @@ const AddTaxPolicy = ({
       queryClient.refetchQueries(["allTax_Selling"])
     },
     onError: (error) => {
-      notify("error");
+      notify("error", error?.response?.data?.errors?.msg);
     },
   });
 
   function PostNewCard(values: PoliciesProps_TP) {
     mutate({
-      endpointName: "/selling/api/v1/tax_includes",
+      endpointName: "/selling/api/v1/create-tax-includes",
       values,
       method: "post",
     });
