@@ -30,14 +30,12 @@ const SellingTableInputWeight = ({
 }: SellingTableInputWeight_TP) => {
     const [searchWeight, setSearchWeight] = useState(""); 
     const [itemsOfWeight, setItemsOfWeight] = useState([]); 
-    console.log("🚀 ~ file: SellingTableInputWeight.tsx:33 ~ itemsOfWeight:", itemsOfWeight)
     const { userData } = useContext(authCtx);
     const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
     const { formatGram, formatReyal } = numberContext();
     const [page, setPage] = useState<number>(1)
 
   const { values, setFieldValue, resetForm , isSubmitting } = useFormikContext<any>();
-  console.log("🚀 ~ file: SellingTableInputWeight.tsx:40 ~ values:", values)
 
   const priceWithCommissionRate = dataSource && (+sellingItemsOfWeigth[0]?.cost + +values.cost) * (+dataSource[0]?.min_selling * 0.01) + (+sellingItemsOfWeigth[0]?.cost + +values.cost);
   

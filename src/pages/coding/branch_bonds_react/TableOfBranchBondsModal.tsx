@@ -57,10 +57,6 @@ type Entry_TP = {
 };
 
 const TableOfBranchBondsModal = ({ item }: { item?: {} }) => {
-  console.log(
-    "🚀 ~ file: TableOfBranchBondsModal.tsx:11 ~ TableOfBranchBondsModal ~ item:",
-    item
-  );
 
   const { formatGram, formatReyal } = numberContext();
 
@@ -164,10 +160,6 @@ const TableOfBranchBondsModal = ({ item }: { item?: {} }) => {
           ? value
           : 0,
     })
-  );
-  console.log(
-    "🚀 ~ file: TableOfBranchBondsModal.tsx:272 ~ TableOfBranchBondsModal ~ restrictions:",
-    restrictions
   );
 
   // group by account

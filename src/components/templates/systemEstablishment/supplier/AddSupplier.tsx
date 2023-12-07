@@ -215,7 +215,6 @@ const AddSupplier = ({
   const [docsFormValues, setDocsFormValues] =
     useState<allDocs_TP[]>(incomingData)
   const navigate = useNavigate()
-  console.log(editData)
   ///
   /////////// SIDE EFFECTS
   ///
@@ -295,7 +294,6 @@ const AddSupplier = ({
               JSON.stringify(editData.logo)
             )
               delete editedValues.logo
-            console.log(editData)
             if (values.password === "") delete editedValues.password
 
             mutate({
@@ -308,10 +306,6 @@ const AddSupplier = ({
             if (values.type === "global") delete editedValues.nationalAddress
             delete editedValues.country_id_out
 
-            console.log(
-              "🚀 ~ file: AddSupplier.tsx:268 ~ editedValues:",
-              editedValues
-            )
             mutate({
               endpointName: `supplier/api/v1/suppliers`,
               values: editedValues,

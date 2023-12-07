@@ -118,7 +118,6 @@ export const ViewStonePurity = () => {
       }
     },
   })
-  console.log("🚀 ~ file: ViewStonePurity.tsx:116 ~ ViewStonePurity ~ purities:", purities)
   const queryClient = useQueryClient()
   const {
     mutate,
@@ -134,7 +133,6 @@ export const ViewStonePurity = () => {
   })
 
   const handleSubmit = () => {
-    console.log(deleteData?.id)
     mutate({
       endpointName: `stones/api/v1/purities/${deleteData?.id}`,
       method: "delete",

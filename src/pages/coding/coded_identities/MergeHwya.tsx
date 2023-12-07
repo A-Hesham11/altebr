@@ -20,8 +20,6 @@ const MergeHwya = ({
     category_id: "",
   };
 
-  console.log(operationTypeSelect);
-
   // FETCH CATEGORY DATA FROM THE API
   const { data: categoryData, isLoading } = useFetch({
     endpoint: `/classification/api/v1/categories?type=all`,
@@ -105,10 +103,6 @@ const MergeHwya = ({
           items: mergeIds,
         });
 
-        console.log({
-          category_id: values.category_id.toString(),
-          items: mergeIds,
-        });
       }}
     >
       <Form>

@@ -20,11 +20,6 @@ const TableOfSeperate = () => {
     pagination: true,
   });
 
-  console.log(
-    "🚀 ~ file: ViewSellingInvoice.tsx:15 ~ ViewSellingInvoice ~ transformBranch:",
-    transformBranch
-  );
-
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [

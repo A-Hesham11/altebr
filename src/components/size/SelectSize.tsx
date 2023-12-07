@@ -18,7 +18,6 @@ type SelectSize_TP = {
 }
 ///
 export const SelectSize = ({ editData }: SelectSize_TP) => {
-    console.log("🚀 ~ file: SelectSize.tsx:21 ~ SelectSize ~ editData:", editData)
     /////////// VARIABLES
     ///
     const [newValue, setNewValue] = useState()

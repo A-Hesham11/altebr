@@ -68,7 +68,6 @@ const AddTaxPolicy = ({
       queryClient.refetchQueries(["allTax_Selling"])
     },
     onError: (error) => {
-      console.log(error);
       notify("error");
     },
   });

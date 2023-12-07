@@ -13,7 +13,6 @@ import RadioGroup from '../../molecules/RadioGroup'
 
 
 const AddClientInputs = ({editClientsData, showClientsData, initialValues, dataSource, resetData, isSuccessPost}) => {
-console.log("🚀 ~ file: AddClientInput.tsx:16 ~ AddClientInputs ~ initialValues:", initialValues)
 
     const { setFieldValue, values, resetForm } = useFormikContext();
 

@@ -24,7 +24,6 @@ const ProfitMarginSelect = () => {
         value: '',
         label: '',
     })
-    console.log("🚀 ~ file: ProfitMarginSelect.tsx:27 ~ ProfitMarginSelect ~ selectProfitValue:", selectProfitValue)
     const [profitVal, setProfitInputVal] = useState('')
     const [percentageVal, setPercentageInputVal] = useState('')
     const factorial = {
@@ -75,7 +74,6 @@ const ProfitMarginSelect = () => {
             percentage: profitData && profitData[0].profit === 'percentage' ? profitData[0].value * 100 : 0,
             profit: profitData && profitData[0]?.profit ||  ''
         }} onSubmit={(values) => {
-            console.log("🚀 ~ file: ProfitMarginSelect.tsx:74 ~ ProfitMarginSelect ~ values:", values)
             const modifiedValue = {
                 profit: values?.profit === 'factorial' ? 'factorial' : 'percentage',
                 value: values?.profit === 'factorial' ? values.factorial : +values.percentage / 100

@@ -23,10 +23,7 @@ type Paginate_Selling_TP = {
 const FinalPreviewBillTable = ({
   paymentData
 }) => {
-  console.log("🚀 ~ file: FinalPreviewBillTable.tsx:26 ~ paymentData:", paymentData)
 
-  // const [dataSource, setDataSource] = useState<Selling_TP[]>([]);
-  console.log("🚀 ~ file: FinalPreviewBillTable.tsx:25 ~ FinalPreviewBillTable ~ dataSource:", dataSource)
   const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
 
@@ -40,7 +37,6 @@ const FinalPreviewBillTable = ({
   //     setDataSource(data.data);
   //   },
   // });
-  // console.log("🚀 ~ file: FinalPreviewBillTable.tsx:31 ~ FinalPreviewBillTable ~ data:", data)
 
   const sellingCols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [

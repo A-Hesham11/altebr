@@ -31,8 +31,6 @@ const TransformToBranch = ({
     setSelectedOption(event.target.value);
   };
 
-  console.log(operationTypeSelect);
-
   const initialValues = {
     branch_id: "",
     gold_price: "",

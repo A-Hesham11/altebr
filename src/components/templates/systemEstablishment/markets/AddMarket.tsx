@@ -69,7 +69,6 @@ export const AddMarket = ({
     city_id: editData ? editData?.city_name : "",
     district_id: editData ? editData?.district_id : "",
   }
-  console.log("AddMarket", editData)
   ///
   /////////// CUSTOM HOOKS
   ///

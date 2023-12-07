@@ -97,7 +97,6 @@ export const ViewCompanyDetails = () => {
   const companyDetailsData: CompanyDetails_TP[] = companyDetails
     ? companyDetails
     : []
-  console.log("companyDetailsData", companyDetailsData)
 
   ///
   /////////// STATES
@@ -106,10 +105,6 @@ export const ViewCompanyDetails = () => {
   const [documentOpen, setDocumentOpen] = useState(false)
 
   // let images: any = companyDetailsData[0]?.files.map((el) => el)
-  // console.log(
-  //   "🚀 ~ file: ViewCompanyDetails.tsx:45 ~ ViewCompanyDetails ~ images:",
-  //   images[0].image
-  // )
 
   ///
   /////////// SIDE EFFECTS

@@ -50,7 +50,6 @@ const ViewExcludedItems = () => {
     view: false,
   })
   const [editData, setEditData] = useState<Cards_Props_TP>()
-  console.log("🚀 ~ file: ViewExcludedItems.tsx:53 ~ ViewExcludedItems ~ editData:", editData)
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
   const [page, setPage] = useState<number>(1)

@@ -99,7 +99,6 @@ export function GoldTable({
             ...Array.from(prev),
             { ...values, id: uniqueID },
           ])
-          console.log("🚀 ~ file: OTable.tsx:96 ~ OTable ~ values:", values)
         }}
         validationSchema={validationSchema}
       >

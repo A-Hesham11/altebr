@@ -87,7 +87,6 @@ export const GoldCodingSanadPicker = () => {
       label: t('attachment number'),
     },
   ]
-  console.log(columns[1]);
   
 
   const {

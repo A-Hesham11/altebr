@@ -96,7 +96,6 @@ export const DiamondCodingWrapper = ({
     }
 
     const [piece, ...remainingPieces] = pieces
-    console.log("🚀 ~ file: DiamondCodingWrapper.tsx:99 ~ sendPieces ~ piece:", piece)
 
     const diamondStoneWeight = piece?.stones?.reduce((acc , curr)=>{
       return +acc + Number(curr.diamondWeight)

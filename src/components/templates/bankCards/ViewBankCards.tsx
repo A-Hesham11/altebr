@@ -52,10 +52,8 @@ const viewBankCards = () => {
     view: false,
   })
   const [editData, setEditData] = useState<Cards_Props_TP>()
-  console.log("🚀 ~ file: viewBankCards.tsx:53 ~ viewBankCards ~ editData:", editData)
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
-  console.log("🚀 ~ file: viewBankCards.tsx:57 ~ viewBankCards ~ dataSource:", dataSource)
   const [page, setPage] = useState<number>(1)
   const [files, setFiles] = useState([]);
 

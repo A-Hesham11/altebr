@@ -253,7 +253,6 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
       setPage(1)
     }
   }, [search])
-  console.log("data", data)
 
   const queryClient = useQueryClient()
   const {

@@ -88,7 +88,6 @@ export const Example = () => {
 
   const { values, errors, touched, setFieldValue } =
     useFormikContext<typeof initialValues>()
-  console.log(`Example ~ values:`, values)
 
   const columns =
     useMemo(() =>
@@ -124,7 +123,6 @@ export const Example = () => {
         cell: (info) => (
           <BaseInputField
             // onChange={(val) => {
-            //   console.log(`columnHelper.accessor ~ val:`, val)
             //   // setWeightVal()
             // }}
             id="weight"

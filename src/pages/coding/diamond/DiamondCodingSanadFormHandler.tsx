@@ -70,8 +70,6 @@ export const DiamondCodingSanadFormHandler = ({
   /////////// VARIABLES
   ///
   const { sanadId } = useParams()
-  console.log(selectedSanad);
-
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)

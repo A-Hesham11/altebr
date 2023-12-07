@@ -47,11 +47,6 @@ const ViewSellingInvoice = () => {
     pagination: true,
   });
 
-  console.log(
-    "🚀 ~ file: ViewSellingInvoice.tsx:15 ~ ViewSellingInvoice ~ invoiceData:",
-    invoiceData
-  );
-
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [

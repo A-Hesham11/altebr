@@ -131,7 +131,6 @@ export const ViewStoneColor = () => {
   })
 
   const handleSubmit = () => {
-    console.log(deleteData?.id)
     mutate({
       endpointName: `stones/api/v1/colors/${deleteData?.id}`,
       method: "delete",

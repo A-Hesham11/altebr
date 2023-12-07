@@ -59,10 +59,6 @@ type Entry_TP = {
 };
 
 const TableOfReturnBondsModal = ({ item }: { item?: {} }) => {
-  console.log(
-    "🚀 ~ file: TableOfBranchBondsModal.tsx:11 ~ TableOfBranchBondsModal ~ item:",
-    item
-  );
 
   const { formatGram, formatReyal } = numberContext();
 
@@ -100,7 +96,6 @@ const TableOfReturnBondsModal = ({ item }: { item?: {} }) => {
 //     // },
 // })
 
-// console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:71 ~ TableOfReturnBondsModal ~ test:", test)
 
 
   // COLUMNS FOR THE TABLE OF DETAILS BOND DETAILS

@@ -126,7 +126,6 @@ export const SelectBranchCard = ({
         value={newValue}
         isDisabled={!branchesLoading && !!branchesErrorReason}
         onChange={(option) => {
-          console.log("🚀 ~ file: SelectBranchCard.tsx:128 ~ option:", option);
           setNewValue(option);
         }}
       />

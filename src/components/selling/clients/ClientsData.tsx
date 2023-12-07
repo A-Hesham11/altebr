@@ -216,7 +216,6 @@ return (
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          console.log("🚀 ~ file: ClientsData.tsx:220 ~ ClientsData ~ values:", values)
           
           setSearch(values.search)
         }}

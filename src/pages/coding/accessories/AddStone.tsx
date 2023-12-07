@@ -62,7 +62,6 @@ type AddStoneProps_TP = {
 
 ///
 export const AddStone = ({ stones, setStones }: AddStoneProps_TP) => {
-  console.log("🚀 ~ file: AddStone.tsx:65 ~ AddStone ~ stones:", stones)
   /////////// VARIABLES
   ///
   // const types = useGetQueryData<Query_TP[]>(["stone_type"])

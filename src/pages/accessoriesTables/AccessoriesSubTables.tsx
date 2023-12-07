@@ -23,7 +23,6 @@ import { AccessoriesStoneTable } from "./AccessoriesStoneTable"
 const columnHelper = createColumnHelper<any>()
 
 export const DiamondSubTables = ({ subTableData  , addedPieces}: any) => {
-  console.log("🚀 ~ file: DiamondSubTables.tsx:26 ~ DiamondSubTables ~ subTableData:", subTableData)
   /// variables
   const selectedRow = subTableData.data.filter(
     (item:any) => item.index === subTableData.index
@@ -56,7 +55,6 @@ export const DiamondSubTables = ({ subTableData  , addedPieces}: any) => {
   )
   ////////// STATES
   const [queryData, setQueryData] = useState<any[] | undefined>()
-  // console.log("🚀 ~ file: DiamondSubTables.tsx:58 ~ DiamondSubTables ~ selectedRow:", selectedRow)
 
   const queryClient = useQueryClient()
 

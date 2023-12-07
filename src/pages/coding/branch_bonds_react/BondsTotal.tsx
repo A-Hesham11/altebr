@@ -16,10 +16,6 @@ const BondsTotal = () => {
     endpoint: "/identity/api/v1/thwelBond_all_counts",
   });
 
-  console.log(
-    "🚀 ~ file: BondsTotal.tsx:11 ~ BondsTotal ~ bondsTotalsData:",
-    bondsTotalsData
-  );
   const bondsBoxes = [
     {
       account: "total number of gold pieces",

@@ -31,7 +31,6 @@ const RecieveItemsFirstScreen = ({ sanadId, selectedItem, setSelectedItem, setSt
     const navigate = useNavigate()
     const { userData } = useContext(authCtx)
     const [dataSource, setDataSource] = useState([])
-    console.log("🚀 ~ file: RecieveItemsFirstScreen.tsx:34 ~ RecieveItemsFirstScreen ~ dataSource:", dataSource)
     const [page, setPage] = useState<number>(1)
     const [sortItems, setSortItems] = useState(false)
     const [search, setSearch] = useState('')

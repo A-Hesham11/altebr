@@ -24,13 +24,10 @@ type RecieveItemsSecondScreenProps_TP = {
     openModal?: boolean
 }
 const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModal }: RecieveItemsSecondScreenProps_TP) => {
-    console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:27 ~ RecieveItemsSecondScreen ~ selectedItem:", selectedItem)
     const isSanadOpened = selectedItem.bond_status !== 0
     const { userData } = useContext(authCtx)
     const [selectedRows, setSelectedRows] = useState<any>([])
-    console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:31 ~ RecieveItemsSecondScreen ~ selectedRows:", selectedRows)
     const [dataSource, setDataSource] = useState({})
-    console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:33 ~ RecieveItemsSecondScreen ~ dataSource:", dataSource)
     const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectAll, setSelectAll] = useState(false)
@@ -354,7 +351,6 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
                                     <div className="flex gap-x-4">
                                         <div className="flex gap-4" >
                                             <Button className="bg-mainOrange text-white" action={() => {
-                                                console.log(selectedRows)
                                                 if (selectedRows.length === 0)
                                                     notify('info', `${t('select item at least')}`)
                                                 else setOpenAcceptModal(true)
@@ -423,7 +419,6 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
                                     // acceptAll: selectedItem.items.length === selectedRows.length ? true : false,
                                     // media: files
                                 }
-                                console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:411 ~ RecieveItemsSecondScreen ~ receivedFinalValue:", receivedFinalValue)
                                 isSanadOpened ?
                                     mutateReceived({
                                         endpointName: 'branchManage/api/v1/accept-items',

@@ -68,7 +68,6 @@ export const StoneTable = ({ subTableData }: any) => {
   ///
   //@ts-ignore
   const selectedRow = subTableData.data.filter(item => item.index === subTableData.index)
-  console.log("🚀 ~ file: StoneTable.tsx:71 ~ StoneTable ~ selectedRow:", selectedRow)
   const queryClient = useQueryClient()
   const [queryData, setQueryData] = useState<StoneRow_TP[] | undefined>()
   //@ts-ignore

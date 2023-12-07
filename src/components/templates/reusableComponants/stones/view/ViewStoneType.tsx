@@ -131,7 +131,6 @@ export const ViewStoneType = () => {
   })
 
   const handleSubmit = () => {
-    console.log(deleteData?.id)
     mutate({
       endpointName: `stones/api/v1/stones/${deleteData?.id}`,
       method: "delete",

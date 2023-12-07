@@ -100,7 +100,6 @@ export const AllSuppliers = ({ title }: SupplierProps_TP) => {
   const [page, setPage] = useState<number>(1)
   const navigate = useNavigate()
   
-  console.log("🚀 ~ file: AllSuppliers.tsx:97 ~ AllSuppliers ~ editData:", editData)
   const columns = useMemo<ColumnDef<supplier>[]>(
     () => [
       {
@@ -181,10 +180,6 @@ export const AllSuppliers = ({ title }: SupplierProps_TP) => {
     },
     onError: (err) => console.log(err),
   })
-  console.log(
-    "🚀 ~ file: AllSuppliers.tsx:151 ~ AllSuppliers ~ suppliers:",
-    suppliers
-  )
 
   ///
   /////////// CUSTOM HOOKS

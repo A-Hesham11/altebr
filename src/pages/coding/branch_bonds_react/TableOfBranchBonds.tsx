@@ -10,10 +10,6 @@ import { numberContext } from "../../../context/settings/number-formatter";
 import TableOfBranchBondsModal from "./TableOfBranchBondsModal";
 
 const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
-  console.log(
-    "🚀 ~ file: TableOfBranchBonds.tsx:18 ~ dataSource:",
-    dataSource.data
-  );
   const { formatReyal } = numberContext();
 
   // STATE
