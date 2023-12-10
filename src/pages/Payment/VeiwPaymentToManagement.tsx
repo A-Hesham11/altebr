@@ -29,19 +29,6 @@ const VeiwPaymentToManagement = () => {
     invoice_date: "",
   };
 
-  // FETCHING DATA FROM API
-  // const {
-  //   data: invoiceData,
-  //   isLoading,
-  //   isFetching,
-  //   isRefetching,
-  //   refetch,
-  // } = useFetch({
-  //   queryKey: ["payment-invoice"],
-  //   endpoint: `/sdad/api/v1/sdadbonds/${userData?.branch_id}?per_page=10000`,
-  //   pagination: true,
-  // });
-
   const {
     data: invoiceData,
     isLoading,
@@ -56,6 +43,8 @@ const VeiwPaymentToManagement = () => {
         : `${search}`,
     pagination: true,
   });
+
+  console.log("🚀 ~ file: VeiwPaymentToManagement.tsx:34 ~ VeiwPaymentToManagement ~ invoiceData:", invoiceData)
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(

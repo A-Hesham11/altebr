@@ -42,6 +42,7 @@ export const BuyingTable = ({
   const { formatGram, formatReyal } = numberContext();
   const { values, setFieldValue } = useFormikContext();
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ file: BuyingTable.tsx:45 ~ userData:", userData)
   const [data, setData] = useState("");
 
     // CASH VALUE API
@@ -54,6 +55,7 @@ export const BuyingTable = ({
   const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2) 
   const priceWithCommissionRate = (+totalValues - +totalValues * (+maxingUser?.max_buy * 0.01));
   const priceWithCommissionCash = (+totalValues - +maxingUser?.max_buy);
+  
   const priceWithSellingPolicy =
   maxingUser?.max_buy_type === "نسبة"
   ? +priceWithCommissionRate
