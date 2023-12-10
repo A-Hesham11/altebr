@@ -45,15 +45,24 @@ export const BuyingTable = ({
   console.log("🚀 ~ file: BuyingTable.tsx:45 ~ userData:", userData)
   const [data, setData] = useState("");
 
+    // CASH VALUE API
+    const { data: maxingUser } = useFetch({
+      endpoint: `/employee/api/max-buy-user`,
+      queryKey: ["maxingUser"],
+    });
+    console.log("🚀 ~ file: BuyingTable.tsx:53 ~ maxingUser:", maxingUser)
+
   // FORMULA
   const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2) 
   console.log("🚀 ~ file: BuyingTable.tsx:49 ~ totalValues:", totalValues)
-  const priceWithCommissionRate = (+totalValues - +totalValues * +(+userData?.max_buy * 0.01));
-  console.log("🚀 ~ file: BuyingTable.tsx:51 ~ +userData?.max_buy:", +userData?.max_buy)
+
+  const priceWithCommissionRate = (+totalValues - +totalValues * (+maxingUser?.max_buy * 0.01));
+  console.log("🚀 ~ file: BuyingTable.tsx:51 ~ +userData?.max_buy:", +maxingUser?.max_buy)
   console.log("🚀 ~ file: BuyingTable.tsx:51 ~ priceWithCommissionRate:", priceWithCommissionRate)
-  const priceWithCommissionCash = (+totalValues - +userData?.max_buy);
+  const priceWithCommissionCash = (+totalValues - +maxingUser?.max_buy);
+  
   const priceWithSellingPolicy =
-  userData?.max_buy_type === "نسبة"
+  maxingUser?.max_buy_type === "نسبة"
   ? +priceWithCommissionRate
   : +priceWithCommissionCash;
 
@@ -232,10 +241,10 @@ export const BuyingTable = ({
                   setFieldValue("piece_per_gram", goldPrice[option.value].toFixed(2));
 
                   const totalValues = (+goldPrice[option.value].toFixed(2) * +values?.weight)
-                  const priceWithCommissionRate = (+totalValues - +totalValues * (+userData?.max_buy * 0.01));
-                  const priceWithCommissionCash = (+totalValues - +userData?.max_buy);
+                  const priceWithCommissionRate = (+totalValues - +totalValues * (+maxingUser?.max_buy * 0.01));
+                  const priceWithCommissionCash = (+totalValues - +maxingUser?.max_buy);
                   const priceWithSellingPolicy =
-                  userData?.max_buy_type === "نسبة"
+                  maxingUser?.max_buy_type === "نسبة"
                   ? priceWithCommissionRate
                   : priceWithCommissionCash;
 
