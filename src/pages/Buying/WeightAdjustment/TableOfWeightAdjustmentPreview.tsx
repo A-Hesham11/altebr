@@ -38,12 +38,16 @@ const TableOfWeightAdjustmentPreview = ({
   );
 
   const [inputValue, setInputValue] = useState(totalEditedWeight);
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:41 ~ inputValue:", inputValue)
   const weightDifference = +inputValue - +totalEditedWeight;
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:43 ~ weightDifference:", weightDifference)
   const weightDifferencePerWeight = (+weightDifference / item.length).toFixed(
     2
   );
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:47 ~ weightDifferencePerWeight:", weightDifferencePerWeight)
 
   const [inputValue2, setInputValue2] = useState();
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:50 ~ inputValue2:", inputValue2)
   const test = item.map(
     (item: any) => +item.weight + +weightDifferencePerWeight
   );
@@ -172,6 +176,31 @@ const TableOfWeightAdjustmentPreview = ({
         <Button
           type="submit"
           action={() => {
+            console.log({
+              invoice: {
+                branch_id: userData?.branch_id,
+                invoice_date: formatDate(new Date()),
+                count: item?.length,
+                employee_id: item[0]?.employee_id,
+                invoice_number: listEditedInvoice?.length,
+              },
+              items: item.map((el, i) => {
+                if (inputValue !== totalEditedWeight) {
+                  return {
+                    id: el.id,
+                    // weight: Number(inputWeight[i].value),
+                    weight: test[i],
+                  };
+                } else {
+                  return {
+                    id: el.id,
+                    // weight: Number(inputWeight[i].value),
+                    weight: Number(inputWeight[i]?.value) || 0,
+                  };
+                }
+              }),
+            });
+
             PostNewValue({
               invoice: {
                 branch_id: userData?.branch_id,
@@ -191,7 +220,7 @@ const TableOfWeightAdjustmentPreview = ({
                   return {
                     id: el.id,
                     // weight: Number(inputWeight[i].value),
-                    weight: Number(inputWeight[i].value),
+                    weight: Number(inputWeight[i]?.value) || 0,
                   };
                 }
               }),
