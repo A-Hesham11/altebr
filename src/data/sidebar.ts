@@ -152,27 +152,28 @@ export const sideBarItems: MenuItem_TP[] = [
         items: [
           {
             id: crypto.randomUUID(),
-            label: 'branch bonds',
-            link: "/branch-bonds",
-            icon: CiExport,
-          },
-          {
-            id: crypto.randomUUID(),
             label: 'Branch payment',
-            link: "/s",
             icon: CiExport,
             items: [
               {
                 id: crypto.randomUUID(),
                 label: 'Payment bonds',
+                link: "/payment-bonds",
                 icon: AiOutlineGold,
               },
               {
                 id: crypto.randomUUID(),
                 label: 'View bonds',
+                link: "/view-bonds",
                 icon: AiOutlineGold,
               },
             ],
+          },
+          {
+            id: crypto.randomUUID(),
+            label: 'branch bonds',
+            link: "/branch-bonds",
+            icon: CiExport,
           },
           // REACT
           {
