@@ -1,11 +1,10 @@
 import { t } from "i18next";
 import React, { useMemo } from "react";
-import { Table } from "../../components/templates/reusableComponants/tantable/Table";
-import { numberContext } from "../../context/settings/number-formatter";
 import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
-import { Button } from "../../components/atoms";
+import { numberContext } from "../../../context/settings/number-formatter";
+import { Button } from "../../../components/atoms";
 
-const PaymentToManagementTable = ({ item }: { item?: {} }) => {
+const PaymentBondsTable = ({ item }: { item?: {} }) => {
   
   const { formatReyal, formatGram } = numberContext();
 
@@ -100,9 +99,14 @@ const PaymentToManagementTable = ({ item }: { item?: {} }) => {
               </tr>
           </tfoot>
         </table>
+        <div className="mt-5 flex">
+            <Button type="submit" className="mr-auto">
+                {t("receive")}
+            </Button>
+        </div>
       </div>
     </>
   );
 };
 
-export default PaymentToManagementTable;
+export default PaymentBondsTable;
