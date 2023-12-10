@@ -50,15 +50,10 @@ export const BuyingTable = ({
       endpoint: `/employee/api/max-buy-user`,
       queryKey: ["maxingUser"],
     });
-    console.log("🚀 ~ file: BuyingTable.tsx:53 ~ maxingUser:", maxingUser)
 
   // FORMULA
   const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2) 
-  console.log("🚀 ~ file: BuyingTable.tsx:49 ~ totalValues:", totalValues)
-
   const priceWithCommissionRate = (+totalValues - +totalValues * (+maxingUser?.max_buy * 0.01));
-  console.log("🚀 ~ file: BuyingTable.tsx:51 ~ +userData?.max_buy:", +maxingUser?.max_buy)
-  console.log("🚀 ~ file: BuyingTable.tsx:51 ~ priceWithCommissionRate:", priceWithCommissionRate)
   const priceWithCommissionCash = (+totalValues - +maxingUser?.max_buy);
   
   const priceWithSellingPolicy =
