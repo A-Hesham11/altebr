@@ -61,8 +61,10 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     useMutate<LoginResponseData_TP>({
       mutationFn: mutateData,
       onSuccess: (loginResponseData) => {
+        console.log("🚀 ~ file: auth.tsx:64 ~ AuthCtxProvider ~ loginResponseData:", loginResponseData)
         if (loginResponseData) {
           const { token, user, permissions } = loginResponseData
+          console.log("🚀 ~ file: auth.tsx:66 ~ AuthCtxProvider ~ user:", user)
           const permissionsAsStrings = permissions.map(
             (permission) => permission.routes
           )
@@ -105,16 +107,18 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
   })
 
   // Get updated userData
-  const { isFetching: isLoadingUpdatedUserData } = useFetch<User_TP>({
+  const { isFetching: isLoadingUpdatedUserData, refetch} = useFetch<User_TP>({
     endpoint: "/employee/api/employee/details",
     queryKey: ["userData"],
     onSuccess: (data) => {
+      console.log("🚀 ~ file: auth.tsx:114 ~ AuthCtxProvider ~ data:", data)
       updateLocalUserData("ADD", data)
     },
     staleTime: Infinity,
     cacheTime: Infinity,
     enabled: isLoggedIn,
   })
+
   // Get updated user permissions
   const { isFetching: isLoadingUpdatedUserPermissions } = useFetch<
     Permission_TP[]
@@ -147,6 +151,7 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     setUserToken("")
   }
   function updateLocalUserData(method: Method_TP, user?: User_TP) {
+    console.log("🚀 ~ file: auth.tsx:154 ~ updateLocalUserData ~ user:", user)
     if (method === "ADD" && !!user) {
       localStorage.userData = JSON.stringify(user)
       setUserData(user)
