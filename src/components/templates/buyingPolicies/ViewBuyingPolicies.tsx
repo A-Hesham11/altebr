@@ -167,7 +167,7 @@ const ViewBuyingPolicies = () => {
     },
   })
 
-  const handleDelete = () => {2
+  const handleDelete = () => {
     mutate({
       endpointName: `/buyingUsedGold/api/v1/delete_maximum_buying/${deleteData?.id}`,
       method: "delete",
