@@ -197,18 +197,18 @@ const PaymentBonds = () => {
     return <Loading mainTitle={`${t("loading items")}`} />;
 
   return (
-    <div className="px-16 py-10">
+    <div className="p-8">
         <div className="flex justify-between items-center mb-8">
-            <h2 className="mb-5 text-lg font-bold">{t("Payment bonds")}</h2>
+            <h2 className="text-lg font-bold">{t("Payment bonds")}</h2>
             <Back className="hover:bg-slate-50 transition-all duration-300" />
         </div>
         <ul className="grid grid-cols-5 gap-4 mb-12">
             {BoxspaymentData.map(({id, name_ar, name_en, value, unit }) => (
                 <BoxesDataBase key={id}>
-                <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">{ isRTL ? name_ar : name_en}</p>
-                <p className="bg-white p-2 text-black h-[35%] rounded-b-xl">
-                    {value?.toFixed(2)} {t(unit)}
-                </p>
+                    <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">{ isRTL ? name_ar : name_en}</p>
+                    <p className="bg-white p-2 text-black h-[35%] rounded-b-xl">
+                        {value?.toFixed(2)} {t(unit)}
+                    </p>
                 </BoxesDataBase>
             ))}
         </ul>
@@ -224,7 +224,7 @@ const PaymentBonds = () => {
         >
           <Form className="w-full flex">
             <div className="flex w-full justify-between items-end gap-3">
-              <div className="flex items-end gap-3">
+              <div className="flex items-end gap-3 w-full">
                 <div className="">
                   <BaseInputField
                     id="invoice_number"
@@ -243,10 +243,11 @@ const PaymentBonds = () => {
                     labelProps={{ className: "mt-10" }}
                   />
                 </div>
-                <div>
+                <div className="w-[230px]">
                   <SelectBranches
                     required
                     name="branch_id"
+                    
                   />
                 </div>
                 <Button
