@@ -70,16 +70,20 @@ const SellingInvoiceData = ({
   // const totalItemsTaxes = userData?.include_tax === "0" ? (+totalCostNotIncludeTax * +TaxRateOfBranch).toFixed(2) : (+totalFinalCost - +totalCost).toFixed(2)
 
   const totalCost =  ((totalCostAfterTax + totalCommissionRatio + totalCommissionTaxes) / 1.15).toFixed(2)
+  console.log("🚀 ~ file: SellingInvoiceData.tsx:73 ~ totalCost:", totalCost)
 
   // const totalFinalCostBeforeTax = totalCost + totalCommissionRatio + totalCost * +TaxRateOfBranch + totalCommissionTaxes;
   
   const totalFinalCostAfterTax = totalCostAfterTax + totalCommissionRatio + totalCommissionTaxes;
+  console.log("🚀 ~ file: SellingInvoiceData.tsx:77 ~ totalFinalCostAfterTax:", totalFinalCostAfterTax)
 
   const totalFinalCost = +totalFinalCostAfterTax.toFixed(2)
+  console.log("🚀 ~ file: SellingInvoiceData.tsx:79 ~ totalFinalCost:", totalFinalCost)
 
   const totalItemsTaxes = (+totalFinalCost - +totalCost).toFixed(2)
 
   const totalItemsTax = (+totalItemsTaxes+ +totalCommissionTaxes).toFixed(2);
+  console.log("🚀 ~ file: SellingInvoiceData.tsx:83 ~ totalItemsTax:", totalItemsTax)
 
   const costDataAsProps = {
     totalCommissionRatio,

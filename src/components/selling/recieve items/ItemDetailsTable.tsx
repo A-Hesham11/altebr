@@ -171,7 +171,7 @@ export const ItemDetailsTable = ({ selectedItem, selectedRowDetailsId }: { selec
                     : ''
             }
             <div className="mt-2 md:mt-8 grid grid-cols-12 items-center">
-                <div className="col-span-11" >
+                <div className="col-span-12" >
                     <ItemDetailsStoneTable selectedItem={selectedItem} selectedRowDetailsId={selectedRowDetailsId} />
                 </div>
                 <div className="col-span-1 ms-4">
