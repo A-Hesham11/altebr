@@ -13,6 +13,7 @@ interface ReactTableProps<T extends object> {
 
 const InvoiceTable = <T extends object>({ data,
     columns, paymentData, costDataAsProps }: ReactTableProps<T>) => {
+    
     const table = useReactTable({
         data,
         columns,
@@ -46,14 +47,12 @@ const InvoiceTable = <T extends object>({ data,
         acc += +card.commission_tax
         return acc
     }, 0)
+
     const totalFinalCost = +totalCost + +totalCommissionRatio + +totalCost * +TaxRateOfBranch + +totalCommissionTaxes
 
     const locationPath = location.pathname 
 
-    const totalFinalCostIntoArabic = convertNumToArWord(Math.round(locationPath === "/selling" ? costDataAsProps?.totalFinalCost : totalFinalCost))
-
-    // const totalItemsTax = +(costDataAsProps?.totalItemsTaxes)?.toFixed(2) + costDataAsProps?.totalCommissionTaxes
-    // const totalItemsCost = costDataAsProps?.totalCommissionRatio + costDataAsProps?.totalCost
+    const totalFinalCostIntoArabic = convertNumToArWord(Math.round(locationPath === "/selling/addInvoice/" ? costDataAsProps?.totalFinalCost : totalFinalCost))
 
     const resultTable = [
         {

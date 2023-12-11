@@ -74,7 +74,7 @@ const AddTaxPolicy = ({
 
   function PostNewCard(values: PoliciesProps_TP) {
     mutate({
-      endpointName: "/selling/api/v1/create-tax-includes",
+      endpointName: "/selling/api/v1/create-tax-include",
       values,
       method: "post",
     });
