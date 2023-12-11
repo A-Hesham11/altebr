@@ -34,6 +34,7 @@ type BuyingPoliciesProps_TP = {
 
 const GoldPrice = ({ title }: BuyingPoliciesProps_TP) => {
   const [goldType, setGoldType] = useState();
+  console.log("🚀 ~ file: GoldPrice.tsx:37 ~ GoldPrice ~ goldType:", goldType)
   const [editData, setEditData] = useState();
 
   const queryClient = useQueryClient();
@@ -85,7 +86,7 @@ const GoldPrice = ({ title }: BuyingPoliciesProps_TP) => {
     isFetching,
     isRefetching,
     refetch,
-    isSuccess
+    isSuccess,
   } = useFetch({
     queryKey: ["static-price"],
     endpoint: "/buyingUsedGold/api/v1/show-gold-price",
@@ -101,19 +102,18 @@ const GoldPrice = ({ title }: BuyingPoliciesProps_TP) => {
       label: editData?.gold_type || t("type"),
     };
     setGoldType(best);
-
   }, [editData]);
 
   const goldTypeOption = [
     {
       id: "kilo",
       label: t("kilo"),
-      value: "kilo",
+      value: "كيلو",
     },
     {
       id: "gram",
       label: t("gram"),
-      value: "gram",
+      value: "جرام",
     },
   ];
 
@@ -157,7 +157,11 @@ const GoldPrice = ({ title }: BuyingPoliciesProps_TP) => {
                   name="gold_price"
                   type="text"
                   label={`${t("gold price")}`}
-                  placeholder={editData ? editData?.gold_price : `${t("gold price")} (${t("monetary")})`}
+                  placeholder={
+                    editData
+                      ? editData?.gold_price
+                      : `${t("gold price")} (${t("monetary")})`
+                  }
                   onChange={() => {
                     setFieldValue("gold_price", values?.gold_price);
                   }}
@@ -177,4 +181,3 @@ const GoldPrice = ({ title }: BuyingPoliciesProps_TP) => {
 };
 
 export default GoldPrice;
-

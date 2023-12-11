@@ -33,7 +33,7 @@ const BuyingHeader = ({ invoiceNumber }: any) => {
       <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
         <BsDatabase className="fill-white" />
         <p className=" border-l border-[#FFA34B] px-1">
-          {t(`daily ${goldPriceData?.gold_type} price`)}
+          {`سعر ${goldPriceData?.gold_type} اليومي`}
         </p>
         <p className="px-1">{goldPriceData?.gold_price} ر.س</p>
       </div>

@@ -70,7 +70,7 @@ const AddSellingPolicies = ({
     min_discount_cash: editData?.min_discount_cash || "",
     return_days: editData?.return_days || "",
     sales_return: editData?.sales_return || "",
-    branch_id: userData?.branch_id,
+    branch_id: editData?.branch_id,
   }
 
   const {
