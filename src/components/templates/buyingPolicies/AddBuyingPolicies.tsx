@@ -37,8 +37,8 @@ type BuyingPoliciesProps_TP = {
 const AddBuyingPolicies = ({
     title,
     editData,
+    setShow
 }: BuyingPoliciesProps_TP) => {
-
     const [jobType, setJobType] = useState();
     const [maxBuyingType, setmaxBuyingType] = useState();
 
@@ -66,7 +66,7 @@ const AddBuyingPolicies = ({
     max_buy_type: editData?.max_buy_type || "",
     max_buy_rate: editData?.max_buy_rate || "",
     max_buy_cash: editData?.max_buy_cash || "",
-    branch_id: userData?.branch_id,
+    branch_id: editData?.branch_id,
   }
 
   const {
@@ -255,6 +255,7 @@ const AddBuyingPolicies = ({
                                     type='submit'
                                     className="w-fit"
                                     loading={editLoading}
+                                    action={() => setShow(false)}
                                 >
                                     {t('save')}
                                 </Button>

@@ -101,6 +101,7 @@ export const SelectBranches = ({
         loadingPlaceholder={`${t("loading")}`}
         options={branchesOptions}
         loading={branchesLoading}
+        // defaultValue={}
         creatable
         CreateComponent={CreateBranch}
         fieldKey="id"
