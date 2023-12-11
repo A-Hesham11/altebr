@@ -152,7 +152,7 @@ export const sideBarItems: MenuItem_TP[] = [
         items: [
           {
             id: crypto.randomUUID(),
-            label: 'Branch payment',
+            label: 'Branches payment',
             icon: CiExport,
             items: [
               {
@@ -163,7 +163,7 @@ export const sideBarItems: MenuItem_TP[] = [
               },
               {
                 id: crypto.randomUUID(),
-                label: 'View bonds',
+                label: 'branches payment view',
                 link: "/view-bonds",
                 icon: AiOutlineGold,
               },

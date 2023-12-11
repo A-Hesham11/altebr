@@ -106,6 +106,8 @@ import VeiwPaymentToManagement from "../pages/Payment/VeiwPaymentToManagement"
 import PurchaseBonds from "../pages/Buying/Bonds/PurchaseBonds"
 import WeightAdjustmentBonds from "../pages/Buying/Bonds/WeightAdjustmentBonds"
 import PaymentBonds from "../pages/coding/branch bonds/PaymentBonds"
+import ViewBondsFromBranchs from "../pages/coding/branch bonds/ViewBondsFromBranchs"
+import { ViewBonds } from "../pages/coding/branch bonds/ViewBonds"
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -129,6 +131,14 @@ export const AllRoutesProvider = () => {
           <Route
             path="/payment-bonds"
             element={<PaymentBonds />}
+          />
+          <Route
+            path="/view-bonds"
+            element={<ViewBonds />}
+          />
+          <Route
+            path="/accept-branchBonds"
+            element={<ViewBondsFromBranchs />}
           />
           <Route
             path="/branch-bonds"
