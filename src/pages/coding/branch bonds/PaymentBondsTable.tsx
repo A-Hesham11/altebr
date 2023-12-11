@@ -1,11 +1,15 @@
 import { t } from "i18next";
 import React, { useMemo } from "react";
-import { Table } from "../../components/templates/reusableComponants/tantable/Table";
-import { numberContext } from "../../context/settings/number-formatter";
 import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
-import { Button } from "../../components/atoms";
+import { numberContext } from "../../../context/settings/number-formatter";
+import { Button } from "../../../components/atoms";
+import { useQueryClient } from "@tanstack/react-query";
+import { useMutate } from "../../../hooks";
+import { notify } from "../../../utils/toast";
+import { mutateData } from "../../../utils/mutateData";
 
-const PaymentToManagementTable = ({ item }: { item?: {} }) => {
+const PaymentBondsTable = ({ item, setOpenInvoiceModal, refetch, receive, refetchBoxsData }: { item?: {} }) => {
+  console.log("🚀 ~ file: PaymentBondsTable.tsx:8 ~ PaymentBondsTable ~ item:", item)
   
   const { formatReyal, formatGram } = numberContext();
 
@@ -48,6 +52,30 @@ const PaymentToManagementTable = ({ item }: { item?: {} }) => {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   })
+
+
+  const queryClient = useQueryClient()
+  const {
+    mutate,
+    error: mutateError,
+    isLoading: mutateLoading,
+  } = useMutate({
+    mutationFn: mutateData,
+    onSuccess: () => {
+      queryClient.refetchQueries(["accept-reject"])
+      refetch()
+      refetchBoxsData()
+      setOpenInvoiceModal(false)
+      notify("success")
+    },
+  })
+
+  const handleSubmit = () => {
+    mutate({
+      endpointName: `/sdad/api/v1/accpet/${item?.branch_id}/${item?.id}`,
+      method: "post",
+    })
+  }
 
   return (
     <>
@@ -100,9 +128,18 @@ const PaymentToManagementTable = ({ item }: { item?: {} }) => {
               </tr>
           </tfoot>
         </table>
+        <div className="mt-5 flex">
+            { receive && (
+                    <Button type="submit" className="mr-auto" action={handleSubmit}>
+                     {t("receive")}
+                    </Button>
+                )
+            }
+
+        </div>
       </div>
     </>
   );
 };
 
-export default PaymentToManagementTable;
+export default PaymentBondsTable;
