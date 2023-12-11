@@ -37,7 +37,7 @@ const PaymentBonds = () => {
     isRefetching,
     refetch,
   } = useFetch({
-    queryKey: ["payment-invoice"],
+    queryKey: ["payment-invoice-inidara"],
     endpoint:
       search === ""
         ? `/sdad/api/v1/sdadbonds?page=${page}`
@@ -49,24 +49,12 @@ const PaymentBonds = () => {
 
   const {
     data,
+    refetch: refetchBoxsData
   } = useFetch({
     queryKey: ["payment-data"],
     endpoint: `/sdad/api/v1/countTrigger`,
     pagination: true,
   });
-
-//   const boxsData = data?.data?.map((item) => )
-
-//   console.log("🚀 ~ file: PaymentBonds.tsx:51 ~ PaymentBonds ~ data:", data)
-
-
-const boxsData = Object.fromEntries(data?.data)
-
-console.log("🚀 ~ file: PaymentBonds.tsx:59 ~ PaymentBonds ~ boxsData:", boxsData)
-
-
-// console.log(object);
-
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -118,6 +106,7 @@ console.log("🚀 ~ file: PaymentBonds.tsx:59 ~ PaymentBonds ~ boxsData:", boxsD
 
   useEffect(() => {
     refetch();
+    refetchBoxsData();
   }, [page, invoiceData, search]);
 
   // SEARCH FUNCTIONALITY
@@ -209,13 +198,16 @@ console.log("🚀 ~ file: PaymentBonds.tsx:59 ~ PaymentBonds ~ boxsData:", boxsD
 
   return (
     <div className="px-16 py-10">
-        <h2 className="mb-5 text-lg font-bold">{t("Payment bonds")}</h2>
+        <div className="flex justify-between items-center mb-8">
+            <h2 className="mb-5 text-lg font-bold">{t("Payment bonds")}</h2>
+            <Back className="hover:bg-slate-50 transition-all duration-300" />
+        </div>
         <ul className="grid grid-cols-5 gap-4 mb-12">
             {BoxspaymentData.map(({id, name_ar, name_en, value, unit }) => (
                 <BoxesDataBase key={id}>
                 <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">{ isRTL ? name_ar : name_en}</p>
                 <p className="bg-white p-2 text-black h-[35%] rounded-b-xl">
-                    {value.toFixed(2)} {t(unit)}
+                    {value?.toFixed(2)} {t(unit)}
                 </p>
                 </BoxesDataBase>
             ))}
@@ -265,7 +257,6 @@ console.log("🚀 ~ file: PaymentBonds.tsx:59 ~ PaymentBonds ~ boxsData:", boxsD
                   {t("search")}
                 </Button>
               </div>
-              <Back className="hover:bg-slate-50 transition-all duration-300" />
             </div>
           </Form>
         </Formik>
@@ -313,7 +304,7 @@ console.log("🚀 ~ file: PaymentBonds.tsx:59 ~ PaymentBonds ~ boxsData:", boxsD
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
-        <PaymentBondsTable item={selectedItem} />
+        <PaymentBondsTable item={selectedItem} setOpenInvoiceModal={setOpenInvoiceModal} refetch={refetch} refetchBoxsData={refetchBoxsData} receive={true}/>
       </Modal>
     </div>
   );
