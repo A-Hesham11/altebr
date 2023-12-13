@@ -72,6 +72,10 @@ export const SellingTableInputData = ({
   ? priceWithCommissionRate
   : priceWithCommissionCash;
 
+  const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
+  console.log("🚀 ~ file: SellingTableInputData.tsx:76 ~ taklfaAfterTax:", taklfaAfterTax)
+
+
   const { values, setFieldValue } = useFormikContext<any>();
 
   const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
@@ -504,7 +508,7 @@ export const SellingTableInputData = ({
                   setFieldValue("taklfa", (+e.target.value / 1.15).toFixed(2));
                 }}
                 disabled={userData?.include_tax === "0"}
-                className={`${!isCategoryDisabled && userData?.include_tax === "0" && "bg-mainDisabled"} text-center`}
+                className={`${!isSuccess || userData?.include_tax === "0" ? "bg-mainDisabled" : (values?.taklfa_after_tax && +values?.taklfa_after_tax < +taklfaAfterTax) ? "bg-red-100" : ""} text-center`}
               />
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">

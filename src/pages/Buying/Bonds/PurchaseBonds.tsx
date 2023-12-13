@@ -138,6 +138,7 @@ const PurchaseBonds = () => {
 
   return (
     <div className="p-16">
+      <h2 className='mb-8 text-base font-bold'>{t("purchase bonds")}</h2>
       <div className="mb-8 flex flex-col items-center gap-6 lg:flex-row lg:items-end lg:justify-between">
         {/* 1) FORM */}
         <Formik

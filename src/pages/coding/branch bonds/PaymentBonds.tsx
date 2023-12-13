@@ -56,6 +56,9 @@ const PaymentBonds = () => {
     pagination: true,
   });
 
+  console.log("🚀 ~ file: PaymentBonds.tsx:52 ~ PaymentBonds ~ data:", data)
+
+
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [
@@ -128,63 +131,63 @@ const PaymentBonds = () => {
 
   const BoxspaymentData = [
     {
-        id:2,
+        id:1,
         name_ar: "صندوق ذهب الكسر عيار 18",
         name_en: "gold box 18 karat",
         value: data?.data[0]?.gold_box_18,
         unit:"جرام",
     },
     {
-        id:3,
+        id:2,
         name_ar: "صندوق ذهب الكسر عيار 21",
         name_en: "gold box 21 karat",
         value:  data?.data[0]?.gold_box_21,
         unit:"جرام",
     },
     {
-        id:4,
+        id:3,
         name_ar: "صندوق ذهب الكسر عيار 22",
         name_en: "gold box 22 karat",
         value:  data?.data[0]?.gold_box_22,
         unit:"جرام",
     },
     {
-        id:5,
+        id:4,
         name_ar: "صندوق ذهب الكسر عيار 24",
         name_en: "gold box 24 karat",
         value:  data?.data[0]?.gold_box_24,
         unit:"جرام",
     },
     {
-        id:1,
+        id:5,
         name_ar: "كاش",
         name_en: "cash",
         value:  data?.data[0]?.cash,
         unit:"ريال",
     },
     {
-        id:1,
+        id:6,
         name_ar: "الأهلي",
         name_en: "Alahly",
         value:  data?.data[0]?.alaly,
         unit:"ريال",
     },
     {
-        id:1,
+        id:7,
         name_ar: "بنك مصر",
         name_en: "Bank masr",
         value:  data?.data[0]?.masr,
         unit:"ريال",
     },
     {
-        id:1,
+        id:8,
         name_ar: "بنك القاهرة",
         name_en: "Bank cairo",
         value:  data?.data[0]?.cairo_bank,
         unit:"ريال",
     },
     {
-        id:1,
+        id:9,
         name_ar: "بنك الإسكندرية",
         name_en: "Bank Alex",
         value:  data?.data[0]?.alex,
