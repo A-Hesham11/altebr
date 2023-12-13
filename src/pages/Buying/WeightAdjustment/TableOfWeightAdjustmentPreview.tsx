@@ -7,7 +7,6 @@ import { useFetch, useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
-import { useReactTable } from "@tanstack/react-table";
 import { formatDate } from "../../../utils/date";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { useNavigate } from "react-router-dom";
@@ -38,19 +37,26 @@ const TableOfWeightAdjustmentPreview = ({
   );
 
   const [inputValue, setInputValue] = useState(totalEditedWeight);
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:41 ~ inputValue:", inputValue)
   const weightDifference = +inputValue - +totalEditedWeight;
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:43 ~ weightDifference:", weightDifference)
   const weightDifferencePerWeight = (+weightDifference / item.length).toFixed(
     2
   );
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:47 ~ weightDifferencePerWeight:", weightDifferencePerWeight)
 
   const [inputValue2, setInputValue2] = useState();
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:50 ~ inputValue2:", inputValue2)
-  const test = item.map(
-    (item: any) => +item.weight + +weightDifferencePerWeight
-  );
+
+  const finalValue = item.map((item: any) => {
+    if (+weightDifference > 0) {
+      return (
+        +item.weight +
+        (+item.weight / +totalEditedWeight) * Math.abs(+weightDifference)
+      );
+    } else {
+      return (
+        +item.weight -
+        (+item.weight / +totalEditedWeight) * Math.abs(+weightDifference)
+      );
+    }
+  });
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -77,47 +83,45 @@ const TableOfWeightAdjustmentPreview = ({
       },
       {
         cell: (info: any) => {
-          // setRowWage(info.row.original.wage);
           return (
-            <input
-              type="number"
-              className="w-20 rounded-md h-10 text-center"
-              min="1"
-              name="weight_input"
-              id="weight_input"
-              onBlur={(e) => {
-                setInputWeight((prev) => {
-                  const existingItemIndex = prev.findIndex(
-                    (item) => item.id === info.row.original.id
-                  );
-
-                  if (existingItemIndex !== -1) {
-                    return prev.map((item, index) =>
-                      index === existingItemIndex
-                        ? { ...item, value: e.target.value }
-                        : item
+            <>
+              <input
+                type="number"
+                className="w-24 rounded-md h-10 text-center placeholder:text-mainBlack"
+                min="1"
+                name="weight_input"
+                placeholder={+finalValue[info.row.index].toFixed(2)}
+                // value={+test[info.row.index].toFixed(2)}
+                id="weight_input"
+                onBlur={(e) => {
+                  setInputWeight((prev) => {
+                    const existingItemIndex = prev.findIndex(
+                      (item) => item.id === info.row.original.id
                     );
-                  } else {
-                    return [
-                      ...prev,
-                      { value: e.target.value, id: info.row.original.id },
-                    ];
-                  }
-                });
-              }}
-              // onChange={(e) =>
-              //   setInputValue2(
-              //     Math.abs(totalEditedWeight - inputValue) / item.length
-              //   )
-              // }
-            />
+
+                    if (existingItemIndex !== -1) {
+                      return prev.map((item, index) =>
+                        index === existingItemIndex
+                          ? { ...item, value: e.target.value }
+                          : item
+                      );
+                    } else {
+                      return [
+                        ...prev,
+                        { value: e.target.value, id: info.row.original.id },
+                      ];
+                    }
+                  });
+                }}
+              />
+            </>
           );
         },
         accessorKey: "edit_weight",
         header: () => <span>{t("edit weight")}</span>,
       },
     ],
-    []
+    [finalValue]
   );
 
   const { mutate, isLoading: editItemsLoading } = useMutate({
@@ -170,12 +174,24 @@ const TableOfWeightAdjustmentPreview = ({
                 );
               }
             }}
-            className="rounded-md h-10 text-center"
+            className={`${
+              inputValue == 0
+                ? "bg-red-100 text-center"
+                : "rounded-md h-10 text-center"
+            }`}
           />
         </div>
         <Button
           type="submit"
           action={() => {
+            if (
+              inputValue == 0 ||
+              inputWeight.some((el) => el?.value == "" || el?.value == 0)
+            ) {
+              notify("error", t("enter value greater than zero"));
+              return;
+            }
+
             console.log({
               invoice: {
                 branch_id: userData?.branch_id,
@@ -189,7 +205,7 @@ const TableOfWeightAdjustmentPreview = ({
                   return {
                     id: el.id,
                     // weight: Number(inputWeight[i].value),
-                    weight: test[i],
+                    weight: +finalValue[i].toFixed(2),
                   };
                 } else {
                   return {
@@ -214,7 +230,7 @@ const TableOfWeightAdjustmentPreview = ({
                   return {
                     id: el.id,
                     // weight: Number(inputWeight[i].value),
-                    weight: test[i],
+                    weight: +finalValue[i].toFixed(2),
                   };
                 } else {
                   return {
