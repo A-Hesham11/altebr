@@ -134,9 +134,9 @@ const AddSellingPolicies = ({
             value: t("percentage"),
         },
         {
-            id: "cash",
-            label: t("cash"),
-            value: t("cash"),
+            id: "monetary",
+            label: t("monetary"),
+            value: t("monetary"),
         },
     ]
 
@@ -166,13 +166,13 @@ const AddSellingPolicies = ({
                             PostCardEdit({
                                 ...values,
                                 min_discount_rate: values?.min_selling_type === "نسبة" && values.min_discount_rate ,
-                                min_discount_cash: values?.min_selling_type === "كاش" && values.min_discount_cash,
+                                min_discount_cash: values?.min_selling_type === "نقدي" && values.min_discount_cash,
                             })
                         } else {
                             PostNewCard({
                                 ...values,
                                 min_discount_rate: values?.min_selling_type === "نسبة" && values.min_discount_rate,
-                                min_discount_cash: values?.min_selling_type === "كاش" && values.min_discount_cash,
+                                min_discount_cash: values?.min_selling_type === "نقدي" && values.min_discount_cash,
                             })
                         }
                     }}
@@ -217,15 +217,15 @@ const AddSellingPolicies = ({
                                         setMinSellingType(option)
                                     }}
                                 />
-                                {values?.min_selling_type === "كاش"
+                                {values?.min_selling_type === "نقدي"
                                     ? (
                                         <div>
                                             <BaseInputField
                                                 id="min_discount_cash"
                                                 name="min_discount_cash"
                                                 type="text"
-                                                label={`${t('minimum selling')} (${t("monetary")})`}
-                                                placeholder={`${t("minimum selling")}`}
+                                                label={`${t('Sales price difference from the international price')} (${t("monetary")})`}
+                                                placeholder={`${t("Sales price difference from the international price")}`}
                                                 onChange={() => {
                                                     setFieldValue("min_discount_cash", values?.min_discount_cash)
                                                 }}
@@ -238,8 +238,8 @@ const AddSellingPolicies = ({
                                                 id="min_discount_rate"
                                                 type="text"
                                                 name="min_discount_rate"
-                                                label={`${t("minimum selling")} (${t("rate")})`}
-                                                placeholder={`${t("minimum selling")}`}
+                                                label={`${t("Sales price difference from the international price")} (${t("rate")})`}
+                                                placeholder={`${t("Sales price difference from the international price")}`}
                                                 onChange={(e) => {
                                                 setFieldValue("min_discount_rate", values.min_discount_rate);
                                                 }}

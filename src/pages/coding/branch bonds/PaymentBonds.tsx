@@ -56,6 +56,9 @@ const PaymentBonds = () => {
     pagination: true,
   });
 
+  console.log("🚀 ~ file: PaymentBonds.tsx:52 ~ PaymentBonds ~ data:", data)
+
+
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [
@@ -128,63 +131,63 @@ const PaymentBonds = () => {
 
   const BoxspaymentData = [
     {
-        id:2,
+        id:1,
         name_ar: "صندوق ذهب الكسر عيار 18",
         name_en: "gold box 18 karat",
         value: data?.data[0]?.gold_box_18,
         unit:"جرام",
     },
     {
-        id:3,
+        id:2,
         name_ar: "صندوق ذهب الكسر عيار 21",
         name_en: "gold box 21 karat",
         value:  data?.data[0]?.gold_box_21,
         unit:"جرام",
     },
     {
-        id:4,
+        id:3,
         name_ar: "صندوق ذهب الكسر عيار 22",
         name_en: "gold box 22 karat",
         value:  data?.data[0]?.gold_box_22,
         unit:"جرام",
     },
     {
-        id:5,
+        id:4,
         name_ar: "صندوق ذهب الكسر عيار 24",
         name_en: "gold box 24 karat",
         value:  data?.data[0]?.gold_box_24,
         unit:"جرام",
     },
     {
-        id:1,
+        id:5,
         name_ar: "كاش",
         name_en: "cash",
         value:  data?.data[0]?.cash,
         unit:"ريال",
     },
     {
-        id:1,
+        id:6,
         name_ar: "الأهلي",
         name_en: "Alahly",
         value:  data?.data[0]?.alaly,
         unit:"ريال",
     },
     {
-        id:1,
+        id:7,
         name_ar: "بنك مصر",
         name_en: "Bank masr",
         value:  data?.data[0]?.masr,
         unit:"ريال",
     },
     {
-        id:1,
+        id:8,
         name_ar: "بنك القاهرة",
         name_en: "Bank cairo",
         value:  data?.data[0]?.cairo_bank,
         unit:"ريال",
     },
     {
-        id:1,
+        id:9,
         name_ar: "بنك الإسكندرية",
         name_en: "Bank Alex",
         value:  data?.data[0]?.alex,
@@ -197,18 +200,18 @@ const PaymentBonds = () => {
     return <Loading mainTitle={`${t("loading items")}`} />;
 
   return (
-    <div className="px-16 py-10">
+    <div className="p-8">
         <div className="flex justify-between items-center mb-8">
-            <h2 className="mb-5 text-lg font-bold">{t("Payment bonds")}</h2>
+            <h2 className="text-lg font-bold">{t("Payment bonds")}</h2>
             <Back className="hover:bg-slate-50 transition-all duration-300" />
         </div>
         <ul className="grid grid-cols-5 gap-4 mb-12">
             {BoxspaymentData.map(({id, name_ar, name_en, value, unit }) => (
                 <BoxesDataBase key={id}>
-                <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">{ isRTL ? name_ar : name_en}</p>
-                <p className="bg-white p-2 text-black h-[35%] rounded-b-xl">
-                    {value?.toFixed(2)} {t(unit)}
-                </p>
+                    <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">{ isRTL ? name_ar : name_en}</p>
+                    <p className="bg-white p-2 text-black h-[35%] rounded-b-xl">
+                        {value?.toFixed(2)} {t(unit)}
+                    </p>
                 </BoxesDataBase>
             ))}
         </ul>
@@ -224,7 +227,7 @@ const PaymentBonds = () => {
         >
           <Form className="w-full flex">
             <div className="flex w-full justify-between items-end gap-3">
-              <div className="flex items-end gap-3">
+              <div className="flex items-end gap-3 w-full">
                 <div className="">
                   <BaseInputField
                     id="invoice_number"
@@ -243,10 +246,11 @@ const PaymentBonds = () => {
                     labelProps={{ className: "mt-10" }}
                   />
                 </div>
-                <div>
+                <div className="w-[230px]">
                   <SelectBranches
                     required
                     name="branch_id"
+                    
                   />
                 </div>
                 <Button

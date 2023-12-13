@@ -146,9 +146,9 @@ const AddExcludedItems = ({
             value: t("percentage"),
         },
         {
-            id: "cash",
-            label: t("cash"),
-            value: t("cash"),
+            id: "monetary",
+            label: t("monetary"),
+            value: t("monetary"),
         },
     ]
 
@@ -178,13 +178,13 @@ const AddExcludedItems = ({
                             PostCardEdit({
                                 ...values,
                                 min_discount_rate: values?.min_selling_type === "نسبة" && values.min_discount_rate,
-                                min_discount_cash: values?.min_selling_type === "كاش" && values.min_discount_cash,
+                                min_discount_cash: values?.min_selling_type === "نقدي" && values.min_discount_cash,
                             })
                         } else {
                             PostNewCard({
                                 ...values,
                                 min_discount_rate:  values.min_selling_type === "نسبة" && values.min_discount_rate,
-                                min_discount_cash: values.min_selling_type === "كاش" && values.min_discount_cash,
+                                min_discount_cash: values.min_selling_type === "نقدي" && values.min_discount_cash,
                             })
                         }
                     }}
@@ -245,7 +245,7 @@ const AddExcludedItems = ({
                                         setMinSellingType(option)
                                     }}
                                 />
-                                {values?.min_selling_type === "كاش"
+                                {values?.min_selling_type === "نقدي"
                                     ? (
                                         <div>
                                             <BaseInputField

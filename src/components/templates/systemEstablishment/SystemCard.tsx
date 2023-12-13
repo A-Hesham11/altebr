@@ -2,6 +2,7 @@
 import { BiShowAlt } from "react-icons/bi"
 import { IoMdAdd } from "react-icons/io"
 import { Button } from "../../atoms"
+import { t } from "i18next"
 ///
 //import classes from './SystemCard.module.css'
 ///
@@ -15,6 +16,8 @@ type SystemCardProps_TP = {
   viewLabel?: string
   title: string
   forStyle?: boolean
+  viewCountReyal?:number
+  viewCountGram?:number
 }
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -27,6 +30,8 @@ export const SystemCard = ({
   viewLabel,
   title,
   forStyle,
+  viewCountReyal,
+  viewCountGram
 }: SystemCardProps_TP) => {
   /////////// VARIABLES
   ///
@@ -71,6 +76,22 @@ export const SystemCard = ({
               <p className="text-sm ms-1">{addLabel}</p>
             </div>
           </Button>
+        )}
+
+        {/* {viewCountReyal && (
+            <div className="flex justify-center items-center border-[0.8px] p-2 border-mainGreen text-mainGreen rounded-md font-bold">
+              <p className="text-sm ms-1">{viewCountReyal}</p>
+            </div>
+        )} */}
+
+        {viewCountGram && (
+            <div className="text-center border-[0.8px] p-2 border-mainGreen text-mainGreen rounded-md font-bold">
+              <p className="font-bold ms-1 mb-4">{t("Branch current")}</p>
+              <div className="flex justify-between items-center px-4 ">
+                <p>{viewCountReyal}</p>
+                <p>{viewCountGram}</p>
+              </div>
+            </div>
         )}
 
         {viewLabel && (
