@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const ReservePiece = () => {
+
   return (
-    <div>reservePiece</div>
+    <div>
+        <p>reservePiece</p>
+    </div>
   )
 }
 

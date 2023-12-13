@@ -106,6 +106,7 @@ export const AddClients = ({
         wsta_id: Yup.string().trim(),
         benser_id: Yup.string().trim(),
         khenser_id: Yup.string().trim(),
+        type: Yup.string().trim(),
 
   });
 

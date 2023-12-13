@@ -12,7 +12,6 @@ import { BaseInputField, OuterFormLayout, Select } from '../../molecules'
 import { Button } from '../../atoms'
 import { SelectBranches } from '../reusableComponants/branches/SelectBranches'
 
-
 type PoliciesProps_TP = {
     title: string
     job_id: string
@@ -131,9 +130,9 @@ const AddBuyingPolicies = ({
             value: t("percentage"),
         },
         {
-            id: "cash",
-            label: t("cash"),
-            value: t("cash"),
+            id: "monetary",
+            label: t("monetary"),
+            value: t("monetary"),
         },
     ]
 
@@ -163,13 +162,13 @@ const AddBuyingPolicies = ({
                             PostCardEdit({
                                 ...values,
                                 max_buy_rate: values?.max_buy_type === "نسبة" && values?.max_buy_rate ,
-                                max_buy_cash: values?.max_buy_type === "كاش" && values?.max_buy_cash,
+                                max_buy_cash: values?.max_buy_type === "نقدي" && values?.max_buy_cash,
                             })
                         } else {
                             PostNewCard({
                                 ...values,
                                 max_buy_rate: values?.max_buy_type === "نسبة" && values?.max_buy_rate,
-                                max_buy_cash: values?.max_buy_type === "كاش" && values?.max_buy_cash,
+                                max_buy_cash: values?.max_buy_type === "نقدي" && values?.max_buy_cash,
                             })
                         }
                     }}
@@ -214,15 +213,15 @@ const AddBuyingPolicies = ({
                                         setmaxBuyingType(option)
                                     }}
                                 />
-                                {values?.max_buy_type === "كاش"
+                                {values?.max_buy_type === "نقدي"
                                     ? (
                                         <div>
                                             <BaseInputField
                                                 id="max_buy_cash"
                                                 name="max_buy_cash"
                                                 type="text"
-                                                label={`${t('maximum buying')} (${t("monetary")})`}
-                                                placeholder={`${t("maximum buying")}`}
+                                                label={`${t('Purchase price difference from the international price')} (${t("monetary")})`}
+                                                placeholder={`${t("Purchase price difference from the international price")}`}
                                                 onChange={() => {
                                                     setFieldValue("max_buy_cash", values?.max_buy_cash)
                                                 }}
@@ -235,8 +234,8 @@ const AddBuyingPolicies = ({
                                                 id="max_buy_rate"
                                                 type="text"
                                                 name="max_buy_rate"
-                                                label={`${t("maximum buying")} (${t("rate")})`}
-                                                placeholder={`${t("maximum buying")}`}
+                                                label={`${t("Purchase price difference from the international price")} (${t("rate")})`}
+                                                placeholder={`${t("Purchase price difference from the international price")}`}
                                                 onChange={(e) => {
                                                 setFieldValue("max_buy_rate", values?.max_buy_rate);
                                                 }}
