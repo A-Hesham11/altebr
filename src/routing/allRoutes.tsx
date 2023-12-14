@@ -407,11 +407,11 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/exchange" element={<>exchange</>} />
           <Route path="/selling/clients" element={<Clients />} />
           <Route
-            path="/selling/clients/customersData"
+            path="/selling/customersData"
             element={<ClientsData />}
           />
           <Route
-            path="/selling/clients/reservePiece"
+            path="/selling/reservePiece"
             element={<ReservePiece />}
           />
           <Route path="/selling/payoff" element={<Payoff />} />
@@ -510,14 +510,6 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/management" element={<Management />} />
           <Route path="/selling/exchange" element={<>exchange</>} />
           <Route path="/selling/clients" element={<Clients />} />
-          <Route
-            path="/selling/clients/customersData"
-            element={<ClientsData />}
-          />
-          <Route
-            path="/selling/clients/reservePiece"
-            element={<ReservePiece />}
-          />
           <Route path="/selling/payoff" element={<Payoff />} />
           <Route path="/selling/payment" element={<PaymentToManagementPage/>} />
           <Route path="/selling/reimbursement" element={<PaymentToManagement/>} />

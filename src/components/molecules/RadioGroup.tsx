@@ -55,7 +55,8 @@ function RadioButton({
   value,
   label,
   id,
-  disabled
+  disabled,
+  isChecked
 }: {
   value: string
   label: string
@@ -64,7 +65,11 @@ function RadioButton({
 }) {
   const { setFieldTouched } = useFormikContext<{ [key: string]: any }>()
   const [state, onChange, name] = useRadioContext()
-  const checked = value === state
+  console.log("🚀 ~ file: RadioGroup.tsx:67 ~ state:", state)
+  console.log("🚀 ~ file: RadioGroup.tsx:67 ~ onChange:", onChange)
+  // const checked = value === state
+  const checked = isChecked !== undefined ? isChecked : value === state;
+  console.log("🚀 ~ file: RadioGroup.tsx:70 ~ value:", value)
   return (
     <Radio
       value={value}
