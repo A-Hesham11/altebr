@@ -11,6 +11,8 @@ import { BaseInputField, OuterFormLayout, Select } from '../../molecules'
 import { Button } from '../../atoms'
 import RadioGroup from '../../molecules/RadioGroup'
 import { SelectBranches } from '../reusableComponants/branches/SelectBranches'
+import SelectCategory from '../reusableComponants/categories/select/SelectCategory'
+import SelectKarat from '../reusableComponants/karats/select/SelectKarat'
 
 
 type PoliciesProps_TP = {
@@ -30,7 +32,10 @@ type SellingPoliciesProps_TP = {
 
 const AddTaxPolicy = ({
     editData,
+    setSelectBarnch,
+    includeTaxFilter
 }: SellingPoliciesProps_TP) => {
+    console.log("🚀 ~ file: AddTaxPolicy.tsx:38 ~ includeTaxFilter:", includeTaxFilter)
 
     const queryClient = useQueryClient()
     const isRTL = useIsRTL()
@@ -44,14 +49,18 @@ const AddTaxPolicy = ({
     Yup.object({
         tax_rate: Yup.string().trim().required(requiredTranslation),
         branch_id:Yup.string().trim().required(requiredTranslation),
-        include_tax: Yup.string().trim().required(requiredTranslation)
+        include_tax: Yup.string().trim().required(requiredTranslation),
+        karat_id: Yup.string(),
+        category_id: Yup.string(),
     });
 
   const initialValues = {
     tax_rate: editData?.tax_rate || "",
     branch_id:editData?.branch_id || "",
     include_tax: editData?.include_tax || "",
-    include_tax_value: editData?.include_tax_value || ""
+    include_tax_value: editData?.include_tax_value || "",
+    karat_id: editData?.karat_id || "",
+    category_id: editData?.category_id || "",
   }
 
   const {
@@ -106,7 +115,11 @@ const AddTaxPolicy = ({
                         }
                     }}
                 >
-                    {({ values, setFieldValue, resetForm }) => (
+                    {({ values, setFieldValue, resetForm }) => {
+                        console.log("🚀 ~ file: AddTaxPolicy.tsx:117 ~ values:", values)
+
+                        setSelectBarnch(values?.branch_id)
+                    return(
                         <Form>
                             <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
                                 <SelectBranches
@@ -117,6 +130,40 @@ const AddTaxPolicy = ({
                                         branch_name: editData?.branch_name,
                                     }}
                                 />
+                                <SelectKarat
+                                    field="id"
+                                    name="karat_id"
+                                    noMb={true}
+                                    placement="top"
+                                    label={`${t('karats')}`}
+                                    onChange={(option) => {
+                                        setFieldValue("karat_name", option!.value);
+                                        setFieldValue("category_name", "");
+                                    }}
+                                    value={{
+                                    id: values.karat_id,
+                                    value: values.karat_id,
+                                    label: values.karat_name || t("karat value"),
+                                    }}
+                                />
+                                <SelectCategory
+                                    name="category_id"
+                                    noMb={true}
+                                    placement="top"
+                                    label={`${t("categories")}`}
+                                    all={true}
+                                    value={{
+                                    value: values?.category_id,
+                                    label: values?.category_name || t("classification"),
+                                    id: values?.category_id,
+                                    }}
+                                    onChange={(option) => {
+                                        setFieldValue("category_name", option!.value);
+                                        setFieldValue("karat_name", "");
+                                    }}
+                                    showItems={true}
+                                />
+
                                 <div>
                                     <BaseInputField
                                         id="tax_rate"
@@ -124,9 +171,12 @@ const AddTaxPolicy = ({
                                         type="text"
                                         label={`${t('tax rate')}`}
                                         placeholder={`${t("tax rate")}`}
-                                        // onChange={(e) => {
-                                        //     setFieldValue("tax_rate", values?.tax_rate)
-                                        // }}
+
+                                        onChange={(e) => {
+                                            // setFieldValue("tax_rate", values?.tax_rate)
+                                        setFieldValue("include_tax", +includeTaxFilter[0]?.include_tax);
+
+                                        }}
                                     />
                                 </div>
                                 <div>
@@ -136,11 +186,13 @@ const AddTaxPolicy = ({
                                                 id="1"
                                                 value="1"
                                                 label={`${t("Selling price includes tax")}`}
+                                                isChecked={values?.branch_id && (includeTaxFilter && +includeTaxFilter[0]?.include_tax === 0 ? false : true)}
                                             />
                                             <RadioGroup.RadioButton
                                                 id="0"
                                                 value="0"
                                                 label={`${t("selling price does not include tax")}`}
+                                                  isChecked={values?.branch_id && (includeTaxFilter && +includeTaxFilter[0]?.include_tax !== 0 ? false : true)}
                                             />
                                         </div>
                                     </RadioGroup>
@@ -158,7 +210,7 @@ const AddTaxPolicy = ({
                             </div>
                         </Form>
 
-                    )}
+                    )}}
                 </Formik>
             </OuterFormLayout>
         </>

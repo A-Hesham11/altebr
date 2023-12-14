@@ -12,13 +12,13 @@ const Clients = () => {
             icon:receiveMoney,
             title_ar:'حجز قطعة',
             title_en:'reserve piece',
-            route:'/selling/clients/reservePiece'
+            route:'/selling/reservePiece'
         },
         {
             icon:receiveitem,
             title_ar:'بيانات العملاء',
             title_en:'clients data',
-            route:'/selling/clients/customersData'
+            route:'/selling/customersData'
         },
     ]
   return (
