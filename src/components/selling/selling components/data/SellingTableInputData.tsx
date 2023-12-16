@@ -49,6 +49,8 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ sellingItemsData:", sellingItemsData)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ dataSource:", dataSource)
 
   const [search, setSearch] = useState(""); 
   const [openDetails, setOpenDetails] = useState<boolean>(false);
@@ -60,7 +62,8 @@ export const SellingTableInputData = ({
 
   const { userData } = useContext(authCtx)
 
-  const TaxRateOfBranch = userData?.tax_rate / 100 ;
+  const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100 ;
+  console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ TaxRateOfBranch:", TaxRateOfBranch)
   
   const priceWithCommissionRate =
   dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
@@ -73,7 +76,6 @@ export const SellingTableInputData = ({
   : priceWithCommissionCash;
 
   const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
-  console.log("🚀 ~ file: SellingTableInputData.tsx:76 ~ taklfaAfterTax:", taklfaAfterTax)
 
 
   const { values, setFieldValue } = useFormikContext<any>();
@@ -596,10 +598,6 @@ export const SellingTableInputData = ({
                   
                 const stoneWeitgh = (values.classification_id === (2 || 3) || +stone_weight_percentage > +weight_percentage) ? +stone_weight_percentage : "v"
 
-                if (values.classification_id === 1) {
-
-                }
-
                 setSellingItemsData((prev) => [
                   ...prev,
                   {...values, itemDetails: selectedItemDetails.flat(Infinity), selsal: sellingItemsOfWeigth, stone_weight: +stoneWeitgh},
@@ -837,6 +835,7 @@ export const SellingTableInputData = ({
                 setSellingItemsOfWeight={setSellingItemsOfWeight}
                 dataSource={dataSource}
                 setOpenSelsal={setOpenSelsal}
+                TaxRateOfBranch={TaxRateOfBranch}
               />
           </div>
       </Modal>

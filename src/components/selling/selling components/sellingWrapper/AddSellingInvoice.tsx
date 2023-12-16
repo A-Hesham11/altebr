@@ -42,6 +42,7 @@ const AddSellingInvoice = () => {
         karatmineral_name: "",
         karat_price:"",
         selling_price: "" ,
+        tax_rate:"",
         cost: "",
         wage:"",
         taklfa: "",

@@ -50,10 +50,11 @@ const ViewTaxPolicy = () => {
   const [editData, setEditData] = useState<Cards_Props_TP>()
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
-  const [selectBranch, setSelectBarnch] = useState("")
+  // const [selectBranch, setSelectBranch] = useState("")
+  // console.log("🚀 ~ file: ViewTaxPolicy.tsx:54 ~ ViewTaxPolicy ~ selectBranch:", selectBranch)
   const [page, setPage] = useState<number>(1)
 
-  const includeTaxFilter = dataSource?.filter((item) => item.branch_id == selectBranch)
+  // const includeTaxFilter = dataSource?.filter((item) => item.branch_id == selectBranch)
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
@@ -238,8 +239,6 @@ const ViewTaxPolicy = () => {
       <Modal isOpen={open} onClose={() => setOpen(false)}>
         {action.edit && (
           <AddTaxPolicy
-            setSelectBarnch={setSelectBarnch}
-            includeTaxFilter={includeTaxFilter}
             editData={editData}
             setDataSource={setDataSource}
             setShow={setOpen}
@@ -251,8 +250,6 @@ const ViewTaxPolicy = () => {
         )}
         {model && (
           <AddTaxPolicy
-            setSelectBarnch={setSelectBarnch}
-            includeTaxFilter={includeTaxFilter}
             editData={editData}
             isFetching={isFetching}
             setDataSource={setDataSource}
