@@ -13,8 +13,8 @@ import { numberContext } from "../../context/settings/number-formatter";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
-  sellingItemsData: never[];
-  paymentData: never[];
+  sellingItemsData: any;
+  paymentData: any;
   clientData: ClientData_TP;
   invoiceNumber: any;
   selectedItemDetails: any;
@@ -29,28 +29,30 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ file: SellingInvoiceData.tsx:32 ~ sellingItemsData:", sellingItemsData)
 
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx)
 
-  const TaxRateOfBranch = userData?.tax_rate / 100 ;
+  const TaxRateOfBranch = sellingItemsData && sellingItemsData[0]?.tax_rate / 100 ;
+
+  const taxEquation = +TaxRateOfBranch + 1;
 
   const totalCommissionRatio = paymentData.reduce((acc, card) => {
     acc += +card.commission_riyals;
     return acc;
   }, 0);
 
-  // const totalCostNotIncludeTax = sellingItemsData.reduce((acc, curr) => {
-  //   acc += +curr.taklfa;
-  //   return acc;
-  // }, 0);
-
   const totalCostAfterTax = sellingItemsData.reduce((acc, curr) => {
     acc += +curr.taklfa_after_tax;
     return acc;
   }, 0);
 
+  const totalCostBeforeTax = sellingItemsData.reduce((acc, curr) => {
+    acc += +curr.taklfa_after_tax / ((curr.tax_rate / 100) + 1);
+    return acc;
+  }, 0);
   
   const totalCommissionTaxes = paymentData.reduce((acc, card) => {
     acc += +card.commission_tax;
@@ -61,29 +63,13 @@ const SellingInvoiceData = ({
 
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
 
-  // const totalCost = userData?.include_tax === "0" ? +totalCostNotIncludeTax.toFixed(2) : ((totalCostAfterTax + totalCommissionRatio + totalCommissionTaxes) / 1.15).toFixed(2)
+  const totalFinalCost = (+totalCostAfterTax + +totalCommissionRatio + +totalCommissionTaxes).toFixed(2);
 
-  // const totalFinalCostBeforeTax = totalCost + totalCommissionRatio + totalCost * +TaxRateOfBranch + totalCommissionTaxes;
-  // const totalFinalCostAfterTax = totalCostAfterTax + totalCommissionRatio + totalCommissionTaxes;
-  // const totalFinalCost = userData?.include_tax === "0" ? +totalFinalCostBeforeTax.toFixed(2) : +totalFinalCostAfterTax.toFixed(2)
-
-  // const totalItemsTaxes = userData?.include_tax === "0" ? (+totalCostNotIncludeTax * +TaxRateOfBranch).toFixed(2) : (+totalFinalCost - +totalCost).toFixed(2)
-
-  const totalCost =  ((totalCostAfterTax + totalCommissionRatio + totalCommissionTaxes) / 1.15).toFixed(2)
-  console.log("🚀 ~ file: SellingInvoiceData.tsx:73 ~ totalCost:", totalCost)
-
-  // const totalFinalCostBeforeTax = totalCost + totalCommissionRatio + totalCost * +TaxRateOfBranch + totalCommissionTaxes;
-  
-  const totalFinalCostAfterTax = totalCostAfterTax + totalCommissionRatio + totalCommissionTaxes;
-  console.log("🚀 ~ file: SellingInvoiceData.tsx:77 ~ totalFinalCostAfterTax:", totalFinalCostAfterTax)
-
-  const totalFinalCost = +totalFinalCostAfterTax.toFixed(2)
-  console.log("🚀 ~ file: SellingInvoiceData.tsx:79 ~ totalFinalCost:", totalFinalCost)
+  const totalCost =  (totalCostBeforeTax + totalCommissionRatio).toFixed(2)
 
   const totalItemsTaxes = (+totalFinalCost - +totalCost).toFixed(2)
 
   const totalItemsTax = (+totalItemsTaxes+ +totalCommissionTaxes).toFixed(2);
-  console.log("🚀 ~ file: SellingInvoiceData.tsx:83 ~ totalItemsTax:", totalItemsTax)
 
   const costDataAsProps = {
     totalCommissionRatio,
@@ -93,6 +79,7 @@ const SellingInvoiceData = ({
     totalFinalCost,
     totalCost,
   };
+
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -129,65 +116,34 @@ const SellingInvoiceData = ({
         accessorKey: "weight",
         cell: (info) => info.getValue() || `${t("no items")}`,
       },
-      // {
-      //   header: () => <span>{t("cost")} </span>,
-      //   accessorKey: "cost",
-      //   cell: (info: any) => {
-      //     const rowData = +info.row.original.taklfa + +ratioForOneItem;
-      //     return <div>{formatReyal(Number(rowData.toFixed(2)))}</div>;
-      //   },
-      // },
       {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
         cell: (info: any) => {
-          const rowData = +info.row.original.taklfa + +ratioForOneItem;
-          const rowDataWithTax = +info.row.original.taklfa_after_tax + +ratioForOneItem;
-          // const costFromIncludePriceTax = userData?.include_tax === "0" ? rowData : ( rowDataWithTax + +ratioForOneItemTaxes) / 1.15
-          const costFromIncludePriceTax = ((+rowDataWithTax + +ratioForOneItemTaxes) / 1.15).toFixed(2)
-
-
-          return <div>{formatReyal(Number(costFromIncludePriceTax))}</div>;
+          const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
+          const totalCostFromRow = (+info.row.original.taklfa_after_tax / +rowTaxEquation) + +ratioForOneItem;
+          return <div>{formatReyal(Number(totalCostFromRow))}</div>;
         },
       },
       {
         header: () => <span>{t("VAT")} </span>,
         accessorKey: "VAT",
         cell: (info: any) => {
-          const rowDataWithTax = +info.row.original.taklfa_after_tax + +ratioForOneItem;
-          const rowData = (+rowDataWithTax + +ratioForOneItemTaxes ) - ((+rowDataWithTax + +ratioForOneItemTaxes) / 1.15);
+          const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
+          const totalCostFromRow = (+info.row.original.taklfa_after_tax / +rowTaxEquation) + +ratioForOneItem;
+          const totaltaklfaFromRow = +info.row.original.taklfa_after_tax + ratioForOneItem + ratioForOneItemTaxes;
+          const totalTaxFromRow = +totaltaklfaFromRow - +totalCostFromRow;
 
-          return <div>{formatReyal(Number(rowData.toFixed(2)))}</div>;
+          return <div>{formatReyal(Number(totalTaxFromRow))}</div>;
         },
       },
-      // {
-      //   header: () => <span>{t("total")} </span>,
-      //   accessorKey: "total", 
-      //   cell: (info: any) => {
-      //     const rowData = +info.row.original.taklfa + ratioForOneItem;
-      //     const rowDataTaxes = +info.row.original.taklfa * +TaxRateOfBranch + ratioForOneItemTaxes;
-      //     return (
-      //       <div>
-      //         {formatReyal(Number((rowData + rowDataTaxes).toFixed(2)))}
-      //       </div>
-      //     );
-      //   },
-      // },
-
       {
         header: () => <span>{t("total")} </span>,
         accessorKey: "total",
         cell: (info: any) => {
-          const rowData = +info.row.original.taklfa + ratioForOneItem;
-          const rowDataWithTax = +info.row.original.taklfa_after_tax + ratioForOneItem;
-          const rowDataTaxes = +info.row.original.taklfa * +TaxRateOfBranch + ratioForOneItemTaxes;
+          const totaltaklfaFromRow = +info.row.original.taklfa_after_tax + ratioForOneItem + ratioForOneItemTaxes;
 
-          const costFromIncludePriceTax = (+rowDataWithTax + +ratioForOneItemTaxes).toFixed(2)
-          return (
-            <div>
-              {formatReyal(Number((costFromIncludePriceTax)))}
-            </div>
-          );
+          return <div>{formatReyal(Number(totaltaklfaFromRow))}</div>;
         },
       },
     ],
@@ -229,14 +185,13 @@ const SellingInvoiceData = ({
     };
     const items = sellingItemsData.map((item) => {
 
-      const rowDataWithTax = +item.taklfa_after_tax + ratioForOneItem + +ratioForOneItemTaxes;
-      // const costItem = userData?.include_tax === "0" ? (+item.taklfa + +ratioForOneItem).toFixed(2) : (+rowDataWithTax / 1.15).toFixed(2);
-      // const costTaxes = userData?.include_tax === "0" ? (+item.taklfa * +TaxRateOfBranch + +ratioForOneItemTaxes).toFixed(2) : (+rowDataWithTax - +costItem).toFixed(2);
-      // const costItemTotal = userData?.include_tax === "0" ? (+item.taklfa + +ratioForOneItem + +costTaxes).toFixed(2) : (+rowDataWithTax).toFixed(2);
-
-      const costItem = (+rowDataWithTax / 1.15).toFixed(2);
-      const costTaxes = (+rowDataWithTax - +costItem).toFixed(2);
-      const costItemTotal = (+rowDataWithTax).toFixed(2);
+      const rowTaxEquation = +item.tax_rate / 100 + 1;
+      const taklfaFromOneItem = +item.taklfa_after_tax + +ratioForOneItem + +ratioForOneItemTaxes;
+      const totalCostFromOneItem = (+item.taklfa_after_tax / +rowTaxEquation) + +ratioForOneItem;
+      const totalTaxFromOneRow = +taklfaFromOneItem - +totalCostFromOneItem;
+      // const costItem = (+taklfaFromOneItem / +taxEquation).toFixed(2);
+      // const costTaxes = (+taklfaFromOneItem - +costItem).toFixed(2);
+      // const costItemTotal = (+taklfaFromOneItem).toFixed(2);
 
       return {
         category_id: item.category_id,
@@ -251,9 +206,9 @@ const SellingInvoiceData = ({
         wage: item.wage,
         wage_total: item.wage_total,
         weight: item.weight,
-        cost: +costItem,
-        vat: +costTaxes,
-        total: +costItemTotal ,
+        cost: +totalCostFromOneItem,
+        vat: +totalTaxFromOneRow,
+        total: +taklfaFromOneItem,
         kitSellingItems: item.itemDetails,
         selsal: item.selsal,
         has_selsal: item.has_selsal,

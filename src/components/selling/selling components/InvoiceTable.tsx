@@ -24,10 +24,6 @@ const InvoiceTable = <T extends object>({ data,
 
     const { formatGram, formatReyal } = numberContext();
 
-    const { userData } = useContext(authCtx)
-  
-    const TaxRateOfBranch = userData?.tax_rate / 100 ;
-
     const totalWeight = data?.reduce((acc, curr) => {
         acc += +curr.weight
         return acc
@@ -48,7 +44,7 @@ const InvoiceTable = <T extends object>({ data,
         return acc
     }, 0)
 
-    const totalFinalCost = +totalCost + +totalCommissionRatio + +totalCost * +TaxRateOfBranch + +totalCommissionTaxes
+    const totalFinalCost = +totalCost + +totalCommissionRatio + +totalCost * 0.15 + +totalCommissionTaxes
 
     const locationPath = location.pathname 
 
@@ -59,7 +55,7 @@ const InvoiceTable = <T extends object>({ data,
             number: t('totals'),
             weight: totalWeight,
             cost: costDataAsProps ? formatReyal(Number(costDataAsProps?.totalCost)) : formatReyal(Number((totalCost + totalCommissionRatio))),
-            vat: costDataAsProps ? formatReyal(Number(costDataAsProps?.totalItemsTaxes)) : formatReyal(Number((totalCost * TaxRateOfBranch + totalCommissionTaxes))),
+            vat: costDataAsProps ? formatReyal(Number(costDataAsProps?.totalItemsTaxes)) : formatReyal(Number((totalCost * 0.15 + totalCommissionTaxes))),
             total: costDataAsProps ? formatReyal(Number(costDataAsProps?.totalFinalCost)) : formatReyal(Number(totalFinalCost))
         }
     ]

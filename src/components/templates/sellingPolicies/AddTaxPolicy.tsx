@@ -1,6 +1,6 @@
 import { t } from 'i18next'
-import { useEffect } from 'react'
-import { useIsRTL, useMutate } from '../../../hooks'
+import { useEffect, useState } from 'react'
+import { useFetch, useIsRTL, useMutate } from '../../../hooks'
 import { notify } from '../../../utils/toast'
 import { Form, Formik } from 'formik'
 import * as Yup from "yup"
@@ -13,6 +13,7 @@ import RadioGroup from '../../molecules/RadioGroup'
 import { SelectBranches } from '../reusableComponants/branches/SelectBranches'
 import SelectCategory from '../reusableComponants/categories/select/SelectCategory'
 import SelectKarat from '../reusableComponants/karats/select/SelectKarat'
+import { Cards_Props_TP } from './ViewSellingPolicies'
 
 
 type PoliciesProps_TP = {
@@ -28,14 +29,25 @@ type SellingPoliciesProps_TP = {
     value?: string
     onAdd?: (value: string) => void
     editData?: PoliciesProps_TP
+    setSelectBranch?: any
+    includeTaxFilter?: any
+    selectBranch?: any
 }
 
 const AddTaxPolicy = ({
     editData,
-    setSelectBarnch,
-    includeTaxFilter
+    // setSelectBranch,
+    // includeTaxFilter,
+    // selectBranch
 }: SellingPoliciesProps_TP) => {
-    console.log("🚀 ~ file: AddTaxPolicy.tsx:38 ~ includeTaxFilter:", includeTaxFilter)
+    // console.log("🚀 ~ file: AddTaxPolicy.tsx:38 ~ includeTaxFilter:", includeTaxFilter)
+    const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
+
+    const [selectBranch, setSelectBranch] = useState("")
+    console.log("🚀 ~ file: ViewTaxPolicy.tsx:54 ~ ViewTaxPolicy ~ selectBranch:", selectBranch)
+  
+    const includeTaxFilter = dataSource?.filter((item) => item.branch_id == selectBranch)
+    console.log("🚀 ~ file: AddTaxPolicy.tsx:50 ~ includeTaxFilter:", includeTaxFilter)
 
     const queryClient = useQueryClient()
     const isRTL = useIsRTL()
@@ -81,6 +93,16 @@ const AddTaxPolicy = ({
     },
   });
 
+  const { isSuccess } =
+  useFetch<Cards_Props_TP[]>({
+    endpoint:`/selling/api/v1/tax_includes`,
+    queryKey: ["allTaxes_Selling"],
+    pagination: true,
+    onSuccess(data) {
+      setDataSource(data.data)
+    },
+  })
+
   function PostNewCard(values: PoliciesProps_TP) {
     mutate({
       endpointName: "/selling/api/v1/create-tax-include",
@@ -118,7 +140,8 @@ const AddTaxPolicy = ({
                     {({ values, setFieldValue, resetForm }) => {
                         console.log("🚀 ~ file: AddTaxPolicy.tsx:117 ~ values:", values)
 
-                        setSelectBarnch(values?.branch_id)
+
+                        setSelectBranch(values?.branch_id)
                     return(
                         <Form>
                             <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
@@ -138,6 +161,7 @@ const AddTaxPolicy = ({
                                     label={`${t('karats')}`}
                                     onChange={(option) => {
                                         setFieldValue("karat_name", option!.value);
+                                        setFieldValue("category_id", "");
                                         setFieldValue("category_name", "");
                                     }}
                                     value={{
@@ -159,6 +183,7 @@ const AddTaxPolicy = ({
                                     }}
                                     onChange={(option) => {
                                         setFieldValue("category_name", option!.value);
+                                        setFieldValue("karat_id", "");
                                         setFieldValue("karat_name", "");
                                     }}
                                     showItems={true}
@@ -186,13 +211,13 @@ const AddTaxPolicy = ({
                                                 id="1"
                                                 value="1"
                                                 label={`${t("Selling price includes tax")}`}
-                                                isChecked={values?.branch_id && (includeTaxFilter && +includeTaxFilter[0]?.include_tax === 0 ? false : true)}
+                                                isChecked={values?.branch_id && includeTaxFilter.length !== 0 && (+includeTaxFilter[0]?.include_tax === 0 ? false : true)}
                                             />
                                             <RadioGroup.RadioButton
                                                 id="0"
                                                 value="0"
                                                 label={`${t("selling price does not include tax")}`}
-                                                  isChecked={values?.branch_id && (includeTaxFilter && +includeTaxFilter[0]?.include_tax !== 0 ? false : true)}
+                                                isChecked={values?.branch_id && includeTaxFilter.length !== 0 && (+includeTaxFilter[0]?.include_tax !== 0 ? false : true)}
                                             />
                                         </div>
                                     </RadioGroup>

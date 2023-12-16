@@ -16,17 +16,19 @@ import { notify } from '../../../../utils/toast';
 import { IoMdAdd } from 'react-icons/io';
 
 type SellingTableInputWeight_TP = {
-    sellingItemsOfWeigth: any;
-    setSellingItemsOfWeight : any;
-    dataSource: any;
-    setOpenSelsal: any
+    sellingItemsOfWeigth?: any;
+    setSellingItemsOfWeight?: any;
+    dataSource?: any;
+    setOpenSelsal?: any
+    TaxRateOfBranch?: any
 };
 
 const SellingTableInputWeight = ({
     sellingItemsOfWeigth,
     setSellingItemsOfWeight,
     dataSource,
-    setOpenSelsal
+    setOpenSelsal,
+    TaxRateOfBranch
 }: SellingTableInputWeight_TP) => {
     const [searchWeight, setSearchWeight] = useState(""); 
     const [itemsOfWeight, setItemsOfWeight] = useState([]); 
@@ -177,7 +179,7 @@ const SellingTableInputWeight = ({
         setFieldValue("weight", +values.weight + +calcOfSelsalWeight)
         setFieldValue("cost", (+values.cost + +calcOfSelsalCost).toFixed(2))
         setFieldValue("taklfa", +priceWithSellingPolicy.toFixed(2))
-        setFieldValue("taklfa_after_tax", (priceWithSellingPolicy * 0.15 + priceWithSellingPolicy).toFixed(2));
+        setFieldValue("taklfa_after_tax", (priceWithSellingPolicy * +TaxRateOfBranch + priceWithSellingPolicy).toFixed(2));
     }
     
   return (
