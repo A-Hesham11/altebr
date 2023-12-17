@@ -20,7 +20,7 @@ const FinalPreviewBuyingPayment = ({
 
   // FORMULA TO CALC THE TOTAL VALUE OF ITEMS
   const totalValueOfItems = sellingItemsData.reduce((acc, curr) => {
-    if (odwyaTypeValue === "شركة") {
+    if (odwyaTypeValue === "supplier") {
       return +acc + +curr.total_value
     }
     

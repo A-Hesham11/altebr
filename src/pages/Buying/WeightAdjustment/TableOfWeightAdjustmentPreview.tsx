@@ -94,7 +94,7 @@ const TableOfWeightAdjustmentPreview = ({
                 className="w-24 rounded-md h-10 text-center placeholder:text-mainBlack"
                 min="1"
                 name="weight_input"
-                // placeholder={+finalValue[info.row.index].toFixed(2)}
+                placeholder={+finalValue[info.row.index].toFixed(2)}
                 // value={+test[info.row.index].toFixed(2)}
                 id="weight_input"
                 onBlur={(e) => {
@@ -125,8 +125,8 @@ const TableOfWeightAdjustmentPreview = ({
         header: () => <span>{t("edit weight")}</span>,
       },
     ],
-    // [finalValue]
-    []
+    [finalValue]
+    // []
   );
 
   const { mutate, isLoading: editItemsLoading } = useMutate({

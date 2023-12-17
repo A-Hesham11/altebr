@@ -41,6 +41,7 @@ export const BuyingTable = ({
   odwyaTypeValue,
   defaultTax,
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ file: BuyingTable.tsx:44 ~ odwyaTypeValue:", odwyaTypeValue)
   const { formatGram, formatReyal } = numberContext();
   const { values, setFieldValue } = useFormikContext();
   console.log("🚀 ~ file: BuyingTable.tsx:46 ~ values:", values)
@@ -120,7 +121,7 @@ export const BuyingTable = ({
     [odwyaTypeValue]
   );
 
-  if (odwyaTypeValue === "شركة")
+  if (odwyaTypeValue === "supplier")
     buyingColumns.push(
       {
         header: () => <span>{t("value added tax")} </span>,
@@ -174,7 +175,7 @@ export const BuyingTable = ({
                 <th
                   key={header.id}
                   className={`py-4 px-2 text-sm font-medium text-white border ${
-                    odwyaTypeValue === "شركة" ? "w-[12.6]" : "w-[16.6%]"
+                    odwyaTypeValue === "supplier" ? "w-[12.6]" : "w-[16.6%]"
                   }`}
                 >
                   {header.isPlaceholder
@@ -248,11 +249,6 @@ export const BuyingTable = ({
                     goldPrice[option.value].toFixed(2)
                   );
 
-                  console.log(
-                    "------------------------------- option",
-                    option.value
-                  );
-                  console.log("------------------------------- values", values);
                   const totalValues =
                     +goldPrice[option.value].toFixed(2) * +values?.weight;
                   const priceWithCommissionRate =
@@ -323,7 +319,7 @@ export const BuyingTable = ({
               />
             </td>
             {/* WILL CHANGE AGAIN FIXING */}
-            {odwyaTypeValue === "شركة" && (
+            {odwyaTypeValue === "supplier" && (
               <>
                 <td>
                   <BaseInputField

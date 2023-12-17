@@ -29,7 +29,10 @@ const BuyingInvoiceData = ({
   odwyaTypeValue,
   setOdwyaTypeValue,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ file: BuyingInvoiceData.tsx:32 ~ sellingItemsData:", sellingItemsData)
+  console.log(
+    "🚀 ~ file: BuyingInvoiceData.tsx:32 ~ sellingItemsData:",
+    sellingItemsData
+  );
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
@@ -40,20 +43,26 @@ const BuyingInvoiceData = ({
     return acc;
   }, 0);
 
-  const totalValueAddedTax = sellingItemsData.reduce((acc: number, curr: any) => {
-    acc += +curr.value_added_tax;
-    return acc;
-  }, 0);
+  const totalValueAddedTax = sellingItemsData.reduce(
+    (acc: number, curr: any) => {
+      acc += +curr.value_added_tax;
+      return acc;
+    },
+    0
+  );
 
-  const totalValueAfterTax = sellingItemsData.reduce((acc: number, curr: any) => {
-    acc += +curr.total_value;
-    return acc;
-  }, 0);
+  const totalValueAfterTax = sellingItemsData.reduce(
+    (acc: number, curr: any) => {
+      acc += +curr.total_value;
+      return acc;
+    },
+    0
+  );
 
   const costDataAsProps = {
     totalCost,
-    totalValueAddedTax, 
-    totalValueAfterTax
+    totalValueAddedTax,
+    totalValueAfterTax,
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -92,7 +101,7 @@ const BuyingInvoiceData = ({
     []
   );
 
-  if (odwyaTypeValue === "شركة") {
+  if (odwyaTypeValue === "supplier") {
     Cols.push(
       {
         header: () => <span>{t("value added tax")} </span>,
@@ -128,17 +137,32 @@ const BuyingInvoiceData = ({
   });
 
   const posSellingDataHandler = () => {
-    const invoice = {
-      employee_id: userData?.id,
-      branch_id: userData?.branch_id,
-      client_id: clientData.client_id,
-      invoice_date: clientData.bond_date,
-      invoice_number: invoiceNumber.length + 1,
-      count: sellingItemsData.length,
-    };
+    let invoice;
+
+    if (odwyaTypeValue === "supplier") {
+      invoice = {
+        employee_id: userData?.id,
+        branch_id: userData?.branch_id,
+        supplier_id: clientData.client_id,
+        client_id: "",
+        invoice_date: clientData.bond_date,
+        invoice_number: invoiceNumber.length + 1,
+        count: sellingItemsData.length,
+      };
+    } else {
+      invoice = {
+        employee_id: userData?.id,
+        branch_id: userData?.branch_id,
+        client_id: clientData.client_id,
+        supplier_id: "",
+        invoice_date: clientData.bond_date,
+        invoice_number: invoiceNumber.length + 1,
+        count: sellingItemsData.length,
+      };
+    }
 
     const items = sellingItemsData.map((item) => {
-      if (odwyaTypeValue === "شركة") {
+      if (odwyaTypeValue === "supplier") {
         return {
           category_id: item.category_id,
           karat_id: item.karat_id,
@@ -167,7 +191,7 @@ const BuyingInvoiceData = ({
       }
     });
 
-    console.log({invoice, items})
+    console.log({ invoice, items });
 
     mutate({
       endpointName: "/buyingUsedGold/api/v1/add_buying_Invoice",
@@ -204,7 +228,7 @@ const BuyingInvoiceData = ({
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}
         odwyaTypeValue={odwyaTypeValue}
-      setOdwyaTypeValue={setOdwyaTypeValue}
+        setOdwyaTypeValue={setOdwyaTypeValue}
       />
     </div>
   );
