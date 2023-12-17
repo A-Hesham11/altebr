@@ -48,6 +48,7 @@ const ViewTaxPolicy = () => {
     view: false,
   })
   const [editData, setEditData] = useState<Cards_Props_TP>()
+  console.log("🚀 ~ file: ViewTaxPolicy.tsx:51 ~ ViewTaxPolicy ~ editData:", editData)
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
   // const [selectBranch, setSelectBranch] = useState("")
@@ -93,6 +94,7 @@ const ViewTaxPolicy = () => {
                     action={() => {
                     setOpen((prev) => !prev)
                     setEditData(info.row.original)
+                    console.log("🚀 ~ file: ViewTaxPolicy.tsx:97 ~ ViewTaxPolicy ~ info.row.original:", info.row.original)
                     setAction({
                         edit: true,
                         delete: false,
