@@ -36,25 +36,18 @@ type SellingPoliciesProps_TP = {
     editData?: PoliciesProps_TP
     setSelectBranch?: any
     includeTaxFilter?: any
-    selectBranch?: any
+    setEditData?: any
 }
 
 const AddTaxPolicy = ({
     editData,
-    // setSelectBranch,
-    // includeTaxFilter,
-    // selectBranch
 }: SellingPoliciesProps_TP) => {
-    // console.log("🚀 ~ file: AddTaxPolicy.tsx:38 ~ includeTaxFilter:", includeTaxFilter)
     const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
-
-    const [addTaxes, setAddTaxes] = useState([]);
-    console.log("🚀 ~ file: AddTaxPolicy.tsx:51 ~ addTaxes:", addTaxes)
+    // const [editTax, setEditTax] = useState([])
+    // const [addTaxes, setAddTaxes] = useState([]);
     const [selectBranch, setSelectBranch] = useState("")
-    console.log("🚀 ~ file: ViewTaxPolicy.tsx:54 ~ ViewTaxPolicy ~ selectBranch:", selectBranch)
   
     const includeTaxFilter = dataSource?.filter((item) => item.branch_id == selectBranch)
-    console.log("🚀 ~ file: AddTaxPolicy.tsx:50 ~ includeTaxFilter:", includeTaxFilter)
 
     const queryClient = useQueryClient()
     const isRTL = useIsRTL()
@@ -84,71 +77,77 @@ const AddTaxPolicy = ({
     category_id: editData?.category_name || "",
   }
 
-  const handleDeleteRow = (itemId) => {
-    addTaxes?.findIndex((item) => {
-      return item.id == itemId;
-    });
+//   const handleDeleteRow = (itemId) => {
+//     addTaxes?.findIndex((item) => {
+//       return item.id == itemId;
+//     });
 
-    const newData = addTaxes?.filter((item) => {
-      return item.id !== itemId;
-    });
+//     const newData = addTaxes?.filter((item) => {
+//       return item.id !== itemId;
+//     });
 
-    setAddTaxes(newData);
-  };
+//     setAddTaxes(newData);
+//   };
 
-  const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
-    () => [
-        {
-            header: () => <span>{t("branch")} </span>,
-            accessorKey: "branch_name",
-            cell: (info) => info.getValue() || "---",
-        },
-        {
-          header: () => <span>{t("karat")} </span>,
-          accessorKey: "karat_name",
-          cell: (info) => info.getValue() || "---",
-        },
-        {
-          header: () => <span>{t("category")} </span>,
-          accessorKey: "category_name",
-          cell: (info) => info.getValue() || "---",
-        },
-        {
-            header: () => <span>{t("tax rate")} </span>,
-            accessorKey: "tax_rate",
-            cell: (info) => `${info.row.original.tax_rate} %`,
-        },
-        {
-            header: () => <span>{t("Tax policy")} </span>,
-            accessorKey: "include_tax",
-            cell: (info) => `${info.row.original.include_tax === 0 ? t("selling price does not include tax") : t("Selling price includes tax")}` || "---",
-        },
-        {
-            header: () => <span>{t("actions")}</span>,
-            accessorKey: "action",
-            cell: (info) => {
-            console.log("🚀 ~ file: AddTaxPolicy.tsx:126 ~ info:", info.row.original)
-            return (
-                <div className="flex items-center justify-center gap-4">
-                <EditIcon
-                    action={() => {
-                        
-                    }}
-                    className='fill-mainGreen'
-                />
-                <SvgDelete
-                    action={() => {
-                        handleDeleteRow(info.row.original.id)
-                    }}
-                    stroke="#ef4444"
-                />
-                </div>
-            )
-            },
-        },
-    ],
-    [addTaxes]
-  )
+//   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
+//     () => [
+//         {
+//             header: () => <span>{t("branch")} </span>,
+//             accessorKey: "branch_name",
+//             cell: (info) => info.getValue() || "---",
+//         },
+//         {
+//           header: () => <span>{t("karat")} </span>,
+//           accessorKey: "karat_name",
+//           cell: (info) => info.getValue() || "---",
+//         },
+//         {
+//           header: () => <span>{t("category")} </span>,
+//           accessorKey: "category_name",
+//           cell: (info) => info.getValue() || "---",
+//         },
+//         {
+//             header: () => <span>{t("tax rate")} </span>,
+//             accessorKey: "tax_rate",
+//             cell: (info) => `${info.row.original.tax_rate} %`,
+//         },
+//         {
+//             header: () => <span>{t("Tax policy")} </span>,
+//             accessorKey: "include_tax",
+//             cell: (info) => `${info.row.original.include_tax === 0 ? t("selling price does not include tax") : t("Selling price includes tax")}` || "---",
+//         },
+//         {
+//             header: () => <span>{t("actions")}</span>,
+//             accessorKey: "action",
+//             cell: (info) => {
+//             console.log("🚀 ~ file: AddTaxPolicy.tsx:126 ~ info:", info.row.original) 
+//             return (
+//                 <div className="flex items-center justify-center gap-4">
+//                 <EditIcon
+//                     action={() => {
+//                         // setEditData((prev) => [...prev, info.row.original])
+//                         setEditTax(info?.row?.original)
+//                         setAction({
+//                             edit: true,
+//                             delete: false,
+//                             view: false,
+//                         })
+//                     }}
+//                     className='fill-mainGreen'
+//                 />
+//                 <SvgDelete
+//                     action={() => {
+//                         handleDeleteRow(info.row.original.id)
+//                     }}
+//                     stroke="#ef4444"
+//                 />
+//                 </div>
+//             )
+//             },
+//         },
+//     ],
+//     [addTaxes]
+//   )
 
   const {
     mutate,
@@ -179,7 +178,6 @@ const AddTaxPolicy = ({
   })
 
   function PostNewCard(values: PoliciesProps_TP) {
-    console.log("🚀 ~ file: AddTaxPolicy.tsx:182 ~ PostNewCard ~ values:", values)
     mutate({
       endpointName: "/selling/api/v1/create-tax-include",
       values,
@@ -229,146 +227,142 @@ const AddTaxPolicy = ({
                         if (editData) {
                             PostCardEdit(values)
                         } else {
-                            // PostNewCard((prev) => {items: [...prev, values]})
-                            // console.log("🚀 ~ file: AddTaxPolicy.tsx:232 ~ [{items: values}]:",  PostNewCard((prev) => {items: [...prev, values]}))
-                            const items = addTaxes.map((item) => {
-                                return {
-                                    ...item
-                                };
-                              });
-                            console.log("🚀 ~ file: AddTaxPolicy.tsx:238 ~ items ~ items:", items)
-                              PostNewCard(items)
+                            PostNewCard(values)
+                            // const items = addTaxes.map((item) => {
+                            //     return {
+                            //         ...item
+                            //     };
+                            //   });
+                            //   PostNewCard(items)
                         }
                     }}
                 >
                     {({ values, setFieldValue, resetForm }) => {
-                        console.log("🚀 ~ file: AddTaxPolicy.tsx:117 ~ values:", values)
 
-
-                        setSelectBranch(values?.branch_id)
-                    return(
-                        <Form>
-                            <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-12">
-                              <Select
-                                id="branch"
-                                label={`${t('branch')}`}
-                                name="branch_id"
-                                placeholder="اختر فرع"
-                                loadingPlaceholder={`${t('loading')}`}
-                                options={branchesOptions}
-                                onChange={(option) => {
-                                    setFieldValue("branch_name", option?.value);
-                                    setFieldValue("branch_id", option?.id)
-                                }}
-                                value={{
-                                    id: editData ? editData?.branch_id : values?.branch_id,
-                                    value: editData ? editData?.branch_id : values?.branch_id,
-                                    label: editData ? editData?.branch_name : values?.branch_name || "اختر فرع",
-                                }}
-                            />
-                                <SelectKarat
-                                    field="id"
-                                    name="karat_id"
-                                    noMb={true}
-                                    placement="top"
-                                    label={`${t('karats')}`}
+                        return(
+                            <Form>
+                                <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-12">
+                                <Select
+                                    id="branch"
+                                    label={`${t('branch')}`}
+                                    name="branch_id"
+                                    placeholder="اختر فرع"
+                                    loadingPlaceholder={`${t('loading')}`}
+                                    options={branchesOptions}
                                     onChange={(option) => {
-                                        setFieldValue("karat_name", option!.value);
+                                        setFieldValue("branch_name", option?.value);
+                                        setFieldValue("branch_id", option?.id)
+                                        setSelectBranch(option?.id)
                                     }}
                                     value={{
-                                        id: editData ? editData?.karat_id : values?.karat_id,
-                                        value: editData ? editData?.karat_id : values?.karat_id,
-                                        label: editData ? editData?.karat_name : values?.karat_name || t("karat value"),
+                                        id: editData ? editData?.branch_id : values?.branch_id,
+                                        value: editData ? editData?.branch_id : values?.branch_id,
+                                        label: editData ? editData?.branch_name : values?.branch_name || "اختر فرع",
                                     }}
                                 />
-                                <SelectCategory
-                                    name="category_id"
-                                    noMb={true}
-                                    placement="top"
-                                    label={`${t("categories")}`}
-                                    all={true}
-                                    value={{
-                                        value: editData ? editData?.category_id : values?.category_id,
-                                        label: editData ? editData?.category_name : values?.category_name || t("classification"),
-                                        id: editData ? editData?.category_id : values?.category_id,
-                                    }}
-                                    onChange={(option) => {
-                                        setFieldValue("category_name", option!.value);
-                                    }}
-                                    showItems={true}
-                                />
-
-                                <div>
-                                    <BaseInputField
-                                        id="tax_rate"
-                                        name="tax_rate"
-                                        type="text"
-                                        label={`${t('tax rate')}`}
-                                        placeholder={`${t("tax rate")}`}
-
-                                        onChange={(e) => {
-                                            // setFieldValue("tax_rate", values?.tax_rate)
-                                        setFieldValue("include_tax", +includeTaxFilter[0]?.include_tax);
-
+                                    <SelectKarat
+                                        field="id"
+                                        name="karat_id"
+                                        noMb={true}
+                                        placement="top"
+                                        label={`${t('karats')}`}
+                                        onChange={(option) => {
+                                            setFieldValue("karat_name", option!.value);
+                                        }}
+                                        value={{
+                                            id: editData ? editData?.karat_id : values?.karat_id,
+                                            value: editData ? editData?.karat_id : values?.karat_id,
+                                            label: editData ? editData?.karat_name : values?.karat_name || t("karat value"),
                                         }}
                                     />
-                                </div>
-                                <div>
-                                    <RadioGroup name="include_tax">
-                                        <div className="flex gap-x-2 font-bold">
-                                            <RadioGroup.RadioButton
-                                                id="1"
-                                                value="1"
-                                                label={`${t("Selling price includes tax")}`}
-                                                isChecked={values?.branch_id && includeTaxFilter.length !== 0 && (+includeTaxFilter[0]?.include_tax === 0 ? false : true)}
-                                            />
-                                            <RadioGroup.RadioButton
-                                                id="0"
-                                                value="0"
-                                                label={`${t("selling price does not include tax")}`}
-                                                isChecked={values?.branch_id && includeTaxFilter.length !== 0 && (+includeTaxFilter[0]?.include_tax !== 0 ? false : true)}
-                                            />
-                                        </div>
-                                    </RadioGroup>
-                                </div>
-                                <div>
-                                    <Button 
-                                    className='bg-mainOrange w-full'
-                                        action={() => {
-                                            const index = addTaxes?.length
-                                            setAddTaxes((prev) => [...prev, {...values, id: index + 1}])
-                                            setFieldValue("category_id", "");
-                                            setFieldValue("category_name", "");
-                                            setFieldValue("karat_id", "");
-                                            setFieldValue("karat_name", "");
+                                    <SelectCategory
+                                        name="category_id"
+                                        noMb={true}
+                                        placement="top"
+                                        label={`${t("categories")}`}
+                                        all={true}
+                                        value={{
+                                            value: editData ? editData?.category_id : values?.category_id,
+                                            label: editData ? editData?.category_name : values?.category_name || t("classification"),
+                                            id: editData ? editData?.category_id : values?.category_id,
                                         }}
+                                        onChange={(option) => {
+                                            setFieldValue("category_name", option!.value);
+                                        }}
+                                        showItems={true}
+                                    />
+
+                                    <div>
+                                        <BaseInputField
+                                            id="tax_rate"
+                                            name="tax_rate"
+                                            type="text"
+                                            label={`${t('tax rate')}`}
+                                            placeholder={`${t("tax rate")}`}
+
+                                            onChange={(e) => {
+                                                // setFieldValue("tax_rate", values?.tax_rate)
+                                            setFieldValue("include_tax", +includeTaxFilter[0]?.include_tax);
+
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <RadioGroup name="include_tax">
+                                            <div className="flex gap-x-2 font-bold">
+                                                <RadioGroup.RadioButton
+                                                    id="1"
+                                                    value="1"
+                                                    label={`${t("Selling price includes tax")}`}
+                                                    isChecked={values?.branch_id && includeTaxFilter.length !== 0 && (+includeTaxFilter[0]?.include_tax === 0  ? false : true)}
+                                                />
+                                                <RadioGroup.RadioButton
+                                                    id="0"
+                                                    value="0"
+                                                    label={`${t("selling price does not include tax")}`}
+                                                    isChecked={values?.branch_id && includeTaxFilter.length !== 0 && (+includeTaxFilter[0]?.include_tax !== 0 ? false : true)}
+                                                />
+                                            </div>
+                                        </RadioGroup>
+                                    </div>
+                                    {/* <div>
+                                        <Button 
+                                        className='bg-mainOrange w-full'
+                                            action={() => {
+                                                const index = addTaxes?.length
+                                                setAddTaxes((prev) => [...prev, {...values, id: index + 1}])
+                                                setFieldValue("category_id", "");
+                                                setFieldValue("category_name", "");
+                                                setFieldValue("karat_id", "");
+                                                setFieldValue("karat_name", "");
+                                            }}
+                                        >
+                                            {t("confirm")}
+                                        </Button>
+                                    </div> */}
+
+                                </div>
+
+                                {/* <div className='my-6'>
+                                    {addTaxes.length ? (
+                                            <Table data={addTaxes} columns={columns}></Table>
+                                        )
+                                        : ""
+                                    }
+                                </div> */}
+
+                                <div className='flex justify-end'>
+                                    <Button
+                                        type='submit'
+                                        className="w-fit"
+                                        loading={editLoading}
                                     >
-                                        {t("confirm")}
+                                        {t('save')}
                                     </Button>
                                 </div>
-
-                            </div>
-
-                            <div className='my-6'>
-                                {addTaxes.length ? (
-                                        <Table data={addTaxes} columns={columns}></Table>
-                                    )
-                                    : ""
-                                }
-                            </div>
-
-                            <div className='flex justify-end'>
-                                <Button
-                                    type='submit'
-                                    className="w-fit"
-                                    loading={editLoading}
-                                >
-                                    {t('save')}
-                                </Button>
-                            </div>
-                        </Form>
-
-                    )}}
+                            </Form>
+                        )
+                    }}
                 </Formik>
             </OuterFormLayout>
         </>
