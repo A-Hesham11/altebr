@@ -93,7 +93,7 @@ const BuyingFirstPage = ({
     },
   ];
 
-  if (odwyaTypeValue === "شركة")
+  if (odwyaTypeValue === "supplier")
     tarqimBoxes.push({
       account: "value added tax",
       id: 0,
@@ -116,30 +116,21 @@ const BuyingFirstPage = ({
   console.log("🚀 ~ file: BuyingFirstPage.tsx:115 ~ naqdya:", naqdya)
 
   // CLIENT OPTIONS
-  const { data: clientsNameOptions, isLoading } = useFetch({
-    endpoint: `/branchManage/api/v1/all-clients/${userData?.branch_id}?per_page=10000`,
-    queryKey: ["all-client"],
-    select: (clients) =>
-      clients.map((item: any) => ({
-        id: item.id,
-        value: item.name,
-        label: item.name,
-        odwyaType: item.odwya.name_ar,
-      })),
+
+  const { data: clientsAndSuppliers, isLoading: loadingClients  } = useFetch({
+    endpoint: `/buyingUsedGold/api/v1/clients_with_suppliers/${userData?.branch_id}?per_page=10000`,
+    queryKey: ["client-supplier"],
     onError: (err) => console.log(err),
   });
-  console.log(
-    "🚀 ~ file: BuyingBillInput.tsx:45 ~ BuyingBillInput ~ clientsNameOptions:",
-    clientsNameOptions
-  );
+  console.log("🚀 ~ file: BuyingBillInput.tsx:46 ~ clientsAndSuppliers:", clientsAndSuppliers)
 
-  const odwyaFind = clientsNameOptions?.find(
+  const odwyaFind = clientsAndSuppliers?.find(
     (item: any) => item?.id === values?.client_id
   );
-  console.log("🚀 ~ file: BuyingFirstPage.tsx:134 ~ odwyaFind:", odwyaFind);
+  console.log("🚀 ~ file: BuyingFirstPage.tsx:134 ~ odwyaFind:", odwyaFind?.type);
 
   useEffect(() => {
-    setOdwyaTypeValue(odwyaFind?.odwyaType);
+    setOdwyaTypeValue(odwyaFind?.type);
   }, [values?.client_id]);
 
   return (
@@ -154,8 +145,8 @@ const BuyingFirstPage = ({
             <div>
               <BuyingBillInput
                 dateFieldName="bond_date"
-                clientsNameOptions={clientsNameOptions}
-                isLoading={isLoading}
+                clientsNameOptions={clientsAndSuppliers}
+                isLoading={loadingClients}
               />
             </div>
           </div>
@@ -184,7 +175,7 @@ const BuyingFirstPage = ({
                 <div>
                   <div
                     className={`grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${
-                      odwyaTypeValue === "شركة"
+                      odwyaTypeValue === "supplier"
                         ? "xl:grid-cols-5"
                         : "xl:grid-cols-4"
                     }  gap-8`}

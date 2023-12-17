@@ -60,7 +60,7 @@ const BuyingInvoiceTable = <T extends object>({
 
   let totalFinalCostIntoArabic
 
-  if (odwyaTypeValue === "شركة") {
+  if (odwyaTypeValue === "supplier") {
     totalFinalCostIntoArabic =  convertNumToArWord(
       Math.round(costDataAsProps?.totalValueAfterTax)
     );
@@ -79,7 +79,7 @@ const BuyingInvoiceTable = <T extends object>({
 
   let resultTable;
 
-  if (odwyaTypeValue === "شركة") {
+  if (odwyaTypeValue === "supplier") {
     resultTable = [
       {
           number: t("totals"),
