@@ -1,5 +1,5 @@
 import { t } from 'i18next'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useFetch, useIsRTL, useMutate } from '../../../hooks'
 import { notify } from '../../../utils/toast'
 import { Form, Formik } from 'formik'
@@ -14,6 +14,11 @@ import { SelectBranches } from '../reusableComponants/branches/SelectBranches'
 import SelectCategory from '../reusableComponants/categories/select/SelectCategory'
 import SelectKarat from '../reusableComponants/karats/select/SelectKarat'
 import { Cards_Props_TP } from './ViewSellingPolicies'
+import { Table } from '../reusableComponants/tantable/Table'
+import { ColumnDef } from '@tanstack/react-table'
+import { SvgDelete } from '../../atoms/icons/SvgDelete'
+import { EditIcon } from '../../atoms/icons'
+import { SelectOption_TP } from '../../../types'
 
 
 type PoliciesProps_TP = {
@@ -43,6 +48,8 @@ const AddTaxPolicy = ({
     // console.log("🚀 ~ file: AddTaxPolicy.tsx:38 ~ includeTaxFilter:", includeTaxFilter)
     const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
 
+    const [addTaxes, setAddTaxes] = useState([]);
+    console.log("🚀 ~ file: AddTaxPolicy.tsx:51 ~ addTaxes:", addTaxes)
     const [selectBranch, setSelectBranch] = useState("")
     console.log("🚀 ~ file: ViewTaxPolicy.tsx:54 ~ ViewTaxPolicy ~ selectBranch:", selectBranch)
   
@@ -67,13 +74,81 @@ const AddTaxPolicy = ({
     });
 
   const initialValues = {
+    id:"",
     tax_rate: editData?.tax_rate || "",
     branch_id:editData?.branch_id || "",
+    branch_name: editData?.branch_name || "",
     include_tax: editData?.include_tax || "",
     include_tax_value: editData?.include_tax_value || "",
-    karat_id: editData?.karat_id || "",
-    category_id: editData?.category_id || "",
+    karat_id: editData?.karat_name || "",
+    category_id: editData?.category_name || "",
   }
+
+  const handleDeleteRow = (itemId) => {
+    addTaxes?.findIndex((item) => {
+      return item.id == itemId;
+    });
+
+    const newData = addTaxes?.filter((item) => {
+      return item.id !== itemId;
+    });
+
+    setAddTaxes(newData);
+  };
+
+  const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
+    () => [
+        {
+            header: () => <span>{t("branch")} </span>,
+            accessorKey: "branch_name",
+            cell: (info) => info.getValue() || "---",
+        },
+        {
+          header: () => <span>{t("karat")} </span>,
+          accessorKey: "karat_name",
+          cell: (info) => info.getValue() || "---",
+        },
+        {
+          header: () => <span>{t("category")} </span>,
+          accessorKey: "category_name",
+          cell: (info) => info.getValue() || "---",
+        },
+        {
+            header: () => <span>{t("tax rate")} </span>,
+            accessorKey: "tax_rate",
+            cell: (info) => `${info.row.original.tax_rate} %`,
+        },
+        {
+            header: () => <span>{t("Tax policy")} </span>,
+            accessorKey: "include_tax",
+            cell: (info) => `${info.row.original.include_tax === 0 ? t("selling price does not include tax") : t("Selling price includes tax")}` || "---",
+        },
+        {
+            header: () => <span>{t("actions")}</span>,
+            accessorKey: "action",
+            cell: (info) => {
+            console.log("🚀 ~ file: AddTaxPolicy.tsx:126 ~ info:", info.row.original)
+            return (
+                <div className="flex items-center justify-center gap-4">
+                <EditIcon
+                    action={() => {
+                        
+                    }}
+                    className='fill-mainGreen'
+                />
+                <SvgDelete
+                    action={() => {
+                        handleDeleteRow(info.row.original.id)
+                    }}
+                    stroke="#ef4444"
+                />
+                </div>
+            )
+            },
+        },
+    ],
+    [addTaxes]
+  )
 
   const {
     mutate,
@@ -104,6 +179,7 @@ const AddTaxPolicy = ({
   })
 
   function PostNewCard(values: PoliciesProps_TP) {
+    console.log("🚀 ~ file: AddTaxPolicy.tsx:182 ~ PostNewCard ~ values:", values)
     mutate({
       endpointName: "/selling/api/v1/create-tax-include",
       values,
@@ -121,6 +197,26 @@ const AddTaxPolicy = ({
     });
   };
 
+  const {
+    data: branchesOptions,
+    isLoading: branchesLoading,
+    refetch: refetchBranches,
+    failureReason: branchesErrorReason,
+  } = useFetch<SelectOption_TP[]>({
+    endpoint: "branch/api/v1/branches?per_page=10000",
+    queryKey: ["branches"],
+    select: (branches) =>
+      branches.map((branch) => {
+        return {
+          id: branch.id,
+          value: branch.name || "",
+          label: branch.name || "",
+        }
+      }),
+    onError: (err) => console.log(err),
+  })
+
+ 
     return (
         <>
             <OuterFormLayout
@@ -133,7 +229,15 @@ const AddTaxPolicy = ({
                         if (editData) {
                             PostCardEdit(values)
                         } else {
-                            PostNewCard(values)
+                            // PostNewCard((prev) => {items: [...prev, values]})
+                            // console.log("🚀 ~ file: AddTaxPolicy.tsx:232 ~ [{items: values}]:",  PostNewCard((prev) => {items: [...prev, values]}))
+                            const items = addTaxes.map((item) => {
+                                return {
+                                    ...item
+                                };
+                              });
+                            console.log("🚀 ~ file: AddTaxPolicy.tsx:238 ~ items ~ items:", items)
+                              PostNewCard(items)
                         }
                     }}
                 >
@@ -144,15 +248,24 @@ const AddTaxPolicy = ({
                         setSelectBranch(values?.branch_id)
                     return(
                         <Form>
-                            <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
-                                <SelectBranches
-                                    required
-                                    name="branch_id"
-                                    editData={{
-                                        branch_id: editData?.branch_id,
-                                        branch_name: editData?.branch_name,
-                                    }}
-                                />
+                            <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-12">
+                              <Select
+                                id="branch"
+                                label={`${t('branch')}`}
+                                name="branch_id"
+                                placeholder="اختر فرع"
+                                loadingPlaceholder={`${t('loading')}`}
+                                options={branchesOptions}
+                                onChange={(option) => {
+                                    setFieldValue("branch_name", option?.value);
+                                    setFieldValue("branch_id", option?.id)
+                                }}
+                                value={{
+                                    id: editData ? editData?.branch_id : values?.branch_id,
+                                    value: editData ? editData?.branch_id : values?.branch_id,
+                                    label: editData ? editData?.branch_name : values?.branch_name || "اختر فرع",
+                                }}
+                            />
                                 <SelectKarat
                                     field="id"
                                     name="karat_id"
@@ -161,13 +274,11 @@ const AddTaxPolicy = ({
                                     label={`${t('karats')}`}
                                     onChange={(option) => {
                                         setFieldValue("karat_name", option!.value);
-                                        setFieldValue("category_id", "");
-                                        setFieldValue("category_name", "");
                                     }}
                                     value={{
-                                    id: values.karat_id,
-                                    value: values.karat_id,
-                                    label: values.karat_name || t("karat value"),
+                                        id: editData ? editData?.karat_id : values?.karat_id,
+                                        value: editData ? editData?.karat_id : values?.karat_id,
+                                        label: editData ? editData?.karat_name : values?.karat_name || t("karat value"),
                                     }}
                                 />
                                 <SelectCategory
@@ -177,14 +288,12 @@ const AddTaxPolicy = ({
                                     label={`${t("categories")}`}
                                     all={true}
                                     value={{
-                                    value: values?.category_id,
-                                    label: values?.category_name || t("classification"),
-                                    id: values?.category_id,
+                                        value: editData ? editData?.category_id : values?.category_id,
+                                        label: editData ? editData?.category_name : values?.category_name || t("classification"),
+                                        id: editData ? editData?.category_id : values?.category_id,
                                     }}
                                     onChange={(option) => {
                                         setFieldValue("category_name", option!.value);
-                                        setFieldValue("karat_id", "");
-                                        setFieldValue("karat_name", "");
                                     }}
                                     showItems={true}
                                 />
@@ -222,8 +331,32 @@ const AddTaxPolicy = ({
                                         </div>
                                     </RadioGroup>
                                 </div>
+                                <div>
+                                    <Button 
+                                    className='bg-mainOrange w-full'
+                                        action={() => {
+                                            const index = addTaxes?.length
+                                            setAddTaxes((prev) => [...prev, {...values, id: index + 1}])
+                                            setFieldValue("category_id", "");
+                                            setFieldValue("category_name", "");
+                                            setFieldValue("karat_id", "");
+                                            setFieldValue("karat_name", "");
+                                        }}
+                                    >
+                                        {t("confirm")}
+                                    </Button>
+                                </div>
 
                             </div>
+
+                            <div className='my-6'>
+                                {addTaxes.length ? (
+                                        <Table data={addTaxes} columns={columns}></Table>
+                                    )
+                                    : ""
+                                }
+                            </div>
+
                             <div className='flex justify-end'>
                                 <Button
                                     type='submit'
