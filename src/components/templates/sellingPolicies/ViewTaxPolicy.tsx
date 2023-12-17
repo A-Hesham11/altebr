@@ -50,25 +50,38 @@ const ViewTaxPolicy = () => {
   const [editData, setEditData] = useState<Cards_Props_TP>()
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
+  // const [selectBranch, setSelectBranch] = useState("")
+  // console.log("🚀 ~ file: ViewTaxPolicy.tsx:54 ~ ViewTaxPolicy ~ selectBranch:", selectBranch)
   const [page, setPage] = useState<number>(1)
+
+  // const includeTaxFilter = dataSource?.filter((item) => item.branch_id == selectBranch)
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
         {
             header: () => <span>{t("branch")} </span>,
             accessorKey: "branch_name",
-            cell: (info) => info.getValue(),
+            cell: (info) => info.getValue() || "---",
+        },
+        {
+          header: () => <span>{t("karat")} </span>,
+          accessorKey: "karat_name",
+          cell: (info) => info.getValue() || "---",
+        },
+        {
+          header: () => <span>{t("category")} </span>,
+          accessorKey: "category_name",
+          cell: (info) => info.getValue() || "---",
         },
         {
             header: () => <span>{t("tax rate")} </span>,
             accessorKey: "tax_rate",
             cell: (info) => `${info.row.original.tax_rate} %`,
         },
-
         {
             header: () => <span>{t("Tax policy")} </span>,
             accessorKey: "include_tax_value",
-            cell: (info) => info.getValue(),
+            cell: (info) => info.getValue() || "---",
         },
         {
             header: () => <span>{t("actions")}</span>,
