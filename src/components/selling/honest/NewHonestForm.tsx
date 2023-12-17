@@ -46,6 +46,7 @@ export const NewHonestForm = ({
   /////////// STATES
   ///
   const [totalAmount, setTotalAmount] = useState(0);
+  console.log("🚀 ~ file: NewHonestForm.tsx:49 ~ totalAmount:", totalAmount)
   const [totalRemainingAmount, setTotalRemainingAmount] = useState(0);
   const totalApproximateCost = tableData.reduce((acc, curr) => {
     acc += +curr.cost;
@@ -163,6 +164,7 @@ export const NewHonestForm = ({
         <PaymentProcessing
           paymentData={paymentData}
           setPaymentData={setPaymentData}
+          totalApproximateCost={totalApproximateCost}
         />
       </OuterFormLayout>
     </>
