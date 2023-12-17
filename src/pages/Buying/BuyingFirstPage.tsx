@@ -10,7 +10,8 @@ import BuyingHeader from "../../components/atoms/UI/BuyingHeader";
 import BillInputs from "../../components/selling/selling components/bill/BillInputs";
 import { numberContext } from "../../context/settings/number-formatter";
 import { authCtx } from "../../context/auth-and-perm/auth";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import BuyingBillInput from "./BuyingBillInput";
 
 type SellingFirstPage_TP = {
   sellingItemsData: Selling_TP;
@@ -36,9 +37,13 @@ const BuyingFirstPage = ({
   setSelectedItemDetails,
   clientData,
   setClientData,
+  setOdwyaTypeValue,
+  odwyaTypeValue
 }: SellingFirstPage_TP) => {
   const { formatGram, formatReyal } = numberContext();
   const { values } = useFormikContext();
+  console.log("🚀 ~ file: BuyingFirstPage.tsx:43 ~ values:", values);
+  const { userData } = useContext(authCtx);
 
   // FORMULA FOR RESULT
   const totalValues = sellingItemsData.reduce(
@@ -68,12 +73,6 @@ const BuyingFirstPage = ({
       value: formatReyal(totalValues),
       unit: "ryal",
     },
-    // {
-    //   account: "value added tax",
-    //   id: 0,
-    //   value: formatReyal(valueAddedTax),
-    //   unit: "ryal",
-    // },
     {
       account: "total gross weight",
       id: 1,
@@ -94,17 +93,54 @@ const BuyingFirstPage = ({
     },
   ];
 
+  if (odwyaTypeValue === "شركة")
+    tarqimBoxes.push({
+      account: "value added tax",
+      id: 0,
+      value: formatReyal(valueAddedTax),
+      unit: "ryal",
+    });
+
   // TODAY GOLD PRICE API
   const { data: goldPrice } = useFetch<ClientData_TP>({
     endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
     queryKey: ["get-gold-price"],
   });
+  console.log("🚀 ~ file: BuyingFirstPage.tsx:109 ~ goldPrice:", goldPrice)
 
   // CASH VALUE API
   const { data: naqdya } = useFetch<ClientData_TP>({
-    endpoint: `/buyingUsedGold/api/v1/get-nadya-box`,
+    endpoint: `/buyingUsedGold/api/v1/get-nadya-box/${userData?.branch_id}`,
     queryKey: ["naqdya"],
   });
+  console.log("🚀 ~ file: BuyingFirstPage.tsx:115 ~ naqdya:", naqdya)
+
+  // CLIENT OPTIONS
+  const { data: clientsNameOptions, isLoading } = useFetch({
+    endpoint: `/branchManage/api/v1/all-clients/${userData?.branch_id}?per_page=10000`,
+    queryKey: ["all-client"],
+    select: (clients) =>
+      clients.map((item: any) => ({
+        id: item.id,
+        value: item.name,
+        label: item.name,
+        odwyaType: item.odwya.name_ar,
+      })),
+    onError: (err) => console.log(err),
+  });
+  console.log(
+    "🚀 ~ file: BuyingBillInput.tsx:45 ~ BuyingBillInput ~ clientsNameOptions:",
+    clientsNameOptions
+  );
+
+  const odwyaFind = clientsNameOptions?.find(
+    (item: any) => item?.id === values?.client_id
+  );
+  console.log("🚀 ~ file: BuyingFirstPage.tsx:134 ~ odwyaFind:", odwyaFind);
+
+  useEffect(() => {
+    setOdwyaTypeValue(odwyaFind?.odwyaType);
+  }, [values?.client_id]);
 
   return (
     <Form className="overflow-hidden">
@@ -116,7 +152,11 @@ const BuyingFirstPage = ({
               <BuyingHeader invoiceNumber={invoiceNumber} />
             </div>
             <div>
-              <BillInputs dateFieldName="bond_date" />
+              <BuyingBillInput
+                dateFieldName="bond_date"
+                clientsNameOptions={clientsNameOptions}
+                isLoading={isLoading}
+              />
             </div>
           </div>
 
@@ -126,6 +166,7 @@ const BuyingFirstPage = ({
             </h2>
             <>
               <BuyingTable
+                odwyaTypeValue={odwyaTypeValue}
                 dataSource={dataSource}
                 setDataSource={setDataSource}
                 sellingItemsData={sellingItemsData}
@@ -134,13 +175,20 @@ const BuyingFirstPage = ({
                 selectedItemDetails={selectedItemDetails}
                 setSelectedItemDetails={setSelectedItemDetails}
                 goldPrice={goldPrice}
+                defaultTax={naqdya?.tax_rate}
               />
               <div className="border-t-2 border-mainGray pt-12 py-5">
                 <h2 className="mb-4 text-base font-bold">
                   {t("total invoice")}
                 </h2>
                 <div>
-                  <div className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  <div
+                    className={`grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${
+                      odwyaTypeValue === "شركة"
+                        ? "xl:grid-cols-5"
+                        : "xl:grid-cols-4"
+                    }  gap-8`}
+                  >
                     {tarqimBoxes?.map((data: any) => (
                       <li
                         key={data.id}
@@ -183,10 +231,12 @@ const BuyingFirstPage = ({
                 return;
               }
 
-              if (+totalValues.toFixed(2) > naqdya.toFixed(2)) {
+              if (+totalValues.toFixed(2) > naqdya?.nadya_box.toFixed(2)) {
                 notify(
                   "error",
-                  `${t(`total values is greater than the value in the cash / available =`)}  ${formatReyal(naqdya.toFixed(2))}`
+                  `${t(
+                    `total values is greater than the value in the cash / available =`
+                  )}  ${formatReyal(naqdya?.nadya_box.toFixed(2))}`
                 );
                 return;
               }

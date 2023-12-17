@@ -29,7 +29,7 @@ type SellingTableInputData_TP = {
   setSellingItemsData: any;
   setClientData: any;
   rowsData: Selling_TP;
-  goldPrice: any
+  goldPrice: any;
 };
 
 export const BuyingTable = ({
@@ -38,28 +38,32 @@ export const BuyingTable = ({
   sellingItemsData,
   setSellingItemsData,
   goldPrice,
+  odwyaTypeValue,
+  defaultTax,
 }: SellingTableInputData_TP) => {
   const { formatGram, formatReyal } = numberContext();
   const { values, setFieldValue } = useFormikContext();
+  console.log("🚀 ~ file: BuyingTable.tsx:46 ~ values:", values)
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ file: BuyingTable.tsx:45 ~ userData:", userData)
+  console.log("🚀 ~ file: BuyingTable.tsx:45 ~ userData:", userData);
   const [data, setData] = useState("");
 
-    // CASH VALUE API
-    const { data: maxingUser } = useFetch({
-      endpoint: `/employee/api/max-buy-user`,
-      queryKey: ["maxingUser"],
-    });
+  // CASH VALUE API
+  const { data: maxingUser } = useFetch({
+    endpoint: `/employee/api/max-buy-user`,
+    queryKey: ["maxingUser"],
+  });
 
   // FORMULA
-  const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2) 
-  const priceWithCommissionRate = (+totalValues - +totalValues * (+maxingUser?.max_buy * 0.01));
-  const priceWithCommissionCash = (+totalValues - +maxingUser?.max_buy);
-  
+  const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2);
+  const priceWithCommissionRate =
+    +totalValues - +totalValues * (+maxingUser?.max_buy * 0.01);
+  const priceWithCommissionCash = +totalValues - +maxingUser?.max_buy;
+
   const priceWithSellingPolicy =
-  maxingUser?.max_buy_type === "نسبة"
-  ? +priceWithCommissionRate
-  : +priceWithCommissionCash;
+    maxingUser?.max_buy_type === "نسبة"
+      ? +priceWithCommissionRate
+      : +priceWithCommissionCash;
 
   // STONES OPTION SELECT
   const stonesOption = [
@@ -112,19 +116,23 @@ export const BuyingTable = ({
           return formatReyal(Number(info.getValue()).toFixed(2)) || "---";
         },
       },
-      // {
-      //   header: () => <span>{t("value added tax")} </span>,
-      //   accessorKey: "value_added_tax",
-      //   cell: (info) => formatReyal(Number(info.getValue())) || "---",
-      // },
-      // {
-      //   header: () => <span>{t("total value")} </span>,
-      //   accessorKey: "total_value",
-      //   cell: (info) => formatReyal(Number(info.getValue())) || "---",
-      // },
     ],
-    []
+    [odwyaTypeValue]
   );
+
+  if (odwyaTypeValue === "شركة")
+    buyingColumns.push(
+      {
+        header: () => <span>{t("value added tax")} </span>,
+        accessorKey: "value_added_tax",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      },
+      {
+        header: () => <span>{t("total value")} </span>,
+        accessorKey: "total_value",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      }
+    );
 
   // TABLE FUNCTIONALITY TO DELETE AND ADD
   const table = useReactTable({
@@ -149,7 +157,7 @@ export const BuyingTable = ({
 
   const handleAddItemsToBuying = () => {
     const { client_id, bond_date, client_value, client_name, ...restValues } =
-      values;      
+      values;
 
     Object.keys(restValues).forEach((key) => {
       setFieldValue(key, "");
@@ -165,7 +173,9 @@ export const BuyingTable = ({
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="py-4 px-2 text-sm font-medium text-white border w-[16.6%]"
+                  className={`py-4 px-2 text-sm font-medium text-white border ${
+                    odwyaTypeValue === "شركة" ? "w-[12.6]" : "w-[16.6%]"
+                  }`}
                 >
                   {header.isPlaceholder
                     ? null
@@ -180,7 +190,7 @@ export const BuyingTable = ({
         </thead>
         <tbody>
           <tr className="text-center table-shadow last:shadow-0">
-            <td className="border-l-2 border-l-flatWhite">
+            <td className="border-l-2 border-l-flatWhite w-36">
               <SelectCategory
                 name="category_id"
                 noMb={true}
@@ -197,7 +207,7 @@ export const BuyingTable = ({
                 }}
               />
             </td>
-            <td>
+            <td className="w-36">
               <Select
                 placeholder={`${t("stones")}`}
                 id="stones_id"
@@ -225,7 +235,7 @@ export const BuyingTable = ({
                 className={`text-center`}
               />
             </td>
-            <td className="border-l-2 border-l-flatWhite">
+            <td className="border-l-2 border-l-flatWhite w-36">
               <SelectKarat
                 field="id"
                 name="karat_id"
@@ -233,19 +243,42 @@ export const BuyingTable = ({
                 placement="top"
                 onChange={(option) => {
                   setFieldValue("karat_name", option!.value);
-                  setFieldValue("piece_per_gram", goldPrice[option.value].toFixed(2));
+                  setFieldValue(
+                    "piece_per_gram",
+                    goldPrice[option.value].toFixed(2)
+                  );
 
-                  const totalValues = (+goldPrice[option.value].toFixed(2) * +values?.weight)
-                  const priceWithCommissionRate = (+totalValues - +totalValues * (+maxingUser?.max_buy * 0.01));
-                  const priceWithCommissionCash = (+totalValues - +maxingUser?.max_buy);
+                  console.log(
+                    "------------------------------- option",
+                    option.value
+                  );
+                  console.log("------------------------------- values", values);
+                  const totalValues =
+                    +goldPrice[option.value].toFixed(2) * +values?.weight;
+                  const priceWithCommissionRate =
+                    +totalValues - +totalValues * (+maxingUser?.max_buy * 0.01);
+                  const priceWithCommissionCash =
+                    +totalValues - +maxingUser?.max_buy;
                   const priceWithSellingPolicy =
-                  maxingUser?.max_buy_type === "نسبة"
-                  ? priceWithCommissionRate
-                  : priceWithCommissionCash;
+                    maxingUser?.max_buy_type === "نسبة"
+                      ? priceWithCommissionRate
+                      : priceWithCommissionCash;
 
                   setFieldValue("value", +priceWithSellingPolicy);
-                  setFieldValue("value_added_tax", +priceWithSellingPolicy * +userData?.tax_rate * 0.01);
-                  setFieldValue("total_value", (+priceWithSellingPolicy * +userData?.tax_rate * 0.01) + +priceWithSellingPolicy);
+
+                  if (option?.value == 24) {
+                    setFieldValue("value_added_tax", +priceWithSellingPolicy * 0);
+                  } else {
+                    setFieldValue(
+                      "value_added_tax",
+                      +priceWithSellingPolicy * +defaultTax * 0.01
+                    );
+                  }
+                  setFieldValue(
+                    "total_value",
+                    +priceWithSellingPolicy * +defaultTax * 0.01 +
+                      +priceWithSellingPolicy
+                  );
                 }}
                 value={{
                   id: values.karat_id,
@@ -270,49 +303,57 @@ export const BuyingTable = ({
                 id="value"
                 name="value"
                 type="text"
-                className={(values?.value && +values?.value > +priceWithSellingPolicy) ? "bg-red-100 text-center" : "text-center"}
+                className={
+                  values?.value && +values?.value > +priceWithSellingPolicy
+                    ? "bg-red-100 text-center"
+                    : "text-center"
+                }
                 required
                 onChange={(e) => {
                   setFieldValue("value", +priceWithSellingPolicy);
-                  setFieldValue("value_added_tax", +e.target.value * +userData?.tax_rate * 0.01);
-                  setFieldValue("total_value", +e.target.value + (e.target.value * +userData?.tax_rate * 0.01));
-
-                  
+                  setFieldValue(
+                    "value_added_tax",
+                    +e.target.value * +defaultTax * 0.01
+                  );
+                  setFieldValue(
+                    "total_value",
+                    +e.target.value + e.target.value * +defaultTax * 0.01
+                  );
                 }}
               />
             </td>
             {/* WILL CHANGE AGAIN FIXING */}
-            {/* <td>
-              <BaseInputField
-                placeholder={`${t("value added tax")}`}
-                id="value_added_tax"
-                name="value_added_tax"
-                type="text"
-                disabled
-                className="bg-mainDisabled text-center"
-                value={+values.value * +userData?.tax_rate * 0.01}
-                required
-              />
-            </td>
-            <td>
-              <BaseInputField
-                placeholder={`${t("total value")}`}
-                id="total_value"
-                name="total_value"
-                type="text"
-                disabled
-                className="bg-mainDisabled text-center"
-              />
-            </td> */}
-            
+            {odwyaTypeValue === "شركة" && (
+              <>
+                <td>
+                  <BaseInputField
+                    placeholder={`${t("value added tax")}`}
+                    id="value_added_tax"
+                    name="value_added_tax"
+                    type="text"
+                    disabled
+                    className="bg-mainDisabled text-center"
+                    value={+values.value * +userData?.tax_rate * 0.01}
+                    required
+                  />
+                </td>
+                <td>
+                  <BaseInputField
+                    placeholder={`${t("total value")}`}
+                    id="total_value"
+                    name="total_value"
+                    type="text"
+                    disabled
+                    className="bg-mainDisabled text-center"
+                  />
+                </td>
+              </>
+            )}
+
             <td className="bg-lightGreen justify-center border border-[#C4C4C4] flex items-center">
               {dataSource?.length == 1 &&
                 dataSource[0]?.category_type === "multi" && (
-                  <Button
-                    action={() => {
-                    }}
-                    className="bg-transparent px-2"
-                  >
+                  <Button action={() => {}} className="bg-transparent px-2">
                     <EditIcon className="fill-mainGreen w-6 h-6" />
                   </Button>
                 )}

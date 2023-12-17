@@ -22,7 +22,10 @@ const BuyingInvoiceTable = <T extends object>({
   columns,
   paymentData,
   costDataAsProps,
+  setOdwyaTypeValue,
+  odwyaTypeValue
 }: ReactTableProps<T>) => {
+  console.log("🚀 ~ file: BuyingInvoiceTable.tsx:28 ~ costDataAsProps:", costDataAsProps)
   const { formatGram, formatReyal } = numberContext();
 
   // CUSTOM CONFIGURE FOR TABLE
@@ -55,9 +58,17 @@ const BuyingInvoiceTable = <T extends object>({
     return acc;
   }, 0);
 
-  const totalFinalCostIntoArabic = convertNumToArWord(
-    Math.round(costDataAsProps?.totalCost)
-  );
+  let totalFinalCostIntoArabic
+
+  if (odwyaTypeValue === "شركة") {
+    totalFinalCostIntoArabic =  convertNumToArWord(
+      Math.round(costDataAsProps?.totalValueAfterTax)
+    );
+  } else {
+    totalFinalCostIntoArabic = convertNumToArWord(
+      Math.round(costDataAsProps?.totalCost)
+    );
+  }
 
   const totalItemsTax =
     +costDataAsProps?.totalItemsTaxes?.toFixed(2) +
@@ -66,14 +77,25 @@ const BuyingInvoiceTable = <T extends object>({
   const totalItemsCost =
     costDataAsProps?.totalCommissionRatio + costDataAsProps?.totalCost;
 
-  const resultTable = [
-    {
-        number: t("totals"),
-        cost: formatReyal(totalCost),
-        // value_added_tax: valueAddedTax,
-        // total_value: totalValue.toFixed(2),
-    },
-  ];
+  let resultTable;
+
+  if (odwyaTypeValue === "شركة") {
+    resultTable = [
+      {
+          number: t("totals"),
+          cost: formatReyal(totalCost),
+          value_added_tax: formatReyal(valueAddedTax),
+          total_value: formatReyal(totalValue.toFixed(2)),
+      },
+    ];
+  } else {
+    resultTable = [
+      {
+          number: t("totals"),
+          cost: formatReyal(totalCost),
+      },
+    ];
+  }
 
   return (
     <>

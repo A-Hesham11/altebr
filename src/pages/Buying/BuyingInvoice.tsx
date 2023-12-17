@@ -20,6 +20,11 @@ const BuyingInvoice = () => {
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [invoiceNumber, setInvoiceNumber] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
+  const [odwyaTypeValue, setOdwyaTypeValue] = useState();
+  console.log(
+    "🚀 ~ file: BuyingFirstPage.tsx:46 ~ odwyaTypeValue:",
+    odwyaTypeValue
+  );
 
 
   const initialValues: Selling_TP = {
@@ -84,6 +89,8 @@ const BuyingInvoice = () => {
             setClientData={setClientData}
             selectedItemDetails={selectedItemDetails}
             setSelectedItemDetails={setSelectedItemDetails}
+            odwyaTypeValue={odwyaTypeValue}
+            setOdwyaTypeValue={setOdwyaTypeValue}
           />
         )}
         {stage === 2 && (
@@ -94,6 +101,8 @@ const BuyingInvoice = () => {
             clientData={clientData}
             setStage={setStage}
             selectedItemDetails={selectedItemDetails}
+            odwyaTypeValue={odwyaTypeValue}
+            setOdwyaTypeValue={setOdwyaTypeValue}
           />
         )}
       </>
