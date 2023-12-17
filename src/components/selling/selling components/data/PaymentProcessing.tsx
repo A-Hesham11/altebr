@@ -39,7 +39,7 @@ const validationSchema = () =>
 
 
 
-const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData }: Payment_TP) => {
+const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, totalApproximateCost }: Payment_TP) => {
 
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
@@ -79,7 +79,7 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData }: Pa
 
   const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax ,0)
 
-  const costRemaining = totalPriceInvoice - amountRemaining
+  const costRemaining =  totalPriceInvoice ? (totalPriceInvoice - amountRemaining) : (totalApproximateCost - amountRemaining)
 
   return (
     <>
@@ -166,7 +166,7 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData }: Pa
               <div className={` my-6 grid grid-cols-2 lg:grid-cols-4 gap-6  ${values.amount > +costRemaining ? "items-center" : "items-end"}`}>
                 <div className="relative">
                   <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
-                    <span>{t("remaining cost")} : </span> {formatReyal(Number((totalPriceInvoice - amountRemaining).toFixed(2)))}
+                    <span>{t("remaining cost")} : </span> {formatReyal(Number((costRemaining).toFixed(2)))}
                   </p>
                   <BaseInputField
                     id="amount"
