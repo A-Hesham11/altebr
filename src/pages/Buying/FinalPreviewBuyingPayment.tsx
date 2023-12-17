@@ -12,11 +12,18 @@ const FinalPreviewBuyingPayment = ({
   paymentData,
   costDataAsProps,
   sellingItemsData,
+  odwyaTypeValue,
+      setOdwyaTypeValue
 }: FinalPreviewBuyingPayment_TP) => {
+  console.log("🚀 ~ file: FinalPreviewBuyingPayment.tsx:18 ~ sellingItemsData:", sellingItemsData)
   const {formatReyal} = numberContext()
 
   // FORMULA TO CALC THE TOTAL VALUE OF ITEMS
   const totalValueOfItems = sellingItemsData.reduce((acc, curr) => {
+    if (odwyaTypeValue === "شركة") {
+      return +acc + +curr.total_value
+    }
+    
     return +acc + +curr.value;
   }, 0);
 

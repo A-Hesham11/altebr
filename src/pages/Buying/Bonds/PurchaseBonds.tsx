@@ -49,6 +49,7 @@ const PurchaseBonds = () => {
         : `${search}`,
     pagination: true,
   });
+    console.log("🚀 ~ file: PurchaseBonds.tsx:52 ~ PurchaseBonds ~ invoiceData:", invoiceData)
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(

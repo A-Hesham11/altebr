@@ -4,6 +4,10 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { numberContext } from "../../../context/settings/number-formatter";
 
 const PurchaseInvoiceBondsPreview = ({ item }: { item?: {} }) => {
+  console.log(
+    "🚀 ~ file: PurchaseInvoiceBondsPreview.tsx:7 ~ PurchaseInvoiceBondsPreview ~ item:",
+    item
+  );
   const { formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE
@@ -16,11 +20,11 @@ const PurchaseInvoiceBondsPreview = ({ item }: { item?: {} }) => {
       },
       {
         cell: (info: any) => {
-            if (info.getValue() == 1) {
-                return <span>{t("there are stones")}</span>;
-            } else {
-                return <span>{t("there are no stones")}</span>;
-            }
+          if (info.getValue() == 1) {
+            return <span>{t("there are stones")}</span>;
+          } else {
+            return <span>{t("there are no stones")}</span>;
+          }
         },
         accessorKey: "has_stones",
         header: () => <span>{t("stones")}</span>,
@@ -42,9 +46,26 @@ const PurchaseInvoiceBondsPreview = ({ item }: { item?: {} }) => {
         header: () => <span>{t("piece per gram")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(Number(info.renderValue()).toFixed(2)),
+        cell: (info: any) =>
+          formatReyal(Number(info.renderValue()).toFixed(2)) || "-",
         accessorKey: "value",
         header: () => <span>{t("value")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          formatReyal(Number(info.renderValue()).toFixed(2)) == 0
+            ? "-"
+            : formatReyal(Number(info.renderValue()).toFixed(2)),
+        accessorKey: "value_added_tax",
+        header: () => <span>{t("VAT")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          formatReyal(Number(info.renderValue()).toFixed(2)) == 0
+            ? "-"
+            : formatReyal(Number(info.renderValue()).toFixed(2)),
+        accessorKey: "total_value",
+        header: () => <span>{t("total value")}</span>,
       },
     ],
     []

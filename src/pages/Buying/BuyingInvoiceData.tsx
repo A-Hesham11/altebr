@@ -26,7 +26,10 @@ const BuyingInvoiceData = ({
   clientData,
   invoiceNumber,
   selectedItemDetails,
+  odwyaTypeValue,
+  setOdwyaTypeValue,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ file: BuyingInvoiceData.tsx:32 ~ sellingItemsData:", sellingItemsData)
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
@@ -37,8 +40,20 @@ const BuyingInvoiceData = ({
     return acc;
   }, 0);
 
+  const totalValueAddedTax = sellingItemsData.reduce((acc: number, curr: any) => {
+    acc += +curr.value_added_tax;
+    return acc;
+  }, 0);
+
+  const totalValueAfterTax = sellingItemsData.reduce((acc: number, curr: any) => {
+    acc += +curr.total_value;
+    return acc;
+  }, 0);
+
   const costDataAsProps = {
     totalCost,
+    totalValueAddedTax, 
+    totalValueAfterTax
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -73,19 +88,24 @@ const BuyingInvoiceData = ({
         accessorKey: "value",
         cell: (info) => info.getValue() || "---",
       },
-      // {
-      //   header: () => <span>{t("value added tax")} </span>,
-      //   accessorKey: "value_added_tax",
-      //   cell: (info) => formatReyal(Number(info.getValue())) || "---",
-      // },
-      // {
-      //   header: () => <span>{t("total value")} </span>,
-      //   accessorKey: "total_value",
-      //   cell: (info) => formatReyal(Number(info.getValue())) || "---",
-      // },
     ],
     []
   );
+
+  if (odwyaTypeValue === "شركة") {
+    Cols.push(
+      {
+        header: () => <span>{t("value added tax")} </span>,
+        accessorKey: "value_added_tax",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      },
+      {
+        header: () => <span>{t("total value")} </span>,
+        accessorKey: "total_value",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      }
+    );
+  }
 
   const BuyingTableComp = () => (
     <BuyingInvoiceTable
@@ -93,6 +113,8 @@ const BuyingInvoiceData = ({
       columns={Cols}
       paymentData={paymentData}
       costDataAsProps={costDataAsProps}
+      odwyaTypeValue={odwyaTypeValue}
+      setOdwyaTypeValue={setOdwyaTypeValue}
     ></BuyingInvoiceTable>
   );
 
@@ -116,24 +138,41 @@ const BuyingInvoiceData = ({
     };
 
     const items = sellingItemsData.map((item) => {
-      return {
-        category_id: item.category_id,
-        karat_id: item.karat_id,
-        branch_id: userData?.branch_id,
-        gram_price: item.piece_per_gram,
-        // edited: "0",
-        // value_added_tax: item.value_added_tax,
-        // total_value: item.total_value,
-        weight: item.weight,
-        value: item.value,
-        has_stones: `${item.stones_id}`,
-      };
+      if (odwyaTypeValue === "شركة") {
+        return {
+          category_id: item.category_id,
+          karat_id: item.karat_id,
+          branch_id: userData?.branch_id,
+          gram_price: item.piece_per_gram,
+          // edited: "0",
+          value_added_tax: item.value_added_tax,
+          total_value: item.total_value,
+          weight: item.weight,
+          value: item.value,
+          has_stones: `${item.stones_id}`,
+        };
+      } else {
+        return {
+          category_id: item.category_id,
+          karat_id: item.karat_id,
+          branch_id: userData?.branch_id,
+          gram_price: item.piece_per_gram,
+          // edited: "0",
+          // value_added_tax: item.value_added_tax,
+          // total_value: item.total_value,
+          weight: item.weight,
+          value: item.value,
+          has_stones: `${item.stones_id}`,
+        };
+      }
     });
 
+    console.log({invoice, items})
+
     mutate({
-        endpointName: '/buyingUsedGold/api/v1/add_buying_Invoice',
-        values: { invoice, items }
-    })
+      endpointName: "/buyingUsedGold/api/v1/add_buying_Invoice",
+      values: { invoice, items },
+    });
   };
 
   return (
@@ -164,6 +203,8 @@ const BuyingInvoiceData = ({
         sellingItemsData={sellingItemsData}
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}
+        odwyaTypeValue={odwyaTypeValue}
+      setOdwyaTypeValue={setOdwyaTypeValue}
       />
     </div>
   );

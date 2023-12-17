@@ -1,3 +1,5 @@
+// FOR ACCOUNTING
+
 import React from 'react'
 
 const BuyingRestrictionsInvoice = () => {
