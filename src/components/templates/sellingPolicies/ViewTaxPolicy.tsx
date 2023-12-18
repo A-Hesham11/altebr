@@ -48,7 +48,6 @@ const ViewTaxPolicy = () => {
     view: false,
   })
   const [editData, setEditData] = useState<Cards_Props_TP>()
-  console.log("🚀 ~ file: ViewTaxPolicy.tsx:51 ~ ViewTaxPolicy ~ editData:", editData)
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
   // const [selectBranch, setSelectBranch] = useState("")
@@ -242,6 +241,7 @@ const ViewTaxPolicy = () => {
         {action.edit && (
           <AddTaxPolicy
             editData={editData}
+            setEditData={setEditData}
             setDataSource={setDataSource}
             setShow={setOpen}
             isFetching={isFetching}
@@ -253,6 +253,7 @@ const ViewTaxPolicy = () => {
         {model && (
           <AddTaxPolicy
             editData={editData}
+            setEditData={setEditData}
             isFetching={isFetching}
             setDataSource={setDataSource}
             setShow={setOpen}
