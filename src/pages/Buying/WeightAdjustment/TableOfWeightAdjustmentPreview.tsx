@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { Button } from "../../../components/atoms";
 import { Form, Formik, useFormikContext } from "formik";
@@ -26,6 +26,7 @@ const TableOfWeightAdjustmentPreview = ({
   setWeightModal,
   setOperationTypeSelect,
 }: TableOfWeightAdjustmentPreview_TP) => {
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:29 ~ inputWeight:", inputWeight)
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
@@ -36,31 +37,50 @@ const TableOfWeightAdjustmentPreview = ({
     0
   );
 
+  const totalInputWeight = inputWeight.reduce(
+    (acc: number, cur: any) => acc + Number(cur.value),
+    0
+  );
+  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:43 ~ totalInputWeight:", totalInputWeight)
+
   const [inputValue, setInputValue] = useState(totalEditedWeight);
   const weightDifference = +inputValue - +totalEditedWeight;
   const weightDifferencePerWeight = (+weightDifference / item.length).toFixed(
     2
   );
+  
 
   // const [inputValue2, setInputValue2] = useState();
 
-  let finalValue = item.map((item: any) => {
-    if (+weightDifference > 0) {
-      return (
-        +item.weight +
-        (+item.weight / +totalEditedWeight) * Math.abs(+weightDifference)
-      );
-    } else {
-      return (
-        +item.weight -
-        (+item.weight / +totalEditedWeight) * Math.abs(+weightDifference)
-      );
-    }
-  });
+  // let finalValue = item.map((item: any) => {
+  //   if (+weightDifference > 0) {
+  //     return (
+  //       +item.weight +
+  //       (+item.weight / +totalEditedWeight) * Math.abs(+weightDifference)
+  //     );
+  //   } else {
+  //     return (
+  //       +item.weight -
+  //       (+item.weight / +totalEditedWeight) * Math.abs(+weightDifference)
+  //     );
+  //   }
+  // });
 
-  console.log("item:", item);
-console.log("weightDifference:", weightDifference);
-console.log("totalEditedWeight:", totalEditedWeight);
+  const finalValue = useMemo(() => {
+    return item.map((item: any) => {
+      if (+weightDifference > 0) {
+        return (
+          +item.weight +
+          (+item.weight / +totalEditedWeight) * Math.abs(+weightDifference)
+        );
+      } else {
+        return (
+          +item.weight -
+          (+item.weight / +totalEditedWeight) * Math.abs(+weightDifference)
+        );
+      }
+    });
+  }, [weightDifference, totalEditedWeight, item]);
 
   console.log(
     "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:60 ~ finalValue ~ finalValue:",
@@ -99,7 +119,7 @@ console.log("totalEditedWeight:", totalEditedWeight);
                 className="w-24 rounded-md h-10 text-center placeholder:text-mainBlack"
                 min="1"
                 name="weight_input"
-                // placeholder={+finalValue[info.row.index].toFixed(2)}
+                placeholder={+finalValue[info.row.index]?.toFixed(2)}
                 // value={+test[info.row.index].toFixed(2)}
                 id="weight_input"
                 onBlur={(e) => {
@@ -130,9 +150,9 @@ console.log("totalEditedWeight:", totalEditedWeight);
         header: () => <span>{t("edit weight")}</span>,
       },
     ],
-    // [finalValue]
-    []
-  )
+    [finalValue]
+    // []
+  );
 
   const { mutate, isLoading: editItemsLoading } = useMutate({
     mutationFn: mutateData,
@@ -175,7 +195,7 @@ console.log("totalEditedWeight:", totalEditedWeight);
           <h2>{t("total edited weight")}</h2>
           <input
             type="number"
-            value={inputValue}
+            value={totalInputWeight} 
             onChange={(e) => {
               setInputValue(e.target.value);
               // if (+weightDifferencePerWeight !== 0) {
