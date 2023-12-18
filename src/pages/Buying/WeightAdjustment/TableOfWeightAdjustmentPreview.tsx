@@ -42,9 +42,7 @@ const TableOfWeightAdjustmentPreview = ({
     2
   );
 
-  const [inputValue2, setInputValue2] = useState();
-
-
+  // const [inputValue2, setInputValue2] = useState();
 
   let finalValue = item.map((item: any) => {
     if (+weightDifference > 0) {
@@ -59,8 +57,15 @@ const TableOfWeightAdjustmentPreview = ({
       );
     }
   });
-  
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:60 ~ finalValue ~ finalValue:", finalValue)
+
+  console.log("item:", item);
+console.log("weightDifference:", weightDifference);
+console.log("totalEditedWeight:", totalEditedWeight);
+
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:60 ~ finalValue ~ finalValue:",
+    finalValue
+  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -94,7 +99,7 @@ const TableOfWeightAdjustmentPreview = ({
                 className="w-24 rounded-md h-10 text-center placeholder:text-mainBlack"
                 min="1"
                 name="weight_input"
-                placeholder={+finalValue[info.row.index].toFixed(2)}
+                // placeholder={+finalValue[info.row.index].toFixed(2)}
                 // value={+test[info.row.index].toFixed(2)}
                 id="weight_input"
                 onBlur={(e) => {
@@ -125,9 +130,9 @@ const TableOfWeightAdjustmentPreview = ({
         header: () => <span>{t("edit weight")}</span>,
       },
     ],
-    [finalValue]
-    // []
-  );
+    // [finalValue]
+    []
+  )
 
   const { mutate, isLoading: editItemsLoading } = useMutate({
     mutationFn: mutateData,
@@ -173,11 +178,11 @@ const TableOfWeightAdjustmentPreview = ({
             value={inputValue}
             onChange={(e) => {
               setInputValue(e.target.value);
-              if (+weightDifferencePerWeight !== 0) {
-                setInputValue2(
-                  (e.target.value - totalEditedWeight) / item.length
-                );
-              }
+              // if (+weightDifferencePerWeight !== 0) {
+              //   setInputValue2(
+              //     (e.target.value - totalEditedWeight) / item.length
+              //   );
+              // }
             }}
             className={`${
               inputValue == 0
