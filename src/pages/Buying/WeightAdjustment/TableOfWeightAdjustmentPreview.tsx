@@ -37,12 +37,6 @@ const TableOfWeightAdjustmentPreview = ({
     0
   );
 
-  const totalInputWeight = inputWeight.reduce(
-    (acc: number, cur: any) => acc + Number(cur.value),
-    0
-  );
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:43 ~ totalInputWeight:", totalInputWeight)
-
   const [inputValue, setInputValue] = useState(totalEditedWeight);
   const weightDifference = +inputValue - +totalEditedWeight;
   const weightDifferencePerWeight = (+weightDifference / item.length).toFixed(
@@ -195,7 +189,7 @@ const TableOfWeightAdjustmentPreview = ({
           <h2>{t("total edited weight")}</h2>
           <input
             type="number"
-            value={totalInputWeight} 
+            value={totalEditedWeight} 
             onChange={(e) => {
               setInputValue(e.target.value);
               // if (+weightDifferencePerWeight !== 0) {
