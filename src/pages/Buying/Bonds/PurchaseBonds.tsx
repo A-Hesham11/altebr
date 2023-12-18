@@ -65,7 +65,9 @@ const PurchaseBonds = () => {
         header: () => <span>{t("date")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
+        cell: (info: any) => {
+          return info.row.original.client_name || info.row.original.supplier_name
+        },
         accessorKey: "client_name",
         header: () => <span>{t("client name")}</span>,
       },
