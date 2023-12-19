@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useFetch, useIsRTL, useMutate } from '../../../hooks'
 import { useNavigate } from 'react-router-dom'
 import { CImageFile_TP } from '../../../types'
@@ -50,9 +50,11 @@ const ViewTaxPolicy = () => {
   const [editData, setEditData] = useState<Cards_Props_TP>()
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
+  console.log("🚀 ~ file: ViewTaxPolicy.tsx:53 ~ ViewTaxPolicy ~ dataSource:", dataSource)
   // const [selectBranch, setSelectBranch] = useState("")
   // console.log("🚀 ~ file: ViewTaxPolicy.tsx:54 ~ ViewTaxPolicy ~ selectBranch:", selectBranch)
   const [page, setPage] = useState<number>(1)
+  console.log("🚀 ~ file: ViewTaxPolicy.tsx:56 ~ ViewTaxPolicy ~ page:", page)
 
   // const includeTaxFilter = dataSource?.filter((item) => item.branch_id == selectBranch)
 
@@ -64,13 +66,13 @@ const ViewTaxPolicy = () => {
             cell: (info) => info.getValue() || "---",
         },
         {
-          header: () => <span>{t("karat")} </span>,
-          accessorKey: "karat_name",
+          header: () => <span>{t("category")} </span>,
+          accessorKey: "category_name",
           cell: (info) => info.getValue() || "---",
         },
         {
-          header: () => <span>{t("category")} </span>,
-          accessorKey: "category_name",
+          header: () => <span>{t("karat")} </span>,
+          accessorKey: "karat_name",
           cell: (info) => info.getValue() || "---",
         },
         {
@@ -87,6 +89,8 @@ const ViewTaxPolicy = () => {
             header: () => <span>{t("actions")}</span>,
             accessorKey: "action",
             cell: (info) => {
+            console.log("🚀 ~ file: ViewTaxPolicy.tsx:125 ~ ViewTaxPolicy ~ info:", info)
+
             return (
                 <div className="flex items-center justify-center gap-4">
                 <EditIcon
@@ -126,7 +130,7 @@ const ViewTaxPolicy = () => {
 
   const { data, isSuccess, isLoading, isError, error, isRefetching, refetch, isFetching } =
   useFetch<Cards_Props_TP[]>({
-    endpoint:`/selling/api/v1/tax_includes`,
+    endpoint:`/selling/api/v1/tax_includes?page=${page}`,
     queryKey: ["allTax_Selling"],
     pagination: true,
     onSuccess(data) {
@@ -142,6 +146,8 @@ const ViewTaxPolicy = () => {
       }
     },
   })
+  console.log("🚀 ~ file: ViewTaxPolicy.tsx:129 ~ ViewTaxPolicy ~ data:", data)
+
 
   const queryClient = useQueryClient()
   const {
@@ -163,6 +169,10 @@ const ViewTaxPolicy = () => {
       method: "delete",
     })
   }
+
+  useEffect(() => {
+    refetch()
+  }, [page])
 
   return (
     <div className=''>

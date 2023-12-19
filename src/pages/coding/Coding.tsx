@@ -1,21 +1,21 @@
 /////////// IMPORTS
 ///
-import { useEffect, useRef } from "react"
-import { Helmet } from "react-helmet-async"
-import { Loading } from "../../components/organisms/Loading"
-import { t } from "i18next"
+import { useEffect, useRef } from "react";
+import { Helmet } from "react-helmet-async";
+import { Loading } from "../../components/organisms/Loading";
+import { t } from "i18next";
 ///
 /////////// Types
 ///
 type CodingProps_TP = {
-  title: string
-}
+  title: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
 ///
 export const Coding = ({ title }: CodingProps_TP) => {
-    const link = useRef(null)
+  const link = useRef(null);
   /////////// VARIABLES
   ///
 
@@ -32,9 +32,9 @@ export const Coding = ({ title }: CodingProps_TP) => {
   ///
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
-    useEffect(() => {
-        link.current.click()
-    }, [])
+  useEffect(() => {
+    link.current.click();
+  }, []);
   ///
   return (
     <>
@@ -42,9 +42,9 @@ export const Coding = ({ title }: CodingProps_TP) => {
         <title>{title}</title>
       </Helmet>
       <a
-        href="http://alexon.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara"
+        href="https://alexon.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara"
         ref={link}
       ></a>
     </>
-  )
-}
+  );
+};

@@ -1,27 +1,27 @@
 /////////// IMPORTS
 ///
-import { t } from "i18next"
-import { useEffect, useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { useParams } from "react-router-dom"
-import { Button } from "../../../components/atoms"
-import { Modal } from "../../../components/molecules"
-import { useLocalStorage, useMutate } from "../../../hooks"
-import { CError_TP } from "../../../types"
-import { mutateData } from "../../../utils/mutateData"
-import { notify } from "../../../utils/toast"
-import { ExpandableTable } from "../../GoldTables/ExapndableTable"
+import { t } from "i18next";
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useParams } from "react-router-dom";
+import { Button } from "../../../components/atoms";
+import { Modal } from "../../../components/molecules";
+import { useLocalStorage, useMutate } from "../../../hooks";
+import { CError_TP } from "../../../types";
+import { mutateData } from "../../../utils/mutateData";
+import { notify } from "../../../utils/toast";
+import { ExpandableTable } from "../../GoldTables/ExapndableTable";
 import {
   GoldCodingSanad_initialValues_TP,
   GoldSanad_TP,
-} from "../coding-types-and-helpers"
-import { CodingSanad } from "./CodingSanad"
+} from "../coding-types-and-helpers";
+import { CodingSanad } from "./CodingSanad";
 ///
 /////////// Types
 ///
 type GoldCodingWrapperProps_TP = {
-  title: string
-}
+  title: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -29,28 +29,28 @@ type GoldCodingWrapperProps_TP = {
 export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   /////////// VARIABLES
   ///
-  const { sanadId } = useParams()
+  const { sanadId } = useParams();
   const [selectedSanadLocal, setSelectedSanadLocal] =
-    useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
+    useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
 
   const [addedPiecesLocal, setAddedPiecesLocal] = useLocalStorage<
     GoldCodingSanad_initialValues_TP[]
-  >(`addedPiecesLocal_${sanadId}`)
-  const [openModal, setOpenModal] = useState(false)
+  >(`addedPiecesLocal_${sanadId}`);
+  const [openModal, setOpenModal] = useState(false);
   ///
   /////////// CUSTOM HOOKS
   ///
   const [addedPieces, setAddedPieces] = useState<
-  GoldCodingSanad_initialValues_TP[]
-  >(addedPiecesLocal || [])
-  
+    GoldCodingSanad_initialValues_TP[]
+  >(addedPiecesLocal || []);
+
   const { mutate, error, mutateAsync, isLoading, isSuccess } =
     useMutate<GoldCodingSanad_initialValues_TP>({
       mutationFn: mutateData,
       onError(error) {
-        null
+        null;
       },
-    })
+    });
   useEffect(() => {
     if (addedPiecesLocal?.length && stage === 1)
       notify(
@@ -58,17 +58,17 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
         `${t("there are items already existed you can save it")}`,
         "top-right",
         5000
-      )
-  }, [])
+      );
+  }, []);
 
   ///
   /////////// STATES
   ///
   const [selectedSanad, setSelectedSanad] = useState<GoldSanad_TP | undefined>(
     selectedSanadLocal
-  )
-  const [stage, setStage] = useState(1)
-  const [tableKey, setTableKey] = useState(1)
+  );
+  const [stage, setStage] = useState(1);
+  const [tableKey, setTableKey] = useState(1);
   ///
   /////////// SIDE EFFECTS
   ///
@@ -78,36 +78,36 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   ///
   const sendPieces = async (pieces: GoldCodingSanad_initialValues_TP[]) => {
     if (pieces.length === 0) {
-      return
+      return;
     }
 
-    const [piece, ...remainingPieces] = pieces
-    
+    const [piece, ...remainingPieces] = pieces;
+
     try {
       const result = await mutateAsync({
-          endpointName: "tarqimGold/api/v1/tarqim_gold",
-          dataType: "formData",
-          values: piece,
-        })
-        
-        if (result) {
-            // const filteredPieces = remainingPieces.filter(
-              //   (p) => p.front_key !== result.front_key
-              // );
-            
-              // const filteredPieces = addedPieces.filter(
-                //   (p) => p.front_key !== result.front_key
-                // )
-                setAddedPieces((curr) =>
-                  curr.filter((p) => p.front_key !== result.front_key)
-                )
-                setAddedPiecesLocal((curr) =>
-                  curr.filter((p) => p.front_key !== result.front_key)
-                )
-              }
+        endpointName: "tarqimGold/api/v1/tarqim_gold",
+        dataType: "formData",
+        values: piece,
+      });
+
+      if (result) {
+        // const filteredPieces = remainingPieces.filter(
+        //   (p) => p.front_key !== result.front_key
+        // );
+
+        // const filteredPieces = addedPieces.filter(
+        //   (p) => p.front_key !== result.front_key
+        // )
+        setAddedPieces((curr) =>
+          curr.filter((p) => p.front_key !== result.front_key)
+        );
+        setAddedPiecesLocal((curr) =>
+          curr.filter((p) => p.front_key !== result.front_key)
+        );
+      }
     } catch (err) {
-      const error = err as CError_TP
-      notify("error", error.response.data.message)
+      const error = err as CError_TP;
+      notify("error", error.response.data.message);
 
       setAddedPieces((curr) =>
         curr.map((p) =>
@@ -115,7 +115,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
             ? { ...p, status: error.response.data.message }
             : p
         )
-      )
+      );
 
       setAddedPiecesLocal((curr) =>
         curr.map((p) =>
@@ -123,7 +123,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
             ? { ...p, status: error.response.data.message }
             : p
         )
-      )
+      );
       // if(error.response.status === 404){
       //   notify("error",`${t('try to send to non existing url')}`)
       // }
@@ -140,15 +140,15 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
     }
 
     await sendPieces(remainingPieces).then(() => {
-      setTableKey((prev) => prev + 1)
-    })
-  }
+      setTableKey((prev) => prev + 1);
+    });
+  };
 
   useEffect(() => {
     if (!!!addedPieces.length && stage === 2) {
-      setOpenModal(true)
+      setOpenModal(true);
     }
-  }, [addedPieces])
+  }, [addedPieces]);
 
   ///
   return (
@@ -199,9 +199,9 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
           <Button
             type="button"
             action={() => {
-              setOpenModal(false)
-              setStage(1)
-              setAddedPiecesLocal([])
+              setOpenModal(false);
+              setStage(1);
+              setAddedPiecesLocal([]);
             }}
             bordered
           >
@@ -211,16 +211,16 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
           <Button
             type="button"
             action={() => {
-              setOpenModal(false)
-              setAddedPiecesLocal([])
+              setOpenModal(false);
+              setAddedPiecesLocal([]);
             }}
           >
-            <a href="http://alexon.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
+            <a href="https://alexon.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
               {t("go to identification management")}
             </a>
           </Button>
         </div>
       </Modal>
     </>
-  )
-}
+  );
+};
