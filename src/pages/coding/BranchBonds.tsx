@@ -1,19 +1,19 @@
 /////////// IMPORTS
 ///
-import { useEffect, useRef } from "react"
-import { Helmet } from "react-helmet-async"
+import { useEffect, useRef } from "react";
+import { Helmet } from "react-helmet-async";
 ///
 /////////// Types
 ///
 type BranchBondsProps_TP = {
-  title: string
-}
+  title: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
 ///
 export const BranchBonds = ({ title }: BranchBondsProps_TP) => {
-    const link = useRef(null)
+  const link = useRef(null);
   /////////// VARIABLES
   ///
 
@@ -30,9 +30,9 @@ export const BranchBonds = ({ title }: BranchBondsProps_TP) => {
   ///
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
-    useEffect(() => {
-        link.current.click()
-    }, [])
+  useEffect(() => {
+    link.current.click();
+  }, []);
   ///
   return (
     <>
@@ -40,9 +40,9 @@ export const BranchBonds = ({ title }: BranchBondsProps_TP) => {
         <title>{title}</title>
       </Helmet>
       <a
-        href="http://alexon.altebr.jewelry/identity/admin/thwelbonds"
+        href="https://alexon.altebr.jewelry/identity/admin/thwelbonds"
         ref={link}
       ></a>
     </>
-  )
-}
+  );
+};

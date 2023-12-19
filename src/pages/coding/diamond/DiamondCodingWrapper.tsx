@@ -1,27 +1,27 @@
 /////////// IMPORTS
 ///
-import { t } from "i18next"
-import { useEffect, useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { useParams } from "react-router-dom"
-import { Button } from "../../../components/atoms"
-import { Modal } from "../../../components/molecules"
-import { useFetch, useLocalStorage, useMutate } from "../../../hooks"
-import { CError_TP } from "../../../types"
-import { mutateData } from "../../../utils/mutateData"
-import { notify } from "../../../utils/toast"
-import { DiamondExapndableTable } from "../../diamoundTables/DiamondExapndableTable"
+import { t } from "i18next";
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useParams } from "react-router-dom";
+import { Button } from "../../../components/atoms";
+import { Modal } from "../../../components/molecules";
+import { useFetch, useLocalStorage, useMutate } from "../../../hooks";
+import { CError_TP } from "../../../types";
+import { mutateData } from "../../../utils/mutateData";
+import { notify } from "../../../utils/toast";
+import { DiamondExapndableTable } from "../../diamoundTables/DiamondExapndableTable";
 import {
   GoldCodingSanad_initialValues_TP,
   GoldSanad_TP,
-} from "../coding-types-and-helpers"
-import { CodingSanad } from "./CodingSanad"
+} from "../coding-types-and-helpers";
+import { CodingSanad } from "./CodingSanad";
 ///
 /////////// Types
 ///
 type DiamondCodingWrapperProps_TP = {
-  title: string
-}
+  title: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -31,28 +31,28 @@ export const DiamondCodingWrapper = ({
 }: DiamondCodingWrapperProps_TP) => {
   /////////// VARIABLES
   ///
-  const { sanadId } = useParams()
+  const { sanadId } = useParams();
   const [selectedSanadLocal, setSelectedSanadLocal] =
-    useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
+    useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
 
   const [addedPiecesLocal, setAddedPiecesLocal] = useLocalStorage<
     GoldCodingSanad_initialValues_TP[]
-  >(`addedPiecesLocal_${sanadId}`)
-  const [openModal, setOpenModal] = useState(false)
+  >(`addedPiecesLocal_${sanadId}`);
+  const [openModal, setOpenModal] = useState(false);
   ///
   /////////// CUSTOM HOOKS
   ///
   const [addedPieces, setAddedPieces] = useState<
-  GoldCodingSanad_initialValues_TP[]
-  >(addedPiecesLocal || [])
+    GoldCodingSanad_initialValues_TP[]
+  >(addedPiecesLocal || []);
 
   const { mutate, error, mutateAsync, isLoading } =
     useMutate<GoldCodingSanad_initialValues_TP>({
       mutationFn: mutateData,
       onError(error) {
-        null
+        null;
       },
-    })
+    });
   useEffect(() => {
     if (addedPiecesLocal?.length && stage === 1)
       notify(
@@ -60,17 +60,17 @@ export const DiamondCodingWrapper = ({
         `${t("there are items already existed you can save it")}`,
         "top-right",
         5000
-      )
-  }, [])
+      );
+  }, []);
 
   ///
   /////////// STATES
   ///
   const [selectedSanad, setSelectedSanad] = useState<GoldSanad_TP | undefined>(
     selectedSanadLocal
-  )
-  const [stage, setStage] = useState(1)
-  const [tableKey, setTableKey] = useState(1)
+  );
+  const [stage, setStage] = useState(1);
+  const [tableKey, setTableKey] = useState(1);
   ///
   /////////// SIDE EFFECTS
   ///
@@ -78,52 +78,54 @@ export const DiamondCodingWrapper = ({
     data: sanadData,
     isSuccess: sanadDataSuccess,
     failureReason,
-    isRefetching:isSanadRefetching,
-    refetch
+    isRefetching: isSanadRefetching,
+    refetch,
   } = useFetch<GoldSanad_TP>({
     endpoint: `tarqimDiamond/api/v1/open-bonds/${sanadId}`,
     queryKey: [`DiamondCodingSanads/${sanadId}`],
-    enabled:false
-  })
-
+    enabled: false,
+  });
 
   ///
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   const sendPieces = async (pieces: GoldCodingSanad_initialValues_TP[]) => {
     if (pieces.length === 0) {
-      return
+      return;
     }
 
-    const [piece, ...remainingPieces] = pieces
+    const [piece, ...remainingPieces] = pieces;
 
-    const diamondStoneWeight = piece?.stones?.reduce((acc , curr)=>{
-      return +acc + Number(curr.diamondWeight)
-    },0)
+    const diamondStoneWeight = piece?.stones?.reduce((acc, curr) => {
+      return +acc + Number(curr.diamondWeight);
+    }, 0);
 
-    const otherStoneWeight = piece?.stones?.reduce((acc , curr)=>{
-      return +acc + Number(curr.weight)
-    },0)
-    
+    const otherStoneWeight = piece?.stones?.reduce((acc, curr) => {
+      return +acc + Number(curr.weight);
+    }, 0);
+
     try {
       const result = await mutateAsync({
         endpointName: "tarqimDiamond/api/v1/tarqimdiamonds", // must be tarqim gold
         dataType: "formData",
-        values: {...piece, diamondWeightStone:diamondStoneWeight || 0 ,weightStone:otherStoneWeight || 0 },
-      })
+        values: {
+          ...piece,
+          diamondWeightStone: diamondStoneWeight || 0,
+          weightStone: otherStoneWeight || 0,
+        },
+      });
 
       if (result) {
-    
         setAddedPieces((curr) =>
           curr.filter((p) => p.front_key !== result.front_key)
-        )
+        );
         setAddedPiecesLocal((curr) =>
           curr.filter((p) => p.front_key !== result.front_key)
-        )
+        );
       }
     } catch (err) {
-      const error = err as CError_TP
-      notify("error", error.response.data.message)
+      const error = err as CError_TP;
+      notify("error", error.response.data.message);
 
       setAddedPieces((curr) =>
         curr.map((p) =>
@@ -131,7 +133,7 @@ export const DiamondCodingWrapper = ({
             ? { ...p, status: error.response.data.message }
             : p
         )
-      )
+      );
 
       setAddedPiecesLocal((curr) =>
         curr.map((p) =>
@@ -139,26 +141,26 @@ export const DiamondCodingWrapper = ({
             ? { ...p, status: error.response.data.message }
             : p
         )
-      )
+      );
     }
 
     await sendPieces(remainingPieces).then(() => {
-      setTableKey((prev) => prev + 1)
-    })
-  }
+      setTableKey((prev) => prev + 1);
+    });
+  };
 
   useEffect(() => {
     if (!!!addedPieces.length && stage === 2) {
-      setOpenModal(true)
-      refetch()
+      setOpenModal(true);
+      refetch();
     }
-  }, [addedPieces])
+  }, [addedPieces]);
 
   useEffect(() => {
     if (addedPieces.length === 0 && stage === 1) {
-      refetch()
+      refetch();
     }
-  }, [addedPieces,stage])
+  }, [addedPieces, stage]);
 
   return (
     <>
@@ -208,8 +210,8 @@ export const DiamondCodingWrapper = ({
           <Button
             type="button"
             action={() => {
-              setOpenModal(false)
-              setStage(1)
+              setOpenModal(false);
+              setStage(1);
             }}
             bordered
           >
@@ -219,15 +221,15 @@ export const DiamondCodingWrapper = ({
           <Button
             type="button"
             action={() => {
-              setOpenModal(false)
+              setOpenModal(false);
             }}
           >
-            <a href="http://alexon.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
+            <a href="https://alexon.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
               {t("go to identification management")}
             </a>
           </Button>
         </div>
       </Modal>
     </>
-  )
-}
+  );
+};
