@@ -38,7 +38,7 @@ const BuyingFirstPage = ({
   clientData,
   setClientData,
   setOdwyaTypeValue,
-  odwyaTypeValue
+  odwyaTypeValue,
 }: SellingFirstPage_TP) => {
   const { formatGram, formatReyal } = numberContext();
   const { values } = useFormikContext();
@@ -106,28 +106,40 @@ const BuyingFirstPage = ({
     endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
     queryKey: ["get-gold-price"],
   });
-  console.log("🚀 ~ file: BuyingFirstPage.tsx:109 ~ goldPrice:", goldPrice)
+  console.log("🚀 ~ file: BuyingFirstPage.tsx:109 ~ goldPrice:", goldPrice);
 
   // CASH VALUE API
   const { data: naqdya } = useFetch<ClientData_TP>({
     endpoint: `/buyingUsedGold/api/v1/get-nadya-box/${userData?.branch_id}`,
     queryKey: ["naqdya"],
   });
-  console.log("🚀 ~ file: BuyingFirstPage.tsx:115 ~ naqdya:", naqdya)
+  console.log("🚀 ~ file: BuyingFirstPage.tsx:115 ~ naqdya:", naqdya);
 
   // CLIENT OPTIONS
-
-  const { data: clientsAndSuppliers, isLoading: loadingClients  } = useFetch({
+  const { data: clientsAndSuppliers, isLoading: loadingClients } = useFetch({
     endpoint: `/buyingUsedGold/api/v1/clients_with_suppliers/${userData?.branch_id}?per_page=10000`,
     queryKey: ["client-supplier"],
+    select: (clients: any) =>
+      clients.map((item: any) => ({
+        id: item.id,
+        value: item.id,
+        label: item.name,
+        type: item.type,
+      })),
     onError: (err) => console.log(err),
   });
-  console.log("🚀 ~ file: BuyingBillInput.tsx:46 ~ clientsAndSuppliers:", clientsAndSuppliers)
+  console.log(
+    "🚀 ~ file: BuyingBillInput.tsx:46 ~ clientsAndSuppliers:",
+    clientsAndSuppliers
+  );
 
   const odwyaFind = clientsAndSuppliers?.find(
     (item: any) => item?.id === values?.client_id
   );
-  console.log("🚀 ~ file: BuyingFirstPage.tsx:134 ~ odwyaFind:", odwyaFind?.type);
+  console.log(
+    "🚀 ~ file: BuyingFirstPage.tsx:134 ~ odwyaFind:",
+    odwyaFind?.type
+  );
 
   useEffect(() => {
     setOdwyaTypeValue(odwyaFind?.type);

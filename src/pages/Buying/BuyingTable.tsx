@@ -41,19 +41,39 @@ export const BuyingTable = ({
   odwyaTypeValue,
   defaultTax,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ file: BuyingTable.tsx:44 ~ odwyaTypeValue:", odwyaTypeValue)
+  console.log(
+    "🚀 ~ file: BuyingTable.tsx:44 ~ odwyaTypeValue:",
+    odwyaTypeValue
+  );
   const { formatGram, formatReyal } = numberContext();
   const { values, setFieldValue } = useFormikContext();
-  console.log("🚀 ~ file: BuyingTable.tsx:46 ~ values:", values)
+  console.log("🚀 ~ file: BuyingTable.tsx:46 ~ values:", values);
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ file: BuyingTable.tsx:45 ~ userData:", userData);
   const [data, setData] = useState("");
+  const [targetTax, setTargetTax] = useState();
 
   // CASH VALUE API
   const { data: maxingUser } = useFetch({
     endpoint: `/employee/api/max-buy-user`,
     queryKey: ["maxingUser"],
   });
+
+  const { data: taxes, isLoading: loadingTaxs } = useFetch({
+    endpoint: `/selling/api/v1/tax-include/${userData?.branch_id}?per_page=10000`,
+    queryKey: ["taxes"],
+    select: (taxes: any) =>
+      taxes.map((tax: any) => ({
+        id: tax.id,
+        tax_rate: tax.tax_rate,
+        include_tax: tax.include_tax,
+        karat_name: tax.karat_name,
+        category_id: tax.category_id,
+        category_name: tax.category_name,
+      })),
+    onError: (err) => console.log(err),
+  });
+  console.log("🚀 ~ file: BuyingTable.tsx:71 ~ taxes:", taxes);
 
   // FORMULA
   const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2);
@@ -249,6 +269,29 @@ export const BuyingTable = ({
                     goldPrice[option.value].toFixed(2)
                   );
 
+                  let targetTax = taxes?.find(
+                    (tax) => tax?.category_id == values.category_id
+                  );
+
+                  console.log(
+                    "🚀 ~ file: BuyingTable.tsx:271 ~ targetTax:",
+                    targetTax
+                  );
+                  console.log(
+                    "🚀 ~ file: BuyingTable.tsx:271 ~ targetTax:",
+                    taxes
+                  );
+                  console.log(
+                    "🚀 ~ file: BuyingTable.tsx:271 ~ category_id:",
+                    values.category_id,
+                    targetTax?.category_id
+                  );
+                  console.log(
+                    "🚀 ~ file: BuyingTable.tsx:271 ~ karat_id:",
+                    targetTax?.karat_name,
+                    option!.values
+                  );
+
                   const totalValues =
                     +goldPrice[option.value].toFixed(2) * +values?.weight;
                   const priceWithCommissionRate =
@@ -262,19 +305,86 @@ export const BuyingTable = ({
 
                   setFieldValue("value", +priceWithSellingPolicy);
 
-                  if (option?.value == 24) {
-                    setFieldValue("value_added_tax", +priceWithSellingPolicy * 0);
-                  } else {
+                  if (option!.value == 24 && +targetTax?.karat_name != 24) {
                     setFieldValue(
                       "value_added_tax",
-                      +priceWithSellingPolicy * +defaultTax * 0.01
+                      +priceWithSellingPolicy * 0
                     );
+                  } else {
+                    if (!targetTax) {
+                      setFieldValue(
+                        "value_added_tax",
+                        +priceWithSellingPolicy * +defaultTax * 0.01
+                      );
+
+                      setFieldValue(
+                        "total_value",
+                        +priceWithSellingPolicy * +defaultTax * 0.01 +
+                          +priceWithSellingPolicy
+                      );
+                    }
+
+                    if (
+                      targetTax?.category_id == values.category_id &&
+                      targetTax?.karat_name == ""
+                    ) {
+                      console.log(
+                        "same category, not same karat ----------------------"
+                      );
+                      setFieldValue(
+                        "value_added_tax",
+                        +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01
+                      );
+
+                      setFieldValue(
+                        "total_value",
+                        +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01 +
+                          +priceWithSellingPolicy
+                      );
+                    }
+
+                    if (option!.value == 24 && +targetTax?.karat_name == 24) {
+                      setFieldValue(
+                        "value_added_tax",
+                        +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01
+                      );
+                      setFieldValue(
+                        "total_value",
+                        +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01 +
+                          +priceWithSellingPolicy
+                      );
+                    }
+
+                    if (
+                      targetTax?.category_id == values.category_id &&
+                      option!.value == targetTax?.karat_name
+                    ) {
+                      setFieldValue(
+                        "value_added_tax",
+                        +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01
+                      );
+                      setFieldValue(
+                        "total_value",
+                        +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01 +
+                          +priceWithSellingPolicy
+                      );
+                    }
+
+                    if (
+                      targetTax?.category_id == values.category_id &&
+                      option!.value != targetTax?.karat_name
+                    ) {
+                      setFieldValue(
+                        "value_added_tax",
+                        +priceWithSellingPolicy * +defaultTax * 0.01
+                      );
+                      setFieldValue(
+                        "total_value",
+                        +priceWithSellingPolicy * +defaultTax * 0.01 +
+                          +priceWithSellingPolicy
+                      );
+                    }
                   }
-                  setFieldValue(
-                    "total_value",
-                    +priceWithSellingPolicy * +defaultTax * 0.01 +
-                      +priceWithSellingPolicy
-                  );
                 }}
                 value={{
                   id: values.karat_id,
