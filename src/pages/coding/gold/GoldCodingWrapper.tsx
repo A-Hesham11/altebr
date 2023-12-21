@@ -215,7 +215,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
               setAddedPiecesLocal([]);
             }}
           >
-            <a href="https://alexon.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
+            <a href="http://api-almehaisen.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
               {t("go to identification management")}
             </a>
           </Button>

@@ -6,6 +6,7 @@ import { IconType } from "react-icons/lib";
 import { RiVipCrownLine } from "react-icons/ri";
 import { TbSmartHome } from "react-icons/tb";
 import { TebrLogo } from "../components/atoms/icons/TebrLogo";
+// import {sideBarLogo} from "../assets/sideBar-logo.svg";
 import { t } from "i18next";
 export type MenuItem_TP = {
   id: string
@@ -117,12 +118,13 @@ export const sideBarItems: MenuItem_TP[] = [
         icon: RiVipCrownLine,
       },
       // REACT
-      {
-        id: crypto.randomUUID(),
-        label: 'coded identities 2',
-        link: "/coding-react",
-        icon: RiVipCrownLine,
-      },
+      // الهويات المرقمة
+      // {
+      //   id: crypto.randomUUID(),
+      //   label: 'coded identities 2',
+      //   link: "/coding-react",
+      //   icon: RiVipCrownLine,
+      // },
       // REACT
       {
         id: crypto.randomUUID(),
@@ -152,6 +154,12 @@ export const sideBarItems: MenuItem_TP[] = [
         items: [
           {
             id: crypto.randomUUID(),
+            label: 'branch bonds',
+            link: "/branch-bonds",
+            icon: CiExport,
+          },
+          {
+            id: crypto.randomUUID(),
             label: 'Branches payment',
             icon: CiExport,
             items: [
@@ -169,25 +177,20 @@ export const sideBarItems: MenuItem_TP[] = [
               },
             ],
           },
-          {
-            id: crypto.randomUUID(),
-            label: 'branch bonds',
-            link: "/branch-bonds",
-            icon: CiExport,
-          },
           // REACT
-          {
-            id: crypto.randomUUID(),
-            label: 'branch bonds 2',
-            link: "/branch-bonds-react",
-            icon: CiExport,
-          },
-          {
-            id: crypto.randomUUID(),
-            label: 'return bonds 2',
-            link: "/return-bonds-react",
-            icon: CiExport,
-          },
+          // سندات الفروع
+          // {
+          //   id: crypto.randomUUID(),
+          //   label: 'branch bonds 2',
+          //   link: "/branch-bonds-react",
+          //   icon: CiExport,
+          // },
+          // {
+          //   id: crypto.randomUUID(),
+          //   label: 'return bonds 2',
+          //   link: "/return-bonds-react",
+          //   icon: CiExport,
+          // },
           // REACT
         ]
   },

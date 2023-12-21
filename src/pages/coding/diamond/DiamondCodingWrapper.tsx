@@ -224,7 +224,7 @@ export const DiamondCodingWrapper = ({
               setOpenModal(false);
             }}
           >
-            <a href="https://alexon.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
+            <a href="http://api-almehaisen.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
               {t("go to identification management")}
             </a>
           </Button>

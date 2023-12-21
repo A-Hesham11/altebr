@@ -1,24 +1,32 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, HttpStatusCode } from "axios"
-import Cookies from "js-cookie"
-import i18n from "../i18n"
+import axios, {
+  AxiosError,
+  AxiosRequestConfig,
+  AxiosResponse,
+  HttpStatusCode,
+} from "axios";
+import Cookies from "js-cookie";
+import i18n from "../i18n";
 
 const baseURL =
-  import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/"
+  import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
 
-const lang = i18n.language.startsWith("ar") ? "ar" : "en"
+const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 
 const client = axios.create({
   baseURL,
-})
+});
 
-export const request = async <T>(options: AxiosRequestConfig, pagination?: boolean): Promise<T> => {
+export const request = async <T>(
+  options: AxiosRequestConfig,
+  pagination?: boolean
+): Promise<T> => {
   const token = Cookies.get("token");
 
   const onSuccess = (response: AxiosResponse) => {
     if (pagination) {
-      return response.data
+      return response.data;
     } else {
-      return response.data.data
+      return response.data.data;
     }
   };
 

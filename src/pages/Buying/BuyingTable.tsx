@@ -51,12 +51,6 @@ export const BuyingTable = ({
   const { userData } = useContext(authCtx);
   // console.log("🚀 ~ file: BuyingTable.tsx:45 ~ userData:", userData);
   const [data, setData] = useState("");
-  const [targetTax, setTargetTax] = useState();
-  const [selectedToFilterTaxes, setSelectedToFilterTaxes] = useState();
-  console.log("🚀 ~ file: BuyingTable.tsx:56 ~ selectedToFilterTaxes:", selectedToFilterTaxes)
-  const [foundedTax, setFoundedTax] = useState(null);
-  console.log("🚀 ~ file: BuyingTable.tsx:58 ~ foundedTax:", foundedTax)
-
 
   // CASH VALUE API
   const { data: maxingUser } = useFetch({
@@ -190,21 +184,6 @@ export const BuyingTable = ({
     });
   };
 
-  useEffect(() => {
-    const foundTax = taxes?.find(item => {
-      return (item.karat_name === "" && item.karat_name !== selectedToFilterTaxes?.karat_name && item.category_id === null && item.category_id !== selectedToFilterTaxes?.category_id) ||
-      (item.karat_name !== "" && item.karat_name === selectedToFilterTaxes?.karat_name && item.category_id !== null  && item.category_id === selectedToFilterTaxes?.category_id) ||
-      (item.karat_name === "" && item.karat_name !== selectedToFilterTaxes?.karat_name && item.category_id !== null  && item.category_id === selectedToFilterTaxes?.category_id) ||
-      (item.karat_name !== "" && item.karat_name === selectedToFilterTaxes?.karat_name && item.category_id === null &&   item.category_id !== selectedToFilterTaxes?.category_id) 
-    });
-
-    if (foundTax) {
-      setFoundedTax(foundTax);
-    } else {
-      setFoundedTax(null);
-    }
-  }, [selectedToFilterTaxes, taxes])
-
   return (
     <>
       <table className="mt-8 ">
@@ -289,10 +268,6 @@ export const BuyingTable = ({
                     goldPrice[option.value].toFixed(2)
                   );
 
-                  // let targetTax = taxes?.find(
-                  //   (tax) => tax?.category_id == values.category_id
-                  // );
-
                   const totalValues =
                     +goldPrice[option.value].toFixed(2) * +values?.weight;
                   const priceWithCommissionRate =
@@ -306,91 +281,18 @@ export const BuyingTable = ({
 
                   setFieldValue("value", +priceWithSellingPolicy);
 
-                  setSelectedToFilterTaxes({karat_name:option?.value, category_id:values?.category_id}) 
+                  const foundedTax = taxes?.find(item => {
+                    return (
+                      (item.karat_name === "" && item.karat_name !== option?.value && item.category_id === null && item.category_id !== values?.category_id) ||
+                      (item.karat_name !== "" && item.karat_name === option?.value && item.category_id !== null  && item.category_id === values?.category_id) ||
+                      (item.karat_name === "" && item.karat_name !== option?.value && item.category_id !== null  && item.category_id === values?.category_id) ||
+                      (item.karat_name !== "" && item.karat_name === option?.value && item.category_id === null &&   item.category_id !== values?.category_id)
+                    );
+                  });     
 
                   setFieldValue("value_added_tax", +priceWithSellingPolicy * +foundedTax?.tax_rate * 0.01);
                   setFieldValue("total_value", +priceWithSellingPolicy * +foundedTax?.tax_rate * 0.01 + +priceWithSellingPolicy);                  
 
-                  // if (option!.value == 24 && +targetTax?.karat_name != 24) {
-                  //   setFieldValue(
-                  //     "value_added_tax",
-                  //     +priceWithSellingPolicy * 0
-                  //   );
-                  // } else {
-                  //   if (!targetTax) {
-                  //     setFieldValue(
-                  //       "value_added_tax",
-                  //       +priceWithSellingPolicy * +defaultTax * 0.01
-                  //     );
-
-                  //     setFieldValue(
-                  //       "total_value",
-                  //       +priceWithSellingPolicy * +defaultTax * 0.01 +
-                  //         +priceWithSellingPolicy
-                  //     );
-                  //   }
-
-                  //   if (
-                  //     targetTax?.category_id == values.category_id &&
-                  //     targetTax?.karat_name == ""
-                  //   ) {
-                  //     console.log(
-                  //       "same category, not same karat ----------------------"
-                  //     );
-                  //     setFieldValue(
-                  //       "value_added_tax",
-                  //       +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01
-                  //     );
-
-                  //     setFieldValue(
-                  //       "total_value",
-                  //       +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01 +
-                  //         +priceWithSellingPolicy
-                  //     );
-                  //   }
-
-                  //   if (option!.value == 24 && +targetTax?.karat_name == 24) {
-                  //     setFieldValue(
-                  //       "value_added_tax",
-                  //       +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01
-                  //     );
-                  //     setFieldValue(
-                  //       "total_value",
-                  //       +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01 +
-                  //         +priceWithSellingPolicy
-                  //     );
-                  //   }
-
-                  //   if (
-                  //     targetTax?.category_id == values.category_id &&
-                  //     option!.value == targetTax?.karat_name
-                  //   ) {
-                  //     setFieldValue(
-                  //       "value_added_tax",
-                  //       +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01
-                  //     );
-                  //     setFieldValue(
-                  //       "total_value",
-                  //       +priceWithSellingPolicy * +targetTax?.tax_rate * 0.01 +
-                  //         +priceWithSellingPolicy
-                  //     );
-                  //   }
-
-                  //   if (
-                  //     targetTax?.category_id == values.category_id &&
-                  //     option!.value != targetTax?.karat_name
-                  //   ) {
-                  //     setFieldValue(
-                  //       "value_added_tax",
-                  //       +priceWithSellingPolicy * +defaultTax * 0.01
-                  //     );
-                  //     setFieldValue(
-                  //       "total_value",
-                  //       +priceWithSellingPolicy * +defaultTax * 0.01 +
-                  //         +priceWithSellingPolicy
-                  //     );
-                  //   }
-                  // }
                 }}
                 value={{
                   id: values.karat_id,
