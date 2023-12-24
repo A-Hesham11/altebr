@@ -197,10 +197,10 @@ input::placeholder {
 nav > .css-ewdv3l > .ps-menuitem-root:first-child {
   padding-bottom: 39px;
   padding-top: 6px !important;
-  padding-left: 30px;
-  padding-right: 30px;
-
+  /* padding-left: 30px;
+  padding-right: 30px; */
 }
+
 .selling {
   background: url("/src/assets/salesbg.png");
   background-position: center;
@@ -390,7 +390,8 @@ input[type="file"] {
 .css-168ta8j >.ps-menu-button:hover  {
   background-color: #497670 !important;
 } */
-li > .ps-menu-button:hover {
+
+/* li > .ps-menu-button:hover {
   background-color: #497670 !important;
 }
 
@@ -404,7 +405,7 @@ li > .ps-menu-button:hover {
   height: 56px;
   border-bottom: 1px solid #FFFFFF33;
   padding-bottom: 4px;
-}
+} */
 
 
 
