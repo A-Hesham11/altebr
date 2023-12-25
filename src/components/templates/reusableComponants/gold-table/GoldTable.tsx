@@ -51,7 +51,6 @@ export function GoldTable({
   formValues,
   setBoxValues,
 }: OTableProps_TP) {
-  console.log("🚀 ~ file: GoldTable.tsx:54 ~ data:", data)
   // states
   const [editRow, setEditRow] = useState(false)
   const [categoriesOptions, setCategoriesOptions] = useState([])
@@ -92,7 +91,6 @@ export function GoldTable({
       <Formik
         initialValues={defaultValues}
         onSubmit={(values, { resetForm, setFieldValue }) => {
-          console.log("🚀 ~ file: GoldTable.tsx:94 ~ values:", values)
           const uniqueID = crypto.randomUUID() // because i need the same id for both data of row and boxes
           setData((prev) => [...Array.from(prev), { ...values, id: uniqueID }])
           setEditRow(false)

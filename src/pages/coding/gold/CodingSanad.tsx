@@ -43,7 +43,6 @@ export const CodingSanad = ({
   setSelectedSanad,
   isSuccess
 }: CodingSanadProps_TP) => {
-  console.log("🚀 ~ file: CodingSanad.tsx:46 ~ addedPieces:", addedPieces)
 
   /////////// VARIABLES
   ///
@@ -73,8 +72,6 @@ export const CodingSanad = ({
   >();
 
   const [activeBand, setActiveBand] = useState<GoldSanadBand_TP | undefined>();
-  console.log("🚀 ~ file: CodingSanad.tsx:76 ~ activeBand:", activeBand) 
-
 
   ///
   /////////// SIDE EFFECTS
@@ -108,7 +105,6 @@ export const CodingSanad = ({
   const updateBandWithNewWeight = (
     values: GoldCodingSanad_initialValues_TP
   ) => {
-    console.log("🚀 ~ file: CodingSanad.tsx:111 ~ values:", values)
     if (activeBand) {
       const newBand = () => {
         if (stones.some((stone) => stone.stone_type === "not_added")) {
@@ -119,9 +115,6 @@ export const CodingSanad = ({
             (acc, curr) => acc + +curr.weight,
             0
           );
-
-          const frontKeyTwred = selectedSanad?.items?.filter((item) => item.id !== addedPieces?.map((item) => item.band_id))
-          console.log("🚀 ~ file: CodingSanad.tsx:124 ~ newBand ~ frontKeyTwred:", frontKeyTwred)
 
           setAddedPieces((curr) => [
             ...curr,
@@ -140,10 +133,6 @@ export const CodingSanad = ({
               front_key_twred:activeBand.front_key_twred
           };
         } else {
-          const xx = addedPieces?.map((item) => item)
-          console.log("🚀 ~ file: CodingSanad.tsx:144 ~ newBand ~ xx:", xx)
-          const frontKeyTwred = selectedSanad?.items?.filter((item) => item.id === xx )
-          console.log("🚀 ~ file: CodingSanad.tsx:124 ~ newBand ~ frontKeyTwred:", frontKeyTwred)
 
           setAddedPieces((curr) => [
             ...curr,
@@ -164,7 +153,6 @@ export const CodingSanad = ({
       };
 
       const theBand: GoldSanadBand_TP = newBand();
-      console.log("🚀 ~ file: CodingSanad.tsx:155 ~ theBand:", theBand)
       setActiveBand(theBand);
 
       setSelectedSanad((curr) => ({
@@ -181,7 +169,6 @@ export const CodingSanad = ({
   };
 
   function finalSubmit(values: GoldCodingSanad_initialValues_TP) {
-    console.log("🚀 ~ file: CodingSanad.tsx:172 ~ finalSubmit ~ values:", values)
     if (!isAbleToCodeMore()) return;
 
     updateBandWithNewWeight(values);
@@ -205,7 +192,6 @@ export const CodingSanad = ({
             validationSchema={codingSanad_schema}
             initialValues={codingSanad_initialValues}
             onSubmit={(values) => {
-              console.log("🚀 ~ file: CodingSanad.tsx:194 ~ values:", values)
               const  weightitemsDetails = activeBand?.category?.items?.map(category=>({
                 category_id : category.id,
                 weight:0
@@ -231,7 +217,6 @@ export const CodingSanad = ({
                 front_key_twred,
                 ...baseValues
               } = values;
-              console.log("🚀 ~ file: CodingSanad.tsx:218 ~ values:", values)
 
               if (values.has_stones && !!stones?.length) {
                 baseValues = { ...baseValues, stones };
@@ -246,9 +231,6 @@ export const CodingSanad = ({
                   front_key_twred: values.front_key_twred,
                 };
 
-                console.log("🚀 ~ file: CodingSanad.tsx:251 ~ vals:", vals)
-
-
                 finalSubmit(vals);
                 return;
               }
@@ -261,7 +243,6 @@ export const CodingSanad = ({
                     weightitems: values.weightitems,
                   } :{ weightitems: weightitemsDetails}),
                 };
-                console.log("🚀 ~ file: CodingSanad.tsx:237 ~ vals:", vals)
 
                 finalSubmit(vals);
                 return;

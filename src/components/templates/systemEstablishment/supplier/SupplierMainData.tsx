@@ -44,6 +44,7 @@ export const SupplierMainData = ({
   restData,
   setDocsFormValues,
   docsFormValues,
+  setSupplierType
 }: SupplierMainDataProps_TP) => {
   /////////// VARIABLES
   /////
@@ -99,6 +100,7 @@ export const SupplierMainData = ({
     }
   }, [values.type])
   ///
+
   return (
     <>
       <OuterFormLayout
@@ -113,7 +115,7 @@ export const SupplierMainData = ({
           <div className="col-span-4 flex justify-between">
             <div className="flex gap-3 items-center">
               <span className="font-bold">{t("supplier type")}:</span>
-              <RadioGroup name="type">
+              <RadioGroup name="type" onChange={(value) => setSupplierType(value)}>
                 <div className="flex gap-3">
                   <RadioGroup.RadioButton
                     value="local"

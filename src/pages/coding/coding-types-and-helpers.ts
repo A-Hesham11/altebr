@@ -42,6 +42,7 @@ export type DiamondCodingSanad_initialValues_TP = {
   wage: number
   media: []
   has_stones: boolean
+  front_key_twred?: string
   details: string
   size_type?: string
   size_unit_id?: string
@@ -94,6 +95,7 @@ export const codingDiamondSanad_initialValues: DiamondCodingSanad_initialValues_
     selling_price: "",
     mineral_id: "",
     cost_item: "",
+    front_key_twred: "",
     conversion_factor: "" || 1,
     masarif_adafia: "" || 0,
     cost: "",

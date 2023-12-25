@@ -60,6 +60,7 @@ export const GoldItemCodingForm = ({
   setActiveBand,
   setEditWage
 }: ItemCodingFormProps_TP) => {
+  console.log("🚀 ~ file: GoldItemCodingForm.tsx:63 ~ activeBand:", activeBand)
   /////////// VARIABLES
   ///
   // const selectedBandLeftWeight =  selectedSanad.items.find((item)=>item?.number === activeBand?.number)?.leftWeight

@@ -65,20 +65,16 @@ export const GoldCodingSanadFormHandler = ({
   setStage,
   activeBand,
   setActiveBand,
-  isSuccess
 }: GoldCodingSanadFormHandlerProps_TP) => {
-  console.log("🚀 ~ file: GoldCodingSanadFormHandler.tsx:70 ~ selectedSanad:", selectedSanad)
 
   /////////// VARIABLES
   ///
   const { sanadId } = useParams()
-  console.log("🚀 ~ file: GoldCodingSanadFormHandler.tsx:74 ~ sanadId:", sanadId)
 
   const [editWage, setEditWage] = useState("")
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
   useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
-  console.log("🚀 ~ file: GoldCodingSanadFormHandler.tsx:79 ~ selectedSanadLocal:", selectedSanadLocal)
   
   const totalLeftWeight = selectedSanad?.items?.map(item => item?.leftWeight)?.reduce((acc, curr) => {
     return acc + curr
