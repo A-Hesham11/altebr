@@ -1,11 +1,12 @@
 import { t } from "i18next";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Box_TP } from "../../supply/Bond";
 import { Button } from "../../../components/atoms";
 import { useFetch } from "../../../hooks";
+import { notify } from "../../../utils/toast";
 
 type TableRow_TP = {
   itemType: string;
@@ -58,45 +59,21 @@ type Entry_TP = {
   creditor_SRA: number;
 };
 
-const TableOfReturnBondsModal = ({ item }: { item?: {} }) => {
+const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
+  console.log(
+    "🚀 ~ file: TableOfReturnBondsModal.tsx:62 ~ TableOfReturnBondsModal ~ item:",
+    item
+  );
 
   const { formatGram, formatReyal } = numberContext();
+  // const [endpointApi, setEndpointApi] = useState("");
+  const [test, setTest] = useState(false);
 
-//   const {
-//     data: test,
-//     isLoading: contractIsLoading,
-//     isFetching: contractIsFetching,
-//     isSuccess: contractIsSuccess,
-//     isError: isContractError
-// } = useFetch({
-//     endpoint: `/identity/api/v1/accept/${item?.id}`,
-//     queryKey: ['entry-accounting'],
-//     pagination: true,
-//     // select: (contract: any) => { b 
-//     //     return {
-//     //         boxes: contract.data.map(box => {
-//     //             return {
-//     //                 id: box.id,
-//     //                 account: box.account,
-//     //                 value: box.value,
-//     //                 unit_id: box.unit_id,
-//     //                 computational_movement: box.computational_movement
-//     //             }
-//     //         }),
-//     //         allboxes: contract.data[0].allboxes,
-//     //         items: contract.data[0].items,
-//     //         images: contract.data[0].images
-//     //     }
-//     // },
-//     // onSuccess(data) {
-//     //     setDataSource(data.items)
-//     // },
-//     // onError(data) {
-//     //     notify('info', `${t('bond has been rejected')}`)
-//     // },
-// })
-
-
+  const { data: entryAccounting } = useFetch({
+    endpoint: `/identity/api/v1/accept/${item?.id}`,
+    queryKey: ["entry-accounting"],
+    enabled: test,
+  });
 
   // COLUMNS FOR THE TABLE OF DETAILS BOND DETAILS
   const tableColumn = useMemo<any>(
@@ -201,24 +178,27 @@ const TableOfReturnBondsModal = ({ item }: { item?: {} }) => {
   );
 
   // group by account
-  const restrictionsWithoutTotals = restrictions?.reduce((prev, curr) => {
-    const index = prev.findIndex((item) => item.bian === curr.bian);
-    if (index === -1) {
-      prev.push(curr);
-    } else {
-      prev[index].debtor_gram += curr.debtor_gram;
-      prev[index].debtor_SRA += curr.debtor_SRA;
-      prev[index].creditor_gram += curr.creditor_gram;
-      prev[index].creditor_SRA += curr.creditor_SRA;
-    }
-    return prev;
-  }, [] as typeof restrictions);
+  const restrictionsWithoutTotals = restrictions?.reduce(
+    (prev: any, curr: any) => {
+      const index = prev.findIndex((item) => item.bian === curr.bian);
+      if (index === -1) {
+        prev.push(curr);
+      } else {
+        prev[index].debtor_gram += curr.debtor_gram;
+        prev[index].debtor_SRA += curr.debtor_SRA;
+        prev[index].creditor_gram += curr.creditor_gram;
+        prev[index].creditor_SRA += curr.creditor_SRA;
+      }
+      return prev;
+    },
+    [] as typeof restrictions
+  );
 
   restrictions = restrictionsWithoutTotals;
 
   let restrictionsTotals;
   if (restrictions && !!restrictions.length) {
-    restrictionsTotals = restrictions?.reduce((prev, curr) => ({
+    restrictionsTotals = restrictions?.reduce((prev: any, curr: any) => ({
       bian: `${t("totals")}`,
       debtor_gram: prev.debtor_gram + curr.debtor_gram,
       debtor_SRA: prev.debtor_SRA + curr.debtor_SRA,
@@ -285,9 +265,12 @@ const TableOfReturnBondsModal = ({ item }: { item?: {} }) => {
           <Table data={restrictions} footered columns={cols2} />
         </div>
       ) : (
-        <Button action={() => { 
-                                                                                                                                                                                                               
-        }} className="bg-mainGreen text-white w-max mx-auto mt-8">       
+        <Button
+          action={() => {
+            setTest(true);
+          }}
+          className="bg-mainGreen text-white w-max mx-auto mt-8"
+        >
           {t("recieve pieces")}
         </Button>
       )}
