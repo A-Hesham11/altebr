@@ -38,9 +38,6 @@ export const SupplyFinalForm = ({
   setFormValues,
   finalData,
 }: GoldSupplyFinalFormProps_TP) => {
-  console.log("🚀 ~ file: SupplyFinalForm.tsx:41 ~ supply:", supply)
-  console.log("🚀 ~ file: SupplyFinalForm.tsx:41 ~ formValues:", formValues)
-  console.log("🚀 ~ file: SupplyFinalForm.tsx:41 ~ finalData:", finalData)
   /////////// VARIABLES
   ///
   const { formatGram, formatReyal } = numberContext()
@@ -521,7 +518,6 @@ export const SupplyFinalForm = ({
       classification: supply == 'gold' ? "gold" : supply == 'diamond' ? "diamond" : "accessory",
       bond: formValues?.twred_type === "global" ? { ...globalBond, factorial: formValues?.factorial || 1, classification: supply == 'gold' ? "gold" : supply == 'diamond' ? "diamond" : "accessory", } : { ...localBond, factorial: formValues?.factorial || 1, classification: supply == 'gold' ? "gold" : supply == 'diamond' ? "diamond" : "accessory" },
       items: finalData?.table.map((item) => {
-      console.log("🚀 ~ file: SupplyFinalForm.tsx:564 ~ items:finalData?.table.map ~ item:", item) 
 
         return supply == 'gold' ? {
           number: item.number,
@@ -546,6 +542,7 @@ export const SupplyFinalForm = ({
           diamond_stone_weight: item.diamond_stone_weight,
           other_stones_weight: item.other_stones_weight,
           diamond_tax: item.diamond_tax,
+          front_key_twred : item.id,
           diamond_value_ryal: item.diamond_value * factorialValue,
           classification: 'diamond'
         } : {
@@ -560,6 +557,7 @@ export const SupplyFinalForm = ({
           accessory_tax: item.accessory_tax,
           accessory_number: item.accessory_amount,
           accessory_weight: item.accessory_weight,
+          front_key_twred : item.id,
           accessory_value_ryal: item.accessory_value * factorialValue,
           classification: 'accessories'
         }
@@ -569,7 +567,6 @@ export const SupplyFinalForm = ({
         ? [...formValues?.media, ...formValues?.goods_media]
         : formValues?.media,
     }
-    console.log("🚀 ~ file: SupplyFinalForm.tsx:569 ~ sendForm ~ sendData:", sendData) 
 
     mutate({
       endpointName: supply == 'gold'

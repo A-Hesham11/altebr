@@ -43,7 +43,6 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   const [addedPieces, setAddedPieces] = useState<
     GoldCodingSanad_initialValues_TP[]
   >(addedPiecesLocal || []);
-  console.log("🚀 ~ file: GoldCodingWrapper.tsx:44 ~ GoldCodingWrapper ~ addedPieces:", addedPieces)
 
 
   const { mutate, error, mutateAsync, isLoading, isSuccess } =
@@ -79,15 +78,12 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   const sendPieces = async (pieces: GoldCodingSanad_initialValues_TP[]) => {
-    console.log("🚀 ~ file: GoldCodingWrapper.tsx:82 ~ sendPieces ~ pieces:", pieces)
     if (pieces.length === 0) {
       return;
     }
 
-    console.log("🚀 ~ file: GoldCodingWrapper.tsx:87 ~ sendPieces ~ pieces:", pieces)
     const [piece, ...remainingPieces] = pieces;
     
-    console.log("🚀 ~ file: GoldCodingWrapper.tsx:85 ~ sendPieces ~ piece:", piece)
     try {
       const result = await mutateAsync({
         endpointName: "tarqimGold/api/v1/tarqim_gold",
@@ -187,7 +183,6 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
             </Button>
             <Button loading={isLoading} action={() => {
               sendPieces(addedPieces)
-              console.log("🚀 ~ file: GoldCodingWrapper.tsx:211 ~ GoldCodingWrapper ~ addedPieces:", "dkmvd,ll")
 
               }}>
               ارسال

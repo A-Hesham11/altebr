@@ -107,7 +107,8 @@ export const SupplySecondForm = ({
         other_stones_weight: editData.other_stones_weight || '',
         diamond_tax: editData.diamond_tax || '',
         karat_value: '',
-        category_value: ''
+        category_value: '',
+        front_key_twred:''
     } :
     {
         id: crypto.randomUUID(),
@@ -125,7 +126,8 @@ export const SupplySecondForm = ({
         other_stones_weight: editData.other_stones_weight || '',
         accessory_tax: editData.accessory_tax || '',
         karat_value: '',
-        category_value: ''
+        category_value: '',
+        front_key_twred:''
     }
     const karat_24_values = boxValues.filter(item => item.karat_value === '24')
     const karat_22_values = boxValues.filter(item => item.karat_value === '22')

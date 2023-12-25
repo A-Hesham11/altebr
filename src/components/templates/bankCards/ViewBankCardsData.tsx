@@ -63,12 +63,12 @@ const ViewBankCardsData = () => {
       },
       {
         header: () => <span>{t("card name")} </span>,
-        accessorKey: "name_ar",
+        accessorKey: isRTL ? "name_ar" : "name_en",
         cell: (info) => info.getValue(),
       },
       {
         header: () => <span>{t("bank name")} </span>,
-        accessorKey: "bank",
+        accessorKey: "bank_name",
         cell: (info) => info.getValue(),
       },
       {

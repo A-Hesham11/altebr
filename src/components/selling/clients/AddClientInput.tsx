@@ -17,6 +17,7 @@ const AddClientInputs = ({editClientsData, showClientsData, initialValues, dataS
     const { setFieldValue, values, resetForm } = useFormikContext();
 
     const {userData} = useContext(authCtx)
+    console.log("🚀 ~ file: AddClientInput.tsx:20 ~ AddClientInputs ~ userData:", userData)
 
     useEffect(() => {
         resetForm()

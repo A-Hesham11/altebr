@@ -70,14 +70,11 @@ const AddBankCardsData = ({
 
   const cardsValidatingSchema = () =>
     Yup.object({
-      discount_percentage: Yup.string().trim().required(requiredTranslation),
-      bank_account: Yup.string().trim().trim().required(requiredTranslation),
-      commission_rate: Yup.string().trim().required(requiredTranslation),
       bank_id: Yup.string().trim().required(requiredTranslation),
+      bank_account_id: Yup.string().trim().trim().required(requiredTranslation),
       company_name: Yup.string().trim().required(requiredTranslation),
-      bank_account_id: Yup.string().trim().required(requiredTranslation),
       branch_id: Yup.string().trim().required(requiredTranslation),
-      // media: Yup.string(),
+      discount_percentage: Yup.string().trim().required(requiredTranslation),
     });
 
   const initialValues = {
@@ -93,6 +90,7 @@ const AddBankCardsData = ({
   };
 
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
+  console.log("🚀 ~ file: AddBankCardsData.tsx:96 ~ dataSource:", dataSource)
 
   const {
     data,
@@ -120,6 +118,7 @@ const AddBankCardsData = ({
       };
     },
   });
+    console.log("🚀 ~ file: AddBankCardsData.tsx:124 ~ data:", data)
 
   function PostNewCard(values: bankCardsProps_TP) {
     mutate({
@@ -178,6 +177,9 @@ const AddBankCardsData = ({
     },
   });
 
+  if (dataSource?.length === 0 && isFetching)
+    return <Loading mainTitle={t("جاري التحميل")} />;
+
   return (
     <div>
       <>
@@ -186,33 +188,32 @@ const AddBankCardsData = ({
             validationSchema={() => cardsValidatingSchema()}
             initialValues={initialValues}
             onSubmit={(values, { resetForm }) => {
+            console.log("🚀 ~ file: AddBankCardsData.tsx:191 ~ values:", values)
  
               if (cardId === "") notify("info", "please select a card");
 
-              // if (editData) {
-              //   PostCardEdit({
-              //     ...values,
-              //     card_id: cardId,
-              //     discount_percentage: values.discount_percentage / 100,
-              //   });
-              // } else {
-              //   PostNewCard({
-              //     ...values,
-              //     card_id: cardId,
-              //     discount_percentage: values.discount_percentage / 100,
-              //   });
-              // }
+              if (editData) {
+                PostCardEdit({
+                  ...values,
+                  card_id: cardId,
+                  discount_percentage: values.discount_percentage / 100,
+                });
+              } else {
+                PostNewCard({
+                  ...values,
+                  card_id: cardId,
+                  discount_percentage: values.discount_percentage / 100,
+                });
+              }
             }}
           >
             {({ values, setFieldValue, resetForm }) => (
               <Form>
-                {isSuccess && !isLoading && dataSource?.length ? (
+                {!isFetching && isSuccess && dataSource?.length !== 0 ? (
                   <>
                     <PaymentCard
-                      // onSelectCard={handleCardSelection}
                       selectedCardId={selectedCardId}
                       setSelectedCardId={setSelectedCardId}
-                      // setCardDataSelect={setCardDataSelect}
                       editData={editData}
                       setCardId={setCardId}
                       fetchShowMainCards
@@ -228,8 +229,6 @@ const AddBankCardsData = ({
                           }}
                           newValue={newValue}
                           setNewValue={setNewValue}
-                          // setBankId={setBankId}
-                          // bankId={newValue?.id}
                         />
                       </div>
                       <div>
@@ -243,26 +242,6 @@ const AddBankCardsData = ({
                           setAccountNumberId={setAccountNumberId}
                         />
                       </div>
-                      {/* <div>
-                                    <BaseInputField
-                                      id="card_new_name"
-                                      name="card_new_name"
-                                      type="text"
-                                      label={`${t('card name arabic')}`}
-                                      placeholder={`${t("card name arabic")}`}
-                                      value={newCardName}
-                                    />
-                                </div> */}
-                      {/* <div>
-                                  <SelectBanksAccount 
-                                    name="bank_id"
-                                    editData={{
-                                        bank_id: editData?.bank_name,
-                                        bank_name: editData?.bank_name,
-                                    }}
-                                  />
-                                </div> */}
-
                       <div>
                         <BaseInputField
                           id="company_name"
@@ -302,18 +281,6 @@ const AddBankCardsData = ({
                           }}
                         />
                       </div>
-                      {/* <div>
-                                    <BaseInputField
-                                      id="commission_rate"
-                                      name="commission_rate"
-                                      type="number"
-                                      label={`${t('commission rate')}`}
-                                      placeholder={`${t("commission rate")}`}
-                                      onChange={(e) => {
-                                          setFieldValue("commission riyals", values.commission_rate)
-                                      }}
-                                    />
-                                </div> */}
                     </div>
                     <div className="flex justify-end">
                       <Button
@@ -326,8 +293,10 @@ const AddBankCardsData = ({
                     </div>
                   </>
                 ) : (
-                  <Loading mainTitle={t("جاري التحميل")} />
-                )}
+                  <p className="text-center font-medium text-lg my-5">{t("The type of cards must be defined first")}</p>
+                ) 
+                }
+                {/* {dataSource.lenght === 0 && "fffff"} */}
               </Form>
             )}
           </Formik>

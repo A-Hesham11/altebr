@@ -1,28 +1,22 @@
 import { ColumnDef } from '@tanstack/react-table'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useFetch, useIsRTL, useMutate } from '../../../hooks'
-import { useNavigate } from 'react-router-dom'
 import { CImageFile_TP } from '../../../types'
 import { notify } from '../../../utils/toast'
 import { mutateData } from '../../../utils/mutateData'
 import { useQueryClient } from '@tanstack/react-query'
-import { Helmet } from 'react-helmet-async'
 import { Table } from '../reusableComponants/tantable/Table'
 import { t } from 'i18next'
 import { Button } from '../../atoms'
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
-import { EditIcon, ViewIcon, ViewSvgIcon } from '../../atoms/icons'
+import { EditIcon } from '../../atoms/icons'
 import { SvgDelete } from '../../atoms/icons/SvgDelete'
 import { AddButton } from '../../molecules/AddButton'
 import { Back } from '../../../utils/utils-components/Back'
 import { Modal } from '../../molecules'
 import { Header } from '../../atoms/Header'
 import { Loading } from '../../organisms/Loading'
-import { CLightbox } from '../../molecules/files/CLightbox'
-import { FilesUpload } from '../../molecules/files/FileUpload'
-import { FilesPreviewOutFormik } from '../../molecules/files/FilesPreviewOutFormik'
 import AddAccountsBank from './AddAccountsBank'
-import { authCtx } from '../../../context/auth-and-perm/auth'
 
 export type Cards_Props_TP = {
   title:string
@@ -33,18 +27,14 @@ export type Cards_Props_TP = {
   market_number: string
   name_ar: string
   name_en: string
-
   number: string
   phone: string
   files: CImageFile_TP[]
-
-
 }
 
 const ViewAccountsBank = () => {
 
   const isRTL = useIsRTL()
-  const navigate = useNavigate()
   const [open, setOpen] = useState<boolean>(false)
   const [model, setModel] = useState(false)
   const [action, setAction] = useState({
@@ -56,9 +46,6 @@ const ViewAccountsBank = () => {
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
   const [page, setPage] = useState<number>(1)
-  const [files, setFiles] = useState([]);
-  const {userData} = useContext(authCtx)
-
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
@@ -69,7 +56,7 @@ const ViewAccountsBank = () => {
       },
       {
         header: () => <span>{t("bank name")} </span>,
-        accessorKey: "bank_name",
+        accessorKey: isRTL ? "name_ar" : "name_en",
         cell: (info) => info.getValue(),
       },
       {
@@ -147,7 +134,7 @@ const ViewAccountsBank = () => {
     []
   )
 
-  const { data, isSuccess, isLoading, isError, error, isRefetching, refetch, isFetching } =
+  const { data, isSuccess, isLoading, isRefetching, refetch, isFetching } =
   useFetch<Cards_Props_TP[]>({
     endpoint:`/selling/api/v1/bank_accounts`,
     queryKey: ["all-banksAccounts"],
@@ -165,10 +152,6 @@ const ViewAccountsBank = () => {
       }
     },
   })
-
-  // useEffect(() => {
-  //   refetch()
-  // }, [page])
 
   const queryClient = useQueryClient()
   const {
@@ -263,15 +246,6 @@ const ViewAccountsBank = () => {
             </div>
         )
       }
-
-        {/* {!isLoading &&
-          !isRefetching &&
-          !dataSource?.length && (
-            <div>
-              <p>{t("there is no available cards yet")}</p>
-              kmk
-            </div>
-        )} */}
 
       <Modal isOpen={open} onClose={() => setOpen(false)}>
         {action.edit && (
