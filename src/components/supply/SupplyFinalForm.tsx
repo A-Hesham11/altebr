@@ -38,6 +38,9 @@ export const SupplyFinalForm = ({
   setFormValues,
   finalData,
 }: GoldSupplyFinalFormProps_TP) => {
+  console.log("🚀 ~ file: SupplyFinalForm.tsx:41 ~ supply:", supply)
+  console.log("🚀 ~ file: SupplyFinalForm.tsx:41 ~ formValues:", formValues)
+  console.log("🚀 ~ file: SupplyFinalForm.tsx:41 ~ finalData:", finalData)
   /////////// VARIABLES
   ///
   const { formatGram, formatReyal } = numberContext()
@@ -518,6 +521,8 @@ export const SupplyFinalForm = ({
       classification: supply == 'gold' ? "gold" : supply == 'diamond' ? "diamond" : "accessory",
       bond: formValues?.twred_type === "global" ? { ...globalBond, factorial: formValues?.factorial || 1, classification: supply == 'gold' ? "gold" : supply == 'diamond' ? "diamond" : "accessory", } : { ...localBond, factorial: formValues?.factorial || 1, classification: supply == 'gold' ? "gold" : supply == 'diamond' ? "diamond" : "accessory" },
       items: finalData?.table.map((item) => {
+      console.log("🚀 ~ file: SupplyFinalForm.tsx:564 ~ items:finalData?.table.map ~ item:", item) 
+
         return supply == 'gold' ? {
           number: item.number,
           category_id: item.category_id,
@@ -528,6 +533,7 @@ export const SupplyFinalForm = ({
           total_wage: item.total_wages,
           wage_tax: item.wage_tax,
           gold_tax: item.gold_tax,
+          front_key_twred : item.id,
         } : supply == 'diamond' ? {
           number: item.number,
           category_id: item.category_id,
@@ -563,6 +569,7 @@ export const SupplyFinalForm = ({
         ? [...formValues?.media, ...formValues?.goods_media]
         : formValues?.media,
     }
+    console.log("🚀 ~ file: SupplyFinalForm.tsx:569 ~ sendForm ~ sendData:", sendData) 
 
     mutate({
       endpointName: supply == 'gold'

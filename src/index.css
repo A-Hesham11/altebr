@@ -123,20 +123,26 @@ input::placeholder {
   bottom: 0;
   min-width: 100%;
   min-height: 100%;
+  object-fit: cover;
 }
 
 .content {
   background-color: rgba(255, 255, 255, 0.6);
   position: fixed;
   top: 25%;
-  /* color: #f1f1f1; */
-  /* padding: 50px 100px; */
-  /* border: 1px solid white; */
   width: 350px;
   height: 460px;
   border-radius: 5px;
   padding: 20px 15px;
 }
+
+/* .content {
+  position: fixed;
+  width: 475px;
+  height: 80%;
+  border-radius: 5px;
+  padding: 20px 15px;
+} */
 
 @media (max-width: 469px) {
   .content {
@@ -148,6 +154,12 @@ input::placeholder {
 }
 .content input[name="email"] {
   color: black;
+}
+
+.content input[type="password"]::-ms-reveal,
+.content input[type="password"]::-webkit-contacts-auto-fill-button,
+.content input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
 }
 .css-b62m3t-container {
   position: relative;
@@ -184,8 +196,11 @@ input::placeholder {
 }
 nav > .css-ewdv3l > .ps-menuitem-root:first-child {
   padding-bottom: 39px;
-  padding-top: 4px !important;
+  padding-top: 6px !important;
+  /* padding-left: 30px;
+  padding-right: 30px; */
 }
+
 .selling {
   background: url("/src/assets/salesbg.png");
   background-position: center;
@@ -364,6 +379,35 @@ input[type="file"] {
     transform: translate(0);
   }
 }
+
+/* .css-1cbmtsf > .ps-menu-button:hover,
+.css-8dyhm6 >.ps-menu-button:hover,
+.css-1ytr39x >.ps-menu-button:hover,
+.css-1fsp9zp >.ps-menu-button:hover,
+.css-jxcfqw >.ps-menu-button:hover,
+.css-fxmqcg >.ps-menu-button:hover,
+.css-1huh6rg >.ps-menu-button:hover,
+.css-168ta8j >.ps-menu-button:hover  {
+  background-color: #497670 !important;
+} */
+
+/* li > .ps-menu-button:hover {
+  background-color: #497670 !important;
+}
+
+.css-1ytr39x:first-child >.ps-menu-button:hover {
+  background-color: transparent !important;
+}
+
+.css-1ytr39x:first-child >.ps-menu-button {
+  display: grid;
+  place-content: center;
+  height: 56px;
+  border-bottom: 1px solid #FFFFFF33;
+  padding-bottom: 4px;
+} */
+
+
 
 /* GLOBAL ANIMATION */
 

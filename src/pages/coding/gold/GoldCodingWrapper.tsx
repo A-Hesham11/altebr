@@ -43,6 +43,8 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   const [addedPieces, setAddedPieces] = useState<
     GoldCodingSanad_initialValues_TP[]
   >(addedPiecesLocal || []);
+  console.log("🚀 ~ file: GoldCodingWrapper.tsx:44 ~ GoldCodingWrapper ~ addedPieces:", addedPieces)
+
 
   const { mutate, error, mutateAsync, isLoading, isSuccess } =
     useMutate<GoldCodingSanad_initialValues_TP>({
@@ -77,12 +79,15 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   const sendPieces = async (pieces: GoldCodingSanad_initialValues_TP[]) => {
+    console.log("🚀 ~ file: GoldCodingWrapper.tsx:82 ~ sendPieces ~ pieces:", pieces)
     if (pieces.length === 0) {
       return;
     }
 
+    console.log("🚀 ~ file: GoldCodingWrapper.tsx:87 ~ sendPieces ~ pieces:", pieces)
     const [piece, ...remainingPieces] = pieces;
-
+    
+    console.log("🚀 ~ file: GoldCodingWrapper.tsx:85 ~ sendPieces ~ piece:", piece)
     try {
       const result = await mutateAsync({
         endpointName: "tarqimGold/api/v1/tarqim_gold",
@@ -176,11 +181,15 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
             showDetails={true}
             key={tableKey}
           />
-          <div className=" flex item-center gap-x-2 mr-auto">
+          <div className=" flex item-center gap-x-2 mr-auto my-4">
             <Button action={() => setStage(1)} bordered>
               رجوع
             </Button>
-            <Button loading={isLoading} action={() => sendPieces(addedPieces)}>
+            <Button loading={isLoading} action={() => {
+              sendPieces(addedPieces)
+              console.log("🚀 ~ file: GoldCodingWrapper.tsx:211 ~ GoldCodingWrapper ~ addedPieces:", "dkmvd,ll")
+
+              }}>
               ارسال
             </Button>
           </div>
@@ -215,7 +224,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
               setAddedPiecesLocal([]);
             }}
           >
-            <a href="https://alexon.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
+            <a href="http://api-almehaisen.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
               {t("go to identification management")}
             </a>
           </Button>

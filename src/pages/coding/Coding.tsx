@@ -42,7 +42,7 @@ export const Coding = ({ title }: CodingProps_TP) => {
         <title>{title}</title>
       </Helmet>
       <a
-        href="https://alexon.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara"
+        href="http://api-almehaisen.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara"
         ref={link}
       ></a>
     </>

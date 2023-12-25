@@ -89,7 +89,8 @@ export const SupplySecondForm = ({
         wage_tax: editData.wage_tax || '',
         gold_tax: editData.gold_tax || '',
         karat_value: '',
-        category_value: ''
+        category_value: '',
+        front_key_twred:''
     } : supply == 'diamond' ?  {
         id: crypto.randomUUID(),
         number: editData.number || '',
