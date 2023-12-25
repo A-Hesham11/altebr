@@ -217,7 +217,7 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
     const total18 = selectedItem.items
         .filter((piece) => piece.karat === "18")
         .reduce((acc, { weight }) => acc + +weight, 0)
-    const allItemsCount = selectedItem.items[0].allboxes.allcounts
+    const allItemsCount = selectedItem?.items[0]?.allboxes?.allcounts
 
     const totals = [
         {
