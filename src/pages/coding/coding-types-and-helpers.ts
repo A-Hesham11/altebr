@@ -19,6 +19,7 @@ export type GoldCodingSanad_initialValues_TP = {
   size_type?: string
   size_unit_id?: string
   sizeIsRequired?: boolean
+  front_key_twred?: string
   // city_id?: string
   // district_id?: string
   left_weight?: number
@@ -73,6 +74,7 @@ export const codingSanad_initialValues: GoldCodingSanad_initialValues_TP = {
   details: "",
   size_type: "",
   size_unit_id: "",
+  front_key_twred: "",
   media: [],
 }
 export const codingDiamondSanad_initialValues: DiamondCodingSanad_initialValues_TP =

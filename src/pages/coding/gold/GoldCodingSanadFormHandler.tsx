@@ -67,17 +67,20 @@ export const GoldCodingSanadFormHandler = ({
   setActiveBand,
   isSuccess
 }: GoldCodingSanadFormHandlerProps_TP) => {
+  console.log("🚀 ~ file: GoldCodingSanadFormHandler.tsx:70 ~ selectedSanad:", selectedSanad)
 
   /////////// VARIABLES
   ///
   const { sanadId } = useParams()
+  console.log("🚀 ~ file: GoldCodingSanadFormHandler.tsx:74 ~ sanadId:", sanadId)
 
   const [editWage, setEditWage] = useState("")
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
   useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
+  console.log("🚀 ~ file: GoldCodingSanadFormHandler.tsx:79 ~ selectedSanadLocal:", selectedSanadLocal)
   
-  const totalLeftWeight = selectedSanad?.items.map(item => item?.leftWeight)?.reduce((acc, curr) => {
+  const totalLeftWeight = selectedSanad?.items?.map(item => item?.leftWeight)?.reduce((acc, curr) => {
     return acc + curr
   }, 0)
 
@@ -213,7 +216,7 @@ export const GoldCodingSanadFormHandler = ({
   //     const updatedSanad = { ...selectedSanadLocal, items: updatedSanadItems }
   //     setSelectedSanad(updatedSanad)
   //   }
-  // }, [])
+  // }, []) 
 
   useEffect(() => {
     if (!!selectedSanad) {
@@ -288,7 +291,7 @@ export const GoldCodingSanadFormHandler = ({
         <p>{failureReason.response.data.message}</p>
       )}
       {isLoading && <Loading mainTitle="تحميل السند" />}
-      {!!selectedSanad && !!selectedSanad.items.length && (
+      {!!selectedSanad && !!selectedSanad?.items?.length && (
         // <HandleBackErrors errors={error?.response?.data?.errors}>
         <>
           <div className="flex items-center justify-between w-full">
@@ -427,7 +430,7 @@ export const GoldCodingSanadFormHandler = ({
         // </HandleBackErrors>
       )}
 
-      {!!selectedSanad && !!!selectedSanad.items.length && (
+      {!!selectedSanad && !!!selectedSanad?.items?.length && (
         <h2>لا يوجد بنود في السند</h2>
       )}
     </>
