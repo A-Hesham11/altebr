@@ -9,7 +9,7 @@ import { Modal } from "../../../components/molecules";
 import { numberContext } from "../../../context/settings/number-formatter";
 import TableOfBranchBondsModal from "./TableOfReturnBondsModal";
 
-const TableOfReturnBonds = ({ dataSource, setPage, page }) => {
+const TableOfReturnBonds = ({ dataSource, setPage, page, refetch }) => {
   const { formatReyal } = numberContext();
 
   // STATE
@@ -147,7 +147,7 @@ const TableOfReturnBonds = ({ dataSource, setPage, page }) => {
         isOpen={IdentitiesModal}
         onClose={() => setOpenIdentitiesModal(false)}
       >
-        <TableOfBranchBondsModal item={selectedItem} />
+        <TableOfBranchBondsModal refetch={refetch} item={selectedItem} />
       </Modal>
     </>
   );

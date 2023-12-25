@@ -16,7 +16,7 @@ const ReturnBondsReact = ({ title }: CodedIdentitiesProps_TP) => {
   const [search, setSearch] = useState("");
 
   // FETCHING DATA FROM API
-  const { data, isLoading, isFetching, isRefetching } = useFetch({
+  const { data, isLoading, isFetching, isRefetching, refetch } = useFetch({
     queryKey: ["return-bond-react", page, search],
     endpoint: 
     search === `/identity/api/v1/rejectedthwelbonds?` ||
@@ -67,6 +67,7 @@ const ReturnBondsReact = ({ title }: CodedIdentitiesProps_TP) => {
         dataSource={dataSource}
         setPage={setPage}
         page={page}
+        refetch={refetch}
       />
 
       {/* BUTTON TO BACK */}

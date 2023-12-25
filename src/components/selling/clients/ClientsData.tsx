@@ -148,7 +148,10 @@ const ClientsData = () => {
         })),
       }
     },
-    onError: (err) => console.log(err),
+    onError: (err) => {
+      console.log(err)
+    }
+      
   })
 
   
@@ -276,7 +279,7 @@ return (
       <div className=" m-auto">
         <Header
           className="text-center text-2xl font-bold"
-          header={t(`some thing went wrong ${error.message}`)}
+          header={t(`${error?.response?.data?.errors?.msg}`)}
         />
       </div>
     )}
