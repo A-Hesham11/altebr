@@ -226,10 +226,10 @@ export const SizesForm = ({
   } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      queryClient.setQueriesData(["sizes"], (old) => [...old, data])
-      if (setModel) {
+      // queryClient.setQueriesData(["sizes"], (old) => [...old, data])
+      // if (setModel) {
         queryClient.refetchQueries(["sizes"])
-      }
+      // }
       notify("success")
     },
     onError: (err) => {

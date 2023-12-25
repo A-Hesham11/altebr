@@ -140,6 +140,7 @@ export const CodingSanad = ({
               ...values,
               front_key: crypto.randomUUID(),
               mezan_weight: values.weight - +tableWeight * 0.2,
+              front_key_twred: activeBand.front_key_twred
             },
           ])
 
@@ -150,7 +151,8 @@ export const CodingSanad = ({
               leftCostItem: +activeBand.leftCostItem - +values.cost_item,
               // leftWeightother: +activeBand?.other_stones_weight - +otherStoneWeight,
               // leftWeightAccessory: +activeBand?.leftWeightAccessory - +accessoryStoneWeight,
-              leftAccessoryNumber: activeBand?.leftAccessoryNumber
+              leftAccessoryNumber: activeBand?.leftAccessoryNumber,
+              front_key_twred: activeBand.front_key_twred
           }
         } else {
           setAddedPieces((curr) => [
@@ -159,7 +161,8 @@ export const CodingSanad = ({
               ...values,
               front_key: crypto.randomUUID(),
               mezan_weight: values.weight,
-              karat_value: activeBand?.accessoryKarat
+              karat_value: activeBand?.accessoryKarat,
+              front_key_twred:activeBand.front_key_twred
             },
           ])
           return {
@@ -169,7 +172,8 @@ export const CodingSanad = ({
             // leftWeightother:  +activeBand?.other_stones_weight - +otherStoneWeight,
             // leftWeightAccessory:  +activeBand?.leftWeightAccessory - +accessoryStoneWeight,
             leftAccessoryNumber: activeBand?.leftAccessoryNumber,
-            karat_value: activeBand?.accessoryKarat
+            karat_value: activeBand?.accessoryKarat,
+            front_key_twred:activeBand.front_key_twred
           }
         }
       }
@@ -235,6 +239,7 @@ export const CodingSanad = ({
                 stones: Omitted,
                 weightitems,
                 init_wage,
+                front_key_twred,
                 ...baseValues
               } = values
 
@@ -248,6 +253,7 @@ export const CodingSanad = ({
                   ...baseValues,
                   size_type: values.size_type,
                   size_unit_id: values.size_unit_id,
+                  front_key_twred: values.front_key_twred,
                 }
                 finalSubmit(vals)
                 return

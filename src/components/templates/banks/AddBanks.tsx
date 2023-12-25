@@ -1,10 +1,8 @@
 import { t } from 'i18next'
-import { ChangeEvent, useContext, useEffect, useState } from 'react'
-import {Button, Label } from '../../atoms'
+import { useEffect, useState } from 'react'
+import {Button } from '../../atoms'
 import { useIsRTL, useMutate } from '../../../hooks'
-import { numberFormatterCtx } from '../../../context/settings/number-formatter'
 import { notify } from '../../../utils/toast'
-import { authCtx } from '../../../context/auth-and-perm/auth'
 import { BaseInputField, OuterFormLayout } from '../../molecules'
 import { Form, Formik } from 'formik'
 import { requiredTranslation } from '../systemEstablishment/partners/validation-and-types-partner'
@@ -25,7 +23,6 @@ type bankCardsProps_TP = {
     title: string
     name_ar: string
     name_en: string
-    // discount_percentage: string
     media: any
     files: any
     setFiles: any
@@ -77,8 +74,8 @@ const AddBanks = ({
       queryClient.refetchQueries(["AllBanks"])
     },
     onError: (error) => {
-      console.log(error);
-      notify("error");
+      console.log(error?.response?.data?.message);
+      notify("error", error?.response?.data?.message);
     },
   });
 
@@ -92,6 +89,7 @@ const AddBanks = ({
       },
       method: "post",
       dataType:'formData'
+
     });
   }
 

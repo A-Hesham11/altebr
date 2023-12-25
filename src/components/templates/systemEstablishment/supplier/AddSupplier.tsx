@@ -44,6 +44,9 @@ const AddSupplier = ({
   setShow,
 }: AddSupplierProps_TP) => {
   /////////// VARIABLES
+
+  const [supplierType, setSupplierType] = useState("")
+
   const supplierValidatingSchema = () =>
     Yup.object({
       // supplier validation
@@ -121,6 +124,44 @@ const AddSupplier = ({
           is: "local",
           then: (schema) => schema.required(),
         }),
+    })
+
+    const outSupplierValidatingSchema = () =>
+    Yup.object({
+      // supplier validation
+      name: Yup.string().trim().required(requiredTranslation),
+      type: Yup.string().trim().required(requiredTranslation),
+      wages_tax: Yup.string().trim(),
+      gold_tax: Yup.string().trim(),
+      is_mediator: Yup.boolean(),
+      company_name: Yup.string().trim().required(requiredTranslation),
+      address_out: Yup.string().trim().required(requiredTranslation),
+      // phone: !!!editData
+      //   ? Yup.string().trim().required(requiredTranslation)
+      //   : Yup.string(),
+
+      phone: !!!editData
+        ? Yup.string()
+            .trim()
+            .required(requiredTranslation)
+            .test("isValidateNumber", "رقم غير صحيح", function (value: string) {
+              return isValidPhoneNumber(value || "")
+            })
+        : Yup.string().trim(),
+
+      email: Yup.string().trim().required(requiredTranslation),
+      password: !!!editData
+        ? Yup.string().trim().required(requiredTranslation)
+        : Yup.string(),
+      fax: Yup.string().trim().required(requiredTranslation),
+      nationality_id: Yup.string().trim().required(requiredTranslation),
+      country_id_out: Yup.string().trim().required(requiredTranslation),
+      address: Yup.string().trim(),
+      national_number: Yup.string()
+        .min(10, nationalNumberMin)
+        .max(30, nationalNumberMax)
+        .required(requiredTranslation),
+      national_expire_date: Yup.string().required(requiredTranslation),
     })
 
   const incomingData = !!editData
@@ -313,7 +354,7 @@ const AddSupplier = ({
             })
           }
         }}
-       validationSchema={() => supplierValidatingSchema()}
+        validationSchema={() => ( supplierType || editData?.type ) === "global" ? outSupplierValidatingSchema() : supplierValidatingSchema()}
       >
         {({ values }) => (
           <HandleBackErrors errors={error?.response?.data?.errors}>
@@ -326,6 +367,7 @@ const AddSupplier = ({
                 restData={reset}
                 setDocsFormValues={setDocsFormValues}
                 docsFormValues={docsFormValues}
+                setSupplierType={setSupplierType}
               />
             </Form>
           </HandleBackErrors>
