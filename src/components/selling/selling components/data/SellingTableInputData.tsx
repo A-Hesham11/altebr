@@ -304,11 +304,11 @@ export const SellingTableInputData = ({
 
   useEffect(() => {
     setEditSellingTaklfa(values?.taklfa)
-  }, [values?.weight, values?.taklfa])
+  }, [values?.weight])
 
   useEffect(() => {
     setEditSellingTaklfaAfterTax(values?.taklfa_after_tax)
-  }, [values?.weight, values?.taklfa_after_tax])
+  }, [values?.weight])
 
   return (
     <Form className="overflow-y-auto">
@@ -794,7 +794,7 @@ export const SellingTableInputData = ({
                         return acc
                     }, 0)
 
-                      const remainingWeight = +dataSource[0]?.weight - +clacSelectedWeight
+                      const remainingWeight = +values?.remaining_weight - +clacSelectedWeight
 
                       const costItem = values.classification_id === 1 ?  (+values.karat_price + +values.wage) * clacSelectedWeight : +clacSelectedCost
 
@@ -830,6 +830,9 @@ export const SellingTableInputData = ({
                         setOpenDetails(false);
 
                       }
+
+                      setEditSellingTaklfa(values?.taklfa)
+                      setEditSellingTaklfaAfterTax(values?.taklfa_after_tax)
                     }}
                   >
                     {`${t("confirm")}`}
