@@ -119,12 +119,12 @@ export const sideBarItems: MenuItem_TP[] = [
       },
       // REACT
       // الهويات المرقمة
-      // {
-      //   id: crypto.randomUUID(),
-      //   label: 'coded identities 2',
-      //   link: "/coding-react",
-      //   icon: RiVipCrownLine,
-      // },
+      {
+        id: crypto.randomUUID(),
+        label: 'coded identities 2',
+        link: "/coding-react",
+        icon: RiVipCrownLine,
+      },
       // REACT
       {
         id: crypto.randomUUID(),

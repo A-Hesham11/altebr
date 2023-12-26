@@ -141,7 +141,7 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
             }
         },
         onSuccess(data) {
-            setDataSource(data.items)
+            setDataSource(data?.items)
         },
         onError(data) {
             notify('info', `${t('bond has been rejected')}`)
