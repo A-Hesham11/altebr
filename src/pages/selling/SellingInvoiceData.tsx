@@ -225,6 +225,7 @@ const SellingInvoiceData = ({
         endpointName: '/selling/api/v1/add_Invoice',
         values: { invoice, items, card }
     })
+    console.log("🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:", { invoice, items, card })
   };
 
   return (

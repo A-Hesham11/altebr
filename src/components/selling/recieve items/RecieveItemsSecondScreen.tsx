@@ -27,7 +27,9 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
     const isSanadOpened = selectedItem.bond_status !== 0
     const { userData } = useContext(authCtx)
     const [selectedRows, setSelectedRows] = useState<any>([])
+    console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:30 ~ RecieveItemsSecondScreen ~ selectedRows:", selectedRows)
     const [dataSource, setDataSource] = useState({})
+    console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:31 ~ RecieveItemsSecondScreen ~ dataSource:", dataSource)
     const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectAll, setSelectAll] = useState(false)
@@ -137,7 +139,7 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
         },
         {
             cell: (info: any) => info.getValue() || '---',
-            accessorKey: "category",
+            accessorKey: "category_name",
             header: () => <span>{t("category")}</span>,
         },
         {
