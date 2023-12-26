@@ -49,6 +49,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth)
   console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ sellingItemsData:", sellingItemsData)
   console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ dataSource:", dataSource)
 
@@ -60,9 +61,7 @@ export const SellingTableInputData = ({
   const [page, setPage] = useState<number>(1)
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState("")
-  console.log("🚀 ~ file: SellingTableInputData.tsx:63 ~ editSellingTaklfa:", editSellingTaklfa)
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] = useState("")
-  console.log("🚀 ~ file: SellingTableInputData.tsx:65 ~ editSellingTaklfaAfterTax:", editSellingTaklfaAfterTax)
 
   const { userData } = useContext(authCtx)
   console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ userData:", userData)
@@ -115,7 +114,7 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{t("classification")} </span>,
         accessorKey: "category_name",
-        cell: (info) => info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`  ,
+        cell: (info) => (info.row.original.selsal.length === 0 && info.row.original.has_selsal !== 0) ? info.getValue() : `${info.getValue()} مع سلسال` ,
       },
       {
         header: () => <span>{t("weight")} </span>,
