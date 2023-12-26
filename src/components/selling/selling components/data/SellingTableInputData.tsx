@@ -60,13 +60,14 @@ export const SellingTableInputData = ({
   const [page, setPage] = useState<number>(1)
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState("")
+  console.log("🚀 ~ file: SellingTableInputData.tsx:63 ~ editSellingTaklfa:", editSellingTaklfa)
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] = useState("")
+  console.log("🚀 ~ file: SellingTableInputData.tsx:65 ~ editSellingTaklfaAfterTax:", editSellingTaklfaAfterTax)
 
   const { userData } = useContext(authCtx)
   console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ userData:", userData)
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100 ;
-  console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ TaxRateOfBranch:", TaxRateOfBranch)
   
   const priceWithCommissionRate =
   dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
@@ -77,8 +78,6 @@ export const SellingTableInputData = ({
   dataSource && dataSource[0]?.min_selling_type === "نسبة"
   ? priceWithCommissionRate
   : priceWithCommissionCash;
-  
-  console.log("🚀 ~ file: SellingTableInputData.tsx:75 ~ priceWithSellingPolicy:", priceWithSellingPolicy)
   
   const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
 
@@ -305,11 +304,11 @@ export const SellingTableInputData = ({
 
   useEffect(() => {
     setEditSellingTaklfa(values?.taklfa)
-  }, [values?.weight])
+  }, [values?.weight, values?.taklfa])
 
   useEffect(() => {
     setEditSellingTaklfaAfterTax(values?.taklfa_after_tax)
-  }, [values?.weight])
+  }, [values?.weight, values?.taklfa_after_tax])
 
   return (
     <Form className="overflow-y-auto">
