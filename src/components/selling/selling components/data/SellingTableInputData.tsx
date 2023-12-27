@@ -114,7 +114,7 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{t("classification")} </span>,
         accessorKey: "category_name",
-        cell: (info) => (info.row.original.selsal.length === 0 && info.row.original.has_selsal !== 0) ? info.getValue() : `${info.getValue()} مع سلسال` ,
+        cell: (info) => (info.row.original.selsal.length === 0 ) ? info.getValue() : `${info.getValue()} مع سلسال`,
       },
       {
         header: () => <span>{t("weight")} </span>,
@@ -440,8 +440,8 @@ export const SellingTableInputData = ({
 
 
                 }}
-                className={`${(!isSuccess || values.category_selling_type !== "all") && "bg-mainDisabled"} text-center`}
-                disabled={!isSuccess || values.category_selling_type !== "all"}
+                className={`${(!isSuccess || values.category_selling_type !== "all" || values?.weight === 0) && "bg-mainDisabled"} text-center`}
+                disabled={!isSuccess || values.category_selling_type !== "all" || values?.weight === 0}
               />
             </td>
             <td>

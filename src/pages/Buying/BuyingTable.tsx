@@ -72,19 +72,19 @@ export const BuyingTable = ({
       })),
     onError: (err) => console.log(err),
   });
-  console.log("🚀 ~ file: BuyingTable.tsx:71 ~ taxes:", taxes);
 
   // FORMULA
   const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2);
   const priceWithCommissionRate =
-    +totalValues - +totalValues * (+maxingUser?.max_buy * 0.01);
+  +totalValues - +totalValues * (+maxingUser?.max_buy * 0.01);
+
   const priceWithCommissionCash = +totalValues - +maxingUser?.max_buy;
 
   const priceWithSellingPolicy =
-    maxingUser?.max_buy_type === "نسبة"
-      ? +priceWithCommissionRate
-      : +priceWithCommissionCash;
-
+  maxingUser?.max_buy_type === "نسبة"
+  ? +priceWithCommissionRate
+  : +priceWithCommissionCash;
+  
   // STONES OPTION SELECT
   const stonesOption = [
     {

@@ -143,6 +143,9 @@ export const CreateHonestSanad = ({
       return acc;
     }, 0);
 
+  const costRemainingHonest = totalActualItemsCost - (+totalPaidCostFromClient + +selectedItem?.amount)
+  console.log("🚀 ~ file: CreateHonestSanad.tsx:147 ~ remainingCost:", costRemainingHonest)
+
   const incomingBoxesData = [
     {
       id: crypto.randomUUID(),
@@ -153,9 +156,7 @@ export const CreateHonestSanad = ({
     {
       id: crypto.randomUUID(),
       account: `${t("remaining cost")}`,
-      value:
-        totalActualItemsCost -
-        (+totalPaidCostFromClient + +selectedItem?.amount),
+      value: costRemainingHonest,
       unit: `${t("ryal")}`,
     },
     {
@@ -498,6 +499,7 @@ export const CreateHonestSanad = ({
               <PaymentProcessing
                 paymentData={paymentData}
                 setPaymentData={setPaymentData}
+                costRemainingHonest={costRemainingHonest}
               />
               {paymentData.length > 0 && (
                 <div>
