@@ -40,7 +40,7 @@ export const NewHonestForm = ({
     pagination: true,
   });
   const sanadId = honestBondsData
-    ? honestBondsData?.data?.find((item) => item.id).bondsafety_id
+    ? honestBondsData?.data?.find((item) => item.id)?.bondsafety_id
     : 0;
   ///
   /////////// STATES

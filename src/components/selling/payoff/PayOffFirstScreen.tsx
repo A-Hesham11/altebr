@@ -26,6 +26,7 @@ export const PayOffFirstScreen = ({ stage, selectedItem, setSelectedItem, setSta
     const navigate = useNavigate()
     const { userData } = useContext(authCtx)
     const [dataSource, setDataSource] = useState([])
+    console.log("🚀 ~ file: PayOffFirstScreen.tsx:29 ~ PayOffFirstScreen ~ dataSource:", dataSource)
     const [page, setPage] = useState<number>(1)
     const [search, setSearch] = useState('')
     const [openModal, setOpenModal] = useState(false)
