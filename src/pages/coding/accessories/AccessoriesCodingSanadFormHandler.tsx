@@ -75,7 +75,8 @@ export const AccessoriesCodingSanadFormHandler = ({
   const { sanadId } = useParams()
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
-    useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
+  useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
+  console.log("🚀 ~ file: AccessoriesCodingSanadFormHandler.tsx:78 ~ selectedSanadLocal:", selectedSanadLocal)
     
   const columns: Column[] = [
     {

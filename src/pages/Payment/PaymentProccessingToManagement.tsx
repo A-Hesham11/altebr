@@ -39,13 +39,17 @@ type CardSelection_TP = {
   selectedCardImage: string;
 };
 
-const validationSchema = () =>
+const validationSchemaOfAmount = () =>
   Yup.object({
     id: Yup.string(),
     amount: Yup.number().required(`${t("required")}`),
-    weight: Yup.string().required(`${t("required")}`),
   });
 
+  const validationSchemaOfWeight= () =>
+  Yup.object({
+    id: Yup.string(),
+    weight: Yup.string().required(`${t("required")}`),
+  });
 
 
 const PaymentProccessingToManagement = ({ 
@@ -112,11 +116,13 @@ const {
       }
   }, [cardId])
 
+  const weightOrAmount = (selectedCardId == 18 || selectedCardId == 21 || selectedCardId == 22 || selectedCardId == 24)
+
   return (
     <>
       <Formik
         initialValues={initialValues}
-        validationSchema={() => validationSchema()}
+        validationSchema={() => weightOrAmount ? validationSchemaOfWeight() : validationSchemaOfAmount()}
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
           if (selectedCardId) {
             if (editData) {
