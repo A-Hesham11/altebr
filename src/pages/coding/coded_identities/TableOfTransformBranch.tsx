@@ -40,7 +40,7 @@ const TableOfTransformBranch = ({
         header: () => <span>{t("weight")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() == 0 ? formatReyal(info.getValue()) : "-",
         accessorKey: "wage",
         header: () => <span>{t("wage geram/ryal")}</span>,
       },
@@ -49,13 +49,13 @@ const TableOfTransformBranch = ({
           const wages =
             Number(info.row.original.wage).toFixed(2) *
             Number(info.row.original.weight);
-          return formatReyal(wages) || "-";
+          return info.getValue() == 0 ?  formatReyal(wages) : "-";
         },
         accessorKey: "total_wages",
         header: () => <span>{t("total wage by ryal")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(info.getValue()) || "-",
+        cell: (info: any) => info.getValue() == 0 ?  formatReyal(info.getValue()) : "-",
         accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },

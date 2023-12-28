@@ -8,6 +8,7 @@ import { BiLinkExternal } from "react-icons/bi";
 import { numberContext } from "../../../context/settings/number-formatter";
 
 const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
+  console.log("🚀 ~ file: TableOfIdentitiesPreview.tsx:11 ~ TableOfIdentitiesPreview ~ item:", item)
   const { formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE OF DETAILS
