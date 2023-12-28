@@ -56,6 +56,7 @@ export const DiamondTableForm = ({
   setEditRow,
   setEditData,
 }: OTableFormProps_TP) => {
+  console.log("🚀 ~ file: DiamondTableForm.tsx:60 ~ categoriesOptions:", categoriesOptions)
   const { formatGram, formatReyal } = numberContext()
   let { enableReinitialize, resetForm, values, setFieldValue, submitForm } =
   useFormikContext<any>()
@@ -192,12 +193,22 @@ export const DiamondTableForm = ({
   })) || []
   // categories options
   const categories = queryClient.getQueryData(['categories_all'])
+  console.log("🚀 ~ file: DiamondTableForm.tsx:196 ~ categories:", categories)
 
-  const categoriesOptionsCache = categories && categories.filter(item=>!item.items)?.map(option => ({
+  // const categoriesOptionsCache = categories && categories.filter(item=>!item.items)?.map(option => ({
+  //   id: option.id,
+  //   value: option.name,
+  //   label: option.name,
+  // })) || []
+  // console.log("🚀 ~ file: DiamondTableForm.tsx:202 ~ categoriesOptionsCache ~ categoriesOptionsCache:", categoriesOptionsCache)
+
+  
+  const categoriesOptionsCache = categories && categories.filter(item=> !item.items && item.selling_type !== "all")?.map(option => ({
     id: option.id,
     value: option.name,
     label: option.name,
   })) || []
+
   const {
     data: karats,
     isLoading: karatLoading,

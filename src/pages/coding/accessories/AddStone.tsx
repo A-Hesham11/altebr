@@ -26,6 +26,8 @@ import SelectStoneType from "../../../components/templates/reusableComponants/st
 import { SetState_TP } from "../../../types"
 import { notify } from "../../../utils/toast"
 import {
+  diamondCodingStoneSchema,
+  diamondCodingStoneValues,
   goldCodingStoneSchema,
   goldCodingStoneValues,
   GoldCodingStoneValues_TP
@@ -61,7 +63,7 @@ type AddStoneProps_TP = {
 ///
 
 ///
-export const AddStone = ({ stones, setStones }: AddStoneProps_TP) => {
+export const AddStone = ({ stones, setStones, activeBand, addedPieces }: AddStoneProps_TP) => {
   /////////// VARIABLES
   ///
   // const types = useGetQueryData<Query_TP[]>(["stone_type"])
@@ -69,6 +71,29 @@ export const AddStone = ({ stones, setStones }: AddStoneProps_TP) => {
   // const shapes = useGetQueryData<Query_TP[]>(["stone_shape"])
   // const purities = useGetQueryData<Query_TP[]>(["stone_purity"])
   // const natures = useGetQueryData<Query_TP[]>(["stone_nature"])
+
+  const [otherStonesWeightSum , setOtherStonesWeightSum] = useState<number | undefined>(0)
+  const [diamondWeightSum , setDiamondWeightSum] = useState<number | undefined>(0)
+
+  useEffect(() => {
+    const relatedAddedPiecesToBand = addedPieces.filter(item=>item.band_id === activeBand?.id)
+    const totalDiamondWeight = relatedAddedPiecesToBand.reduce((acc, item) => {
+      const diamondWeightSum = item.stones?.reduce((acc, curr) => acc + +curr.diamondWeight, 0) || 0;
+      return acc + diamondWeightSum;
+    }, 0);
+    
+    setDiamondWeightSum(totalDiamondWeight);
+    
+    
+    const totalWeight = relatedAddedPiecesToBand.reduce((acc, item) => {
+      const stonesWeightSum = item.stones?.reduce((acc, curr) => acc + +curr.weight, 0) || 0;
+      return acc + stonesWeightSum;
+    }, 0);
+    
+    setOtherStonesWeightSum(totalWeight);
+    
+  }, [stones,addedPieces])
+
   const [queryData, setQueryData] = useState<StoneRow_TP[] | undefined>()
 
   const columns: Column[] = [
@@ -192,8 +217,8 @@ export const AddStone = ({ stones, setStones }: AddStoneProps_TP) => {
       <div className="  bg-lightGreen rounded-md p-4 mt-3">
         <div className="bg-white shadows mt-6 rounded-md p-4 overflow-x-hidden">
           <Formik
-            initialValues={goldCodingStoneValues}
-            validationSchema={goldCodingStoneSchema}
+            initialValues={diamondCodingStoneValues}
+            validationSchema={diamondCodingStoneSchema}
             onSubmit={(values) => {
               notify("success", `${t("stone added successfully")}`)
               setStones((curr) => [
@@ -202,7 +227,7 @@ export const AddStone = ({ stones, setStones }: AddStoneProps_TP) => {
               ])
             }}
           >
-            {({ submitForm, errors, touched, setFieldValue }) => (
+            {({ submitForm, errors, touched, setFieldValue, values }) => (
               <div className="grid items-center grid-cols-4 gap-x-4 gap-y-8 p-4 ">
                 <SelectStoneyTypePurity showDiamond={true} isClearable/>
                 <BaseInputField
@@ -210,6 +235,8 @@ export const AddStone = ({ stones, setStones }: AddStoneProps_TP) => {
                   name="weight"
                   type="number"
                   label={t("weight the total number of stones in carats")}
+                  disabled={+activeBand?.leftWeightother - +otherStonesWeightSum === 0}
+                  className={`${+activeBand?.leftWeightother - +otherStonesWeightSum === 0 && stones?.find(item => item?.weight) && 'bg-slate-300'} ${values.weight > +activeBand?.leftWeightother - +otherStonesWeightSum && 'bg-red-200'} `}
                 />
                 
                 <BaseInputField

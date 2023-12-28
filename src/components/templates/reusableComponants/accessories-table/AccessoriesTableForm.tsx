@@ -58,6 +58,7 @@ export const AccessoriesTableForm = ({
   setEditRow,
   setEditData,
 }: OTableFormProps_TP) => {
+  console.log("🚀 ~ file: AccessoriesTableForm.tsx:61 ~ categoriesOptions:", categoriesOptions)
   const { formatGram, formatReyal } = numberContext()
   let { enableReinitialize, resetForm, values, setFieldValue, submitForm } =
   useFormikContext<any>()
@@ -199,11 +200,20 @@ export const AccessoriesTableForm = ({
   // categories options
 
   const categories = queryClient.getQueryData(['categories_all'])
-  const categoriesOptionsCache = categories && categories.filter(item=>!item.items)?.map(option => ({
+  console.log("🚀 ~ file: AccessoriesTableForm.tsx:202 ~ categories:", categories)
+  // const categoriesOptionsCache = categories && categories.filter(item=>!item.items)?.map(option => ({
+  //   id: option.id,
+  //   value: option.name,
+  //   label: option.name,
+  // })) || []
+
+  const categoriesOptionsCache = categories && categories.filter(item=> !item.items && item.selling_type !== "all")?.map(option => ({
     id: option.id,
     value: option.name,
     label: option.name,
   })) || []
+  console.log("🚀 ~ file: AccessoriesTableForm.tsx:213 ~ categoriesOptionsCache ~ categoriesOptionsCache:", categoriesOptionsCache)
+
   const {
     data: karats,
     isLoading: karatLoading,
@@ -521,7 +531,7 @@ export const AccessoriesTableForm = ({
                 <td className="border-l-2 border-l-flatWhite">
                   <SelectCategory
                     name="category_id"
-                    noMb={true}
+                    // noMb={true}
                     placement="top"
                     onChange={(option) => {
                       setFieldValue("category_value", option!.value)
@@ -535,7 +545,7 @@ export const AccessoriesTableForm = ({
                         t("categories"),
                       id: values.category_id || values.category_id,
                     }}
-                    showItems={true}
+                    showItemsDiamond={true}
                   />
                 </td>
                 <td className="border-l-2 border-l-flatWhite" style={{ minWidth: "150px" }}>
