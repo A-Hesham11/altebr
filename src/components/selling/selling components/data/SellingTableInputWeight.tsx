@@ -426,12 +426,13 @@ const SellingTableInputWeight = ({
                             })}
                         </tbody>
                     </table>
-                    <div className='flex justify-end w-full mt-5'>
+                    <div className='flex justify-end w-full mt-8'>
                         <Button 
                             action={() => {
                                 handleAddSelsalToPieces()
                                 setOpenSelsal(false)
                             }}
+                            disabled={!sellingItemsOfWeigth.length}
                         >
                             {t("confirm")}
                         </Button>

@@ -94,13 +94,13 @@ const FingerSize = ({editClientsData, showClientsData, initialValues}: any) => {
   });
 
   const { data: sizesFinger, refetch, isFetching: isFetchingFinger } = useFetch({
-    endpoint: `/selling/api/v1/fingers-sizes/${newValue?.id}`,
+    endpoint: `/selling/api/v1/fingers-sizes/${newValue?.id}?per_page=10000`,
     queryKey: ["fingers-sizes"],
     select: (sizesFinger) => {
       return sizesFinger?.map((item) => ({
         id: item.id,
-        value:item.number,
-        label:item.number,
+        value:item.value,
+        label:item.value,
       }));
     },
     enabled:false
@@ -186,9 +186,6 @@ const FingerSize = ({editClientsData, showClientsData, initialValues}: any) => {
     }
     setValueKhenser(best);
   }, []);
-
-
-
 
   useEffect(() => {
     refetch()
@@ -382,7 +379,7 @@ const FingerSize = ({editClientsData, showClientsData, initialValues}: any) => {
                     fieldKey="id"
                     value={valueKhenser}
                     onChange={(option) => {
-                        setValueKhenser(option);
+                      setValueKhenser(option);
                     }}   
                     loading={isFetchingFinger}
                     isDisabled={sizesFinger?.length === 0 || showClientsData}

@@ -42,8 +42,8 @@ type CardSelection_TP = {
 const validationSchema = () =>
   Yup.object({
     id: Yup.string(),
-    amount: Yup.number(),
-    weight: Yup.string(),
+    amount: Yup.number().required(`${t("required")}`),
+    weight: Yup.string().required(`${t("required")}`),
   });
 
 

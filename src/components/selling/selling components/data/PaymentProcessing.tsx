@@ -39,7 +39,8 @@ const validationSchema = () =>
 
 
 
-const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, totalApproximateCost }: Payment_TP) => {
+const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, totalApproximateCost, costRemainingHonest }: Payment_TP) => {
+console.log("🚀 ~ file: PaymentProcessing.tsx:43 ~ PaymentProcessing ~ costRemainingHonest:", costRemainingHonest)
 
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
@@ -78,8 +79,9 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, tota
   const totalPriceInvoice = sellingItemsData?.reduce((total, item) => +total + +item.taklfa_after_tax, 0)
 
   const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax ,0)
+  console.log("🚀 ~ file: PaymentProcessing.tsx:82 ~ PaymentProcessing ~ amountRemaining:", amountRemaining)
 
-  const costRemaining =  totalPriceInvoice ? (totalPriceInvoice - amountRemaining) : (totalApproximateCost - amountRemaining)
+  const costRemaining =  totalPriceInvoice ? (totalPriceInvoice - amountRemaining) : costRemainingHonest ? (costRemainingHonest) : (totalApproximateCost - amountRemaining)
 
   return (
     <>
@@ -150,6 +152,8 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, tota
           const commissionRiyals = +commissionValue.toFixed(3);
           const commissionTax = (+commissionRiyals * 0.15).toFixed(3);
           const cost_after_commission = +values.cost_after_tax + +commissionRiyals + +commissionTax;
+        console.log("🚀 ~ file: PaymentProcessing.tsx:274 ~ PaymentProcessing ~ values:", values.amount)
+
           return (
             <Form>
               <div>
@@ -251,7 +255,8 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, tota
                 )}
                 <Button
                   type="submit"
-                  className="animate_from_left animation_delay-11 hover:bg-orange-600 transition-all duration-300 bg-mainOrange h-10"
+                  className="animate_from_left animation_delay-11 hover:bg-orange-500 transition-all duration-300 bg-mainOrange h-10"
+                  disabled={+values.amount > +costRemaining}
                 >
                   {t("confirm")}
                 </Button>

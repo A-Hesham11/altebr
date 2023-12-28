@@ -49,6 +49,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth)
   console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ sellingItemsData:", sellingItemsData)
   console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ dataSource:", dataSource)
 
@@ -59,11 +60,13 @@ export const SellingTableInputData = ({
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
   const [page, setPage] = useState<number>(1)
   const { formatGram, formatReyal } = numberContext();
+  const [editSellingTaklfa, setEditSellingTaklfa] = useState("")
+  const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] = useState("")
 
   const { userData } = useContext(authCtx)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ userData:", userData)
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100 ;
-  console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ TaxRateOfBranch:", TaxRateOfBranch)
   
   const priceWithCommissionRate =
   dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
@@ -74,7 +77,7 @@ export const SellingTableInputData = ({
   dataSource && dataSource[0]?.min_selling_type === "نسبة"
   ? priceWithCommissionRate
   : priceWithCommissionCash;
-
+  
   const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
 
 
@@ -111,7 +114,7 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{t("classification")} </span>,
         accessorKey: "category_name",
-        cell: (info) => info.row.original.has_selsal === 0 ? info.getValue() : `${info.getValue()} مع سلسال`  ,
+        cell: (info) => (info.row.original.selsal.length === 0 ) ? info.getValue() : `${info.getValue()} مع سلسال`,
       },
       {
         header: () => <span>{t("weight")} </span>,
@@ -298,6 +301,14 @@ export const SellingTableInputData = ({
       }
   }, [search])
 
+  useEffect(() => {
+    setEditSellingTaklfa(values?.taklfa)
+  }, [values?.weight])
+
+  useEffect(() => {
+    setEditSellingTaklfaAfterTax(values?.taklfa_after_tax)
+  }, [values?.weight])
+
   return (
     <Form className="overflow-y-auto">
       <p className="font-semibold text-center text-lg text-mainGreen">
@@ -426,9 +437,11 @@ export const SellingTableInputData = ({
 
                   }
 
+
+
                 }}
-                className={`${(!isSuccess || values.category_selling_type !== "all") && "bg-mainDisabled"} text-center`}
-                disabled={!isSuccess || values.category_selling_type !== "all"}
+                className={`${(!isSuccess || values.category_selling_type !== "all" || values?.weight === 0) && "bg-mainDisabled"} text-center`}
+                disabled={!isSuccess || values.category_selling_type !== "all" || values?.weight === 0}
               />
             </td>
             <td>
@@ -473,7 +486,7 @@ export const SellingTableInputData = ({
                 name="cost"
                 type="text"
                 onChange={(e) => {
-                  setFieldValue("cost", values.value);
+                  setFieldValue("cost", (values.value).toFixed(2));
                 }}
                 disabled={!isCategoryDisabled}
                 className={`${
@@ -495,7 +508,7 @@ export const SellingTableInputData = ({
                     (+e.target.value * TaxRateOfBranch + +e.target.value).toFixed(2)
                   );
                 }}
-                className={`${!isSuccess || userData?.include_tax === "1" ? "bg-mainDisabled" : (values?.taklfa && +values?.taklfa < +priceWithSellingPolicy) ? "bg-red-100" : ""} text-center`}
+                className={`${!isSuccess || userData?.include_tax === "1" ? "bg-mainDisabled" : (values?.taklfa && +values?.taklfa < +editSellingTaklfa) ? "bg-red-100" : ""} text-center`}
                 disabled={!isSuccess || userData?.include_tax === "1"}
               />
             </td>
@@ -510,7 +523,7 @@ export const SellingTableInputData = ({
                   setFieldValue("taklfa", (+e.target.value / 1.15).toFixed(2));
                 }}
                 disabled={userData?.include_tax === "0"}
-                className={`${!isSuccess || userData?.include_tax === "0" ? "bg-mainDisabled" : (values?.taklfa_after_tax && +values?.taklfa_after_tax < +taklfaAfterTax) ? "bg-red-100" : ""} text-center`}
+                className={`${!isSuccess || userData?.include_tax === "0" ? "bg-mainDisabled" : (values?.taklfa_after_tax && +values?.taklfa_after_tax < +editSellingTaklfaAfterTax) ? "bg-red-100" : ""} text-center`}
               />
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
@@ -585,7 +598,7 @@ export const SellingTableInputData = ({
                   selectedItemDetails.push(kitAllDetails)
                 }
 
-                if (+values?.taklfa < +priceWithSellingPolicy) {
+                if (+values?.taklfa < +editSellingTaklfa) {
                   notify("info", `${t("The selling price may not be less than the minimum")}`)
                   return
                 }
@@ -780,7 +793,7 @@ export const SellingTableInputData = ({
                         return acc
                     }, 0)
 
-                      const remainingWeight = +dataSource[0]?.weight - +clacSelectedWeight
+                      const remainingWeight = +values?.remaining_weight - +clacSelectedWeight
 
                       const costItem = values.classification_id === 1 ?  (+values.karat_price + +values.wage) * clacSelectedWeight : +clacSelectedCost
 
@@ -791,7 +804,7 @@ export const SellingTableInputData = ({
                     values?.min_selling_type === "نسبة"
                       ? priceWithCommissionRate
                       : priceWithCommissionCash;
-                    
+
                       const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
 
                       const checkedFromWeight = selectedItemDetails?.every((item) => item.weight !== "")
@@ -816,6 +829,9 @@ export const SellingTableInputData = ({
                         setOpenDetails(false);
 
                       }
+
+                      setEditSellingTaklfa(values?.taklfa)
+                      setEditSellingTaklfaAfterTax(values?.taklfa_after_tax)
                     }}
                   >
                     {`${t("confirm")}`}

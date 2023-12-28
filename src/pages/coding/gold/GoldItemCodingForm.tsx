@@ -533,7 +533,7 @@ export const GoldItemCodingForm = ({
                   action={submitForm}
                   className="mt-8 mr-auto flex"
                 >
-                  تأكيد
+                  {t("confirm")}
                 </Button>
               </>
             )}
@@ -546,7 +546,7 @@ export const GoldItemCodingForm = ({
             <Header
               header={t("")}
             />
-              <div className="w-full">
+              <div className="w-full mb-4">
                 <p className="font-semibold text-lg text-center mb-5">{t("This item already exists")}</p>
                 <div className="w-full flex justify-center">
                   {modalNumber?.images[0]?.preview 
@@ -559,7 +559,7 @@ export const GoldItemCodingForm = ({
                   <p className="font-semibold">{t("weight")} : <span className="text-mainGreen font-semibold">{modalNumber?.weight}</span></p>
                 </div>
               </div>
-              <div className="flex gap-4 justify-end items-center w-full">
+              {/* <div className="flex gap-4 justify-end items-center w-full">
                   <Button
                     type="submit"
                     action={() => {
@@ -567,7 +567,7 @@ export const GoldItemCodingForm = ({
                   >
                     {`${t("confirm")}`}
                   </Button>
-              </div>
+              </div> */}
           </div>
       </Modal>
     </div>

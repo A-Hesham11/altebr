@@ -160,7 +160,7 @@ const PaymentBonds = () => {
     },
     {
         id:5,
-        name_ar: "كاش",
+        name_ar: "نقدي",
         name_en: "cash",
         value:  data?.data[0]?.cash,
         unit:"ريال",
