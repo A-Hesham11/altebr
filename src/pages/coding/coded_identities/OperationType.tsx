@@ -13,6 +13,7 @@ const OperationType = ({
   setOperationTypeSelect,
   refetch,
   setIsSuccessPost,
+  setPage
 }) => {
   const [transformToBranchModal, setOpenTransformToBranchModal] =
     useState(false);
@@ -71,6 +72,7 @@ const OperationType = ({
         >
           <TransformToBranch
             refetch={refetch}
+            setPage={setPage}
             setOperationTypeSelect={setOperationTypeSelect}
             setOpenSeperateModal={setOpenSeperateModal}
             setIsSuccessPost={setIsSuccessPost}
@@ -81,6 +83,7 @@ const OperationType = ({
         <Modal isOpen={mergeModal} onClose={() => setOpenMergeModal(false)}>
           <MergeHwya
             refetch={refetch}
+            setPage={setPage}
             setOperationTypeSelect={setOperationTypeSelect}
             setOpenSeperateModal={setOpenSeperateModal}
             mergeModal={mergeModal}
@@ -97,6 +100,7 @@ const OperationType = ({
             setFormData={setFormData}
             formData={formData}
             refetch={refetch}
+            setPage={setPage}
             setOperationTypeSelect={setOperationTypeSelect}
             setOpenSeperateModal={setOpenSeperateModal}
             setIsSuccessPost={setIsSuccessPost}

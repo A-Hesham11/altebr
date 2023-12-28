@@ -15,6 +15,7 @@ const SeperateHwya = ({
   setFormData,
   formData,
   refetch,
+  setPage,
   setOpenSeperateModal,
   setOperationTypeSelect
 }) => {
@@ -129,7 +130,7 @@ const SeperateHwya = ({
                         !weightInputDisabledCheck && "bg-mainDisabled"
                       }`}
                       key={item.id}
-                      placeholder={item.item_weight}
+                      placeholder={(!weightInputDisabledCheck && item.item_weight !== 0) ? item.item_weight : t("type weight")}
                       label={`${item.child}`}
                       disabled={!weightInputDisabledCheck}
                       onChange={handleChange}
@@ -148,8 +149,8 @@ const SeperateHwya = ({
               type="submit"
               action={() => {
                 console.log({
-                  category_id: operationTypeSelect[0]?.category_id,
-                  items: operationTypeSelect[0]?.category_id,
+                  category_id: operationTypeSelect[0]?.id,
+                  items: operationTypeSelect[0]?.id,
                   weights:
                     valuesOfForm.length === 0
                       ? operationTypeSelect[0]?.category_items.map(
@@ -174,8 +175,8 @@ const SeperateHwya = ({
                 }
 
                 PostNewValue({
-                  category_id: operationTypeSelect[0]?.category_id,
-                  items: operationTypeSelect[0]?.category_id,
+                  category_id: operationTypeSelect[0]?.id,
+                  items: operationTypeSelect[0]?.id,
                   weights:
                     valuesOfForm.length === 0
                       ? operationTypeSelect[0]?.category_items.map(
@@ -186,7 +187,8 @@ const SeperateHwya = ({
 
                 // refetch();
                 // setOpenSeperateModal(false);
-                // setOperationTypeSelect([])
+                setOperationTypeSelect([])
+                setPage(1)
               }}
               className="bg-mainGreen text-white self-end"
             >

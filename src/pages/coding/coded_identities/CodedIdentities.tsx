@@ -33,6 +33,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [search, setSearch] = useState("");
+  console.log("🚀 ~ file: CodedIdentities.tsx:36 ~ CodedIdentities ~ search:", search)
   const [isSuccessPost, setIsSuccessPost] = useState(false);
   const [fetchEndPoint, setFetchEndPoint] = useState(
     `identity/api/v1/pieces_in_edara`
@@ -260,8 +261,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         <Button
           action={() => {
             // setCheckboxChecked(false)
-            refetch();
-            setPage(1)
+            // refetch();
+            // setPage(1)
             setOperationTypeSelect([]);
             // localStorage.clear()
           }}
@@ -285,6 +286,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       {(activeClass === "قطع بالوزن" || activeClass === "هويات في الإدارة") && (
         <OperationType
           refetch={refetch}
+          setPage={setPage}
           setOperationTypeSelect={setOperationTypeSelect}
           setIsSuccessPost={setIsSuccessPost}
           operationTypeSelect={operationTypeSelect}
