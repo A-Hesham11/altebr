@@ -119,12 +119,12 @@ export const sideBarItems: MenuItem_TP[] = [
       },
       // REACT
       // الهويات المرقمة
-      // {
-      //   id: crypto.randomUUID(),
-      //   label: 'coded identities 2',
-      //   link: "/coding-react",
-      //   icon: RiVipCrownLine,
-      // },
+      {
+        id: crypto.randomUUID(),
+        label: 'coded identities 2',
+        link: "/coding-react",
+        icon: RiVipCrownLine,
+      },
       // REACT
       {
         id: crypto.randomUUID(),
@@ -179,18 +179,18 @@ export const sideBarItems: MenuItem_TP[] = [
           },
           // REACT
           // سندات الفروع
-          // {
-          //   id: crypto.randomUUID(),
-          //   label: 'branch bonds 2',
-          //   link: "/branch-bonds-react",
-          //   icon: CiExport,
-          // },
-          // {
-          //   id: crypto.randomUUID(),
-          //   label: 'return bonds 2',
-          //   link: "/return-bonds-react",
-          //   icon: CiExport,
-          // },
+          {
+            id: crypto.randomUUID(),
+            label: 'branch bonds 2',
+            link: "/branch-bonds-react",
+            icon: CiExport,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: 'return bonds 2',
+            link: "/return-bonds-react",
+            icon: CiExport,
+          },
           // REACT
         ]
   },

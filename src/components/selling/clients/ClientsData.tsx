@@ -150,6 +150,7 @@ const ClientsData = () => {
     },
     onError: (err) => {
       console.log(err)
+      notify("error", err?.response?.data?.message)
     }
       
   })

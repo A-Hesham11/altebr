@@ -189,7 +189,7 @@ const TableOfWeightAdjustmentPreview = ({
           <h2>{t("total edited weight")}</h2>
           <input
             type="number"
-            value={totalEditedWeight} 
+            placeholder={totalEditedWeight} 
             onChange={(e) => {
               setInputValue(e.target.value);
               // if (+weightDifferencePerWeight !== 0) {

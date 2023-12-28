@@ -57,6 +57,7 @@ export const BuyingTable = ({
     endpoint: `/employee/api/max-buy-user`,
     queryKey: ["maxingUser"],
   });
+  console.log("🚀 ~ file: BuyingTable.tsx:60 ~ maxingUser:", maxingUser)
 
   const { data: taxes, isLoading: loadingTaxs } = useFetch({
     endpoint: `/selling/api/v1/tax-include/${userData?.branch_id}?per_page=10000`,

@@ -10,7 +10,7 @@ import { SelectBranches } from "../../../components/templates/reusableComponants
 import SelectCategory from "../../../components/templates/reusableComponants/categories/select/SelectCategory";
 import { useFetch } from "../../../hooks";
 
-const SearchFilter = ({ getSearchResults }) => {
+const SearchFilter = ({ getSearchResults, refetch }) => {
   const initailSearchValues = {
     id: "",
     hwya: "",
@@ -235,7 +235,10 @@ const SearchFilter = ({ getSearchResults }) => {
             {/* BUTTONS */}
             <div className="flex mt-6 gap-4 justify-end">
               <Button
-                action={() => handleResetForm(formik)}
+                action={() => {
+                  handleResetForm(formik)
+                  refetch()
+                }}
                 className="bg-mainGreen text-white"
               >
                 تفريغ البحث
