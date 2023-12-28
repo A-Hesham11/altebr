@@ -533,7 +533,7 @@ export const GoldItemCodingForm = ({
                   action={submitForm}
                   className="mt-8 mr-auto flex"
                 >
-                  تأكيد
+                  {t("confirm")}
                 </Button>
               </>
             )}

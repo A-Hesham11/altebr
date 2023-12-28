@@ -27,9 +27,7 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
     const isSanadOpened = selectedItem.bond_status !== 0
     const { userData } = useContext(authCtx)
     const [selectedRows, setSelectedRows] = useState<any>([])
-    console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:30 ~ RecieveItemsSecondScreen ~ selectedRows:", selectedRows)
     const [dataSource, setDataSource] = useState({})
-    console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:31 ~ RecieveItemsSecondScreen ~ dataSource:", dataSource)
     const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectAll, setSelectAll] = useState(false)
@@ -407,13 +405,20 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
                                     item_id: item.item_id,
                                     weight: item.weight,
                                     wage: item.wage,
+                                    front: item.front,
                                     id: +selectedItem?.id
                                 }));
 
                                 const receivedFinalValue = {
                                     id: selectedItem?.id,
                                     branch_id: userData?.branch_id,
-                                    allItems: selectedItem.items.map(item => item.hwya),
+                                    // allItems: selectedItem.items.map(item => item.hwya),
+                                    allItems: selectedItem.items.map(item => {
+                                            return {
+                                                hwya: item.hwya,
+                                                front:item.front
+                                            }
+                                        }),
                                     items: selectedItems,
                                     entity_gold_price: selectedItem?.entity_gold_price,
                                     api_gold_price: selectedItem?.api_gold_price,
@@ -421,6 +426,7 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
                                     // acceptAll: selectedItem.items.length === selectedRows.length ? true : false,
                                     // media: files
                                 }
+                                console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:423 ~ RecieveItemsSecondScreen ~ receivedFinalValue:", receivedFinalValue)
                                 isSanadOpened ?
                                     mutateReceived({
                                         endpointName: 'branchManage/api/v1/accept-items',
@@ -458,6 +464,7 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
                                     item_id: item.item_id,
                                     weight: item.weight,
                                     wage: item.wage,
+                                    front: item.front,
                                     id: +selectedItem?.id
                                 }));
                                 const rejectFinalValue = {
@@ -470,6 +477,7 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
                                     allRejected: (selectedItem.items.length === selectedRows.length && isItRefusedAllBtn) ? true : false,
                                     ...(isItRefusedAllBtn ? { media: files } : {})
                                 }
+                                console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:480 ~ RecieveItemsSecondScreen ~ rejectFinalValue:", rejectFinalValue)
                                 setSelectedRows([])
                                 mutateReject({
                                     endpointName: 'branchManage/api/v1/reject-items',
