@@ -10,11 +10,13 @@ console.log("🚀 ~ file: ItemDetailsTable.tsx:9 ~ ItemDetailsTable ~ selectedIt
 
     const selectedItemDetails = Array.isArray(selectedItem)
         ?
-        selectedItem?.filter((item: any) => item.id === selectedRowDetailsId)[0]?.detailsItem
+            selectedItem?.filter((item: any) => item.id === selectedRowDetailsId)[0]?.detailsItem
         :
-        selectedItem?.items?.filter((item: any) => selectedItem?.id === selectedRowDetailsId)[0]?.detailsItem
+            selectedItem?.items?.filter((item: any) => selectedItem?.id === selectedRowDetailsId)[0]?.detailsItem
+
     const detailsWeightOfItem = selectedItem?.items?.filter((item: any) => item?.id === selectedRowDetailsId)[0]?.weightitems
-    const images = selectedItemDetails && selectedItemDetails[0]?.attachment
+
+    const images = selectedItemDetails[0]?.attachment
 
     const Cols = useMemo<any>(() => [
         {

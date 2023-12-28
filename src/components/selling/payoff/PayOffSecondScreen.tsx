@@ -40,6 +40,7 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
   /////////// CUSTOM HOOKS
   ///
   const [dataSource, setDataSource] = useState([])
+  console.log("🚀 ~ file: PayOffSecondScreen.tsx:43 ~ PayOffSecondScreen ~ dataSource:", dataSource)
   const [selectedRows, setSelectedRows] = useState<any>([])
   const [disableSelectedCheckAfterSendById, setDisableSelectedCheckAfterSendById] = useState([])
   const [selectAll, setSelectAll] = useState(false)
@@ -294,7 +295,7 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
             <Button
               bordered
               onClick={() => {
-                selectedRows.length ?
+                selectedRows?.length ?
                   setRetrieveOpenModal(true)
                   :
                   notify('info', `${t('choose item at least')}`)
@@ -306,7 +307,7 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
     }
 
     <Modal isOpen={openDetailsModal} onClose={() => setOpenDetailsModal(false)}>
-      <ItemDetailsTable selectedItem={selectedItem.items} selectedRowDetailsId={selectedRowDetailsId} />
+      <ItemDetailsTable selectedItem={selectedItem?.items} selectedRowDetailsId={selectedRowDetailsId} />
     </Modal>
     <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
       <div className="flex flex-col items-center justify-center gap-y-4" >
@@ -326,11 +327,18 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
                       front:item.front
                   }
                 }),
-                items: allRows,
+                items: selectedItem.items.map(item => {
+                  return {
+                      hwya: item.hwya,
+                      front:item.front
+                  }
+                }),
+                // items: allRows,
                 entity_gold_price: selectedItem?.entity_gold_price,
                 api_gold_price: selectedItem?.api_gold_price,
                 type: selectedItem?.type,
               }
+              console.log("🚀 ~ file: PayOffSecondScreen.tsx:334 ~ PayOffSecondScreen ~ receivedFinalValue:", receivedFinalValue)
               mutate({
                 endpointName: "branchManage/api/v1/restriction-items-rejected",
                 values: receivedFinalValue
@@ -354,7 +362,7 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
           <Button
             onClick={() => {
               const retrieveFinalValue = {
-                items: selectedRows.map(item => item.hwya),
+                items: selectedRows?.map(item => item.hwya),
               }
               mutateRetrieve({
                 endpointName: "branchManage/api/v1/change-status-after-mardod",

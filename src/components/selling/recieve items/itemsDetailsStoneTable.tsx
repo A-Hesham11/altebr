@@ -4,9 +4,9 @@ import { useMemo } from "react"
 
 export const ItemDetailsStoneTable = ({selectedItem,selectedRowDetailsId}:{selectedItem:any,selectedRowDetailsId:number}) => {
   const selectedItemDetails = Array.isArray(selectedItem) ? 
-   selectedItem.filter((item:any)=> item.id === selectedRowDetailsId)[0]?.detailsItem?.map(stone=>stone.stonesDetails)[0]
+   selectedItem?.filter((item:any)=> item.id === selectedRowDetailsId)[0]?.detailsItem?.map(stone=>stone?.stonesDetails)[0]
    : 
-   selectedItem.items.filter((item:any)=> selectedItem.id === selectedRowDetailsId)[0]?.detailsItem?.map(stone=>stone.stonesDetails)[0]
+   selectedItem?.items?.filter((item:any)=> selectedItem?.id === selectedRowDetailsId)[0]?.detailsItem?.map(stone=>stone?.stonesDetails)[0]
 
   const Cols = useMemo<any>(() => [
     {
@@ -57,7 +57,7 @@ export const ItemDetailsStoneTable = ({selectedItem,selectedRowDetailsId}:{selec
 ],
     []
 )
-    if (!selectedItemDetails.length) return <h2 className="text-center font-bold text-xl mt-16 text-mainGreen" >{t('there are no stones in this item')}</h2>
+    if (!selectedItemDetails?.length) return <h2 className="text-center font-bold text-xl mt-16 text-mainGreen" >{t('there are no stones in this item')}</h2>
   return (
     <div>
         <p className="text-center mb-2 bg-green-200" >{t('stone details')}</p>

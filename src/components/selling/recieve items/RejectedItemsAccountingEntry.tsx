@@ -147,12 +147,12 @@ export const RejectedItemsAccountingEntry = ({ sanadId, isInPopup, setStage }: R
                         computational_movement: box.computational_movement
                     }
                 }),
-                allboxes: contract.data[0].rejected_allboxes,
-                items: contract.data[0].rejected_items
+                allboxes: contract?.data[0]?.rejected_allboxes,
+                items: contract?.data[0]?.rejected_items
             }
         },
         onSuccess(data) {
-            setDataSource(data.items)
+            setDataSource(data?.items)
         },
         onError: (error) => {
             error &&
