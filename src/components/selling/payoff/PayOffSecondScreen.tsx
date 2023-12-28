@@ -117,13 +117,18 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
   },
     {
       cell: (info: any) => info.getValue() || "---",
-      accessorKey: "classification_id",
+      accessorKey: "classification_name",
       header: () => <span>{t("classification")}</span>,
     },
     {
       cell: (info: any) => info.getValue() || "---",
-      accessorKey: "karat_id",
+      accessorKey: "karat_name",
       header: () => <span>{t("karat")}</span>,
+    },
+    {
+      cell: (info: any) => info.getValue() || "---",
+      accessorKey: "weight",
+      header: () => <span>{t("weight")}</span>,
     },
     {
       cell: (info: any) => info.getValue() || "---",
@@ -314,7 +319,13 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
               const receivedFinalValue = {
                 id: selectedItem?.id,
                 branch_id: userData?.branch_id,
-                allItems: selectedItem.items.map(item => item.hwya),
+                // allItems: selectedItem.items.map(item => item.hwya),
+                allItems: selectedItem.items.map(item => {
+                  return {
+                      hwya: item.hwya,
+                      front:item.front
+                  }
+                }),
                 items: allRows,
                 entity_gold_price: selectedItem?.entity_gold_price,
                 api_gold_price: selectedItem?.api_gold_price,
