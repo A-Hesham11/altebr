@@ -5,7 +5,7 @@ import TarqeemTotals from "./TarqeemTotals";
 import SearchFilter from "./SearchFilter";
 import TableOfIdentities from "./TableOfIdentities";
 import OperationType from "./OperationType";
-import { useNavigate } from "react-router-dom";
+import { json, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Loading } from "../../../components/organisms/Loading";
 import { useFetch } from "../../../hooks";
@@ -21,12 +21,25 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [dataSource, setDataSource] = useState([]);
   const [page, setPage] = useState(1);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
+  // const [operationTypeSelect, setOperationTypeSelect] = useState(() => {
+  //   const storedData = localStorage.getItem("operationTypeSelect");
+
+  //   return storedData ? JSON.parse(storedData) : [];
+  // });
+  console.log(
+    "🚀 ~ file: CodedIdentities.tsx:24 ~ CodedIdentities ~ operationTypeSelect:",
+    operationTypeSelect
+  );
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [search, setSearch] = useState("");
   const [isSuccessPost, setIsSuccessPost] = useState(false);
   const [fetchEndPoint, setFetchEndPoint] = useState(
-    `identity/api/v1/pieces_in_edara?`
+    `identity/api/v1/pieces_in_edara`
+  );
+  console.log(
+    "🚀 ~ file: CodedIdentities.tsx:31 ~ CodedIdentities ~ fetchEndPoint:",
+    fetchEndPoint
   );
 
   const shouldCheck = operationTypeSelect.length === 0;
@@ -38,6 +51,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       setCheckboxChecked(false);
     }
   }, [shouldCheck]);
+
+  // useEffect(() => {
+  //   localStorage.setItem("operationTypeSelect", JSON.stringify(operationTypeSelect))
+  // }, [operationTypeSelect])
 
   // FETCHING DATA FROM API
   const { data, isLoading, isFetching, isRefetching, refetch } = useFetch({
@@ -58,30 +75,30 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   // HANDLE BRANCH
   const handleBranch = () => {
     setFetchKey(["branch-hwya"]);
-    setFetchEndPoint(`identity/api/v1/pieces_in_branch?`);
+    setFetchEndPoint(`identity/api/v1/pieces_in_branch`);
   };
 
   // HANDLE WAY TO BRANCH
   const handleWayToBranch = () => {
     setFetchKey(["way-to-branch-hwya"]);
-    setFetchEndPoint(`identity/api/v1/way_to_branch?`);
+    setFetchEndPoint(`identity/api/v1/way_to_branch`);
   };
 
   // HANDLE WAY TO EDARA
   const handleWayToEdara = () => {
     setFetchKey(["way-to-edara-hwya"]);
-    setFetchEndPoint(`identity/api/v1/way_to_edara?`);
+    setFetchEndPoint(`identity/api/v1/way_to_edara`);
   };
 
   // HANDLE PIECE BY WEIGHT
   const handlePieceByWeight = () => {
     setFetchKey(["piece_by_weight"]);
-    setFetchEndPoint(`identity/api/v1/ItemWeight?`);
+    setFetchEndPoint(`identity/api/v1/ItemWeight`);
   };
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
-    let url = `${fetchEndPoint}`;
+    let url = `${fetchEndPoint}?`;
     let first = false;
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
@@ -236,14 +253,17 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       </div>
 
       {/* SEARCH FILTER */}
-      <SearchFilter getSearchResults={getSearchResults} />
+      <SearchFilter getSearchResults={getSearchResults} refetch={refetch} />
 
       {/* TABLE OF IDENTITIES */}
       <div className="flex flex-col gap-4 mt-8">
         <Button
           action={() => {
             // setCheckboxChecked(false)
+            refetch();
+            setPage(1)
             setOperationTypeSelect([]);
+            // localStorage.clear()
           }}
           className="bg-mainGreen text-white self-end"
         >
@@ -254,6 +274,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           setPage={setPage}
           page={page}
           fetchKey={fetchKey}
+          operationTypeSelect={operationTypeSelect}
           setOperationTypeSelect={setOperationTypeSelect}
           checkboxChecked={checkboxChecked}
           setCheckboxChecked={setCheckboxChecked}
@@ -263,6 +284,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       {/* OPERATION TYPE */}
       {(activeClass === "قطع بالوزن" || activeClass === "هويات في الإدارة") && (
         <OperationType
+          refetch={refetch}
+          setOperationTypeSelect={setOperationTypeSelect}
           setIsSuccessPost={setIsSuccessPost}
           operationTypeSelect={operationTypeSelect}
         />

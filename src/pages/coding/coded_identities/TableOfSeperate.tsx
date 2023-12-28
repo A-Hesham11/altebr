@@ -1,11 +1,17 @@
-import { t } from 'i18next';
-import React, { useMemo, useState } from 'react'
-import { useFetch } from '../../../hooks';
-import { Table } from '../../../components/templates/reusableComponants/tantable/Table';
+import { t } from "i18next";
+import React, { useMemo, useState } from "react";
+import { useFetch } from "../../../hooks";
+import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
+import { numberContext } from "../../../context/settings/number-formatter";
 
-const TableOfSeperate = () => {
+const TableOfSeperate = ({ operationTypeSelect }) => {
+  console.log(
+    "🚀 ~ file: TableOfSeperate.tsx:7 ~ TableOfSeperate ~ operationTypeSelect:",
+    operationTypeSelect
+  );
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [dataSource, setDataSource] = useState([]);
+  const { formatReyal } = numberContext();
 
   // FETCHING DATA FROM API
   const {
@@ -25,52 +31,69 @@ const TableOfSeperate = () => {
     () => [
       {
         cell: (info: any) => info.getValue(),
-        accessorKey: "invoice_number", // THIS WILL CHANGE
-        header: () => <span>{t("hwya")}</span>,
+        accessorKey: "hwya", // THIS WILL CHANGE
+        header: () => <span>{t("taqm code")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
-        accessorKey: "client_name",
+        accessorKey: "classification_name",
         header: () => <span>{t("classification")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
-        accessorKey: "invoice_date",
-        header: () => <span>{t("category")}</span>,
-      },
-      {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "employee_name",
+        accessorKey: "karat_name",
         header: () => <span>{t("karat")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
-        accessorKey: "employee_name",
+        accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "employee_name",
+        cell: (info: any) => {
+          return (
+            Number(formatReyal(info.row.original.weight)) *
+            Number(formatReyal(info.row.original.wage))
+          );
+        },
+        accessorKey: "wage_geram/ryal",
         header: () => <span>{t("wage geram/ryal")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
-        accessorKey: "employee_name",
-        header: () => <span>{t("total wage by ryal")}</span>,
+        accessorKey: "wage",
+        header: () => <span>{t("total wage by gram")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "employee_name",
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "employee_name",
+        cell: (info: any) => {
+          // return info.getValue()[0]?.diamondWeight || "-";
+          const stonesDetails = info
+            .getValue()
+            .reduce((acc: number, curr: any) => {
+              return acc + curr.diamondWeight;
+            }, 0);
+
+          return stonesDetails === 0 ? "-" : stonesDetails;
+        },
+        accessorKey: "stonesDetails",
         header: () => <span>{t("weight of diamond stone")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "employee_name",
+        cell: (info: any) => {
+          const stonesDetails = info
+            .getValue()
+            .reduce((acc: number, curr: any) => {
+              return acc + curr.weight;
+            }, 0);
+
+            return stonesDetails === 0 ? "-" : stonesDetails;
+        },
+        accessorKey: "stonesDetails",
         header: () => <span>{t("stone weight")}</span>,
       },
     ],
@@ -82,11 +105,15 @@ const TableOfSeperate = () => {
       <h2 className="text-xl ml-4 mb-2 font-bold text-slate-700">
         {t("selected pieces")}
       </h2>
-      <Table data={dataSource || []} columns={tableColumn}>
-        <div className="text-xl text-center ml-4 mb-2 font-bold text-slate-700">{t("no combined pieces were selected for separation")}</div>
+      <Table data={operationTypeSelect || []} columns={tableColumn}>
+        {operationTypeSelect.length === 0 && (
+          <div className="text-xl text-center ml-4 mb-2 font-bold text-slate-700">
+            {t("no combined pieces were selected for separation")}
+          </div>
+        )}
       </Table>
     </div>
   );
-}
+};
 
-export default TableOfSeperate
+export default TableOfSeperate;

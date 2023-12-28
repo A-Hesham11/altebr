@@ -1028,5 +1028,10 @@
   "buying invoice number": "رقم فاتورة الشراء",
   "there is no pieces available": "لا يوجد قطع متاحه",
   "enter value greater than zero": "ادخل وزن اكبر من الصفر",
-  "return bonds 2": "سندات المردود 2"
+  "return bonds 2": "سندات المردود 2",
+  "taqm code": "كود الطقم",
+  "total wage by gram": "اجمالي الاجرة بالجرام",
+  "You can only select one identity to separate": "يجب اختبار طقم واحد للقيام بالفصل",
+  "must select taqm": "يجب اختيار طقم",
+  "total edited weight greater than available weight": "اجمالي الوزن المعدل اكبر من الوزن المتاح"
 }

@@ -15,6 +15,9 @@ const TransformToBranch = ({
   operationTypeSelect,
   setOpenTransformToBranchModal,
   setIsSuccessPost,
+  refetch,
+  setOperationTypeSelect,
+  setOpenSeperateModal,
 }: any) => {
   const { formatReyal } = numberContext();
   const [selectedOption, setSelectedOption] = useState("normal"); // Initialize the selected option.
@@ -203,10 +206,7 @@ const TransformToBranch = ({
     },
   ];
 
-  const {
-    mutate,
-    isLoading: thwelLoading,
-  } = useMutate({
+  const { mutate, isLoading: thwelLoading } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["thwel-api"],
     onSuccess: (data) => {
@@ -251,8 +251,7 @@ const TransformToBranch = ({
           return;
         }
 
-        // CLOSE THE POPUP
-        setOpenTransformToBranchModal(false);
+        
 
         PostNewValue({
           Branch: values.branch_id.toString(),
@@ -276,6 +275,9 @@ const TransformToBranch = ({
           }),
           // media: files
         });
+
+        setOpenTransformToBranchModal(false);
+        setOperationTypeSelect([])
       }}
     >
       <Form>

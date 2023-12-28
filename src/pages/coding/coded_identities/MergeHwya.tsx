@@ -7,13 +7,17 @@ import { Button } from "../../../components/atoms";
 import { useFetch, useMutate } from "../../../hooks";
 import { notify } from "../../../utils/toast";
 import { mutateData } from "../../../utils/mutateData";
+import { Loading } from "../../../components/organisms/Loading";
 
 const MergeHwya = ({
   operationTypeSelect,
   setOpenTransformToBranchModal,
   setIsSuccessPost,
+  setOperationTypeSelect,
+  mergeModal,
 }: any) => {
   const [mergeIds, setMergeIds] = useState([]);
+  const [taqm, setTaqm] = useState([]);
   const [selectValue, setSelectValue] = useState("");
 
   const initialValues = {
@@ -69,7 +73,13 @@ const MergeHwya = ({
   }, []);
 
   // SEPERATE MULTI SELECT OF TAQM
-  const { data: taqm, refetch } = useFetch({
+  const {
+    data: taqming,
+    refetch,
+    isLoading: taqmLoading,
+    isRefetching: isTaqmReftching,
+    isFetching: isTaqmFetching,
+  } = useFetch({
     endpoint: `/identity/api/v1/api-tqm-items/${selectValue}`,
     queryKey: ["taqm"],
     select: (category: any) =>
@@ -78,6 +88,7 @@ const MergeHwya = ({
         value: item.id,
         label: item.name,
       })),
+    onSuccess: (data) => setTaqm(data),
     onError: (err) => console.log(err),
   });
 
@@ -85,6 +96,10 @@ const MergeHwya = ({
   useEffect(() => {
     refetch();
   }, [selectValue]);
+
+  useEffect(() => {
+    setTaqm([]);
+  }, [mergeModal]);
 
   return (
     <Formik
@@ -103,62 +118,67 @@ const MergeHwya = ({
           items: mergeIds,
         });
 
+        setOperationTypeSelect([]);
       }}
     >
-      <Form>
-        <div className="flex flex-col gap-10 mt-6">
-          <h2>
-            <span className="text-xl ml-4 font-bold text-slate-700">
-              {t("identity and numbering management")}
-            </span>
-            <span>{t("merging identities")}</span>
-          </h2>
+      {(values) => {
+        return (
+          <Form>
+            <div className="flex flex-col gap-10 mt-6">
+              <h2>
+                <span className="text-xl ml-4 font-bold text-slate-700">
+                  {t("identity and numbering management")}
+                </span>
+                <span>{t("merging identities")}</span>
+              </h2>
 
-          {/* TABLE OF merging identities */}
-          <TableOfMerging operationTypeSelect={operationTypeSelect} />
+              {/* TABLE OF merging identities */}
+              <TableOfMerging operationTypeSelect={operationTypeSelect} />
 
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-lg ml-4 mb-2 font-bold text-slate-700 col-span-1">
-              {t("classification group")}
-            </h2>
-            <div className="w-72">
-              <Select
-                id="category"
-                isDisabled={operationTypeSelect.length === 0}
-                name="category_id"
-                placeholder={`${t("category")}`}
-                loadingPlaceholder={`${t("loading")}`}
-                options={filterMulty}
-                loading={isLoading}
-                onChange={(option: any) => setSelectValue(option?.value)}
-              />
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-lg ml-4 mb-2 font-bold text-slate-700 col-span-1">
+                  {t("classification group")}
+                </h2>
+                <div className="w-72">
+                  <Select
+                    id="category"
+                    isDisabled={operationTypeSelect.length === 0}
+                    name="category_id"
+                    placeholder={`${t("category")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={filterMulty}
+                    loading={isLoading}
+                    onChange={(option: any) => setSelectValue(option?.value)}
+                  />
+                </div>
+              </div>
+
+              {taqm?.length > 0 && (
+                <div className="flex gap-3 items-center">
+                  {taqm?.map((el: any) => {
+                    return (
+                      <p
+                        className="text-lg text-white rounded-md bg-mainGreen py-1 px-6"
+                        key={el?.id}
+                      >
+                        {el?.label}
+                      </p>
+                    );
+                  })}
+                </div>
+              )}
+
+              <Button
+                loading={mergeLoading}
+                type="submit"
+                className="bg-mainGreen text-white self-end"
+              >
+                {t("confirm")}
+              </Button>
             </div>
-          </div>
-
-          {taqm?.length > 0 && (
-            <div className="flex gap-3 items-center">
-              {taqm?.map((el: any) => {
-                return (
-                  <p
-                    className="text-lg text-white rounded-md bg-mainGreen py-1 px-6"
-                    key={el?.id}
-                  >
-                    {el?.label}
-                  </p>
-                );
-              })}
-            </div>
-          )}
-
-          <Button
-            loading={mergeLoading}
-            type="submit"
-            className="bg-mainGreen text-white self-end"
-          >
-            {t("confirm")}
-          </Button>
-        </div>
-      </Form>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };
