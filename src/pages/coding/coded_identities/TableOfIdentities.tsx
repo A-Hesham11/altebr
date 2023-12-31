@@ -24,6 +24,7 @@ const TableOfIdentities = ({
   const { formatReyal } = numberContext();
   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
+  console.log("🚀 ~ file: TableOfIdentities.tsx:27 ~ selectedItem:", selectedItem)
 
   const isChecked = (id) => operationTypeSelect.some((item) => item.id === id)
 

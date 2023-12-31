@@ -102,6 +102,7 @@ const OperationType = ({
             refetch={refetch}
             setPage={setPage}
             setOperationTypeSelect={setOperationTypeSelect}
+            seperateModal={seperateModal}
             setOpenSeperateModal={setOpenSeperateModal}
             setIsSuccessPost={setIsSuccessPost}
             operationTypeSelect={operationTypeSelect}

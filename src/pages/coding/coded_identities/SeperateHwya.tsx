@@ -17,7 +17,8 @@ const SeperateHwya = ({
   refetch,
   setPage,
   setOpenSeperateModal,
-  setOperationTypeSelect
+  setOperationTypeSelect,
+  seperateModal
 }) => {
   console.log(
     "🚀 ~ file: SeperateHwya.tsx:7 ~ SeperateHwya ~ operationTypeSelect:",
@@ -29,6 +30,8 @@ const SeperateHwya = ({
   );
   console.log("🚀 ~ file: SeperateHwya.tsx:24 ~ totalWeight:", totalWeight);
   const valuesOfForm = Object.values(formData);
+  const isAnyPieceEmpty = valuesOfForm.some((el) => (+el === 0 || el === ""))
+  console.log("🚀 ~ file: SeperateHwya.tsx:34 ~ isAnyPieceEmpty:", isAnyPieceEmpty)
   const totalOfValuesOfForm = valuesOfForm.reduce((acc: any, curr: any) => {
     return +acc + +curr;
   }, 0);
@@ -36,7 +39,7 @@ const SeperateHwya = ({
     "🚀 ~ file: SeperateHwya.tsx:142 ~ totalOfValuesOfForm ~ totalOfValuesOfForm:",
     totalOfValuesOfForm
   );
-
+  
   useEffect(() => {
     const formula = +operationTypeSelect[0]?.weight - +totalOfValuesOfForm;
     console.log(
@@ -44,7 +47,15 @@ const SeperateHwya = ({
       formula
     );
     setTotalWeight(formula);
+
+    if (+formula < 0) {
+      notify("error", t("available weight is negative"))
+    }
   }, [totalOfValuesOfForm]);
+
+  // useEffect(() => {
+  //   setTotalWeight(+operationTypeSelect[0]?.weight)
+  // }, [seperateModal])
 
   const initialValues = {
     hwya: "",
@@ -165,6 +176,12 @@ const SeperateHwya = ({
                 );
 
                 console.log(formData);
+
+                console.log("🚀 ~ file: SeperateHwya.tsx:181 ~ isAnyPieceEmpty:", isAnyPieceEmpty)
+                if (isAnyPieceEmpty) {
+                  notify("error", t("type details weight per piece"))
+                  return;
+                }
 
                 if (totalOfValuesOfForm > +operationTypeSelect[0]?.weight) {
                   notify(
