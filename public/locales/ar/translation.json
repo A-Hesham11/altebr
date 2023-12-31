@@ -1034,5 +1034,7 @@
   "You can only select one identity to separate": "يجب اختبار طقم واحد للقيام بالفصل",
   "must select taqm": "يجب اختيار طقم",
   "total edited weight greater than available weight": "اجمالي الوزن المعدل اكبر من الوزن المتاح",
-  "type weight": "ادخل الوزن"
+  "type weight": "ادخل الوزن",
+  "available weight is negative": "الوزن المتاح بالسالب",
+  "type details weight per piece": "ادخل الوزن التفصيلي لكل قطعه"
 }

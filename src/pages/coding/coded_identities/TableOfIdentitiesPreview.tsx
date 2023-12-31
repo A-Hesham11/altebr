@@ -186,6 +186,7 @@ const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
             <p>{item?.details}</p>
           </div>
         </Table>
+        <Table data={item?.damgDetails} columns={tableColumn}></Table>
       </div>
 
       {/* STONES */}

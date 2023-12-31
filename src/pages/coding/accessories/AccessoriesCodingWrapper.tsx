@@ -3,7 +3,7 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../../components/atoms";
 import { Modal } from "../../../components/molecules";
 import { useFetch, useLocalStorage, useMutate } from "../../../hooks";
@@ -33,6 +33,7 @@ export const AccessoriesCodingWrapper = ({
   /////////// VARIABLES
   ///
   const { sanadId } = useParams();
+  const navigate = useNavigate()
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
 
@@ -225,11 +226,10 @@ export const AccessoriesCodingWrapper = ({
               setOpenModal(false);
               setAddedPiecesLocal((prev) => (prev = []));
               setAddedPieces((prev) => (prev = []));
+              navigate("/coding-react")
             }}
           >
-            <a href="http://api-almehaisen.altebr.jewelry/identity/admin/identities?twrdStat[eq]=inedara">
               {t("go to identification management")}
-            </a>
           </Button>
         </div>
       </Modal>
