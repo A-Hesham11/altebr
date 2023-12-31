@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { ColumnDef } from "@tanstack/react-table";
@@ -68,12 +68,19 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
   const { formatGram, formatReyal } = numberContext();
   // const [endpointApi, setEndpointApi] = useState("");
   const [test, setTest] = useState(false);
+  const [constraintID, setConstraintID] = useState("")
+  console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:72 ~ TableOfReturnBondsModal ~ constraintID:", constraintID)
 
-  const { data: entryAccounting } = useFetch({
-    endpoint: `/identity/api/v1/accept/${item?.id}`,
+  const { data: entryAccounting, refetch: entryAccountingRefetch, isLoading, isFetching} = useFetch({
+    endpoint: `/identity/api/v1/accept/${constraintID && constraintID}`,
     queryKey: ["entry-accounting"],
-    enabled: test,
+    // enabled: test,
   });
+  console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:77 ~ TableOfReturnBondsModal ~ entryAccounting:", entryAccounting)
+
+  useEffect(() => {
+    entryAccountingRefetch()
+  }, [constraintID])
 
   // COLUMNS FOR THE TABLE OF DETAILS BOND DETAILS
   const tableColumn = useMemo<any>(
@@ -176,6 +183,7 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
           : 0,
     })
   );
+  console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:186 ~ TableOfReturnBondsModal ~ restrictions:", restrictions)
 
   // group by account
   const restrictionsWithoutTotals = restrictions?.reduce(
@@ -268,8 +276,11 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
         <Button
           action={() => {
             setTest(true);
+            setConstraintID(item?.id)
+            entryAccountingRefetch()
           }}
           className="bg-mainGreen text-white w-max mx-auto mt-8"
+          loading={isFetching}
         >
           {t("recieve pieces")}
         </Button>
