@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const NavBar = ({ isInSelling = false }: { isInSelling?: boolean }) => {
   const { logOutHandler, isLoggingOut, userData } = useContext(authCtx);
+  console.log("🚀 ~ file: NavBar.tsx:12 ~ NavBar ~ userData:", userData)
   const navigate = useNavigate();
 
   const isRTL = useIsRTL();
