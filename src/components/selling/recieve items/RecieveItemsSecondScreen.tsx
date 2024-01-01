@@ -137,7 +137,7 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
         },
         {
             cell: (info: any) => info.getValue() || '---',
-            accessorKey: "category_name",
+            accessorKey: "category",
             header: () => <span>{t("category")}</span>,
         },
         {

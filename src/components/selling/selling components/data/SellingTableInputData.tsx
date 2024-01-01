@@ -64,7 +64,6 @@ export const SellingTableInputData = ({
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] = useState("")
 
   const { userData } = useContext(authCtx)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ userData:", userData)
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100 ;
   
@@ -233,6 +232,8 @@ export const SellingTableInputData = ({
         if (dataSource?.length === 1) {
           setFieldValue(key, dataSource[0][key]);
 
+          setFieldValue("cost", dataSource[0]?.cost?.toFixed(2));
+          
           setFieldValue("weight", dataSource[0]?.remaining_weight);
           
           if (values.classification_id === 1) {
@@ -241,7 +242,7 @@ export const SellingTableInputData = ({
             setFieldValue("karatmineral_name", dataSource[0]?.karatmineral_name);
           }
 
-          setFieldValue("taklfa", priceWithSellingPolicy.toFixed(2));
+          setFieldValue("taklfa", priceWithSellingPolicy?.toFixed(2));
           setFieldValue(
             "taklfa_after_tax",
             (priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy).toFixed(2)
@@ -502,7 +503,7 @@ export const SellingTableInputData = ({
                 type="text"
                 required
                 onChange={(e) => {
-                  setFieldValue("taklfa", values?.taklfa);
+                  setFieldValue("taklfa", (values?.taklfa).toFixed(2));
                   setFieldValue(
                     "taklfa_after_tax",
                     (+e.target.value * TaxRateOfBranch + +e.target.value).toFixed(2)
