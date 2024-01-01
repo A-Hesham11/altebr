@@ -8,7 +8,10 @@ import { BiLinkExternal } from "react-icons/bi";
 import { numberContext } from "../../../context/settings/number-formatter";
 
 const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ file: TableOfIdentitiesPreview.tsx:11 ~ TableOfIdentitiesPreview ~ item:", item)
+  console.log(
+    "🚀 ~ file: TableOfIdentitiesPreview.tsx:11 ~ TableOfIdentitiesPreview ~ item:",
+    item
+  );
   const { formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE OF DETAILS
@@ -156,9 +159,9 @@ const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
     <div>
       {/* SLIDE */}
       <div className="mt-14 mx-auto">
-        {item?.images.length > 0 ? (
+        {item?.images?.length > 0 ? (
           <Slider {...sliderSettings}>
-            {item?.images.map((item: any) => (
+            {item?.images?.map((item: any) => (
               <img
                 className="w-full h-full object-cover"
                 src={item?.preview}
@@ -178,21 +181,23 @@ const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
         <h2 className="mb-4 text-center w-max border border-slate-300 py-2 px-3 rounded-md mx-auto bg-gray-200">
           {t("pieces details")}
         </h2>
-        <Table data={[item]} columns={tableColumn}>
+        <Table data={[item] || []} columns={tableColumn}>
           <div className="flex gap-4 items-center">
-            <h2 className="text-lg font-bold text-slate-700">
+            <h2 className="text-lg mb-4 font-bold text-slate-700">
               {t("piece detail:")}
             </h2>
-            <p>{item?.details}</p>
+            <p >{item?.details}</p>
           </div>
         </Table>
-        {/* <Table data={item?.damgDetails} columns={tableColumn}></Table> */}
+        {item?.damgDetails && (
+          <Table data={item?.damgDetails || []} columns={tableColumn}></Table>
+        )}
       </div>
 
       {/* STONES */}
       <div className="mt-14 mx-auto">
-        {item?.stonesDetails.length > 0 ? (
-          <Table data={item?.stonesDetails} columns={tableColumnStones}>
+        {item?.stonesDetails?.length > 0 ? (
+          <Table data={item?.stonesDetails || []} columns={tableColumnStones}>
             {/* <div className="flex gap-4 items-center">
               <h2 className="text-lg font-bold text-slate-700">
                 {t("stone description")}

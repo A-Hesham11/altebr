@@ -52,7 +52,7 @@ export const NumberFormatterProvider = ({
     // enabled: false, // >>>> Remove this
     endpoint: "companySettings/api/v1/companysettings/key/before_init",
     queryKey: ["digits_count"],
-    select: (digits_countObj) => ({ value: digits_countObj.value }),
+    select: (digits_countObj) => ({ value: digits_countObj?.value }),
     onSuccess: (digits_count) => {
       setStoredDigitsCount(JSON.parse(`${digits_count.value}`))
     },

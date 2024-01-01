@@ -195,7 +195,7 @@ const SeperateHwya = ({
                   category_id: operationTypeSelect[0]?.id,
                   items: operationTypeSelect[0]?.id,
                   weights:
-                    valuesOfForm.length === 0
+                    valuesOfForm?.length === 0
                       ? operationTypeSelect[0]?.category_items.map(
                           (item) => `${item.item_weight}`
                         )
