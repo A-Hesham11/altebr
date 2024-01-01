@@ -160,7 +160,7 @@ export const BranchMainData = ({
               name="market_number"
               type="number"
               placeholder={`${t("market number")}`}
-              defaultValue={editData && editData.market_number}
+              defaultValue={editData && editData?.market_number}
             />
           </div>
           {/* market number  end */}
@@ -173,7 +173,7 @@ export const BranchMainData = ({
               name="main_address"
               type="text"
               placeholder={`${t("address")}`}
-              defaultValue={editData && editData.nationalAddress.address}
+              defaultValue={editData && editData?.nationalAddress?.address}
             />
           </div>
           {/* address  end */}
@@ -186,7 +186,7 @@ export const BranchMainData = ({
               name="phone"
               type="text"
               placeholder={`${t("phone")}`}
-              defaultValue={editData && editData.phone}
+              defaultValue={editData && editData?.phone}
             />
           </div>
           {/* phone end */}

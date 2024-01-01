@@ -8,12 +8,13 @@ import Cookies from "js-cookie";
 import i18n from "../i18n";
 
 const baseURL =
-  import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
+  // import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
+  import.meta.env.VITE_BASE_URL || "http://api-almehaisen.altebr.jewelry";
 
 const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 
 const client = axios.create({
-  baseURL,
+  baseURL, 
 });
 
 export const request = async <T>(

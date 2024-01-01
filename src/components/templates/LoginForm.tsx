@@ -67,8 +67,10 @@ export const LoginForm = () => {
         </h1>
         <Formik                                                                                                                             
           initialValues={{
-            email: "emp@emp.com",
-            password: "alexon123456@$!acdfdsas",
+            // email: "emp@emp.com",
+            // password: "alexon123456@$!acdfdsas",
+            email: "",
+            password: "",
           }}
           validationSchema={loginSchema}
           onSubmit={(values) => {

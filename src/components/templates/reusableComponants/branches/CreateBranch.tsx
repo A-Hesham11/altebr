@@ -59,11 +59,11 @@ export const CreateBranch = ({
     main_address: editData ? editData.address : "",
 
     // national address data
-    building_number: editData ? editData.nationalAddress.building_number : "",
-    street_number: editData ? editData.nationalAddress.street_number : "",
-    sub_number: editData ? editData.nationalAddress.sub_number : "",
-    address: editData ? editData.nationalAddress.address : "",
-    zip_code: editData ? editData.nationalAddress.zip_code : "",
+    building_number: editData ? editData?.nationalAddress?.building_number : "",
+    street_number: editData ? editData.nationalAddress?.street_number : "",
+    sub_number: editData ? editData.nationalAddress?.sub_number : "",
+    address: editData ? editData.nationalAddress?.address : "",
+    zip_code: editData ? editData.nationalAddress?.zip_code : "",
     // document type
     docType: "",
     docName: "",
@@ -151,7 +151,7 @@ export const CreateBranch = ({
               country_id: values.country_id,
               city_id: values.city_id,
               district_id: values.district_id,
-              building_number: values.building_number,
+              building_number: values?.building_number,
               street_number: values.street_number,
               sub_number: values.sub_number,
               zip_code: values.zip_code,
