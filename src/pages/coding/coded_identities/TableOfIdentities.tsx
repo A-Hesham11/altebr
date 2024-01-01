@@ -166,8 +166,8 @@ const TableOfIdentities = ({
         cell: (info: any) => (
           <BsEye
             onClick={() => {
-              setOpenIdentitiesModal(true);
               setSelectedItem(info.row.original);
+              setOpenIdentitiesModal(true);
             }}
             size={23}
             className="text-mainGreen mx-auto cursor-pointer"
@@ -200,7 +200,7 @@ const TableOfIdentities = ({
   return (
     <>
       <div className="">
-        <Table data={dataSource.data || []} columns={tableColumn}>
+        <Table data={dataSource?.data || []} columns={tableColumn}>
           <div className="mt-3 flex items-center justify-center gap-5 p-2">
             <div className="flex items-center gap-2 font-bold">
               {t("page")}
