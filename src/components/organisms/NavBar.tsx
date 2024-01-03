@@ -6,10 +6,13 @@ import { useIsRTL } from "../../hooks";
 import { Button } from "../atoms";
 import logo from "../../assets/altebr_logo.png";
 import { useNavigate } from "react-router-dom";
+import undefinedImgUser from "../../assets/blank-person-image.png";
+
 
 const NavBar = ({ isInSelling = false }: { isInSelling?: boolean }) => {
   const { logOutHandler, isLoggingOut, userData } = useContext(authCtx);
   console.log("🚀 ~ file: NavBar.tsx:12 ~ NavBar ~ userData:", userData)
+
   const navigate = useNavigate();
 
   const isRTL = useIsRTL();
@@ -23,6 +26,8 @@ const NavBar = ({ isInSelling = false }: { isInSelling?: boolean }) => {
   const toggleLang = () => {
     i18n.changeLanguage(isRTL ? "en" : "ar");
   };
+  
+  const loginUserImage = (userData?.image && Object.keys(userData.image).length !== 0) ? userData.image : undefinedImgUser;
 
   return (
     <div className="w-100 flex h-16 items-center justify-between px-4">
@@ -64,23 +69,15 @@ const NavBar = ({ isInSelling = false }: { isInSelling?: boolean }) => {
           </Button>
           <div className="flex items-center justify-center gap-2 bg-flatWhite rounded w-28 py-1">
             <h6 className="m-0">{userData?.name}</h6>
-            {userData?.image ? (
-              <img
-                src={userData?.image}
-                alt="User Image"
-                className="w-7 h-7 rounded-full"
-              />
-            ) : (
-              <img
-                src="/src/assets/blank-person-image.png"
-                className="w-7 h-7 rounded-full"
-                alt="undefined User Image"
-              />
-            )}
+            <img
+              src={loginUserImage}
+              alt="User Image"
+              className="w-7 h-7 rounded-full"
+            />
           </div>
           <h6 className="m-0 text-mainGreen">
             <span className="font-bold text-black">{t("branch")}</span>:
-            {userData?.branch?.name}
+            {userData?.branch?.name || userData?.branch_name}
           </h6>
           {/* <IoIosArrowDown className="h-4 w-4 fill-mainBlack" /> */}
           <Button
@@ -109,9 +106,8 @@ export default NavBar;
 // import logo from "../../assets/altebr_logo.png";
 // import { useNavigate } from "react-router-dom";
 // import logout from "../../assets/logout.svg";
-// import person from "../../assets/blank-person-image.png";
 // import language from "../../assets/language.svg";
-
+// import undefinedImgUser from "../../assets/blank-person-image.png";
 
 // const NavBar = ({ isInSelling = false }: { isInSelling?: boolean }) => {
 //   const { logOutHandler, isLoggingOut, userData } = useContext(authCtx);
@@ -129,6 +125,8 @@ export default NavBar;
 //   const toggleLang = () => {
 //     i18n.changeLanguage(isRTL ? "en" : "ar");
 //   };
+
+//   const loginUserImage = (userData?.image && Object.keys(userData.image).length !== 0) ? userData.image : undefinedImgUser;
 
 //   return (
 //     <div className="w-100 flex h-16 items-center justify-between px-12">
@@ -156,7 +154,7 @@ export default NavBar;
 //           </Button>
 //           <div className="flex items-center gap-3">
 //             <div className="w-[38px] h-[38px] border-2 border-[#969696] rounded-full flex items-center justify-center">
-//               <img src={person} className="h-[22px] w-[22px]" alt="user"/>
+//               <img src={loginUserImage} className="h-[22px] w-[22px]" alt="user"/>
 //             </div>
 //             <div>
 //               <p className="text-[#414345] font-bold text-base">{userData?.name}</p>

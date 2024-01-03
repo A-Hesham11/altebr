@@ -8,13 +8,14 @@ import Cookies from "js-cookie";
 import i18n from "../i18n";
 
 const baseURL =
-  // import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
-  import.meta.env.VITE_BASE_URL || "http://api-almehaisen.altebr.jewelry";
+  import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
+//  import.meta.env.VITE_BASE_URL || "http://api-almehaisen.altebr.jewelry";
 
 const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 
 const client = axios.create({
-  baseURL, 
+  baseURL,
+  // withCredentials: true,
 });
 
 export const request = async <T>(
@@ -38,8 +39,10 @@ export const request = async <T>(
       headers: {
         "Content-Type": `application/json`,
         "Accept-Language": lang,
-        ...options.headers,
         Authorization: `Bearer ${token}`,
+        "Cache-Control": "no-cache",
+        "Access-Control-Allow-Credentials": true,
+        ...options.headers,
       },
     });
     return onSuccess(response);
