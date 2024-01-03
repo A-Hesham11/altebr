@@ -68,6 +68,8 @@ export const AccessoriesCodingSanadFormHandler = ({
   activeBand,
   setActiveBand,
 }: AccessoryCodingSanadFormHandlerProps_TP) => {
+  console.log("🚀 ~ file: AccessoriesCodingSanadFormHandler.tsx:71 ~ selectedSanad:", selectedSanad)
+  console.log("🚀 ~ file: AccessoriesCodingSanadFormHandler.tsx:71 ~ activeBand:", activeBand)
   const itemsCount = addedPieces.filter(piece=> piece?.band_id === activeBand?.id)
   /////////// VARIABLES
   ///
