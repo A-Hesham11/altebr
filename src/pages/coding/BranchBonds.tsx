@@ -40,7 +40,7 @@ export const BranchBonds = ({ title }: BranchBondsProps_TP) => {
         <title>{title}</title>
       </Helmet>
       <a
-        href="http://api-almehaisen.altebr.jewelry/identity/admin/thwelbonds"
+        href="https://api-almehaisen.altebr.jewelry/identity/admin/thwelbonds"
         ref={link}
       ></a>
     </>

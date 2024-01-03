@@ -17,7 +17,6 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
     karat_id: "",
     bond_id: "",
     category_id: "",
-    wage: "",
     country_id: "",
     created_at: "",
     coding_date_from: "",
@@ -148,13 +147,6 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
                   label={t("classification")}
                 />
               </div>
-              <BaseInputField
-                id="wage"
-                label={`${t("wage")}`}
-                name="wage"
-                type="text"
-                placeholder={`${t("wage")}`}
-              />
               <div className="">
                 <Select
                   id="country_id"

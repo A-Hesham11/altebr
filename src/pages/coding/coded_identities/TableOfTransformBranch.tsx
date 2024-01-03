@@ -138,8 +138,7 @@ const TableOfTransformBranch = ({
       <h2 className="text-xl ml-4 mb-2 font-bold text-slate-700">
         {t("selected pieces")}
       </h2>
-      <Table data={operationTypeSelect || []} columns={tableColumn}>
-        <div className="mt-3 flex items-center justify-center gap-5 p-2"></div>
+      <Table showNavigation data={operationTypeSelect || []} columns={tableColumn}>
       </Table>
     </div>
   );

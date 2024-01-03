@@ -6,13 +6,18 @@ import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import { BiLinkExternal } from "react-icons/bi";
 import { numberContext } from "../../../context/settings/number-formatter";
+import { BaseInputField } from "../../../components/molecules";
+import { Form, Formik } from "formik";
+import { initialValues } from "../../System";
 
 const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
   console.log(
     "🚀 ~ file: TableOfIdentitiesPreview.tsx:11 ~ TableOfIdentitiesPreview ~ item:",
-    item
+    item?.category_items
   );
   const { formatReyal } = numberContext();
+
+  const initialValues = {};
 
   // COLUMNS FOR THE TABLE OF DETAILS
   const tableColumn = useMemo<any>(
@@ -177,22 +182,54 @@ const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
       </div>
 
       {/* TABLE */}
-      <div className="mt-8">
-        <h2 className="mb-4 text-center w-max border border-slate-300 py-2 px-3 rounded-md mx-auto bg-gray-200">
-          {t("pieces details")}
-        </h2>
-        <Table data={[item] || []} columns={tableColumn}>
-          <div className="flex gap-4 items-center">
-            <h2 className="text-lg mb-4 font-bold text-slate-700">
-              {t("piece detail:")}
-            </h2>
-            <p >{item?.details}</p>
-          </div>
-        </Table>
-        {item?.damgDetails && (
-          <Table data={item?.damgDetails || []} columns={tableColumn}></Table>
-        )}
-      </div>
+      <Formik
+        className="mt-8"
+        onSubmit={(values) => {
+          console.log(values);
+        }}
+        initialValues={initialValues}
+      >
+        {(values) => {
+          return (
+            <>
+              <Form className="grid grid-cols-1 md:grid-cols-4 my-8  gap-8">
+                {item?.category_items?.map((el: any) => {
+                  return (
+                    <BaseInputField
+                      id={`item_${el.id}`}
+                      className="bg-mainDisabled"
+                      key={el.id}
+                      placeholder={el.item_weight}
+                      label={`${el.child}`}
+                      disabled={true}
+                      name={`item_${el.id}`}
+                      type="text"
+                    />
+                  );
+                })}
+              </Form>
+
+              <h2 className="mb-4 text-center w-max border border-slate-300 py-2 px-3 rounded-md mx-auto bg-gray-200">
+                {t("pieces details")}
+              </h2>
+              <Table data={[item] || []} columns={tableColumn}>
+                <div className="flex gap-4 items-center">
+                  <h2 className="text-lg mb-4 font-bold text-slate-700">
+                    {t("piece detail:")}
+                  </h2>
+                  <p>{item?.details}</p>
+                </div>
+              </Table>
+              {item?.damgDetails && (
+                <Table
+                  data={item?.damgDetails || []}
+                  columns={tableColumn}
+                ></Table>
+              )}
+            </>
+          );
+        }}
+      </Formik>
 
       {/* STONES */}
       <div className="mt-14 mx-auto">

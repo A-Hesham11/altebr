@@ -168,7 +168,7 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
   );
 
   // FOR TABLE ACCOUNTING ENTRY
-  let restrictions = item.boxes?.map(
+  let restrictions = entryAccounting?.boxes?.map(
     ({ account, computational_movement, unit_id, value }) => ({
       bian: account,
       debtor_gram:
@@ -267,7 +267,7 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
       </div>
 
       {/* ACCOUNTING ENTRY */}
-      {item?.is_accept === 1 ? (
+      {entryAccounting?.is_accept === 1 ? (
         <div className="mt-6">
           <h2 className="text-xl mb-5 font-bold">{t("accounting entry")}</h2>
           <Table data={restrictions} footered columns={cols2} />
@@ -280,7 +280,7 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
             entryAccountingRefetch()
           }}
           className="bg-mainGreen text-white w-max mx-auto mt-8"
-          loading={isFetching}
+          // loading={isFetching}
         >
           {t("recieve pieces")}
         </Button>

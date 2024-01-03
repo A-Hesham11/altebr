@@ -1,5 +1,11 @@
 import { t } from "i18next";
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { Button } from "../../../components/atoms";
 import { Form, Formik, useFormikContext } from "formik";
@@ -26,7 +32,10 @@ const TableOfWeightAdjustmentPreview = ({
   setWeightModal,
   setOperationTypeSelect,
 }: TableOfWeightAdjustmentPreview_TP) => {
-  console.log("🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:29 ~ inputWeight:", inputWeight)
+  console.log(
+    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:29 ~ inputWeight:",
+    inputWeight
+  );
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
@@ -42,7 +51,6 @@ const TableOfWeightAdjustmentPreview = ({
   const weightDifferencePerWeight = (+weightDifference / item.length).toFixed(
     2
   );
-  
 
   // const [inputValue2, setInputValue2] = useState();
 
@@ -189,7 +197,7 @@ const TableOfWeightAdjustmentPreview = ({
           <h2>{t("total edited weight")}</h2>
           <input
             type="number"
-            placeholder={totalEditedWeight} 
+            placeholder={totalEditedWeight}
             onChange={(e) => {
               setInputValue(e.target.value);
               // if (+weightDifferencePerWeight !== 0) {
@@ -207,69 +215,113 @@ const TableOfWeightAdjustmentPreview = ({
         </div>
         <Button
           type="submit"
-          action={() => {
-            if (
-              inputValue == 0 ||
-              inputWeight.some((el) => el?.value == "" || el?.value == 0)
-            ) {
-              notify("error", t("enter value greater than zero"));
-              return;
+          // action={() => {
+          //   if (
+          //     inputValue == 0 ||
+          //     inputWeight.some((el) => el?.value == "" || el?.value == 0)
+          //   ) {
+          //     notify("error", t("enter value greater than zero"));
+          //     return;
+          //   }
+
+          //   console.log({
+          //     invoice: {
+          //       branch_id: userData?.branch_id,
+          //       invoice_date: formatDate(new Date()),
+          //       count: item?.length,
+          //       employee_id: item[0]?.employee_id,
+          //       invoice_number: listEditedInvoice?.length,
+          //     },
+          //     items: item.map((el, i) => {
+          //       if (inputValue !== totalEditedWeight) {
+          //         return {
+          //           id: el.id,
+          //           // weight: Number(inputWeight[i].value),
+          //           weight: +finalValue[i].toFixed(2),
+          //         };
+          //       } else {
+          //         return {
+          //           id: el.id,
+          //           // weight: Number(inputWeight[i].value),
+          //           weight: Number(inputWeight[i]?.value) || 0,
+          //         };
+          //       }
+          //     }),
+          //   });
+
+          // PostNewValue({
+          //     invoice: {
+          //       branch_id: userData?.branch_id,
+          //       invoice_date: formatDate(new Date()),
+          //       count: item?.length,
+          //       employee_id: item[0]?.employee_id,
+          //       invoice_number: listEditedInvoice?.length,
+          //     },
+          //     items: item.map((el, i) => {
+          //       if (inputValue !== totalEditedWeight) {
+          //         return {
+          //           id: el.id,
+          //           // weight: Number(inputWeight[i].value),
+          //           weight: +finalValue[i].toFixed(2),
+          //         };
+          //       } else {
+          //         return {
+          //           id: el.id,
+          //           // weight: Number(inputWeight[i].value),
+          //           weight: Number(inputWeight[i]?.value) || 0,
+          //         };
+          //       }
+          //     }),
+          //   });
+
+          //   setWeightModal(false);
+          //   setOperationTypeSelect([]);
+          //   setInputWeight([]);
+          //   navigate("/buying/weightAdjustmentBonds/");
+          // }}
+
+          action={async () => {
+            try {
+              if (
+                inputValue == 0 ||
+                inputWeight.some((el) => el?.value == "" || el?.value == 0)
+              ) {
+                notify("error", t("enter value greater than zero"));
+                return;
+              }
+
+              const postData = {
+                invoice: {
+                  branch_id: userData?.branch_id,
+                  invoice_date: formatDate(new Date()),
+                  count: item?.length,
+                  employee_id: item[0]?.employee_id,
+                  invoice_number: listEditedInvoice?.length,
+                },
+                items: item.map((el, i) => {
+                  if (inputValue !== totalEditedWeight) {
+                    return {
+                      id: el.id,
+                      weight: +finalValue[i].toFixed(2),
+                    };
+                  } else {
+                    return {
+                      id: el.id,
+                      weight: Number(inputWeight[i]?.value) || 0,
+                    };
+                  }
+                }),
+              };
+
+              await PostNewValue(postData);
+
+              setWeightModal(false);
+              setOperationTypeSelect([]);
+              setInputWeight([]);
+              navigate("/buying/weightAdjustmentBonds/");
+            } catch (error) {
+              notify("error", error);
             }
-
-            console.log({
-              invoice: {
-                branch_id: userData?.branch_id,
-                invoice_date: formatDate(new Date()),
-                count: item?.length,
-                employee_id: item[0]?.employee_id,
-                invoice_number: listEditedInvoice?.length,
-              },
-              items: item.map((el, i) => {
-                if (inputValue !== totalEditedWeight) {
-                  return {
-                    id: el.id,
-                    // weight: Number(inputWeight[i].value),
-                    weight: +finalValue[i].toFixed(2),
-                  };
-                } else {
-                  return {
-                    id: el.id,
-                    // weight: Number(inputWeight[i].value),
-                    weight: Number(inputWeight[i]?.value) || 0,
-                  };
-                }
-              }),
-            });
-
-            PostNewValue({
-              invoice: {
-                branch_id: userData?.branch_id,
-                invoice_date: formatDate(new Date()),
-                count: item?.length,
-                employee_id: item[0]?.employee_id,
-                invoice_number: listEditedInvoice?.length,
-              },
-              items: item.map((el, i) => {
-                if (inputValue !== totalEditedWeight) {
-                  return {
-                    id: el.id,
-                    // weight: Number(inputWeight[i].value),
-                    weight: +finalValue[i].toFixed(2),
-                  };
-                } else {
-                  return {
-                    id: el.id,
-                    // weight: Number(inputWeight[i].value),
-                    weight: Number(inputWeight[i]?.value) || 0,
-                  };
-                }
-              }),
-            });
-
-            setWeightModal(false);
-            setOperationTypeSelect([]);
-            setInputWeight([]);
-            navigate("/buying/weightAdjustmentBonds/");
           }}
           className="bg-mainGreen text-white self-end"
         >
