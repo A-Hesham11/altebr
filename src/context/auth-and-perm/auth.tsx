@@ -109,6 +109,7 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     endpoint: "/employee/api/employee/details",
     queryKey: ["userData"],
     onSuccess: (data) => {
+      console.log("🚀 ~ file: auth.tsx:114 ~ AuthCtxProvider ~ data:", data)
       updateLocalUserData("ADD", data)
     },
     staleTime: Infinity,

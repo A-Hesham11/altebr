@@ -49,6 +49,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ selectedItemDetails:", selectedItemDetails)
   console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth)
   console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ sellingItemsData:", sellingItemsData)
   console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ dataSource:", dataSource)
@@ -61,6 +62,7 @@ export const SellingTableInputData = ({
   const [page, setPage] = useState<number>(1)
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState("")
+  console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ editSellingTaklfa:", editSellingTaklfa)
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] = useState("")
 
   const { userData } = useContext(authCtx)
@@ -233,7 +235,7 @@ export const SellingTableInputData = ({
           setFieldValue(key, dataSource[0][key]);
 
           setFieldValue("cost", dataSource[0]?.cost?.toFixed(2));
-          
+
           setFieldValue("weight", dataSource[0]?.remaining_weight);
           
           if (values.classification_id === 1) {
@@ -303,12 +305,12 @@ export const SellingTableInputData = ({
   }, [search])
 
   useEffect(() => {
-    setEditSellingTaklfa(values?.taklfa)
-  }, [values?.weight])
+    setEditSellingTaklfa(+values?.taklfa)
+  }, [values?.weight, priceWithSellingPolicy])
 
   useEffect(() => {
-    setEditSellingTaklfaAfterTax(values?.taklfa_after_tax)
-  }, [values?.weight])
+    setEditSellingTaklfaAfterTax(+values?.taklfa_after_tax)
+  }, [values?.weight, priceWithSellingPolicy])
 
   return (
     <Form className="overflow-y-auto">
@@ -503,7 +505,7 @@ export const SellingTableInputData = ({
                 type="text"
                 required
                 onChange={(e) => {
-                  setFieldValue("taklfa", (values?.taklfa).toFixed(2));
+                  setFieldValue("taklfa", (+values?.taklfa).toFixed(2));
                   setFieldValue(
                     "taklfa_after_tax",
                     (+e.target.value * TaxRateOfBranch + +e.target.value).toFixed(2)
@@ -807,6 +809,7 @@ export const SellingTableInputData = ({
                       : priceWithCommissionCash;
 
                       const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
+                      console.log("🚀 ~ file: SellingTableInputData.tsx:811 ~ taklfaAfterTax:", taklfaAfterTax)
 
                       const checkedFromWeight = selectedItemDetails?.every((item) => item.weight !== "")
 
@@ -830,9 +833,10 @@ export const SellingTableInputData = ({
                         setOpenDetails(false);
 
                       }
+                        console.log("🚀 ~ file: SellingTableInputData.tsx:836 ~ +values?.taklfa:", +values?.taklfa)
 
-                      setEditSellingTaklfa(values?.taklfa)
-                      setEditSellingTaklfaAfterTax(values?.taklfa_after_tax)
+                      setEditSellingTaklfa(+priceWithSellingPolicy)
+                      setEditSellingTaklfaAfterTax(+priceWithSellingPolicy)
                     }}
                   >
                     {`${t("confirm")}`}

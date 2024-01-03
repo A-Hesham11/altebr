@@ -46,7 +46,7 @@ export const useFetch = <T, ComingTP = T>({ ...args }: Args_TP<T, ComingTP>) => 
     enabled,
     onSuccess,
     onError: (err: CError_TP) => {
-      if (err.response.status === HttpStatusCode.Unauthorized) {
+      if (err?.response?.status === HttpStatusCode.Unauthorized) {
         frontLogOutHandler()
         return
       }
