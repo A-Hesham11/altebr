@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Loading } from "../../../components/organisms/Loading";
 import { useFetch } from "../../../hooks";
 import { Back } from "../../../utils/utils-components/Back";
+import { formatDate } from "../../../utils/date";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -33,7 +34,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ file: CodedIdentities.tsx:36 ~ CodedIdentities ~ search:", search)
+  console.log(
+    "🚀 ~ file: CodedIdentities.tsx:36 ~ CodedIdentities ~ search:",
+    search
+  );
   const [isSuccessPost, setIsSuccessPost] = useState(false);
   const [fetchEndPoint, setFetchEndPoint] = useState(
     `identity/api/v1/pieces_in_edara`
@@ -99,15 +103,32 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
+    console.log(
+      "🚀 ~ file: CodedIdentities.tsx:102 ~ getSearchResults ~ req:",
+      req
+    );
     let url = `${fetchEndPoint}?`;
     let first = false;
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
         if (first) {
-          url += `?${key}[eq]=${req[key]}`;
+          if (key === "created_at")
+            url += `?cAt[lk]=${formatDate(req[key])}`;
+          else if (key === "coding_date_from")
+            url += `?cAt[gte]=${formatDate(req[key])}`;
+          else if (key === "coding_date_to")
+            url += `?cAt[lte]=${formatDate(req[key])}`;
+          else url += `?${key}[eq]=${req[key]}`;
+
           first = false;
         } else {
-          url += `&${key}[eq]=${req[key]}`;
+          if (key === "created_at")
+            url += `&cAt[lk]=${formatDate(req[key])}`;
+          else if (key === "coding_date_from")
+            url += `&cAt[gte]=${formatDate(req[key])}`;
+          else if (key === "coding_date_to")
+            url += `&cAt[lte]=${formatDate(req[key])}`;
+          else url += `&${key}[eq]=${req[key]}`;
         }
       }
     });

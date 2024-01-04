@@ -1,15 +1,20 @@
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { BaseInputField, InnerFormLayout } from "../../../components/molecules";
+import {
+  BaseInputField,
+  InnerFormLayout,
+  Select,
+} from "../../../components/molecules";
 import { Form, Formik } from "formik";
 import TableOfTransformBranch from "./TableOfTransformBranch";
 import { Button } from "../../../components/atoms";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { notify } from "../../../utils/toast";
 import { SelectBranches } from "../../../components/templates/reusableComponants/branches/SelectBranches";
-import { useMutate } from "../../../hooks";
+import { useFetch, useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
+import { SelectOption_TP } from "../../../types";
 
 const TransformToBranch = ({
   operationTypeSelect,
@@ -236,6 +241,29 @@ const TransformToBranch = ({
     });
   }, []);
 
+  const {
+    data: branchesOptions,
+    isLoading: branchesLoading,
+    refetch: refetchBranches,
+    failureReason: branchesErrorReason,
+  } = useFetch<SelectOption_TP[]>({
+    endpoint: "branch/api/v1/branches?per_page=10000",
+    queryKey: ["branches"],
+    select: (branches) =>
+      branches.map((branch) => {
+        return {
+          id: branch.id,
+          value: branch.name || "",
+          label: branch.name || "",
+        };
+      }),
+    onError: (err) => console.log(err),
+  });
+
+  const filterBranchesOptions = branchesOptions?.filter(
+    (branch: any) => branch.id !== 1
+  );
+
   return (
     <Formik
       validationSchema=""
@@ -250,8 +278,6 @@ const TransformToBranch = ({
           notify("info", "قم بكتابة سعر الدهب");
           return;
         }
-
-        
 
         PostNewValue({
           Branch: values.branch_id.toString(),
@@ -277,7 +303,7 @@ const TransformToBranch = ({
         });
 
         setOpenTransformToBranchModal(false);
-        setOperationTypeSelect([])
+        setOperationTypeSelect([]);
       }}
     >
       <Form>
@@ -347,7 +373,17 @@ const TransformToBranch = ({
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 items-end gap-6">
                   <div className="col-span-1">
-                    <SelectBranches required name="branch_id" />
+                    {/* <SelectBranches required name="branch_id" /> */}
+                    <div className="">
+                      <Select
+                        id="branch_id"
+                        label={`${t("branches")}`}
+                        name="branch_id"
+                        placeholder={`${t("branches")}`}
+                        loadingPlaceholder={`${t("loading")}`}
+                        options={filterBranchesOptions}
+                      />
+                    </div>
                   </div>
 
                   <BaseInputField
