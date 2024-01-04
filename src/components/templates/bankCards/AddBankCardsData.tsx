@@ -54,6 +54,7 @@ const AddBankCardsData = ({
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   const [accountNumberId, setAccountNumberId] = useState();
+  console.log("🚀 ~ file: AddBankCardsData.tsx:57 ~ accountNumberId:", accountNumberId)
 
   const [card, setCard] = useState("");
 
@@ -173,7 +174,7 @@ const AddBankCardsData = ({
     },
     onError: (error) => {
       console.log(error);
-      notify("error");
+      notify("error", error.response.data.message);
     },
   });
 

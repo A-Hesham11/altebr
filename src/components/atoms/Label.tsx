@@ -53,7 +53,7 @@ const label = tv({
       lg: "text-lg",
     },
     required: {
-      true: 'after:content-["*"] after:text-mainRed after:me-1',
+      // true: 'after:content-["*"] after:text-mainRed after:me-1',
     },
   },
   defaultVariants: {

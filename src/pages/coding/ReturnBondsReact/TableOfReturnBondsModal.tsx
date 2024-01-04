@@ -5,8 +5,10 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { ColumnDef } from "@tanstack/react-table";
 import { Box_TP } from "../../supply/Bond";
 import { Button } from "../../../components/atoms";
-import { useFetch } from "../../../hooks";
+import { useFetch, useMutate } from "../../../hooks";
 import { notify } from "../../../utils/toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { mutateData } from "../../../utils/mutateData";
 
 type TableRow_TP = {
   itemType: string;
@@ -60,27 +62,55 @@ type Entry_TP = {
 };
 
 const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
-  console.log(
-    "🚀 ~ file: TableOfReturnBondsModal.tsx:62 ~ TableOfReturnBondsModal ~ item:",
-    item
-  );
+console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:63 ~ TableOfReturnBondsModal ~ item:", item)
 
   const { formatGram, formatReyal } = numberContext();
   // const [endpointApi, setEndpointApi] = useState("");
   const [test, setTest] = useState(false);
+  console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:68 ~ TableOfReturnBondsModal ~ test:", test)
   const [constraintID, setConstraintID] = useState("")
   console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:72 ~ TableOfReturnBondsModal ~ constraintID:", constraintID)
 
-  const { data: entryAccounting, refetch: entryAccountingRefetch, isLoading, isFetching} = useFetch({
-    endpoint: `/identity/api/v1/accept/${constraintID && constraintID}`,
-    queryKey: ["entry-accounting"],
-    // enabled: test,
-  });
-  console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:77 ~ TableOfReturnBondsModal ~ entryAccounting:", entryAccounting)
+  // const { data: entryAccounting, refetch: entryAccountingRefetch, isLoading, isFetching } = useFetch({
+  //   endpoint: `/identity/api/v1/accept/${constraintID}`,
+  //   queryKey: ["entry-accounting"],
+  //   // enabled: test === true,
+  // });
 
-  useEffect(() => {
-    entryAccountingRefetch()
-  }, [constraintID])
+  function PostNewCard(values) {
+    mutate({
+      endpointName: "/identity/api/v1/accept",
+      values: {
+        id: values,
+      },
+      method: "post",
+    });
+  }
+
+  const queryClient = useQueryClient();
+
+  const {
+    mutate,
+    isLoading: editLoading,
+    data: cardsData,
+    isSuccess: isSuccessData,
+    reset,
+  } = useMutate({
+    mutationFn: mutateData,
+    mutationKey: ["entryAccounting"],
+    onSuccess: (data) => {
+      notify("success");
+      queryClient.refetchQueries(["entry-accounting"]);
+    },
+    onError: (error) => {
+      console.log(error);
+      notify("error", error.response.data.message);
+    },
+  });
+
+  // useEffect(() => {
+  //   refetch()
+  // }, [isSuccessData])
 
   // COLUMNS FOR THE TABLE OF DETAILS BOND DETAILS
   const tableColumn = useMemo<any>(
@@ -124,18 +154,6 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
     []
   );
 
-  // COLUMNS FOR THE TABLE OF DETAILS BOND DETAILS
-  //   const tableColumnAccountingEntry = useMemo<any>(
-  //     () => [
-  //       {
-  //         cell: (info: any) => info.getValue() || "-",
-  //         accessorKey: "hwya",
-  //         header: () => <span>{t("hwya")}</span>,
-  //       },
-  //     ],
-  //     []
-  //   );
-
   const cols2 = useMemo<ColumnDef<Entry_TP>[]>(
     () => [
       {
@@ -167,8 +185,12 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
     []
   );
 
+  // const restrictionsData = entryAccounting ? entryAccounting : item;
+
+  // const restrictionsBoxes = entryAccounting ? entryAccounting?.boxes : item?.boxes;
+
   // FOR TABLE ACCOUNTING ENTRY
-  let restrictions = entryAccounting?.boxes?.map(
+  let restrictions = item?.boxes?.map(
     ({ account, computational_movement, unit_id, value }) => ({
       bian: account,
       debtor_gram:
@@ -183,7 +205,6 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
           : 0,
     })
   );
-  console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:186 ~ TableOfReturnBondsModal ~ restrictions:", restrictions)
 
   // group by account
   const restrictionsWithoutTotals = restrictions?.reduce(
@@ -267,7 +288,7 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
       </div>
 
       {/* ACCOUNTING ENTRY */}
-      {entryAccounting?.is_accept === 1 ? (
+      {item?.is_accept === 1 ? (
         <div className="mt-6">
           <h2 className="text-xl mb-5 font-bold">{t("accounting entry")}</h2>
           <Table data={restrictions} footered columns={cols2} />
@@ -277,7 +298,9 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
           action={() => {
             setTest(true);
             setConstraintID(item?.id)
-            entryAccountingRefetch()
+            PostNewCard(item?.id)
+            // entryAccountingRefetch()
+            refetch()
           }}
           className="bg-mainGreen text-white w-max mx-auto mt-8"
           // loading={isFetching}

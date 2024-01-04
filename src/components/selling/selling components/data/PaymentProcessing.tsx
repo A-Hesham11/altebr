@@ -46,6 +46,7 @@ console.log("🚀 ~ file: PaymentProcessing.tsx:43 ~ PaymentProcessing ~ costRem
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [editData, setEditData] = useState<Payment_TP>();
+  console.log("🚀 ~ file: PaymentProcessing.tsx:49 ~ PaymentProcessing ~ editData:", editData)
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
@@ -78,10 +79,11 @@ console.log("🚀 ~ file: PaymentProcessing.tsx:43 ~ PaymentProcessing ~ costRem
 
   const totalPriceInvoice = sellingItemsData?.reduce((total, item) => +total + +item.taklfa_after_tax, 0)
 
-  const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax ,0)
-  console.log("🚀 ~ file: PaymentProcessing.tsx:82 ~ PaymentProcessing ~ amountRemaining:", amountRemaining)
+  const editDataAmount = editData ? editData?.amount : 0;
 
-  const costRemaining =  totalPriceInvoice ? (totalPriceInvoice - amountRemaining) : costRemainingHonest ? (costRemainingHonest) : (totalApproximateCost - amountRemaining)
+  const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax - +editDataAmount ,0)
+
+  const costRemaining =  totalPriceInvoice ? (totalPriceInvoice - amountRemaining ) : costRemainingHonest ? (costRemainingHonest) : (totalApproximateCost - amountRemaining)
 
   return (
     <>

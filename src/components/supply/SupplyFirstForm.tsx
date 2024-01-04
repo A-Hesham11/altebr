@@ -45,18 +45,32 @@ export const SupplyFirstForm = ({
   ///
   // fetch gold price api to set it as default price
   // fetch buyer api 
-  const { data: employees, isLoading: employeesLoading, failureReason: employeeError, refetch: refetchEmployee } = useFetch<SelectOption_TP[], Employee_TP[]>
+  // const { data: employees, isLoading: employeesLoading, failureReason: employeeError, refetch: refetchEmployee } = useFetch<SelectOption_TP[], Employee_TP[]>
+  //   ({
+  //     endpoint: "employee/api/v1/employees?per_page=10000",
+  //     queryKey: ["employees"],
+  //     select: (employess) => employess.map((employee) => {
+  //       return {
+  //         id: employee.id,
+  //         value: employee.name,
+  //         label: employee.name,
+  //         name: employee.name
+  //       }
+  //     })
+  //   })
+  //   console.log("🚀 ~ file: SupplyFirstForm.tsx:49 ~ employees:", employees)
+
+    const { data: employees, isLoading: employeesLoading, failureReason: employeeError, refetch: refetchEmployee } = useFetch<SelectOption_TP[], Employee_TP[]>
     ({
       endpoint: "employee/api/v1/employees?per_page=10000",
       queryKey: ["employees"],
-      select: (employess) => employess.map((employee) => {
-        return {
-          id: employee.id,
-          value: employee.name,
-          label: employee.name,
-          name: employee.name
-        }
-      })
+      select: (employees) => employees.filter((employee) => employee?.branch?.id === 1)
+      .map((employee) => ({
+        id: employee.id,
+        value: employee.name,
+        label: employee.name,
+        name: employee.name
+      }))
     })
 
   const { data: suppliers, isLoading: suppliersLoading, failureReason: suppliersErrorReason, refetch: refetchSupplier } = useFetch<SelectOption_TP[], Supplier_TP[]>

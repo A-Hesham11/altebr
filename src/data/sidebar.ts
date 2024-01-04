@@ -111,17 +111,17 @@ export const sideBarItems: MenuItem_TP[] = [
     label: 'coding',
     icon: CiExport,
     items: [
-      {
-        id: crypto.randomUUID(),
-        label: 'coded identities',
-        link: "/coding",
-        icon: RiVipCrownLine,
-      },
+      // {
+      //   id: crypto.randomUUID(),
+      //   label: 'coded identities',
+      //   link: "/coding",
+      //   icon: RiVipCrownLine,
+      // },
       // REACT
       // الهويات المرقمة
       {
         id: crypto.randomUUID(),
-        label: 'coded identities 2',
+        label: 'coded identities',
         link: "/coding-react",
         icon: RiVipCrownLine,
       },
@@ -152,10 +152,25 @@ export const sideBarItems: MenuItem_TP[] = [
     label: 'branches',
     icon: CiExport,
         items: [
+          // {
+          //   id: crypto.randomUUID(),
+          //   label: 'branch bonds',
+          //   link: "/branch-bonds",
+          //   icon: CiExport,
+          // },
+          
+          // REACT
+          // سندات الفروع
           {
             id: crypto.randomUUID(),
             label: 'branch bonds',
-            link: "/branch-bonds",
+            link: "/branch-bonds-react",
+            icon: CiExport,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: 'return bonds',
+            link: "/return-bonds-react",
             icon: CiExport,
           },
           {
@@ -176,20 +191,6 @@ export const sideBarItems: MenuItem_TP[] = [
                 icon: AiOutlineGold,
               },
             ],
-          },
-          // REACT
-          // سندات الفروع
-          {
-            id: crypto.randomUUID(),
-            label: 'branch bonds 2',
-            link: "/branch-bonds-react",
-            icon: CiExport,
-          },
-          {
-            id: crypto.randomUUID(),
-            label: 'return bonds 2',
-            link: "/return-bonds-react",
-            icon: CiExport,
           },
           // REACT
         ]

@@ -21,7 +21,7 @@ const SellingSecondpage = ({
 
   const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax ,0)
 
-  const costRemaining = +totalPriceInvoice.toFixed(1) - +amountRemaining.toFixed(1)
+  const costRemaining = +totalPriceInvoice?.toFixed(1) - +amountRemaining
 
    const handleSeccessedData = () => {
 
