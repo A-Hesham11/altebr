@@ -92,7 +92,8 @@ export function GoldTable({
         initialValues={defaultValues}
         onSubmit={(values, { resetForm, setFieldValue }) => {
           const uniqueID = crypto.randomUUID() // because i need the same id for both data of row and boxes
-          setData((prev) => [...Array.from(prev), { ...values, id: uniqueID }])
+          // setData((prev) => [...Array.from(prev), { ...values, id: uniqueID }])
+          setData((prev) => [...Array.from(prev), { ...values, id: uniqueID }].reverse());
           setEditRow(false)
           resetForm()
           setBoxValues((prev) => [

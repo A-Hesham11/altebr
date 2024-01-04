@@ -295,89 +295,8 @@ export const AccessoriesTableForm = ({
               </tr>
             ))}
           </thead>
-          <tbody className="">
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className={`${editRow && editData.id !== row.original.id
-                  ? "hidden cursor-not-allowed pointer-events-none"
-                  : "border-b-2 border-b-flatWhite"
-                  }`}
-              >
-                {row.getVisibleCells().map((cell, i) => {
 
-                  return ((i + 1) !== row.getVisibleCells().length) ? (
-                    <td
-                      key={cell.id}
-                      className="border-l-2 px-6 py-4 whitespace-nowrap border-l-flatWhite text-center bg-lightGray"
-                      style={{
-                        minWidth: "max-content",
-                      }}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ) : (
-                    <td className="flex px-6 py-5 bg-lightGreen gap-x-2 items-center">
-                      {!editRow && (
-                        <DeleteIcon
-                          action={() => deleteRowHandler(row.original.id)}
-                        />
-                      )}
-                      {editRow && editData.id === row.original.id ? (
-                        <button
-                          type="submit"
-                          className="relative active:top-[1px] py-2 px-2 font-bold rounded-md border-mainGreen border-2"
-                          onClick={() => {
-                            setEditRow(false)
-                            const index = data.findIndex(
-                              (item) => item.id === row.original.id
-                            )
-                            const updatedData = [...data]
-                            updatedData[index] = {
-                              ...editData,
-                              category_value: values.category_value || editData.category_value,
-                              weight: values.weight || editData.weight,
-                              gold_weight: values.gold_weight || editData.gold_weight,
-                              karat_value: values.karat_value || editData.karat_value,
-                              mineral_id: values.mineral_id || editData.mineral_id,
-                              mineral_value: values.mineral_value || editData.mineral_value,
-                              stock: values.stock || editData.stock,
-                              accessory_value: values.accessory_value || editData.accessory_value,
-                              accessory_amount: values.accessory_amount || editData.accessory_amount,
-                              accessory_weight: values.accessory_weight || editData.accessory_weight,
-                              accessory_value_ryal: values.accessory_value*factorialValue || editData.accessory_value*factorialValue,
-                              // diamond_amount: values.diamond_amount || editData.diamond_amount,
-                              // accessory_stone_weight: values.accessory_stone_weight || editData.accessory_stone_weight,
-                              other_stones_weight: values.other_stones_weight || editData.other_stones_weight,
-                              accessory_tax: values.accessory_tax || editData.accessory_tax,
-                            }
-                            setData(updatedData)
-                            setBoxValues(updatedData)
-                            resetForm()
-                            //resetting select field values
-                            editData.karat_value = ""
-                            editData.category_value = ""
-                          }}
-                        >
-                          {t("edit")}
-                        </button>
-                      ) : (
-                        <EditIcon
-                          action={() => {
-                            editRowHandler(row.original, row.original.id)
-                            enableReinitialize = true
-                            setEditRow(true)
-                            resetForm()
-                          }}
-                        />
-                      )}
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
-          </tbody>
-          <tfoot className="bg-lightGray">
+          <tbody className="bg-lightGray">
             {editRow ? (
               <tr>
                 <td className="text-center ">
@@ -614,6 +533,89 @@ export const AccessoriesTableForm = ({
                 </td>
               </tr>
             )}
+          </tbody>
+
+          <tfoot className="">
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                className={`${editRow && editData.id !== row.original.id
+                  ? "hidden cursor-not-allowed pointer-events-none"
+                  : "border-b-2 border-b-flatWhite"
+                  }`}
+              >
+                {row.getVisibleCells().map((cell, i) => {
+
+                  return ((i + 1) !== row.getVisibleCells().length) ? (
+                    <td
+                      key={cell.id}
+                      className="border-l-2 px-6 py-4 whitespace-nowrap border-l-flatWhite text-center bg-lightGray"
+                      style={{
+                        minWidth: "max-content",
+                      }}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ) : (
+                    <td className="flex px-6 py-5 bg-lightGreen gap-x-2 items-center">
+                      {!editRow && (
+                        <DeleteIcon
+                          action={() => deleteRowHandler(row.original.id)}
+                        />
+                      )}
+                      {editRow && editData.id === row.original.id ? (
+                        <button
+                          type="submit"
+                          className="relative active:top-[1px] py-2 px-2 font-bold rounded-md border-mainGreen border-2"
+                          onClick={() => {
+                            setEditRow(false)
+                            const index = data.findIndex(
+                              (item) => item.id === row.original.id
+                            )
+                            const updatedData = [...data]
+                            updatedData[index] = {
+                              ...editData,
+                              category_value: values.category_value || editData.category_value,
+                              weight: values.weight || editData.weight,
+                              gold_weight: values.gold_weight || editData.gold_weight,
+                              karat_value: values.karat_value || editData.karat_value,
+                              mineral_id: values.mineral_id || editData.mineral_id,
+                              mineral_value: values.mineral_value || editData.mineral_value,
+                              stock: values.stock || editData.stock,
+                              accessory_value: values.accessory_value || editData.accessory_value,
+                              accessory_amount: values.accessory_amount || editData.accessory_amount,
+                              accessory_weight: values.accessory_weight || editData.accessory_weight,
+                              accessory_value_ryal: values.accessory_value*factorialValue || editData.accessory_value*factorialValue,
+                              // diamond_amount: values.diamond_amount || editData.diamond_amount,
+                              // accessory_stone_weight: values.accessory_stone_weight || editData.accessory_stone_weight,
+                              other_stones_weight: values.other_stones_weight || editData.other_stones_weight,
+                              accessory_tax: values.accessory_tax || editData.accessory_tax,
+                            }
+                            setData(updatedData)
+                            setBoxValues(updatedData)
+                            resetForm()
+                            //resetting select field values
+                            editData.karat_value = ""
+                            editData.category_value = ""
+                          }}
+                        >
+                          {t("edit")}
+                        </button>
+                      ) : (
+                        <EditIcon
+                          action={() => {
+                            editRowHandler(row.original, row.original.id)
+                            enableReinitialize = true
+                            setEditRow(true)
+                            resetForm()
+                          }}
+                        />
+                      )}
+                    </td>
+                  )
+                })}
+              </tr>
+            ))}
           </tfoot>
         </table>
       </Form>

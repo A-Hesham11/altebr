@@ -90,7 +90,7 @@ const AddBankCards = ({
     },
     onError: (error) => {
       console.log(error);
-      notify("error");
+      notify("error", error.response.data.message);
     },
   });
 
