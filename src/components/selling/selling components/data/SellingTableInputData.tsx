@@ -81,7 +81,6 @@ export const SellingTableInputData = ({
   
   const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
 
-
   const { values, setFieldValue } = useFormikContext<any>();
 
   const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
@@ -163,6 +162,8 @@ export const SellingTableInputData = ({
         header: () => "#",
         accessorKey: "action",
         cell: (info: any) => {
+          console.log("🚀 ~ file: SellingTableInputData.tsx:184 ~ info:", info.row.original.status)
+          
           return (
             <div className="flex items-center justify-center gap-4">
               <input type="checkbox" className={`border-mainGreen text-mainGreen rounded bg-red-600' ${info.row.original.status && "bg-neutral-400"}`} 
@@ -170,9 +171,9 @@ export const SellingTableInputData = ({
                 name="selectedItem" 
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setSelectedItemDetails((prev) => [...prev, {...info.row.original, index:info.row.index}]);
+                      setSelectedItemDetails((prev) => [...prev, {...info.row.original, index:info.row.index}]);
                   } else {
-                    setSelectedItemDetails((prev) => prev.filter((item) => item.index !== info.row.index));
+                      setSelectedItemDetails((prev) => prev.filter((item) => item.index !== info.row.index));
                   }
                 }}  
                 disabled={info.row.original.status} 

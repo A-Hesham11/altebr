@@ -273,7 +273,7 @@ const ViewBankCardsData = () => {
             setDataSource={setDataSource}
             setShow={setOpen}
             isFetching={isFetching}
-            title={`${editData ? t("edit cards") : t("Add cards")}`}
+            title={`${editData ? t("edit card bank") : t("add card bank")}`}
             refetch={refetch}
             isSuccess={isSuccess}
           />
@@ -284,7 +284,7 @@ const ViewBankCardsData = () => {
             isFetching={isFetching}
             setDataSource={setDataSource}
             setShow={setOpen}
-            title={`${editData ? t("edit cards") : t("Add cards")}`}
+            title={`${editData ? t("edit card bank") : t("add card bank")}`}
             refetch={refetch}
             isSuccess={isSuccess}
           />

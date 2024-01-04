@@ -79,7 +79,6 @@ export const SelectBankAccount = ({
       }),
   })
 
-
   useEffect(() => {
     refetchBankAccount()
   }, [bankId?.id])
