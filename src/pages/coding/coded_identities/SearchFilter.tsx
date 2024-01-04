@@ -24,7 +24,7 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
     damg: "",
     mineral_id: "",
     stage: "",
-    modal_number: "",
+    model_number: "",
     weight: "",
   };
 
@@ -50,6 +50,29 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
         value: country?.id,
       })),
   });
+
+  // categories OPTION
+  const { data: categoriesOption } = useFetch({
+    endpoint: "classification/api/v1/categories?per_page=10000",
+    queryKey: ["categories_option"],
+    select: (categories) =>
+      categories?.map((category: any) => ({
+        id: category?.id,
+        label: category?.name,
+        name: category?.name,
+        value: category?.id,
+        type: category?.type,
+      })),
+  });
+
+  const filterCategories = categoriesOption?.filter(
+    (category: any) => category?.type !== "single"
+  );
+
+  console.log(
+    "🚀 ~ file: SearchFilter.tsx:70 ~ SearchFilter ~ filterCategories:",
+    filterCategories
+  );
 
   // METAL OPTION
   const { data: metalOption } = useFetch({
@@ -175,7 +198,7 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
                 name="coding_date_to"
                 labelProps={{ className: "mt--10" }}
               />
-              <div className="">
+              {/* <div className="">
                 <Select
                   id="damg"
                   label={`${t("identities for merging")}`}
@@ -184,8 +207,18 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
                   loadingPlaceholder={`${t("loading")}`}
                   options={identitiesForMergeOption}
                 />
-              </div>
+              </div> */}
               <div className="">
+                <Select
+                  id="damg"
+                  label={`${t("identities for merging")}`}
+                  name="damg"
+                  placeholder={`${t("identities for merging")}`}
+                  loadingPlaceholder={`${t("loading")}`}
+                  options={filterCategories}
+                />
+              </div>
+              {/* <div className="">
                 <Select
                   id="mineral_id"
                   label={`${t("metal type")}`}
@@ -194,7 +227,7 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
                   loadingPlaceholder={`${t("loading")}`}
                   options={metalOption}
                 />
-              </div>
+              </div> */}
               <div className="">
                 <Select
                   id="karatmineral_id"
@@ -206,9 +239,9 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
                 />
               </div>
               <BaseInputField
-                id="modal_number"
+                id="model_number"
                 label={`${t("modal number")}`}
-                name="modal_number"
+                name="model_number"
                 type="text"
                 placeholder={`${t("modal number")}`}
               />
@@ -222,14 +255,15 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
               <div className="">
                 <SelectBranches name="stage" />
               </div>
+              
             </div>
 
             {/* BUTTONS */}
             <div className="flex mt-6 gap-4 justify-end">
               <Button
                 action={() => {
-                  handleResetForm(formik)
-                  refetch()
+                  handleResetForm(formik);
+                  refetch();
                 }}
                 className="bg-mainGreen text-white"
               >
