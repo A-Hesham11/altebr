@@ -80,9 +80,7 @@ console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:63 ~ TableOfReturnBondsMod
   function PostNewCard(values) {
     mutate({
       endpointName: "/identity/api/v1/accept",
-      values: {
-        id: values,
-      },
+      values,
       method: "post",
     });
   }
@@ -101,6 +99,7 @@ console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:63 ~ TableOfReturnBondsMod
     onSuccess: (data) => {
       notify("success");
       queryClient.refetchQueries(["entry-accounting"]);
+      refetch()
     },
     onError: (error) => {
       console.log(error);
@@ -298,7 +297,18 @@ console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:63 ~ TableOfReturnBondsMod
           action={() => {
             setTest(true);
             setConstraintID(item?.id)
-            PostNewCard(item?.id)
+            const itemsReceived = item?.items?.map((item) => {
+              return {
+                hwya: item.hwya,
+                front: item.front
+              }
+            })
+            PostNewCard({
+              id: item?.id,
+              items: itemsReceived
+            })
+
+            
             // entryAccountingRefetch()
             refetch()
           }}

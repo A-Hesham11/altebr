@@ -182,7 +182,7 @@ const AddAccountsBank = ({ title, editData }: AddBankProps_TP) => {
           {({ values, setFieldValue, resetForm }) => (
             <Form>
               <div className="grid grid-cols-4 gap-x-6 gap-y-4 items-end mb-8">
-                <Country_city_distract_markets
+                {/* <Country_city_distract_markets
                   countryName="country_id"
                   countryFieldKey="id"
                   cityName="city_id"
@@ -193,7 +193,14 @@ const AddAccountsBank = ({ title, editData }: AddBankProps_TP) => {
                     city_id: editData?.city_id,
                     city_name: editData?.city_name,
                   }}
-                />
+                /> */}
+                  <Country_city_distract_markets
+                    cityName="city_id"
+                    countryName="country_id"
+                    editData={editData}
+                    // isSuccessPost={!editData && isSuccessPost}
+                    // resetSelect={!editData && restData}
+                  />
                 <div>
                   <Select
                     id="purpose"
@@ -213,8 +220,8 @@ const AddAccountsBank = ({ title, editData }: AddBankProps_TP) => {
                   <SelectBanks
                     name="bank_id"
                     editData={{
-                      bank_id: editData?.bank_name,
-                      bank_name: editData?.bank_name,
+                      bank_id: editData?.bank_id,
+                      bank_name: editData?.name_ar,
                     }}
                     newValue={newValue}
                     setNewValue={setNewValue}

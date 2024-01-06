@@ -253,7 +253,7 @@ const TransformToBranch = ({
       branches.map((branch) => {
         return {
           id: branch.id,
-          value: branch.name || "",
+          value: branch.id || "",
           label: branch.name || "",
         };
       }),
@@ -277,6 +277,18 @@ const TransformToBranch = ({
         if (!values.gold_price) {
           notify("info", "قم بكتابة سعر الدهب");
           return;
+        }
+
+        const inputWeightItem = inputWeight?.every((item) => item.value !== "")
+
+        if (inputWeight?.length !== operationTypeSelectWeight?.length) {
+            notify("info",  `${t("You must add weight first")}`)
+            return;
+        }
+
+        if (inputWeightItem === false) {
+            notify("info", `${t("You must add weight first")}`)
+            return;
         }
 
         PostNewValue({

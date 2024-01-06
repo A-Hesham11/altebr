@@ -46,6 +46,7 @@ const AddSupplier = ({
   /////////// VARIABLES
 
   const [supplierType, setSupplierType] = useState("")
+  console.log("🚀 ~ file: AddSupplier.tsx:49 ~ supplierType:", supplierType)
 
   const supplierValidatingSchema = () =>
     Yup.object({
@@ -130,16 +131,9 @@ const AddSupplier = ({
     Yup.object({
       // supplier validation
       name: Yup.string().trim().required(requiredTranslation),
-      type: Yup.string().trim().required(requiredTranslation),
-      wages_tax: Yup.string().trim(),
-      gold_tax: Yup.string().trim(),
-      is_mediator: Yup.boolean(),
       company_name: Yup.string().trim().required(requiredTranslation),
       address_out: Yup.string().trim().required(requiredTranslation),
-      // phone: !!!editData
-      //   ? Yup.string().trim().required(requiredTranslation)
-      //   : Yup.string(),
-
+      country_id_out: Yup.string().trim().required(requiredTranslation),
       phone: !!!editData
         ? Yup.string()
             .trim()
@@ -148,20 +142,26 @@ const AddSupplier = ({
               return isValidPhoneNumber(value || "")
             })
         : Yup.string().trim(),
-
       email: Yup.string().trim().required(requiredTranslation),
       password: !!!editData
         ? Yup.string().trim().required(requiredTranslation)
         : Yup.string(),
       fax: Yup.string().trim().required(requiredTranslation),
       nationality_id: Yup.string().trim().required(requiredTranslation),
-      country_id_out: Yup.string().trim().required(requiredTranslation),
-      address: Yup.string().trim(),
-      national_number: Yup.string()
-        .min(10, nationalNumberMin)
-        .max(30, nationalNumberMax)
-        .required(requiredTranslation),
+      national_number: Yup.string(),
       national_expire_date: Yup.string().required(requiredTranslation),
+
+      // type: Yup.string().trim().required(requiredTranslation),
+      // wages_tax: Yup.string().trim(),
+      // gold_tax: Yup.string().trim(),
+      // is_mediator: Yup.boolean(),
+      // phone: !!!editData
+      //   ? Yup.string().trim().required(requiredTranslation)
+      //   : Yup.string(),
+      // address: Yup.string().trim()
+      //   .min(10, nationalNumberMin)
+      //   .max(30, nationalNumberMax)
+      //   .required(requiredTranslation),
     })
 
   const incomingData = !!editData

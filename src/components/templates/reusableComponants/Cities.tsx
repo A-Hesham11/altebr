@@ -317,11 +317,11 @@ export const Cities = ({
         //   label: values?.city_value || ""
         // }})}}
       />
-      <RefetchErrorHandler
+      {/* <RefetchErrorHandler
         failureReason={failureReason}
         isLoading={citiesLoading}
         refetch={refetch}
-      />
+      /> */}
     </div>
   )
 }

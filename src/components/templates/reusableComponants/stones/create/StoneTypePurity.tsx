@@ -39,7 +39,7 @@ export const SelectStoneyTypePurity = ({ editData, showLabel, showDiamond , isCl
     refetch
   } = useFetch({
     endpoint: `stones/api/v1/stone_purity/${values?.stone_id}`,
-    queryKey: [`stone_purity/${newValue?.id}`],
+    queryKey: [`stone_purity/${values?.stone_id}`],
     select: (purities) => {
       return purities.map((item) => ({
         value: item.name,
@@ -48,6 +48,7 @@ export const SelectStoneyTypePurity = ({ editData, showLabel, showDiamond , isCl
         id: item.id,
       }))
     },
+    enabled: !!values?.stone_id,
   })
   const {
     data,
@@ -93,7 +94,7 @@ export const SelectStoneyTypePurity = ({ editData, showLabel, showDiamond , isCl
         options={purities}
         loadingPlaceholder={`${t("loading")}`}
         loading={isFetching}
-        // isDisabled={purities?.length === 0}
+        isDisabled={!purities?.length}
         value={purityValue}
         onChange={(option) => {
           // setFieldValue('purity_value', option.label)
@@ -101,6 +102,7 @@ export const SelectStoneyTypePurity = ({ editData, showLabel, showDiamond , isCl
         }}
         isClearable={isClearable}
       />
+
     </>
   )
 }

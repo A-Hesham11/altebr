@@ -12,6 +12,7 @@ import {
   Permission_TP,
   User_TP,
 } from "./auth-permissions-types"
+import { useQueryClient } from "@tanstack/react-query"
 ///
 /////////TYPES
 ///
@@ -60,6 +61,7 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
   const { mutate: loginMutate, isLoading: isLoggingIn } =
     useMutate<LoginResponseData_TP>({
       mutationFn: mutateData,
+      mutationKey: ["login_key"],
       onSuccess: (loginResponseData) => {
         if (loginResponseData) {
           const { token, user, permissions } = loginResponseData
@@ -87,13 +89,13 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
           setIsLoggedIn(true)
           notify("success", "Welcome")
           navigate("/")
+          
         }
       },
-      // onError: (err) => {
-      //   notify("error")
-      // },
+      onError: (error) => {
+        notify("error", `${error.response.data.message}`);
+      },
     })
-
 
 
   // LOGOUT
@@ -102,6 +104,9 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     onSuccess: (data) => {
       logoutOperations()
     },
+    onError: (error) => {
+      notify("error", `${error.response.data.message}`);
+    },
   })
 
   // Get updated userData
@@ -109,7 +114,6 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     endpoint: "/employee/api/employee/details",
     queryKey: ["userData"],
     onSuccess: (data) => {
-      console.log("🚀 ~ file: auth.tsx:114 ~ AuthCtxProvider ~ data:", data)
       updateLocalUserData("ADD", data)
     },
     staleTime: Infinity,
@@ -149,7 +153,6 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     setUserToken("")
   }
   function updateLocalUserData(method: Method_TP, user?: User_TP) {
-    console.log("🚀 ~ file: auth.tsx:154 ~ updateLocalUserData ~ user:", user)
     if (method === "ADD" && !!user) {
       localStorage.userData = JSON.stringify(user)
       setUserData(user)
