@@ -25,7 +25,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         header: () => <span>{t("classification")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "---",
+        cell: (info: any) => info.row.original.karat_name !== null ? info.getValue() : (info.row.original.karatmineral_id),
         accessorKey: "karat_name",
         header: () => <span>{t("karat")}</span>,
       },
