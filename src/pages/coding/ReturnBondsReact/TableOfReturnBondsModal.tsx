@@ -124,6 +124,11 @@ console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:63 ~ TableOfReturnBondsMod
         accessorKey: "classification_id",
         header: () => <span>{t("category")}</span>,
       },
+      // {
+      //   cell: (info: any) => info.getValue() || "-",
+      //   accessorKey: "category_id",
+      //   header: () => <span>{t("classification")}</span>,
+      // },
       {
         cell: (info: any) => info.getValue() || "-",
         accessorKey: "karat_id",

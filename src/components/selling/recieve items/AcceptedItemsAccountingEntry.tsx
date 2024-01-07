@@ -15,7 +15,6 @@ import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutForm
 type AcceptedItemsAccountingEntryProps_TP = { sanadId: number, isInPopup?: boolean, setStage: React.Dispatch<React.SetStateAction<number>>, isInReceivedComp?: boolean }
 ///
 export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isInReceivedComp }: AcceptedItemsAccountingEntryProps_TP) => {
-    console.log("🚀 ~ file: AcceptedItemsAccountingEntry.tsx:18 ~ AcceptedItemsAccountingEntry ~ sanadId:", sanadId)
     /////////// VARIABLES
     ///
     const { formatGram, formatReyal } = numberContext()
@@ -112,6 +111,7 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
     /////////// STATES
     ///
     const [dataSource, setDataSource] = useState([])
+    console.log("🚀 ~ file: AcceptedItemsAccountingEntry.tsx:114 ~ AcceptedItemsAccountingEntry ~ dataSource:", dataSource)
     ///
     /////////// CUSTOM HOOKS
     ///

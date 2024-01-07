@@ -63,7 +63,7 @@ export const DiamondCodingSanadPicker = () => {
     {
       name: "classification",
       label: t("classification"),
-      Cell: (info) => !isRTL ? info.value : info.value === 'diamond' ? 'ألماس' : 'diamond'
+      Cell: (info) => !isRTL ? info.value : info.value === 'diamond' ? 'الماس' : 'diamond'
     },
     {
       name: "supplier_name",

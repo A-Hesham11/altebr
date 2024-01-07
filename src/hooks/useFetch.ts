@@ -6,26 +6,26 @@ import { notify } from "../utils/toast";
 import { useContext } from "react";
 import { authCtx } from "../context/auth-and-perm/auth";
 
-type AxiosRequestConfig_withoutURL_TP = Omit<AxiosRequestConfig, 'url'>
+type AxiosRequestConfig_withoutURL_TP = Omit<AxiosRequestConfig, "url">;
 
 type Args_TP<T, ComingTP> = {
-  queryKey: [string] | [string, string] | [string, number]
-  endpoint: string
-  select?: (data: ComingTP) => T
-  enabled?: boolean
-  onSuccess?: (data: T) => void | undefined
-  onError?: (error: CError_TP) => void
-  axiosOptions?: AxiosRequestConfig_withoutURL_TP
-  refetchInterval?: number
-  staleTime?: number
-  cacheTime?: number
-  pagination?: boolean
-}
+  queryKey: [string] | [string, string] | [string, number];
+  endpoint: string;
+  select?: (data: ComingTP) => T;
+  enabled?: boolean;
+  onSuccess?: (data: T) => void | undefined;
+  onError?: (error: CError_TP) => void;
+  axiosOptions?: AxiosRequestConfig_withoutURL_TP;
+  refetchInterval?: number;
+  staleTime?: number;
+  cacheTime?: number;
+  pagination?: boolean;
+};
 
-
-export const useFetch = <T, ComingTP = T>({ ...args }: Args_TP<T, ComingTP>) => {
-
-  const { logOutHandler, frontLogOutHandler } = useContext(authCtx)
+export const useFetch = <T, ComingTP = T>({
+  ...args
+}: Args_TP<T, ComingTP>) => {
+  const { logOutHandler, frontLogOutHandler } = useContext(authCtx);
   const {
     queryKey,
     endpoint,
@@ -38,23 +38,26 @@ export const useFetch = <T, ComingTP = T>({ ...args }: Args_TP<T, ComingTP>) => 
     refetchInterval,
     staleTime,
     cacheTime,
-  } = args
+  } = args;
 
   // useQuery infers queryFn return type
   const query = useQuery(queryKey, {
-    queryFn: () => request<ComingTP>({ url: endpoint, ...axiosOptions }, pagination),
+    queryFn: () =>
+      request<ComingTP>({ url: endpoint, ...axiosOptions }, pagination),
     enabled,
     onSuccess,
     onError: (err: CError_TP) => {
       if (err?.response?.status === HttpStatusCode.Unauthorized) {
-        frontLogOutHandler()
-        return
+        frontLogOutHandler();
+        return;
       }
-      if (!!onError) { onError(err) } else {
+      if (!!onError) {
+        onError(err);
+      } else {
         if (!!!err.response?.data.errors && !!err.response?.data.message) {
-          notify("error", err.response.data.message)
+          notify("error", err.response.data.message);
         } else {
-          notify("error")
+          notify("error");
         }
       }
     },
@@ -70,7 +73,10 @@ export const useFetch = <T, ComingTP = T>({ ...args }: Args_TP<T, ComingTP>) => 
     refetchInterval,
     staleTime,
     cacheTime,
-  })
+  });
   // حل مشكلة الديسيبل والاز لودينج
-  return { ...query, isLoading: query.isLoading && query.fetchStatus !== "idle" }
-}
+  return {
+    ...query,
+    isLoading: query.isLoading && query.fetchStatus !== "idle",
+  };
+};

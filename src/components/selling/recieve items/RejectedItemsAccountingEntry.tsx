@@ -108,6 +108,7 @@ export const RejectedItemsAccountingEntry = ({ sanadId, isInPopup, setStage }: R
     /////////// STATES
     ///
     const [dataSource, setDataSource] = useState([])
+    console.log("🚀 ~ file: RejectedItemsAccountingEntry.tsx:111 ~ RejectedItemsAccountingEntry ~ dataSource:", dataSource) 
 
     ///
     /////////// CUSTOM HOOKS
