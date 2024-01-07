@@ -15,6 +15,7 @@ import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutForm
 type AcceptedItemsAccountingEntryProps_TP = { sanadId: number, isInPopup?: boolean, setStage: React.Dispatch<React.SetStateAction<number>>, isInReceivedComp?: boolean }
 ///
 export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isInReceivedComp }: AcceptedItemsAccountingEntryProps_TP) => {
+    console.log("🚀 ~ file: AcceptedItemsAccountingEntry.tsx:18 ~ AcceptedItemsAccountingEntry ~ sanadId:", sanadId)
     /////////// VARIABLES
     ///
     const { formatGram, formatReyal } = numberContext()
@@ -122,7 +123,8 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
         isError: isContractError
     } = useFetch({
         endpoint: `branchManage/api/v1/bond-boxes/${sanadId}`,
-        queryKey: ['bond-boxes'],
+        // queryKey: ['bond-boxes'],
+        queryKey: [`bond-boxes-${sanadId}`],
         pagination: true,
         select: (contract: any) => {
             return {
@@ -146,6 +148,7 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
         onError(data) {
             notify('info', `${t('bond has been rejected')}`)
         },
+        enabled: !!sanadId,
     })
     // restriction start
     let restrictions = contract?.boxes?.map(

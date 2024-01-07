@@ -124,11 +124,9 @@ export const PartnerMainData = ({
             />
           )}
 
-          <Country_city_distract_markets
-            countryName="country_id_out"
-            countryLabel={`${t("country")}`}
-            cityName="city_id_out"
-            cityLabel={`${t("city")}`}
+          {/* <Country_city_distract_markets
+            cityName="city_id"
+            countryName="country_id"
             isSuccessPost={!editData && isSuccessPost}
             resetSelect={!editData && restData}
             editData={{
@@ -147,7 +145,16 @@ export const PartnerMainData = ({
                 },
               },
             }}
-          />
+          /> */}
+
+        <Country_city_distract_markets
+          cityName="city_id"
+          countryName="country_id"
+          editData={editData}
+          isSuccessPost={!editData && isSuccessPost}
+          resetSelect={!editData && restData}
+        />
+
           <SelectNationality
             name="nationality_id"
             editData={editData}

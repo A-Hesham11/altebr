@@ -31,13 +31,25 @@ const OperationType = ({
         {/* BUTTONS */}
         <div className="flex justify-center items-center gap-4">
           <Button
-            action={() => setOpenTransformToBranchModal(true)}
+            action={() => {
+              if (!operationTypeSelect.length) {
+                notify("info", `${t("You must choose a piece first")}`);
+                return;
+              }
+              setOpenTransformToBranchModal(true)
+            }}
             className="border-2 border-mainGreen bg-mainGreen text-white flex items-center gap-2"
           >
             <span>{t("transfer to branch")}</span>
           </Button>
           <Button
-            action={() => setOpenMergeModal(true)}
+            action={() => {
+              if (!operationTypeSelect.length) {
+                notify("info", `${t("You must choose a piece first")}`);
+                return;
+              }
+              setOpenMergeModal(true)
+            }}
             className="border-2 border-mainGreen bg-transparent text-mainGreen flex items-center gap-2"
           >
             <span>{t("merging identities")}</span>
@@ -45,15 +57,12 @@ const OperationType = ({
           <Button
             action={() => {
               if (operationTypeSelect.length > 1) {
-                notify(
-                  "error",
-                  t("You can only select one identity to separate")
-                );
+                notify("info", `${t("You can only select one identity to separate")}`);
                 return;
               }
 
               if (!operationTypeSelect[0]?.category_items) {
-                notify("error", t("must select taqm"));
+                notify("info", `${t("must select taqm")}`);
                 return;
               }
 

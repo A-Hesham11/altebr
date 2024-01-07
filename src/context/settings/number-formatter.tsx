@@ -49,13 +49,13 @@ export const NumberFormatterProvider = ({
   const {
     refetch,
   } = useFetch<Setting_TP>({
-    // enabled: false, // >>>> Remove this
     endpoint: "companySettings/api/v1/companysettings/key/before_init",
     queryKey: ["digits_count"],
     select: (digits_countObj) => ({ value: digits_countObj?.value }),
     onSuccess: (digits_count) => {
       setStoredDigitsCount(JSON.parse(`${digits_count.value}`))
     },
+    // enabled: false, // >>>> Remove this
   })
 
   
@@ -68,7 +68,7 @@ export const NumberFormatterProvider = ({
       mutateData<ResponseData_TP>(data),
     onError: (err) => console.log(err),
     onSuccess: (data) => {
-      refetch()
+      // refetch()
       notify()
     },
   })

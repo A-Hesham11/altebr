@@ -74,10 +74,10 @@ const AddSellingInvoice = () => {
 
     const { data } = useFetch<ClientData_TP>({
         endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}?per_page=10000`,
-        queryKey: ["invoices_data"],
+        queryKey: [`invoices_data_${userData?.branch_id}`],
         onSuccess(data) {
             setInvoiceNumber(data)
-        }
+        },
     });
 
   return (

@@ -6,6 +6,7 @@ import axios, {
 } from "axios";
 import Cookies from "js-cookie";
 import i18n from "../i18n";
+import { notify } from "./toast";
 
 const baseURL =
   import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
@@ -47,6 +48,9 @@ export const request = async <T>(
     });
     return onSuccess(response);
   } catch (error) {
+    if (error?.response.data.message !== "Unauthenticated.") {
+      notify("error", error?.response.data.message)
+    }
     // 👁️ i will handle unauthorized in useFetch and useMutate because i can't use useContext here
     // const axiosError = error as CError_TP;
     // // handle error responses

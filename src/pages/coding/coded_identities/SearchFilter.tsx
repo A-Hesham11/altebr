@@ -69,11 +69,6 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
     (category: any) => category?.type !== "single"
   );
 
-  console.log(
-    "🚀 ~ file: SearchFilter.tsx:70 ~ SearchFilter ~ filterCategories:",
-    filterCategories
-  );
-
   // METAL OPTION
   const { data: metalOption } = useFetch({
     endpoint: "/classification/api/v1/minerals?type=all",

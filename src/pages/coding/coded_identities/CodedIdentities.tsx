@@ -34,17 +34,9 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [search, setSearch] = useState("");
-  console.log(
-    "🚀 ~ file: CodedIdentities.tsx:36 ~ CodedIdentities ~ search:",
-    search
-  );
   const [isSuccessPost, setIsSuccessPost] = useState(false);
   const [fetchEndPoint, setFetchEndPoint] = useState(
     `identity/api/v1/pieces_in_edara`
-  );
-  console.log(
-    "🚀 ~ file: CodedIdentities.tsx:31 ~ CodedIdentities ~ fetchEndPoint:",
-    fetchEndPoint
   );
 
   const shouldCheck = operationTypeSelect.length === 0;
@@ -103,10 +95,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
-    console.log(
-      "🚀 ~ file: CodedIdentities.tsx:102 ~ getSearchResults ~ req:",
-      req
-    );
     let url = `${fetchEndPoint}?`;
     let first = false;
     Object.keys(req).forEach((key) => {
