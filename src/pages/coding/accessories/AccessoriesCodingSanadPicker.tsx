@@ -46,6 +46,7 @@ export const AccessoriesCodingSanadPicker = () => {
   const [isClosedBond, setIsClosedBond] = useState(false)
   const [page, setPage] = useState<number>(1)
   const [dataSource, setDataSource] = useState<GoldSanad_TP[]>([])
+  console.log("🚀 ~ file: AccessoriesCodingSanadPicker.tsx:49 ~ AccessoriesCodingSanadPicker ~ dataSource:", dataSource)
 
   const searchValues: SearchValues_TP = {
     id: '',
@@ -63,7 +64,7 @@ export const AccessoriesCodingSanadPicker = () => {
     {
       name: "classification",
       label: t("classification"),
-      Cell: (info) => !isRTL ? info.value : info.value === 'accessory' ? 'متفرقات' : 'accessory'
+      Cell: (info) => !isRTL ? info.value : info.value === 'متفرقات' ? 'متفرقات' : 'accessory'
     },
     {
       name: "supplier_name",

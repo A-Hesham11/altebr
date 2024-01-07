@@ -44,8 +44,8 @@ const OperationType = ({
           </Button>
           <Button
             action={() => {
-              if (!operationTypeSelect.length) {
-                notify("info", `${t("You must choose a piece first")}`);
+              if (operationTypeSelect.length < 2) {
+                notify("info", `${t("You must choose at least two pieces")}`);
                 return;
               }
               setOpenMergeModal(true)

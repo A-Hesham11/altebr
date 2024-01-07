@@ -27,6 +27,7 @@ type PayOffSecondScreen_TP = {
 }
 ///
 export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOffSecondScreen_TP) => {
+  console.log("🚀 ~ file: PayOffSecondScreen.tsx:30 ~ PayOffSecondScreen ~ selectedItem:", selectedItem)
   /////////// VARIABLES
   ///
   const [openModal, setOpenModal] = useState(false)
@@ -116,9 +117,14 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
       accessorKey: "hwya",
       header: () => <span>{t("identification")}</span>,
   },
+  {
+    cell: (info: any) => info.getValue() || "---",
+    accessorKey: "classification_name",
+    header: () => <span>{t("category")}</span>,
+  },
     {
       cell: (info: any) => info.getValue() || "---",
-      accessorKey: "classification_name",
+      accessorKey: "category_name",
       header: () => <span>{t("classification")}</span>,
     },
     {
@@ -317,6 +323,7 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
           <Button
             onClick={() => {
               const allRows = selectedItem.items.filter(item => item.item_status === "Rejected").map(item => item.hwya)
+              console.log("🚀 ~ file: PayOffSecondScreen.tsx:321 ~ PayOffSecondScreen ~ selectedItem:", selectedItem)
               const receivedFinalValue = {
                 id: selectedItem?.id,
                 branch_id: userData?.branch_id,
@@ -327,7 +334,7 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
                       front:item.front
                   }
                 }),
-                items: selectedItem.items.map(item => {
+                items: dataSource?.map(item => {
                   return {
                       hwya: item.hwya,
                       front:item.front
@@ -364,10 +371,10 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
               const retrieveFinalValue = {
                 items: selectedRows?.map(item => item.hwya),
               }
-              mutateRetrieve({
-                endpointName: "branchManage/api/v1/change-status-after-mardod",
-                values: retrieveFinalValue
-              })
+              // mutateRetrieve({
+              //   endpointName: "branchManage/api/v1/change-status-after-mardod",
+              //   values: retrieveFinalValue
+              // })
             }}
             loading={retrieveIsLoading}
           >{t('confirm')}</Button>

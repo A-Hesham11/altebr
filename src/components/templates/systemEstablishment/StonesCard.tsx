@@ -40,7 +40,9 @@ export const StonesCard = ({ addHandler, title, viewHandler }: SystemCardProps_T
       <h3>{title}</h3>
       <div className="flex gap-3 rounded-lg bg-green bg-opacity-20 p-2">
         <BiPlus onClick={addHandler} className="cursor-pointer"/>
-        <BsEye  onClick={viewHandler} className="cursor-pointer"/>
+        {viewHandler && (
+          <BsEye  onClick={viewHandler} className="cursor-pointer"/>
+        )}
       </div>
     </>
   )

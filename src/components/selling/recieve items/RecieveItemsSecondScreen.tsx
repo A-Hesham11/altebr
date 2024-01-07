@@ -28,6 +28,7 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
     const { userData } = useContext(authCtx)
     const [selectedRows, setSelectedRows] = useState<any>([])
     const [dataSource, setDataSource] = useState({})
+    console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:31 ~ RecieveItemsSecondScreen ~ dataSource:", dataSource)
     const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectAll, setSelectAll] = useState(false)

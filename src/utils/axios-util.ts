@@ -41,14 +41,12 @@ export const request = async <T>(
         "Content-Type": `application/json`,
         "Accept-Language": lang,
         Authorization: `Bearer ${token}`,
-        "Cache-Control": "no-cache",
-        "Access-Control-Allow-Credentials": true,
         ...options.headers,
       },
     });
     return onSuccess(response);
   } catch (error) {
-    if (error?.response.data.message !== "Unauthenticated.") {
+    if (error?.response.data.message === "البريد الالكتروني او كلمة المرور غير صحيحة") {
       notify("error", error?.response.data.message)
     }
     // 👁️ i will handle unauthorized in useFetch and useMutate because i can't use useContext here
