@@ -57,6 +57,7 @@ type Entry_TP = {
 };
 
 const TableOfBranchBondsModal = ({ item }: { item?: {} }) => {
+console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsModal ~ item:", item)
 
   const { formatGram, formatReyal } = numberContext();
 
@@ -74,7 +75,9 @@ const TableOfBranchBondsModal = ({ item }: { item?: {} }) => {
         header: () => <span>{t("category")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => {
+          return info.getValue() || info.row.original.karatmineral ;
+        } ,
         accessorKey: "karat_id",
         header: () => <span>{t("karat")}</span>,
       },

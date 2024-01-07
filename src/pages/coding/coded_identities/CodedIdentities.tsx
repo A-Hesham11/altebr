@@ -62,6 +62,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         : `${search}`,
     pagination: true,
   });
+  console.log("🚀 ~ file: CodedIdentities.tsx:65 ~ CodedIdentities ~ data:", data)
 
   // HANDLE MANAGEMENT EDARA
   const handleManagement = () => {
