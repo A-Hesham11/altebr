@@ -90,10 +90,11 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
           notify("success", "Welcome")
           navigate("/")
           
-        }
+        } 
       },
-      onError: (error) => {
-        notify("error", `${error.response.data.message}`);
+      onError: (err) => {
+        console.log(`AuthCtxProvider ~ err:`, err)
+        notify("error")
       },
     })
 
@@ -103,9 +104,6 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     mutationFn: mutateData,
     onSuccess: (data) => {
       logoutOperations()
-    },
-    onError: (error) => {
-      notify("error", `${error.response.data.message}`);
     },
   })
 

@@ -51,6 +51,7 @@ const AddBankCardsData = ({
   value,
   onAdd,
 }: AddBankCardProps_TP) => {
+  console.log("🚀 ~ file: AddBankCardsData.tsx:54 ~ editData:", editData)
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   const [accountNumberId, setAccountNumberId] = useState();
@@ -226,7 +227,7 @@ const AddBankCardsData = ({
                           name="bank_id"
                           editData={{
                             bank_id: editData?.bank_id,
-                            bank_name: editData?.name_ar,
+                            bank_name: editData?.bank_name,
                           }}
                           newValue={newValue}
                           setNewValue={setNewValue}
