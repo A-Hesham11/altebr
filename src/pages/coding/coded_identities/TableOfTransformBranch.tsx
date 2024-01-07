@@ -9,6 +9,7 @@ const TableOfTransformBranch = ({
   setInputWeight,
   inputWeight,
 }) => {
+  console.log("🚀 ~ file: TableOfTransformBranch.tsx:12 ~ operationTypeSelect:", operationTypeSelect)
   const { formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE
