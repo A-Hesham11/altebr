@@ -37,10 +37,7 @@ const validationSchema = () =>
     discount_percentage: Yup.string(),
   });
 
-
-
 const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, totalApproximateCost, costRemainingHonest }: Payment_TP) => {
-console.log("🚀 ~ file: PaymentProcessing.tsx:43 ~ PaymentProcessing ~ costRemainingHonest:", costRemainingHonest)
 
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
@@ -154,8 +151,7 @@ console.log("🚀 ~ file: PaymentProcessing.tsx:43 ~ PaymentProcessing ~ costRem
           const commissionRiyals = +commissionValue.toFixed(3);
           const commissionTax = (+commissionRiyals * 0.15).toFixed(3);
           const cost_after_commission = +values.cost_after_tax + +commissionRiyals + +commissionTax;
-        console.log("🚀 ~ file: PaymentProcessing.tsx:274 ~ PaymentProcessing ~ values:", values.amount)
-
+          
           return (
             <Form>
               <div>

@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
 import { t } from "i18next";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { notify } from "../../utils/toast";
 import PaymentCard from "../../components/selling/selling components/data/PaymentCard";
@@ -10,6 +10,7 @@ import { BaseInputField, Select } from "../../components/molecules";
 import { numberContext } from "../../context/settings/number-formatter";
 import { useFetch } from "../../hooks";
 import { Loading } from "../../components/organisms/Loading";
+import { authCtx } from "../../context/auth-and-perm/auth";
 
 export type Payment_TP = {
   id: string;
@@ -63,6 +64,7 @@ const PaymentProccessingToManagement = ({
     selectedCardName,
     setSelectedCardName
  }: Payment_TP) => {
+    console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:67 ~ cardId:", cardId)
 
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
@@ -71,6 +73,8 @@ const PaymentProccessingToManagement = ({
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("")
+
+  const { userData } = useContext(authCtx)
 
   const handleCardSelection = (
     selectedCardType: string,
@@ -103,11 +107,12 @@ const {
     data,
     refetch,
 } = useFetch ({
-    endpoint:  `/sdad/api/v1/show/${cardId || 0}`,
+    endpoint:  `/sdad/api/v1/show/${cardId || 0}/${userData?.branch_id}`,
     queryKey: ["showValueOfCards"],
     onSuccess(data) {
       return data.data
     },
+    enabled: (!!cardId && !!userData?.branch_id)
 });
 
   useEffect(() => {

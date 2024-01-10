@@ -62,7 +62,7 @@ const PurchaseInvoiceBondsPreview = ({ item }: { item?: {} }) => {
       {
         cell: (info: any) =>
           formatReyal(Number(info.renderValue()).toFixed(2)) == 0
-            ? "-"
+            ? formatReyal(Number(info.row.original.value).toFixed(2))
             : formatReyal(Number(info.renderValue()).toFixed(2)),
         accessorKey: "total_value",
         header: () => <span>{t("total value")}</span>,

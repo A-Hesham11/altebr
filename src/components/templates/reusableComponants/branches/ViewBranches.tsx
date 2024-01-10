@@ -310,7 +310,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
           </Form>
         </Formik>
         <div className="flex">
-          {/* <AddButton
+          <AddButton
             action={() => {
               setEditData(undefined)
               setModel(true)
@@ -322,7 +322,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
               })
             }}
             addLabel={`${t("add")}`}
-          /> */}
+          />
           <div className="ms-2">
             <Back />
           </div>

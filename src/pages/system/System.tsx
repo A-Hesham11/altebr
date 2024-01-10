@@ -132,10 +132,10 @@ export const System = ({ title }: SystemProps_TP) => {
       id: crypto.randomUUID(),
       title: t("branch"),
       name: "add_branch",
-      // addLabel: `${t("add branch")}`,
+      addLabel: `${t("add branch")}`,
       viewLabel: `${t("view branches")}`,
       viewHandler: () => navigate("branches"),
-      // addComponent: <CreateBranch title={`${t("add branch")}`} />,
+      addComponent: <CreateBranch title={`${t("add branch")}`} />,
     },
     {
       id: crypto.randomUUID(),
