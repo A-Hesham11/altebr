@@ -9,15 +9,13 @@ import i18n from "../i18n";
 import { notify } from "./toast";
 
 const baseURL =
-  import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
-//  import.meta.env.VITE_BASE_URL || "http://api-almehaisen.altebr.jewelry";
+  import.meta.env.VITE_BASE_URL || "https://alexon.api.altebr.jewelry/";
 
-const lang = i18n.language.startsWith("ar") ? "ar" : "en";
+  const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 
-const client = axios.create({
-  baseURL,
-  // withCredentials: true,
-});
+  const client = axios.create({
+    baseURL,
+  });
 
 export const request = async <T>(
   options: AxiosRequestConfig,
@@ -46,8 +44,11 @@ export const request = async <T>(
     });
     return onSuccess(response);
   } catch (error) {
-    if (error?.response.data.message === "البريد الالكتروني او كلمة المرور غير صحيحة") {
-      notify("error", error?.response.data.message)
+    if (
+      error?.response.data.message ===
+      "البريد الالكتروني او كلمة المرور غير صحيحة"
+    ) {
+      notify("error", error?.response.data.message);
     }
     // 👁️ i will handle unauthorized in useFetch and useMutate because i can't use useContext here
     // const axiosError = error as CError_TP;

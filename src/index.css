@@ -380,6 +380,21 @@ input[type="file"] {
   }
 }
 
+/* .css-ewdv3l li:first-of-type span {
+  min-width: 45px !important;
+} */
+
+nav.css-vj11vy > ul > li:first-child span {
+  min-width: 45px !important;
+}
+nav.css-vj11vy > ul > li:first-child {
+  margin: 4px 0px 0px !important;
+}
+
+nav.css-vj11vy > ul > li:first-child a {
+  padding-right: 16px !important;
+}
+
 /* .css-1cbmtsf > .ps-menu-button:hover,
 .css-8dyhm6 >.ps-menu-button:hover,
 .css-1ytr39x >.ps-menu-button:hover,

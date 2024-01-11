@@ -1,8 +1,9 @@
 /////////// IMPORTS
-import { BiShowAlt } from "react-icons/bi"
-import { IoMdAdd } from "react-icons/io"
-import { Button } from "../../atoms"
-import { t } from "i18next"
+import { BiShowAlt } from "react-icons/bi";
+import { IoMdAdd } from "react-icons/io";
+import { Button } from "../../atoms";
+import { t } from "i18next";
+import { useLocation } from "react-router-dom";
 ///
 //import classes from './SystemCard.module.css'
 ///
@@ -10,15 +11,15 @@ import { t } from "i18next"
 
 ///
 type SystemCardProps_TP = {
-  addHandler: () => void
-  viewHandler?: () => void
-  addLabel?: string
-  viewLabel?: string
-  title: string
-  forStyle?: boolean
-  viewCountReyal?:number
-  viewCountGram?:number
-}
+  addHandler: () => void;
+  viewHandler?: () => void;
+  addLabel?: string;
+  viewLabel?: string;
+  title: string;
+  forStyle?: boolean;
+  viewCountReyal?: number;
+  viewCountGram?: number;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -31,14 +32,17 @@ export const SystemCard = ({
   title,
   forStyle,
   viewCountReyal,
-  viewCountGram
+  viewCountGram,
 }: SystemCardProps_TP) => {
   /////////// VARIABLES
   ///
-
   ///
   /////////// CUSTOM HOOKS
   ///
+
+  const location = useLocation()
+  const path = location.pathname 
+  console.log("🚀 ~ file: SystemCard.tsx:45 ~ path:", path)
 
   ///
   /////////// STATES
@@ -70,28 +74,32 @@ export const SystemCard = ({
           </div>
         </div>
         {addLabel && addHandler && (
-          <Button bordered={true} action={addHandler} className="border-[0.7px] px-2 ">
+          <Button
+            bordered={true}
+            action={addHandler}
+            className="border-[0.7px] px-2 "
+          >
             <div className="flex justify-center items-center">
-              <IoMdAdd className="fill-lightBlack" fill="lightBlack" size={22} />
+              <IoMdAdd
+                className="fill-lightBlack"
+                fill="lightBlack"
+                size={22}
+              />
               <p className="text-sm ms-1">{addLabel}</p>
             </div>
           </Button>
         )}
 
-        {/* {viewCountReyal && (
-            <div className="flex justify-center items-center border-[0.8px] p-2 border-mainGreen text-mainGreen rounded-md font-bold">
-              <p className="text-sm ms-1">{viewCountReyal}</p>
-            </div>
-        )} */}
 
-        {viewCountGram && (
-            <div className="text-center border-[0.8px] p-2 border-mainGreen text-mainGreen rounded-md font-bold">
-              <p className="font-bold ms-1 mb-4">{t("Branch current")}</p>
-              <div className="flex justify-between items-center px-4 ">
-                <p>{viewCountReyal}</p>
-                <p>{viewCountGram}</p>
-              </div>
+
+        {(path === "/view-bonds") && (
+          <div className="text-center border-[0.8px] p-2 border-mainGreen text-mainGreen rounded-md font-bold">
+            <p className="font-bold ms-1 mb-4">{t("Branch current")}</p>
+            <div className="flex justify-between items-center px-4 ">
+                <p>{viewCountReyal ? viewCountReyal : `0 ${t("ryal")}` }</p>
+                <p>{viewCountGram ? viewCountGram : `0 ${t("gram")}`}</p>
             </div>
+          </div>
         )}
 
         {viewLabel && (
@@ -114,5 +122,5 @@ export const SystemCard = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};

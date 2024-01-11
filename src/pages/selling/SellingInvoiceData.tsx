@@ -29,7 +29,7 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ file: SellingInvoiceData.tsx:32 ~ sellingItemsData:", sellingItemsData)
+  console.log("🚀 ~ file: SellingInvoiceData.tsx:32 ~ sellingItemsData:", sellingItemsData) 
 
   const { formatGram, formatReyal } = numberContext();
 
@@ -203,9 +203,13 @@ const SellingInvoiceData = ({
         item_id: item.item_id,
         karat_id: item.karat_id,
         karat_name: item.karat_name,
+        mineral_id: item.mineral_id,
+        karatmineral_id: item.karatmineral_id,
+        karatmineral_name:item.karatmineral_name,
         wage: item.wage,
         wage_total: item.wage_total,
         weight: item.weight,
+        selling_price: item.selling_price,
         cost: +totalCostFromOneItem,
         vat: +totalTaxFromOneRow,
         total: +taklfaFromOneItem,

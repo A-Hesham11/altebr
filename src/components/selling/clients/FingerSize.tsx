@@ -5,6 +5,7 @@ import { useFetch } from "../../../hooks";
 import { Select } from "../../molecules";
 import { t } from "i18next";
 import { ClientData_TP } from "./AddClients";
+import handImg from "../../../assets/hand.png"
 
 // type Size_TP = {
 //   sizeType: string;
@@ -286,7 +287,7 @@ const FingerSize = ({editClientsData, showClientsData, initialValues}: any) => {
               <div className="absolute w-full h-full rounded-full flex justify-center items-center">
                   <div className="relative w-24 h-[120px]">
                   <img
-                      src="/src/assets/hand.png"
+                      src={handImg}
                       alt="Hand"
                       className="w-full"
                   />

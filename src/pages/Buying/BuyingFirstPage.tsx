@@ -106,14 +106,15 @@ const BuyingFirstPage = ({
     endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
     queryKey: ["get-gold-price"],
   });
-  console.log("🚀 ~ file: BuyingFirstPage.tsx:109 ~ goldPrice:", goldPrice);
 
   // CASH VALUE API
   const { data: naqdya } = useFetch<ClientData_TP>({
     endpoint: `/buyingUsedGold/api/v1/get-nadya-box/${userData?.branch_id}`,
     queryKey: ["naqdya"],
+    onError: (error) => {
+      notify("info", error?.response?.data?.msg)
+    }
   });
-  console.log("🚀 ~ file: BuyingFirstPage.tsx:115 ~ naqdya:", naqdya);
 
   // CLIENT OPTIONS
   const { data: clientsAndSuppliers, isLoading: loadingClients } = useFetch({

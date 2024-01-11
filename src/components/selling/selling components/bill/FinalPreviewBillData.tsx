@@ -1,8 +1,10 @@
-import { t } from 'i18next'
-import { useContext } from 'react'
-import { authCtx } from '../../../../context/auth-and-perm/auth'
-import { useFetch } from '../../../../hooks'
-import { formatDate } from '../../../../utils/date'
+import { t } from 'i18next';
+import { useContext } from 'react';
+import { authCtx } from '../../../../context/auth-and-perm/auth';
+import { useFetch } from '../../../../hooks';
+import { formatDate } from '../../../../utils/date';
+import billLogo from "../../../../assets/bill-logo.png";
+
 type Client_TP = {
   clientData?: {
     amount: number
@@ -35,7 +37,7 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
         <p className='text-xs font-bold'>{t("bill date")} : <span className='font-medium'>{formatDate(new Date)}</span> </p>
       </div>
       <div className='flex flex-col gap-1 items-center'>
-        <img src='/src/assets/bill-logo.png' alt='bill' />
+        <img src={billLogo} alt='bill' />
         <p className='text-xs font-medium'>{userData?.branch?.country?.name} , {userData?.branch?.city?.name}</p>
         <p className='text-xs font-medium'><span className='font-bold'>{t('district')}:</span>{userData?.branch?.district?.name}</p>
       </div>

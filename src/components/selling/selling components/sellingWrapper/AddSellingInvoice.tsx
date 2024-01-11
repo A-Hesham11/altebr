@@ -12,6 +12,7 @@ import { authCtx } from '../../../../context/auth-and-perm/auth';
 
 const AddSellingInvoice = () => {
     const [dataSource, setDataSource] = useState<Selling_TP[]>();
+    console.log("🚀 ~ file: AddSellingInvoice.tsx:15 ~ AddSellingInvoice ~ dataSource:", dataSource)
     const [stage, setStage] = useState<number>(1)
     const [clientData, setClientData] = useState<ClientData_TP>();
     const [sellingItemsData, setSellingItemsData] = useState([]);
@@ -36,10 +37,11 @@ const AddSellingInvoice = () => {
         has_selsal: 0,
         remaining_weight: "" ,
         karat_id: "",
-        karatmineral_id: "",
-        gold_price:[],
         karat_name: "",
+        mineral_id: "",
+        karatmineral_id: "",
         karatmineral_name: "",
+        gold_price:[],
         karat_price:"",
         selling_price: "" ,
         tax_rate:"",
