@@ -108,6 +108,12 @@ import WeightAdjustmentBonds from "../pages/Buying/Bonds/WeightAdjustmentBonds"
 import PaymentBonds from "../pages/coding/branch bonds/PaymentBonds"
 import ViewBondsFromBranchs from "../pages/coding/branch bonds/ViewBondsFromBranchs"
 import { ViewBonds } from "../pages/coding/branch bonds/ViewBonds"
+import Expenses from "../pages/expenses/Expenses"
+import ExpensesInvoice from "../pages/expenses/Invoice/ExpensesInvoice"
+import ExpensesBonds from "../pages/expenses/Bonds/ExpensesBonds"
+import ViewExpensesPolicies from "../components/templates/expensesPolicy/ViewExpensesPolicies"
+import ViewSubExpensesPolicies from "../components/templates/subExpensesPolicy/ViewSubExpensesPolicies"
+import ViewTaxExpensesPolicies from "../components/templates/taxExpensesPolicy/ViewTaxExpensesPolicies"
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -404,7 +410,7 @@ export const AllRoutesProvider = () => {
           />
           <Route path="/selling/buying" element={<BuyingPage />} />
           <Route path="/selling/management" element={<Management />} />
-          <Route path="/selling/exchange" element={<>exchange</>} />
+          <Route path="/selling/exchange" element={<Expenses />} />
           <Route path="/selling/clients" element={<Clients />} />
           <Route
             path="/selling/customersData"
@@ -508,7 +514,7 @@ export const AllRoutesProvider = () => {
           />
           {/* <Route path="/selling/buying/test" element={<>butingh</>} /> */}
           <Route path="/selling/management" element={<Management />} />
-          <Route path="/selling/exchange" element={<>exchange</>} />
+          {/* <Route path="/selling/exchange" element={<>exchange</>} /> */}
           <Route path="/selling/clients" element={<Clients />} />
           <Route path="/selling/payoff" element={<Payoff />} />
           <Route path="/selling/payment" element={<PaymentToManagementPage/>} />
@@ -600,6 +606,18 @@ export const AllRoutesProvider = () => {
             element={<BuyingRestrictionsInvoice />}
           />
           {/* BUYING END */}
+          {/* EXPENSES START */}
+          <Route path="/system/mainExpensesPolicies" element={<ViewExpensesPolicies />} />
+          <Route path="/expenses/expensesInvoice" element={<ExpensesInvoice />} />
+          <Route path="/expenses/expensesBonds" element={<ExpensesBonds />} />
+
+          {/* TAX EXPENSES */}
+          <Route path="/expenses/taxExpensesPolicies" element={<ViewTaxExpensesPolicies />} />
+
+          {/* SUB EXPENSES */}
+          <Route path="/system/subExpensesPolicies" element={<ViewSubExpensesPolicies />} />
+
+          {/* EXPENSES END */}
           <Route path="/system/cardsData" element={<ViewBankCardsData />} />
           <Route
             path="/selling/payoff/supply-payoff"

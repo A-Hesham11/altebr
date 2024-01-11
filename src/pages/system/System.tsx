@@ -25,6 +25,9 @@ import AddInvoiceData from "../../components/templates/invoiceData/AddInvoiceDat
 import AddBuyingPolicies from "../../components/templates/buyingPolicies/AddBuyingPolicies"
 import GoldPrice from "../../components/templates/goldPrice/GoldPrice"
 import AddTaxPolicy from "../../components/templates/sellingPolicies/AddTaxPolicy"
+import AddExpensesPolicies from "../../components/templates/expensesPolicy/AddExpensesPolicies"
+import AddSubExpensesPolicies from "../../components/templates/subExpensesPolicy/AddSubExpensesPolicies"
+import AddTaxExpensesPolicy from "../../components/templates/taxExpensesPolicy/AddTaxExpensesPolicy"
 ///
 /////////// Types
 ///
@@ -55,6 +58,9 @@ export const System = ({ title }: SystemProps_TP) => {
     add_accountBank: false,
     selling_policies: false,
     buying_policies: false,
+    main_expenses_policies: false,
+    sub_expenses_policies: false,
+    tax_expenses_policies: false,
     gold_price: false,
     excluded_items: false,
     invoice_data: false,
@@ -198,6 +204,41 @@ export const System = ({ title }: SystemProps_TP) => {
       viewLabel: `${t("view buying policies")}`,
       viewHandler: () => navigate("/system/policiesBuying"),
     },
+    // EXPENSES
+    // MAIN EXPENSES POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("main expenses policies"),
+      name: "main_expenses_policies",
+      addLabel: `${t("add main expenses policy")}`,
+      addComponent: <AddExpensesPolicies title={`${t("add main expenses policy")}`} />,
+      viewLabel: `${t("view main expenses policies")}`,
+      viewHandler: () => navigate("/system/mainExpensesPolicies"),
+    },
+
+    // SUB EXPENSES POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("sub expenses policies"),
+      name: "sub_expenses_policies",
+      addLabel: `${t("add sub expenses policy")}`,
+      addComponent: <AddSubExpensesPolicies title={`${t("add sub expenses policy")}`} />,
+      viewLabel: `${t("view sub expenses policies")}`,
+      viewHandler: () => navigate("/system/subExpensesPolicies"),
+    },
+
+    // TAX EXPENSES POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("tax expenses policies"),
+      name: "tax_expenses_policies",
+      addLabel: `${t("add tax expenses policy")}`,
+      addComponent: <AddTaxExpensesPolicy title={`${t("add tax expenses policy")}`} />,
+      viewLabel: `${t("view tax expenses policies")}`,
+      viewHandler: () => navigate("/system/taxExpensesPolicies"),
+    },
+    // EXPENSES
+    
     {
       id: crypto.randomUUID(),
       title: t("gold price"),

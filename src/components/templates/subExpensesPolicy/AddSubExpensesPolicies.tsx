@@ -1,0 +1,228 @@
+import { t } from "i18next";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
+import { notify } from "../../../utils/toast";
+import { authCtx } from "../../../context/auth-and-perm/auth";
+import { Form, Formik, useFormikContext } from "formik";
+import * as Yup from "yup";
+import { useQueryClient } from "@tanstack/react-query";
+import { mutateData } from "../../../utils/mutateData";
+import { requiredTranslation } from "../../../utils/helpers";
+import { BaseInputField, OuterFormLayout, Select } from "../../molecules";
+import { Button } from "../../atoms";
+import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
+
+type PoliciesProps_TP = {
+  title: string;
+  job_id: string;
+  job_type: string;
+  max_buy_type_id: string;
+  max_buy_type: string;
+  max_buy_rate: string;
+  max_buy_cash: string;
+  return_days: string;
+  sales_return: string;
+  branch_id: string;
+  branch_name: string;
+};
+
+type BuyingPoliciesProps_TP = {
+  title: string;
+  value?: string;
+  onAdd?: (value: string) => void;
+  editData?: PoliciesProps_TP;
+};
+
+const AddSubExpensesPolicies = ({
+  title,
+  editData,
+  setShow,
+}: BuyingPoliciesProps_TP) => {
+  console.log("🚀 ~ file: AddSubExpensesPolicies.tsx:41 ~ editData:", editData)
+  const queryClient = useQueryClient();
+  const { userData } = useContext(authCtx);
+  console.log("🚀 ~ file: AddSubExpensesPolicies.tsx:43 ~ userData:", userData);
+  const isRTL = useIsRTL();
+  const [newValue, setNewValue] = useState<any>(null);
+
+  useEffect(() => {
+    document.documentElement.dir = isRTL ? "rtl" : "ltr";
+    document.documentElement.lang = isRTL ? "ar" : "en";
+  }, [isRTL]);
+
+  const cardsValidatingSchema = () =>
+    Yup.object({
+      name_ar: Yup.string().trim().required(requiredTranslation),
+      name_en: Yup.string().trim().required(requiredTranslation),
+      major_id: Yup.string().trim().required(requiredTranslation),
+      branch_id: Yup.string().trim().required(requiredTranslation),
+    });
+
+  const initialValues = {
+    name_ar: editData?.name_ar || "",
+    name_en: editData?.name_en || "",
+    major_id: editData?.major_id || "",
+    branch_id: editData?.branch_id,
+  };
+
+  const {
+    mutate,
+    isLoading: editLoading,
+    data,
+    isSuccess: isSuccessData,
+    reset,
+  } = useMutate({
+    mutationFn: mutateData,
+    mutationKey: ["mainExpenses"],
+    onSuccess: (data) => {
+      notify("success");
+      queryClient.refetchQueries(["mainExpenses"]);
+    },
+    onError: (error) => {
+      console.log(error);
+      notify("error", error?.response?.data?.errors?.msg);
+    },
+  });
+
+  function PostNewCard(values: PoliciesProps_TP) {
+    mutate({
+      endpointName: "/expenses/api/v1/subexpences",
+      values,
+      method: "post",
+    });
+  }
+
+  const PostCardEdit = (values: PoliciesProps_TP) => {
+    mutate({
+      endpointName: `/expenses/api/v1/subexpences/${editData?.id}`,
+      values: {
+        ...values,
+        _method: "put",
+      },
+    });
+  };
+
+  const {
+    data: mainExpensesOption,
+    isSuccess,
+    isLoading,
+    isError,
+    error,
+    isRefetching,
+    refetch,
+    isFetching,
+  } = useFetch({
+    endpoint: `/expenses/api/v1/majorexpences`,
+    queryKey: ["mainExpensesOption"],
+    select: (data) =>
+      data.map((item) => {
+        return {
+          id: item.id,
+          value: item.id || "",
+          label: item.name_ar || "",
+        };
+      }),
+  });
+
+  useEffect(() => {
+    const best = {
+        id: editData?.id  || "",
+        value: editData?.major_name || "",
+        label: editData?.major_name || `${t("choose type of size")}` ,
+    }
+    setNewValue(best);
+  }, []);
+
+  return (
+    <>
+      <OuterFormLayout header={t("add sub expenses policy")}>
+        <Formik
+          validationSchema={() => cardsValidatingSchema()}
+          initialValues={initialValues}
+          onSubmit={(values, { resetForm }) => {
+            if (editData) {
+              PostCardEdit({
+                ...values,
+              });
+            } else {
+                PostNewCard({
+                  ...values,
+                });
+              console.log({
+                ...values,
+              });
+            }
+          }}
+        >
+          {({ values, setFieldValue, resetForm }) => (
+            <Form>
+              <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
+                <div>
+                  <BaseInputField
+                    id="name_ar"
+                    name="name_ar"
+                    type="text"
+                    label={`${t("expenses name in arabic")}`}
+                    placeholder={`${t("expenses name in arabic")}`}
+                    onChange={() => {
+                      setFieldValue("name_ar", values?.name_ar);
+                    }}
+                  />
+                </div>
+                <div className="relative">
+                  <BaseInputField
+                    id="name_en"
+                    type="text"
+                    name="name_en"
+                    label={`${t("expenses name in english")}`}
+                    placeholder={`${t("expenses name in english")}`}
+                    onChange={(e) => {
+                      setFieldValue("name_en", values?.name_en);
+                    }}
+                    className="relative"
+                  />
+                </div>
+                <div className="">
+                  <Select
+                    id="major_id"
+                    label={`${t("main expense")}`}
+                    name="major_id"
+                    value={newValue}
+                    // value={values?.major_id}
+                    placeholder={`${t("main expense")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={mainExpensesOption}
+                    onChange={(e) => {
+                      setNewValue(e);
+                    }
+                  }
+                  />
+                </div>
+                <SelectBranches
+                  required
+                  name="branch_id"
+                  editData={{
+                    branch_id: editData?.branch_id,
+                    branch_name: editData?.branch_name,
+                  }}
+                />
+              </div>
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  className="w-fit"
+                  loading={editLoading}
+                  action={() => setShow(false)}
+                >
+                  {t("save")}
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </OuterFormLayout>
+    </>
+  );
+};
+
+export default AddSubExpensesPolicies;
