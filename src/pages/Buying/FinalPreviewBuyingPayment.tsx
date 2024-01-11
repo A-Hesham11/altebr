@@ -1,6 +1,7 @@
 import { t } from "i18next";
 import QRCodeGen from "../../components/atoms/QRCode";
 import { numberContext } from "../../context/settings/number-formatter";
+import cashImg from "../../assets/cash.png";
 
 type FinalPreviewBuyingPayment_TP = {
   paymentData: never[];
@@ -44,7 +45,7 @@ const FinalPreviewBuyingPayment = ({
           <div className="flex flex-col items-center max-w-[100px] text-center">
             <div className="w-24 h-9">
               <img
-                src={"/src/assets/cash.png"}
+                src={cashImg} 
                 alt="cash"
                 className="w-full h-full"
               />

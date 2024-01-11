@@ -14,7 +14,7 @@ import loginGif from '../../assets/homeGif.gif'
 import { authCtx } from "../../context/auth-and-perm/auth"
 import { Button } from "../atoms/buttons/Button"
 import { CheckBoxField } from "../molecules"
-import { BaseInputField } from "../molecules/formik-fields/BaseInputField"
+import { BaseInputField } from "../molecules/formik-fields/BaseInputField";
 
 ///
 /////////// Types

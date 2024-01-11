@@ -54,8 +54,8 @@ const PaymentToManagement = () => {
     const {
         data: invoiceDataNumber,
       } = useFetch({
-        queryKey: ["payment-sdadbonds"],
         endpoint: `/sdad/api/v1/sdadbonds/${userData?.branch_id}?per_page=10000`,
+        queryKey: ["payment-sdadbonds"],
         onSuccess(data) {
             return data.data
         },
@@ -100,6 +100,7 @@ const PaymentToManagement = () => {
             endpointName: "/sdad/api/v1/store",
             values: {
                 payment: postPaymentData,
+                branch_id: userData?.branch_id,
             },
             method: "post",
         });

@@ -40,6 +40,8 @@ export const BranchMainData = ({
   setModalOpen,
   modalOpen,
 }: BranchMainDataProps_TP) => {
+  // console.log("🚀 ~ file: BranchMainData.tsx:12 ~ NationalAddress:", NationalAddress)
+
   console.log(
     "🚀 ~ file: BranchMainData.tsx:48 ~ isSuccessPost:",
     isSuccessPost
@@ -122,33 +124,58 @@ export const BranchMainData = ({
           {/* market  start */}
           <Country_city_distract_markets
             countryName="country_id_out"
-            countryLabel={`${t("country")}`}
             cityName="city_id_out"
-            cityLabel={`${t("city")}`}
             distractName="district_id_out"
-            distractLabel={`${t("district")}`}
             marketName="market_id"
+            countryLabel={`${t("country")}`}
+            cityLabel={`${t("city")}`}
+            distractLabel={`${t("district")}`}
             marketLabel={`${t("markets")}`}
-            editData={{
-              nationalAddress: {
-                country: {
-                  id: editData?.country?.id,
-                  name: editData?.country?.name,
-                },
-                city: {
-                  id: editData?.city.id,
-                  name: editData?.city.name,
-                },
-                district: {
-                  id: editData?.district.id,
-                  name: editData?.district.name,
-                },
-                market: {
-                  id: editData?.market.id,
-                  name: editData?.market.name,
-                },
-              },
-            }}
+            isSuccessPost={isSuccessPost}
+            resetSelect={restData}
+            editData={editData 
+              ? ({
+                  nationalAddress: {
+                    country: {
+                      id: editData?.country?.id,
+                      name: editData?.country?.name,
+                    },
+                    city: {
+                      id: editData?.city.id,
+                      name: editData?.city.name,
+                    },
+                    district: {
+                      id: editData?.district.id,
+                      name: editData?.district.name,
+                    },
+                    market: {
+                      id: editData?.market.id,
+                      name: editData?.market.name,
+                    },
+                  },
+                })
+              : undefined
+            }
+            // editData={{
+            //   nationalAddress: {
+            //     country: {
+            //       id: editData?.country?.id,
+            //       name: editData?.country?.name,
+            //     },
+            //     city: {
+            //       id: editData?.city.id,
+            //       name: editData?.city.name,
+            //     },
+            //     district: {
+            //       id: editData?.district.id,
+            //       name: editData?.district.name,
+            //     },
+            //     market: {
+            //       id: editData?.market.id,
+            //       name: editData?.market.name,
+            //     },
+            //   },
+            // }}
           />
           {/* market  end */}
 

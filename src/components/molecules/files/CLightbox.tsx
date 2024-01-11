@@ -71,7 +71,7 @@ export const CLightbox = ({
                   />
                 )}
                 <div className="relative max-h-full" key={slide.id}>
-                  <img src={slide.src} className="object-cover w-full" alt="" />
+                  <img src={slide?.src} className="object-cover w-full" alt="" />
                 </div>
               </>
             )

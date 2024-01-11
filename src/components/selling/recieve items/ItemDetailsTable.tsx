@@ -6,17 +6,16 @@ import { ItemDetailsStoneTable } from "./itemsDetailsStoneTable"
 import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutFormik"
 
 export const ItemDetailsTable = ({ selectedItem, selectedRowDetailsId }: { selectedItem: any, selectedRowDetailsId: number }) => {
-console.log("🚀 ~ file: ItemDetailsTable.tsx:9 ~ ItemDetailsTable ~ selectedItem:", selectedItem)
 
     const selectedItemDetails = Array.isArray(selectedItem)
         ?
-            selectedItem?.filter((item: any) => item.id === selectedRowDetailsId)[0]?.detailsItem
+            selectedItem?.filter((item: any) => item.item_id === selectedRowDetailsId)[0]?.detailsItem
         :
             selectedItem?.items?.filter((item: any) => selectedItem?.id === selectedRowDetailsId)[0]?.detailsItem
 
     const detailsWeightOfItem = selectedItem?.items?.filter((item: any) => item?.id === selectedRowDetailsId)[0]?.weightitems
 
-    const images = selectedItemDetails[0]?.attachment
+    const images = selectedItemDetails && selectedItemDetails[0]?.attachment
 
     const Cols = useMemo<any>(() => [
         {

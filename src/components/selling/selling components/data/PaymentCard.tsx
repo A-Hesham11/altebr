@@ -7,6 +7,8 @@ import { Cards_Props_TP } from "../../../templates/bankCards/ViewBankCards";
 import { t } from "i18next";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import Slider from "react-slick";
+import cashImg from "../../../../assets/cash.png";
+import brokenGoldImg from "../../../../assets/Frame 26085625.svg";
 
 type Payment_TP = {
   onSelectCard?: any
@@ -42,23 +44,26 @@ const PaymentCard = ({
   setSelectedCardName
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
+  console.log("🚀 ~ file: PaymentCard.tsx:47 ~ dataSource:", dataSource)
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
+  console.log("🚀 ~ file: PaymentCard.tsx:49 ~ bankAccountCards:", bankAccountCards)
   const [slidesToShow, setSlidesToShow] = useState(2);
+  console.log("🚀 ~ file: PaymentCard.tsx:51 ~ slidesToShow:", slidesToShow)
 
   const isRTL = useIsRTL();
 
   const cardOfCash = [
     {
       front_key: "cash",
-      name_ar: "كاش",
+      name_ar: "نقدي",
       name_en: "cash",
       discount_percentage: 0,
       card: {
-        id: 1,
-        name_ar: "كاش",
+        bank_id: 1,
+        name_ar: "نقدي",
         name_en: "cash",
         front_key: "cash",
-        images: [{ preview: "/src/assets/cash.png" }],
+        images: [{ preview: `${cashImg}` }],
       },
     }
   ];
@@ -66,16 +71,16 @@ const PaymentCard = ({
   const cardReimbursement = [
     {
       front_key: "cash",
-      name_ar: "كاش",
+      name_ar: "نقدي",
       name_en: "cash",
       discount_percentage: 0,
-      id: 10005,
+      bank_id: 10005,
       card: {
         id: 10005,
-        name_ar: "كاش",
+        name_ar: "نقدي",
         name_en: "cash",
         front_key: "cash",
-        images: [{ preview: "/src/assets/cash.png" }],
+        images: [{ preview: `${cashImg}` }],
       },
     },
     {
@@ -84,13 +89,13 @@ const PaymentCard = ({
       name_en: "gold box 18 karat",
       karat: 18,
       discount_percentage: 0,
-      id: 10001,
+      bank_id: 10001,
       card: {
         id: 10001,
         name_ar: "صندوق ذهب الكسر عيار 18",
         name_en: "gold box 18 karat",
         front_key: "18",
-        images: [{ preview: "/src/assets/Frame 26085625.svg" }],
+        images: [{ preview: `${brokenGoldImg}` }],
       },
     },
     {
@@ -99,13 +104,13 @@ const PaymentCard = ({
       name_en: "gold box 21 karat",
       karat: 21,
       discount_percentage: 0,
-      id: 10002,
+      bank_id: 10002,
       card: {
         id: 10002,
         name_ar: "صندوق ذهب الكسر عيار 21",
         name_en: "gold box 21 karat",
         front_key: "21",
-        images: [{ preview: "/src/assets/Frame 26085625.svg" }],
+        images: [{ preview: `${brokenGoldImg}` }],
       },
     },
     {
@@ -114,13 +119,13 @@ const PaymentCard = ({
       name_en: "gold box 22 karat",
       discount_percentage: 0,
       karat: 22,
-      id: 10003,
+      bank_id: 10003,
       card: {
         id: 10003,
         name_ar: "صندوق ذهب الكسر عيار 22",
         name_en: "gold box 22 karat",
         front_key: "22",
-        images: [{ preview: "/src/assets/Frame 26085625.svg" }],
+        images: [{ preview: `${brokenGoldImg}` }],
       },
     },
     {
@@ -129,13 +134,13 @@ const PaymentCard = ({
       name_en: "gold box 24 karat",
       discount_percentage: 0,
       karat: 24,
-      id: 10004,
+      bank_id: 10004,
       card: {
         id: 10004,
         name_ar: "صندوق ذهب الكسر عيار 24",
         name_en: "gold box 24 karat",
         front_key: "24",
-        images: [{ preview: "/src/assets/Frame 26085625.svg" }],
+        images: [{ preview: `${brokenGoldImg}` }],
       },
     },
   ];
@@ -162,7 +167,7 @@ const PaymentCard = ({
       const selectNewCard = cardsData?.filter(
         (item) => item?.front_key === frontKey
       );
-      setCardId?.(selectNewCard[0]?.id);
+      setCardId?.(selectNewCard[0]?.bank_id);
       setSelectedCardName?.(isRTL ? selectNewCard[0]?.name_ar : selectNewCard[0]?.name_en);
       setSelectedCardId(frontKey);
       setFieldValue(
@@ -183,6 +188,7 @@ const PaymentCard = ({
   };
 
   const cardID = cardsData?.filter((item) => item.id === editData?.card_id);
+
   useEffect(() => {
     if (editData) {
       setSelectedCardId(cardID[0]?.id);

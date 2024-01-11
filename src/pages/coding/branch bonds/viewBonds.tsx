@@ -13,11 +13,13 @@ import { SelectOption_TP } from "../../../types"
 import { authCtx } from "../../../context/auth-and-perm/auth"
 import axios from "axios"
 import { Loading } from "../../../components/organisms/Loading"
+import { numberContext } from "../../../context/settings/number-formatter"
 
 export const ViewBonds = () => {
   /////////// VARIABLES
   ///
   const navigate = useNavigate()
+  const { formatReyal, formatGram } = numberContext()
 
   const [popupIsOpen, setPopupIsOpen] = useState({
     partners: false,
@@ -70,8 +72,8 @@ if (branchesOptions && !branchesLoading) {
         viewHandler: () => {
           navigate(`/accept-branchBonds?id=${branch?.id}&name=${branch?.name}`, { branchName: branch?.name });
         },
-        viewCountReyal: countBranchesReyal ? `${countBranchesReyal.value} ${countBranchesReyal.unit_id}` : '',
-        viewCountGram: countBranchesGram ? `${countBranchesGram.value} ${countBranchesGram.unit_id}` : '',
+        viewCountReyal: countBranchesReyal ? `${formatReyal(countBranchesReyal.value)} ${countBranchesReyal.unit_id}` : '',
+        viewCountGram: countBranchesGram ? `${formatGram(countBranchesGram.value)} ${countBranchesGram.unit_id}` : '',
       });
     });
   }

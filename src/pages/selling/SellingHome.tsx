@@ -9,6 +9,7 @@ import logo from "../../assets/altebr_logo.png";
 import { IoSettingsOutline } from "react-icons/io5";
 import { Button } from "../../components/atoms";
 import { useNavigate } from "react-router-dom";
+
 const SellingHome = () => {
   const { logOutHandler, userData } = useContext(authCtx);
 
@@ -25,7 +26,7 @@ const SellingHome = () => {
         <span className="text-mainOrange"> {t("branch")} {userData?.branch_name}</span>
       </h2>
       <div className="flex justify-end items-center gap-2 ">
-        <span className="text-white">{t('welcome')}{userData?.name}</span>
+        <span className="text-white">{t('welcome')} {userData?.name}</span>
         <BiLogOut className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer" size={30} onClick={logOutHandler} />
       </div>
   </div>

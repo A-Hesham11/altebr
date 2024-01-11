@@ -1,23 +1,14 @@
 import { Formik, Form } from 'formik';
-import React, { useEffect, useMemo, useState } from 'react'
-import { notify } from '../../../utils/toast';
+import React, { useEffect, useState } from 'react'
 import { t } from 'i18next';
-import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
-import { Selling_TP } from '../selling components/data/SellingTableData';
-import { useFetch } from '../../../hooks';
-import { numberContext } from '../../../context/settings/number-formatter';
 import * as Yup from "yup";
 import { BaseInputField } from '../../molecules';
 import { Button } from '../../atoms';
-import { BiSearch, BiXCircle } from 'react-icons/bi';
-import { IoMdAdd } from 'react-icons/io';
-import { Loading } from '../../organisms/Loading';
+import { BiSearch } from 'react-icons/bi';
 import { ItemInformation_TP } from '../../../pages/selling/ItemInformation';
-import StonesDetails from './StonesDetails';
-import { FilesPreviewOutFormik } from '../../molecules/files/FilesPreviewOutFormik';
 import { ViewSvgIcon } from '../../atoms/icons';
 import { CLightbox } from '../../molecules/files/CLightbox';
-import { useNavigate } from 'react-router-dom';
+import goldImg from "../../../assets/gold.png";
 
 
 const validationSchema = () =>
@@ -231,7 +222,7 @@ const PieceDetails = ({dataSource, setSearchId, isSuccess, isLoading, searchId, 
                             : (
                                 <div className='flex justify-end '>
                                     <img 
-                                        src={peiceDetails[0] ? peiceDetails[0].attachment[0]?.preview : "/src/assets/gold.png"}
+                                        src={peiceDetails[0] ? peiceDetails[0].attachment[0]?.preview : `${goldImg}`}
                                         alt='صورة القطعة'
                                         className={`${peiceDetails[0] ? "top-2/4 lg:top-[44%]" : "top-[55%] lg:top-2/4"} border-2 border-dashed bill-shadow w-[290px] lg:w-80 h-72 rounded-lg absolute  left-4` }
                                     />

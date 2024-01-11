@@ -197,7 +197,7 @@ const ViewTaxPolicy = () => {
             </div>
         </div>
       </div>
-      {isFetching && (<Loading mainTitle={t("bank accounts")} />)}
+      {isFetching && (<Loading mainTitle={t("Tax policy")} />)}
 
       {isSuccess &&
         !isLoading &&
