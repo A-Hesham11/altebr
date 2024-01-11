@@ -48,9 +48,6 @@ export const CreateBranch = ({
     country_id_out: editData ? editData.country.id : "",
     city_id_out: editData ? editData.city.id : "",
     district_id_out: editData ? editData.district.id : "",
-    country_id: editData ? editData.country.id : "",
-    city_id: editData ? editData.city.id : "",
-    district_id: editData ? editData.district.id : "",
     market_id: editData ? editData.market.id : "",
     market_number: editData ? editData.market_number : "",
     phone: editData ? editData.phone : "",
@@ -59,6 +56,9 @@ export const CreateBranch = ({
     main_address: editData ? editData.address : "",
 
     // national address data
+    country_id: editData ? editData?.nationalAddress.country.id : "",
+    city_id: editData ? editData?.nationalAddress.city.id : "",
+    district_id: editData ? editData?.nationalAddress.district.id : "",
     building_number: editData ? editData?.nationalAddress?.building_number : "",
     street_number: editData ? editData.nationalAddress?.street_number : "",
     sub_number: editData ? editData.nationalAddress?.sub_number : "",
@@ -75,6 +75,7 @@ export const CreateBranch = ({
   const validationSchema = Yup.object({
     name_ar: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     name_en: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
+    number:Yup.string().trim(),
     market_id: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     country_id_out: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     country_id: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
@@ -91,7 +92,6 @@ export const CreateBranch = ({
     sub_number: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     address: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     main_address: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
-    number: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     zip_code: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
   })
 

@@ -267,6 +267,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
       // )
       queryClient.refetchQueries(["AllBranches"])
       setOpen(false)
+      refetch()
       notify("success")
     },
   })

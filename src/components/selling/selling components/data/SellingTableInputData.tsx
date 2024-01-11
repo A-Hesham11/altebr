@@ -62,10 +62,10 @@ export const SellingTableInputData = ({
   const [page, setPage] = useState<number>(1)
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState("")
-  console.log("🚀 ~ file: SellingTableInputData.tsx:64 ~ editSellingTaklfa:", editSellingTaklfa)
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] = useState("")
 
   const { userData } = useContext(authCtx)
+  console.log("🚀 ~ file: SellingTableInputData.tsx:68 ~ userData:", userData)
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100 ;
   

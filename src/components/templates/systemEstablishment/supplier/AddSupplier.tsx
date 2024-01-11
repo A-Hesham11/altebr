@@ -46,7 +46,6 @@ const AddSupplier = ({
   /////////// VARIABLES
 
   const [supplierType, setSupplierType] = useState("")
-  console.log("🚀 ~ file: AddSupplier.tsx:49 ~ supplierType:", supplierType)
 
   const supplierValidatingSchema = () =>
     Yup.object({
@@ -176,7 +175,7 @@ const AddSupplier = ({
     // supplier data
     name: editData ? editData.name : "",
     type: editData ? editData.type : "local",
-    is_mediator: editData ? editData.is_mediator : true,
+    is_mediator: editData ? editData.is_mediator : false,
     country_id_out: editData ? editData?.country?.id : "",
 
     gold_tax: editData
