@@ -1039,5 +1039,22 @@
   "total edited weight greater than available weight": "اجمالي الوزن المعدل اكبر من الوزن المتاح",
   "type weight": "ادخل الوزن",
   "available weight is negative": "الوزن المتاح بالسالب",
-  "type details weight per piece": "ادخل الوزن التفصيلي لكل قطعه"
+  "type details weight per piece": "ادخل الوزن التفصيلي لكل قطعه",
+  "expenses bonds": "سندات المصروف",
+  "expenses policies": "سياسات المصروفات الرئيسية",
+  "add main expenses policy": "إضافة سياسة مصروفات رئيسية",
+  "view main expenses policies": "عرض سياسة المصروفات الرئيسية",
+  "sub expenses policies": "سياسة المصروفات الفرعية",
+  "add sub expenses policy": "إضافة سياسة مصروفات فرعية",
+  "view sub expenses policies": "عرض سياسة المصروفات الفرعية",
+  "main expenses policies": "سياسة المصروفات الرئيسية",
+  "expenses name in arabic": "إسم المصروف بالعربي",
+  "main expense": "المصروفات الرئيسية",
+  "expenses name in english": "إسم المصروف بالانجليزي",
+  "there are no expenses policies available yet": "لا توجد سياسات مصروفات متاحة حتى الآن",
+  "tax exempt": "ضريبة معفاة",
+  "zero tax": "ضريبة صفرية",
+  "add tax expenses policy": "إضافة سياسة ضريبة مصروفات",
+  "tax expenses policies": "سياسة ضريبة المصروفات",
+  "view tax expenses policies": "عرض سياسة ضريبة المصروفات"
 }
