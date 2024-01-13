@@ -42,8 +42,6 @@ export const SystemCard = ({
 
   const location = useLocation()
   const path = location.pathname 
-  console.log("🚀 ~ file: SystemCard.tsx:45 ~ path:", path)
-
   ///
   /////////// STATES
   ///

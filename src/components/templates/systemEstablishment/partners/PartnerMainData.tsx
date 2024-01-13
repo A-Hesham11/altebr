@@ -124,36 +124,39 @@ export const PartnerMainData = ({
             />
           )}
 
-          {/* <Country_city_distract_markets
-            cityName="city_id"
-            countryName="country_id"
+          <Country_city_distract_markets
+            cityName="city_id_out"
+            countryName="country_id_out"
             isSuccessPost={!editData && isSuccessPost}
             resetSelect={!editData && restData}
-            editData={{
-              nationalAddress: {
-                country: {
-                  id: editData?.country?.id,
-                  name: editData?.country?.name,
+            editData={editData 
+              ? ({
+                nationalAddress: {
+                  country: {
+                    id: editData?.country?.id,
+                    name: editData?.country?.name,
+                  },
+                  city: {
+                    id: editData?.city?.id,
+                    name: editData?.city?.name,
+                  },
+                  district: {
+                    id: editData?.nationalAddress?.district?.id,
+                    name: editData?.nationalAddress?.district?.name,
+                  },
                 },
-                city: {
-                  id: editData?.city?.id,
-                  name: editData?.city?.name,
-                },
-                district: {
-                  id: editData?.nationalAddress?.district?.id,
-                  name: editData?.nationalAddress?.district?.name,
-                },
-              },
-            }}
-          /> */}
+                })
+              : undefined
+            }
+          />
 
-        <Country_city_distract_markets
+        {/* <Country_city_distract_markets
           cityName="city_id"
           countryName="country_id"
           editData={editData}
           isSuccessPost={!editData && isSuccessPost}
           resetSelect={!editData && restData}
-        />
+        /> */}
 
           <SelectNationality
             name="nationality_id"

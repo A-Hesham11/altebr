@@ -58,12 +58,12 @@ export const SellingFinalPreview = ({
     endpoint: `/selling/api/v1/get_sentence`,
     queryKey: ["sentence"],
   });
+  console.log("🚀 ~ data:", data)
 
   const { data: companyData } = useFetch<Client_TP>({
     endpoint: `/companySettings/api/v1/companies`,
     queryKey: ["Mineral_license"],
   });
-  
 
   return (
     <div className="relative h-full p-10 bg-flatWhite ">

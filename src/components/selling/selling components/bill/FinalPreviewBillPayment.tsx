@@ -43,12 +43,14 @@ const FinalPreviewBillPayment = ({
           ))}
         </div>
         <h3 className="mt-5 font-extrabold">
-          {costDataAsProps.prepaidAmount && (
+          {costDataAsProps.prepaidAmount ? (
             <>
               <span>{t("prepaid cost")}: </span>
               <span>{costDataAsProps.prepaidAmount}</span>
             </>
-          )}
+          )
+          : null
+        }
         </h3>
       </div>
     </div>

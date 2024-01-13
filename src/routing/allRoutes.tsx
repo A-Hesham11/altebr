@@ -545,24 +545,12 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/honesty" element={<Honest />} />
           <Route path="/selling/honesty/new-honest" element={<NewHonest />} />
           <Route
-            path="/selling/honesty/return-honest"
-            element={<RetrieveHonestEntryScreen />}
-          />
-          <Route
             path="/selling/honesty/all-honest"
             element={<AllHonestBonds />}
           />
           <Route
-            path="/selling/honesty/all-return-honest"
-            element={<AllRetrieveHonestBonds />}
-          />
-          <Route
             path="/selling/honesty/all-honest/:bondId"
             element={<HonestBondAccountingRestriction />}
-          />
-          <Route
-            path="/selling/honesty/return-honest/:bondId"
-            element={<ReturnHonestRestriction />}
           />
           <Route
             path="/selling/honesty/all-retrieval-restrictions"

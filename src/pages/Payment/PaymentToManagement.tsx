@@ -33,11 +33,14 @@ type SellingSecondpage_TP = {
 const PaymentToManagement = () => {
 
     const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
+    console.log("🚀 ~ PaymentToManagement ~ paymentData:", paymentData)
     const [sellingItemsData, setSellingItemsData] = useState([]);
+    console.log("🚀 ~ PaymentToManagement ~ sellingItemsData:", sellingItemsData)
     const [stage, setStage] = useState<number>(1);
     const [selectedCardId, setSelectedCardId] = useState(null);
     const [selectedCardName, setSelectedCardName] = useState(null);
     const [cardId, setCardId] = useState("");
+    console.log("🚀 ~ PaymentToManagement ~ cardId:", cardId)
     const { userData } = useContext(authCtx)
     const navigate = useNavigate()
 

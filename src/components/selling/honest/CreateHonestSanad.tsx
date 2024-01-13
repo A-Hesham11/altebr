@@ -143,8 +143,7 @@ export const CreateHonestSanad = ({
       return acc;
     }, 0);
 
-  const costRemainingHonest = totalActualItemsCost - (+totalPaidCostFromClient + +selectedItem?.amount)
-  console.log("🚀 ~ file: CreateHonestSanad.tsx:147 ~ remainingCost:", costRemainingHonest)
+  const costRemainingHonest = +totalActualItemsCost - (+totalPaidCostFromClient + +selectedItem?.amount)
 
   const incomingBoxesData = [
     {

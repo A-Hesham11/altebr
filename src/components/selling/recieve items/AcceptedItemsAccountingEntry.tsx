@@ -111,7 +111,6 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
     /////////// STATES
     ///
     const [dataSource, setDataSource] = useState([])
-    console.log("🚀 ~ file: AcceptedItemsAccountingEntry.tsx:114 ~ AcceptedItemsAccountingEntry ~ dataSource:", dataSource)
     ///
     /////////// CUSTOM HOOKS
     ///

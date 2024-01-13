@@ -11,7 +11,6 @@ import undefinedImgUser from "../../assets/blank-person-image.png";
 
 const NavBar = ({ isInSelling = false }: { isInSelling?: boolean }) => {
   const { logOutHandler, isLoggingOut, userData } = useContext(authCtx);
-  console.log("🚀 ~ file: NavBar.tsx:12 ~ NavBar ~ userData:", userData)
 
   const navigate = useNavigate();
 

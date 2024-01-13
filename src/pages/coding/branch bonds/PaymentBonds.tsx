@@ -20,6 +20,7 @@ const PaymentBonds = () => {
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ PaymentBonds ~ userData:", userData)
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
@@ -54,10 +55,9 @@ const PaymentBonds = () => {
     queryKey: ["payment-data"],
     endpoint: `/sdad/api/v1/countTrigger`,
     pagination: true,
+    // enabled: !!userData?.branch_id,
   });
-
-  console.log("🚀 ~ file: PaymentBonds.tsx:52 ~ PaymentBonds ~ data:", data)
-
+    console.log("🚀 ~ PaymentBonds ~ data:", data)
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -205,7 +205,7 @@ const PaymentBonds = () => {
             <h2 className="text-lg font-bold">{t("Payment bonds")}</h2>
             <Back className="hover:bg-slate-50 transition-all duration-300" />
         </div>
-        <ul className="grid grid-cols-5 gap-4 mb-12">
+        {/* <ul className="grid grid-cols-5 gap-4 mb-12">
             {BoxspaymentData.map(({id, name_ar, name_en, value, unit }) => (
                 <BoxesDataBase key={id}>
                     <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">{ isRTL ? name_ar : name_en}</p>
@@ -214,7 +214,7 @@ const PaymentBonds = () => {
                     </p>
                 </BoxesDataBase>
             ))}
-        </ul>
+        </ul> */}
       <div className="mb-8 flex flex-col items-center gap-6 lg:flex-row lg:items-end lg:justify-between">
         <Formik
           initialValues={searchValues}
