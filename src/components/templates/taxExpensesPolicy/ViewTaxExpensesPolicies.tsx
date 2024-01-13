@@ -1,46 +1,46 @@
-import { ColumnDef } from '@tanstack/react-table'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { useFetch, useIsRTL, useMutate } from '../../../hooks'
-import {  useNavigate } from 'react-router-dom'
-import { CImageFile_TP, SelectOption_TP } from '../../../types'
-import { notify } from '../../../utils/toast'
-import { mutateData } from '../../../utils/mutateData'
-import { useQueryClient } from '@tanstack/react-query'
-import { t } from 'i18next'
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
-import { Back } from '../../../utils/utils-components/Back'
-import { authCtx } from '../../../context/auth-and-perm/auth'
-import { EditIcon } from '../../atoms/icons'
-import { SvgDelete } from '../../atoms/icons/SvgDelete'
-import { AddButton } from '../../molecules/AddButton'
-import { Loading } from '../../organisms/Loading'
-import { Table } from '../reusableComponants/tantable/Table'
-import { Button } from '../../atoms'
-import { Modal, Select } from '../../molecules'
-import AddAccountsBank from '../accountsBank/AddAccountsBank'
-import { Header } from '../../atoms/Header'
-import { Formik, Form } from 'formik'
-import AddTaxExpensesPolicy from './AddTaxExpensesPolicy'
+import { ColumnDef } from "@tanstack/react-table";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
+import { useNavigate } from "react-router-dom";
+import { CImageFile_TP, SelectOption_TP } from "../../../types";
+import { notify } from "../../../utils/toast";
+import { mutateData } from "../../../utils/mutateData";
+import { useQueryClient } from "@tanstack/react-query";
+import { t } from "i18next";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { Back } from "../../../utils/utils-components/Back";
+import { authCtx } from "../../../context/auth-and-perm/auth";
+import { EditIcon } from "../../atoms/icons";
+import { SvgDelete } from "../../atoms/icons/SvgDelete";
+import { AddButton } from "../../molecules/AddButton";
+import { Loading } from "../../organisms/Loading";
+import { Table } from "../reusableComponants/tantable/Table";
+import { Button } from "../../atoms";
+import { Modal, Select } from "../../molecules";
+import AddAccountsBank from "../accountsBank/AddAccountsBank";
+import { Header } from "../../atoms/Header";
+import { Formik, Form } from "formik";
+import AddTaxExpensesPolicy from "./AddTaxExpensesPolicy";
 
 export type Cards_Props_TP = {
-  title:string
-  main_address: any
-  id: string
-  address: string
-  fax: string
-  market_number: string
-  name_ar: string
-  name_en: string
+  title: string;
+  main_address: any;
+  id: string;
+  address: string;
+  fax: string;
+  market_number: string;
+  name_ar: string;
+  name_en: string;
 
-  number: string
-  phone: string
-  files: CImageFile_TP[]
+  number: string;
+  phone: string;
+  files: CImageFile_TP[];
+};
 
-
-}
-
+/**
+ * Renders the view for tax expenses policies.
+ */
 const ViewTaxExpensesPolicies = () => {
-
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
@@ -74,14 +74,14 @@ const ViewTaxExpensesPolicies = () => {
         cell: (info) => info.getValue(),
       },
       {
-        header: () => <span>{t("expenses name in arabic")} </span>,
-        accessorKey: "name_ar",
+        header: () => <span>{t("type of tax")} </span>,
+        accessorKey: "name",
         cell: (info) => info.getValue(),
       },
       {
-        header: () => <span>{`${t("expenses name in english")}`}</span>,
-        accessorKey: "name_en",
-        cell: (info) => info.getValue(),
+        header: () => <span>{`${t("tax value")}`}</span>,
+        accessorKey: "value",
+        cell: (info) => (info.getValue() != null ? info.getValue() : "-"),
       },
       {
         header: () => <span>{t("actions")}</span>,
@@ -89,19 +89,21 @@ const ViewTaxExpensesPolicies = () => {
         cell: (info) => {
           return (
             <div className="flex items-center justify-center gap-4">
-              <EditIcon
-                action={() => {
-                  setOpen((prev) => !prev);
-                  setEditData(info.row.original);
-                  setAction({
-                    edit: true,
-                    delete: false,
-                    view: false,
-                  });
-                  setModel(false);
-                }}
-                className="fill-mainGreen"
-              />
+              {info.row.original?.name !== "ضريبة معفاه" && (
+                <EditIcon
+                  action={() => {
+                    setOpen((prev) => !prev);
+                    setEditData(info.row.original);
+                    setAction({
+                      edit: true,
+                      delete: false,
+                      view: false,
+                    });
+                    setModel(false);
+                  }}
+                  className="fill-mainGreen"
+                />
+              )}
             </div>
           );
         },
@@ -120,8 +122,8 @@ const ViewTaxExpensesPolicies = () => {
     refetch,
     isFetching,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/expenses/api/v1/sub-expence/${branchId}`,
-    queryKey: ["subExpensesPolicies"],
+    endpoint: `/expenses/api/v1/expence-tax/${branchId}`,
+    queryKey: ["taxExpensesPolicies"],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data);
@@ -173,7 +175,7 @@ const ViewTaxExpensesPolicies = () => {
       <Form>
         <div className="flex justify-between items-center mb-8">
           <p className="font-semibold text-lg">
-            {t("view sub expenses policies")}
+            {t("view tax expenses policies")}
           </p>
           <div className="flex gap-2">
             <AddButton
@@ -308,6 +310,6 @@ const ViewTaxExpensesPolicies = () => {
       </Form>
     </Formik>
   );
-}
+};
 
-export default ViewTaxExpensesPolicies
+export default ViewTaxExpensesPolicies;

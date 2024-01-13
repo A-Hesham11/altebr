@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import {  useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { notify } from "../../../utils/toast";
 import { authCtx } from "../../../context/auth-and-perm/auth";
@@ -33,12 +33,21 @@ type BuyingPoliciesProps_TP = {
   editData?: PoliciesProps_TP;
 };
 
+/**
+ * Component for adding expenses policies.
+ *
+ * @param {BuyingPoliciesProps_TP} props - The component props.
+ * @param {string} props.title - The title of the component.
+ * @param {any} props.editData - The data to be edited.
+ * @param {function} props.setShow - The function to control the visibility of the component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AddExpensesPolicies = ({
   title,
   editData,
   setShow,
+  refetch,
 }: BuyingPoliciesProps_TP) => {
-
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
@@ -76,7 +85,7 @@ const AddExpensesPolicies = ({
     },
     onError: (error) => {
       console.log(error);
-      notify("error", error?.response?.data?.errors?.msg);
+      notify("error", error?.response?.data?.message);
     },
   });
 
@@ -98,6 +107,12 @@ const AddExpensesPolicies = ({
     });
   };
 
+  useEffect(() => {
+    if (editData && isSuccessData) {
+      setShow(false);
+      refetch();
+    }
+  }, [isSuccessData]);
 
   return (
     <>
@@ -128,12 +143,8 @@ const AddExpensesPolicies = ({
                     id="name_ar"
                     name="name_ar"
                     type="text"
-                    label={`${t(
-                      "expenses name in arabic"
-                    )}`}
-                    placeholder={`${t(
-                      "expenses name in arabic"
-                    )}`}
+                    label={`${t("expenses name in arabic")}`}
+                    placeholder={`${t("expenses name in arabic")}`}
                     onChange={() => {
                       setFieldValue("name_ar", values?.name_ar);
                     }}
@@ -144,12 +155,8 @@ const AddExpensesPolicies = ({
                     id="name_en"
                     type="text"
                     name="name_en"
-                    label={`${t(
-                      "expenses name in english"
-                    )}`}
-                    placeholder={`${t(
-                      "expenses name in english"
-                    )}`}
+                    label={`${t("expenses name in english")}`}
+                    placeholder={`${t("expenses name in english")}`}
                     onChange={(e) => {
                       setFieldValue("name_en", values?.name_en);
                     }}
@@ -170,7 +177,7 @@ const AddExpensesPolicies = ({
                   type="submit"
                   className="w-fit"
                   loading={editLoading}
-                  action={() => setShow(false)}
+                  // action={() => setShow(false)}
                 >
                   {t("save")}
                 </Button>
