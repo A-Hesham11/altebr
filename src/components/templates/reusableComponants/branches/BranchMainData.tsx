@@ -40,12 +40,7 @@ export const BranchMainData = ({
   setModalOpen,
   modalOpen,
 }: BranchMainDataProps_TP) => {
-  // console.log("🚀 ~ file: BranchMainData.tsx:12 ~ NationalAddress:", NationalAddress)
 
-  console.log(
-    "🚀 ~ file: BranchMainData.tsx:48 ~ isSuccessPost:",
-    isSuccessPost
-  )
   /////////// VARIABLES
   /////
 

@@ -58,7 +58,6 @@ export const SupplyFirstForm = ({
   //       }
   //     })
   //   })
-  //   console.log("🚀 ~ file: SupplyFirstForm.tsx:49 ~ employees:", employees)
 
     const { data: employees, isLoading: employeesLoading, failureReason: employeeError, refetch: refetchEmployee } = useFetch<SelectOption_TP[], Employee_TP[]>
     ({

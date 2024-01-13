@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { t } from "i18next";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import FinalPreviewBillData from "../../components/selling/selling components/bill/FinalPreviewBillData";
@@ -35,7 +35,7 @@ export const BuyingFinalPreview = ({
   sellingItemsData,
   invoiceNumber,
   odwyaTypeValue,
-      setOdwyaTypeValue
+  setOdwyaTypeValue,
 }: SellingFinalPreviewProps_TP) => {
   const { userData } = useContext(authCtx);
 
@@ -48,7 +48,7 @@ export const BuyingFinalPreview = ({
   // COMPANY DATA API
   const { data: companyData } = useFetch<Client_TP>({
     endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
+    queryKey: ["Selling_Mineral_license"],
   });
 
   return (
@@ -68,7 +68,7 @@ export const BuyingFinalPreview = ({
               costDataAsProps={costDataAsProps}
               sellingItemsData={sellingItemsData}
               odwyaTypeValue={odwyaTypeValue}
-      setOdwyaTypeValue={setOdwyaTypeValue}
+              setOdwyaTypeValue={setOdwyaTypeValue}
             />
           </div>
           <div className="text-center">
@@ -90,12 +90,10 @@ export const BuyingFinalPreview = ({
                 {t("email")}: {userData?.email}
               </p>
               <p>
-                {t("tax number")}:{" "}
-                {companyData && companyData[0]?.taxRegisteration}
+                {t("tax number")}: {companyData && companyData[0]?.taxRegisteration}
               </p>
               <p>
-                {t("Mineral license")}:{" "}
-                {companyData && companyData[0]?.mineralLicence}
+                {t("Mineral license")}: {companyData && companyData[0]?.mineralLicence}
               </p>
             </div>
           </div>

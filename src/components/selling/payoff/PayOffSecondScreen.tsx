@@ -17,6 +17,7 @@ import { Modal } from "../../molecules"
 import { Loading } from "../../organisms/Loading"
 import { Table } from "../../templates/reusableComponants/tantable/Table"
 import { ItemDetailsTable } from "../recieve items/ItemDetailsTable"
+import { numberContext } from "../../../context/settings/number-formatter"
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -27,7 +28,6 @@ type PayOffSecondScreen_TP = {
 }
 ///
 export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOffSecondScreen_TP) => {
-  console.log("🚀 ~ file: PayOffSecondScreen.tsx:30 ~ PayOffSecondScreen ~ selectedItem:", selectedItem)
   /////////// VARIABLES
   ///
   const [openModal, setOpenModal] = useState(false)
@@ -36,12 +36,12 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
   const navigate = useNavigate()
   const [page, setPage] = useState<number>(1)
   const { userData } = useContext(authCtx)
+  const { formatGram, formatReyal } = numberContext();
 
   ///
   /////////// CUSTOM HOOKS
   ///
   const [dataSource, setDataSource] = useState([])
-  console.log("🚀 ~ file: PayOffSecondScreen.tsx:43 ~ PayOffSecondScreen ~ dataSource:", dataSource)
   const [selectedRows, setSelectedRows] = useState<any>([])
   const [disableSelectedCheckAfterSendById, setDisableSelectedCheckAfterSendById] = useState([])
   const [selectAll, setSelectAll] = useState(false)
@@ -49,11 +49,11 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
 
   const isRTL = useIsRTL()
   const { data, isLoading, isSuccess, isRefetching, refetch } = useFetch({
-    endpoint: `/branchManage/api/v1/rejected-per-sanad/${selectedItem?.id}?page=${page}`,
+    endpoint: `/branchManage/api/v1/rejected-per-sanad/${selectedItem?.id}/${userData?.branch_id}?page=${page}`,
     queryKey: ['rejected-per-sanad'],
     pagination: true,
     onSuccess: (data) => {
-      setDataSource(data.data)
+      setDataSource(data.data);
     }
   })
   const {mutate, isLoading: isMutateLoading, issuccess} = useMutate({
@@ -189,31 +189,31 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
       name: t("total items count"),
       key: crypto.randomUUID(),
       unit: t(""),
-      value: allcounts,
+      value:  allcounts,
     },
     {
       name: t("total net weight 24"),
       key: crypto.randomUUID(),
       unit: t("gram"),
-      value: total24,
+      value: formatGram(+total24),
     },
     {
       name: t("total wages"),
       key: crypto.randomUUID(),
       unit: t("gram"),
-      value: allOgour,
+      value: formatGram(+allOgour),
     },
     {
       name: t("total diamond stone weight"),
       key: crypto.randomUUID(),
       unit: t("gram"),
-      value: diamondStone,
+      value: formatGram(+diamondStone),
     },
     {
       name: t("total other stone weight"),
       key: crypto.randomUUID(),
       unit: t("gram"),
-      value: otherStone,
+      value: formatGram(+otherStone),
     },
   ]
 
@@ -295,8 +295,7 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
             <Button
               onClick={() => {
                 setOpenModal(true)
-              }
-              }
+              }}
             >{t('return all items to management')}</Button>
             <Button
               bordered
@@ -323,7 +322,6 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
           <Button
             onClick={() => {
               const allRows = selectedItem.items.filter(item => item.item_status === "Rejected").map(item => item.hwya)
-              console.log("🚀 ~ file: PayOffSecondScreen.tsx:321 ~ PayOffSecondScreen ~ selectedItem:", selectedItem)
               const receivedFinalValue = {
                 id: selectedItem?.id,
                 branch_id: userData?.branch_id,
@@ -345,7 +343,6 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
                 api_gold_price: selectedItem?.api_gold_price,
                 type: selectedItem?.type,
               }
-              console.log("🚀 ~ file: PayOffSecondScreen.tsx:334 ~ PayOffSecondScreen ~ receivedFinalValue:", receivedFinalValue)
               mutate({
                 endpointName: "branchManage/api/v1/restriction-items-rejected",
                 values: receivedFinalValue

@@ -50,11 +50,8 @@ const ViewTaxPolicy = () => {
   const [editData, setEditData] = useState<Cards_Props_TP>()
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
-  console.log("🚀 ~ file: ViewTaxPolicy.tsx:53 ~ ViewTaxPolicy ~ dataSource:", dataSource)
   // const [selectBranch, setSelectBranch] = useState("")
-  // console.log("🚀 ~ file: ViewTaxPolicy.tsx:54 ~ ViewTaxPolicy ~ selectBranch:", selectBranch)
   const [page, setPage] = useState<number>(1)
-  console.log("🚀 ~ file: ViewTaxPolicy.tsx:56 ~ ViewTaxPolicy ~ page:", page)
 
   // const includeTaxFilter = dataSource?.filter((item) => item.branch_id == selectBranch)
 
@@ -89,15 +86,12 @@ const ViewTaxPolicy = () => {
             header: () => <span>{t("actions")}</span>,
             accessorKey: "action",
             cell: (info) => {
-            console.log("🚀 ~ file: ViewTaxPolicy.tsx:125 ~ ViewTaxPolicy ~ info:", info)
-
             return (
                 <div className="flex items-center justify-center gap-4">
                 <EditIcon
                     action={() => {
                     setOpen((prev) => !prev)
                     setEditData(info.row.original)
-                    console.log("🚀 ~ file: ViewTaxPolicy.tsx:97 ~ ViewTaxPolicy ~ info.row.original:", info.row.original)
                     setAction({
                         edit: true,
                         delete: false,
@@ -146,8 +140,6 @@ const ViewTaxPolicy = () => {
       }
     },
   })
-  console.log("🚀 ~ file: ViewTaxPolicy.tsx:129 ~ ViewTaxPolicy ~ data:", data)
-
 
   const queryClient = useQueryClient()
   const {

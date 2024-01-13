@@ -398,7 +398,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
             editData={editData}
             setDataSource={setDataSource}
             setShow={setOpen}
-            title={`${editData ? t("edit Branch") : t("Add Branch")}`}
+            title={`${editData ? t("edit Branch") : t("add branch")}`}
           />
         )}
         {model && (
@@ -406,7 +406,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
             editData={editData}
             setDataSource={setDataSource}
             setShow={setOpen}
-            title={`${editData ? t("edit Branch") : t("Add Branch")}`}
+            title={`${editData ? t("edit Branch") : t("add branch")}`}
           />
         )}
         {action.delete && (

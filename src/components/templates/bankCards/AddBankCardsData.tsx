@@ -51,11 +51,9 @@ const AddBankCardsData = ({
   value,
   onAdd,
 }: AddBankCardProps_TP) => {
-  console.log("🚀 ~ file: AddBankCardsData.tsx:54 ~ editData:", editData)
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   const [accountNumberId, setAccountNumberId] = useState();
-  console.log("🚀 ~ file: AddBankCardsData.tsx:57 ~ accountNumberId:", accountNumberId)
 
   const [card, setCard] = useState("");
 
@@ -92,7 +90,6 @@ const AddBankCardsData = ({
   };
 
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
-  console.log("🚀 ~ file: AddBankCardsData.tsx:96 ~ dataSource:", dataSource)
 
   const {
     data,
@@ -120,7 +117,6 @@ const AddBankCardsData = ({
       };
     },
   });
-    console.log("🚀 ~ file: AddBankCardsData.tsx:124 ~ data:", data)
 
   function PostNewCard(values: bankCardsProps_TP) {
     mutate({
@@ -139,6 +135,7 @@ const AddBankCardsData = ({
       method: "post",
     });
   }
+  
 
   const PostCardEdit = (values: bankCardsProps_TP) => {
     mutate({
@@ -174,7 +171,6 @@ const AddBankCardsData = ({
       queryClient.refetchQueries(["all-BranchCards"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error.response.data.message);
     },
   });
@@ -190,7 +186,6 @@ const AddBankCardsData = ({
             validationSchema={() => cardsValidatingSchema()}
             initialValues={initialValues}
             onSubmit={(values, { resetForm }) => {
-            console.log("🚀 ~ file: AddBankCardsData.tsx:191 ~ values:", values)
  
               if (cardId === "") notify("info", "please select a card");
 
@@ -206,6 +201,7 @@ const AddBankCardsData = ({
                   card_id: cardId,
                   discount_percentage: values.discount_percentage / 100,
                 });
+
               }
             }}
           >

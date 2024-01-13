@@ -38,12 +38,13 @@ const validationSchema = () =>
   });
 
 const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, totalApproximateCost, costRemainingHonest }: Payment_TP) => {
+console.log("🚀 ~ PaymentProcessing ~ totalApproximateCost:", +totalApproximateCost)
+console.log("🚀 ~ PaymentProcessing ~ costRemainingHonest:", costRemainingHonest)
 
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [editData, setEditData] = useState<Payment_TP>();
-  console.log("🚀 ~ file: PaymentProcessing.tsx:49 ~ PaymentProcessing ~ editData:", editData)
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
@@ -79,8 +80,9 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, tota
   const editDataAmount = editData ? editData?.amount : 0;
 
   const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax - +editDataAmount ,0)
+  console.log("🚀 ~ PaymentProcessing ~ amountRemaining:", amountRemaining)
 
-  const costRemaining =  totalPriceInvoice ? (totalPriceInvoice - amountRemaining ) : costRemainingHonest ? (costRemainingHonest) : (totalApproximateCost - amountRemaining)
+  const costRemaining =  +totalPriceInvoice ? (+totalPriceInvoice - +amountRemaining ) : costRemainingHonest ? (+costRemainingHonest) : (+totalApproximateCost - +amountRemaining) || 0
 
   return (
     <>

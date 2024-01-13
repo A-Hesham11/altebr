@@ -47,8 +47,10 @@ export const AddPartners = ({
     start_date: editData ? new Date(editData?.start_date) : new Date(),
     country_id_out: editData ? editData?.country?.id : "",
     city_id_out: editData ? editData?.city?.id : "",
-    country_id: editData?.country?.id || "",
-    city_id: editData?.city?.id || "",
+    // country_id: editData?.country?.id || "",
+    country_id: editData?.nationalAddress.country?.id || "",
+    // city_id: editData?.city?.id || "",
+    city_id: editData?.nationalAddress.city?.id || "",
     nationality_name: editData?.nationality_name || "",
     nationality_id: editData?.nationality.id || "",
     national_image: !!editData?.national_image
@@ -91,8 +93,6 @@ export const AddPartners = ({
         : Yup.string().trim(),
       end_date: Yup.date().required(requiredTranslation),
       start_date: Yup.date().required(requiredTranslation),
-      // x_city: Yup.string().trim().required(requiredTranslation),
-      // x_country: Yup.string().trim().required(requiredTranslation),
       nationality_id: Yup.string().trim().required(requiredTranslation),
       building_number: Yup.string().trim().required(requiredTranslation),
       country_id: Yup.string().trim().required(requiredTranslation),
@@ -184,7 +184,7 @@ export const AddPartners = ({
     <>
       <Formik
         initialValues={initialValues}
-        validationSchema={partnerValidatingSchema}
+        // validationSchema={partnerValidatingSchema}
         onSubmit={(values) => {
           let editedValues = {
             name: values.name,

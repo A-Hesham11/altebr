@@ -34,7 +34,6 @@ type BuyingPoliciesProps_TP = {
 
 const GoldPrice = ({ title }: BuyingPoliciesProps_TP) => {
   const [goldType, setGoldType] = useState();
-  console.log("🚀 ~ file: GoldPrice.tsx:37 ~ GoldPrice ~ goldType:", goldType)
   const [editData, setEditData] = useState();
 
   const queryClient = useQueryClient();

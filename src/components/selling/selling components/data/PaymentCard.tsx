@@ -44,11 +44,10 @@ const PaymentCard = ({
   setSelectedCardName
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
-  console.log("🚀 ~ file: PaymentCard.tsx:47 ~ dataSource:", dataSource)
+  console.log("🚀 ~ dataSource:", dataSource)
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
-  console.log("🚀 ~ file: PaymentCard.tsx:49 ~ bankAccountCards:", bankAccountCards)
+  console.log("🚀 ~ bankAccountCards:", bankAccountCards)
   const [slidesToShow, setSlidesToShow] = useState(2);
-  console.log("🚀 ~ file: PaymentCard.tsx:51 ~ slidesToShow:", slidesToShow)
 
   const isRTL = useIsRTL();
 
@@ -167,7 +166,10 @@ const PaymentCard = ({
       const selectNewCard = cardsData?.filter(
         (item) => item?.front_key === frontKey
       );
-      setCardId?.(selectNewCard[0]?.bank_id);
+
+      const selectCradIDOrBankId = selectNewCard[0]?.bank_id ? selectNewCard[0]?.bank_id : selectNewCard[0]?.id;
+
+      setCardId?.(selectCradIDOrBankId);
       setSelectedCardName?.(isRTL ? selectNewCard[0]?.name_ar : selectNewCard[0]?.name_en);
       setSelectedCardId(frontKey);
       setFieldValue(

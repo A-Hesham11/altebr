@@ -183,22 +183,25 @@ export const SupplierMainData = ({
             countryLabel={`${t("country")}`}
             isSuccessPost={isSuccessPost}
             resetSelect={restData}
-            editData={{
-              nationalAddress: {
-                country: {
-                  id: editData?.country?.id,
-                  name: editData?.country?.name,
-                },
-                city: {
-                  id: editData?.city?.id,
-                  name: editData?.city?.name,
-                },
-                district: {
-                  id: editData?.nationalAddress?.district?.id,
-                  name: editData?.nationalAddress?.district?.name,
-                },
-              },
-            }}
+            editData={editData 
+              ? ({
+                  nationalAddress: {
+                    country: {
+                      id: editData?.country?.id,
+                      name: editData?.country?.name,
+                    },
+                    city: {
+                      id: editData?.city?.id,
+                      name: editData?.city?.name,
+                    },
+                    district: {
+                      id: editData?.nationalAddress?.district?.id,
+                      name: editData?.nationalAddress?.district?.name,
+                    },
+                  }
+                })
+              : undefined
+            }
           />
           {!!!editData?.phone && (
             <PhoneInput
