@@ -105,7 +105,12 @@ export const AllSuppliers = ({ title }: SupplierProps_TP) => {
       {
         cell: (info) => info.getValue(),
         accessorKey: "index",
-        header: () => <span>{t("Sequence ")} </span>,
+        header: () => <span>{t("Sequence")} </span>,
+      },
+      {
+        header: () => <span>{t("company name")} </span>,
+        accessorKey: "company_name",
+        cell: (info) => info.getValue(),
       },
       {
         header: () => <span>{t("supplier")} </span>,

@@ -4,31 +4,44 @@
 ///
 /////////// Types
 
-import { Form, Formik } from "formik"
-import { t } from "i18next"
-import { Dispatch, SetStateAction } from "react"
-import { useFetch } from "../../hooks"
-import { Employee_TP } from "../../pages/employees/employees-types"
-import { Supply_TP, supplierTax_TP } from "../../pages/supply/Supply"
-import { SelectOption_TP } from "../../types"
-import { getDayBefore } from "../../utils/date"
-import { Button } from "../atoms"
-import { BaseInputField, DateInputField, InnerFormLayout, OuterFormLayout, Select, TextAreaField } from "../molecules"
-import RadioGroup from "../molecules/RadioGroup"
-import { RefetchErrorHandler } from "../molecules/RefetchErrorHandler"
-import { DropFile } from "../molecules/files/DropFile"
-import { Supplier_TP } from "../templates/systemEstablishment/supplier/supplier-types"
-import { FirstFormInitValues_TP, diamondValidatingSchema, goldValidatingSchema } from "./formInitialValues_types"
+import { Form, Formik } from "formik";
+import { t } from "i18next";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useFetch } from "../../hooks";
+import { Employee_TP } from "../../pages/employees/employees-types";
+import { Supply_TP, supplierTax_TP } from "../../pages/supply/Supply";
+import { SelectOption_TP } from "../../types";
+import { getDayBefore } from "../../utils/date";
+import { Button } from "../atoms";
+import {
+  BaseInputField,
+  DateInputField,
+  InnerFormLayout,
+  OuterFormLayout,
+  Select,
+  TextAreaField,
+} from "../molecules";
+import RadioGroup from "../molecules/RadioGroup";
+import { RefetchErrorHandler } from "../molecules/RefetchErrorHandler";
+import { DropFile } from "../molecules/files/DropFile";
+import { Supplier_TP } from "../templates/systemEstablishment/supplier/supplier-types";
+import {
+  FirstFormInitValues_TP,
+  diamondValidatingSchema,
+  goldValidatingSchema,
+} from "./formInitialValues_types";
 
 ///
 type FirstFormProps_TP = {
-  setSupplierTax: Dispatch<SetStateAction<supplierTax_TP>>
-  supply: Supply_TP
-  formValues: FirstFormInitValues_TP | undefined
-  setFormValues: React.Dispatch<React.SetStateAction<FirstFormInitValues_TP | undefined>>
-  setStage: React.Dispatch<React.SetStateAction<number>>
-  nextBondNumber: string | undefined
-}
+  setSupplierTax: Dispatch<SetStateAction<supplierTax_TP>>;
+  supply: Supply_TP;
+  formValues: FirstFormInitValues_TP | undefined;
+  setFormValues: React.Dispatch<
+    React.SetStateAction<FirstFormInitValues_TP | undefined>
+  >;
+  setStage: React.Dispatch<React.SetStateAction<number>>;
+  nextBondNumber: string | undefined;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 ///
@@ -44,7 +57,7 @@ export const SupplyFirstForm = ({
   /////////// CUSTOM HOOKS
   ///
   // fetch gold price api to set it as default price
-  // fetch buyer api 
+  // fetch buyer api
   // const { data: employees, isLoading: employeesLoading, failureReason: employeeError, refetch: refetchEmployee } = useFetch<SelectOption_TP[], Employee_TP[]>
   //   ({
   //     endpoint: "employee/api/v1/employees?per_page=10000",
@@ -59,36 +72,61 @@ export const SupplyFirstForm = ({
   //     })
   //   })
 
-    const { data: employees, isLoading: employeesLoading, failureReason: employeeError, refetch: refetchEmployee } = useFetch<SelectOption_TP[], Employee_TP[]>
-    ({
-      endpoint: "employee/api/v1/employees?per_page=10000",
-      queryKey: ["employees"],
-      select: (employees) => employees.filter((employee) => employee?.branch?.id === 1)
-      .map((employee) => ({
-        id: employee.id,
-        value: employee.name,
-        label: employee.name,
-        name: employee.name
-      }))
-    })
+  const [goldPriceToday, setGoldPriceToday] = useState("")
 
-  const { data: suppliers, isLoading: suppliersLoading, failureReason: suppliersErrorReason, refetch: refetchSupplier } = useFetch<SelectOption_TP[], Supplier_TP[]>
-    ({
-      endpoint: "/supplier/api/v1/suppliers?per_page=10000",
-      queryKey: ["suppliers"],
-      onSuccess(data) {
-      },
-      select: (suppliers) => suppliers.map((supplier) => {
+  useEffect(() => {
+    setGoldPriceToday("");
+  }, []);
+
+  const {
+    data: employees,
+    isLoading: employeesLoading,
+    failureReason: employeeError,
+    refetch: refetchEmployee,
+  } = useFetch<SelectOption_TP[], Employee_TP[]>({
+    endpoint: "employee/api/v1/employees?per_page=10000",
+    queryKey: ["employees"],
+    select: (employees) =>
+      employees
+        .filter((employee) => employee?.branch?.id === 1)
+        .map((employee) => ({
+          id: employee.id,
+          value: employee.name,
+          label: employee.name,
+          name: employee.name,
+        })),
+  });
+
+  const {
+    data: suppliers,
+    isLoading: suppliersLoading,
+    failureReason: suppliersErrorReason,
+    refetch: refetchSupplier,
+  } = useFetch<SelectOption_TP[], Supplier_TP[]>({
+    endpoint: "/supplier/api/v1/suppliers?per_page=10000",
+    queryKey: ["suppliers"],
+    onSuccess(data) {},
+    select: (suppliers) =>
+      suppliers.map((supplier) => {
         return {
           //@ts-ignore
           id: supplier.id,
           value: supplier.name,
           label: supplier.name,
           name: supplier.name,
-          tax: supplier.tax
-        }
-      })
-    })
+          tax: supplier.tax,
+        };
+      }),
+  });
+
+  // Gold Price Api
+  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
+    endpoint: "/buyingUsedGold/api/v1/get-gold-price",
+    queryKey: ["GoldPriceApi"],
+    onSuccess: (data) => {
+      setGoldPriceToday(data["24"])
+    }
+  });
   // fetch supplier api
 
   ///
@@ -98,51 +136,54 @@ export const SupplyFirstForm = ({
   /////////// VARIABLES
   ///
 
-  const FirstFormInitValues: FirstFormInitValues_TP = supply === 'gold' ? {
-    twred_type: formValues?.twred_type || 'local',
-    bond_date: formValues?.bond_date || getDayBefore(new Date()),
-    employee_id: formValues?.employee_id || '',
-    supplier_id: formValues?.supplier_id || '',
-    employee_value: formValues?.employee_value || '',
-    supplier_value: formValues?.supplier_value || '',
-    bond_number: formValues?.bond_number || "",
-    api_gold_price: formValues?.api_gold_price || 20, // comes from api gold price 
-    entity_gold_price: formValues?.entity_gold_price || "" || "20", // should be api gold price value from api if no entered data
-    notes: formValues?.notes || "",
-    out_goods_value: formValues?.out_goods_value || "",
-    media: formValues?.media || [],
-    goods_media: formValues?.goods_media || [],
-  } : supply === 'diamond' ?  {
-    twred_type: formValues?.twred_type || 'local',
-    bond_date: formValues?.bond_date || getDayBefore(new Date()),
-    employee_id: formValues?.employee_id || '',
-    supplier_id: formValues?.supplier_id || '',
-    currency: formValues?.currency || 'ryal',
-    factorial: formValues?.factorial || 1,
-    employee_value: formValues?.employee_value || '',
-    supplier_value: formValues?.supplier_value || '',
-    bond_number: formValues?.bond_number || "",
-    notes: formValues?.notes || "",
-    out_goods_value: formValues?.out_goods_value || "",
-    media: formValues?.media || [],
-    goods_media: formValues?.goods_media || [],
-  }
-  : 
-  {
-    twred_type: formValues?.twred_type || 'local',
-    bond_date: formValues?.bond_date || getDayBefore(new Date()),
-    employee_id: formValues?.employee_id || '',
-    supplier_id: formValues?.supplier_id || '',
-    currency: formValues?.currency || 'ryal',
-    factorial: formValues?.factorial || 1,
-    employee_value: formValues?.employee_value || '',
-    supplier_value: formValues?.supplier_value || '',
-    bond_number: formValues?.bond_number || "",
-    notes: formValues?.notes || "",
-    out_goods_value: formValues?.out_goods_value || "",
-    media: formValues?.media || [],
-    goods_media: formValues?.goods_media || [],
-  }
+  const FirstFormInitValues: FirstFormInitValues_TP =
+    supply === "gold"
+      ? {
+          twred_type: formValues?.twred_type || "local",
+          bond_date: formValues?.bond_date || getDayBefore(new Date()),
+          employee_id: formValues?.employee_id || "",
+          supplier_id: formValues?.supplier_id || "",
+          employee_value: formValues?.employee_value || "",
+          supplier_value: formValues?.supplier_value || "",
+          bond_number: formValues?.bond_number || "",
+          api_gold_price: formValues?.api_gold_price || "", // comes from api gold price
+          entity_gold_price: formValues?.entity_gold_price || "" || "20", // should be api gold price value from api if no entered data
+          notes: formValues?.notes || "",
+          out_goods_value: formValues?.out_goods_value || "",
+          media: formValues?.media || [],
+          goods_media: formValues?.goods_media || [],
+        }
+      : supply === "diamond"
+      ? {
+          twred_type: formValues?.twred_type || "local",
+          bond_date: formValues?.bond_date || getDayBefore(new Date()),
+          employee_id: formValues?.employee_id || "",
+          supplier_id: formValues?.supplier_id || "",
+          currency: formValues?.currency || "ryal",
+          factorial: formValues?.factorial || 1,
+          employee_value: formValues?.employee_value || "",
+          supplier_value: formValues?.supplier_value || "",
+          bond_number: formValues?.bond_number || "",
+          notes: formValues?.notes || "",
+          out_goods_value: formValues?.out_goods_value || "",
+          media: formValues?.media || [],
+          goods_media: formValues?.goods_media || [],
+        }
+      : {
+          twred_type: formValues?.twred_type || "local",
+          bond_date: formValues?.bond_date || getDayBefore(new Date()),
+          employee_id: formValues?.employee_id || "",
+          supplier_id: formValues?.supplier_id || "",
+          currency: formValues?.currency || "ryal",
+          factorial: formValues?.factorial || 1,
+          employee_value: formValues?.employee_value || "",
+          supplier_value: formValues?.supplier_value || "",
+          bond_number: formValues?.bond_number || "",
+          notes: formValues?.notes || "",
+          out_goods_value: formValues?.out_goods_value || "",
+          media: formValues?.media || [],
+          goods_media: formValues?.goods_media || [],
+        };
 
   /////////// SIDE EFFECTS
   ///
@@ -150,41 +191,41 @@ export const SupplyFirstForm = ({
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   const handleSubmit = (values: FirstFormInitValues_TP) => {
-    setStage((prev) => prev + 1)
-    if (supply === 'gold') {
+    setStage((prev) => prev + 1);
+    if (supply === "gold") {
       values.twred_type === "global"
         ? setFormValues(values)
         : setFormValues({
-          twred_type: values.twred_type,
-          bond_date: values.bond_date,
-          employee_id: values.employee_id,
-          supplier_id: values.supplier_id,
-          employee_value: values.employee_value,
-          supplier_value: values.supplier_value,
-          bond_number: values.bond_number,
-          api_gold_price: values.api_gold_price,
-          entity_gold_price: values.entity_gold_price,
-          notes: values.notes,
-          media: values.media
-        })
-    } else if (supply === 'diamond' || supply === 'accessories' ) {
+            twred_type: values.twred_type,
+            bond_date: values.bond_date,
+            employee_id: values.employee_id,
+            supplier_id: values.supplier_id,
+            employee_value: values.employee_value,
+            supplier_value: values.supplier_value,
+            bond_number: values.bond_number,
+            api_gold_price: values.api_gold_price,
+            entity_gold_price: values.entity_gold_price,
+            notes: values.notes,
+            media: values.media,
+          });
+    } else if (supply === "diamond" || supply === "accessories") {
       values.twred_type === "global"
         ? setFormValues(values)
         : setFormValues({
-          twred_type: values.twred_type,
-          bond_date: values.bond_date,
-          employee_id: values.employee_id,
-          supplier_id: values.supplier_id,
-          employee_value: values.employee_value,
-          supplier_value: values.supplier_value,
-          bond_number: values.bond_number,
-          notes: values.notes,
-          currency: values.currency,
-          factorial: values.factorial,
-          media: values.media
-        })
+            twred_type: values.twred_type,
+            bond_date: values.bond_date,
+            employee_id: values.employee_id,
+            supplier_id: values.supplier_id,
+            employee_value: values.employee_value,
+            supplier_value: values.supplier_value,
+            bond_number: values.bond_number,
+            notes: values.notes,
+            currency: values.currency,
+            factorial: values.factorial,
+            media: values.media,
+          });
     }
-  }
+  };
   ///
   return (
     <>
@@ -192,9 +233,7 @@ export const SupplyFirstForm = ({
         onSubmit={(values) => handleSubmit(values)}
         initialValues={FirstFormInitValues}
         validationSchema={
-          supply === 'gold'
-            ? goldValidatingSchema
-            : diamondValidatingSchema
+          supply === "gold" ? goldValidatingSchema : diamondValidatingSchema
         }
       >
         {({ values, setFieldValue }) => (
@@ -212,7 +251,7 @@ export const SupplyFirstForm = ({
                 title={`${t("main data")}`}
                 leftComponent={
                   <p className="font-bold">
-                    {`${t('bond number')}`}/
+                    {`${t("bond number")}`}/
                     <span className=" text-mainOrange">
                       {nextBondNumber ? nextBondNumber : "تحميل رقم ..."}
                     </span>
@@ -239,8 +278,7 @@ export const SupplyFirstForm = ({
                       </div>
                     </RadioGroup>
                   </div>
-                  {
-                    supply !== 'gold' &&
+                  {supply !== "gold" && (
                     <div className="flex gap-x-2 mt-8 col-span-4">
                       <span className="font-bold">{t("currency")}</span>
                       <RadioGroup name="currency">
@@ -258,7 +296,7 @@ export const SupplyFirstForm = ({
                         </div>
                       </RadioGroup>
                     </div>
-                  }
+                  )}
                 </div>
                 {/* currency end */}
 
@@ -283,8 +321,8 @@ export const SupplyFirstForm = ({
                     loading={employeesLoading}
                     isDisabled={!employeesLoading && !!employeeError}
                     onChange={(option: any) => {
-                      setFieldValue("employee_value", option!.value)
-                      setFieldValue("employee_id", option!.id)
+                      setFieldValue("employee_value", option!.value);
+                      setFieldValue("employee_id", option!.id);
                     }}
                     value={{
                       value:
@@ -317,9 +355,9 @@ export const SupplyFirstForm = ({
                     loading={suppliersLoading}
                     isDisabled={!suppliersLoading && !!suppliersErrorReason}
                     onChange={(option: any) => {
-                      setFieldValue("supplier_value", option!.value)
-                      setFieldValue("supplier_id", option!.id)
-                      setSupplierTax(option.tax)
+                      setFieldValue("supplier_value", option!.value);
+                      setFieldValue("supplier_id", option!.id);
+                      setSupplierTax(option.tax);
                     }}
                     value={{
                       value:
@@ -351,14 +389,20 @@ export const SupplyFirstForm = ({
                 {/* document number end */}
 
                 {/* gold price start */}
-                {supply === 'gold' && <BaseInputField
-                  id="entity_gold_price"
-                  label={`${t("gold price")}`}
-                  name="api_gold_price"
-                  type="text"
-                  placeholder={`${t("gold price")}`}
-                  required
-                />}
+                {supply === "gold" && (
+                  <BaseInputField
+                    id="entity_gold_price"
+                    label={`${t("gold price")}`}
+                    name="api_gold_price"
+                    type="text"
+                    value={goldPriceToday ? goldPriceToday : ""}
+                    placeholder={`${t("gold price")}`}
+                    onChange={(e) => {
+                      setGoldPriceToday(e.target.value)
+                    }}
+                    required
+                  />
+                )}
                 {/* gold price end */}
 
                 {/* outer goods amount start */}
@@ -386,7 +430,11 @@ export const SupplyFirstForm = ({
                 {/* currency factorial end */}
                 <div className="col-span-4 flex justify-between gap-x-4">
                   {/*doc file start */}
-                  <div className={values.twred_type === "global" ? "w-1/2" : "w-full"}>
+                  <div
+                    className={
+                      values.twred_type === "global" ? "w-1/2" : "w-full"
+                    }
+                  >
                     <h2>{t("attach supplier bond file")}</h2>
                     <DropFile name="media" />
                   </div>
@@ -423,5 +471,5 @@ export const SupplyFirstForm = ({
         )}
       </Formik>
     </>
-  )
-}
+  );
+};

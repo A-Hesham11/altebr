@@ -49,7 +49,6 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ dataSource:", dataSource)
 
   const [search, setSearch] = useState(""); 
   const [openDetails, setOpenDetails] = useState<boolean>(false);
@@ -62,7 +61,6 @@ export const SellingTableInputData = ({
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] = useState("")
 
   const { userData } = useContext(authCtx)
-  console.log("🚀 ~ userData:", userData)
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100 ;
   
@@ -70,8 +68,6 @@ export const SellingTableInputData = ({
   dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
   
   const priceWithCommissionCash = dataSource && (+dataSource[0]?.cost + +dataSource[0]?.min_selling);
-  // console.log("🚀 ~ dataSource[0]?.min_selling:", dataSource[0]?.min_selling)
-  console.log("🚀 ~ priceWithCommissionCash:", priceWithCommissionCash)
   
   const priceWithSellingPolicy =
   dataSource && dataSource[0]?.min_selling_type === "نسبة"

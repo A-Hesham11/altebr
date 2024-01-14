@@ -28,6 +28,7 @@ type Payment_TP = {
   setCardId?: any
   setCardDiscountPercentage?: any
   setSelectedCardName?: any
+  setMainAccountNumber?: any
 };
 
 const PaymentCard = ({
@@ -41,12 +42,11 @@ const PaymentCard = ({
   setSellingFrontKey,
   setCardDiscountPercentage,
   setCardId,
-  setSelectedCardName
+  setSelectedCardName,
+  setMainAccountNumber
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
-  console.log("🚀 ~ dataSource:", dataSource)
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
-  console.log("🚀 ~ bankAccountCards:", bankAccountCards)
   const [slidesToShow, setSlidesToShow] = useState(2);
 
   const isRTL = useIsRTL();
@@ -153,6 +153,8 @@ const PaymentCard = ({
   const cardsData = fetchShowMainCards
   ? [...dataSource].reverse()
   : [...bankscard, ...bankAccountCards, ...cardCash].reverse();
+
+  console.log("🚀 ~ file: PaymentCard.tsx:152 ~ cardsData:", cardsData)
   
   const { userData } = useContext(authCtx);
 
@@ -172,12 +174,12 @@ const PaymentCard = ({
       setCardId?.(selectCradIDOrBankId);
       setSelectedCardName?.(isRTL ? selectNewCard[0]?.name_ar : selectNewCard[0]?.name_en);
       setSelectedCardId(frontKey);
+      setMainAccountNumber?.(selectNewCard[0]?.main_account_number)
       setFieldValue(
         "discount_percentage",
         selectNewCard[0]?.discount_percentage * 100
       );
-      const cardNameInTable = `${selectNewCard[0]?.name_ar} ${selectNewCard[0]?.bank_name ? `(${selectNewCard[0]?.bank_name})` : ""
-        }`;
+      const cardNameInTable = `${selectNewCard[0]?.name_ar} ${selectNewCard[0]?.bank_name ? `(${selectNewCard[0]?.bank_name})` : ""}`;
       const cardIMageInTable = `${selectNewCard[0]?.card.images[0]?.preview}`;
       onSelectCard(cardNameInTable, cardIMageInTable);
       setCardFronKey(selectNewCard[0]?.front_key);

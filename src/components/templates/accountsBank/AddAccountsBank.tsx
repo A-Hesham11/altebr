@@ -61,7 +61,7 @@ const AddAccountsBank = ({ title, editData }: AddBankProps_TP) => {
       branch_id: Yup.string().trim().required(requiredTranslation),
       main_account_number: Yup.string().trim().required(requiredTranslation),
       iban: Yup.string().trim().required(requiredTranslation),
-      swift: Yup.string().trim().required(requiredTranslation),
+      swift: Yup.string().trim(),
     });
 
   const initialValues = {
