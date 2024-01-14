@@ -114,6 +114,7 @@ import ExpensesBonds from "../pages/expenses/Bonds/ExpensesBonds"
 import ViewExpensesPolicies from "../components/templates/expensesPolicy/ViewExpensesPolicies"
 import ViewSubExpensesPolicies from "../components/templates/subExpensesPolicy/ViewSubExpensesPolicies"
 import ViewTaxExpensesPolicies from "../components/templates/taxExpensesPolicy/ViewTaxExpensesPolicies"
+import ExpensesPage from "../pages/expenses/ExpensesPage"
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -608,7 +609,7 @@ export const AllRoutesProvider = () => {
           {/* BUYING END */}
           {/* EXPENSES START */}
           <Route path="/system/mainExpensesPolicies" element={<ViewExpensesPolicies />} />
-          <Route path="/expenses/expensesInvoice" element={<ExpensesInvoice />} />
+          <Route path="/expenses/expensesInvoice" element={<ExpensesPage />} />
           <Route path="/expenses/expensesBonds" element={<ExpensesBonds />} />
 
           {/* TAX EXPENSES */}

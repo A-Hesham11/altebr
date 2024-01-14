@@ -1056,5 +1056,16 @@
   "zero tax": "ضريبة صفرية",
   "add tax expenses policy": "إضافة سياسة ضريبة مصروفات",
   "tax expenses policies": "سياسة ضريبة المصروفات",
-  "view tax expenses policies": "عرض سياسة ضريبة المصروفات"
+  "view tax expenses policies": "عرض سياسة ضريبة المصروفات",
+  "expenses bond number": "رقم سند المصروف",
+  "sub expense": "مصروف فرعية",
+  "total expenses of day": "اجمالي المصروفات لليوم",
+  "total expenses of month": "اجمالي المصروفات للشهر",
+  "total expenses of year": "اجمالي المصروفات للسنة",
+  "expense amount": "مبلغ المصروف",
+  "expense from date": "المصروف من تاريخ",
+  "expense to date": "المصروف الي تاريخ",
+  "include tax": "شامل الضريبة",
+  "add expense bond": "إضافة سند مصروف",
+  "expense bond number": "رقم سند المصروف"
 }
