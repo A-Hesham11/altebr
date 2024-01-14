@@ -19,6 +19,7 @@ const TableOfIdentities = ({
   checkboxChecked,
   operationTypeSelect,
 }) => {
+  console.log("🚀 ~ dataSource:", dataSource)
   // STATE
   const isRTL = useIsRTL();
   const { formatReyal } = numberContext();

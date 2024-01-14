@@ -49,10 +49,6 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ selectedItemDetails:", selectedItemDetails)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ sellingItemsData:", sellingItemsData)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:52 ~ dataSource:", dataSource)
 
   const [search, setSearch] = useState(""); 
   const [openDetails, setOpenDetails] = useState<boolean>(false);
@@ -65,7 +61,6 @@ export const SellingTableInputData = ({
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] = useState("")
 
   const { userData } = useContext(authCtx)
-  console.log("🚀 ~ file: SellingTableInputData.tsx:68 ~ userData:", userData)
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100 ;
   
@@ -162,8 +157,6 @@ export const SellingTableInputData = ({
         header: () => "#",
         accessorKey: "action",
         cell: (info: any) => {
-          console.log("🚀 ~ file: SellingTableInputData.tsx:184 ~ info:", info.row.original.status)
-          
           return (
             <div className="flex items-center justify-center gap-4">
               <input type="checkbox" className={`border-mainGreen text-mainGreen rounded bg-red-600' ${info.row.original.status && "bg-neutral-400"}`} 
@@ -810,7 +803,6 @@ export const SellingTableInputData = ({
                       : priceWithCommissionCash;
 
                       const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
-                      console.log("🚀 ~ file: SellingTableInputData.tsx:811 ~ taklfaAfterTax:", taklfaAfterTax)
 
                       const checkedFromWeight = selectedItemDetails?.every((item) => item.weight !== "")
 
@@ -834,7 +826,6 @@ export const SellingTableInputData = ({
                         setOpenDetails(false);
 
                       }
-                        console.log("🚀 ~ file: SellingTableInputData.tsx:836 ~ +values?.taklfa:", +values?.taklfa)
 
                       setEditSellingTaklfa(+priceWithSellingPolicy)
                       setEditSellingTaklfaAfterTax(+priceWithSellingPolicy)

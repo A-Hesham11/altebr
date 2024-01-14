@@ -6,7 +6,7 @@ import FinalPreviewBillPayment from './FinalPreviewBillPayment'
 import { Payment_TP } from '../data/PaymentProcessing'
 
 const BillFinalPreview = ({
-  paymentData
+  paymentData,
 }: Payment_TP) => {
   return (
     <div >

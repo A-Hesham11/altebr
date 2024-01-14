@@ -58,7 +58,6 @@ export const AccessoriesTableForm = ({
   setEditRow,
   setEditData,
 }: OTableFormProps_TP) => {
-  console.log("🚀 ~ file: AccessoriesTableForm.tsx:61 ~ categoriesOptions:", categoriesOptions)
   const { formatGram, formatReyal } = numberContext()
   let { enableReinitialize, resetForm, values, setFieldValue, submitForm } =
   useFormikContext<any>()
@@ -200,7 +199,6 @@ export const AccessoriesTableForm = ({
   // categories options
 
   const categories = queryClient.getQueryData(['categories_all'])
-  console.log("🚀 ~ file: AccessoriesTableForm.tsx:202 ~ categories:", categories)
   // const categoriesOptionsCache = categories && categories.filter(item=>!item.items)?.map(option => ({
   //   id: option.id,
   //   value: option.name,
@@ -212,7 +210,6 @@ export const AccessoriesTableForm = ({
     value: option.name,
     label: option.name,
   })) || []
-  console.log("🚀 ~ file: AccessoriesTableForm.tsx:213 ~ categoriesOptionsCache ~ categoriesOptionsCache:", categoriesOptionsCache)
 
   const {
     data: karats,

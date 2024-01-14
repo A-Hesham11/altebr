@@ -4,6 +4,7 @@ import { authCtx } from '../../../../context/auth-and-perm/auth';
 import { useFetch } from '../../../../hooks';
 import { formatDate } from '../../../../utils/date';
 import billLogo from "../../../../assets/bill-logo.png";
+import { useLocation } from 'react-router-dom';
 
 type Client_TP = {
   clientData?: {
@@ -30,10 +31,22 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   
   const { userData } = useContext(authCtx)
 
+  const {
+    data: honestBondsData,
+  } = useFetch({
+    queryKey: [`all-retrieve-honest-bonds-${userData?.branch_id}`],
+    endpoint: `branchSafety/api/v1/receive-bonds/${userData?.branch_id}`
+  });
+
+  const location = useLocation()
+  const path = location.pathname
+
+  const billNumber = path === "/selling/honesty/return-honest" ? honestBondsData?.length + 1 : invoiceNumber?.length + 1
+
   return (
     <div className='flex justify-between'>
       <div className='flex flex-col gap-1 mt-6'>
-        <p className='text-xs font-bold'>{t("bill no")} : <span className='font-medium'>{invoiceNumber?.length + 1}</span> </p>
+        <p className='text-xs font-bold'>{t("bill no")} : <span className='font-medium'>{billNumber}</span> </p>
         <p className='text-xs font-bold'>{t("bill date")} : <span className='font-medium'>{formatDate(new Date)}</span> </p>
       </div>
       <div className='flex flex-col gap-1 items-center'>

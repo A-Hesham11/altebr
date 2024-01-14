@@ -74,7 +74,6 @@ const AddBanks = ({
       queryClient.refetchQueries(["AllBanks"])
     },
     onError: (error) => {
-      console.log(error?.response?.data?.message);
       notify("error", error?.response?.data?.message);
     },
   });

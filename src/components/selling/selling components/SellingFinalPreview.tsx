@@ -63,7 +63,6 @@ export const SellingFinalPreview = ({
     endpoint: `/companySettings/api/v1/companies`,
     queryKey: ["Mineral_license"],
   });
-  
 
   return (
     <div className="relative h-full p-10 bg-flatWhite ">

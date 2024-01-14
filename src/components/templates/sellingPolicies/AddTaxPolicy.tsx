@@ -42,15 +42,12 @@ type SellingPoliciesProps_TP = {
 const AddTaxPolicy = ({
     editData,
 }: SellingPoliciesProps_TP) => {
-    console.log("🚀 ~ file: AddTaxPolicy.tsx:45 ~ editData:", editData)
     const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
     // const [editTax, setEditTax] = useState([])
     // const [addTaxes, setAddTaxes] = useState([]);
     const [selectBranch, setSelectBranch] = useState("")
-    console.log("🚀 ~ file: AddTaxPolicy.tsx:50 ~ selectBranch:", selectBranch)
   
     const includeTaxFilter = dataSource?.filter((item) => item.branch_id == selectBranch)
-    console.log("🚀 ~ file: AddTaxPolicy.tsx:52 ~ includeTaxFilter:", includeTaxFilter)
 
     const queryClient = useQueryClient()
     const isRTL = useIsRTL()
@@ -123,7 +120,6 @@ const AddTaxPolicy = ({
 //             header: () => <span>{t("actions")}</span>,
 //             accessorKey: "action",
 //             cell: (info) => {
-//             console.log("🚀 ~ file: AddTaxPolicy.tsx:126 ~ info:", info.row.original) 
 //             return (
 //                 <div className="flex items-center justify-center gap-4">
 //                 <EditIcon
@@ -229,12 +225,10 @@ const AddTaxPolicy = ({
                         if (editData) {
                             // PostCardEdit({...values , karat_id:editData?.karat_id, category_id:editData?.category_id})
                             PostCardEdit(values)
-                            console.log("🚀 ~ file: AddTaxPolicy.tsx:241 ~ values:",values)
                             // console.log("🚀 ~ file: AddTaxPolicy.tsx:241 ~ values:",{...values, karat_id:editData?.karat_id, category_id:editData?.category_id})
 
                         } else {
                             PostNewCard(values)
-                            console.log("🚀 ~ file: AddTaxPolicy.tsx:231 ~ values:", values)
                             // const items = addTaxes.map((item) => {
                             //     return {
                             //         ...item
@@ -257,7 +251,6 @@ const AddTaxPolicy = ({
                                     loadingPlaceholder={`${t('loading')}`}
                                     options={branchesOptions}
                                     onChange={(option) => {
-                                        console.log("🚀 ~ file: AddTaxPolicy.tsx:259 ~ option:", option)
                                         setFieldValue("branch_name", option?.value);
                                         setFieldValue("branch_id", option?.id);
                                         setSelectBranch(option?.id)

@@ -36,6 +36,7 @@ const PaymentToManagement = () => {
     const [sellingItemsData, setSellingItemsData] = useState([]);
     const [stage, setStage] = useState<number>(1);
     const [selectedCardId, setSelectedCardId] = useState(null);
+    console.log("🚀 ~ file: PaymentToManagement.tsx:39 ~ PaymentToManagement ~ selectedCardId:", selectedCardId)
     const [selectedCardName, setSelectedCardName] = useState(null);
     const [cardId, setCardId] = useState("");
     const { userData } = useContext(authCtx)

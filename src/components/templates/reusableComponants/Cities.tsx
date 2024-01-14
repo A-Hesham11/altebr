@@ -167,7 +167,6 @@ export const Cities = ({
   setDistrictId,
   disabled,
 }: Cities_TP) => {
-  console.log("🚀 ~ file: Cities.tsx:170 ~ editData:", editData)
   /////////// VARIABLES
   ///
   const { setFieldValue, values } = useFormikContext()

@@ -28,7 +28,6 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
     const { userData } = useContext(authCtx)
     const [selectedRows, setSelectedRows] = useState<any>([])
     const [dataSource, setDataSource] = useState({})
-    console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:31 ~ RecieveItemsSecondScreen ~ dataSource:", dataSource)
     const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectAll, setSelectAll] = useState(false)
@@ -427,7 +426,6 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
                                     // acceptAll: selectedItem.items.length === selectedRows.length ? true : false,
                                     // media: files
                                 }
-                                console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:423 ~ RecieveItemsSecondScreen ~ receivedFinalValue:", receivedFinalValue)
                                 isSanadOpened ?
                                     mutateReceived({
                                         endpointName: 'branchManage/api/v1/accept-items',
@@ -478,7 +476,6 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
                                     allRejected: (selectedItem.items.length === selectedRows.length && isItRefusedAllBtn) ? true : false,
                                     ...(isItRefusedAllBtn ? { media: files } : {})
                                 }
-                                console.log("🚀 ~ file: RecieveItemsSecondScreen.tsx:480 ~ RecieveItemsSecondScreen ~ rejectFinalValue:", rejectFinalValue)
                                 setSelectedRows([])
                                 mutateReject({
                                     endpointName: 'branchManage/api/v1/reject-items',

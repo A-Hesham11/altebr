@@ -86,7 +86,7 @@ export const CreateBranch = ({
     district_id: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     market_number: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     phone: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
-    fax: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
+    fax: Yup.string().trim(),
     building_number: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     street_number: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     sub_number: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
@@ -173,6 +173,10 @@ export const CreateBranch = ({
               editWithFormData: true,
             })
           } else {
+            if (editedValues?.document.length === 0) {
+              notify("info", t("You must add a document"));
+              return
+            }
             mutate({
               endpointName: "branch/api/v1/branches",
               values: editedValues,
