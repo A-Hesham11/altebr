@@ -1,4 +1,4 @@
-import { t } from "i18next";
+import { t, use } from "i18next";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { notify } from "../../../utils/toast";
@@ -33,17 +33,29 @@ type BuyingPoliciesProps_TP = {
   editData?: PoliciesProps_TP;
 };
 
+/**
+ * Component for adding sub expenses policies.
+ *
+ * @param {BuyingPoliciesProps_TP} props - The component props.
+ * @param {string} props.title - The title of the component.
+ * @param {any} props.editData - The data to be edited.
+ * @param {function} props.setShow - The function to control the visibility of the component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AddSubExpensesPolicies = ({
   title,
   editData,
   setShow,
+  refetch: refetchTable,
 }: BuyingPoliciesProps_TP) => {
-  console.log("🚀 ~ file: AddSubExpensesPolicies.tsx:41 ~ editData:", editData)
+  console.log("🚀 ~ file: AddSubExpensesPolicies.tsx:41 ~ editData:", editData);
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ file: AddSubExpensesPolicies.tsx:43 ~ userData:", userData);
   const isRTL = useIsRTL();
   const [newValue, setNewValue] = useState<any>(null);
+  const [branchId, setBranchId] = useState<any>(null);
+  console.log("🚀 ~ branchId:", branchId);
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
@@ -80,7 +92,7 @@ const AddSubExpensesPolicies = ({
     },
     onError: (error) => {
       console.log(error);
-      notify("error", error?.response?.data?.errors?.msg);
+      notify("error", error?.response?.data?.message);
     },
   });
 
@@ -102,6 +114,13 @@ const AddSubExpensesPolicies = ({
     });
   };
 
+  useEffect(() => {
+    if (editData && isSuccessData) {
+      setShow(false);
+      refetchTable();
+    }
+  }, [isSuccessData]);
+
   const {
     data: mainExpensesOption,
     isSuccess,
@@ -112,7 +131,7 @@ const AddSubExpensesPolicies = ({
     refetch,
     isFetching,
   } = useFetch({
-    endpoint: `/expenses/api/v1/majorexpences`,
+    endpoint: `/expenses/api/v1/major-expence/${branchId}`,
     queryKey: ["mainExpensesOption"],
     select: (data) =>
       data.map((item) => {
@@ -125,13 +144,38 @@ const AddSubExpensesPolicies = ({
   });
 
   useEffect(() => {
-    const best = {
-        id: editData?.id  || "",
-        value: editData?.major_name || "",
-        label: editData?.major_name || `${t("choose type of size")}` ,
+    if (branchId) {
+      refetch();
     }
+  }, [branchId]);
+
+  useEffect(() => {
+    const best = {
+      id: editData?.id || "",
+      value: editData?.major_name || "",
+      label: editData?.major_name || `${t("choose type of expenses")}`,
+    };
     setNewValue(best);
   }, []);
+
+  const {
+    data: branchesOptions,
+    isLoading: branchesLoading,
+    refetch: refetchBranches,
+    failureReason: branchesErrorReason,
+  } = useFetch<SelectOption_TP[]>({
+    endpoint: "branch/api/v1/branches?per_page=10000",
+    queryKey: ["branches"],
+    select: (branches) =>
+      branches.map((branch) => {
+        return {
+          id: branch.id,
+          value: branch.id || "",
+          label: branch.name || "",
+        };
+      }),
+    onError: (err) => console.log(err),
+  });
 
   return (
     <>
@@ -145,9 +189,9 @@ const AddSubExpensesPolicies = ({
                 ...values,
               });
             } else {
-                PostNewCard({
-                  ...values,
-                });
+              PostNewCard({
+                ...values,
+              });
               console.log({
                 ...values,
               });
@@ -182,6 +226,18 @@ const AddSubExpensesPolicies = ({
                     className="relative"
                   />
                 </div>
+                <Select
+                  id="branch_id"
+                  label={`${t("branches")}`}
+                  name="branch_id"
+                  placeholder={`${t("branches")}`}
+                  loadingPlaceholder={`${t("loading")}`}
+                  options={branchesOptions}
+                  isLoading={branchesLoading}
+                  onChange={(e) => {
+                    setBranchId(e.id);
+                  }}
+                />
                 <div className="">
                   <Select
                     id="major_id"
@@ -191,28 +247,28 @@ const AddSubExpensesPolicies = ({
                     // value={values?.major_id}
                     placeholder={`${t("main expense")}`}
                     loadingPlaceholder={`${t("loading")}`}
+                    isLoading={isLoading || isRefetching || isFetching}
                     options={mainExpensesOption}
                     onChange={(e) => {
                       setNewValue(e);
-                    }
-                  }
+                    }}
                   />
                 </div>
-                <SelectBranches
+                {/* <SelectBranches
                   required
                   name="branch_id"
                   editData={{
                     branch_id: editData?.branch_id,
                     branch_name: editData?.branch_name,
                   }}
-                />
+                /> */}
               </div>
               <div className="flex justify-end">
                 <Button
                   type="submit"
                   className="w-fit"
                   loading={editLoading}
-                  action={() => setShow(false)}
+                  // action={() => setShow(false)}
                 >
                   {t("save")}
                 </Button>

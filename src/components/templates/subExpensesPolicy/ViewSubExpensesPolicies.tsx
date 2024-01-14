@@ -1,46 +1,46 @@
-import { ColumnDef } from '@tanstack/react-table'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { useFetch, useIsRTL, useMutate } from '../../../hooks'
-import {  useNavigate } from 'react-router-dom'
-import { CImageFile_TP, SelectOption_TP } from '../../../types'
-import { notify } from '../../../utils/toast'
-import { mutateData } from '../../../utils/mutateData'
-import { useQueryClient } from '@tanstack/react-query'
-import { t } from 'i18next'
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
-import { Back } from '../../../utils/utils-components/Back'
-import { authCtx } from '../../../context/auth-and-perm/auth'
-import { EditIcon } from '../../atoms/icons'
-import { SvgDelete } from '../../atoms/icons/SvgDelete'
-import { AddButton } from '../../molecules/AddButton'
-import { Loading } from '../../organisms/Loading'
-import { Table } from '../reusableComponants/tantable/Table'
-import { Button } from '../../atoms'
-import { Modal, Select } from '../../molecules'
-import AddAccountsBank from '../accountsBank/AddAccountsBank'
-import { Header } from '../../atoms/Header'
-import { Formik, Form } from 'formik'
-import AddSubExpensesPolicies from './AddSubExpensesPolicies'
+import { ColumnDef } from "@tanstack/react-table";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
+import { useNavigate } from "react-router-dom";
+import { CImageFile_TP, SelectOption_TP } from "../../../types";
+import { notify } from "../../../utils/toast";
+import { mutateData } from "../../../utils/mutateData";
+import { useQueryClient } from "@tanstack/react-query";
+import { t } from "i18next";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { Back } from "../../../utils/utils-components/Back";
+import { authCtx } from "../../../context/auth-and-perm/auth";
+import { EditIcon } from "../../atoms/icons";
+import { SvgDelete } from "../../atoms/icons/SvgDelete";
+import { AddButton } from "../../molecules/AddButton";
+import { Loading } from "../../organisms/Loading";
+import { Table } from "../reusableComponants/tantable/Table";
+import { Button } from "../../atoms";
+import { Modal, Select } from "../../molecules";
+import AddAccountsBank from "../accountsBank/AddAccountsBank";
+import { Header } from "../../atoms/Header";
+import { Formik, Form } from "formik";
+import AddSubExpensesPolicies from "./AddSubExpensesPolicies";
 
 export type Cards_Props_TP = {
-  title:string
-  main_address: any
-  id: string
-  address: string
-  fax: string
-  market_number: string
-  name_ar: string
-  name_en: string
+  title: string;
+  main_address: any;
+  id: string;
+  address: string;
+  fax: string;
+  market_number: string;
+  name_ar: string;
+  name_en: string;
 
-  number: string
-  phone: string
-  files: CImageFile_TP[]
+  number: string;
+  phone: string;
+  files: CImageFile_TP[];
+};
 
-
-}
-
+/**
+ * Renders the component for viewing sub expenses policies.
+ */
 const ViewSubExpensesPolicies = () => {
-
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
@@ -71,6 +71,11 @@ const ViewSubExpensesPolicies = () => {
       {
         header: () => <span>{t("branch")} </span>,
         accessorKey: "branch_name",
+        cell: (info) => info.getValue(),
+      },
+      {
+        header: () => <span>{t("main expense")} </span>,
+        accessorKey: "major_name",
         cell: (info) => info.getValue(),
       },
       {
@@ -136,6 +141,7 @@ const ViewSubExpensesPolicies = () => {
       };
     },
   });
+  console.log("🚀 ~ ViewSubExpensesPolicies ~ data:", data);
   console.log(
     "🚀 ~ file: ViewExpensesPolicies.tsx:164 ~ ViewExpensesPolicies ~ data:",
     data
@@ -308,6 +314,6 @@ const ViewSubExpensesPolicies = () => {
       </Form>
     </Formik>
   );
-}
+};
 
-export default ViewSubExpensesPolicies
+export default ViewSubExpensesPolicies;
