@@ -100,20 +100,21 @@ import BuyingPage from "../pages/Buying/BuyingPage";
 import ViewBuyingPolicies from "../components/templates/buyingPolicies/ViewBuyingPolicies";
 import BuyingInvoice from "../pages/Buying/BuyingInvoice";
 import WeightAdjustment from "../pages/Buying/WeightAdjustment/WeightAdjustment";
-import BuyingRestrictionsInvoice from "../pages/Buying/BuyingRestrictionsInvoice";
-import PaymentToManagementPage from "../pages/Payment/PaymentToManagementPage";
-import VeiwPaymentToManagement from "../pages/Payment/VeiwPaymentToManagement";
-import PurchaseBonds from "../pages/Buying/Bonds/PurchaseBonds";
-import WeightAdjustmentBonds from "../pages/Buying/Bonds/WeightAdjustmentBonds";
-import PaymentBonds from "../pages/coding/branch bonds/PaymentBonds";
-import ViewBondsFromBranchs from "../pages/coding/branch bonds/ViewBondsFromBranchs";
-import { ViewBonds } from "../pages/coding/branch bonds/ViewBonds";
-import Expenses from "../pages/expenses/Expenses";
-import ExpensesInvoice from "../pages/expenses/Invoice/ExpensesInvoice";
-import ExpensesBonds from "../pages/expenses/Bonds/ExpensesBonds";
-import ViewExpensesPolicies from "../components/templates/expensesPolicy/ViewExpensesPolicies";
-import ViewSubExpensesPolicies from "../components/templates/subExpensesPolicy/ViewSubExpensesPolicies";
-import ViewTaxExpensesPolicies from "../components/templates/taxExpensesPolicy/ViewTaxExpensesPolicies";
+import BuyingRestrictionsInvoice from "../pages/Buying/BuyingRestrictionsInvoice"
+import PaymentToManagementPage from "../pages/Payment/PaymentToManagementPage"
+import VeiwPaymentToManagement from "../pages/Payment/VeiwPaymentToManagement"
+import PurchaseBonds from "../pages/Buying/Bonds/PurchaseBonds"
+import WeightAdjustmentBonds from "../pages/Buying/Bonds/WeightAdjustmentBonds"
+import PaymentBonds from "../pages/coding/branch bonds/PaymentBonds"
+import ViewBondsFromBranchs from "../pages/coding/branch bonds/ViewBondsFromBranchs"
+import { ViewBonds } from "../pages/coding/branch bonds/ViewBonds"
+import Expenses from "../pages/expenses/Expenses"
+import ExpensesInvoice from "../pages/expenses/Invoice/ExpensesInvoice"
+import ExpensesBonds from "../pages/expenses/Bonds/ExpensesBonds"
+import ViewExpensesPolicies from "../components/templates/expensesPolicy/ViewExpensesPolicies"
+import ViewSubExpensesPolicies from "../components/templates/subExpensesPolicy/ViewSubExpensesPolicies"
+import ViewTaxExpensesPolicies from "../components/templates/taxExpensesPolicy/ViewTaxExpensesPolicies"
+import ExpensesPage from "../pages/expenses/ExpensesPage"
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -592,14 +593,8 @@ export const AllRoutesProvider = () => {
           />
           {/* BUYING END */}
           {/* EXPENSES START */}
-          <Route
-            path="/system/mainExpensesPolicies"
-            element={<ViewExpensesPolicies />}
-          />
-          <Route
-            path="/expenses/expensesInvoice"
-            element={<ExpensesInvoice />}
-          />
+          <Route path="/system/mainExpensesPolicies" element={<ViewExpensesPolicies />} />
+          <Route path="/expenses/expensesInvoice" element={<ExpensesPage />} />
           <Route path="/expenses/expensesBonds" element={<ExpensesBonds />} />
 
           {/* TAX EXPENSES */}
