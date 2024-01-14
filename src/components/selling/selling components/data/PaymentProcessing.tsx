@@ -38,8 +38,6 @@ const validationSchema = () =>
   });
 
 const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, totalApproximateCost, costRemainingHonest }: Payment_TP) => {
-console.log("🚀 ~ PaymentProcessing ~ totalApproximateCost:", +totalApproximateCost)
-console.log("🚀 ~ PaymentProcessing ~ costRemainingHonest:", costRemainingHonest)
 
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
@@ -153,7 +151,7 @@ console.log("🚀 ~ PaymentProcessing ~ costRemainingHonest:", costRemainingHone
           const commissionRiyals = +commissionValue.toFixed(3);
           const commissionTax = (+commissionRiyals * 0.15).toFixed(3);
           const cost_after_commission = +values.cost_after_tax + +commissionRiyals + +commissionTax;
-          
+
           return (
             <Form>
               <div>

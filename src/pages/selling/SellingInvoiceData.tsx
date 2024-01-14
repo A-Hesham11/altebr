@@ -27,15 +27,14 @@ const SellingInvoiceData = ({
   clientData,
   invoiceNumber,
   selectedItemDetails,
-  sellingItemsOfWeigth
+  sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ file: SellingInvoiceData.tsx:32 ~ sellingItemsData:", sellingItemsData) 
-
   const { formatGram, formatReyal } = numberContext();
 
-  const { userData } = useContext(authCtx)
+  const { userData } = useContext(authCtx);
 
-  const TaxRateOfBranch = sellingItemsData && sellingItemsData[0]?.tax_rate / 100 ;
+  const TaxRateOfBranch =
+    sellingItemsData && sellingItemsData[0]?.tax_rate / 100;
 
   const taxEquation = +TaxRateOfBranch + 1;
 
@@ -50,10 +49,10 @@ const SellingInvoiceData = ({
   }, 0);
 
   const totalCostBeforeTax = sellingItemsData.reduce((acc, curr) => {
-    acc += +curr.taklfa_after_tax / ((curr.tax_rate / 100) + 1);
+    acc += +curr.taklfa_after_tax / (curr.tax_rate / 100 + 1);
     return acc;
   }, 0);
-  
+
   const totalCommissionTaxes = paymentData.reduce((acc, card) => {
     acc += +card.commission_tax;
     return acc;
@@ -63,13 +62,17 @@ const SellingInvoiceData = ({
 
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
 
-  const totalFinalCost = (+totalCostAfterTax + +totalCommissionRatio + +totalCommissionTaxes).toFixed(2);
+  const totalFinalCost = (
+    +totalCostAfterTax +
+    +totalCommissionRatio +
+    +totalCommissionTaxes
+  ).toFixed(2);
 
-  const totalCost =  (totalCostBeforeTax + totalCommissionRatio).toFixed(2)
+  const totalCost = (totalCostBeforeTax + totalCommissionRatio).toFixed(2);
 
-  const totalItemsTaxes = (+totalFinalCost - +totalCost).toFixed(2)
+  const totalItemsTaxes = (+totalFinalCost - +totalCost).toFixed(2);
 
-  const totalItemsTax = (+totalItemsTaxes+ +totalCommissionTaxes).toFixed(2);
+  const totalItemsTax = (+totalItemsTaxes + +totalCommissionTaxes).toFixed(2);
 
   const costDataAsProps = {
     totalCommissionRatio,
@@ -79,7 +82,6 @@ const SellingInvoiceData = ({
     totalFinalCost,
     totalCost,
   };
-
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -97,8 +99,16 @@ const SellingInvoiceData = ({
         header: () => <span>{t("category")} </span>,
         accessorKey: "category_name",
         cell: (info) => {
-          const finalCategoriesNames = info.row.original.itemDetails?.map((category) => category.category_name).join("-");
-          return  info.row.original.itemDetails.length ? (info.row.original.has_selsal === 0 ? finalCategoriesNames : `${finalCategoriesNames} مع سلسال`) : (info.row.original.selsal.length === 0 ? info.getValue() : `${info.getValue()} مع سلسال`);
+          const finalCategoriesNames = info.row.original.itemDetails
+            ?.map((category) => category.category_name)
+            .join("-");
+          return info.row.original.itemDetails.length
+            ? info.row.original.has_selsal === 0
+              ? finalCategoriesNames
+              : `${finalCategoriesNames} مع سلسال`
+            : info.row.original.selsal.length === 0
+            ? info.getValue()
+            : `${info.getValue()} مع سلسال`;
         },
       },
       {
@@ -109,7 +119,10 @@ const SellingInvoiceData = ({
       {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
-        cell: (info: any) => info.row.original.classification_id === 1 ?  formatReyal(Number(info.getValue())) : formatGram(Number(info.row.original.karatmineral_name)),
+        cell: (info: any) =>
+          info.row.original.classification_id === 1
+            ? formatReyal(Number(info.getValue()))
+            : formatGram(Number(info.row.original.karatmineral_name)),
       },
       {
         header: () => <span>{t("weight")}</span>,
@@ -121,7 +134,9 @@ const SellingInvoiceData = ({
         accessorKey: "cost",
         cell: (info: any) => {
           const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
-          const totalCostFromRow = (+info.row.original.taklfa_after_tax / +rowTaxEquation) + +ratioForOneItem;
+          const totalCostFromRow =
+            +info.row.original.taklfa_after_tax / +rowTaxEquation +
+            +ratioForOneItem;
           return <div>{formatReyal(Number(totalCostFromRow))}</div>;
         },
       },
@@ -130,8 +145,13 @@ const SellingInvoiceData = ({
         accessorKey: "VAT",
         cell: (info: any) => {
           const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
-          const totalCostFromRow = (+info.row.original.taklfa_after_tax / +rowTaxEquation) + +ratioForOneItem;
-          const totaltaklfaFromRow = +info.row.original.taklfa_after_tax + ratioForOneItem + ratioForOneItemTaxes;
+          const totalCostFromRow =
+            +info.row.original.taklfa_after_tax / +rowTaxEquation +
+            +ratioForOneItem;
+          const totaltaklfaFromRow =
+            +info.row.original.taklfa_after_tax +
+            ratioForOneItem +
+            ratioForOneItemTaxes;
           const totalTaxFromRow = +totaltaklfaFromRow - +totalCostFromRow;
 
           return <div>{formatReyal(Number(totalTaxFromRow))}</div>;
@@ -141,7 +161,10 @@ const SellingInvoiceData = ({
         header: () => <span>{t("total")} </span>,
         accessorKey: "total",
         cell: (info: any) => {
-          const totaltaklfaFromRow = +info.row.original.taklfa_after_tax + ratioForOneItem + ratioForOneItemTaxes;
+          const totaltaklfaFromRow =
+            +info.row.original.taklfa_after_tax +
+            ratioForOneItem +
+            ratioForOneItemTaxes;
 
           return <div>{formatReyal(Number(totaltaklfaFromRow))}</div>;
         },
@@ -184,14 +207,12 @@ const SellingInvoiceData = ({
       karat_price: sellingItemsData[0].gold_price,
     };
     const items = sellingItemsData.map((item) => {
-
       const rowTaxEquation = +item.tax_rate / 100 + 1;
-      const taklfaFromOneItem = +item.taklfa_after_tax + +ratioForOneItem + +ratioForOneItemTaxes;
-      const totalCostFromOneItem = (+item.taklfa_after_tax / +rowTaxEquation) + +ratioForOneItem;
+      const taklfaFromOneItem =
+        +item.taklfa_after_tax + +ratioForOneItem + +ratioForOneItemTaxes;
+      const totalCostFromOneItem =
+        +item.taklfa_after_tax / +rowTaxEquation + +ratioForOneItem;
       const totalTaxFromOneRow = +taklfaFromOneItem - +totalCostFromOneItem;
-      // const costItem = (+taklfaFromOneItem / +taxEquation).toFixed(2);
-      // const costTaxes = (+taklfaFromOneItem - +costItem).toFixed(2);
-      // const costItemTotal = (+taklfaFromOneItem).toFixed(2);
 
       return {
         category_id: item.category_id,
@@ -205,7 +226,7 @@ const SellingInvoiceData = ({
         karat_name: item.karat_name,
         mineral_id: item.mineral_id,
         karatmineral_id: item.karatmineral_id,
-        karatmineral_name:item.karatmineral_name,
+        karatmineral_name: item.karatmineral_name,
         wage: item.wage,
         wage_total: item.wage_total,
         weight: item.weight,
@@ -229,7 +250,10 @@ const SellingInvoiceData = ({
         endpointName: '/selling/api/v1/add_Invoice',
         values: { invoice, items, card }
     })
-    console.log("🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:", { invoice, items, card })
+    console.log(
+      "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
+      { invoice, items, card }
+    );
   };
 
   return (
@@ -252,7 +276,7 @@ const SellingInvoiceData = ({
           </Button>
         </div>
       </div>
-     
+
       <SellingFinalPreview
         ItemsTableContent={<SellingTableComp />}
         setStage={setStage}
@@ -261,7 +285,7 @@ const SellingInvoiceData = ({
         sellingItemsData={sellingItemsData}
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}
-      /> 
+      />
     </div>
   );
 };

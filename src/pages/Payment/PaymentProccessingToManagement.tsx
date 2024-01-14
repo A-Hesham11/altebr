@@ -70,9 +70,13 @@ const PaymentProccessingToManagement = ({
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
   const [cardFrontKey, setCardFronKey] = useState<string>("");
+  console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:73 ~ cardFrontKey:", cardFrontKey)
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
+  console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:75 ~ frontKeyAccept:", frontKeyAccept)
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("")
+  console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:78 ~ sellingFrontKey:", sellingFrontKey)
+  const [mainAccountNumber, setMainAccountNumber] = useState("");
 
   const { userData } = useContext(authCtx)
 
@@ -107,19 +111,19 @@ const {
     data,
     refetch,
 } = useFetch ({
-    endpoint:  `/sdad/api/v1/show/${cardId || 0}/${userData?.branch_id}`,
+    endpoint:  `/sdad/api/v1/show/${cardId || 0}/${userData?.branch_id}/${cardFrontKey || 0}`,
     queryKey: ["showValueOfCards"],
     onSuccess(data) {
       return data.data
     },
-    enabled: (!!cardId && !!userData?.branch_id)
+    enabled: (!!cardId && !!userData?.branch_id && !!cardFrontKey)
 });
 
   useEffect(() => {
-      if (cardId !== null) {
+      if (cardId !== null && cardFrontKey !== null) {
           refetch();
       }
-  }, [cardId])
+  }, [cardId, cardFrontKey])
 
   const weightOrAmount = (selectedCardId == 18 || selectedCardId == 21 || selectedCardId == 22 || selectedCardId == 24)
 
@@ -200,6 +204,7 @@ const {
                   setCardDiscountPercentage={setCardDiscountPercentage}
                   setCardId={setCardId}
                   setSelectedCardName={setSelectedCardName}
+                  setMainAccountNumber={setMainAccountNumber}
                 />
               </div>
               <div className={` my-6 grid grid-cols-2 lg:grid-cols-4 gap-6  ${values.amount > +costRemaining ? "items-center" : "items-end"}`}>                          
@@ -207,7 +212,7 @@ const {
                     id="value"
                     name="value"
                     type="text"
-                    label={selectedCardName ? selectedCardName : t("Fund totals")}
+                    label={selectedCardName ?  `${selectedCardName}  ${mainAccountNumber ? `(${mainAccountNumber})` : ""}` : t("Fund totals")}
                     placeholder={selectedCardName ? selectedCardName : t("Fund totals")}
                     value={(data?.value)?.toFixed(2)}
                     disabled

@@ -72,7 +72,7 @@ const AddSupplier = ({
       password: !!!editData
         ? Yup.string().trim().required(requiredTranslation)
         : Yup.string(),
-      fax: Yup.string().trim().required(requiredTranslation),
+      fax: Yup.string().trim(),
       nationality_id: Yup.string().trim().required(requiredTranslation),
       country_id_out: Yup.string().trim().required(requiredTranslation),
       address: Yup.string().trim().required(requiredTranslation),
@@ -149,7 +149,6 @@ const AddSupplier = ({
       nationality_id: Yup.string().trim().required(requiredTranslation),
       national_number: Yup.string(),
       national_expire_date: Yup.string().required(requiredTranslation),
-
       // type: Yup.string().trim().required(requiredTranslation),
       // wages_tax: Yup.string().trim(),
       // gold_tax: Yup.string().trim(),
