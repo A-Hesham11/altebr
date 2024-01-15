@@ -37,16 +37,31 @@ const validationSchema = () =>
     discount_percentage: Yup.string(),
   });
 
-const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, totalApproximateCost, costRemainingHonest }: Payment_TP) => {
-
+const PaymentProcessing = ({
+  paymentData,
+  setPaymentData,
+  sellingItemsData,
+  totalApproximateCost,
+  costRemainingHonest,
+}: Payment_TP) => {
+  console.log("🚀 ~ paymentData:", paymentData)
   const [card, setCard] = useState<string | undefined>("");
+  console.log("🚀 ~ PaymentProcessing ~ card:", card);
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [selectedCardId, setSelectedCardId] = useState(null);
+  console.log("🚀 ~ PaymentProcessing ~ selectedCardId:", selectedCardId);
   const [editData, setEditData] = useState<Payment_TP>();
+  console.log("🚀 ~ PaymentProcessing ~ editData:", editData);
   const [cardFrontKey, setCardFronKey] = useState<string>("");
-  const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>("");
+  const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>(
+    {}
+  );
+  console.log(
+    "🚀 ~ PaymentProcessing ~ cardDiscountPercentage:",
+    cardDiscountPercentage
+  );
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
-  const [sellingFrontKey, setSellingFrontKey] = useState<string>("")
+  const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
   const { formatGram, formatReyal } = numberContext();
 
   const handleCardSelection = (
@@ -73,14 +88,23 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, tota
     add_commission_ratio: "no",
   };
 
-  const totalPriceInvoice = sellingItemsData?.reduce((total, item) => +total + +item.taklfa_after_tax, 0)
+  const totalPriceInvoice = sellingItemsData?.reduce(
+    (total, item) => +total + +item.taklfa_after_tax,
+    0
+  );
 
   const editDataAmount = editData ? editData?.amount : 0;
 
-  const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax - +editDataAmount ,0)
-  console.log("🚀 ~ PaymentProcessing ~ amountRemaining:", amountRemaining)
+  const amountRemaining = paymentData?.reduce(
+    (total, item) => total + item.cost_after_tax - +editDataAmount,
+    0
+  );
 
-  const costRemaining =  +totalPriceInvoice ? (+totalPriceInvoice - +amountRemaining ) : costRemainingHonest ? (+costRemainingHonest) : (+totalApproximateCost - +amountRemaining) || 0
+  const costRemaining = +totalPriceInvoice
+    ? +totalPriceInvoice - +amountRemaining
+    : costRemainingHonest
+    ? +costRemainingHonest
+    : +totalApproximateCost - +amountRemaining || 0;
 
   return (
     <>
@@ -88,8 +112,14 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, tota
         initialValues={initialValues}
         validationSchema={() => validationSchema()}
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
+          // const commissionValue =
+          //   values.cost_after_tax * (values.discount_percentage / 100);
           const commissionValue =
-            values.cost_after_tax * (values.discount_percentage / 100);
+            (cardDiscountPercentage?.max_discount_limit &&
+              +values?.amount > +cardDiscountPercentage?.max_discount_limit)
+              ? values?.amount ? +cardDiscountPercentage?.max_discount_limit_value : 0
+              : +values.cost_after_tax * (+values.discount_percentage / 100);
+
           const commissionRiyals = +commissionValue.toFixed(3);
           const commissionTax = (+commissionRiyals * 0.15).toFixed(3);
           if (selectedCardId) {
@@ -122,6 +152,7 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, tota
                     values.add_commission_ratio === "yes"
                       ? commissionRiyals
                       : 0,
+                  max_discount_limit_value: cardDiscountPercentage?.max_discount_limit_value,
                   cardImage: cardImage,
                   frontkey: cardFrontKey,
                   frontKeyAccept: frontKeyAccept,
@@ -147,10 +178,20 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, tota
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
-          const commissionValue = values.cost_after_tax * (+values.discount_percentage / 100);
+          console.log("🚀 ~ PaymentProcessing ~ values:", values);
+          console.log("🚀 ~ values.discount_percentage:", values.discount_percentage)
+
+
+          const commissionValue =
+            (cardDiscountPercentage?.max_discount_limit &&
+              +values?.amount > +cardDiscountPercentage?.max_discount_limit)
+              ? values?.amount ? +cardDiscountPercentage?.max_discount_limit_value : 0
+              : +values.cost_after_tax * (+values.discount_percentage / 100);
+
           const commissionRiyals = +commissionValue.toFixed(3);
           const commissionTax = (+commissionRiyals * 0.15).toFixed(3);
-          const cost_after_commission = +values.cost_after_tax + +commissionRiyals + +commissionTax;
+          const cost_after_commission =
+            +values.cost_after_tax + +commissionRiyals + +commissionTax;
 
           return (
             <Form>
@@ -165,10 +206,15 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, tota
                   setCardDiscountPercentage={setCardDiscountPercentage}
                 />
               </div>
-              <div className={` my-6 grid grid-cols-2 lg:grid-cols-4 gap-6  ${values.amount > +costRemaining ? "items-center" : "items-end"}`}>
+              <div
+                className={` my-6 grid grid-cols-2 lg:grid-cols-4 gap-6  ${
+                  values.amount > +costRemaining ? "items-center" : "items-end"
+                }`}
+              >
                 <div className="relative">
                   <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
-                    <span>{t("remaining cost")} : </span> {formatReyal(Number((costRemaining).toFixed(2)))}
+                    <span>{t("remaining cost")} : </span>{" "}
+                    {formatReyal(Number(costRemaining.toFixed(2)))}
                   </p>
                   <BaseInputField
                     id="amount"
@@ -179,7 +225,9 @@ const PaymentProcessing = ({ paymentData, setPaymentData, sellingItemsData, tota
                     onChange={(e) => {
                       setFieldValue("cost_after_tax", +e.target.value);
                     }}
-                    className={` ${+values.amount > +costRemaining && "bg-red-100"}`}
+                    className={` ${
+                      +values.amount > +costRemaining && "bg-red-100"
+                    }`}
                   />
                   <div>
                     {+values.amount > +costRemaining && (

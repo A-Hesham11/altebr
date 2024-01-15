@@ -24,6 +24,7 @@ export const HonestFinalScreen = ({
   sanadData,
   setStage,
 }: HonestFinalScreenProps_TP) => {
+  console.log("🚀 ~ sanadData:", sanadData.card)
   /////////// VARIABLES
   const { userData } = useContext(authCtx);
   const mainSanadData = {
@@ -50,6 +51,7 @@ export const HonestFinalScreen = ({
     card: sanadData.card,
     items,
   };
+  console.log("🚀 ~ finalData:", finalData)
   ///
   const Cols = useMemo<any>(
     () => [
