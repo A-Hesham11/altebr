@@ -1,4 +1,24 @@
+import { ColumnDef } from "@tanstack/react-table";
+import { t } from "i18next";
+import { useContext, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { ExpenseFinalPreview } from "./ExpenseFinalPreview";
+import BuyingInvoiceTable from "../../Buying/BuyingInvoiceTable";
+import { authCtx } from "../../../context/auth-and-perm/auth";
+import { numberContext } from "../../../context/settings/number-formatter";
+import { ClientData_TP, Selling_TP } from "../../selling/PaymentSellingPage";
+import { mutateData } from "../../../utils/mutateData";
+import { useMutate } from "../../../hooks";
+import { Button } from "../../../components/atoms";
 
+type CreateHonestSanadProps_TP = {
+  setStage: React.Dispatch<React.SetStateAction<number>>;
+  sellingItemsData: never[];
+  paymentData: never[];
+  clientData: ClientData_TP;
+  invoiceNumber: any;
+  selectedItemDetails: any;
+};
 const ExpensesInvoiceSecond = ({
   setStage,
   sellingItemsData,
@@ -12,7 +32,209 @@ const ExpensesInvoiceSecond = ({
   setOdwyaTypeValue,
   odwyaTypeValue,
 }: any) => {
-  return <div>ExpensesInvoiceSecond</div>;
+  console.log(
+    "🚀 ~ file: BuyingInvoiceData.tsx:32 ~ sellingItemsData:",
+    sellingItemsData
+  );
+  const { formatGram, formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
+  const navigate = useNavigate();
+
+  // FORMULA TO CALC THE TOTAL COST OF BUYING INVOICE
+  const totalCost = sellingItemsData.reduce((acc: number, curr: any) => {
+    acc += +curr.value;
+    return acc;
+  }, 0);
+
+  const totalValueAddedTax = sellingItemsData.reduce(
+    (acc: number, curr: any) => {
+      acc += +curr.value_added_tax;
+      return acc;
+    },
+    0
+  );
+
+  const totalValueAfterTax = sellingItemsData.reduce(
+    (acc: number, curr: any) => {
+      acc += +curr.total_value;
+      return acc;
+    },
+    0
+  );
+
+  const costDataAsProps = {
+    totalCost,
+    totalValueAddedTax,
+    totalValueAfterTax,
+  };
+
+  const Cols = useMemo<ColumnDef<Selling_TP>[]>(
+    () => [
+      {
+        header: () => <span>{t("classification")}</span>,
+        accessorKey: "category_name",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("stones")} </span>,
+        accessorKey: "stones_name",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("weight")}</span>,
+        accessorKey: "weight",
+        cell: (info) => info.getValue() || `${t("no items")}`,
+      },
+      {
+        header: () => <span>{t("karat value")} </span>,
+        accessorKey: "karat_name",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("price per gram")} </span>,
+        accessorKey: "piece_per_gram",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("value")} </span>,
+        accessorKey: "value",
+        cell: (info) => info.getValue() || "---",
+      },
+    ],
+    []
+  );
+
+  if (odwyaTypeValue === "supplier") {
+    Cols.push(
+      {
+        header: () => <span>{t("value added tax")} </span>,
+        accessorKey: "value_added_tax",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      },
+      {
+        header: () => <span>{t("total value")} </span>,
+        accessorKey: "total_value",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      }
+    );
+  }
+
+  const BuyingTableComp = () => (
+    <BuyingInvoiceTable
+      data={sellingItemsData}
+      columns={Cols}
+      // paymentData={paymentData}
+      costDataAsProps={costDataAsProps}
+      odwyaTypeValue={odwyaTypeValue}
+      setOdwyaTypeValue={setOdwyaTypeValue}
+    ></BuyingInvoiceTable>
+  );
+
+  // api
+  const { mutate, isLoading } = useMutate({
+    mutationFn: mutateData,
+    onSuccess: (data) => {
+      // navigate(`/selling/honesty/return-honest/${data.bond_id}`)
+      navigate(`/buying/purchaseBonds`);
+    },
+  });
+
+  const posSellingDataHandler = () => {
+    let invoice;
+
+    if (odwyaTypeValue === "supplier") {
+      invoice = {
+        employee_id: userData?.id,
+        branch_id: userData?.branch_id,
+        supplier_id: clientData.client_id,
+        client_id: "",
+        invoice_date: clientData.bond_date,
+        // invoice_number: invoiceNumber.length + 1,
+        count: sellingItemsData.length,
+      };
+    } else {
+      invoice = {
+        employee_id: userData?.id,
+        branch_id: userData?.branch_id,
+        client_id: clientData.client_id,
+        supplier_id: "",
+        invoice_date: clientData.bond_date,
+        // invoice_number: invoiceNumber.length + 1,
+        count: sellingItemsData.length,
+      };
+    }
+
+    const items = sellingItemsData.map((item) => {
+      if (odwyaTypeValue === "supplier") {
+        return {
+          category_id: item.category_id,
+          karat_id: item.karat_id,
+          branch_id: userData?.branch_id,
+          gram_price: item.piece_per_gram,
+          // edited: "0",
+          value_added_tax: item.value_added_tax,
+          total_value: item.total_value,
+          weight: item.weight,
+          value: item.value,
+          has_stones: `${item.stones_id}`,
+        };
+      } else {
+        return {
+          category_id: item.category_id,
+          karat_id: item.karat_id,
+          branch_id: userData?.branch_id,
+          gram_price: item.piece_per_gram,
+          // edited: "0",
+          // value_added_tax: item.value_added_tax,
+          // total_value: item.total_value,
+          weight: item.weight,
+          value: item.value,
+          has_stones: `${item.stones_id}`,
+        };
+      }
+    });
+
+    console.log({ invoice, items });
+
+    mutate({
+      endpointName: "/buyingUsedGold/api/v1/add_buying_Invoice",
+      values: { invoice, items },
+    });
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mx-8 mt-8">
+        <h2 className="text-base font-bold">{t("final preview")}</h2>
+        <div className="flex gap-3">
+          <Button
+            className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
+            action={() => window.print()}
+          >
+            {t("print")}
+          </Button>
+          <Button
+            className="bg-mainOrange px-7 py-[6px]"
+            loading={isLoading}
+            action={posSellingDataHandler}
+          >
+            {t("save")}
+          </Button>
+        </div>
+      </div>
+      <ExpenseFinalPreview
+        ItemsTableContent={<BuyingTableComp />}
+        setStage={setStage}
+        // paymentData={paymentData}
+        clientData={clientData}
+        sellingItemsData={sellingItemsData}
+        costDataAsProps={costDataAsProps}
+        // invoiceNumber={invoiceNumber}
+        odwyaTypeValue={odwyaTypeValue}
+        setOdwyaTypeValue={setOdwyaTypeValue}
+      />
+    </div>
+  );
 };
 
 export default ExpensesInvoiceSecond;
