@@ -64,19 +64,15 @@ const PaymentProccessingToManagement = ({
     selectedCardName,
     setSelectedCardName
  }: Payment_TP) => {
-    console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:67 ~ cardId:", cardId)
+    console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:67 ~ paymentData:", paymentData)
 
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
   const [cardFrontKey, setCardFronKey] = useState<string>("");
-  console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:73 ~ cardFrontKey:", cardFrontKey)
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
-  console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:75 ~ frontKeyAccept:", frontKeyAccept)
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("")
-  console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:78 ~ sellingFrontKey:", sellingFrontKey)
-  const [mainAccountNumber, setMainAccountNumber] = useState("");
 
   const { userData } = useContext(authCtx)
 
@@ -204,7 +200,6 @@ const {
                   setCardDiscountPercentage={setCardDiscountPercentage}
                   setCardId={setCardId}
                   setSelectedCardName={setSelectedCardName}
-                  setMainAccountNumber={setMainAccountNumber}
                 />
               </div>
               <div className={` my-6 grid grid-cols-2 lg:grid-cols-4 gap-6  ${values.amount > +costRemaining ? "items-center" : "items-end"}`}>                          
@@ -212,7 +207,7 @@ const {
                     id="value"
                     name="value"
                     type="text"
-                    label={selectedCardName ?  `${selectedCardName}  ${mainAccountNumber ? `(${mainAccountNumber})` : ""}` : t("Fund totals")}
+                    label={selectedCardName ?  `${selectedCardName} ` : t("Fund totals")}
                     placeholder={selectedCardName ? selectedCardName : t("Fund totals")}
                     value={(data?.value)?.toFixed(2)}
                     disabled

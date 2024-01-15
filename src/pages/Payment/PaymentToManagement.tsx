@@ -36,7 +36,6 @@ const PaymentToManagement = () => {
     const [sellingItemsData, setSellingItemsData] = useState([]);
     const [stage, setStage] = useState<number>(1);
     const [selectedCardId, setSelectedCardId] = useState(null);
-    console.log("🚀 ~ file: PaymentToManagement.tsx:39 ~ PaymentToManagement ~ selectedCardId:", selectedCardId)
     const [selectedCardName, setSelectedCardName] = useState(null);
     const [cardId, setCardId] = useState("");
     const { userData } = useContext(authCtx)
@@ -84,18 +83,21 @@ const PaymentToManagement = () => {
         Object.keys(paymentData).forEach((key) => {
             const keyValueObject = {
                 id: paymentData[key]?.id,
+                front_key: paymentData[key]?.frontKeyAccept,
                 value: paymentData[key]?.amount || paymentData[key]?.weight,
             };
             postPaymentData.push(keyValueObject);
 
             const keyAllValueObject = {
                 card_id: paymentData[key]?.id,
+                front_key: paymentData[key]?.frontKeyAccept,
                 value_reyal: paymentData[key]?.amount,
                 value_gram: paymentData[key]?.weight,
                 card_name: paymentData[key]?.card,
             };
             postPaymentAllData.push(keyAllValueObject)
         })
+
 
         mutatePaymentsData({
             endpointName: "/sdad/api/v1/store",

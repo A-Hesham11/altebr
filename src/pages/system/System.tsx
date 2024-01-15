@@ -206,37 +206,38 @@ export const System = ({ title }: SystemProps_TP) => {
     },
     // EXPENSES
     // MAIN EXPENSES POLICIES
-    {
-      id: crypto.randomUUID(),
-      title: t("main expenses policies"),
-      name: "main_expenses_policies",
-      addLabel: `${t("add main expenses policy")}`,
-      addComponent: <AddExpensesPolicies title={`${t("add main expenses policy")}`} />,
-      viewLabel: `${t("view main expenses policies")}`,
-      viewHandler: () => navigate("/system/mainExpensesPolicies"),
-    },
+    // {
+    //   id: crypto.randomUUID(),
+    //   title: t("main expenses policies"),
+    //   name: "main_expenses_policies",
+    //   addLabel: `${t("add main expenses policy")}`,
+    //   addComponent: <AddExpensesPolicies title={`${t("add main expenses policy")}`} />,
+    //   viewLabel: `${t("view main expenses policies")}`,
+    //   viewHandler: () => navigate("/system/mainExpensesPolicies"),
+    // },
 
     // SUB EXPENSES POLICIES
-    {
-      id: crypto.randomUUID(),
-      title: t("sub expenses policies"),
-      name: "sub_expenses_policies",
-      addLabel: `${t("add sub expenses policy")}`,
-      addComponent: <AddSubExpensesPolicies title={`${t("add sub expenses policy")}`} />,
-      viewLabel: `${t("view sub expenses policies")}`,
-      viewHandler: () => navigate("/system/subExpensesPolicies"),
-    },
+    // {
+    //   id: crypto.randomUUID(),
+    //   title: t("sub expenses policies"),
+    //   name: "sub_expenses_policies",
+    //   addLabel: `${t("add sub expenses policy")}`,
+    //   addComponent: <AddSubExpensesPolicies title={`${t("add sub expenses policy")}`} />,
+    //   viewLabel: `${t("view sub expenses policies")}`,
+    //   viewHandler: () => navigate("/system/subExpensesPolicies"),
+    // },
 
     // TAX EXPENSES POLICIES
-    {
-      id: crypto.randomUUID(),
-      title: t("tax expenses policies"),
-      name: "tax_expenses_policies",
-      addLabel: `${t("add tax expenses policy")}`,
-      addComponent: <AddTaxExpensesPolicy title={`${t("add tax expenses policy")}`} />,
-      viewLabel: `${t("view tax expenses policies")}`,
-      viewHandler: () => navigate("/system/taxExpensesPolicies"),
-    },
+    // {
+    //   id: crypto.randomUUID(),
+    //   title: t("tax expenses policies"),
+    //   name: "tax_expenses_policies",
+    //   addLabel: `${t("add tax expenses policy")}`,
+    //   addComponent: <AddTaxExpensesPolicy title={`${t("add tax expenses policy")}`} />,
+    //   viewLabel: `${t("view tax expenses policies")}`,
+    //   viewHandler: () => navigate("/system/taxExpensesPolicies"),
+    // },
+
     // EXPENSES
     
     {
@@ -248,6 +249,7 @@ export const System = ({ title }: SystemProps_TP) => {
       // viewLabel: `${t("view buying policies")}`,
       // viewHandler: () => navigate("/system/policiesBuying"),
      },
+
     {
       id: crypto.randomUUID(),
       title: t("Tax policy"),
