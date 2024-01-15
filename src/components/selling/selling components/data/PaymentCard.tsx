@@ -154,8 +154,6 @@ const PaymentCard = ({
   ? [...dataSource].reverse()
   : [...bankscard, ...bankAccountCards, ...cardCash].reverse();
 
-  console.log("🚀 ~ file: PaymentCard.tsx:152 ~ cardsData:", cardsData)
-  
   const { userData } = useContext(authCtx);
 
   const { setFieldValue } = useFormikContext<FormikSharedConfig>();
@@ -195,7 +193,7 @@ const PaymentCard = ({
 
   useEffect(() => {
     if (editData) {
-      setSelectedCardId(cardID[0]?.id);
+      setSelectedCardId(cardID[0]?.front_key);
     }
   }, [cardID]);
 
@@ -305,7 +303,11 @@ const PaymentCard = ({
                   className={`flex flex-col h-28 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
                   onClick={() => {
                     handleChooseCard(item?.front_key, item.id)
-                    setCardDiscountPercentage?.(item?.discount_percentage)
+                    setCardDiscountPercentage?.({
+                      discount_percentage:item?.discount_percentage,
+                      max_discount_limit:item?.max_discount_limit,
+                      max_discount_limit_value:item?.max_discount_limit_value,
+                    })
                   }}
                 >
                   <span className={`bg-white px-6 flex items-center justify-center h-[65%] rounded-t-xl text-white 
