@@ -28,7 +28,7 @@ type Payment_TP = {
   setCardId?: any
   setCardDiscountPercentage?: any
   setSelectedCardName?: any
-  setMainAccountNumber?: any
+  setIsMaxDiscountLimit?: any
 };
 
 const PaymentCard = ({
@@ -43,7 +43,7 @@ const PaymentCard = ({
   setCardDiscountPercentage,
   setCardId,
   setSelectedCardName,
-  setMainAccountNumber
+  setIsMaxDiscountLimit
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
@@ -173,8 +173,8 @@ const PaymentCard = ({
 
       setCardId?.(selectCradIDOrBankId);
       setSelectedCardName?.(isRTL ? selectNewCard[0]?.name_ar : selectNewCard[0]?.name_en);
+      setIsMaxDiscountLimit?.(selectNewCard[0]?.is_minimum);
       setSelectedCardId(frontKey);
-      setMainAccountNumber?.(selectNewCard[0]?.main_account_number)
       setFieldValue(
         "discount_percentage",
         selectNewCard[0]?.discount_percentage * 100
@@ -319,7 +319,7 @@ const PaymentCard = ({
                   <p className={` py-2 text-black h-[35%] rounded-b-xl 
                                     ${selectedCardId === item?.front_key ? 'bg-mainGreen text-white' : 'bg-flatWhite'}`}
                   >
-                    {fetchShowMainCards ? item?.name_ar : `${item?.name_ar} ${item?.bank_name ? `(${item?.bank_name})` : ""}`}
+                    {fetchShowMainCards ? item?.name_ar : `${item?.name_ar} ${item?.bank_name ? `(${item?.bank_name})` : item?.main_account_number ? `(${item?.main_account_number})` : ""}`}
                   </p>
                 </li>
               ))}

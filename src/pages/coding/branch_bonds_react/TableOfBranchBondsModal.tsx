@@ -202,9 +202,12 @@ console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsMod
 
       {/* BOND DETAILS */}
       <div>
-        <h2 className="text-xl font-bold text-slate-700 mb-4 mt-8">
-          {t("bond details")}
-        </h2>
+        <div className="flex items-center justify-between mb-6 mt-8">
+          <h2 className="text-xl font-bold text-slate-700">
+            {t("bond details")} 
+          </h2>
+          <p className="text-base font-semibold">{t("bond number")} <span className="text-mainOrange">{item?.id}</span></p>
+        </div>
 
         <Table data={item?.items || []} showNavigation columns={tableColumn}>
           {/* <div className="mt-3 flex items-center justify-center gap-5 p-2">
