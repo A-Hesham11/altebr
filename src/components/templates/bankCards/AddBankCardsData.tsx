@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PaymentCard from "../../selling/selling components/data/PaymentCard";
 import { Button } from "../../atoms";
 import { BaseInputField, OuterFormLayout } from "../../molecules";
@@ -43,6 +43,8 @@ type bankCardsProps_TP = {
   bankId?: string;
   card_new_name: string;
   company_name: string;
+  max_discount_limit: string;
+  max_discount_limit_value: string;
 };
 
 const AddBankCardsData = ({
@@ -51,6 +53,7 @@ const AddBankCardsData = ({
   value,
   onAdd,
 }: AddBankCardProps_TP) => {
+  console.log("🚀 ~ file: AddBankCardsData.tsx:56 ~ editData:", editData)
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   const [accountNumberId, setAccountNumberId] = useState();
@@ -58,6 +61,11 @@ const AddBankCardsData = ({
   const [card, setCard] = useState("");
 
   const [cardId, setCardId] = useState("");
+  const [isMaxDiscountLimit, setIsMaxDiscountLimit] = useState(0);
+
+  useEffect(() => {
+    setCardId(editData?.card?.id)
+  }, [editData])
 
   const [newValue, setNewValue] =
     useState<SingleValue<SelectOption_TP> | null>();
@@ -79,14 +87,16 @@ const AddBankCardsData = ({
 
   const initialValues = {
     discount_percentage: editData?.discount_percentage || "",
-    branch_id: "",
-    card_id: cardId,
+    branch_id: editData?.branch_id || "",
+    card_id: cardId || editData?.card?.id,
     bank_account_id: editData?.bank_account_id || "",
     main_account_number: editData?.main_account_number || "",
     bank_id: editData?.bank_id || "",
     company_id: userData?.branch?.company?.id,
     company_name: userData?.branch?.company?.name,
     commission_rate: editData?.commission_rate || "",
+    max_discount_limit: editData?.max_discount_limit || "",
+    max_discount_limit_value: editData?.max_discount_limit_value || "",
   };
 
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
@@ -131,11 +141,12 @@ const AddBankCardsData = ({
         company_id: values?.company_id,
         company_name: values?.company_name,
         commission_rate: values?.commission_rate,
+        max_discount_limit: values?.max_discount_limit,
+        max_discount_limit_value: values?.max_discount_limit_value,
       },
       method: "post",
     });
   }
-  
 
   const PostCardEdit = (values: bankCardsProps_TP) => {
     mutate({
@@ -150,6 +161,8 @@ const AddBankCardsData = ({
         company_id: values?.company_id,
         company_name: values?.company_name,
         commission_rate: values?.commission_rate,
+        max_discount_limit: values?.max_discount_limit,
+        max_discount_limit_value: values?.max_discount_limit_value,
         _method: "put",
       },
     });
@@ -186,7 +199,6 @@ const AddBankCardsData = ({
             validationSchema={() => cardsValidatingSchema()}
             initialValues={initialValues}
             onSubmit={(values, { resetForm }) => {
- 
               if (cardId === "") notify("info", "please select a card");
 
               if (editData) {
@@ -195,10 +207,18 @@ const AddBankCardsData = ({
                   card_id: cardId,
                   discount_percentage: values.discount_percentage / 100,
                 });
+                                // console.log(
+                //   "🚀 ~ file: AddBankCardsData.tsx:214 ~ discount_percentage:",
+                //   {
+                //     ...values,
+                //     card_id: cardId,
+                //     discount_percentage: values.discount_percentage / 100,
+                //   }
+                // );
               } else {
                 PostNewCard({
                   ...values,
-                  card_id: cardId,
+                  // card_id: edit,
                   discount_percentage: values.discount_percentage / 100,
                 });
 
@@ -214,6 +234,7 @@ const AddBankCardsData = ({
                       setSelectedCardId={setSelectedCardId}
                       editData={editData}
                       setCardId={setCardId}
+                      setIsMaxDiscountLimit={setIsMaxDiscountLimit}
                       fetchShowMainCards
                     />
 
@@ -264,6 +285,37 @@ const AddBankCardsData = ({
                         />
                       </div>
 
+                      {(isMaxDiscountLimit === 1) || (editData?.max_discount_limit) ? (
+                        <>
+                          <BaseInputField
+                            id="max_discount_limit"
+                            name="max_discount_limit"
+                            type="number"
+                            label={`${t("Maximum discount limit")}`}
+                            placeholder={`${t("Maximum discount limit")}`}
+                            onChange={() => {
+                              setFieldValue(
+                                "max_discount_limit",
+                                values.max_discount_limit
+                              );
+                            }}
+                          />
+                          <BaseInputField
+                            id="max_discount_limit_value"
+                            name="max_discount_limit_value"
+                            type="number"
+                            label={`${t("Maximum discount value")}`}
+                            placeholder={`${t("Maximum discount value")}`}
+                            onChange={() => {
+                              setFieldValue(
+                                "max_discount_limit_value",
+                                values.max_discount_limit_value
+                              );
+                            }}
+                          />
+                        </>
+                      ) : null}
+
                       <div>
                         <BaseInputField
                           id="discount_percentage"
@@ -291,9 +343,10 @@ const AddBankCardsData = ({
                     </div>
                   </>
                 ) : (
-                  <p className="text-center font-medium text-lg my-5">{t("The type of cards must be defined first")}</p>
-                ) 
-                }
+                  <p className="text-center font-medium text-lg my-5">
+                    {t("The type of cards must be defined first")}
+                  </p>
+                )}
                 {/* {dataSource.lenght === 0 && "fffff"} */}
               </Form>
             )}

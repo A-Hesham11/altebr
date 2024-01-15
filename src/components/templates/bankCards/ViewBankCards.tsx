@@ -52,6 +52,7 @@ const viewBankCards = () => {
     view: false,
   })
   const [editData, setEditData] = useState<Cards_Props_TP>()
+  console.log("🚀 ~ file: ViewBankCards.tsx:55 ~ viewBankCards ~ editData:", editData)
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
   const [page, setPage] = useState<number>(1)
@@ -74,6 +75,11 @@ const viewBankCards = () => {
         header: () => <span>{t("card")} </span>,
         accessorKey: "name_en",
         cell: (info) => info.getValue(),
+      },
+      {
+        header: () => <span>{t("minimum")} </span>,
+        accessorKey: "is_minimum",
+        cell: (info) => info.row.original.is_minimum === 1 ? t("yes") : t("no"),
       },
       // {
       //   header: () => <span>{t("discount percentage")} </span>,

@@ -73,6 +73,7 @@ export const SupplyFirstForm = ({
   //   })
 
   const [goldPriceToday, setGoldPriceToday] = useState("")
+  console.log("🚀 ~ file: SupplyFirstForm.tsx:76 ~ goldPriceToday:", goldPriceToday)
 
   useEffect(() => {
     setGoldPriceToday("");
@@ -127,6 +128,7 @@ export const SupplyFirstForm = ({
       setGoldPriceToday(data["24"])
     }
   });
+
   // fetch supplier api
 
   ///
@@ -146,7 +148,7 @@ export const SupplyFirstForm = ({
           employee_value: formValues?.employee_value || "",
           supplier_value: formValues?.supplier_value || "",
           bond_number: formValues?.bond_number || "",
-          api_gold_price: formValues?.api_gold_price || "", // comes from api gold price
+          api_gold_price: formValues?.api_gold_price || goldPriceToday, // comes from api gold price
           entity_gold_price: formValues?.entity_gold_price || "" || "20", // should be api gold price value from api if no entered data
           notes: formValues?.notes || "",
           out_goods_value: formValues?.out_goods_value || "",
@@ -185,6 +187,10 @@ export const SupplyFirstForm = ({
           goods_media: formValues?.goods_media || [],
         };
 
+
+    console.log("🚀 ~ file: SupplyFirstForm.tsx:140 ~ FirstFormInitValues:", FirstFormInitValues)
+
+
   /////////// SIDE EFFECTS
   ///
 
@@ -193,6 +199,8 @@ export const SupplyFirstForm = ({
   const handleSubmit = (values: FirstFormInitValues_TP) => {
     setStage((prev) => prev + 1);
     if (supply === "gold") {
+    console.log("🚀 ~ file: SupplyFirstForm.tsx:194 ~ handleSubmit ~ values:", values)
+
       values.twred_type === "global"
         ? setFormValues(values)
         : setFormValues({
@@ -230,13 +238,20 @@ export const SupplyFirstForm = ({
   return (
     <>
       <Formik
-        onSubmit={(values) => handleSubmit(values)}
+        onSubmit={(values) => {
+        console.log("🚀 ~ file: SupplyFirstForm.tsx:235 ~ values:", values)
+
+          handleSubmit(values)
+        }}
         initialValues={FirstFormInitValues}
         validationSchema={
           supply === "gold" ? goldValidatingSchema : diamondValidatingSchema
         }
       >
-        {({ values, setFieldValue }) => (
+        {({ values, setFieldValue }) => {
+        console.log("🚀 ~ file: SupplyFirstForm.tsx:490 ~ values:", values)
+          
+          return (
           <Form>
             {/* <HandleBackErrors errors={}> */}
 
@@ -323,6 +338,8 @@ export const SupplyFirstForm = ({
                     onChange={(option: any) => {
                       setFieldValue("employee_value", option!.value);
                       setFieldValue("employee_id", option!.id);
+                      setFieldValue("api_gold_price", goldPriceToday);
+
                     }}
                     value={{
                       value:
@@ -399,8 +416,11 @@ export const SupplyFirstForm = ({
                     placeholder={`${t("gold price")}`}
                     onChange={(e) => {
                       setGoldPriceToday(e.target.value)
+                      setFieldValue("api_gold_price", e.target.value);
                     }}
                     required
+                    disabled
+                    className="bg-mainDisabled"
                   />
                 )}
                 {/* gold price end */}
@@ -468,7 +488,7 @@ export const SupplyFirstForm = ({
 
             {/* </HandleBackErrors> */}
           </Form>
-        )}
+        )}}
       </Formik>
     </>
   );

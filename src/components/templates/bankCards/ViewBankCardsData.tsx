@@ -52,6 +52,7 @@ const ViewBankCardsData = () => {
   const [editData, setEditData] = useState<Cards_Props_TP>()
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
+  console.log("🚀 ~ file: ViewBankCardsData.tsx:55 ~ ViewBankCardsData ~ dataSource:", dataSource)
   const [page, setPage] = useState<number>(1)
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
@@ -82,6 +83,16 @@ const ViewBankCardsData = () => {
         cell: (info) => `${info.row.original.discount_percentage * 100} %`,
       },
       {
+        header: () => <span>{t("Maximum discount limit")} </span>,
+        accessorKey: "max_discount_limit",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("Maximum discount limit")} </span>,
+        accessorKey: "max_discount_limit_value",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
         header: () => <span>{t("branch")} </span>,
         accessorKey: "branch_id",
         cell: (info) => info.getValue(),
@@ -103,7 +114,7 @@ const ViewBankCardsData = () => {
                   setEditData(
                     {
                       ...(info.row.original),
-                      discount_percentage: info.row.original.discount_percentage * 100
+                      discount_percentage: info.row.original.discount_percentage * 100,
                     }
                   )
                   setAction({

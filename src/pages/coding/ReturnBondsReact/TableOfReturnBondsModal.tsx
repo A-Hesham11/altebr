@@ -62,14 +62,11 @@ type Entry_TP = {
 };
 
 const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
-console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:63 ~ TableOfReturnBondsModal ~ item:", item)
 
   const { formatGram, formatReyal } = numberContext();
   // const [endpointApi, setEndpointApi] = useState("");
   const [test, setTest] = useState(false);
-  console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:68 ~ TableOfReturnBondsModal ~ test:", test)
   const [constraintID, setConstraintID] = useState("")
-  console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:72 ~ TableOfReturnBondsModal ~ constraintID:", constraintID)
 
   // const { data: entryAccounting, refetch: entryAccountingRefetch, isLoading, isFetching } = useFetch({
   //   endpoint: `/identity/api/v1/accept/${constraintID}`,
@@ -250,9 +247,12 @@ console.log("🚀 ~ file: TableOfReturnBondsModal.tsx:63 ~ TableOfReturnBondsMod
 
       {/* BOND DETAILS */}
       <div>
-        <h2 className="text-xl font-bold text-slate-700 mb-4 mt-8">
-          {t("bond details")}
-        </h2>
+        <div className="flex items-center justify-between mb-4 mt-8">
+          <h2 className="text-xl font-bold text-slate-700">
+          {t("view bond details")}
+          </h2>
+          <p className="text-base font-semibold">{t("bond number")} <span className="text-mainOrange">{item?.id}</span></p>
+        </div>
 
         <Table data={item?.items || []} showNavigation columns={tableColumn}>
           {/* <div className="mt-3 flex items-center justify-center gap-5 p-2">

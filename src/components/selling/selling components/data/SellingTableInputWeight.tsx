@@ -32,6 +32,7 @@ const SellingTableInputWeight = ({
 }: SellingTableInputWeight_TP) => {
     const [searchWeight, setSearchWeight] = useState(""); 
     const [itemsOfWeight, setItemsOfWeight] = useState([]); 
+    console.log("🚀 ~ file: SellingTableInputWeight.tsx:35 ~ itemsOfWeight:", itemsOfWeight)
     const { userData } = useContext(authCtx);
     const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
     const { formatGram, formatReyal } = numberContext();
@@ -40,8 +41,10 @@ const SellingTableInputWeight = ({
   const { values, setFieldValue, resetForm , isSubmitting } = useFormikContext<any>();
 
   const priceWithCommissionRate = dataSource && (+sellingItemsOfWeigth[0]?.cost + +values.cost) * (+dataSource[0]?.min_selling * 0.01) + (+sellingItemsOfWeigth[0]?.cost + +values.cost);
+  console.log("🚀 ~ file: SellingTableInputWeight.tsx:44 ~ priceWithCommissionRate:", priceWithCommissionRate)
   
   const priceWithCommissionCash = dataSource && (+sellingItemsOfWeigth[0]?.cost + +values.cost) + +dataSource[0]?.min_selling;
+  console.log("🚀 ~ file: SellingTableInputWeight.tsx:47 ~ priceWithCommissionCash:", priceWithCommissionCash)
 
   const priceWithSellingPolicy =
   dataSource && dataSource[0]?.min_selling_type === "نسبة"
@@ -100,7 +103,7 @@ const SellingTableInputWeight = ({
         {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
-        cell: (info) => formatReyal(Number(info.getValue()).toFixed(3)) || "---",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         },
     ],
     []
@@ -174,6 +177,7 @@ const SellingTableInputWeight = ({
         acc += +item.cost
         return acc
       }, 0)
+      console.log("🚀 ~ file: SellingTableInputWeight.tsx:180 ~ calcOfSelsalCost ~ calcOfSelsalCost:", calcOfSelsalCost)
 
     const handleAddSelsalToPieces = () => {
         setFieldValue("weight", +values.weight + +calcOfSelsalWeight)
@@ -195,6 +199,7 @@ const SellingTableInputWeight = ({
                     if (itemsOfWeight?.length === 1) {
                         setFieldValue(key, itemsOfWeight[0][key]); 
                         setFieldValue("weight", itemsOfWeight[0]?.remaining_weight); 
+                        setFieldValue("cost", itemsOfWeight[0]?.cost?.toFixed(2));
                     }
                 });
             }, [itemsOfWeight, searchWeight]);

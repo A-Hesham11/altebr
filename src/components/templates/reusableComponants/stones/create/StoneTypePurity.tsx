@@ -50,12 +50,13 @@ export const SelectStoneyTypePurity = ({ editData, showLabel, showDiamond , isCl
     },
     enabled: !!values?.stone_id,
   })
-  const {
-    data,
-  } = useFetch({
-    endpoint: `stones/api/v1/purities`,
-    queryKey: [`stone_purity`]
-  })
+
+  // const {
+  //   data,
+  // } = useFetch({
+  //   endpoint: `stones/api/v1/purities`,
+  //   queryKey: [`stone_purity`]
+  // })
 
 
   ///
