@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikSharedConfig, useFormikContext } from "formik";
 import { Button } from "../../../components/atoms";
 import { Back } from "../../../utils/utils-components/Back";
 import ExpenseHeader from "./ExpenseHeader";
@@ -24,6 +24,7 @@ import PaymentCard from "../../../components/selling/selling components/data/Pay
 import ExpensesInvoiceTable from "./ExpensesInvoiceTable";
 import { Payment_TP } from "../../Payment/PaymentProccessingToManagement";
 import ExpensesCards from "./ExpensesCards";
+import { notify } from "../../../utils/toast";
 
 interface ExpensesInvoiceProps {
   setTaxAdded: (value: boolean) => void;
@@ -56,23 +57,29 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   setPaymentData,
   selectedItem,
   setSelectedItem,
+  selectedCardId,
+  setSelectedCardId,
+  cardDiscountPercentage,
+  setCardDiscountPercentage,
+  selectedCardFrontKey,
+  setSelectedCardFrontKey,
+  card,
+  setCard,
+  cardImage,
+  setCardImage,
+  cardItem,
+  setCardItem,
+  editData,
+  setEditData,
 }) => {
-  console.log("🚀 ~ file: ExpensesInvoice.tsx:51 ~ files:", files);
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ file: AddSubExpensesPolicies.tsx:43 ~ userData:", userData);
   const isRTL = useIsRTL();
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
-  const [selectedCardId, setSelectedCardId] = useState("");
-  const [cardFrontKey, setCardFronKey] = useState("");
-  const [cardFrontKeyAccept, setCardFrontKeyAccept] = useState("");
-  const [sellingFrontKey, setSellingFrontKey] = useState("");
-  const [cardDiscountPercentage, setCardDiscountPercentage] = useState(0);
-  const [editData, setEditData] = useState<Payment_TP>();
-  const [card, setCard] = useState<string | undefined>("");
-  console.log("🚀 ~ file: ExpensesInvoice.tsx:72 ~ card:", card);
-  const [cardImage, setCardImage] = useState<string | undefined>("");
-  console.log("🚀 ~ file: ExpensesInvoice.tsx:74 ~ cardImage:", cardImage);
+
+  const { setFieldValue, values, resetForm } =
+    useFormikContext<FormikSharedConfig>();
+  console.log("🚀 ~ values:", values);
 
   const {
     data: subExpensesOption,
@@ -207,20 +214,25 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
           <div>
             {/* <PaymentCard
               onSelectCard={handleCardSelection}
-              selectedCardId={selectedCardId}
-              setSelectedCardId={setSelectedCardId}
+              selectedCardFrontKey={selectedCardFrontKey}
+              setSelectedCardFrontKey={setSelectedCardFrontKey}
               setCardFronKey={setCardFronKey} 
               setCardFrontKeyAccept={setCardFrontKeyAccept}
               setSellingFrontKey={setSellingFrontKey}
               setCardDiscountPercentage={setCardDiscountPercentage}
             /> */}
             <ExpensesCards
+              editData={editData}
+              setEditData={setEditData}
               cardImage={cardImage}
               setCardImage={setCardImage}
               card={card}
-              setCard={setCard}
-              selectedCardId={selectedCardId}
               setSelectedCardId={setSelectedCardId}
+              setCard={setCard}
+              setCardItem={setCardItem}
+              selectedCardFrontKey={selectedCardFrontKey}
+              setSelectedCardFrontKey={setSelectedCardFrontKey}
+              setCardDiscountPercentage={setCardDiscountPercentage}
             />
           </div>
 
@@ -230,26 +242,22 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               id="value"
               name="value"
               type="text"
-              // label={
-              //   selectedCardName
-              //     ? `${selectedCardName}  ${
-              //         mainAccountNumber ? `(${mainAccountNumber})` : ""
-              //       }`
-              //     : t("Fund totals")
-              // }
-              // placeholder={
-              //   selectedCardName ? selectedCardName : t("Fund totals")
-              // }
+              label={
+                cardItem?.name_ar ? `${cardItem?.name_ar}` : t("Fund totals")
+              }
+              placeholder={
+                cardItem?.name_ar ? cardItem?.name_ar : t("Fund totals")
+              }
               // value={data?.value?.toFixed(2)}
               disabled
               className={`bg-mainDisabled text-mainGreen `}
             />
 
             <div className="relative">
-              <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
-                <span>{t("remaining cost")} : </span>{" "}
-                {/* {formatReyal(Number(costRemaining.toFixed(2)))} */}25
-              </p>
+              {/* <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen"> */}
+              {/* <span>{t("remaining cost")} : </span>{" "} */}
+              {/* {formatReyal(Number(costRemaining.toFixed(2)))}25 */}
+              {/* </p> */}
               <BaseInputField
                 id="amount"
                 name="amount"
@@ -257,7 +265,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                 label={`${t("amount")}`}
                 placeholder={`${t("amount")}`}
                 onChange={(e) => {
-                  // setFieldValue("cost_after_tax", +e.target.value);
+                  // setFieldValue("cost_after_card", +e.target.value);
                 }}
                 // className={` ${
                 //   +values.amount > +costRemaining && "bg-red-100"
@@ -274,11 +282,67 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
             </div>
 
             <Button
+              action={() => {
+                // const newItem = {
+                // id: crypto.randomUUID(),
+                // cardItem: cardItem,
+                // ...values,
+                // selectedCardId: selectedCardId,
+                // cardImage: cardImage,
+                // amount: values.amount,
+                // };
+
+                // setPaymentData((prevData) => [newItem, ...prevData]);
+                // // setSelectedCardId(null);
+                // // setSelectedCardFrontKey("");
+
+                console.log("🚀 ~ selectedCardId:", selectedCardId);
+                console.log("🚀 ~ editData:", editData);
+                if (editData) {
+                  const updatedPaymentData = paymentData.map((item) =>
+                    item.id === editData.id
+                      ? {
+                          ...values,
+                          id: editData.id,
+                          card: editData?.card,
+                          cardItem: editData?.cardItem,
+                          selectedCardId: editData?.selectedCardId,
+                          amount: values?.amount,
+                        }
+                      : item
+                  );
+                  console.log("🚀 ~ updatedPaymentData:", updatedPaymentData);
+                  setPaymentData(updatedPaymentData);
+                } else {
+                  const isItemExistInPaymentData = !!paymentData.find(
+                    (item) => item.selectedCardId == selectedCardId
+                  );
+                  if (!isItemExistInPaymentData || !paymentData.length) {
+                    const newItem = {
+                      card: card,
+                      id: crypto.randomUUID(),
+                      cardItem: cardItem,
+                      ...values,
+                      cardImage: cardImage,
+                      amount: values.amount,
+                      selectedCardId: selectedCardId,
+                    };
+                    setPaymentData((prevData) => [newItem, ...prevData]);
+                    setSelectedCardId(null);
+                  } else {
+                    notify("info", `${t("the card has been added before")}`);
+                  }
+                }
+
+                // setEditData(undefined);
+                setFieldValue("amount", "");
+                setCard("");
+              }}
               type="submit"
               className="animate_from_left animation_delay-11  transition-all duration-300 bg-mainOrange h-10"
               // disabled={+values.amount > +costRemaining}
             >
-              {t("confirm")}
+              {t("add")}
             </Button>
           </div>
 
@@ -295,7 +359,6 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
         <div className="flex gap-3 justify-end mt-12 pb-8">
           <Back />
           <Button
-            type="submit"
             loading={false}
             action={() => {
               setStage(2);
