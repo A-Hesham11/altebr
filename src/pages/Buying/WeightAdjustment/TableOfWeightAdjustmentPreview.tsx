@@ -296,7 +296,7 @@ const TableOfWeightAdjustmentPreview = ({
                   invoice_date: formatDate(new Date()),
                   count: item?.length,
                   employee_id: item[0]?.employee_id,
-                  invoice_number: listEditedInvoice?.length,
+                  invoice_number: listEditedInvoice?.length + 1,
                 },
                 items: item.map((el, i) => {
                   if (inputValue !== totalEditedWeight) {

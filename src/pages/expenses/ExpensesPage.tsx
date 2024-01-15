@@ -21,15 +21,18 @@ const ExpensesPage = () => {
   const [stage, setStage] = useState<number>(1);
   const [clientData, setClientData] = useState<ClientData_TP>();
   const [sellingItemsData, setSellingItemsData] = useState([]);
-  const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [invoiceNumber, setInvoiceNumber] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const [odwyaTypeValue, setOdwyaTypeValue] = useState();
 
+  const [files, setFiles] = useState([]);
+  const [majorExpensesOption, setMajorExpensesOption] = useState<any>("");
   const [taxAdded, setTaxAdded] = useState<boolean>(false);
   const [taxZero, setTaxZero] = useState<boolean>(false);
   const [taxExempt, setTaxExempt] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<any>([]);
   const [showTax, setShowTax] = useState<boolean>(false);
+  const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   console.log(
     "🚀 ~ file: BuyingFirstPage.tsx:46 ~ odwyaTypeValue:",
     odwyaTypeValue
@@ -41,6 +44,11 @@ const ExpensesPage = () => {
     value_zero: "",
     value_exempt: "",
     expense_price: "",
+    expense_date: "",
+    expense_type: "",
+    add_description: "",
+    expense_price_after_tax: "",
+    sub_expense: ""
   };
 
   const validationSchema = () => Yup.object({});
@@ -89,6 +97,14 @@ const ExpensesPage = () => {
             taxExempt={taxExempt}
             taxZero={taxZero}
             taxAdded={taxAdded}
+            files={files}
+            setFiles={setFiles}
+            paymentData={paymentData}
+            selectedItem={selectedItem}
+            setSelectedItem={setSelectedItem}
+            setPaymentData={setPaymentData}
+            majorExpensesOption={majorExpensesOption}
+            setMajorExpensesOption={setMajorExpensesOption}
           />
         )}
         {stage === 2 && (

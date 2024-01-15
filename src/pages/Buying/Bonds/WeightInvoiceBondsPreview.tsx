@@ -58,6 +58,9 @@ const WeightInvoiceBondsPreview = ({ item }: { item?: {} }) => {
   return (
     <>
       <div className="mt-16">
+        <h2 className="text-center text-xl font-bold mb-6 items-center">
+          {t("invoice number")} {item?.invoice_number}
+        </h2>
         <Table data={item?.items} columns={tableColumn}></Table>
       </div>
     </>
