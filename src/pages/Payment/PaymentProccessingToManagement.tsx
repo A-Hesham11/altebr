@@ -73,6 +73,7 @@ const PaymentProccessingToManagement = ({
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("")
+  const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx)
 
@@ -209,7 +210,7 @@ const {
                     type="text"
                     label={selectedCardName ?  `${selectedCardName} ` : t("Fund totals")}
                     placeholder={selectedCardName ? selectedCardName : t("Fund totals")}
-                    value={(data?.value)?.toFixed(2)}
+                    value={formatReyal(Number(data?.value))}
                     disabled
                     className={`bg-mainDisabled text-mainGreen ${selectedCardName && "font-semibold"}`}
                 />

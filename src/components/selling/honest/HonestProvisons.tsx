@@ -14,6 +14,7 @@ import { FilesPreview } from "../../molecules/files/FilesPreview"
 import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutFormik"
 import SelectCategory from "../../templates/reusableComponants/categories/select/SelectCategory"
 import SelectKarat from "../../templates/reusableComponants/karats/select/SelectKarat"
+import { numberContext } from "../../../context/settings/number-formatter"
 
 /////////// types
 ///
@@ -37,6 +38,9 @@ export const HonestProvisons = ({ data, setData }: HonestProvisonsProps_TP) => {
     const [editData, setEditData] = useState({})
     const [selectCategoryValue, setSelectCategoryValue] = useState(null)
     const [selectkaratValue, setSelectKaratValue] = useState(null)
+
+    const { formatGram, formatReyal } = numberContext();
+
     /////////// FUNCTIONS | EVENTS | IF CASES
     ///
     // functions
@@ -60,7 +64,7 @@ export const HonestProvisons = ({ data, setData }: HonestProvisonsProps_TP) => {
         }),
         columnHelper.accessor("weight", {
             header: () => `${t("weight")}`,
-            cell: (info) => info.getValue(),
+            cell: (info) => formatGram(Number(info.getValue())),
         }),
         columnHelper.accessor("karat_value", {
             header: () => `${t("karat")}`,
@@ -68,7 +72,7 @@ export const HonestProvisons = ({ data, setData }: HonestProvisonsProps_TP) => {
         }),
         columnHelper.accessor("cost", {
             header: () => `${t("approximate cost")}`,
-            cell: (info) => info.getValue(),
+            cell: (info) => formatReyal(Number(info.getValue())) ,
         }),
         columnHelper.accessor("notes", {
             header: () => `${t("notes")}`,
