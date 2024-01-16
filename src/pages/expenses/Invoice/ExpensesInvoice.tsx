@@ -22,9 +22,11 @@ import AddSubExpensesPolicies from "../../../components/templates/subExpensesPol
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
 import PaymentCard from "../../../components/selling/selling components/data/PaymentCard";
 import ExpensesInvoiceTable from "./ExpensesInvoiceTable";
-import { Payment_TP } from "../../Payment/PaymentProccessingToManagement";
+import PaymentProccessingToManagement, {
+  Payment_TP,
+} from "../../Payment/PaymentProccessingToManagement";
 import ExpensesCards from "./ExpensesCards";
-import { notify } from "../../../utils/toast";
+import PaymentProcessing from "../../../components/selling/selling components/data/PaymentProcessing";
 
 interface ExpensesInvoiceProps {
   setTaxAdded: (value: boolean) => void;
@@ -76,10 +78,20 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   const isRTL = useIsRTL();
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
+  const [selectedCardId, setSelectedCardId] = useState("");
+  const [cardFrontKey, setCardFronKey] = useState("");
+  const [cardFrontKeyAccept, setCardFrontKeyAccept] = useState("");
+  const [sellingFrontKey, setSellingFrontKey] = useState("");
+  const [cardDiscountPercentage, setCardDiscountPercentage] = useState(0);
+  const [editData, setEditData] = useState<Payment_TP>();
+  const [card, setCard] = useState<string | undefined>("");
+  console.log("🚀 ~ file: ExpensesInvoice.tsx:72 ~ card:", card);
+  const [cardImage, setCardImage] = useState<string | undefined>("");
+  console.log("🚀 ~ file: ExpensesInvoice.tsx:74 ~ cardImage:", cardImage);
 
-  const { setFieldValue, values, resetForm } =
-    useFormikContext<FormikSharedConfig>();
-  console.log("🚀 ~ values:", values);
+  const [sellingItemsData, setSellingItemsData] = useState([]);
+  const [selectedCardName, setSelectedCardName] = useState(null);
+  const [cardId, setCardId] = useState("");
 
   const {
     data: subExpensesOption,
@@ -212,148 +224,33 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
 
           {/* PAYMENT CARDS */}
           <div>
-            {/* <PaymentCard
-              onSelectCard={handleCardSelection}
-              selectedCardFrontKey={selectedCardFrontKey}
-              setSelectedCardFrontKey={setSelectedCardFrontKey}
-              setCardFronKey={setCardFronKey} 
-              setCardFrontKeyAccept={setCardFrontKeyAccept}
-              setSellingFrontKey={setSellingFrontKey}
-              setCardDiscountPercentage={setCardDiscountPercentage}
-            /> */}
-            <ExpensesCards
-              editData={editData}
-              setEditData={setEditData}
+            {/* <ExpensesCards
               cardImage={cardImage}
               setCardImage={setCardImage}
               card={card}
               setSelectedCardId={setSelectedCardId}
-              setCard={setCard}
-              setCardItem={setCardItem}
-              selectedCardFrontKey={selectedCardFrontKey}
-              setSelectedCardFrontKey={setSelectedCardFrontKey}
-              setCardDiscountPercentage={setCardDiscountPercentage}
+            /> */}
+            <PaymentProccessingToManagement
+              paymentData={paymentData}
+              setPaymentData={setPaymentData}
+              sellingItemsData={sellingItemsData}
+              selectedCardId={selectedCardId}
+              setSelectedCardId={setSelectedCardId}
+              setCardId={setCardId}
+              cardId={cardId}
+              setSelectedCardName={setSelectedCardName}
+              selectedCardName={selectedCardName}
             />
-          </div>
-
-          {/* TOTALS OF BOXES */}
-          <div className="flex items-end my-6 gap-4">
-            <BaseInputField
-              id="value"
-              name="value"
-              type="text"
-              label={
-                cardItem?.name_ar ? `${cardItem?.name_ar}` : t("Fund totals")
-              }
-              placeholder={
-                cardItem?.name_ar ? cardItem?.name_ar : t("Fund totals")
-              }
-              // value={data?.value?.toFixed(2)}
-              disabled
-              className={`bg-mainDisabled text-mainGreen `}
-            />
-
-            <div className="relative">
-              {/* <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen"> */}
-              {/* <span>{t("remaining cost")} : </span>{" "} */}
-              {/* {formatReyal(Number(costRemaining.toFixed(2)))}25 */}
-              {/* </p> */}
-              <BaseInputField
-                id="amount"
-                name="amount"
-                type="text"
-                label={`${t("amount")}`}
-                placeholder={`${t("amount")}`}
-                onChange={(e) => {
-                  // setFieldValue("cost_after_card", +e.target.value);
-                }}
-                // className={` ${
-                //   +values.amount > +costRemaining && "bg-red-100"
-                // }`}
-              />
-              <div>
-                {/* {+values.amount > +costRemaining && (
-                  <p className="text-mainRed">
-                    <span>{t("Weight must be less than or equal to")}</span>
-                    <span> {costRemaining}</span>
-                  </p>
-                )} */}
-              </div>
-            </div>
-
-            <Button
-              action={() => {
-                // const newItem = {
-                // id: crypto.randomUUID(),
-                // cardItem: cardItem,
-                // ...values,
-                // selectedCardId: selectedCardId,
-                // cardImage: cardImage,
-                // amount: values.amount,
-                // };
-
-                // setPaymentData((prevData) => [newItem, ...prevData]);
-                // // setSelectedCardId(null);
-                // // setSelectedCardFrontKey("");
-
-                console.log("🚀 ~ selectedCardId:", selectedCardId);
-                console.log("🚀 ~ editData:", editData);
-                if (editData) {
-                  const updatedPaymentData = paymentData.map((item) =>
-                    item.id === editData.id
-                      ? {
-                          ...values,
-                          id: editData.id,
-                          card: editData?.card,
-                          cardItem: editData?.cardItem,
-                          selectedCardId: editData?.selectedCardId,
-                          amount: values?.amount,
-                        }
-                      : item
-                  );
-                  console.log("🚀 ~ updatedPaymentData:", updatedPaymentData);
-                  setPaymentData(updatedPaymentData);
-                } else {
-                  const isItemExistInPaymentData = !!paymentData.find(
-                    (item) => item.selectedCardId == selectedCardId
-                  );
-                  if (!isItemExistInPaymentData || !paymentData.length) {
-                    const newItem = {
-                      card: card,
-                      id: crypto.randomUUID(),
-                      cardItem: cardItem,
-                      ...values,
-                      cardImage: cardImage,
-                      amount: values.amount,
-                      selectedCardId: selectedCardId,
-                    };
-                    setPaymentData((prevData) => [newItem, ...prevData]);
-                    setSelectedCardId(null);
-                  } else {
-                    notify("info", `${t("the card has been added before")}`);
-                  }
-                }
-
-                // setEditData(undefined);
-                setFieldValue("amount", "");
-                setCard("");
-              }}
-              type="submit"
-              className="animate_from_left animation_delay-11  transition-all duration-300 bg-mainOrange h-10"
-              // disabled={+values.amount > +costRemaining}
-            >
-              {t("add")}
-            </Button>
           </div>
 
           {/* TABLE */}
-          <div>
+          {/* <div>
             <ExpensesInvoiceTable
               paymentData={paymentData}
               setEditData={setEditData}
               setPaymentData={setPaymentData}
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="flex gap-3 justify-end mt-12 pb-8">
@@ -452,3 +349,62 @@ export default ExpensesInvoice;
 //     </div>
 //   )}
 // </div>
+
+{
+  /* <div className="flex items-end my-6 gap-4">
+<BaseInputField
+  id="value"
+  name="value"
+  type="text"
+  label={
+    selectedCardName
+      ? `${selectedCardName}  ${
+          mainAccountNumber ? `(${mainAccountNumber})` : ""
+        }`
+      : t("Fund totals")
+  }
+  placeholder={
+    selectedCardName ? selectedCardName : t("Fund totals")
+  }
+  value={data?.value?.toFixed(2)}
+  disabled
+  className={`bg-mainDisabled text-mainGreen `}
+/>
+
+<div className="relative">
+  <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
+    <span>{t("remaining cost")} : </span>{" "}
+    {formatReyal(Number(costRemaining.toFixed(2)))}
+  </p>
+  <BaseInputField
+    id="amount"
+    name="amount"
+    type="text"
+    label={`${t("amount")}`}
+    placeholder={`${t("amount")}`}
+    onChange={(e) => {
+      setFieldValue("cost_after_tax", +e.target.value);
+    }}
+    className={` ${
+      +values.amount > +costRemaining && "bg-red-100"
+    }`}
+  />
+  <div>
+    {+values.amount > +costRemaining && (
+      <p className="text-mainRed">
+        <span>{t("Weight must be less than or equal to")}</span>
+        <span> {costRemaining}</span>
+      </p>
+    )}
+  </div>
+</div>
+
+<Button
+  type="submit"
+  className="animate_from_left animation_delay-11  transition-all duration-300 bg-mainOrange h-10"
+  disabled={+values.amount > +costRemaining}
+>
+  {t("confirm")}
+</Button>
+</div> */
+}

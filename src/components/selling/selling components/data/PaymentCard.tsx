@@ -148,7 +148,7 @@ const PaymentCard = ({
 
   const cardCash = locationPath === "/selling/reimbursement" ? cardReimbursement : cardOfCash
 
-  const bankscard = locationPath === "/selling/reimbursement" ? "" : dataSource
+  const bankscard = (locationPath === "/selling/reimbursement" || locationPath === "/expenses/expensesInvoice") ? "" :  dataSource 
 
   const cardsData = fetchShowMainCards
   ? [...dataSource].reverse()
