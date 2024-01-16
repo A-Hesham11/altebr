@@ -239,11 +239,21 @@ const SellingInvoiceData = ({
         has_selsal: item.has_selsal,
       };
     });
+    // const card = paymentData.reduce((acc, curr) => {
+    //   acc[curr.sellingFrontKey] =
+    //     Number(curr.amount) * Number(curr.discount_percentage / 100) +
+    //     +curr.amount +
+    //     Number(curr.commission_tax);
+    //   return acc;
+    // }, {});
     const card = paymentData.reduce((acc, curr) => {
-      acc[curr.sellingFrontKey] =
-        Number(curr.amount) * Number(curr.discount_percentage / 100) +
-        +curr.amount +
-        Number(curr.commission_tax);
+      const maxDiscountOrNOt =
+        curr.max_discount_limit_value
+          ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
+          : Number(curr.amount) * Number(curr.discount_percentage / 100) + Number(curr.amount);
+          
+      acc[curr.sellingFrontKey] = +maxDiscountOrNOt + Number(curr.commission_tax);
+      
       return acc;
     }, {});
     mutate({

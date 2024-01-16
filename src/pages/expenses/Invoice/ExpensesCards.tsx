@@ -9,24 +9,36 @@ import { FormikSharedConfig, useFormikContext } from "formik";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import cashImg from "../../../assets/cash.png";
 
-const ExpensesCards = ({
+interface ExpensesCardsProps {
+  setSelectedCardId: Function;
+  setCard: Function;
+  setCardImage: Function;
+  card: any;
+  cardImage: any;
+  selectedCardFrontKey: any;
+  setSelectedCardFrontKey: Function;
+  setCardItem: Function;
+  setCardDiscountPercentage: Function;
+  editData: any;
+  setEditData: Function;
+}
+
+const ExpensesCards: React.FC<ExpensesCardsProps> = ({
+  setSelectedCardId,
   setCard,
   setCardImage,
   card,
   cardImage,
-  selectedCardId,
-  setSelectedCardId,
+  selectedCardFrontKey,
+  setSelectedCardFrontKey,
+  setCardItem,
+  setCardDiscountPercentage,
+  editData,
+  setEditData,
 }) => {
-  console.log(
-    "🚀 ~ file: ExpensesCards.tsx:20 ~ selectedCardId:",
-    selectedCardId
-  );
+  console.log("🚀 ~ card:", card);
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
-  console.log(
-    "🚀 ~ file: ExpensesCards.tsx:23 ~ bankAccountCards:",
-    bankAccountCards
-  );
   const [slidesToShow, setSlidesToShow] = useState(2);
   const { userData } = useContext(authCtx);
 
@@ -117,45 +129,41 @@ const ExpensesCards = ({
   };
 
   const handleActiveSelect = (id: number) => {
-    setSelectedCardId(id);
+    setSelectedCardFrontKey(id);
   };
 
-//   const handleChooseCard = (frontKey: number) => {
-//     if (selectedCardId === frontKey) {
-//       setSelectedCardId(null);
-//       onSelectCard(null);
-//     } else {
-//       const selectNewCard = cardsData?.filter(
-//         (item) => item?.front_key === frontKey
-//       );
+  const handleChooseCard = (frontKey: number) => {
+    if (selectedCardFrontKey === frontKey) {
+      setSelectedCardFrontKey(null);
+      // onSelectCard(null);
+    } else {
+      const selectNewCard = bankAccountCards.filter(
+        (item) => item.front_key === frontKey
+      );
+      console.log("🚀 ~ handleChooseCard ~ selectNewCard:", selectNewCard);
+      const selectCradIDOrBankId = selectNewCard[0]?.id;
 
-//       const selectCradIDOrBankId = selectNewCard[0]?.bank_id ? selectNewCard[0]?.bank_id : selectNewCard[0]?.id;
+      setSelectedCardId(selectCradIDOrBankId);
+      setSelectedCardFrontKey(frontKey);
+    }
+  };
 
-//       setCardId?.(selectCradIDOrBankId);
-//       setSelectedCardName?.(isRTL ? selectNewCard[0]?.name_ar : selectNewCard[0]?.name_en);
-//       setSelectedCardId(frontKey);
-//       setMainAccountNumber?.(selectNewCard[0]?.main_account_number)
-//       setFieldValue(
-//         "discount_percentage",
-//         selectNewCard[0]?.discount_percentage * 100
-//       );
-//       const cardNameInTable = `${selectNewCard[0]?.name_ar} ${selectNewCard[0]?.bank_name ? `(${selectNewCard[0]?.bank_name})` : ""}`;
-//       const cardIMageInTable = `${selectNewCard[0]?.card.images[0]?.preview}`;
-//       onSelectCard(cardNameInTable, cardIMageInTable);
-//       setCardFronKey(selectNewCard[0]?.front_key);
-//       if (locationPath === "/selling/addInvoice/") {
-//         setSellingFrontKey?.(selectNewCard[0]?.selling_front_key || "cash")
-//       } else {
-//         setCardFrontKeyAccept?.(selectNewCard[0]?.front_key_accept || "cash");
-//       }
-//     }
-//   };
+  const cardID = bankAccountCards?.filter(
+    (item) => item.id === editData?.selectedCardId
+  );
+  console.log("🚀 ~ cardID:", cardID);
+
+  useEffect(() => {
+    if (editData) {
+      setSelectedCardId(cardID[0]?.id);
+    }
+  }, [cardID, editData]);
 
   const sliderSettings = {
     className: "center",
     centerMode: true,
     centerPadding: "60px",
-    slidesToShow: 2,
+    slidesToShow: 3,
     speed: 500,
     nextArrow: <GrNext size={30} />,
     prevArrow: <GrPrevious size={30} />,
@@ -175,15 +183,21 @@ const ExpensesCards = ({
                 key={item.id}
                 className={`flex flex-col h-28 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
                 onClick={() => {
-                  handleActiveSelect(item.id);
+                  setCardItem(item);
+                  handleChooseCard(item?.front_key);
+                  handleActiveSelect(item?.front_key);
+                  setCardDiscountPercentage?.(item?.discount_percentage);
+                  handleCardSelection(
+                    item?.front_key,
+                    item?.card?.images[0]?.preview
+                  );
                   //   handleChooseCard(item?.front_key, item.id)
-                  //   setCardDiscountPercentage?.(item?.discount_percentage)
                 }}
               >
                 <span
                   className={`bg-white px-6 border-2  flex items-center justify-center h-[65%] rounded-t-xl text-white 
                   ${
-                    selectedCardId === item.id
+                    selectedCardFrontKey === item.front_key
                       ? "border-2 border-mainGreen"
                       : "border-transparent"
                   }`}
@@ -198,12 +212,16 @@ const ExpensesCards = ({
                 </span>
                 <p
                   className={`${
-                    item?.id === selectedCardId
+                    item?.front_key === selectedCardFrontKey
                       ? "bg-mainGreen text-white"
                       : "bg-flatWhite"
                   } py-2 text-black h-[35%] rounded-b-xl `}
                 >
-                    {item?.name_ar ? `${item?.name_ar}  ${item?.bank_name ? `(${item?.bank_name})` : ""}` : ""}
+                  {item?.name_ar
+                    ? `${item?.name_ar}  ${
+                        item?.bank_name ? `(${item?.bank_name})` : ""
+                      }`
+                    : ""}
                 </p>
               </li>
             ))}

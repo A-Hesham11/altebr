@@ -93,7 +93,7 @@ const ViewBankCardsData = () => {
       },
       {
         header: () => <span>{t("branch")} </span>,
-        accessorKey: "branch_id",
+        accessorKey: "branch_name",
         cell: (info) => info.getValue(),
       },
       {
@@ -146,7 +146,7 @@ const ViewBankCardsData = () => {
     []
   )
 
-  const { data, isSuccess, isLoading, isError, error, isRefetching, refetch, isFetching } =
+  const { data, isSuccess, isLoading, isError, error, isRefetching, refetch: refetchBankCards, isFetching } =
   useFetch<Cards_Props_TP[]>({
     endpoint:`/selling/api/v1/add_cards`,
     queryKey: ["addCards"],
@@ -177,13 +177,10 @@ const ViewBankCardsData = () => {
   } = useMutate<Cards_Props_TP>({
     mutationFn: mutateData,
     onSuccess: () => {
-      // setDataSource((prev: ViewCategories_TP[]) =>
-      //   prev.filter((p) => p.id !== deleteData?.id)
-      // )
       queryClient.refetchQueries(["All Cards"])
+      refetchBankCards()
       setOpen(false)
       notify("success")
-      refetch()
     },
   })
 
@@ -284,8 +281,8 @@ const ViewBankCardsData = () => {
             setShow={setOpen}
             isFetching={isFetching}
             title={`${editData ? t("edit card bank") : t("add card bank")}`}
-            refetch={refetch}
             isSuccess={isSuccess}
+            refetchBankCards={refetchBankCards}
           />
         )}
         {model && (
@@ -295,8 +292,8 @@ const ViewBankCardsData = () => {
             setDataSource={setDataSource}
             setShow={setOpen}
             title={`${editData ? t("edit card bank") : t("add card bank")}`}
-            refetch={refetch}
             isSuccess={isSuccess}
+            refetchBankCards={refetchBankCards}
           />
         )}
         {action.delete && (

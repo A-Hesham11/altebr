@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikSharedConfig, useFormikContext } from "formik";
 import { Button } from "../../../components/atoms";
 import { Back } from "../../../utils/utils-components/Back";
 import ExpenseHeader from "./ExpenseHeader";
@@ -59,10 +59,22 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   setPaymentData,
   selectedItem,
   setSelectedItem,
+  selectedCardId,
+  setSelectedCardId,
+  cardDiscountPercentage,
+  setCardDiscountPercentage,
+  selectedCardFrontKey,
+  setSelectedCardFrontKey,
+  card,
+  setCard,
+  cardImage,
+  setCardImage,
+  cardItem,
+  setCardItem,
+  editData,
+  setEditData,
 }) => {
-  console.log("🚀 ~ file: ExpensesInvoice.tsx:51 ~ files:", files);
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ file: AddSubExpensesPolicies.tsx:43 ~ userData:", userData);
   const isRTL = useIsRTL();
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
@@ -216,8 +228,6 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               cardImage={cardImage}
               setCardImage={setCardImage}
               card={card}
-              setCard={setCard}
-              selectedCardId={selectedCardId}
               setSelectedCardId={setSelectedCardId}
             /> */}
             <PaymentProccessingToManagement
@@ -246,7 +256,6 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
         <div className="flex gap-3 justify-end mt-12 pb-8">
           <Back />
           <Button
-            type="submit"
             loading={false}
             action={() => {
               setStage(2);

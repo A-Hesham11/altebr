@@ -36,6 +36,7 @@ export const NewHonest = () => {
     return acc;
   }, 0);
   const [stage, setStage] = useState(1);
+
   /////////// VARIABLES
   ///
   const InitialValues = {
@@ -96,19 +97,29 @@ export const NewHonest = () => {
           }
           if (!tableData.length) {
           } else {
+            // const card = paymentData.reduce((acc, curr) => {
+            //   const addDiscountPercentage =
+            //     curr.add_commission_ratio === "yes"
+            //       ? Number(curr.discount_percentage / 100)
+            //       : 0;
+            //   const addTaxToResult =
+            //     curr.add_commission_ratio === "yes"
+            //       ? Number(curr.commission_riyals) * 0.15
+            //       : 0;
+            //   acc[curr.frontkey] =
+            //     Number(curr.amount) * addDiscountPercentage +
+            //     +curr.amount +
+            //     addTaxToResult;
+            //   return acc;
+            // }, {});
             const card = paymentData.reduce((acc, curr) => {
-              const addDiscountPercentage =
-                curr.add_commission_ratio === "yes"
-                  ? Number(curr.discount_percentage / 100)
-                  : 0;
-              const addTaxToResult =
-                curr.add_commission_ratio === "yes"
-                  ? Number(curr.commission_riyals) * 0.15
-                  : 0;
-              acc[curr.frontkey] =
-                Number(curr.amount) * addDiscountPercentage +
-                +curr.amount +
-                addTaxToResult;
+              const maxDiscountOrNOt =
+                curr.max_discount_limit_value
+                  ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
+                  : Number(curr.amount) * Number(curr.discount_percentage / 100) + Number(curr.amount);
+          
+              acc[curr.frontkey] = maxDiscountOrNOt + Number(curr.commission_tax);
+              
               return acc;
             }, {});
             setStage(2);

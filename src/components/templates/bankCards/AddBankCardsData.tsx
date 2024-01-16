@@ -25,6 +25,8 @@ type AddBankCardProps_TP = {
   value?: string;
   onAdd?: (value: string) => void;
   editData?: Cards_Props_TP;
+  refetchBankCards?: any;
+  setShow?: any;
 };
 
 type bankCardsProps_TP = {
@@ -52,8 +54,9 @@ const AddBankCardsData = ({
   editData,
   value,
   onAdd,
+  refetchBankCards,
+  setShow,
 }: AddBankCardProps_TP) => {
-  console.log("🚀 ~ file: AddBankCardsData.tsx:56 ~ editData:", editData)
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   const [accountNumberId, setAccountNumberId] = useState();
@@ -64,7 +67,7 @@ const AddBankCardsData = ({
   const [isMaxDiscountLimit, setIsMaxDiscountLimit] = useState(0);
 
   useEffect(() => {
-    setCardId(editData?.card?.id)
+      setCardId(editData?.card?.id)
   }, [editData])
 
   const [newValue, setNewValue] =
@@ -180,6 +183,7 @@ const AddBankCardsData = ({
     mutationFn: mutateData,
     mutationKey: ["BranchCards"],
     onSuccess: (data) => {
+      refetchBankCards()
       notify("success");
       queryClient.refetchQueries(["all-BranchCards"]);
     },
@@ -207,18 +211,10 @@ const AddBankCardsData = ({
                   card_id: cardId,
                   discount_percentage: values.discount_percentage / 100,
                 });
-                                // console.log(
-                //   "🚀 ~ file: AddBankCardsData.tsx:214 ~ discount_percentage:",
-                //   {
-                //     ...values,
-                //     card_id: cardId,
-                //     discount_percentage: values.discount_percentage / 100,
-                //   }
-                // );
               } else {
                 PostNewCard({
                   ...values,
-                  // card_id: edit,
+                  card_id: cardId,
                   discount_percentage: values.discount_percentage / 100,
                 });
 

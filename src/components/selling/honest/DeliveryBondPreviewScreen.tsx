@@ -153,12 +153,22 @@ const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: Crea
                 total: rowData + rowDataTaxes
             })
         })
+        // const card = paymentData.reduce((acc, curr) => {
+        //     const addDiscountPercentage = curr.add_commission_ratio === 'yes' ? Number(curr.discount_percentage / 100) : 0
+        //     const addTaxToResult = curr.add_commission_ratio === 'yes' ? Number(curr.commission_riyals) * .15 : 0
+        //     acc[curr.frontKeyAccept] = Number(curr.amount) * addDiscountPercentage + +curr.amount + addTaxToResult;
+        //     return acc
+        // }, {})
         const card = paymentData.reduce((acc, curr) => {
-            const addDiscountPercentage = curr.add_commission_ratio === 'yes' ? Number(curr.discount_percentage / 100) : 0
-            const addTaxToResult = curr.add_commission_ratio === 'yes' ? Number(curr.commission_riyals) * .15 : 0
-            acc[curr.frontKeyAccept] = Number(curr.amount) * addDiscountPercentage + +curr.amount + addTaxToResult;
-            return acc
-        }, {})
+            const maxDiscountOrNOt =
+              curr.max_discount_limit_value
+                ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
+                : Number(curr.amount) * Number(curr.discount_percentage / 100) + Number(curr.amount);
+                
+            acc[curr.frontKeyAccept] = +maxDiscountOrNOt + Number(curr.commission_tax);
+            
+            return acc;
+          }, {});
         mutate({
             endpointName: 'branchSafety/api/v1/create-receive',
             values: { bond, items, card }
