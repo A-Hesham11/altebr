@@ -4,38 +4,38 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { numberContext } from "../../../context/settings/number-formatter";
 
 const TableOfMerging = ({ operationTypeSelect }: any) => {
-  const { formatReyal } = numberContext();
+  const { formatReyal, formatGram } = numberContext();
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "hwya",
         header: () => <span>{t("hwya")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "category",
         header: () => <span>{t("classification")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "classification_name",
         header: () => <span>{t("category")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "karat_name",
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
       {
-        cell: (info: any) => Number(info.getValue()).toFixed(2) || "-",
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
         accessorKey: "wage",
         header: () => <span>{t("wage geram/ryal")}</span>,
       },

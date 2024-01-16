@@ -3,7 +3,7 @@ import { numberContext } from "../../../context/settings/number-formatter";
 import { useFetch } from "../../../hooks";
 import { Loading } from "../../../components/organisms/Loading";
 const BondsTotal = () => {
-  const { formatReyal } = numberContext();
+  const { formatReyal, formatGram } = numberContext();
 
   // FETCHING DATA FROM API
   const {
@@ -62,25 +62,25 @@ const BondsTotal = () => {
     {
       account: "total weight of 18 karat",
       id: 7,
-      value: bondsTotalsData?.total18_way2branch,
+      value: formatGram(Number(bondsTotalsData?.total18_way2branch)) ,
       unit: "gram",
     },
     {
       account: "total weight of 21 karat",
       id: 8,
-      value: bondsTotalsData?.total21_way2branch,
+      value: formatGram(Number(bondsTotalsData?.total21_way2branch)) ,
       unit: "gram",
     },
     {
       account: "total weight of 22 karat",
       id: 9,
-      value: bondsTotalsData?.total22_way2branch,
+      value: formatGram(Number(bondsTotalsData?.total22_way2branch)) ,
       unit: "gram",
     },
     {
       account: "total weight of 24 karat",
       id: 10,
-      value: bondsTotalsData?.total24_way2branch,
+      value: formatGram(Number(bondsTotalsData?.total24_way2branch)) ,
       unit: "gram",
     },
     {
@@ -102,7 +102,7 @@ const BondsTotal = () => {
     {
       account: "total weight of adapter 24",
       id: 12,
-      value: Number(bondsTotalsData?.total24_way2branch),
+      value: formatGram(Number(bondsTotalsData?.total24_way2branch)) ,
       unit: "ryal",
     },
   ];

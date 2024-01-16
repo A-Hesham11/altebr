@@ -5,13 +5,10 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { numberContext } from "../../../context/settings/number-formatter";
 
 const TableOfSeperate = ({ operationTypeSelect }) => {
-  console.log(
-    "🚀 ~ file: TableOfSeperate.tsx:7 ~ TableOfSeperate ~ operationTypeSelect:",
-    operationTypeSelect
-  );
+
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [dataSource, setDataSource] = useState([]);
-  const { formatReyal } = numberContext();
+  const { formatReyal, formatGram } = numberContext();
 
   // FETCHING DATA FROM API
   const {
@@ -45,7 +42,7 @@ const TableOfSeperate = ({ operationTypeSelect }) => {
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
+        cell: (info: any) => formatGram(Number(info.getValue())) ,
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
@@ -65,7 +62,7 @@ const TableOfSeperate = ({ operationTypeSelect }) => {
         header: () => <span>{t("total wage by gram")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },

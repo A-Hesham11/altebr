@@ -78,16 +78,9 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   const isRTL = useIsRTL();
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
-  const [selectedCardId, setSelectedCardId] = useState("");
   const [cardFrontKey, setCardFronKey] = useState("");
   const [cardFrontKeyAccept, setCardFrontKeyAccept] = useState("");
   const [sellingFrontKey, setSellingFrontKey] = useState("");
-  const [cardDiscountPercentage, setCardDiscountPercentage] = useState(0);
-  const [editData, setEditData] = useState<Payment_TP>();
-  const [card, setCard] = useState<string | undefined>("");
-  console.log("🚀 ~ file: ExpensesInvoice.tsx:72 ~ card:", card);
-  const [cardImage, setCardImage] = useState<string | undefined>("");
-  console.log("🚀 ~ file: ExpensesInvoice.tsx:74 ~ cardImage:", cardImage);
 
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [selectedCardName, setSelectedCardName] = useState(null);

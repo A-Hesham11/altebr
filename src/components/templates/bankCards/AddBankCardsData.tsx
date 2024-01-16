@@ -183,8 +183,8 @@ const AddBankCardsData = ({
     mutationFn: mutateData,
     mutationKey: ["BranchCards"],
     onSuccess: (data) => {
-      refetchBankCards()
       notify("success");
+      refetchBankCards()
       queryClient.refetchQueries(["all-BranchCards"]);
     },
     onError: (error) => {

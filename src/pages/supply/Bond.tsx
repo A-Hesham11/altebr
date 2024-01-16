@@ -289,7 +289,7 @@ export const Bond = ({ title }: BondProps_TP) => {
       },
       {
         header: `${t('diamond value ryal')}`,
-        cell: (info) =>info.row.original.diamond_value*factorialValue,
+        cell: (info) => formatReyal(Number(info.row.original.diamond_value*factorialValue)),
         accessorKey: 'diamond_value_ryal',
       },
       {

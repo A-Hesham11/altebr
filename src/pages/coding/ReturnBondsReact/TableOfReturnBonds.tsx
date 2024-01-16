@@ -10,7 +10,7 @@ import { numberContext } from "../../../context/settings/number-formatter";
 import TableOfBranchBondsModal from "./TableOfReturnBondsModal";
 
 const TableOfReturnBonds = ({ dataSource, setPage, page, refetch }) => {
-  const { formatReyal } = numberContext();
+  const { formatReyal, formatGram } = numberContext();
 
   // STATE
   const isRTL = useIsRTL();
@@ -57,7 +57,7 @@ const TableOfReturnBonds = ({ dataSource, setPage, page, refetch }) => {
         header: () => <span>{t("total wages")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(info.getValue()) || "-",
+        cell: (info: any) => formatGram(info.getValue()) || "-",
         accessorKey: "total_gold_weight",
         header: () => <span>{t("total gold weight")}</span>,
       },
