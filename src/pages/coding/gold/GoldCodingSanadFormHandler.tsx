@@ -27,6 +27,7 @@ import {
 } from "../coding-types-and-helpers"
 import { AddStone } from "./AddStone"
 import { GoldItemCodingForm } from "./GoldItemCodingForm"
+import { numberContext } from "../../../context/settings/number-formatter"
 ///
 /////////// Types
 ///
@@ -72,6 +73,7 @@ export const GoldCodingSanadFormHandler = ({
   const { sanadId } = useParams()
 
   const [editWage, setEditWage] = useState("")
+  const { formatGram, formatReyal } = numberContext();
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
   useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
@@ -89,6 +91,7 @@ export const GoldCodingSanadFormHandler = ({
     {
       name: "goldWeight",
       label: t("goldWeight"),
+      Cell: (info) => formatGram(Number(info.value)) || "---",
     },
     {
       name: "goldKarat",
@@ -97,10 +100,12 @@ export const GoldCodingSanadFormHandler = ({
     {
       name: "wage",
       label: t("wage"),
+      Cell: (info) => formatReyal(Number(info.value)) || "---"
     },
     {
       name: "leftWeight",
       label: t("leftWeight"),
+      Cell: (info) => formatGram(Number(info.value)) || "---",
     },
   ]
 
@@ -326,7 +331,7 @@ export const GoldCodingSanadFormHandler = ({
                   <BoxesDataBase key={id}>
                     <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">{t(account)}</p>
                     <p className="bg-white p-2 text-black h-[35%] rounded-b-xl">
-                      {value.toFixed(2)} {t(unit)}
+                      {formatGram(Number(value))} {t(unit)}
                     </p>
                   </BoxesDataBase>
                 ))}
@@ -357,7 +362,7 @@ export const GoldCodingSanadFormHandler = ({
 
                     <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl" >{name}</p>
                     <p className="bg-white px-2 py-[7px] text-black rounded-b-xl" >
-                      {value} {t(unit)}
+                      {formatGram(Number(value))} {t(unit)}
                     </p>
 
                 </BoxesDataBase>

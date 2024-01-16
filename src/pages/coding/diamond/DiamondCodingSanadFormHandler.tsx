@@ -27,6 +27,7 @@ import {
 } from "../coding-types-and-helpers"
 import { AddStone } from "./AddStone"
 import { DiamondItemCodingForm } from "./DiamondItemCodingForm"
+import { numberContext } from "../../../context/settings/number-formatter"
 ///
 /////////// Types
 ///
@@ -71,6 +72,8 @@ export const DiamondCodingSanadFormHandler = ({
   ///
   const { sanadId } = useParams()
 
+  const { formatGram, formatReyal } = numberContext();
+
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
   const columns: Column[] = [
@@ -86,14 +89,17 @@ export const DiamondCodingSanadFormHandler = ({
     {
       name: "diamond_value",
       label: t("supplier currency value"),
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
     },
     {
       name: "diamond_value_ryal",
       label: t("diamond value ryal"),
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
     },
     {
       name: "leftCostItem",
       label: t("left cost"),
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
     },
     // {
     //   name: "goldWeight",
@@ -102,14 +108,17 @@ export const DiamondCodingSanadFormHandler = ({
     {
       name: "bandTotalWeight",
       label: t("total weight"),
+      Cell: (info) => formatGram(Number(info.value)) || "---",
     },
     {
       name: "leftWeight",
       label: t("mineral weight"),
+      Cell: (info) => formatGram(Number(info.value)) || "---",
     },
     {
       name: "leftWeightDiamond",
       label: t("diamond stone weight"),
+      Cell: (info) => formatGram(Number(info.value)) || "---",
     },
     // {
     //   name: "other_stones_weight",
@@ -118,6 +127,7 @@ export const DiamondCodingSanadFormHandler = ({
     {
       name: "leftWeightother",
       label: t("other stones weight"),
+      Cell: (info) => formatGram(Number(info.value)) || "---",
     },
     // { 
     //   name: "diamond_number",
@@ -127,7 +137,8 @@ export const DiamondCodingSanadFormHandler = ({
     {
       name: "leftDiamondNumber",
       label: t("left items count"),
-      Cell: (info) => info?.value?.toFixed(0)
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
+
     },
     // {
     //   name: "diamond_stone_weight",
@@ -362,7 +373,7 @@ export const DiamondCodingSanadFormHandler = ({
                   <BoxesDataBase key={id}>
                     <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">{t(account)}</p>
                     <p className="bg-white p-2 text-black h-[35%] rounded-b-xl">
-                      {value.toFixed(2)} {t(unit)}
+                      {formatGram(Number(value))} {t(unit)}
                     </p>
                   </BoxesDataBase>
                 ))}
@@ -397,7 +408,7 @@ export const DiamondCodingSanadFormHandler = ({
                   <div className="flex flex-col h-28">
                     <p className="bg-mainOrange px-2 h-[65%] flex items-center justify-center rounded-t-xl">{name}</p>
                     <p className="bg-white py-2 h-[35%] text-black rounded-b-xl">
-                      {value} {t(unit)}
+                      {formatGram(Number(value))} {t(unit)}
                     </p>
                   </div>
                 </BoxesDataBase>

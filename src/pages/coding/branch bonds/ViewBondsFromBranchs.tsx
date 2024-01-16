@@ -10,12 +10,14 @@ import { Modal } from "../../../components/molecules";
 import PaymentBondsTable from "./PaymentBondsTable";
 import { BsEye } from "react-icons/bs";
 import { Loading } from "../../../components/organisms/Loading";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 const ViewBondsFromBranchs = () => {
   const isRTL = useIsRTL();
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
+  const { formatReyal, formatGram } = numberContext();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const branch_id = queryParams.get("id");
@@ -92,7 +94,10 @@ const ViewBondsFromBranchs = () => {
         <div className="bg-flatWhite rounded-lg bill-shadow  py-5 px-6 h-41 my-5">
           <h2 className="mb-8 text-base font-bold">{t("total bonds")}</h2>
           <ul className="flex justify-around py-1 w-full mb-2">
-            {bankAccountFromBranch?.map(({ name, key, unit_id, value }) => (
+            {bankAccountFromBranch?.map(({ name, key, unit_id, value }) => { 
+              console.log(unit_id);
+              
+              return(
               <li
                 className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12"
                 key={key}
@@ -101,10 +106,10 @@ const ViewBondsFromBranchs = () => {
                   {name}
                 </p>
                 <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                  {value} {t(unit_id)}
+                  {(t(unit_id) == "جرام" || "gram" ) ? formatGram(Number(value)) :  formatReyal(Number(value))} {t(unit_id)}
                 </p>
               </li>
-            ))}
+            )})}
           </ul>
         </div>
       </div>

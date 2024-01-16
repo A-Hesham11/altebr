@@ -14,6 +14,7 @@ import { useFetch, useIsRTL } from '../../../hooks'
 import { formatDate } from "../../../utils/date"
 import { notify } from '../../../utils/toast'
 import { GoldSanad_TP } from '../coding-types-and-helpers'
+import { numberContext } from '../../../context/settings/number-formatter'
 
 type InitialValues_TP = {
   sanad_type: 'tawrid' | 'talme3'
@@ -39,6 +40,7 @@ export const GoldCodingSanadPicker = () => {
   const [isClosedBond, setIsClosedBond] = useState(false)
   const [page, setPage] = useState<number>(1)
   const [dataSource, setDataSource] = useState<GoldSanad_TP[]>([])
+  const { formatGram, formatReyal } = numberContext();
 
   const searchValues: SearchValues_TP = {
     id: '',
@@ -68,10 +70,12 @@ export const GoldCodingSanadPicker = () => {
     {
       name: "total_gold_by_24",
       label: t('total gold by 24'),
+      Cell: (info) => formatGram(Number(info.value)) || "---"
     },
     {
       name: "total_money",
       label: t('total money'),
+      Cell: (info) => formatReyal(Number(info.value)) || "---"
     },
     {
       name: "trqem_status",
@@ -85,6 +89,7 @@ export const GoldCodingSanadPicker = () => {
     {
       name: "bond_number",
       label: t('attachment number'),
+      Cell: (info) => formatReyal(Number(info.value)) || "---"
     },
   ]
   

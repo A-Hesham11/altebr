@@ -22,7 +22,7 @@ const TableOfIdentities = ({
   console.log("🚀 ~ dataSource:", dataSource)
   // STATE
   const isRTL = useIsRTL();
-  const { formatReyal } = numberContext();
+  const { formatReyal, formatGram } = numberContext();
   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
   console.log("🚀 ~ file: TableOfIdentities.tsx:27 ~ selectedItem:", selectedItem)
@@ -126,7 +126,7 @@ const TableOfIdentities = ({
                 "bg-mainOrange text-white p-2"
               }`}
             >
-              {info.getValue() || "-"}
+              {formatGram(Number(info.getValue() ))|| "-"}
             </div>
           );
         },
@@ -154,7 +154,7 @@ const TableOfIdentities = ({
         header: () => <span>{t("wages")}</span>,
       },
       {
-        cell: (info: any) => info.getValue()?.toFixed(2) || "-",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },

@@ -62,6 +62,7 @@ type Entry_TP = {
 };
 
 const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
+console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item)
 
   const { formatGram, formatReyal } = numberContext();
   // const [endpointApi, setEndpointApi] = useState("");

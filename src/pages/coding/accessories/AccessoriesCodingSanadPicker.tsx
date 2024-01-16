@@ -14,6 +14,7 @@ import { useFetch, useIsRTL } from '../../../hooks'
 import { formatDate, getDayBefore } from "../../../utils/date"
 import { notify } from '../../../utils/toast'
 import { GoldSanad_TP } from '../coding-types-and-helpers'
+import { numberContext } from '../../../context/settings/number-formatter'
 
 type InitialValues_TP = {
   sanad_type: 'tawrid' | 'talme3'
@@ -46,7 +47,7 @@ export const AccessoriesCodingSanadPicker = () => {
   const [isClosedBond, setIsClosedBond] = useState(false)
   const [page, setPage] = useState<number>(1)
   const [dataSource, setDataSource] = useState<GoldSanad_TP[]>([])
-  console.log("🚀 ~ file: AccessoriesCodingSanadPicker.tsx:49 ~ AccessoriesCodingSanadPicker ~ dataSource:", dataSource)
+  const { formatGram, formatReyal } = numberContext();
 
   const searchValues: SearchValues_TP = {
     id: '',
@@ -77,10 +78,12 @@ export const AccessoriesCodingSanadPicker = () => {
     {
       name: "total_weight",
       label: t("total white"),
+      Cell: (info) => formatGram(Number(info.value)) || "---",
     },
     {
       name: "total_accessory_value",
       label: t("total accessories value"),
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
     }, 
     {
       name: "trqem_status",
@@ -90,11 +93,12 @@ export const AccessoriesCodingSanadPicker = () => {
     {
       name: "item_count",
       label: t("item count"),
-      Cell: (info) => info.value
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
     },
     {
       name: "bond_number",
       label: t("attachment number"),
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
     },
   ]
 
