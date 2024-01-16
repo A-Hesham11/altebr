@@ -116,7 +116,7 @@ const PaymentProcessing = ({
           //   values.cost_after_tax * (values.discount_percentage / 100);
           const commissionValue =
             (cardDiscountPercentage?.max_discount_limit &&
-              +values?.amount > +cardDiscountPercentage?.max_discount_limit)
+              +values?.amount >= +cardDiscountPercentage?.max_discount_limit)
               ? values?.amount ? +cardDiscountPercentage?.max_discount_limit_value : 0
               : +values.cost_after_tax * (+values.discount_percentage / 100);
 
@@ -184,7 +184,7 @@ const PaymentProcessing = ({
 
           const commissionValue =
             (cardDiscountPercentage?.max_discount_limit &&
-              +values?.amount > +cardDiscountPercentage?.max_discount_limit)
+              +values?.amount >= +cardDiscountPercentage?.max_discount_limit)
               ? values?.amount ? +cardDiscountPercentage?.max_discount_limit_value : 0
               : +values.cost_after_tax * (+values.discount_percentage / 100);
 
@@ -267,7 +267,7 @@ const PaymentProcessing = ({
                           id="cost_after_commission"
                           type="text"
                           name="cost_after_commission"
-                          value={cost_after_commission}
+                          value={formatReyal(Number(cost_after_commission))}
                           label={`${t("cost after commission")}`}
                           placeholder={`${t("cost after commission")}`}
                           disabled

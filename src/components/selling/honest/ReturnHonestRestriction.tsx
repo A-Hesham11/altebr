@@ -133,14 +133,17 @@ export const ReturnHonestRestriction = ({ sanadId }: { sanadId?: number }) => {
     // group by account
     const restrictionsWithoutTotals = restrictions?.reduce((prev, curr) => {
         const index = prev.findIndex((item) => item.bian === curr.bian);
-        if (index === -1) {
-            prev.push(curr);
-        } else {
-            prev[index].debtor_gram += curr.debtor_gram;
-            prev[index].debtor_SRA += curr.debtor_SRA;
-            prev[index].creditor_gram += curr.creditor_gram;
-            prev[index].creditor_SRA += curr.creditor_SRA;
-        }
+        // if (index === -1) {
+        //     prev.push(curr);
+        // } else {
+        //     prev[index].debtor_gram += curr.debtor_gram;
+        //     prev[index].debtor_SRA += curr.debtor_SRA;
+        //     prev[index].creditor_gram += curr.creditor_gram;
+        //     prev[index].creditor_SRA += curr.creditor_SRA;
+        // }
+
+        prev.push(curr);
+
         return prev;
     }, [] as typeof restrictions);
 

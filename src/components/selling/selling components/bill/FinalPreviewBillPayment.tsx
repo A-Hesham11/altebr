@@ -1,5 +1,6 @@
 import { t } from "i18next";
 import QRCodeGen from "../../../atoms/QRCode";
+import { numberContext } from "../../../../context/settings/number-formatter";
 
 const FinalPreviewBillPayment = ({
   paymentData,
@@ -8,6 +9,10 @@ const FinalPreviewBillPayment = ({
   paymentData: never[];
   costDataAsProps: any;
 }) => {
+
+  const { formatGram, formatReyal } = numberContext();
+
+
   return (
     <div className="flex justify-between pe-8">
       <div className="text-center">
@@ -35,9 +40,7 @@ const FinalPreviewBillPayment = ({
                 />
               </div>
               <p className="mt-3">
-                {card.cost_after_tax +
-                  card.commission_riyals +
-                  +card.commission_tax}
+                {formatReyal(Number(card.cost_after_tax + card.commission_riyals + +card.commission_tax)) }
               </p>
             </div>
           ))}

@@ -160,13 +160,14 @@ const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: Crea
         //     return acc
         // }, {})
         const card = paymentData.reduce((acc, curr) => {
+                
             const maxDiscountOrNOt =
-              curr.max_discount_limit_value
-                ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
-                : Number(curr.amount) * Number(curr.discount_percentage / 100) + Number(curr.amount);
+            curr.max_discount_limit_value
+              ? Number(curr.amount) + Number(curr?.max_discount_limit_value) 
+              : Number(curr.amount) + Number(curr.commission_riyals);
                 
             acc[curr.frontKeyAccept] = +maxDiscountOrNOt + Number(curr.commission_tax);
-            
+
             return acc;
           }, {});
         mutate({

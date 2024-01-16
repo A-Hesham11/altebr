@@ -28,6 +28,7 @@ import {
 } from "../coding/coding-types-and-helpers"
 import { SelectedDetailedWeight } from "./SelectedDetailedWeight"
 import { SubTables } from "./SubTables"
+import { numberContext } from "../../context/settings/number-formatter"
 
 // types
 type Categories_TP = {
@@ -52,6 +53,8 @@ export function ExpandableTable({
   setSelectedSanad?: SetState_TP<GoldSanad_TP | undefined>
 }) {
   const { sanadId } = useParams()
+
+  const { formatGram, formatReyal } = numberContext();
 
   const [addedPiecesLocal, setAddedPiecesLocal] = useLocalStorage<
     GoldCodingSanad_initialValues_TP[]

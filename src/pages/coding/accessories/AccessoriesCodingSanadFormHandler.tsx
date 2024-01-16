@@ -29,6 +29,7 @@ import {
 import { AccessoriesItemCodingForm } from "./AccessoriesItemCodingForm" 
 // import { AddStone } from "../accessory/AddStone"
 import { AddStone } from "./AddStone" 
+import { numberContext } from "../../../context/settings/number-formatter"
 ///
 /////////// Types
 ///
@@ -76,6 +77,8 @@ export const AccessoriesCodingSanadFormHandler = ({
   
   const { sanadId } = useParams()
 
+  const { formatGram, formatReyal } = numberContext();
+
   const [selectedSanadLocal, setSelectedSanadLocal] =
   useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
   console.log("🚀 ~ file: AccessoriesCodingSanadFormHandler.tsx:78 ~ selectedSanadLocal:", selectedSanadLocal)
@@ -93,14 +96,17 @@ export const AccessoriesCodingSanadFormHandler = ({
     {
       name: "accessory_value",
       label: t("supplier currency value"),
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
     },
     {
       name: "accessory_value_ryal",
       label: t("accessory value ryal"),
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
     },
     {
       name: "leftCostItem",
       label: t("left cost"),
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
     },
     // {
     //   name: "goldWeight",
@@ -109,10 +115,12 @@ export const AccessoriesCodingSanadFormHandler = ({
     {
       name: "bandTotalWeight",
       label: t("total weight"),
+      Cell: (info) => formatGram(Number(info.value)) || "---",
     },
     {
       name: "leftWeight",
       label: t("mineral weight"),
+      Cell: (info) => formatGram(Number(info.value)) || "---",
     },
     // {
     //   name: "leftWeightAccessory",
@@ -125,6 +133,7 @@ export const AccessoriesCodingSanadFormHandler = ({
     {
       name: "leftWeightother",
       label: t("other stones weight"),
+      Cell: (info) => formatGram(Number(info.value)) || "---",
     },
     // { 
     //   name: "accessory_number",
@@ -134,7 +143,7 @@ export const AccessoriesCodingSanadFormHandler = ({
     {
       name: "leftAccessoryNumber",
       label: t("left items count"),
-      Cell: (info)=> info?.value?.toFixed(0)
+      Cell: (info) => formatReyal(Number(info.value)) || "---",
     },
     // {
     //   name: "accessory_stone_weight",
@@ -368,7 +377,7 @@ export const AccessoriesCodingSanadFormHandler = ({
                   <BoxesDataBase key={id}>
                     <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">{t(account)}</p>
                     <p className="bg-white p-2 text-black h-[35%] rounded-b-xl">
-                      {value.toFixed(2)} {t(unit)}
+                      {formatGram(Number(value))} {t(unit)}
                     </p>
                   </BoxesDataBase>
                 ))}
@@ -398,7 +407,7 @@ export const AccessoriesCodingSanadFormHandler = ({
                   <div className="flex flex-col h-28">
                     <p className="bg-mainOrange px-2 h-[65%] flex items-center justify-center rounded-t-xl">{name}</p>
                     <p className="bg-white py-2 h-[35%] text-black rounded-b-xl">
-                      {value} {t(unit)}
+                      {formatGram(Number(value))} {t(unit)}
                     </p>
                   </div>
                 </BoxesDataBase>

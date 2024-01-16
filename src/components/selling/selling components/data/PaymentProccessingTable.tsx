@@ -11,6 +11,7 @@ import { t } from "i18next";
 import { useMemo, useState } from "react";
 import { DeleteIcon, EditIcon } from "../../../atoms/icons";
 import { Payment_TP } from "./PaymentProcessing";
+import { numberContext } from "../../../../context/settings/number-formatter";
 
 const PaymentProccessingTable = ({
   paymentData,
@@ -22,6 +23,8 @@ const PaymentProccessingTable = ({
   const [editingRowId, setEditingRowId] = useState<string | undefined>(null);
 
   const { setFieldValue } = useFormikContext<FormikSharedConfig>();
+  const { formatGram, formatReyal } = numberContext();
+
 
   const paymentCols = useMemo<ColumnDef<Payment_TP>[]>(
     () => [
@@ -33,16 +36,12 @@ const PaymentProccessingTable = ({
       {
         header: () => <span>{t("amount")}</span>,
         accessorKey: "amount",
-        cell: (info) => info.row.original.amount || "---",
+        cell: (info) => formatReyal(Number(info.row.original.amount)) || "---",
       },
       {
         header: () => <span>{t("commission percentage")} </span>,
         accessorKey: "discount_percentage",
-        cell: (info) =>
-          info.row.original.max_discount_limit_value &&
-          info.row.original.discount_percentage
-            ? info.row.original.max_discount_limit_value
-            : `${info.row.original.discount_percentage} %` || "---",
+        cell: (info) => `${info.row.original.discount_percentage} %` || "---",
       },
       {
         header: () => <span>{t("commission riyals")} </span>,

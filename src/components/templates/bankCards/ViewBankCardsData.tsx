@@ -20,6 +20,7 @@ import { Modal } from '../../molecules'
 import { mutateData } from '../../../utils/mutateData'
 import { Header } from '../../atoms/Header'
 import AddBankCardsData from './AddBankCardsData'
+import { numberContext } from '../../../context/settings/number-formatter'
 
 export type Cards_Props_TP = {
   title:string
@@ -53,6 +54,7 @@ const ViewBankCardsData = () => {
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
   const [page, setPage] = useState<number>(1)
+  const { formatReyal, formatGram } = numberContext();
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
@@ -84,12 +86,12 @@ const ViewBankCardsData = () => {
       {
         header: () => <span>{t("Maximum discount limit")} </span>,
         accessorKey: "max_discount_limit",
-        cell: (info) => info.getValue() || "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
       },
       {
         header: () => <span>{t("Maximum discount limit")} </span>,
         accessorKey: "max_discount_limit_value",
-        cell: (info) => info.getValue() || "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
       },
       {
         header: () => <span>{t("branch")} </span>,
@@ -178,9 +180,9 @@ const ViewBankCardsData = () => {
     mutationFn: mutateData,
     onSuccess: () => {
       queryClient.refetchQueries(["All Cards"])
+      notify("success")
       refetchBankCards()
       setOpen(false)
-      notify("success")
     },
   })
 

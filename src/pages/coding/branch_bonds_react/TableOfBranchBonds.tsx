@@ -10,7 +10,7 @@ import { numberContext } from "../../../context/settings/number-formatter";
 import TableOfBranchBondsModal from "./TableOfBranchBondsModal";
 
 const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
-  const { formatReyal } = numberContext();
+  const { formatReyal, formatGram } = numberContext();
 
   // STATE
   const isRTL = useIsRTL();
@@ -21,7 +21,7 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
   const tableColumn = useMemo<any>(
     () => [
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "id",
         header: () => <span>{t("bond number")}</span>,
       },
@@ -37,32 +37,32 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
         header: () => <span>{t("bond type")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "date",
         header: () => <span>{t("bond date")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "branch_id",
         header: () => <span>{t("branch")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "count_items",
         header: () => <span>{t("pieces count")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(info.getValue()) || "-",
+        cell: (info: any) => formatReyal(info.getValue()) || "---",
         accessorKey: "total_wage",
         header: () => <span>{t("total wages")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(info.getValue()) || "-",
+        cell: (info: any) => formatGram(info.getValue()) || "---",
         accessorKey: "total_gold_weight",
         header: () => <span>{t("total gold weight")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "count_stones",
         header: () => <span>{t("stones count")}</span>,
       },

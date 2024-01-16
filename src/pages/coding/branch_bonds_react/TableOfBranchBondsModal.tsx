@@ -65,12 +65,12 @@ console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsMod
   const tableColumn = useMemo<any>(
     () => [
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "hwya",
         header: () => <span>{t("hwya")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "classification_id",
         header: () => <span>{t("category")}</span>,
       },
@@ -82,7 +82,7 @@ console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsMod
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
@@ -92,12 +92,12 @@ console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsMod
         header: () => <span>{t("supply bond")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "-",
         accessorKey: "wage",
         header: () => <span>{t("wage")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => formatReyal(Number(info.getValue(info.getValue()))) || "-",
         accessorKey: "value",
         header: () => <span>{t("value")}</span>,
       },
