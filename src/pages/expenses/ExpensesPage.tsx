@@ -14,8 +14,6 @@ import ExpensesInvoiceSecond from "./Invoice/ExpensesInvoiceSecond";
 const ExpensesPage = () => {
   const { userData } = useContext(authCtx);
 
-  console.log("first")
-
   // STATE
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
   const [stage, setStage] = useState<number>(1);
@@ -33,10 +31,14 @@ const ExpensesPage = () => {
   const [selectedItem, setSelectedItem] = useState<any>([]);
   const [showTax, setShowTax] = useState<boolean>(false);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
-  console.log(
-    "🚀 ~ file: BuyingFirstPage.tsx:46 ~ odwyaTypeValue:",
-    odwyaTypeValue
-  );
+  const [selectedCardId, setSelectedCardId] = useState<number>(null);
+  const [selectedCardFrontKey, setSelectedCardFrontKey] = useState("");
+  const [cardDiscountPercentage, setCardDiscountPercentage] = useState(0);
+  const [editData, setEditData] = useState<Payment_TP>();
+  console.log("🚀 ~ ExpensesPage ~ editData:", editData);
+  const [card, setCard] = useState<string | undefined>("");
+  const [cardImage, setCardImage] = useState<string | undefined>("");
+  const [cardItem, setCardItem] = useState<any>();
 
   const initialValues: Selling_TP = {
     include_tax: "",
@@ -48,7 +50,8 @@ const ExpensesPage = () => {
     expense_type: "",
     add_description: "",
     expense_price_after_tax: "",
-    sub_expense: ""
+    sub_expense: "",
+    amount: "",
   };
 
   const validationSchema = () => Yup.object({});
@@ -60,19 +63,12 @@ const ExpensesPage = () => {
       setInvoiceNumber(data);
     },
   });
-  console.log(
-    "🚀 ~ file: ExpensesPage.tsx:55 ~ ExpensesPage ~ expensesInvoice:",
-    expensesInvoice
-  );
-  console.log(`/expenses/api/v1/expense-invoices/${userData?.branch_id}`)
 
   return (
     <Formik
       initialValues={initialValues}
       // validationSchema={validationSchema}
-      onSubmit={(values) => {
-        console.log(values);
-      }}
+      onSubmit={(values) => {}}
     >
       <>
         {stage === 1 && (
@@ -105,6 +101,20 @@ const ExpensesPage = () => {
             setPaymentData={setPaymentData}
             majorExpensesOption={majorExpensesOption}
             setMajorExpensesOption={setMajorExpensesOption}
+            selectedCardId={selectedCardId}
+            setSelectedCardId={setSelectedCardId}
+            selectedCardFrontKey={selectedCardFrontKey}
+            setSelectedCardFrontKey={setSelectedCardFrontKey}
+            cardDiscountPercentage={cardDiscountPercentage}
+            setCardDiscountPercentage={setCardDiscountPercentage}
+            card={card}
+            setCard={setCard}
+            cardImage={cardImage}
+            setCardImage={setCardImage}
+            cardItem={cardItem}
+            setCardItem={setCardItem}
+            editData={editData}
+            setEditData={setEditData}
           />
         )}
         {stage === 2 && (
