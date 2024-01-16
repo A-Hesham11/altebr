@@ -1,18 +1,19 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { t } from "i18next";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { useFetch } from "../../../hooks";
+import FinalPreviewBillData from "./ExpenseBillData";
+import FinalPreviewBuyingPayment from "./FinalPreviewExpensePayment";
 import { Button } from "../../../components/atoms";
-import { t } from "i18next";
-import FinalPreviewBillData from "../../../components/selling/selling components/bill/FinalPreviewBillData";
-import FinalPreviewBuyingPayment from "../../Buying/FinalPreviewBuyingPayment";
-
+import ExpenseBillData from "./ExpenseBillData";
+import FinalPreviewExpensePayment from "./FinalPreviewExpensePayment";
 
 type Client_TP = {
   amount: number;
   bond_date: string;
   client_id: number;
   client_value: string;
-  employee_id: number;
+  employee_id: number;F
   employee_value: string;
   id: number;
 };
@@ -57,14 +58,14 @@ export const ExpenseFinalPreview = ({
       <div className="print-section">
         <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
           <div className="mx-6 bill-shadow rounded-md p-6">
-            {/* <FinalPreviewBillData
+            <ExpenseBillData
               clientData={clientData}
               invoiceNumber={invoiceNumber}
-            /> */}
+            />
           </div>
           {ItemsTableContent}
           <div className="mx-6 bill-shadow rounded-md p-6 my-9">
-            <FinalPreviewBuyingPayment
+            <FinalPreviewExpensePayment
               paymentData={paymentData}
               costDataAsProps={costDataAsProps}
               sellingItemsData={sellingItemsData}
@@ -91,10 +92,12 @@ export const ExpenseFinalPreview = ({
                 {t("email")}: {userData?.email}
               </p>
               <p>
-                {t("tax number")}: {companyData && companyData[0]?.taxRegisteration}
+                {t("tax number")}:{" "}
+                {companyData && companyData[0]?.taxRegisteration}
               </p>
               <p>
-                {t("Mineral license")}: {companyData && companyData[0]?.mineralLicence}
+                {t("Mineral license")}:{" "}
+                {companyData && companyData[0]?.mineralLicence}
               </p>
             </div>
           </div>

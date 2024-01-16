@@ -27,6 +27,7 @@ import PaymentProccessingToManagement, {
 } from "../../Payment/PaymentProccessingToManagement";
 import ExpensesCards from "./ExpensesCards";
 import PaymentProcessing from "../../../components/selling/selling components/data/PaymentProcessing";
+import { notify } from "../../../utils/toast";
 
 interface ExpensesInvoiceProps {
   setTaxAdded: (value: boolean) => void;
@@ -51,8 +52,8 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   taxExempt,
   setStage,
   invoiceNumber,
-  majorExpensesOption,
-  setMajorExpensesOption,
+  subExpensesOption,
+  setSubExpensesOption,
   files,
   setFiles,
   paymentData,
@@ -61,6 +62,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   setSelectedItem,
   selectedCardId,
   setSelectedCardId,
+  setClientData,
   cardDiscountPercentage,
   setCardDiscountPercentage,
   selectedCardFrontKey,
@@ -73,28 +75,67 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   setCardItem,
   editData,
   setEditData,
+  sellingItemsData,
+  setSellingItemsData,
 }) => {
+  console.log("🚀 ~ taxExempt:", taxExempt);
+  console.log("🚀 ~ taxZero:", taxZero);
+  console.log("🚀 ~ taxAdded:", taxAdded);
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
-  const [selectedCardId, setSelectedCardId] = useState("");
   const [cardFrontKey, setCardFronKey] = useState("");
   const [cardFrontKeyAccept, setCardFrontKeyAccept] = useState("");
   const [sellingFrontKey, setSellingFrontKey] = useState("");
-  const [cardDiscountPercentage, setCardDiscountPercentage] = useState(0);
-  const [editData, setEditData] = useState<Payment_TP>();
-  const [card, setCard] = useState<string | undefined>("");
-  console.log("🚀 ~ file: ExpensesInvoice.tsx:72 ~ card:", card);
-  const [cardImage, setCardImage] = useState<string | undefined>("");
-  console.log("🚀 ~ file: ExpensesInvoice.tsx:74 ~ cardImage:", cardImage);
 
-  const [sellingItemsData, setSellingItemsData] = useState([]);
+  const { setFieldValue, values } = useFormikContext<Payment_TP>();
+
   const [selectedCardName, setSelectedCardName] = useState(null);
   const [cardId, setCardId] = useState("");
+  const [activeTaxBtn, setActiveTaxBtn] = useState(null);
+
+  const handleTaxClick = (id, taxValue, setTaxFunc) => {
+    if (activeTaxBtn === id) {
+      setTaxFunc(null);
+      setActiveTaxBtn(null);
+    } else {
+      setTaxAdded(null);
+      setTaxZero(null);
+      setTaxExempt(null);
+
+      setTaxFunc(taxValue);
+      setActiveTaxBtn(id);
+
+      const priceTax = +values.expense_price * (+taxValue / 100);
+      const priceAfterTax =
+        +values.expense_price * (+taxValue / 100) + +values.expense_price;
+
+      setFieldValue("expense_price_tax", priceTax);
+      setFieldValue("expense_price_after_tax", priceAfterTax);
+    }
+  };
+
+  const taxBtns = [
+    {
+      id: 1,
+      name: "value added tax",
+      handleClick: () => handleTaxClick(1, 15, setTaxAdded),
+    },
+    {
+      id: 2,
+      name: "zero tax",
+      handleClick: () => handleTaxClick(2, 0, setTaxZero),
+    },
+    {
+      id: 3,
+      name: "tax exempt",
+      handleClick: () => handleTaxClick(3, null, setTaxExempt),
+    },
+  ];
 
   const {
-    data: subExpensesOption,
+    data: subExpensesOptionData,
     isSuccess,
     isLoading,
     isError,
@@ -114,6 +155,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
         };
       }),
   });
+  console.log("🚀 ~ subExpensesOptionData:", subExpensesOptionData);
 
   return (
     <div className="overflow-hidden">
@@ -137,30 +179,30 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                 placeholder={`${t("expense price")}`}
                 id="expense_price"
                 name="expense_price"
-                label="expense price"
+                label={`${t("expense price")}`}
                 type="text"
                 required
                 className="w-80"
-              />
-
-              <BaseInputField
-                placeholder={`${t("expense price after tax")}`}
-                id="expense_price_after_tax"
-                name="expense_price_after_tax"
-                label=""
-                type="text"
-                required
-                className="hidden"
-              />
-
-              <Button
-                action={() => {
-                  console.log("add tax");
+                onChange={(e) => {
+                  setFieldValue("expense_price", +e.target.value);
+                  const priceAfterTax =
+                    +e.target.value * (+taxAdded / 100) + +e.target.value;
+                  setFieldValue("expense_price_after_tax", priceAfterTax);
                 }}
-                className="border-2 ml-8 justify-self-end bg-mainGreen text-white flex items-center gap-2 w-40 text-center justify-center"
-              >
-                <span>{t("add tax")}</span>
-              </Button>
+              />
+
+              {(taxAdded !== null && activeTaxBtn != 3) ||
+              (taxZero !== null && activeTaxBtn != 3) ? (
+                <BaseInputField
+                  placeholder={`${t("expense price after tax")}`}
+                  id="expense_price_after_tax"
+                  name="expense_price_after_tax"
+                  label={`${t("expense price after tax")}`}
+                  type="text"
+                  disabled
+                  className="bg-mainDisabled border-mainDisabled"
+                />
+              ) : null}
             </div>
 
             <div className="grid md:grid-cols-2 items-end lg:grid-cols-3 gap-12">
@@ -169,13 +211,15 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                   id="sub_expense"
                   label={`${t("sub expense")}`}
                   name="sub_expense"
-                  value={majorExpensesOption}
+                  value={subExpensesOption}
                   placeholder={`${t("sub expense")}`}
                   loadingPlaceholder={`${t("loading")}`}
                   isLoading={isLoading || isRefetching || isFetching}
-                  options={subExpensesOption}
+                  options={subExpensesOptionData}
                   onChange={(e) => {
-                    setMajorExpensesOption(e);
+                    console.log("🚀 ~ e:", e);
+                    setSubExpensesOption(e);
+                    setFieldValue("expense_type_name", e.label);
                   }}
                 />
                 <button
@@ -216,11 +260,33 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                 />
               </div>
             </div>
+
+            {/* TAXES BUTTONS */}
+            <div className="mt-2">
+              <div className="flex gap-4">
+                {taxBtns.map((btn) => (
+                  <button
+                    key={btn.id}
+                    type="button"
+                    onClick={btn.handleClick}
+                    className={`${
+                      activeTaxBtn === btn.id
+                        ? "bg-mainGreen text-white"
+                        : "bg-gray-300 text-mainGreen"
+                    } px-4 py-2 rounded-lg`}
+                  >
+                    {t(`${btn.name}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="my-6">
-          <h2 className="mb-4 text-base font-bold">{t("choose a method")}</h2>
+          <h2 className="mb-4 text-base font-bold">
+            {t("choose a method of payment")}
+          </h2>
 
           {/* PAYMENT CARDS */}
           <div>
@@ -232,6 +298,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
             /> */}
             <PaymentProccessingToManagement
               paymentData={paymentData}
+              isInExpenses
               setPaymentData={setPaymentData}
               sellingItemsData={sellingItemsData}
               selectedCardId={selectedCardId}
@@ -239,26 +306,45 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               setCardId={setCardId}
               cardId={cardId}
               setSelectedCardName={setSelectedCardName}
-              selectedCardName={selectedCardName}
+              selectedCardName={selectedCardName} 
             />
           </div>
-
-          {/* TABLE */}
-          {/* <div>
-            <ExpensesInvoiceTable
-              paymentData={paymentData}
-              setEditData={setEditData}
-              setPaymentData={setPaymentData}
-            />
-          </div> */}
         </div>
 
         <div className="flex gap-3 justify-end mt-12 pb-8">
           <Back />
           <Button
+            type="submit"
             loading={false}
             action={() => {
+              if (values.expense_price === "") {
+                notify("error", t("please enter expense price"));
+                return;
+              }
+
+              if (values.expense_date === "") {
+                notify("error", t("please enter expense date"));
+                return;
+              }
+
+              if (values.sub_expense === "") {
+                notify("error", t("please select sub expense"));
+                return;
+              }
+
+              if (values.add_description === "") {
+                notify("error", t("please enter description"));
+                return;
+              }
+
               setStage(2);
+              setClientData({
+                client_value: "ahmed",
+                client_id: 1,
+                bond_date: values.expense_date,
+              });
+
+              setSellingItemsData([values]);
             }}
           >
             {t("add expense bond")}
@@ -272,7 +358,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               setOpen(false);
             }}
           >
-            <AddSubExpensesPolicies />
+            <AddSubExpensesPolicies idInBranch={userData?.branch_id} />
           </Modal>
         )}
       </div>

@@ -11,6 +11,7 @@ import { requiredTranslation } from "../../../utils/helpers";
 import { BaseInputField, OuterFormLayout, Select } from "../../molecules";
 import { Button } from "../../atoms";
 import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
+import { SelectOption_TP } from "../../../types";
 
 type PoliciesProps_TP = {
   title: string;
@@ -47,15 +48,14 @@ const AddSubExpensesPolicies = ({
   editData,
   setShow,
   refetch: refetchTable,
+  idInBranch,
 }: BuyingPoliciesProps_TP) => {
-  console.log("🚀 ~ file: AddSubExpensesPolicies.tsx:41 ~ editData:", editData);
+  console.log("🚀 ~ idInBranch:", idInBranch)
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ file: AddSubExpensesPolicies.tsx:43 ~ userData:", userData);
   const isRTL = useIsRTL();
   const [newValue, setNewValue] = useState<any>(null);
   const [branchId, setBranchId] = useState<any>(null);
-  console.log("🚀 ~ branchId:", branchId);
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
@@ -67,14 +67,14 @@ const AddSubExpensesPolicies = ({
       name_ar: Yup.string().trim().required(requiredTranslation),
       name_en: Yup.string().trim().required(requiredTranslation),
       major_id: Yup.string().trim().required(requiredTranslation),
-      branch_id: Yup.string().trim().required(requiredTranslation),
+      // branch_id: Yup.string().trim().required(requiredTranslation),
     });
 
   const initialValues = {
     name_ar: editData?.name_ar || "",
     name_en: editData?.name_en || "",
     major_id: editData?.major_id || "",
-    branch_id: editData?.branch_id,
+    branch_id: idInBranch || editData?.branch_id,
   };
 
   const {
@@ -131,7 +131,9 @@ const AddSubExpensesPolicies = ({
     refetch,
     isFetching,
   } = useFetch({
-    endpoint: `/expenses/api/v1/major-expence/${branchId}`,
+    endpoint: `/expenses/api/v1/major-expence/${
+      idInBranch ? idInBranch : branchId
+    }`,
     queryKey: ["mainExpensesOption"],
     select: (data) =>
       data.map((item) => {
@@ -164,7 +166,7 @@ const AddSubExpensesPolicies = ({
     refetch: refetchBranches,
     failureReason: branchesErrorReason,
   } = useFetch<SelectOption_TP[]>({
-    endpoint: "branch/api/v1/branches?per_page=10000",
+    endpoint: "/branch/api/v1/branches?per_page=10000",
     queryKey: ["branches"],
     select: (branches) =>
       branches.map((branch) => {
@@ -187,13 +189,16 @@ const AddSubExpensesPolicies = ({
             if (editData) {
               PostCardEdit({
                 ...values,
+                branch_id: idInBranch ? idInBranch : branchId,
               });
             } else {
               PostNewCard({
                 ...values,
+                branch_id: idInBranch ? idInBranch : branchId,
               });
               console.log({
                 ...values,
+                branch_id: idInBranch ? idInBranch : branchId,
               });
             }
           }}
@@ -226,18 +231,21 @@ const AddSubExpensesPolicies = ({
                     className="relative"
                   />
                 </div>
-                <Select
-                  id="branch_id"
-                  label={`${t("branches")}`}
-                  name="branch_id"
-                  placeholder={`${t("branches")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={branchesOptions}
-                  isLoading={branchesLoading}
-                  onChange={(e) => {
-                    setBranchId(e.id);
-                  }}
-                />
+                {!idInBranch && (
+                  <Select
+                    id="branch_id"
+                    label={`${t("branches")}`}
+                    name="branch_id"
+                    placeholder={`${t("branches")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={branchesOptions}
+                    isLoading={branchesLoading}
+                    onChange={(e) => {
+                      setBranchId(e.id);
+                    }}
+                  />
+                )}
+
                 <div className="">
                   <Select
                     id="major_id"

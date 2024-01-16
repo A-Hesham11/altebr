@@ -27,6 +27,7 @@ const ExpensesBonds = () => {
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
+  console.log("🚀 ~ ExpensesBonds ~ search:", search)
 
   const searchValues = {
     expence_bond_number: "",
@@ -150,10 +151,10 @@ const ExpensesBonds = () => {
         } else {
           // url += `&${key}[eq]=${req[key]}`;
           if (key === "expence_from_date")
-            url += `?expence_from_date[gte]=${formatDate(req[key])}`;
+            url += `&expence_from_date[gte]=${formatDate(req[key])}`;
           else if (key === "expence_to_date")
-            url += `?expence_to_date[lte]=${formatDate(req[key])}`;
-          else url += `?${key}[eq]=${req[key]}`;
+            url += `&expence_to_date[lte]=${formatDate(req[key])}`;
+          else url += `&${key}[eq]=${req[key]}`;
         }
       }
     });
