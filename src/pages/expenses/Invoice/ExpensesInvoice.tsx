@@ -22,8 +22,11 @@ import AddSubExpensesPolicies from "../../../components/templates/subExpensesPol
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
 import PaymentCard from "../../../components/selling/selling components/data/PaymentCard";
 import ExpensesInvoiceTable from "./ExpensesInvoiceTable";
-import { Payment_TP } from "../../Payment/PaymentProccessingToManagement";
+import PaymentProccessingToManagement, {
+  Payment_TP,
+} from "../../Payment/PaymentProccessingToManagement";
 import ExpensesCards from "./ExpensesCards";
+import PaymentProcessing from "../../../components/selling/selling components/data/PaymentProcessing";
 
 interface ExpensesInvoiceProps {
   setTaxAdded: (value: boolean) => void;
@@ -73,6 +76,10 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   console.log("🚀 ~ file: ExpensesInvoice.tsx:72 ~ card:", card);
   const [cardImage, setCardImage] = useState<string | undefined>("");
   console.log("🚀 ~ file: ExpensesInvoice.tsx:74 ~ cardImage:", cardImage);
+
+  const [sellingItemsData, setSellingItemsData] = useState([]);
+  const [selectedCardName, setSelectedCardName] = useState(null);
+  const [cardId, setCardId] = useState("");
 
   const {
     data: subExpensesOption,
@@ -205,91 +212,35 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
 
           {/* PAYMENT CARDS */}
           <div>
-            {/* <PaymentCard
-              onSelectCard={handleCardSelection}
-              selectedCardId={selectedCardId}
-              setSelectedCardId={setSelectedCardId}
-              setCardFronKey={setCardFronKey} 
-              setCardFrontKeyAccept={setCardFrontKeyAccept}
-              setSellingFrontKey={setSellingFrontKey}
-              setCardDiscountPercentage={setCardDiscountPercentage}
-            /> */}
-            <ExpensesCards
+            {/* <ExpensesCards
               cardImage={cardImage}
               setCardImage={setCardImage}
               card={card}
               setCard={setCard}
               selectedCardId={selectedCardId}
               setSelectedCardId={setSelectedCardId}
+            /> */}
+            <PaymentProccessingToManagement
+              paymentData={paymentData}
+              setPaymentData={setPaymentData}
+              sellingItemsData={sellingItemsData}
+              selectedCardId={selectedCardId}
+              setSelectedCardId={setSelectedCardId}
+              setCardId={setCardId}
+              cardId={cardId}
+              setSelectedCardName={setSelectedCardName}
+              selectedCardName={selectedCardName}
             />
-          </div>
-
-          {/* TOTALS OF BOXES */}
-          <div className="flex items-end my-6 gap-4">
-            <BaseInputField
-              id="value"
-              name="value"
-              type="text"
-              // label={
-              //   selectedCardName
-              //     ? `${selectedCardName}  ${
-              //         mainAccountNumber ? `(${mainAccountNumber})` : ""
-              //       }`
-              //     : t("Fund totals")
-              // }
-              // placeholder={
-              //   selectedCardName ? selectedCardName : t("Fund totals")
-              // }
-              // value={data?.value?.toFixed(2)}
-              disabled
-              className={`bg-mainDisabled text-mainGreen `}
-            />
-
-            <div className="relative">
-              <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
-                <span>{t("remaining cost")} : </span>{" "}
-                {/* {formatReyal(Number(costRemaining.toFixed(2)))} */}25
-              </p>
-              <BaseInputField
-                id="amount"
-                name="amount"
-                type="text"
-                label={`${t("amount")}`}
-                placeholder={`${t("amount")}`}
-                onChange={(e) => {
-                  // setFieldValue("cost_after_tax", +e.target.value);
-                }}
-                // className={` ${
-                //   +values.amount > +costRemaining && "bg-red-100"
-                // }`}
-              />
-              <div>
-                {/* {+values.amount > +costRemaining && (
-                  <p className="text-mainRed">
-                    <span>{t("Weight must be less than or equal to")}</span>
-                    <span> {costRemaining}</span>
-                  </p>
-                )} */}
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              className="animate_from_left animation_delay-11  transition-all duration-300 bg-mainOrange h-10"
-              // disabled={+values.amount > +costRemaining}
-            >
-              {t("confirm")}
-            </Button>
           </div>
 
           {/* TABLE */}
-          <div>
+          {/* <div>
             <ExpensesInvoiceTable
               paymentData={paymentData}
               setEditData={setEditData}
               setPaymentData={setPaymentData}
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="flex gap-3 justify-end mt-12 pb-8">
@@ -389,3 +340,62 @@ export default ExpensesInvoice;
 //     </div>
 //   )}
 // </div>
+
+{
+  /* <div className="flex items-end my-6 gap-4">
+<BaseInputField
+  id="value"
+  name="value"
+  type="text"
+  label={
+    selectedCardName
+      ? `${selectedCardName}  ${
+          mainAccountNumber ? `(${mainAccountNumber})` : ""
+        }`
+      : t("Fund totals")
+  }
+  placeholder={
+    selectedCardName ? selectedCardName : t("Fund totals")
+  }
+  value={data?.value?.toFixed(2)}
+  disabled
+  className={`bg-mainDisabled text-mainGreen `}
+/>
+
+<div className="relative">
+  <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
+    <span>{t("remaining cost")} : </span>{" "}
+    {formatReyal(Number(costRemaining.toFixed(2)))}
+  </p>
+  <BaseInputField
+    id="amount"
+    name="amount"
+    type="text"
+    label={`${t("amount")}`}
+    placeholder={`${t("amount")}`}
+    onChange={(e) => {
+      setFieldValue("cost_after_tax", +e.target.value);
+    }}
+    className={` ${
+      +values.amount > +costRemaining && "bg-red-100"
+    }`}
+  />
+  <div>
+    {+values.amount > +costRemaining && (
+      <p className="text-mainRed">
+        <span>{t("Weight must be less than or equal to")}</span>
+        <span> {costRemaining}</span>
+      </p>
+    )}
+  </div>
+</div>
+
+<Button
+  type="submit"
+  className="animate_from_left animation_delay-11  transition-all duration-300 bg-mainOrange h-10"
+  disabled={+values.amount > +costRemaining}
+>
+  {t("confirm")}
+</Button>
+</div> */
+}
