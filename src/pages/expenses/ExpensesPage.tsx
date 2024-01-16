@@ -24,10 +24,10 @@ const ExpensesPage = () => {
   const [odwyaTypeValue, setOdwyaTypeValue] = useState();
 
   const [files, setFiles] = useState([]);
-  const [majorExpensesOption, setMajorExpensesOption] = useState<any>("");
-  const [taxAdded, setTaxAdded] = useState<boolean>(false);
-  const [taxZero, setTaxZero] = useState<boolean>(false);
-  const [taxExempt, setTaxExempt] = useState<boolean>(false);
+  const [subExpensesOption, setSubExpensesOption] = useState<any>("");
+  const [taxAdded, setTaxAdded] = useState<boolean>(null);
+  const [taxZero, setTaxZero] = useState<boolean>(null);
+  const [taxExempt, setTaxExempt] = useState<boolean>(null);
   const [selectedItem, setSelectedItem] = useState<any>([]);
   const [showTax, setShowTax] = useState<boolean>(false);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
@@ -35,7 +35,6 @@ const ExpensesPage = () => {
   const [selectedCardFrontKey, setSelectedCardFrontKey] = useState("");
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState(0);
   const [editData, setEditData] = useState<Payment_TP>();
-  console.log("🚀 ~ ExpensesPage ~ editData:", editData);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [cardItem, setCardItem] = useState<any>();
@@ -48,13 +47,28 @@ const ExpensesPage = () => {
     expense_price: "",
     expense_date: "",
     expense_type: "",
+    expense_type_name: "",
     add_description: "",
     expense_price_after_tax: "",
+    expense_price_tax: "",
     sub_expense: "",
-    amount: "",
   };
 
-  const validationSchema = () => Yup.object({});
+
+  const validationSchema = Yup.object({
+    // include_tax: Yup.string().required("Include tax is required"),
+    // value_added: Yup.string().required("Value added is required"),
+    // value_zero: Yup.string().required("Value zero is required"),
+    // value_exempt: Yup.string().required("Value exempt is required"),
+    expense_price: Yup.string().required("Expense price is required"),
+    expense_date: Yup.string().required("Expense date is required"),
+    // expense_type: Yup.string().required("Expense type is required"),
+    // expense_type_name: Yup.string().required("Expense type name is required"),
+    add_description: Yup.string().required("Add description is required"),
+    // expense_price_after_tax: Yup.string().required("Expense price after tax is required"),
+    // expense_price_tax: Yup.string().required("Expense price tax is required"),
+    sub_expense: Yup.string().required("Sub expense is required"),
+  });
 
   const { data: expensesInvoice } = useFetch<ClientData_TP>({
     endpoint: `/expenses/api/v1/expense-invoices/${userData?.branch_id}`,
@@ -67,7 +81,7 @@ const ExpensesPage = () => {
   return (
     <Formik
       initialValues={initialValues}
-      // validationSchema={validationSchema}
+      validationSchema={validationSchema}
       onSubmit={(values) => {}}
     >
       <>
@@ -99,8 +113,8 @@ const ExpensesPage = () => {
             selectedItem={selectedItem}
             setSelectedItem={setSelectedItem}
             setPaymentData={setPaymentData}
-            majorExpensesOption={majorExpensesOption}
-            setMajorExpensesOption={setMajorExpensesOption}
+            subExpensesOption={subExpensesOption}
+            setSubExpensesOption={setSubExpensesOption}
             selectedCardId={selectedCardId}
             setSelectedCardId={setSelectedCardId}
             selectedCardFrontKey={selectedCardFrontKey}

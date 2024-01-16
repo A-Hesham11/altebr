@@ -1072,5 +1072,16 @@
   "expense to date": "المصروف الي تاريخ",
   "include tax": "شامل الضريبة",
   "add expense bond": "إضافة سند مصروف",
-  "expense bond number": "رقم سند المصروف"
+  "expense bond number": "رقم سند المصروف",
+  "expense price": "المبلغ المصروف",
+  "expense date": "تاريخ الصرف",
+  "add description": "إضافة وصف",
+  "choose a method of payment": "اختر طريقة الدفع",
+  "expense price after tax": "المبلغ المصروف شامل الضريبة",
+  "success add expense invoice": "تم إضافة سند المصروف بنجاح",
+  "please enter expense price": "من فضلك ادخل المبلغ المصروف",
+  "please enter expense date": "من فضلك ادخل تاريخ الصرف",
+  "please select sub expense": "من فضلك اختر مصروف فرعي",
+  "please enter description": "من فضلك ادخل الوصف",
+  "expense type": "نوع المصروف"
 }

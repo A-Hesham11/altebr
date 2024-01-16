@@ -17,7 +17,7 @@ interface ReactTableProps<T extends object> {
   costDataAsProps?: any;
 }
 
-const ExpenseInvoiceTable = <T extends object>({
+const ExpenseFinalInvoiceTable = <T extends object>({
   data,
   columns,
   paymentData,
@@ -25,8 +25,10 @@ const ExpenseInvoiceTable = <T extends object>({
   setOdwyaTypeValue,
   odwyaTypeValue,
 }: ReactTableProps<T>) => {
+  console.log("🚀 ~ columns:", columns)
+  console.log("🚀 ~ data:", data)
   console.log(
-    "🚀 ~ file: ExpenseInvoiceTable.tsx:28 ~ costDataAsProps:",
+    "🚀 ~ file: ExpenseFinalInvoiceTable.tsx:28 ~ costDataAsProps:",
     costDataAsProps
   );
   const { formatGram, formatReyal } = numberContext();
@@ -41,61 +43,63 @@ const ExpenseInvoiceTable = <T extends object>({
   });
 
   // FORMULA TO CALC TOTAL COST, VALUE ADDED TAX, TOTAL VALUE
-  // const totalWeight = data.reduce((acc: number, curr: any) => {
-  //   acc += +curr.weight;
-  //   return acc;
-  // }, 0);
-
-  const totalCost = data.reduce((acc: number, curr: any) => {
-    acc = +curr.expense_price + +curr.expense_price_tax;
+  const totalWeight = data.reduce((acc: number, curr: any) => {
+    acc += +curr.weight;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalCost ~ totalCost:", totalCost);
 
-  // const valueAddedTax = data.reduce((acc: number, curr: any) => {
-  //   acc += +curr.value_added_tax;
-  //   return acc;
-  // }, 0);
-  // const totalValue = data.reduce((acc: number, curr: any) => {
-  //   acc += +curr.total_value;
-  //   return acc;
-  // }, 0);
+  const totalCost = data.reduce((acc: number, curr: any) => {
+    acc += +curr.value;
+    return acc;
+  }, 0);
 
-  const totalFinalCostIntoArabic = convertNumToArWord(
-    Math.round(costDataAsProps?.totalCost)
-  );
+  const valueAddedTax = data.reduce((acc: number, curr: any) => {
+    acc += +curr.value_added_tax;
+    return acc;
+  }, 0);
+  const totalValue = data.reduce((acc: number, curr: any) => {
+    acc += +curr.total_value;
+    return acc;
+  }, 0);
 
-  // const totalItemsTax =
-  //   +costDataAsProps?.totalItemsTaxes?.toFixed(2) +
-  //   costDataAsProps?.totalCommissionTaxes;
+  let totalFinalCostIntoArabic;
 
-  // const totalItemsCost =
-  //   costDataAsProps?.totalCommissionRatio + costDataAsProps?.totalCost;
+  if (odwyaTypeValue === "supplier") {
+    totalFinalCostIntoArabic = convertNumToArWord(
+      Math.round(costDataAsProps?.totalValueAfterTax)
+    );
+  } else {
+    totalFinalCostIntoArabic = convertNumToArWord(
+      Math.round(costDataAsProps?.totalCost)
+    );
+  }
 
-  const resultTable = [
-    {
-      number: t("totals"),
-      cost: formatReyal(totalCost),
-    },
-  ];
+  const totalItemsTax =
+    +costDataAsProps?.totalItemsTaxes?.toFixed(2) +
+    costDataAsProps?.totalCommissionTaxes;
 
-  // if (odwyaTypeValue === "supplier") {
-  //   resultTable = [
-  //     {
-  //       number: t("totals"),
-  //       cost: formatReyal(totalCost),
-  //       value_added_tax: formatReyal(valueAddedTax),
-  //       total_value: formatReyal(totalValue.toFixed(2)),
-  //     },
-  //   ];
-  // } else {
-  //   resultTable = [
-  //     {
-  //       number: t("totals"),
-  //       cost: formatReyal(totalCost),
-  //     },
-  //   ];
-  // }
+  const totalItemsCost =
+    costDataAsProps?.totalCommissionRatio + costDataAsProps?.totalCost;
+
+  let resultTable;
+
+  if (odwyaTypeValue === "supplier") {
+    resultTable = [
+      {
+        number: t("totals"),
+        cost: formatReyal(totalCost),
+        value_added_tax: formatReyal(valueAddedTax),
+        total_value: formatReyal(totalValue.toFixed(2)),
+      },
+    ];
+  } else {
+    resultTable = [
+      {
+        number: t("totals"),
+        cost: formatReyal(totalCost),
+      },
+    ];
+  }
 
   return (
     <>
@@ -174,4 +178,4 @@ const ExpenseInvoiceTable = <T extends object>({
   );
 };
 
-export default ExpenseInvoiceTable;
+export default ExpenseFinalInvoiceTable;
