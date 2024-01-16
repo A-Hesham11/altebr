@@ -26,6 +26,7 @@ import {
 } from "../coding/coding-types-and-helpers"
 import { DiamondSelectedDetailedWeight } from "./AccessoriesSelectedDetailedWeight"
 import { DiamondSubTables } from "./AccessoriesSubTables"
+import { numberContext } from "../../context/settings/number-formatter"
 
 // types
 type Categories_TP = {
@@ -53,6 +54,8 @@ export function AccessoriesExapndableTable({
 }) {
   console.log("🚀 ~ file: DiamondExapndableTable.tsx:54 ~ addedPieces:", addedPieces)
   const { sanadId } = useParams()
+
+  const { formatGram, formatReyal } = numberContext();
 
   const [addedPiecesLocal, setAddedPiecesLocal] = useLocalStorage<
     GoldCodingSanad_initialValues_TP[]
@@ -103,12 +106,15 @@ export function AccessoriesExapndableTable({
       }),
       columnHelper.accessor("weight", {
         header: `${t("weight")}`,
+        cell: (info) => formatGram(Number(info.getValue())) || "---",
       }),
       columnHelper.accessor("mezan_weight", {
         header: `الوزن الفعلي`,
+        cell: (info) => formatGram(Number(info.getValue())) || "---",
       }),
       columnHelper.accessor("cost_item", {
         header: `${t("value")}`,
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
       }),
       ...(showDetails
         ? [

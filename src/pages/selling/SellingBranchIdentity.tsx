@@ -21,6 +21,7 @@ import { authCtx } from "../../context/auth-and-perm/auth"
 import { useFetch, useIsRTL } from "../../hooks"
 import SelectClassification from "../../components/templates/reusableComponants/classifications/select/SelectClassification"
 import { useNavigate } from "react-router-dom"
+import { numberContext } from "../../context/settings/number-formatter"
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -36,6 +37,8 @@ export const SellingBranchIdentity = () => {
     const [page, setPage] = useState<number>(1)
     const [search, setSearch] = useState('')
     const isRTL = useIsRTL()
+    const { formatGram, formatReyal } = numberContext();
+
     const navigate = useNavigate();
 
     const searchValues = {
@@ -92,27 +95,27 @@ export const SellingBranchIdentity = () => {
             header: () => <span>{t("mineral karat")}</span>,
         },
         {
-            cell: (info: any) => (+info.getValue()).toFixed(3) || '---',
+            cell: (info: any) => formatReyal(Number(info.getValue())) || '---',
             accessorKey: "wage",
             header: () => <span>{t("wage")}</span>,
         },
         {
-            cell: (info: any) => (info.row.original.weight * info.row.original.wage).toFixed(3),
+            cell: (info: any) => formatReyal(Number(info.row.original.weight * info.row.original.wage)),
             accessorKey: "wage_total",
             header: () => <span>{t("total wages")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() == 0 ? '---' : info.getValue(),
+            cell: (info: any) => info.getValue() == 0 ? '---' : formatGram(Number(info.getValue())),
             accessorKey: "stones_weight",
             header: () => <span>{t("other stones weight")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() || '---',
+            cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
             accessorKey: "selling_price",
             header: () => <span>{t("selling price")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() == 0 ? '---' : info.getValue(),
+            cell: (info: any) => info.getValue() == 0 ? '---' : formatGram(Number(info.getValue())),
             accessorKey: "diamond_weight",
             header: () => <span>{t("diamond weight")}</span>,
         },

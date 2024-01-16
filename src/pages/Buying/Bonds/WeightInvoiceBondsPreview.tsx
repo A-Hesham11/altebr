@@ -4,18 +4,18 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { numberContext } from "../../../context/settings/number-formatter";
 
 const WeightInvoiceBondsPreview = ({ item }: { item?: {} }) => {
-  const { formatReyal } = numberContext();
+  const { formatReyal, formatGram } = numberContext();
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "invoice_number",
         header: () => <span>{t("buying invoice number")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "category_name",
         header: () => <span>{t("classification")}</span>,
       },
@@ -27,27 +27,27 @@ const WeightInvoiceBondsPreview = ({ item }: { item?: {} }) => {
         header: () => <span>{t("stones")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
         accessorKey: "old_weight",
         header: () => <span>{t("weight")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
         accessorKey: "weight",
         header: () => <span>{t("weight after editing")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(Number(info.renderValue())) || "-",
+        cell: (info: any) => formatReyal(Number(info.renderValue())) || "---",
         accessorKey: "karat_name",
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.renderValue() || "-",
+        cell: (info: any) => info.renderValue() || "---",
         accessorKey: "hadr_ahgar",
         header: () => <span>{t("lose stones")}</span>,
       },
       {
-        cell: (info: any) => info.renderValue() || "-",
+        cell: (info: any) =>formatReyal(Number(info.renderValue())) || "---",
         accessorKey: "added_ahgar",
         header: () => <span>{t("increase weight")}</span>,
       },

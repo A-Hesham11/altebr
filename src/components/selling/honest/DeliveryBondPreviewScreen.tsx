@@ -8,6 +8,7 @@ import { mutateData } from "../../../utils/mutateData"
 import { Button } from "../../atoms"
 import InvoiceTable from "../selling components/InvoiceTable"
 import { SellingFinalPreview } from "../selling components/SellingFinalPreview"
+import { numberContext } from "../../../context/settings/number-formatter"
 
 type CreateHonestSanadProps_TP = {
     setStage: React.Dispatch<React.SetStateAction<number>>
@@ -15,6 +16,12 @@ type CreateHonestSanadProps_TP = {
     paymentData: never[]
 }
 const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: CreateHonestSanadProps_TP) => {
+
+    const { formatGram, formatReyal } = numberContext();
+    const { userData } = useContext(authCtx);
+
+    const taxRate = userData?.tax_rate / 100
+
     const prepaidAmount = selectedItem.amount
     const totalCommissionRatio = paymentData.reduce((acc, card) => {
         acc += +card.commission_riyals
@@ -32,7 +39,7 @@ const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: Crea
         acc += +curr.cost
         return acc
     }, 0)
-    const totalFinalCost = totalCost + totalCommissionRatio + totalCost * .15 + totalCommissionTaxes
+    const totalFinalCost = totalCost + totalCommissionRatio + totalCost * +taxRate + totalCommissionTaxes
 
     // gather cost data to pass it to SellingFinalPreview as props 
     const costDataAsProps = {
@@ -72,7 +79,7 @@ const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: Crea
             header: () => <span>{t("deliver date")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() || '---',
+            cell: (info: any) => formatGram(Number(info.getValue())) || '---',
             accessorKey: "weight",
             header: () => <span>{t("weight")}</span>,
         },
@@ -82,7 +89,7 @@ const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: Crea
             cell: (info: any) => {
                 const rowData = +info.row.original.cost + +ratioForOneItem
                 return (
-                    <div>{rowData.toFixed(3)}</div>
+                    <div>{formatReyal(Number(rowData))}</div>
                 )
             },
         },
@@ -90,9 +97,9 @@ const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: Crea
             header: () => <span>{t("VAT")}</span>,
             accessorKey: "VAT",
             cell: (info: any) => {
-                const rowData = +info.row.original.cost * .15 + +ratioForOneItemTaxes
+                const rowData = +info.row.original.cost * +taxRate + +ratioForOneItemTaxes
                 return (
-                    <div>{rowData.toFixed(3)}</div>
+                    <div>{formatReyal(Number(rowData))}</div>
                 )
             },
         },
@@ -101,9 +108,9 @@ const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: Crea
             accessorKey: "total",
             cell: (info: any) => {
                 const rowData = +info.row.original.cost + ratioForOneItem
-                const rowDataTaxes = +info.row.original.cost * .15 + ratioForOneItemTaxes
+                const rowDataTaxes = +info.row.original.cost * +taxRate + ratioForOneItemTaxes
                 return (
-                    <div>{(rowData + rowDataTaxes).toFixed(3)}</div>
+                    <div>{formatReyal(Number(rowData + rowDataTaxes))}</div>
                 )
             },
         },
@@ -118,8 +125,7 @@ const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: Crea
 
     // 
     const navigate = useNavigate()
-    // user data
-    const { userData } = useContext(authCtx)
+
     // api 
     const { mutate, isLoading } = useMutate({
         mutationFn: mutateData,
@@ -135,12 +141,12 @@ const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: Crea
             branch_id: userData?.branch_id,
             bond_date: selectedItem.bond_date,
             total_inovice: totalFinalCost,
-            total_vat: totalCost * .15 + totalCommissionTaxes,
+            total_vat: totalCost * +taxRate + totalCommissionTaxes,
             bond_id: selectedItem.id
         }
         const items = selectedItem.items.filter(item => item.return_status === 'not_returned').map(item => {
             const rowData = +item.cost + ratioForOneItem
-            const rowDataTaxes = +item.cost * .15 + ratioForOneItemTaxes
+            const rowDataTaxes = +item.cost * +taxRate + ratioForOneItemTaxes
             return ({
                 category_id: item.category_id,
                 bondsafety_id: selectedItem.id,
@@ -149,7 +155,7 @@ const DeliveryBondPreviewScreen = ({ setStage, selectedItem, paymentData }: Crea
                 karatmineral_id: item.karatmineral_id,
                 weight: item.weight,
                 cost: +item.cost + +ratioForOneItem,
-                vat: +item.cost * .15 + +ratioForOneItemTaxes,
+                vat: +item.cost * +taxRate + +ratioForOneItemTaxes,
                 total: rowData + rowDataTaxes
             })
         })

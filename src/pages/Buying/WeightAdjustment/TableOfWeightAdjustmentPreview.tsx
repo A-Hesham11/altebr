@@ -16,6 +16,7 @@ import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "../../../utils/date";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { useNavigate } from "react-router-dom";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 type TableOfWeightAdjustmentPreview_TP = {
   item: any;
@@ -39,6 +40,8 @@ const TableOfWeightAdjustmentPreview = ({
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
+
+  const { formatGram, formatReyal } = numberContext();
 
   // FORMULA FOR EDITED TOTAL WEIGHT
   const totalEditedWeight = item.reduce(
@@ -108,7 +111,7 @@ const TableOfWeightAdjustmentPreview = ({
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => formatGram(Number(info.getValue())) || "-",
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },

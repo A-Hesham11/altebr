@@ -28,6 +28,7 @@ import { Edit } from "../../atoms/icons/Edit";
 import { InnerFormLayout, Modal, OuterFormLayout } from "../../molecules";
 import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutFormik";
 import PaymentProcessing from "../selling components/data/PaymentProcessing";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 ///
 type CreateHonestSanadProps_TP = {
@@ -55,11 +56,17 @@ export const CreateHonestSanad = ({
   const [editCost, setEditCost] = useState(false);
   const [open, setOpen] = useState(false);
   const [openTotal, setOpenTotal] = useState(false);
+  const { formatGram, formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData)
+
   const [costValue, setCostValue] = useState({
     id: null,
     value: "0",
   });
 
+  const taxRate = userData?.tax_rate / 100
+  console.log("🚀 ~ taxRate:", taxRate)
   const [refundAmount, setRefundAmount] = useState(0);
 
   const [selectedRows, setSelectedRows] = useState([]);
@@ -110,7 +117,7 @@ export const CreateHonestSanad = ({
   const totalPaid = paymentData.reduce((acc, item) => {
     return (
       acc +
-      (+item.amount + item.commission_riyals + item.commission_riyals * 0.15)
+      (+item.amount + item.commission_riyals + item.commission_riyals * taxRate)
     );
   }, 0);
 
@@ -139,7 +146,7 @@ export const CreateHonestSanad = ({
   const totalActualItemsCost = selectedItem.items
     .filter((item) => item.return_status !== "returned")
     .reduce((acc, curr) => {
-      acc += +curr.cost * 0.15 + +curr.cost;
+      acc += +curr.cost * taxRate + +curr.cost;
       return acc;
     }, 0);
 
@@ -199,29 +206,29 @@ export const CreateHonestSanad = ({
       }),
       columnHelper.accessor("category_value", {
         header: () => `${t("category")}`,
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       }),
       columnHelper.accessor("karat_value", {
         header: () => `${t("karat")}`,
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       }),
       columnHelper.accessor("weight", {
         header: () => `${t("weight")}`,
-        cell: (info) => info.getValue(),
+        cell: (info) => formatGram(Number(info.getValue())) || "---",
       }),
       columnHelper.accessor("cost", {
         header: () => `${t("cost")}`,
         cell: (info) =>
-          (info.row.original.id == costValue.id && costValue.value) ||
-          info.getValue(),
+          (info.row.original.id == costValue.id && formatReyal(Number(costValue.value))) ||
+          formatReyal(Number(info.getValue())),
       }),
       columnHelper.accessor("VAT", {
         header: () => `${t("VAT")}`,
-        cell: (info) => (info.row.original.cost * 0.15).toFixed(2),
+        cell: (info) => formatReyal(Number(info.row.original.cost * taxRate)) || "---",
       }),
       columnHelper.accessor("cost_after_vat", {
         header: () => `${t("cost after tax")}`,
-        cell: (info) => info.row.original.cost * 0.15 + info.row.original.cost,
+        cell: (info) => formatReyal(Number(info.row.original.cost * taxRate + info.row.original.cost)) || "---",
       }),
       columnHelper.accessor("category_value", {
         header: () => `${t("categories")}`,
@@ -313,7 +320,6 @@ export const CreateHonestSanad = ({
   }, [selectedItem])
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
-  const { userData } = useContext(authCtx)
   const selectedRowsToReturn = selectedRows.map(item => ({ ...item, branch_id: userData?.branch_id }))
 
   const handlePostSelectedRows = () => {
@@ -486,7 +492,7 @@ export const CreateHonestSanad = ({
                             {data.account}
                           </p>
                           <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                            {data.value.toFixed(2)} <span>{data.unit}</span>
+                            {formatReyal(Number(data.value))} <span>{data.unit}</span>
                           </p>
                         </li>
                       ))}
@@ -509,7 +515,7 @@ export const CreateHonestSanad = ({
                           {data.account}
                         </p>
                         <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                          {data.value} <span>{data.unit}</span>
+                          {formatReyal(Number(data.value))} <span>{data.unit}</span>
                         </p>
                       </li>
                     ))}

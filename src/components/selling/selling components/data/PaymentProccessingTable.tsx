@@ -46,12 +46,12 @@ const PaymentProccessingTable = ({
       {
         header: () => <span>{t("commission riyals")} </span>,
         accessorKey: "commission_riyals",
-        cell: (info) => info.row.original.commission_riyals || "---",
+        cell: (info) => formatReyal(Number(info.row.original.commission_riyals)) || "---",
       },
       {
         header: () => <span>{t("commission tax")} </span>,
         accessorKey: "commission_tax",
-        cell: (info) => info.row.original.commission_tax || "---",
+        cell: (info) => formatReyal(Number(info.row.original.commission_tax)) || "---",
       },
       {
         header: () => <span>{t("actions")}</span>,
