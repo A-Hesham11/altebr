@@ -61,7 +61,7 @@ export const ViewStoneNature = () => {
   const cols = useMemo<ColumnDef<StonesNatures>[]>(
     () => [
       {
-        header: `${t('Sequence ')}`,
+        header: `${t('Sequence')}`,
         cell: (info) => info.renderValue(),
         accessorKey: 'index',
       },

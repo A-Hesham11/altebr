@@ -1,39 +1,43 @@
 /////////// IMPORTS
 ///
-import { t } from "i18next"
-import { useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { useNavigate } from "react-router-dom"
-import { Modal } from "../../components/molecules"
-import { AddEmployee } from "../../components/templates/employee/AddEmployee"
-import { CreateBranch } from "../../components/templates/reusableComponants/branches/CreateBranch"
-import { AccountingTree } from "../../components/templates/systemEstablishment/AccountingTree/AccountingTree"
-import { AddPartners } from "../../components/templates/systemEstablishment/partners/AddPartners"
-import AddSupplier from "../../components/templates/systemEstablishment/supplier/AddSupplier"
-import { SystemCard } from "../../components/templates/systemEstablishment/SystemCard"
-import { AddAdministrativeStructure } from "../administrativeStructure/AddAdministrativeStructure"
-import { Card_TP, FormNames_TP } from "./types-and-helpers"
-import AddDesimalNumber from "../../components/templates/DecimalNumber/AddDecimalNumber"
-import { GlobalAndStones } from "./GlobalAndStones"
-import AddBankCards from "../../components/templates/bankCards/AddBankCards"
-import AddBanks from "../../components/templates/banks/AddBanks"
-import AddAccountsBank from "../../components/templates/accountsBank/AddAccountsBank"
-import AddBankCardsData from "../../components/templates/bankCards/AddBankCardsData"
-import AddSellingPolicies from "../../components/templates/sellingPolicies/AddSellingPolicies"
-import AddExcludedItems from "../../components/templates/excludedItems/AddExcludedItems"
-import AddInvoiceData from "../../components/templates/invoiceData/AddInvoiceData"
-import AddBuyingPolicies from "../../components/templates/buyingPolicies/AddBuyingPolicies"
-import GoldPrice from "../../components/templates/goldPrice/GoldPrice"
-import AddTaxPolicy from "../../components/templates/sellingPolicies/AddTaxPolicy"
-import AddExpensesPolicies from "../../components/templates/expensesPolicy/AddExpensesPolicies"
-import AddSubExpensesPolicies from "../../components/templates/subExpensesPolicy/AddSubExpensesPolicies"
-import AddTaxExpensesPolicy from "../../components/templates/taxExpensesPolicy/AddTaxExpensesPolicy"
+import { t } from "i18next";
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "../../components/molecules";
+import { AddEmployee } from "../../components/templates/employee/AddEmployee";
+import { CreateBranch } from "../../components/templates/reusableComponants/branches/CreateBranch";
+import { AccountingTree } from "../../components/templates/systemEstablishment/AccountingTree/AccountingTree";
+import { AddPartners } from "../../components/templates/systemEstablishment/partners/AddPartners";
+import AddSupplier from "../../components/templates/systemEstablishment/supplier/AddSupplier";
+import { SystemCard } from "../../components/templates/systemEstablishment/SystemCard";
+import { AddAdministrativeStructure } from "../administrativeStructure/AddAdministrativeStructure";
+import { Card_TP, FormNames_TP } from "./types-and-helpers";
+import AddDesimalNumber from "../../components/templates/DecimalNumber/AddDecimalNumber";
+import { GlobalAndStones } from "./GlobalAndStones";
+import AddBankCards from "../../components/templates/bankCards/AddBankCards";
+import AddBanks from "../../components/templates/banks/AddBanks";
+import AddAccountsBank from "../../components/templates/accountsBank/AddAccountsBank";
+import AddBankCardsData from "../../components/templates/bankCards/AddBankCardsData";
+import AddSellingPolicies from "../../components/templates/sellingPolicies/AddSellingPolicies";
+import AddExcludedItems from "../../components/templates/excludedItems/AddExcludedItems";
+import AddInvoiceData from "../../components/templates/invoiceData/AddInvoiceData";
+import AddBuyingPolicies from "../../components/templates/buyingPolicies/AddBuyingPolicies";
+import GoldPrice from "../../components/templates/goldPrice/GoldPrice";
+import AddTaxPolicy from "../../components/templates/sellingPolicies/AddTaxPolicy";
+import AddExpensesPolicies from "../../components/templates/expensesPolicy/AddExpensesPolicies";
+import AddSubExpensesPolicies from "../../components/templates/subExpensesPolicy/AddSubExpensesPolicies";
+import AddTaxExpensesPolicy from "../../components/templates/taxExpensesPolicy/AddTaxExpensesPolicy";
+import { CreateClassification } from "../../components/templates/reusableComponants/classifications/create/CreateClassification";
+import CreateKarat from "../../components/templates/reusableComponants/karats/create/CreateKarat";
+import CreateCategory from "../../components/templates/reusableComponants/categories/create/CreateCategory";
+import CreateColor from "../../components/templates/reusableComponants/CreateColor";
 ///
 /////////// Types
 ///
 type SystemProps_TP = {
-  title: string
-}
+  title: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -41,8 +45,7 @@ type SystemProps_TP = {
 export const System = ({ title }: SystemProps_TP) => {
   /////////// VARIABLES
   ///
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   const [popupIsOpen, setPopupIsOpen] = useState({
     partners: false,
@@ -54,7 +57,7 @@ export const System = ({ title }: SystemProps_TP) => {
     add_decimal_number: false,
     add_typeCards: false,
     add_cards: false,
-    add_banks:false,
+    add_banks: false,
     add_accountBank: false,
     selling_policies: false,
     buying_policies: false,
@@ -64,9 +67,14 @@ export const System = ({ title }: SystemProps_TP) => {
     gold_price: false,
     excluded_items: false,
     invoice_data: false,
-    Tax_Policy: false
-  })
+    Tax_Policy: false,
+    colors: false,
+    classifications: false,
+    categories: false,
+    karats: false,
+  });
   const systemCards: Card_TP<FormNames_TP>[] = [
+    // بيانات هيكل الشركة
     {
       id: crypto.randomUUID(),
       title: t("company data"),
@@ -84,33 +92,6 @@ export const System = ({ title }: SystemProps_TP) => {
     },
     {
       id: crypto.randomUUID(),
-      title: t("add_account"),
-      name: "add_account",
-      addLabel: `${t("add account")}`,
-      viewLabel: `${t("view accounts")}`,
-      addComponent: <AccountingTree />,
-      viewHandler: () => navigate("accounts"),
-    },
-    {
-      id: crypto.randomUUID(),
-      title: t("supplier"),
-      name: "add_supplier",
-      addLabel: `${t("add supplier")}`,
-      viewLabel: `${t("View Suppliers")}`,
-      addComponent: <AddSupplier title={`${t("add supplier")}`} />,
-      viewHandler: () => navigate("suppliers"),
-    },
-    {
-      id: crypto.randomUUID(),
-      title: t("employees"),
-      name: "add_employee",
-      addLabel: `${t("add employee")}`,
-      viewLabel: `${t("view employees")}`,
-      viewHandler: () => navigate("employees"),
-      addComponent: <AddEmployee title={`${t("add employee")}`} />,
-    },
-    {
-      id: crypto.randomUUID(),
       title: `${t("administrative-structure")}`,
       name: "add_administrative_structure",
       addLabel: `${t("add administrative structure")}`,
@@ -124,18 +105,6 @@ export const System = ({ title }: SystemProps_TP) => {
     },
     {
       id: crypto.randomUUID(),
-      title: t("operations"),
-      viewLabel: `${t("view operations")}`,
-      viewHandler: () => navigate("operations"),
-    },
-    // {
-    //   id: crypto.randomUUID(),
-    //   title: t("system establishment"),
-    //   viewLabel: `${t("system establishment")}`,
-    //   viewHandler: () => navigate("global-and-stones"),
-    // },
-    {
-      id: crypto.randomUUID(),
       title: t("branch"),
       name: "add_branch",
       addLabel: `${t("add branch")}`,
@@ -145,11 +114,24 @@ export const System = ({ title }: SystemProps_TP) => {
     },
     {
       id: crypto.randomUUID(),
-      title: t("decimal numbers"),
-      name: "add_decimal_number",
-      addLabel: `${t("add decimal number")}`,
-      addComponent: <AddDesimalNumber title={`${t("add decimal number")}`} />,
+      title: t("employees"),
+      name: "add_employee",
+      addLabel: `${t("add employee")}`,
+      viewLabel: `${t("view employees")}`,
+      viewHandler: () => navigate("employees"),
+      addComponent: <AddEmployee title={`${t("add employee")}`} />,
     },
+    {
+      id: crypto.randomUUID(),
+      title: t("supplier"),
+      name: "add_supplier",
+      addLabel: `${t("add supplier")}`,
+      viewLabel: `${t("View Suppliers")}`,
+      addComponent: <AddSupplier title={`${t("add supplier")}`} />,
+      viewHandler: () => navigate("suppliers"),
+    },
+    // **************************************************************
+    // بيانات البنوك
     {
       id: crypto.randomUUID(),
       title: t("banks"),
@@ -157,7 +139,7 @@ export const System = ({ title }: SystemProps_TP) => {
       addLabel: `${t("add banks")}`,
       viewLabel: `${t("view banks")}`,
       viewHandler: () => navigate("/system/banks"),
-      addComponent: (<AddBanks title={`${t("add banks")}`} />),
+      addComponent: <AddBanks title={`${t("add banks")}`} />,
     },
     {
       id: crypto.randomUUID(),
@@ -166,7 +148,7 @@ export const System = ({ title }: SystemProps_TP) => {
       addLabel: `${t("add bank account")}`,
       viewLabel: `${t("view bank accounts")}`,
       viewHandler: () => navigate("/system/accountsBank"),
-      addComponent: (<AddAccountsBank title={`${t("add bank account")}`} />),
+      addComponent: <AddAccountsBank title={`${t("add bank account")}`} />,
     },
     {
       id: crypto.randomUUID(),
@@ -175,7 +157,7 @@ export const System = ({ title }: SystemProps_TP) => {
       addLabel: `${t("add type card")}`,
       viewLabel: `${t("view types cards")}`,
       viewHandler: () => navigate("/system/bankCards"),
-      addComponent: (<AddBankCards title={`${t("add type card")}`} />),
+      addComponent: <AddBankCards title={`${t("add type card")}`} />,
     },
     {
       id: crypto.randomUUID(),
@@ -184,7 +166,71 @@ export const System = ({ title }: SystemProps_TP) => {
       addLabel: `${t("add card bank")}`,
       viewLabel: `${t("view cards banks")}`,
       viewHandler: () => navigate("/system/cardsData"),
-      addComponent: (<AddBankCardsData title={`${t("add card bank")}`} />),
+      addComponent: <AddBankCardsData title={`${t("add card bank")}`} />,
+    },
+    // **************************************************************
+    // خصائص الأصناف 
+
+    {
+      id: crypto.randomUUID(),
+      title: t("classifications"),
+      name: "classifications",
+      addLabel: `${t("add classification")}`,
+      addComponent: (
+        <CreateClassification title={`${t("add classification")}`} />
+      ),
+      viewLabel: `${t("view classifications")}`,
+      viewHandler: () => navigate("/system/global-and-stones/classifications"),
+    },
+    {
+      id: crypto.randomUUID(),
+      title: t("karats"),
+      name: "karats",
+      addLabel: `${t("add karat")}`,
+      addComponent: <CreateKarat title={`${t("add karat")}`} />,
+      viewLabel: `${t("view karats")}`,
+      viewHandler: () => navigate("/system/global-and-stones/karats"),
+    },
+    {
+      id: crypto.randomUUID(),
+      title: t("categories"),
+      name: "categories",
+      addLabel: `${t("add category")}`,
+      addComponent: <CreateCategory title={`${t("add category")}`} />,
+      viewLabel: `${t("view categories")}`,
+      viewHandler: () => navigate("/system/global-and-stones/categories"),
+    },
+    {
+      id: crypto.randomUUID(),
+      title: t("gold colors"),
+      name: "colors",
+      addLabel: `${t("add color")}`,
+      addComponent: <CreateColor title={`${t("add color")}`} />,
+      viewLabel: `${t("view colors")}`,
+      viewHandler: () => navigate("/system/global-and-stones/colors"),
+    },
+
+    // **************************************************************
+    // سياسة المبيعات والمشتريات 
+    {
+      id: crypto.randomUUID(),
+      title: t("Tax policy"),
+      name: "Tax_Policy",
+      addLabel: `${t("Add Tax Policy")}`,
+      addComponent: <AddTaxPolicy title={`${t("Add Tax Policy")}`} />,
+      viewLabel: `${t("View Tax Policy")}`,
+      viewHandler: () => navigate("/system/TaxPolicy"),
+    },
+    {
+      id: crypto.randomUUID(),
+      title: t("excluded items"),
+      name: "excluded_items",
+      addLabel: `${t("add excluded category")}`,
+      addComponent: (
+        <AddExcludedItems title={`${t("add excluded category")}`} />
+      ),
+      viewLabel: `${t("view excluded items")}`,
+      viewHandler: () => navigate("/system/excludedItems"),
     },
     {
       id: crypto.randomUUID(),
@@ -204,14 +250,15 @@ export const System = ({ title }: SystemProps_TP) => {
       viewLabel: `${t("view buying policies")}`,
       viewHandler: () => navigate("/system/policiesBuying"),
     },
-    // EXPENSES
-    // MAIN EXPENSES POLICIES
+
     {
       id: crypto.randomUUID(),
       title: t("main expenses policies"),
       name: "main_expenses_policies",
       addLabel: `${t("add main expenses policy")}`,
-      addComponent: <AddExpensesPolicies title={`${t("add main expenses policy")}`} />,
+      addComponent: (
+        <AddExpensesPolicies title={`${t("add main expenses policy")}`} />
+      ),
       viewLabel: `${t("view main expenses policies")}`,
       viewHandler: () => navigate("/system/mainExpensesPolicies"),
     },
@@ -222,7 +269,9 @@ export const System = ({ title }: SystemProps_TP) => {
       title: t("sub expenses policies"),
       name: "sub_expenses_policies",
       addLabel: `${t("add sub expenses policy")}`,
-      addComponent: <AddSubExpensesPolicies title={`${t("add sub expenses policy")}`} />,
+      addComponent: (
+        <AddSubExpensesPolicies title={`${t("add sub expenses policy")}`} />
+      ),
       viewLabel: `${t("view sub expenses policies")}`,
       viewHandler: () => navigate("/system/subExpensesPolicies"),
     },
@@ -233,51 +282,67 @@ export const System = ({ title }: SystemProps_TP) => {
       title: t("tax expenses policies"),
       name: "tax_expenses_policies",
       addLabel: `${t("add tax expenses policy")}`,
-      addComponent: <AddTaxExpensesPolicy title={`${t("add tax expenses policy")}`} />,
+      addComponent: (
+        <AddTaxExpensesPolicy title={`${t("add tax expenses policy")}`} />
+      ),
       viewLabel: `${t("view tax expenses policies")}`,
       viewHandler: () => navigate("/system/taxExpensesPolicies"),
     },
 
-    // EXPENSES
-    
+
+    // **************************************************************
+    // سياسات المصاريف
+
+
+
+    // **************************************************************
+    // إدارة الحسابات
+    {
+      id: crypto.randomUUID(),
+      title: t("add_account"),
+      name: "add_account",
+      addLabel: `${t("add account")}`,
+      viewLabel: `${t("view accounts")}`,
+      addComponent: <AccountingTree />,
+      viewHandler: () => navigate("accounts"),
+    },
+    {
+      id: crypto.randomUUID(),
+      title: t("operations"),
+      viewLabel: `${t("view operations")}`,
+      viewHandler: () => navigate("operations"),
+    },
+
+
+    // **************************************************************
+    //  أخري
+
+    {
+      id: crypto.randomUUID(),
+      title: t("decimal numbers"),
+      name: "add_decimal_number",
+      addLabel: `${t("add decimal number")}`,
+      addComponent: <AddDesimalNumber title={`${t("add decimal number")}`} />,
+    },
     {
       id: crypto.randomUUID(),
       title: t("gold price"),
       name: "gold_price",
       addLabel: `${t("add the price of 24 karat gold")}`,
       addComponent: <GoldPrice title={`${t("gold price")}`} />,
-      // viewLabel: `${t("view buying policies")}`,
-      // viewHandler: () => navigate("/system/policiesBuying"),
-     },
-
-    {
-      id: crypto.randomUUID(),
-      title: t("Tax policy"),
-      name: "Tax_Policy",
-      addLabel: `${t("Add Tax Policy")}`,
-      addComponent: <AddTaxPolicy title={`${t("Add Tax Policy")}`} />,
-      viewLabel: `${t("View Tax Policy")}`,
-      viewHandler: () => navigate("/system/TaxPolicy"),
-    },
-    {
-      id: crypto.randomUUID(),
-      title: t("excluded items"),
-      name: "excluded_items",
-      addLabel: `${t("add excluded category")}`,
-      addComponent: <AddExcludedItems title={`${t("add excluded category")}`} />,
-      viewLabel: `${t("view excluded items")}`,
-      viewHandler: () => navigate("/system/excludedItems"),
     },
     {
       id: crypto.randomUUID(),
       title: t("manage congratulatory sentences"),
       name: "invoice_data",
       addLabel: `${t("add sentence congratulatory")}`,
-      addComponent: <AddInvoiceData title={`${t("add sentence congratulatory")}`} />,
+      addComponent: (
+        <AddInvoiceData title={`${t("add sentence congratulatory")}`} />
+      ),
       viewLabel: `${t("view sentence congratulatory")}`,
       viewHandler: () => navigate("/system/invoiceData"),
     },
-  ]
+  ];
   //   // XXX
   // ]
   ///
@@ -296,10 +361,10 @@ export const System = ({ title }: SystemProps_TP) => {
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   const openPopup = (formName: FormNames_TP) =>
-    setPopupIsOpen((prev) => ({ ...prev, [formName]: true }))
+    setPopupIsOpen((prev) => ({ ...prev, [formName]: true }));
 
   const closePopupHandler = (formName: FormNames_TP) =>
-    setPopupIsOpen((prev) => ({ ...prev, [formName]: false }))
+    setPopupIsOpen((prev) => ({ ...prev, [formName]: false }));
   ///
   return (
     <>
@@ -307,31 +372,191 @@ export const System = ({ title }: SystemProps_TP) => {
         <title>{title}</title>
       </Helmet>
 
-        <h2 className="underline underline-offset-8 bold text-2xl mb-5">{t('system establishment')}</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {systemCards.map(
-          ({
-            id,
-            title,
-            addComponent,
-            addLabel,
-            viewHandler,
-            viewLabel,
-            name,
-          }) => (
-            <SystemCard
-              key={id}
-              viewHandler={viewHandler}
-              viewLabel={viewLabel}
-              title={title}
-              addLabel={addLabel}
-              addHandler={() => openPopup(name as FormNames_TP)}
-            />
-          )
-        )}
+      <h2 className="underline underline-offset-8 font-extrabold text-lg mb-5">
+        {t("system establishment")}
+      </h2>
+      <div className="my-8">
+        <h2 className="underline underline-offset-8 bold text-2xl mb-5 ">
+          {t("Company structure data")}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {systemCards
+            .slice(0, 6)
+            .map(
+              ({
+                id,
+                title,
+                addComponent,
+                addLabel,
+                viewHandler,
+                viewLabel,
+                name,
+              }) => (
+                <SystemCard
+                  key={id}
+                  viewHandler={viewHandler}
+                  viewLabel={viewLabel}
+                  title={title}
+                  addLabel={addLabel}
+                  addHandler={() => openPopup(name as FormNames_TP)}
+                />
+              )
+            )}
+        </div>
       </div>
+
+      <div className="mb-8">
+        <h2 className="underline underline-offset-8 bold text-2xl mb-5">
+          {t("Bank data")}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {systemCards
+            .slice(6, 10)
+            .map(
+              ({
+                id,
+                title,
+                addComponent,
+                addLabel,
+                viewHandler,
+                viewLabel,
+                name,
+              }) => (
+                <SystemCard
+                  key={id}
+                  viewHandler={viewHandler}
+                  viewLabel={viewLabel}
+                  title={title}
+                  addLabel={addLabel}
+                  addHandler={() => openPopup(name as FormNames_TP)}
+                />
+              )
+            )}
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="underline underline-offset-8 bold text-2xl mb-5">
+          {t("Item characteristics")}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {systemCards
+            .slice(10, 14)
+            .map(
+              ({
+                id,
+                title,
+                addComponent,
+                addLabel,
+                viewHandler,
+                viewLabel,
+                name,
+              }) => (
+                <SystemCard
+                  key={id}
+                  viewHandler={viewHandler}
+                  viewLabel={viewLabel}
+                  title={title}
+                  addLabel={addLabel}
+                  addHandler={() => openPopup(name as FormNames_TP)}
+                />
+              )
+            )}
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="underline underline-offset-8 bold text-2xl mb-5">
+          {t("Sales and purchasing policy")}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {systemCards
+            .slice(14, 18)
+            .map(
+              ({
+                id,
+                title,
+                addComponent,
+                addLabel,
+                viewHandler,
+                viewLabel,
+                name,
+              }) => (
+                <SystemCard
+                  key={id}
+                  viewHandler={viewHandler}
+                  viewLabel={viewLabel}
+                  title={title}
+                  addLabel={addLabel}
+                  addHandler={() => openPopup(name as FormNames_TP)}
+                />
+              )
+            )}
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="underline underline-offset-8 bold text-2xl mb-5">
+          {t("Expense policies")}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {systemCards
+            .slice(18, 21)
+            .map(
+              ({
+                id,
+                title,
+                addComponent,
+                addLabel,
+                viewHandler,
+                viewLabel,
+                name,
+              }) => (
+                <SystemCard
+                  key={id}
+                  viewHandler={viewHandler}
+                  viewLabel={viewLabel}
+                  title={title}
+                  addLabel={addLabel}
+                  addHandler={() => openPopup(name as FormNames_TP)}
+                />
+              )
+            )}
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="underline underline-offset-8 bold text-2xl mb-5">
+          {t("Account management")}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {systemCards
+            .slice(21, 23)
+            .map(
+              ({
+                id,
+                title,
+                addComponent,
+                addLabel,
+                viewHandler,
+                viewLabel,
+                name,
+              }) => (
+                <SystemCard
+                  key={id}
+                  viewHandler={viewHandler}
+                  viewLabel={viewLabel}
+                  title={title}
+                  addLabel={addLabel}
+                  addHandler={() => openPopup(name as FormNames_TP)}
+                />
+              )
+            )}
+        </div>
+      </div>
+
       <div className="my-8 bg-mainBlack h-[1px] rounded"></div>
-        <GlobalAndStones title="تاسيس عام واحجار" />
+      <GlobalAndStones title={t("Another")} />
 
       {systemCards.map(({ id, name, addComponent }) => {
         if (name && addComponent) {
@@ -345,9 +570,15 @@ export const System = ({ title }: SystemProps_TP) => {
             >
               {addComponent}
             </Modal>
-          )
+          );
         }
       })}
     </>
-  )
-}
+  );
+};
+
+
+
+
+
+// ************************************************************************
