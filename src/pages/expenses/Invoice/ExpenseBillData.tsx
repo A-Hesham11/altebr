@@ -39,10 +39,10 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ ExpenseBillData ~ userData:", userData);
 
-  const { data: honestBondsData } = useFetch({
-    queryKey: [`all-retrieve-honest-bonds-${userData?.branch_id}`],
-    endpoint: `branchSafety/api/v1/receive-bonds/${userData?.branch_id}`,
-  });
+  // const { data: honestBondsData } = useFetch({
+  //   queryKey: [`all-retrieve-honest-bonds-${userData?.branch_id}`],
+  //   endpoint: `branchSafety/api/v1/receive-bonds/${userData?.branch_id}`,
+  // });
 
   const location = useLocation();
   const path = location.pathname;
@@ -56,10 +56,10 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
     <div className="flex justify-between">
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
-          {t("bill no")} : <span className="font-medium">{billNumber}</span>{" "}
+          {t("expense number")} : <span className="font-medium">{billNumber}</span>{" "}
         </p>
         <p className="text-xs font-bold">
-          {t("bill date")} :{" "}
+          {t("expense date")} :{" "}
           <span className="font-medium">
             {bond_date ? formatDate(bond_date) : formatDate(new Date())}
           </span>{" "}
@@ -77,14 +77,14 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
       </div>
       <div className="flex flex-col gap-1 mt-6">
         {/* <p className='text-xs font-bold'>{t("client name")} : <span className='font-medium'>{client_value}</span> </p> */}
-        <p className="text-xs font-bold">
+        {/* <p className="text-xs font-bold">
           {t("mobile number")} :{" "}
           <span className="font-medium">{data?.phone}</span>{" "}
         </p>
         <p className="text-xs font-bold">
           {t("Id number")} :{" "}
           <span className="font-medium">{data?.identity}</span>{" "}
-        </p>
+        </p> */}
       </div>
     </div>
   );

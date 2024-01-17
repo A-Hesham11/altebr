@@ -1083,5 +1083,8 @@
   "please enter expense date": "من فضلك ادخل تاريخ الصرف",
   "please select sub expense": "من فضلك اختر مصروف فرعي",
   "please enter description": "من فضلك ادخل الوصف",
-  "expense type": "نوع المصروف"
+  "expense type": "نوع المصروف",
+  "expense tax": "ضريبة المصروف",
+  "choose type of expenses": "اختر نوع المصروف",
+  "expense number": "رقم المصروف"
 }

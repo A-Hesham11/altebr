@@ -95,10 +95,33 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   const [cardId, setCardId] = useState("");
   const [activeTaxBtn, setActiveTaxBtn] = useState(null);
 
+
+  // TODO: CALCULATE TAX EXPENSES DEPEND ON THE API
+  const {
+    data: taxExpensesData,
+    isSuccess: taxExpensesIsSuccess,
+    isLoading: taxExpensesIsLoading,
+    refetch: taxExpensesRefetch,
+  } = useFetch({
+    endpoint: `/expenses/api/v1/expence-tax/${userData?.branch_id}`,
+    queryKey: ["taxExpenses"],
+    // select: (data) =>
+    //   data.map((item) => {
+    //     return {
+    //       id: item.id,
+    //       value: item.id || "",
+    //       label: item.name_ar || "",
+    //     };
+    //   }),
+  });
+    console.log("🚀 ~ taxExpensesData:", taxExpensesData)
+
   const handleTaxClick = (id, taxValue, setTaxFunc) => {
     if (activeTaxBtn === id) {
       setTaxFunc(null);
       setActiveTaxBtn(null);
+      setFieldValue("expense_price_tax", 0);
+      setFieldValue("expense_price_after_tax", 0);
     } else {
       setTaxAdded(null);
       setTaxZero(null);
@@ -306,7 +329,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               setCardId={setCardId}
               cardId={cardId}
               setSelectedCardName={setSelectedCardName}
-              selectedCardName={selectedCardName} 
+              selectedCardName={selectedCardName}
             />
           </div>
         </div>
