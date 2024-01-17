@@ -10,6 +10,7 @@ import BillInputs from "../selling components/bill/BillInputs";
 import PaymentProcessing from "../selling components/data/PaymentProcessing";
 import { HonestProvisons } from "./HonestProvisons";
 import { notify } from "../../../utils/toast";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -33,6 +34,8 @@ export const NewHonestForm = ({
   /////////// CUSTOM HOOKS
   ///
   const { submitForm, setFieldValue, values } = useFormikContext();
+  const { formatGram, formatReyal } = numberContext();
+
   const { userData } = useContext(authCtx);
   const { data: honestBondsData } = useFetch({
     queryKey: ["all-honest-bonds"],
@@ -154,7 +157,7 @@ export const NewHonestForm = ({
                 {data.account}
               </p>
               <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                {data.value} <span>{data.unit}</span>
+                {(t(data?.unit_id) == "جرام" || "gram" ) ? formatGram(Number(data.value)) :  formatReyal(Number(data.value))} <span>{data.unit}</span>
               </p>
             </li>
           ))}

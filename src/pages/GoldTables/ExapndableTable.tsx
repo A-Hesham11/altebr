@@ -103,15 +103,19 @@ export function ExpandableTable({
       }),
       columnHelper.accessor("weight", {
         header: `${t("weight")}`,
+        cell: (info) => formatGram(Number(info.getValue())) || "---",
       }),
       columnHelper.accessor("mezan_weight", {
         header: `الوزن الفعلي`,
+        cell: (info) => formatGram(Number(info.getValue())) || "---",
       }),
       columnHelper.accessor("wage", {
         header: `${t("wage")}`,
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
       }),
       columnHelper.accessor("value", {
         header: `${t("value")}`,
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
       }),
       ...(showDetails
         ? [

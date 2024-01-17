@@ -16,6 +16,7 @@ import { MdLocalOffer, MdOutlineCancel, MdOutlineLocalOffer } from "react-icons/
 import { AcceptedItemsAccountingEntry } from "./AcceptedItemsAccountingEntry"
 import { Link, useNavigate } from "react-router-dom"
 import { FilesUpload } from "../../molecules/files/FileUpload"
+import { numberContext } from "../../../context/settings/number-formatter"
 
 type RecieveItemsSecondScreenProps_TP = {
     setStage: Dispatch<SetStateAction<number>>
@@ -37,6 +38,8 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
     const [disableSelectedCheckAfterSendById, setDisableSelectedCheckAfterSendById] = useState([])
     const [files, setFiles] = useState([]);
     const [searchInputValue, setSearchInputValue] = useState('');
+    const { formatGram, formatReyal } = numberContext();
+
     const navigate = useNavigate()
     // side effects
     useEffect(() => {
@@ -151,32 +154,32 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
             header: () => <span>{t("karat")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() || '---',
+            cell: (info: any) => formatGram(Number(info.getValue())) || '---',
             accessorKey: "weight",
             header: () => <span>{t("weight")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() || '---',
+            cell: (info: any) => formatReyal(Number(info.getValue())) || '---',
             accessorKey: "wage",
             header: () => <span>{t("wage")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() || '---',
+            cell: (info: any) => formatReyal(Number(info.getValue())) || '---',
             accessorKey: "wage_total",
             header: () => <span>{t("total wages")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() == 0 ? '---' : info.getValue(),
+            cell: (info: any) => info.getValue() == 0 ? '---' : formatGram(Number(info.getValue())),
             accessorKey: "stones_weight",
             header: () => <span>{t("other stones weight")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() || '---',
+            cell: (info: any) => info.getValue() == 0 ? '---' : formatReyal(Number(info.getValue())),
             accessorKey: "selling_price",
             header: () => <span>{t("selling price")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() == 0 ? '---' : info.getValue(),
+            cell: (info: any) => info.getValue() == 0 ? '---' : formatGram(Number(info.getValue())),
             accessorKey: "diamond_weight",
             header: () => <span>{t("diamond weight")}</span>,
         },
@@ -272,7 +275,7 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
 
                         <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl" >{name}</p>
                         <p className="bg-white px-2 py-[7px] text-black rounded-b-xl" >
-                            {value} {t(unit)}
+                            {formatReyal(Number(value))} {t(unit)}
                         </p>
 
                     </BoxesDataBase>

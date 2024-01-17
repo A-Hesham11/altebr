@@ -90,12 +90,12 @@ const BuyingInvoiceData = ({
       {
         header: () => <span>{t("price per gram")} </span>,
         accessorKey: "piece_per_gram",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => formatGram(Number(info.getValue())) || "---",
       },
       {
         header: () => <span>{t("value")} </span>,
         accessorKey: "value",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
       },
     ],
     []

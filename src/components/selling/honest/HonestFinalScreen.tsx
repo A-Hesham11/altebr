@@ -10,6 +10,7 @@ import { notify } from "../../../utils/toast";
 import { Button } from "../../atoms";
 import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutFormik";
 import { Table } from "../../templates/reusableComponants/tantable/Table";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 ///
 type HonestFinalScreenProps_TP = {
@@ -27,6 +28,8 @@ export const HonestFinalScreen = ({
   console.log("🚀 ~ sanadData:", sanadData.card)
   /////////// VARIABLES
   const { userData } = useContext(authCtx);
+  const { formatGram, formatReyal } = numberContext();
+
   const mainSanadData = {
     client_id: sanadData.client_id,
     employee_id: userData?.id,
@@ -56,27 +59,27 @@ export const HonestFinalScreen = ({
   const Cols = useMemo<any>(
     () => [
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
         accessorKey: "category_value",
         header: () => <span>{t("category")}</span>,
       },
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => formatGram(Number(info.getValue())) || "---",
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
         accessorKey: "karat_value",
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "cost",
         header: () => <span>{t("approximate cost")}</span>,
       },
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
         accessorKey: "notes",
         header: () => <span>{t("notes")}</span>,
       },
@@ -133,15 +136,15 @@ export const HonestFinalScreen = ({
           </li>
           <li className="py-1">
             <span className="font-bold">{t("approximate cost")}: </span>
-            {sanadData.totalApproximateCost}
+            {formatReyal(Number(sanadData.totalApproximateCost))}
           </li>
           <li className="py-1">
             <span className="font-bold">{t("paid cost")}: </span>
-            {sanadData.amount}
+            {formatReyal(Number(sanadData.amount))}
           </li>
           <li className="py-1">
             <span className="font-bold">{t("remaining cost")}: </span>
-            {sanadData.remaining_amount}
+            {formatReyal(Number(sanadData.remaining_amount))}
           </li>
           <li className="py-1">
             <span className="font-bold">{t("date")}: </span>
