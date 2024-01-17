@@ -43,7 +43,7 @@ const ExpensesInvoiceSecond = ({
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
 
-  const {setFieldValue, values} = useFormikContext<any>();
+  const { setFieldValue, values } = useFormikContext<any>();
 
   // FORMULA TO CALC THE TOTAL COST OF BUYING INVOICE
   const totalCost = sellingItemsData.reduce((acc: number, curr: any) => {
@@ -86,20 +86,27 @@ const ExpensesInvoiceSecond = ({
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("expense_price")}</span>,
+        header: () => <span>{t("expense price")}</span>,
         accessorKey: "expense_price",
         cell: (info) => info.getValue(),
       },
       {
-        header: () => <span>{t("expense price after tax")} </span>,
+        header: () => <span>{t("expense tax")} </span>,
         accessorKey: "expense_price_tax",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
       },
       // {
-      //   header: () => <span>{t("value")} </span>,
-      //   accessorKey: "value",
-      //   cell: (info) => info.getValue() || "---",
+      //   header: () => <span>{t("total value")} </span>,
+      //   accessorKey: "total_value",
+      //   cell: (info) => formatReyal(Number(info.getValue())) || "---",
       // },
+      {
+        header: () => <span>{t("total value")} </span>,
+        accessorKey: "total_value",
+        cell: (info) => {
+          return formatReyal(+info.row.original.expense_price + +info.row.original.expense_price_tax) || "---";
+        },
+      },
     ],
     []
   );
@@ -134,17 +141,16 @@ const ExpensesInvoiceSecond = ({
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      notify("success", t("success add expense invoice"))
+      notify("success", t("success add expense invoice"));
       // navigate(`/selling/honesty/return-honest/${data.bond_id}`)
       navigate(`/expenses/expensesBonds/`);
     },
     onError: (error) => {
-      notify("error", error?.message)
-    }
+      notify("error", error?.message);
+    },
   });
 
   const posSellingDataHandler = () => {
-
     // if (odwyaTypeValue === "supplier") {
     //   invoice = {
     //     employee_id: userData?.id,
@@ -206,7 +212,7 @@ const ExpensesInvoiceSecond = ({
     //   }
     // });
 
-    console.log( invoice);
+    console.log(invoice);
 
     mutate({
       endpointName: "/expenses/api/v1/add-expense-invoice",

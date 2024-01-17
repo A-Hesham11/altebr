@@ -29,6 +29,7 @@ const ExpenseInvoiceTable = <T extends object>({
     "🚀 ~ file: ExpenseInvoiceTable.tsx:28 ~ costDataAsProps:",
     costDataAsProps
   );
+
   const { formatGram, formatReyal } = numberContext();
 
   // CUSTOM CONFIGURE FOR TABLE
@@ -128,7 +129,7 @@ const ExpenseInvoiceTable = <T extends object>({
                     {row.getVisibleCells().map((cell, i) => {
                       return (
                         <td
-                          className="px-2 py-2 text-mainGreen bg-white gap-x-2 items-center border border-[#7B7B7B4D]"
+                          className="px-2 py-2 max-w-xl break-words text-mainGreen bg-white gap-x-2 items-center border border-[#7B7B7B4D]"
                           key={cell.id}
                           colSpan={1}
                         >
@@ -148,7 +149,7 @@ const ExpenseInvoiceTable = <T extends object>({
                   return (
                     <td
                       className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                      colSpan={index === 0 ? 5 : 1}
+                      colSpan={index === 0 ? 4 : 1}
                     >
                       {resultTable[0][key]}
                     </td>
