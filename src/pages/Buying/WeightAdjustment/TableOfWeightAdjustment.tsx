@@ -4,6 +4,7 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { useIsRTL } from "../../../hooks";
 import { Button } from "../../../components/atoms";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 type TableOfWeightAdjustment_TP = {
   dataSource: any;
@@ -26,6 +27,8 @@ const TableOfWeightAdjustment = ({
   const isRTL = useIsRTL();
   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
+
+  const { formatGram, formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -80,7 +83,7 @@ const TableOfWeightAdjustment = ({
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => formatGram(Number(info.getValue())) || "-",
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },

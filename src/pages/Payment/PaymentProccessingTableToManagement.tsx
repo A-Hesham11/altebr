@@ -11,6 +11,7 @@ import { t } from "i18next";
 import { useMemo, useState } from "react";
 import { Payment_TP } from "./PaymentProccessingToManagement";
 import { DeleteIcon, EditIcon } from "../../components/atoms/icons";
+import { numberContext } from "../../context/settings/number-formatter";
 
 const PaymentProccessingTableToManagement = ({
   paymentData,
@@ -18,6 +19,8 @@ const PaymentProccessingTableToManagement = ({
   setPaymentData,
 }) => {
   const [editingRowId, setEditingRowId] = useState<string | undefined>(null);
+  const { formatGram, formatReyal } = numberContext();
+
   const path = location.pathname
 
   const { setFieldValue } = useFormikContext<FormikSharedConfig>();
@@ -32,14 +35,14 @@ const PaymentProccessingTableToManagement = ({
       {
         header: () => <span>{t("amount")}</span>,
         accessorKey: "amount",
-        cell: (info) => info.row.original.amount || "---",
+        cell: (info) => formatReyal(Number(info.row.original.amount)) || "---",
       },
       {
         header: () => <span>{t("Gold (in grams)")} </span>,
         accessorKey: "weight",
         cell: (info) =>
           info.row.original.weight
-            ? `${info.row.original.weight} ${t("gram")}`
+            ? `${formatGram(Number(info.row.original.weight))} ${t("gram")}`
             : "---",
       },
       {

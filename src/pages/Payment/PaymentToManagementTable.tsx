@@ -28,12 +28,12 @@ const PaymentToManagementTable = ({ item }: { item?: {} }) => {
         header: () => <span>{t("payment method")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "value_reyal",
         header: () => <span>{t("amount")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "---",
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
         accessorKey: "value_gram",
         header: () => <span>{t("Gold value (in grams)")}</span>,
       },
@@ -95,7 +95,7 @@ const PaymentToManagementTable = ({ item }: { item?: {} }) => {
                     {formatReyal(+totalValueReyal)} <span>{t("reyal")}</span>
                   </td>
                   <td className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]">
-                    {formatGram(totalValueGram)} <span>{t("gram")}</span>
+                    {formatGram(+totalValueGram)} <span>{t("gram")}</span>
                   </td>
               </tr>
           </tfoot>

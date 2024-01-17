@@ -49,7 +49,7 @@ const FinalPreviewBillPayment = ({
           {costDataAsProps.prepaidAmount ? (
             <>
               <span>{t("prepaid cost")}: </span>
-              <span>{costDataAsProps.prepaidAmount}</span>
+              <span>{formatReyal(Number(costDataAsProps.prepaidAmount))}</span>
             </>
           )
           : null

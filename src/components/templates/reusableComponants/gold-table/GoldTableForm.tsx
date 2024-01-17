@@ -281,6 +281,8 @@ import { supplierTax_TP } from "../../../../pages/supply/Supply"
                       onChange={(option: any) => {
                         setFieldValue("karat_id", option!.id)
                         setFieldValue("karat_value", option!.value)
+                        setFieldValue("api_gold_price", option!.value)
+
                       }}
                     />
                   </td>

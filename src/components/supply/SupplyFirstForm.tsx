@@ -148,7 +148,7 @@ export const SupplyFirstForm = ({
           employee_value: formValues?.employee_value || "",
           supplier_value: formValues?.supplier_value || "",
           bond_number: formValues?.bond_number || "",
-          api_gold_price: formValues?.api_gold_price || goldPriceToday, // comes from api gold price
+          api_gold_price: formValues?.api_gold_price || goldPriceToday || "", // comes from api gold price
           entity_gold_price: formValues?.entity_gold_price || "" || "20", // should be api gold price value from api if no entered data
           notes: formValues?.notes || "",
           out_goods_value: formValues?.out_goods_value || "",

@@ -145,7 +145,7 @@ const AddSupplier = ({
       password: !!!editData
         ? Yup.string().trim().required(requiredTranslation)
         : Yup.string(),
-      fax: Yup.string().trim().required(requiredTranslation),
+      fax: Yup.string().trim(),
       nationality_id: Yup.string().trim().required(requiredTranslation),
       national_number: Yup.string(),
       national_expire_date: Yup.string().required(requiredTranslation),

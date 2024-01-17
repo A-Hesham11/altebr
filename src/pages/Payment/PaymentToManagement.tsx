@@ -23,6 +23,7 @@ import { useFetch, useMutate } from "../../hooks";
 import { mutateData } from "../../utils/mutateData";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/date";
+import { numberContext } from "../../context/settings/number-formatter";
 
 type SellingSecondpage_TP = {
   paymentData: Payment_TP[]
@@ -40,6 +41,7 @@ const PaymentToManagement = () => {
     const [cardId, setCardId] = useState("");
     const { userData } = useContext(authCtx)
     const navigate = useNavigate()
+    const { formatGram, formatReyal } = numberContext();
 
     const {
         data,
@@ -136,13 +138,13 @@ const PaymentToManagement = () => {
             name: t("Management current account (GRAM)"),
             key: 1,
             unit: t("gram"),
-            value: data && (data[0]?.account_edara_gram).toFixed(3),
+            value: data && (data[0]?.account_edara_gram),
         },
         {
             name: t("Management current account (SAR)"),
             key: 2,
             unit: t("ر.س"),
-            value: data && (data[0]?.account_edara_reyal).toFixed(3),
+            value: data && (data[0]?.account_edara_reyal),
         },
     ]
 
@@ -158,7 +160,7 @@ const PaymentToManagement = () => {
                         <li className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12">
                             <p className="bg-mainOrange  p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">{name}</p>
                             <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                                {value} {t(unit)}
+                                {formatGram(Number(value))} {t(unit)}
                             </p>
                         </li>
                     ))}
