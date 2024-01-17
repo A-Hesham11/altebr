@@ -177,7 +177,7 @@ const AddBankCards = ({ title, editData }: AddBankProps_TP) => {
                 <div>
                   <RadioGroup name="is_minimum">
                     <span>
-                      {t("Add the minimum card limit")}
+                      {t("Add the maximum  card limit")}
                     </span>
                     <div className="flex gap-x-2">
                       <RadioGroup.RadioButton

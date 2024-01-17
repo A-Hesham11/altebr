@@ -113,12 +113,12 @@ export const AllSuppliers = ({ title }: SupplierProps_TP) => {
         cell: (info) => info.getValue(),
       },
       {
-        header: () => <span>{t("supplier")} </span>,
+        header: () => <span>{t("Representative name")} </span>,
         accessorKey: "name",
         cell: (info) => info.getValue(),
       },
       {
-        header: () => <span>{t("action")}</span>,
+        header: () => <span>{t("actions")}</span>,
         accessorKey: "action",
         cell: (info) => {
           return (

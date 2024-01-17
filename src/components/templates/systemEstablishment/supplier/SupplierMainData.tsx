@@ -152,21 +152,21 @@ export const SupplierMainData = ({
             </div>
           </div>
           <BaseInputField
-            id="name"
-            required
-            label={`${t("name")}`}
-            name="name"
-            type="text"
-            placeholder={`${t("name")}`}
-            labelProps={{ className: "mb-1" }}
-          />
-          <BaseInputField
             id="company_name"
             required
             label={`${t("company name")}`}
             name="company_name"
             type="text"
             placeholder={`${t("company name")}`}
+            labelProps={{ className: "mb-1" }}
+          />
+          <BaseInputField
+            id="name"
+            required
+            label={`${t("Representative name")}`}
+            name="name"
+            type="text"
+            placeholder={`${t("Representative name")}`}
             labelProps={{ className: "mb-1" }}
           />
           <BaseInputField

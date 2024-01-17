@@ -61,7 +61,7 @@ export const ViewStoneQuality = () => {
   const cols = useMemo<ColumnDef<StonesQualities>[]>(
     () => [
       {
-        header: `${t('Sequence ')}`,
+        header: `${t('Sequence')}`,
         cell: (info) => info.renderValue(),
         accessorKey: 'index',
       },

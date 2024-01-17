@@ -83,44 +83,44 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
       viewLabel: `${t("view nationalities")}`,
       viewHandler: () => navigate("/system/global-and-stones/nationalities"),
     },
-    {
-      id: crypto.randomUUID(),
-      title: t("gold colors"),
-      name: "colors",
-      addLabel: `${t("add color")}`,
-      addComponent: <CreateColor title={`${t("add color")}`} />,
-      viewLabel: `${t("view colors")}`,
-      viewHandler: () => navigate("/system/global-and-stones/colors"),
-    },
-    {
-      id: crypto.randomUUID(),
-      title: t("classifications"),
-      name: "classifications",
-      addLabel: `${t("add classification")}`,
-      addComponent: (
-        <CreateClassification title={`${t("add classification")}`} />
-      ),
-      viewLabel: `${t("view classifications")}`,
-      viewHandler: () => navigate("/system/global-and-stones/classifications"),
-    },
-    {
-      id: crypto.randomUUID(),
-      title: t("karats"),
-      name: "karats",
-      addLabel: `${t("add karat")}`,
-      addComponent: <CreateKarat title={`${t("add karat")}`} />,
-      viewLabel: `${t("view karats")}`,
-      viewHandler: () => navigate("/system/global-and-stones/karats"),
-    },
-    {
-      id: crypto.randomUUID(),
-      title: t("categories"),
-      name: "categories",
-      addLabel: `${t("add category")}`,
-      addComponent: <CreateCategory title={`${t("add category")}`} />,
-      viewLabel: `${t("view categories")}`,
-      viewHandler: () => navigate("/system/global-and-stones/categories"),
-    },
+    // {
+    //   id: crypto.randomUUID(),
+    //   title: t("gold colors"),
+    //   name: "colors",
+    //   addLabel: `${t("add color")}`,
+    //   addComponent: <CreateColor title={`${t("add color")}`} />,
+    //   viewLabel: `${t("view colors")}`,
+    //   viewHandler: () => navigate("/system/global-and-stones/colors"),
+    // },
+    // {
+    //   id: crypto.randomUUID(),
+    //   title: t("classifications"),
+    //   name: "classifications",
+    //   addLabel: `${t("add classification")}`,
+    //   addComponent: (
+    //     <CreateClassification title={`${t("add classification")}`} />
+    //   ),
+    //   viewLabel: `${t("view classifications")}`,
+    //   viewHandler: () => navigate("/system/global-and-stones/classifications"),
+    // },
+    // {
+    //   id: crypto.randomUUID(),
+    //   title: t("karats"),
+    //   name: "karats",
+    //   addLabel: `${t("add karat")}`,
+    //   addComponent: <CreateKarat title={`${t("add karat")}`} />,
+    //   viewLabel: `${t("view karats")}`,
+    //   viewHandler: () => navigate("/system/global-and-stones/karats"),
+    // },
+    // {
+    //   id: crypto.randomUUID(),
+    //   title: t("categories"),
+    //   name: "categories",
+    //   addLabel: `${t("add category")}`,
+    //   addComponent: <CreateCategory title={`${t("add category")}`} />,
+    //   viewLabel: `${t("view categories")}`,
+    //   viewHandler: () => navigate("/system/global-and-stones/categories"),
+    // },
     {
       id: crypto.randomUUID(),
       title: t("sizes"),
@@ -290,7 +290,7 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
         <title>{title}</title>
       </Helmet>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-lg font-bold underline underline-offset-8">{t("global and stones setting")}</h1>
+        <h1 className="text-lg font-bold underline underline-offset-8">{t("Another")}</h1>
         {/* <Back path="/system" /> */}
       </div>
 

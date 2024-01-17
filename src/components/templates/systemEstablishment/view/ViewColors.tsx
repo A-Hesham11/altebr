@@ -44,7 +44,7 @@ export const ViewColors = () => {
       {
         cell: (info) => info.getValue(),
         accessorKey: "id",
-        header: () => <span>{t("Sequence ")} </span>,
+        header: () => <span>{t("Sequence")} </span>,
       },
       {
         header: () => <span>{t("colors")} </span>,

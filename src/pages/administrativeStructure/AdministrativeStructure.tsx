@@ -143,10 +143,10 @@ export const AdministrativeStructure = ({
 
       <OuterFormLayout
         leftComponent={AddAdministrative}
-        header="الهيكل الإداري"
+        header={t("administrative structure")}
       >
-        <div className="flex justify-between mb-8">
-          <h3 className="font-bold">{`${t("administrative structure")}`}</h3>
+        <div className="flex justify-between mb-6">
+          {/* <h3 className="font-bold">{`${t("administrative structure")}`}</h3> */}
         </div>
         <Modal isOpen={open} onClose={() => setOpen(false)}>
           {model ? (

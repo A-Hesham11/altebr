@@ -65,7 +65,7 @@ export const ViewMineralsKarats = () => {
       {
         cell: (info) => info.getValue(),
         accessorKey: "index",
-        header: () => <span>{t("Sequence ")} </span>,
+        header: () => <span>{t("Sequence")} </span>,
       },
       {
         header: () => <span>{t("mineral type")} </span>,
