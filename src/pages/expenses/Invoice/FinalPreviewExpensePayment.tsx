@@ -42,12 +42,25 @@ const FinalPreviewExpensePayment = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <div className="flex flex-row items-end gap-4 mb-3">
-          <div className="flex flex-col items-center max-w-[100px] text-center">
+          {paymentData?.map((item: any, index: number) => {
+            return (
+              <div
+                key={index}
+                className="flex flex-col items-center max-w-[100px] text-center"
+              >
+                <div className="w-24 h-9">
+                  <img src={item.cardImage} alt="cash" className="w-full h-full" />
+                </div>
+                <p className="mt-3">{formatReyal(item.amount)}</p>
+              </div>
+            );
+          })}
+          {/* <div className="flex flex-col items-center max-w-[100px] text-center">
             <div className="w-24 h-9">
               <img src={cashImg} alt="cash" className="w-full h-full" />
             </div>
             <p className="mt-3">{formatReyal(totalValueOfItems)}</p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

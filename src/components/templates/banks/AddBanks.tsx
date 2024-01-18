@@ -35,6 +35,7 @@ const AddBanks = ({
 }: AddBankProps_TP) => {
 
     const [files, setFiles] = useState([]);
+    console.log("🚀 ~ files:", files)
 
     const isRTL = useIsRTL()
     const queryClient = useQueryClient()
