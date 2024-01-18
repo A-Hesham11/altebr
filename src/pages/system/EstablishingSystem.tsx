@@ -1,8 +1,34 @@
 import { t } from "i18next";
-import React from "react";
+import { SystemCard } from "../../components/templates/systemEstablishment/SystemCard";
+import { FormNames_TP } from "./types-and-helpers";
 
-const EstablishingSystem = (titleKey, index, startIdx, endIdx, systemCards) => {
+type EstablishingSystemCard_TP = {
+  titleKey:string
+  index:number
+  start: number
+  end: number
+  systemCards: any
+  openPopup: any
+}
 
+type SystemCard_TP = {
+  id: number
+  title: string
+  addComponent: any
+  addLabel: any
+  viewHandler: any
+  viewLabel: any
+  name: string
+}
+
+const EstablishingSystem = ({
+  titleKey,
+  index,
+  start,
+  end,
+  systemCards,
+  openPopup
+} : EstablishingSystemCard_TP) => {
 
   return (
     <div className="mb-8">
@@ -14,7 +40,7 @@ const EstablishingSystem = (titleKey, index, startIdx, endIdx, systemCards) => {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {systemCards
-          .slice(startIdx, endIdx)
+          .slice(start, end)
           .map(
             ({
               id,
@@ -24,7 +50,7 @@ const EstablishingSystem = (titleKey, index, startIdx, endIdx, systemCards) => {
               viewHandler,
               viewLabel,
               name,
-            }) => (
+            } : SystemCard_TP) => (
               <SystemCard
                 key={id}
                 viewHandler={viewHandler}
