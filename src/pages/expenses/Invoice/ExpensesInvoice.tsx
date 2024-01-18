@@ -78,6 +78,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   sellingItemsData,
   setSellingItemsData,
 }) => {
+  console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ taxExempt:", taxExempt);
   console.log("🚀 ~ taxZero:", taxZero);
   console.log("🚀 ~ taxAdded:", taxAdded);
@@ -89,12 +90,16 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   const [cardFrontKeyAccept, setCardFrontKeyAccept] = useState("");
   const [sellingFrontKey, setSellingFrontKey] = useState("");
 
+  const totalPaymentAmount = paymentData?.reduce((acc, item) => {
+    return acc + +item.amount;
+  }, 0);
+  console.log("🚀 ~ totalPaymentAmount ~ totalPaymentAmount:", totalPaymentAmount)
+
   const { setFieldValue, values } = useFormikContext<Payment_TP>();
 
   const [selectedCardName, setSelectedCardName] = useState(null);
   const [cardId, setCardId] = useState("");
   const [activeTaxBtn, setActiveTaxBtn] = useState(null);
-
 
   // TODO: CALCULATE TAX EXPENSES DEPEND ON THE API
   const {
@@ -114,7 +119,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
     //     };
     //   }),
   });
-    console.log("🚀 ~ taxExpensesData:", taxExpensesData)
+  console.log("🚀 ~ taxExpensesData:", taxExpensesData);
 
   const handleTaxClick = (id, taxValue, setTaxFunc) => {
     if (activeTaxBtn === id) {
@@ -357,6 +362,14 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
 
               if (values.add_description === "") {
                 notify("error", t("please enter description"));
+                return;
+              }
+
+              if (totalPaymentAmount > +values.expense_price_after_tax) {
+                notify(
+                  "error",
+                  t("the amount of payment is greater than the value of the bond")
+                );
                 return;
               }
 

@@ -1086,5 +1086,7 @@
   "expense type": "نوع المصروف",
   "expense tax": "ضريبة المصروف",
   "choose type of expenses": "اختر نوع المصروف",
-  "expense number": "رقم المصروف"
+  "expense number": "رقم المصروف",
+  "type of tax": "نوع الضريبة",
+  "tax value": "قيمة الضريبة"
 }

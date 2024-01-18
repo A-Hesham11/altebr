@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ExpenseFinalPreview } from "./ExpenseFinalPreview";
 import BuyingInvoiceTable from "../../Buying/BuyingInvoiceTable";
@@ -34,7 +34,9 @@ const ExpensesInvoiceSecond = ({
   selectedItemDetails,
   odwyaTypeValue,
   setOdwyaTypeValue,
+  files,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ files:", files);
   console.log(
     "🚀 ~ file: ExpensesInvoiceSecond.tsx:32 ~ sellingItemsData:",
     sellingItemsData
@@ -104,7 +106,12 @@ const ExpensesInvoiceSecond = ({
         header: () => <span>{t("total value")} </span>,
         accessorKey: "total_value",
         cell: (info) => {
-          return formatReyal(+info.row.original.expense_price + +info.row.original.expense_price_tax) || "---";
+          return (
+            formatReyal(
+              +info.row.original.expense_price +
+                +info.row.original.expense_price_tax
+            ) || "---"
+          );
         },
       },
     ],
@@ -182,6 +189,7 @@ const ExpensesInvoiceSecond = ({
       expence_amount: values.expense_price_after_tax,
     };
 
+
     // const items = sellingItemsData.map((item) => {
     //   if (odwyaTypeValue === "supplier") {
     //     return {
@@ -212,11 +220,10 @@ const ExpensesInvoiceSecond = ({
     //   }
     // });
 
-    console.log(invoice);
-
     mutate({
       endpointName: "/expenses/api/v1/add-expense-invoice",
-      values: invoice,
+      values: { ...invoice, media: files },
+      dataType: "formData",
     });
   };
 

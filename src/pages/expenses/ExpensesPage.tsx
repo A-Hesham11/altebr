@@ -52,6 +52,7 @@ const ExpensesPage = () => {
     expense_price_after_tax: "",
     expense_price_tax: "",
     sub_expense: "",
+    media: [...files] ,
   };
 
 
@@ -68,6 +69,7 @@ const ExpensesPage = () => {
     // expense_price_after_tax: Yup.string().required("Expense price after tax is required"),
     // expense_price_tax: Yup.string().required("Expense price tax is required"),
     sub_expense: Yup.string().required("Sub expense is required"),
+    media: Yup.array().min(1, "Media is required"),
   });
 
   const { data: expensesInvoice } = useFetch<ClientData_TP>({
@@ -141,6 +143,7 @@ const ExpensesPage = () => {
             selectedItemDetails={selectedItemDetails}
             odwyaTypeValue={odwyaTypeValue}
             setOdwyaTypeValue={setOdwyaTypeValue}
+            files={files}
           />
         )}
       </>
