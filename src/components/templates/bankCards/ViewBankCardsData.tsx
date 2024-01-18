@@ -53,6 +53,7 @@ const ViewBankCardsData = () => {
   const [editData, setEditData] = useState<Cards_Props_TP>()
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
+  console.log("🚀 ~ ViewBankCardsData ~ dataSource:", dataSource)
   const [page, setPage] = useState<number>(1)
   const { formatReyal, formatGram } = numberContext();
 
@@ -86,12 +87,12 @@ const ViewBankCardsData = () => {
       {
         header: () => <span>{t("Maximum discount limit")} </span>,
         accessorKey: "max_discount_limit",
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("Maximum discount limit")} </span>,
         accessorKey: "max_discount_limit_value",
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("branch")} </span>,

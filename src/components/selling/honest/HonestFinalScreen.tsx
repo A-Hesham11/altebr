@@ -74,7 +74,7 @@ export const HonestFinalScreen = ({
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
         accessorKey: "cost",
         header: () => <span>{t("approximate cost")}</span>,
       },

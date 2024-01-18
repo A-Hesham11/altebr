@@ -6,6 +6,7 @@ import { IconType } from "react-icons/lib";
 import { RiVipCrownLine } from "react-icons/ri";
 import { TbSmartHome } from "react-icons/tb";
 import { TebrLogo } from "../components/atoms/icons/TebrLogo";
+// import {altebrLogo}  from "../components/atoms/icons/altebrLogo.svg";
 // import {sideBarLogo} from "../assets/sideBar-logo.svg";
 import { t } from "i18next";
 export type MenuItem_TP = {

@@ -385,14 +385,15 @@ input[type="file"] {
 } */
 
 nav.css-vj11vy > ul > li:first-child span {
-  min-width: 45px !important;
+  min-width: 56px !important;
 }
 nav.css-vj11vy > ul > li:first-child {
   margin: 4px 0px 0px !important;
 }
 
 nav.css-vj11vy > ul > li:first-child a {
-  padding-right: 16px !important;
+  padding-right: 10px !important;
+  padding-top: 26px !important;
 }
 
 /* .css-1cbmtsf > .ps-menu-button:hover,
@@ -421,8 +422,6 @@ nav.css-vj11vy > ul > li:first-child a {
   border-bottom: 1px solid #FFFFFF33;
   padding-bottom: 4px;
 } */
-
-
 
 /* GLOBAL ANIMATION */
 

@@ -118,17 +118,17 @@ export const BuyingTable = ({
       {
         header: () => <span>{t("weight")} </span>,
         accessorKey: "weight",
-        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("piece per gram")} </span>,
         accessorKey: "piece_per_gram",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("value")} </span>,
@@ -146,12 +146,12 @@ export const BuyingTable = ({
       {
         header: () => <span>{t("value added tax")} </span>,
         accessorKey: "value_added_tax",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("total value")} </span>,
         accessorKey: "total_value",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       }
     );
 

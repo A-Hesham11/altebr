@@ -28,7 +28,7 @@ const PaymentToManagementTable = ({ item }: { item?: {} }) => {
         header: () => <span>{t("payment method")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info: any) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
         accessorKey: "value_reyal",
         header: () => <span>{t("amount")}</span>,
       },

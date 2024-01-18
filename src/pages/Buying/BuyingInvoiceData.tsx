@@ -90,12 +90,12 @@ const BuyingInvoiceData = ({
       {
         header: () => <span>{t("price per gram")} </span>,
         accessorKey: "piece_per_gram",
-        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("value")} </span>,
         accessorKey: "value",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
     ],
     []
@@ -106,12 +106,12 @@ const BuyingInvoiceData = ({
       {
         header: () => <span>{t("value added tax")} </span>,
         accessorKey: "value_added_tax",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("total value")} </span>,
         accessorKey: "total_value",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       }
     );
   }
