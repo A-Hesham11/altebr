@@ -42,7 +42,7 @@ const TableOfSeperate = ({ operationTypeSelect }) => {
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => formatGram(Number(info.getValue())) ,
+        cell: (info: any) => info.getValue() ? formatGram(Number(info.getValue())) : "---" ,
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
@@ -62,7 +62,7 @@ const TableOfSeperate = ({ operationTypeSelect }) => {
         header: () => <span>{t("total wage by gram")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
         accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },

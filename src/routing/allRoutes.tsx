@@ -129,6 +129,7 @@ export const AllRoutesProvider = () => {
             path="/settings"
             element={<Settings title={t("settings")} />}
           />
+          
           {/* CODING */}
           <Route path="/coding" element={<Coding title={t("coding")} />} />
           <Route

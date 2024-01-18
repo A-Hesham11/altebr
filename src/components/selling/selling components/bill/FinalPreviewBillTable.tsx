@@ -68,7 +68,7 @@ const FinalPreviewBillTable = ({
       {
         header: () => <span>{t("statement")} </span>,
         accessorKey: "bond_date",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("price per gram")} </span>,

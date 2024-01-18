@@ -32,12 +32,12 @@ const PaymentBondsTable = ({ item, setOpenInvoiceModal, refetch, receive, refetc
         header: () => <span>{t("payment method")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
         accessorKey: "value_reyal",
         header: () => <span>{t("amount")}</span>,
       },
       {
-        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
+        cell: (info: any) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
         accessorKey: "value_gram",
         header: () => <span>{t("Gold value (in grams)")}</span>,
       },

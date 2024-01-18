@@ -95,27 +95,27 @@ export const SellingBranchIdentity = () => {
             header: () => <span>{t("mineral karat")}</span>,
         },
         {
-            cell: (info: any) => formatReyal(Number(info.getValue())) || '---',
+            cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
             accessorKey: "wage",
             header: () => <span>{t("wage")}</span>,
         },
         {
-            cell: (info: any) => formatReyal(Number(info.row.original.weight * info.row.original.wage)),
+            cell: (info: any) => info.getValue() ? formatReyal(Number(info.row.original.weight * info.row.original.wage)) : "",
             accessorKey: "wage_total",
             header: () => <span>{t("total wages")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() == 0 ? '---' : formatGram(Number(info.getValue())),
+            cell: (info: any) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
             accessorKey: "stones_weight",
             header: () => <span>{t("other stones weight")}</span>,
         },
         {
-            cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+            cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
             accessorKey: "selling_price",
             header: () => <span>{t("selling price")}</span>,
         },
         {
-            cell: (info: any) => info.getValue() == 0 ? '---' : formatGram(Number(info.getValue())),
+            cell: (info: any) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
             accessorKey: "diamond_weight",
             header: () => <span>{t("diamond weight")}</span>,
         },
