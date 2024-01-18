@@ -106,15 +106,15 @@ export function AccessoriesExapndableTable({
       }),
       columnHelper.accessor("weight", {
         header: `${t("weight")}`,
-        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
       }),
       columnHelper.accessor("mezan_weight", {
         header: `الوزن الفعلي`,
-        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       }),
       columnHelper.accessor("cost_item", {
         header: `${t("value")}`,
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       }),
       ...(showDetails
         ? [

@@ -114,12 +114,12 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{t("weight")} </span>,
         accessorKey: "weight",
-        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("remaining weight")} </span>,
         accessorKey: "remaining_weight",
-        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("karat value")} </span>,
@@ -129,17 +129,17 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("selling price")} </span>,
         accessorKey: "taklfa",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("selling price after tax")} </span>,
         accessorKey: "taklfa_after_tax",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
     ],
     []
@@ -183,12 +183,12 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{t("weight")}</span>,
         accessorKey: "weight",
-        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("cost")}</span>,
         accessorKey: "selling_price",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
     ],
     []

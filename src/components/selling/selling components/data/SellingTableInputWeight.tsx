@@ -88,7 +88,7 @@ const SellingTableInputWeight = ({
         {
         header: () => <span>{t("weight")} </span>,
         accessorKey: "weight",
-        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
         },
         {
         header: () => <span>{t("remaining weight")} </span>,
@@ -98,12 +98,12 @@ const SellingTableInputWeight = ({
         {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
         },
         {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
         },
     ],
     []

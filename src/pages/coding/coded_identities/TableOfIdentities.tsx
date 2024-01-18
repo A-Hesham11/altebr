@@ -88,32 +88,32 @@ const TableOfIdentities = ({
         header: () => <span>{t("")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "id",
         header: () => <span>{t("#")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "hwya",
         header: () => <span>{t("hwya")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "classification_name",
         header: () => <span>{t("category")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "category",
         header: () => <span>{t("classification")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "karat_name",
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "model_number",
         header: () => <span>{t("modal number")}</span>,
       },
@@ -126,7 +126,7 @@ const TableOfIdentities = ({
                 "bg-mainOrange text-white p-2"
               }`}
             >
-              {formatGram(Number(info.getValue() ))|| "-"}
+              {info.getValue() ? formatGram(Number(info.getValue())) : "---"}
             </div>
           );
         },
@@ -134,12 +134,12 @@ const TableOfIdentities = ({
         header: () => <span>{t("weight")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "supplier",
         header: () => <span>{t("supplier")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "bond_id",
         header: () => <span>{t("supply bond")}</span>,
       },
@@ -154,12 +154,12 @@ const TableOfIdentities = ({
         header: () => <span>{t("wages")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
         accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "branch",
         header: () => <span>{t("branch")}</span>,
       },

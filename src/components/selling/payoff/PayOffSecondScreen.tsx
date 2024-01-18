@@ -133,27 +133,27 @@ export const PayOffSecondScreen = ({ setStage, selectedItem, setSanadId }: PayOf
       header: () => <span>{t("karat")}</span>,
     },
     {
-      cell: (info: any) => formatGram(Number(info.getValue())) || "---",
+      cell: (info: any) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
       accessorKey: "weight",
       header: () => <span>{t("weight")}</span>,
     },
     {
-      cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+      cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       accessorKey: "wage",
       header: () => <span>{t("wage")} {t('ryal/gram')}</span>,
     },
     {
-      cell: (info: any) => formatGram(Number(info.getValue())) || "---",
+      cell: (info: any) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
       accessorKey: "stones_weight",
       header: () => <span>{t("stones weight")}</span>,
     },
     {
-      cell: (info: any) => formatGram(Number(info.getValue())) || "---",
+      cell: (info: any) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
       accessorKey: "diamond_weight",
       header: () => <span>{t("diamond weight")}</span>,
     },
     {
-      cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+      cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       accessorKey: "diamond_value",
       header: () => <span>{t("diamond value")}</span>,
     },
