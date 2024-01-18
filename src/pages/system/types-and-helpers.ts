@@ -25,6 +25,12 @@ export type FormNames_TP =
   | "excluded_items"
   | "invoice_data"
   | "Tax_Policy"
+  | "colors"
+  | "classifications"
+  | "nationalities"
+  | "karats"
+  | "categories"
+  | "markets"
 
 export type GlobalFormNames_TP =
   | "countries"

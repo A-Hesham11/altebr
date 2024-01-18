@@ -52,47 +52,47 @@ const ViewAccountsBank = () => {
       {
         header: () => <span>{t("Sequence")} </span>,
         accessorKey: "index",
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("bank name")} </span>,
         accessorKey: isRTL ? "name_ar" : "name_en",
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("primary account number")} </span>,
         accessorKey: "main_account_number",
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("IBAN number")} </span>,
         accessorKey: "iban",
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("SWIFT number")} </span>,
         accessorKey: "swift",
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("branch")} </span>,
         accessorKey: "branch_name",
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("purpose")} </span>,
         accessorKey: "purpose",
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("country")} </span>,
         accessorKey: "country_name",
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("city")} </span>,
         accessorKey: "city_name",
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("actions")}</span>,

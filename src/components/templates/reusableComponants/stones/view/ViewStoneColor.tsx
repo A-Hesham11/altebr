@@ -61,7 +61,7 @@ export const ViewStoneColor = () => {
   const cols = useMemo<ColumnDef<StonesColors>[]>(
     () => [
       {
-        header: `${t('Sequence ')}`,
+        header: `${t('Sequence')}`,
         cell: (info) => info.renderValue(),
         accessorKey: 'index',
       },
