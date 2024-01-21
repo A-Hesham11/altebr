@@ -974,12 +974,12 @@ export const System = ({ title }: SystemProps_TP) => {
   const titleStyle = "under bold text-lg";
   const descriptionStyle = "text-sm";
 
-  const renderSection = (titleKey, index, startIdx, endIdx) => {
+  // const renderSection = (titleKey, index, startIdx, endIdx) => {
 
-    return (
+  //   return (
 
-    );
-  };
+  //   )
+  // };
 
   // const EstablishingSystemCard = [
   //   {renderSection("Company structure data", 1, 0, 6)},

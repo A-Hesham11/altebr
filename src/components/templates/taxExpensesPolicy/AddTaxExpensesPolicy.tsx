@@ -344,7 +344,7 @@ const AddTaxExpensesPolicy = ({
                         type="text"
                         name="value_exempt"
                         disabled
-                        placeholder={`${t("value")}`}
+                        placeholder={`${t("tax exempt")}`}
                         onChange={(e) => {
                           setFieldValue("value_exempt", null);
                         }}
