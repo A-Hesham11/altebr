@@ -99,7 +99,7 @@ export const SelectBranches = ({
           branchesOptions?.length !== 0 ? `${t("branch")}` : "اضف فرع "
         }
         loadingPlaceholder={`${t("loading")}`}
-        options={branchesOptions}
+        options={branchesOptions?.reverse()}
         loading={branchesLoading}
         // defaultValue={}
         creatable

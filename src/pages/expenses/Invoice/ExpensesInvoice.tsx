@@ -1,8 +1,7 @@
 import { t } from "i18next";
-import { Form, Formik, FormikSharedConfig, useFormikContext } from "formik";
+import { useFormikContext } from "formik";
 import { Button } from "../../../components/atoms";
 import { Back } from "../../../utils/utils-components/Back";
-import ExpenseHeader from "./ExpenseHeader";
 import {
   BaseInputField,
   DateInputField,
@@ -16,17 +15,11 @@ import { useFetch, useIsRTL } from "../../../hooks";
 import { useContext, useState } from "react";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { IoMdAdd } from "react-icons/io";
-import { Add } from "../../../components/atoms/icons/Add";
-import AddExpensesPolicies from "../../../components/templates/expensesPolicy/AddExpensesPolicies";
 import AddSubExpensesPolicies from "../../../components/templates/subExpensesPolicy/AddSubExpensesPolicies";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
-import PaymentCard from "../../../components/selling/selling components/data/PaymentCard";
-import ExpensesInvoiceTable from "./ExpensesInvoiceTable";
 import PaymentProccessingToManagement, {
   Payment_TP,
 } from "../../Payment/PaymentProccessingToManagement";
-import ExpensesCards from "./ExpensesCards";
-import PaymentProcessing from "../../../components/selling/selling components/data/PaymentProcessing";
 import { notify } from "../../../utils/toast";
 
 interface ExpensesInvoiceProps {
@@ -45,11 +38,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   setTaxAdded,
   setTaxZero,
   setTaxExempt,
-  showTax,
-  setShowTax,
   taxAdded,
-  taxZero,
-  taxExempt,
   setStage,
   invoiceNumber,
   subExpensesOption,
@@ -58,42 +47,19 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   setFiles,
   paymentData,
   setPaymentData,
-  selectedItem,
-  setSelectedItem,
   selectedCardId,
   setSelectedCardId,
   setClientData,
-  cardDiscountPercentage,
-  setCardDiscountPercentage,
-  selectedCardFrontKey,
-  setSelectedCardFrontKey,
-  card,
-  setCard,
-  cardImage,
-  setCardImage,
-  cardItem,
-  setCardItem,
-  editData,
-  setEditData,
   sellingItemsData,
   setSellingItemsData,
 }) => {
-  console.log("🚀 ~ paymentData:", paymentData);
-  console.log("🚀 ~ taxExempt:", taxExempt);
-  console.log("🚀 ~ taxZero:", taxZero);
-  console.log("🚀 ~ taxAdded:", taxAdded);
   const { userData } = useContext(authCtx);
-  const isRTL = useIsRTL();
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
-  const [cardFrontKey, setCardFronKey] = useState("");
-  const [cardFrontKeyAccept, setCardFrontKeyAccept] = useState("");
-  const [sellingFrontKey, setSellingFrontKey] = useState("");
 
-  const totalPaymentAmount = paymentData?.reduce((acc, item) => {
+  const totalPaymentAmount = paymentData?.reduce((acc: any, item: any) => {
     return acc + +item.amount;
   }, 0);
-  console.log("🚀 ~ totalPaymentAmount ~ totalPaymentAmount:", totalPaymentAmount)
 
   const { setFieldValue, values } = useFormikContext<Payment_TP>();
 
@@ -121,7 +87,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   });
   console.log("🚀 ~ taxExpensesData:", taxExpensesData);
 
-  const handleTaxClick = (id, taxValue, setTaxFunc) => {
+  const handleTaxClick = (id: any, taxValue: any, setTaxFunc: any) => {
     if (activeTaxBtn === id) {
       setTaxFunc(null);
       setActiveTaxBtn(null);
@@ -175,7 +141,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
     endpoint: `/expenses/api/v1/sub-expence/${userData?.branch_id}`,
     queryKey: ["subExpensesOption"],
     select: (data) =>
-      data.map((item) => {
+      data.map((item: any) => {
         return {
           id: item.id,
           value: item.id || "",
@@ -183,7 +149,6 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
         };
       }),
   });
-  console.log("🚀 ~ subExpensesOptionData:", subExpensesOptionData);
 
   return (
     <div className="overflow-hidden">
@@ -219,18 +184,15 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                 }}
               />
 
-              {(taxAdded !== null && activeTaxBtn != 3) ||
-              (taxZero !== null && activeTaxBtn != 3) ? (
-                <BaseInputField
-                  placeholder={`${t("expense price after tax")}`}
-                  id="expense_price_after_tax"
-                  name="expense_price_after_tax"
-                  label={`${t("expense price after tax")}`}
-                  type="text"
-                  disabled
-                  className="bg-mainDisabled border-mainDisabled"
-                />
-              ) : null}
+              <BaseInputField
+                placeholder={`${t("expense price after tax")}`}
+                id="expense_price_after_tax"
+                name="expense_price_after_tax"
+                label={`${t("expense price after tax")}`}
+                type="text"
+                disabled
+                className="bg-mainDisabled border-mainDisabled"
+              />
             </div>
 
             <div className="grid md:grid-cols-2 items-end lg:grid-cols-3 gap-12">
@@ -318,12 +280,6 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
 
           {/* PAYMENT CARDS */}
           <div>
-            {/* <ExpensesCards
-              cardImage={cardImage}
-              setCardImage={setCardImage}
-              card={card}
-              setSelectedCardId={setSelectedCardId}
-            /> */}
             <PaymentProccessingToManagement
               paymentData={paymentData}
               isInExpenses
@@ -368,7 +324,9 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               if (totalPaymentAmount > +values.expense_price_after_tax) {
                 notify(
                   "error",
-                  t("the amount of payment is greater than the value of the bond")
+                  t(
+                    "the amount of payment is greater than the value of the bond"
+                  )
                 );
                 return;
               }

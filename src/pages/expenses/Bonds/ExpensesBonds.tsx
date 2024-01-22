@@ -27,7 +27,7 @@ const ExpensesBonds = () => {
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ ExpensesBonds ~ search:", search)
+  console.log("🚀 ~ ExpensesBonds ~ search:", search);
 
   const searchValues = {
     expence_bond_number: "",
@@ -206,7 +206,10 @@ const ExpensesBonds = () => {
 
   return (
     <div className="p-16">
-      <h2 className="mb-8 text-base font-bold">{t("expenses bonds")}</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="mb-8 text-base font-bold">{t("expenses bonds")}</h2>
+        <Back className="hover:bg-slate-50 transition-all duration-300" />
+      </div>
 
       {/* 1) EXPENSES BOXES */}
       <div className="my-8 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -295,7 +298,6 @@ const ExpensesBonds = () => {
               >
                 {t("search")}
               </Button>
-              <Back className="hover:bg-slate-50 transition-all duration-300" />
             </div>
           </Form>
         </Formik>
