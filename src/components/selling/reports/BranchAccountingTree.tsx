@@ -1,5 +1,5 @@
 
-import { useEffect, useRef } from "react"
+import { useContext, useEffect, useRef } from "react"
 import { t } from "i18next"
 import { useFetch } from "../../../hooks"
 import AccountingTreeData, { TreeNode_TP } from "../../templates/systemEstablishment/AccountingTree/view/AccountingTreeData"
@@ -11,9 +11,11 @@ import { Button } from "../../atoms"
 import ZoomIn from "../../atoms/icons/ZoomIn"
 import ZoomOut from "../../atoms/icons/ZoomOut"
 import Reset from "../../atoms/icons/Reset"
+import { authCtx } from "../../../context/auth-and-perm/auth"
 
 const BranchAccountingTree = () => {
   const reset = useRef<HTMLButtonElement>(null)
+  const { userData } = useContext(authCtx);
 
   const { 
     data,
@@ -21,9 +23,10 @@ const BranchAccountingTree = () => {
     isSuccess, 
     error 
   } = useFetch<TreeNode_TP[]>({
-    endpoint: '/branchAccount/api/v1/treeAccounts',
-    queryKey: ['view_branch_accounting_tree']
+    endpoint: `/branchAccount/api/v1/treeAccounts`,
+    queryKey: ['view_branch_accounting_tree'],
   })
+    console.log("🚀 ~ BranchAccountingTree ~ data:", data)
 
   useEffect(() => {
     if (data && data.length > 0 && reset.current)

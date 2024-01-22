@@ -191,7 +191,7 @@ export const SystemCard = ({
           }`}
         >
           <div className="flex w-full items-center justify-between">
-            <h3>{title}</h3>
+            <h3 className="">{title}</h3>
             <div className="flex items-center gap-1">
               {addLabel && addHandler && (
                 <Button
@@ -217,7 +217,7 @@ export const SystemCard = ({
                      p-1
                     bg-transparent
                     forStyle
-                      ? "!bg-green !bg-opacity-20	 !text-mainGreen"
+                      ? "!bg-green !bg-opacity-20	!text-mainGreen"
                       : "!bg-mainOrange !bg-opacity-20"
                   `}
                   action={viewHandler}

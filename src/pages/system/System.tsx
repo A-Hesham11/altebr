@@ -251,6 +251,9 @@ export const System = ({ title }: SystemProps_TP) => {
       viewLabel: `${t("view buying policies")}`,
       viewHandler: () => navigate("/system/policiesBuying"),
     },
+    
+    // **************************************************************
+    // سياسات المصاريف
 
     {
       id: crypto.randomUUID(),
@@ -289,9 +292,6 @@ export const System = ({ title }: SystemProps_TP) => {
       viewLabel: `${t("view tax expenses policies")}`,
       viewHandler: () => navigate("/system/taxExpensesPolicies"),
     },
-
-    // **************************************************************
-    // سياسات المصاريف
 
     // **************************************************************
     // إدارة الحسابات
@@ -393,7 +393,7 @@ export const System = ({ title }: SystemProps_TP) => {
         <title>{title}</title>
       </Helmet>
 
-      <h2 className="font-extrabold text-lg mb-5 text-center bg-mainGreen text-white py-2 w-[250px] m-auto rounded-xl">
+      <h2 className="font-extrabold text-lg mb-8 text-center bg-mainGreen text-white py-2 w-[250px] m-auto rounded-xl">
         {t("system establishment")}
       </h2>
 
