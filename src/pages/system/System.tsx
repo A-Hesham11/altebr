@@ -36,6 +36,8 @@ import AddWorkHours from "../../components/templates/workHours/AddWorkHours";
 import AddSalariesPolicies from "../../components/templates/salaries/AddSalariesPolicies";
 import AddEntitlementsPolicies from "../../components/templates/entitlements/AddEntitlementsPolicies";
 import AddDeductionsPolicy from "../../components/templates/deductions/AddDeductionsPolicy";
+import AddEmployeeBenefits from "../../components/templates/employeeBenefits/AddEmployeeBenefits";
+import AddEmployeeDeductions from "../../components/templates/employeeDeductions/AddEmployeeDeductions";
 ///
 /////////// Types
 ///
@@ -80,6 +82,8 @@ export const System = ({ title }: SystemProps_TP) => {
     salary_policies: false,
     entitlements_policies: false,
     deductions_policies: false,
+    employee_benefits_policies: false,
+    employee_deductions_policies: false,
   });
 
   const systemCards: Card_TP<FormNames_TP>[] = [
@@ -259,7 +263,7 @@ export const System = ({ title }: SystemProps_TP) => {
       viewLabel: `${t("view buying policies")}`,
       viewHandler: () => navigate("/system/policiesBuying"),
     },
-    
+
     // **************************************************************
     // سياسات المصاريف
 
@@ -329,7 +333,9 @@ export const System = ({ title }: SystemProps_TP) => {
       title: t("entitlements policies"),
       name: "entitlements_policies",
       addLabel: `${t("add entitlements policy")}`,
-      addComponent: <AddEntitlementsPolicies title={`${t("add entitlements policy")}`} />,
+      addComponent: (
+        <AddEntitlementsPolicies title={`${t("add entitlements policy")}`} />
+      ),
       viewLabel: `${t("view entitlements policy")}`,
       viewHandler: () => navigate("/system/entitlementsPolicies"),
     },
@@ -340,9 +346,37 @@ export const System = ({ title }: SystemProps_TP) => {
       title: t("deductions policies"),
       name: "deductions_policies",
       addLabel: `${t("add deductions policy")}`,
-      addComponent: <AddDeductionsPolicy title={`${t("add deductions policy")}`} />,
+      addComponent: (
+        <AddDeductionsPolicy title={`${t("add deductions policy")}`} />
+      ),
       viewLabel: `${t("view deductions policy")}`,
       viewHandler: () => navigate("/system/deductionsPolicies"),
+    },
+
+    // EMPLOYEE BENEFITS POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("employee benefits policies"),
+      name: "employee_benefits_policies",
+      addLabel: `${t("add employee benefits policy")}`,
+      addComponent: (
+        <AddEmployeeBenefits title={`${t("add employee benefits policy")}`} />
+      ),
+      viewLabel: `${t("view employee benefits policy")}`,
+      viewHandler: () => navigate("/system/employeeBenefitsPolicies"),
+    },
+
+    // EMPLOYEE DEDUCTIONS POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("employee deductions policies"),
+      name: "employee_deductions_policies",
+      addLabel: `${t("add employee deductions policy")}`,
+      addComponent: (
+        <AddEmployeeDeductions title={`${t("add employee deductions policy")}`} />
+      ),
+      viewLabel: `${t("view employee deductions policy")}`,
+      viewHandler: () => navigate("/system/employeeDeductionsPolicies"),
     },
 
     // **************************************************************
@@ -392,7 +426,7 @@ export const System = ({ title }: SystemProps_TP) => {
       viewHandler: () => navigate("/system/invoiceData"),
     },
   ];
-  console.log("🚀 ~ System ~ systemCards:", systemCards.length)
+  console.log("🚀 ~ System ~ systemCards:", systemCards.length);
 
   const openPopup = (formName: FormNames_TP) =>
     setPopupIsOpen((prev) => ({ ...prev, [formName]: true }));
@@ -430,13 +464,13 @@ export const System = ({ title }: SystemProps_TP) => {
       titleKey: "Expense policies",
       index: 5,
       start: 18,
-      end: 25,
+      end: 27,
     },
     {
       titleKey: "Account management",
       index: 6,
-      start: 25,
-      end: 30,
+      start: 27,
+      end: 32,
     },
   ];
 
