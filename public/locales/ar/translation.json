@@ -1127,5 +1127,17 @@
   "add deductions policy": "إضافة سياسة الاستقطاعات",
   "deductions name in arabic": "إسم الاستقطاع بالعربي",
   "deductions name in english": "إسم الاستقطاع بالانجليزي",
-  "view deductions policy": "عرض سياسة الاستقطاعات"
+  "view deductions policy": "عرض سياسة الاستقطاعات",
+  "employee benefits": "استحقاقات الموظفين",
+  "employee benefits policies": "سياسة استحقاقات الموظفين",
+  "add employee benefits policy": "إضافة سياسة استحقاقات الموظفين",
+  "entitlement name": "إسم الاستتحقاق",
+  "view employee benefits policies": "عرض سياسة استحقاقات الموظفين",
+  "view employee deductions policies": "عرض سياسة استقطاعات الموظفين",
+  "there are no employee benefits policies available yet": "لا يوجد سياسة استحقاقات للموظفين",
+  "there are no employee deductions policies available yet": "لا يوجد سياسة استقطاعات للموظفين",
+  "employee deductions policies": "سياسة استقطاعات الموظفين",
+  "employee deduction": "استقطاعات الموظفين",
+  "add employee deductions policy": "اضافة سياسة استقطاع الموظفين",
+  "deduction name": "اسم الاستقطاع"
 }

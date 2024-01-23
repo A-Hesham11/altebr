@@ -119,6 +119,8 @@ import ViewWorkHours from "../components/templates/workHours/ViewWorkHours";
 import ViewSalariesPolicies from "../components/templates/salaries/ViewSalariesPolicies";
 import ViewEtitlementsPolicies from "../components/templates/entitlements/ViewEtitlementsPolicies";
 import ViewDeductionsPolicy from "../components/templates/deductions/ViewDeductionsPolicy";
+import ViewEmployeeBenefits from "../components/templates/employeeBenefits/ViewEmployeeBenefits";
+import ViewEmployeeDeductions from "../components/templates/employeeDeductions/ViewEmployeeDeductions";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -625,6 +627,13 @@ export const AllRoutesProvider = () => {
 
           {/* DEDUCTIONS */}
           <Route path="/system/deductionsPolicies" element={<ViewDeductionsPolicy />} />
+
+          {/* EMPLOYEE BENEFITS */}
+          <Route path="/system/employeeBenefitsPolicies" element={<ViewEmployeeBenefits />} />
+
+          {/* EMPLOYEE DEDUCTIONS */}
+          <Route path="/system/employeeDeductionsPolicies" element={<ViewEmployeeDeductions />} />
+
 
           {/* EXPENSES END */}
           <Route path="/system/cardsData" element={<ViewBankCardsData />} />
