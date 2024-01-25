@@ -17,6 +17,7 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const [percentage, setPercentage] = useState(false);
+  const [branchId, setBranchId] = useState(0);
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
@@ -27,8 +28,8 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
     Yup.object({
       entitlement_id: Yup.string().trim().required(requiredTranslation),
       branch_id: Yup.string().trim().required(requiredTranslation),
-    //   type: Yup.string().trim().required(requiredTranslation),
-    employee_id: Yup.string().trim().required(requiredTranslation),
+      //   type: Yup.string().trim().required(requiredTranslation),
+      employee_id: Yup.string().trim().required(requiredTranslation),
       value: Yup.string().trim().required(requiredTranslation),
     });
 
@@ -46,7 +47,7 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
     refetch: refetchEmployeeBenefitsData,
   } = useFetch({
     endpoint: "/employeeSalary/api/v1/entitlements",
-    queryKey: ["employeeBenefits"],
+    queryKey: ["employeeBenefit"],
     select: (employeeBenefits) =>
       employeeBenefits.map((employeeBenefit) => {
         return {
@@ -64,8 +65,8 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
     isLoading: employeeLoading,
     refetch: refetchEmployees,
     failureReason: employeesErrorReason,
-  } = useFetch({
-    endpoint: "/employee/api/v1/employees",
+  } = useFetch<SelectOption_TP[]>({
+    endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}`,
     queryKey: ["employees"],
     select: (employees) =>
       employees.map((employee) => {
@@ -73,6 +74,25 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
           id: employee.id,
           value: employee.id || "",
           label: employee.name || "",
+        };
+      }),
+    onError: (err) => console.log(err),
+  });
+
+  const {
+    data: branchesOptions,
+    isLoading: branchesLoading,
+    refetch: refetchBranches,
+    failureReason: branchesErrorReason,
+  } = useFetch({
+    endpoint: "branch/api/v1/branches?per_page=10000",
+    queryKey: ["branches"],
+    select: (branches) =>
+      branches.map((branch) => {
+        return {
+          id: branch.id,
+          value: branch.id || "",
+          label: branch.name || "",
         };
       }),
     onError: (err) => console.log(err),
@@ -116,6 +136,12 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
   };
 
   useEffect(() => {
+    if (branchId) {
+      refetchEmployees();
+    }
+  }, [branchId]);
+
+  useEffect(() => {
     if (editData && isSuccessData) {
       setShow(false);
       refetch();
@@ -133,6 +159,18 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
           {({ values, setFieldValue, resetForm }) => (
             <Form>
               <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
+              <Select
+                  id="branch_id"
+                  label={`${t("branches")}`}
+                  name="branch_id"
+                  placeholder={`${t("branches")}`}
+                  loadingPlaceholder={`${t("loading")}`}
+                  options={branchesOptions}
+                  isLoading={branchesLoading}
+                  onChange={(e) => {
+                    setBranchId(e.id);
+                  }}
+                />
                 <Select
                   id="entitlement_id"
                   label={`${t("employee benefits")}`}
@@ -147,14 +185,6 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
                       setPercentage(false);
                     }
                   }}
-                />
-
-                <SelectBranches
-                  id="branch_id"
-                  label={`${t("branch")}`}
-                  name="branch_id"
-                  placeholder={`${t("branch")}`}
-                  loadingPlaceholder={`${t("loading")}`}
                 />
 
                 <Select

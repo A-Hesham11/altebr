@@ -54,7 +54,7 @@ const ViewExpensesPolicies = () => {
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
   const [page, setPage] = useState<number>(1);
   const { userData } = useContext(authCtx);
-  const [branchId, setBranchId] = useState<string>(1);
+  // const [branchId, setBranchId] = useState<string>(1);
 
   const initialValues = {
     branch_id: "",
@@ -65,11 +65,6 @@ const ViewExpensesPolicies = () => {
       {
         header: () => <span>{t("Sequence")} </span>,
         accessorKey: "index",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("branch")} </span>,
-        accessorKey: "branch_name",
         cell: (info) => info.getValue(),
       },
       {
@@ -119,7 +114,7 @@ const ViewExpensesPolicies = () => {
     refetch,
     isFetching,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/expenses/api/v1/major-expence/${branchId}`,
+    endpoint: `/expenses/api/v1/majorexpences`,
     queryKey: ["expensesPolicies"],
     pagination: true,
     onSuccess(data) {
@@ -140,9 +135,9 @@ const ViewExpensesPolicies = () => {
     data
   );
 
-  useEffect(() => {
-    refetch();
-  }, [branchId]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [branchId]);
 
   const {
     data: branchesOptions,
@@ -203,7 +198,7 @@ const ViewExpensesPolicies = () => {
               branch_name: editData?.branch_name,
             }}
           /> */}
-          <Select
+          {/* <Select
             id="branch_id"
             label={`${t("branches")}`}
             name="branch_id"
@@ -214,7 +209,7 @@ const ViewExpensesPolicies = () => {
             onChange={(e) => {
               setBranchId(e.id);
             }}
-          />
+          /> */}
         </div>
 
         {isFetching && <Loading mainTitle={t("expenses policies")} />}

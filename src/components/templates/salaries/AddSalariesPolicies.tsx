@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
@@ -18,6 +18,9 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
+  const [branchId, setBranchId] = useState<string>(0);
+  const [shifts, setShifts] = useState<SelectOption_TP[]>([]);
+  console.log("🚀 ~ AddSalariesPolicies ~ shifts:", shifts)
 
   // Effect hook to handle RTL layout
   useEffect(() => {
@@ -29,21 +32,15 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
   const cardsValidatingSchema = () =>
     Yup.object({
       employee_id: Yup.string().trim().required(requiredTranslation),
-      working_hours: Yup.string().trim().required(requiredTranslation),
       salary: Yup.string().trim().required(requiredTranslation),
-      housing_allowance: Yup.string().trim().required(requiredTranslation),
-      transport_allowance: Yup.string().trim().required(requiredTranslation),
-      insurance_allowance: Yup.string().trim().required(requiredTranslation),
+      branch_id: Yup.string().trim().required(requiredTranslation),
     });
 
   // Initial form values
   const initialValues = {
     employee_id: editData?.employee_id,
     salary: editData?.salary,
-    working_hours: editData?.working_hours,
-    housing_allowance: editData?.housing_allowance,
-    transport_allowance: editData?.transport_allowance,
-    insurance_allowance: editData?.insurance_allowance,
+    branch_id: editData?.branch_id,
   };
 
   const {
@@ -52,7 +49,7 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
     refetch: refetchEmployees,
     failureReason: employeesErrorReason,
   } = useFetch<SelectOption_TP[]>({
-    endpoint: "/employee/api/v1/employees",
+    endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}`,
     queryKey: ["employees"],
     select: (employees) =>
       employees.map((employee) => {
@@ -65,6 +62,54 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
     onError: (err) => console.log(err),
   });
   console.log("🚀 ~ AddSalariesPolicies ~ employeesOptions:", employeesOptions);
+
+  const {
+    data: shiftData,
+    isLoading: shiftLoading,
+    refetch: refetchShifts,
+    failureReason: shiftErrorReason,
+  } = useFetch<SelectOption_TP[]>({
+    endpoint: `/employeeSalary/api/v1/shifts-per-branch/${branchId}`,
+    queryKey: ["shifts"],
+    select: (shifts) => {
+      return shifts.map((shift) => {
+        return {
+          id: shift.id,
+          value: shift.id,
+          label: shift.shift_name,
+          name: shift.id,
+        };
+      });
+    },
+    onError: (err) => console.log(err),
+  });
+  console.log("🚀 ~ AddSalariesPolicies ~ shiftData:", shiftData);
+
+  useEffect(() => {
+    if (branchId) {
+      refetchShifts();
+      refetchEmployees();
+    }
+  }, [branchId]);
+
+  const {
+    data: branchesOptions,
+    isLoading: branchesLoading,
+    refetch: refetchBranches,
+    failureReason: branchesErrorReason,
+  } = useFetch({
+    endpoint: "branch/api/v1/branches?per_page=10000",
+    queryKey: ["branches"],
+    select: (branches) =>
+      branches.map((branch) => {
+        return {
+          id: branch.id,
+          value: branch.id || "",
+          label: branch.name || "",
+        };
+      }),
+    onError: (err) => console.log(err),
+  });
 
   // Mutation hook for mutating data
   const {
@@ -124,13 +169,16 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
             if (editData) {
               PostCardEdit({
                 ...values,
+                workingshifts: shifts?.map((shift) => ({ id: shift.id })),
               });
             } else {
-                PostNewCard({
-                  ...values,
-                });
+              PostNewCard({
+                ...values,
+              workingshifts: shifts?.map((shift) => ({ id: shift.id })),
+              });
               console.log({
                 ...values,
+                workingshifts: shifts?.map((shift) => ({ id: shift.id })),
               });
             }
           }}
@@ -138,6 +186,18 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
           {({ values, setFieldValue, resetForm }) => (
             <Form>
               <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
+                <Select
+                  id="branch_id"
+                  label={`${t("branches")}`}
+                  name="branch_id"
+                  placeholder={`${t("branches")}`}
+                  loadingPlaceholder={`${t("loading")}`}
+                  options={branchesOptions}
+                  isLoading={branchesLoading}
+                  onChange={(e) => {
+                    setBranchId(e.id);
+                  }}
+                />
                 <div>
                   <Select
                     id="employee_id"
@@ -152,16 +212,43 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
                     }}
                   />
                 </div>
-                <div>
-                  <BaseInputField
-                    type="text"
-                    id="working_hours"
-                    name="working_hours"
-                    label={`${t("working hours")}`}
-                    placeholder={`${t("working hours")}`}
-                    onChange={(e) => {}}
+                {/* <div>
+                  <Select
+                    id="shifting"
+                    label={`${t("shift")}`}
+                    name="shifting"
+                    placeholder={`${t("shift")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={employeesOptions}
+                    isLoading={employeeLoading}
+                    onChange={(e) => {
+                      //   setBranchId(e.id);
+                    }}
                   />
-                </div>
+                </div> */}
+                <Select
+                  id={"workingshifts"}
+                  label={`${t("working shifts")}`}
+                  name={"workingshifts"}
+                  placeholder={`${t("working shifts")}`}
+                  loadingPlaceholder={`${t("Loading...")}`}
+                  options={shiftData}
+                  //@ts-ignore
+                  // onChange={(option: SingleValue<SelectOption_TP>) =>
+                  //   setFieldValue(name, option?.id)
+                  // }
+                  // loading={colorLoading}
+                  isMulti
+                  creatable
+                  onChange={(e) => {
+                    setShifts(e)
+                  }}
+                  // modalTitle={modalTitle}
+                  // CreateComponent={CreateColor}
+                  // fieldKey={field}
+                  // onChange={onChange}
+                  // {...{ ...(value && { value }) }}
+                />
                 <div>
                   <BaseInputField
                     type="text"
@@ -171,40 +258,6 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
                     placeholder={`${t("salary")}`}
                     onChange={(e) => {}}
                   />
-                </div>
-                <div>
-                  <BaseInputField
-                    type="text"
-                    id="housing_allowance"
-                    name="housing_allowance"
-                    label={`${t("housing allowance")}`}
-                    placeholder={`${t("housing allowance")}`}
-                    onChange={(e) => {}}
-                  />
-                </div>
-                <div>
-                  <BaseInputField
-                    type="text"
-                    id="transport_allowance"
-                    name="transport_allowance"
-                    label={`${t("transport allowance")}`}
-                    placeholder={`${t("transport allowance")}`}
-                    onChange={(e) => {}}
-                  />
-                </div>
-                <div className="relative">
-                  <BaseInputField
-                    type="text"
-                    id="insurance_allowance"
-                    name="insurance_allowance"
-                    label={`${t("insurance allowance")}`}
-                    placeholder={`${t("insurance allowance")}`}
-                    onChange={(e) => {}}
-                    className="relative"
-                  />
-                  <span className="absolute left-3 top-9 font-bold text-mainGreen">
-                    %
-                  </span>
                 </div>
               </div>
               <div className="flex justify-end">

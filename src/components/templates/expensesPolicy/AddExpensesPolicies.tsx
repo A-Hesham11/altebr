@@ -61,13 +61,11 @@ const AddExpensesPolicies = ({
     Yup.object({
       name_ar: Yup.string().trim().required(requiredTranslation),
       name_en: Yup.string().trim().required(requiredTranslation),
-      branch_id: Yup.string().trim().required(requiredTranslation),
     });
 
   const initialValues = {
     name_ar: editData?.name_ar || "",
     name_en: editData?.name_en || "",
-    branch_id: editData?.branch_id,
   };
 
   const {
@@ -163,14 +161,14 @@ const AddExpensesPolicies = ({
                     className="relative"
                   />
                 </div>
-                <SelectBranches
+                {/* <SelectBranches
                   required
                   name="branch_id"
                   editData={{
                     branch_id: editData?.branch_id,
                     branch_name: editData?.branch_name,
                   }}
-                />
+                /> */}
               </div>
               <div className="flex justify-end">
                 <Button

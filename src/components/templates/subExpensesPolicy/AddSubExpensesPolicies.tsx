@@ -50,7 +50,7 @@ const AddSubExpensesPolicies = ({
   refetch: refetchTable,
   idInBranch,
 }: BuyingPoliciesProps_TP) => {
-  console.log("🚀 ~ idInBranch:", idInBranch)
+  console.log("🚀 ~ idInBranch:", idInBranch);
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
@@ -131,9 +131,7 @@ const AddSubExpensesPolicies = ({
     refetch,
     isFetching,
   } = useFetch({
-    endpoint: `/expenses/api/v1/major-expence/${
-      idInBranch ? idInBranch : branchId
-    }`,
+    endpoint: `/expenses/api/v1/majorexpences`,
     queryKey: ["mainExpensesOption"],
     select: (data) =>
       data.map((item) => {
@@ -206,31 +204,6 @@ const AddSubExpensesPolicies = ({
           {({ values, setFieldValue, resetForm }) => (
             <Form>
               <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
-                <div>
-                  <BaseInputField
-                    id="name_ar"
-                    name="name_ar"
-                    type="text"
-                    label={`${t("expenses name in arabic")}`}
-                    placeholder={`${t("expenses name in arabic")}`}
-                    onChange={() => {
-                      setFieldValue("name_ar", values?.name_ar);
-                    }}
-                  />
-                </div>
-                <div className="relative">
-                  <BaseInputField
-                    id="name_en"
-                    type="text"
-                    name="name_en"
-                    label={`${t("expenses name in english")}`}
-                    placeholder={`${t("expenses name in english")}`}
-                    onChange={(e) => {
-                      setFieldValue("name_en", values?.name_en);
-                    }}
-                    className="relative"
-                  />
-                </div>
                 {!idInBranch && (
                   <Select
                     id="branch_id"
@@ -262,6 +235,32 @@ const AddSubExpensesPolicies = ({
                     }}
                   />
                 </div>
+                <div>
+                  <BaseInputField
+                    id="name_ar"
+                    name="name_ar"
+                    type="text"
+                    label={`${t("expenses name in arabic")}`}
+                    placeholder={`${t("expenses name in arabic")}`}
+                    onChange={() => {
+                      setFieldValue("name_ar", values?.name_ar);
+                    }}
+                  />
+                </div>
+                <div className="relative">
+                  <BaseInputField
+                    id="name_en"
+                    type="text"
+                    name="name_en"
+                    label={`${t("expenses name in english")}`}
+                    placeholder={`${t("expenses name in english")}`}
+                    onChange={(e) => {
+                      setFieldValue("name_en", values?.name_en);
+                    }}
+                    className="relative"
+                  />
+                </div>
+
                 {/* <SelectBranches
                   required
                   name="branch_id"

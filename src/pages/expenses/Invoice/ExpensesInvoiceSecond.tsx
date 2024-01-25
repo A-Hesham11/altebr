@@ -94,7 +94,7 @@ const ExpensesInvoiceSecond = ({
       },
       {
         header: () => <span>{t("expense tax")} </span>,
-        accessorKey: "expense_price_tax",
+        accessorKey: "expense_price_after_tax",
         cell: (info) => formatReyal(Number(info.getValue())) || "---",
       },
       // {
@@ -186,7 +186,8 @@ const ExpensesInvoiceSecond = ({
       expence_bond_number: invoiceNumber.length + 1,
       child_id: values.sub_expense,
       description: values.add_description,
-      expence_amount: values.expense_price_after_tax,
+      expence_amount: +values.expense_price,
+      expence_tax: +values.expense_price_after_tax,
     };
 
 
@@ -219,6 +220,8 @@ const ExpensesInvoiceSecond = ({
     //     };
     //   }
     // });
+
+    console.log({...invoice});
 
     mutate({
       endpointName: "/expenses/api/v1/add-expense-invoice",

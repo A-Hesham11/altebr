@@ -1,23 +1,24 @@
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useContext, useEffect, useState } from "react";
 import { authCtx } from "../../../context/auth-and-perm/auth";
-import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import * as Yup from "yup";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { requiredTranslation } from "../systemEstablishment/partners/validation-and-types-partner";
+import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { BaseInputField, OuterFormLayout, Select } from "../../molecules";
 import { Form, Formik } from "formik";
+import { Button } from "../../atoms";
 import { t } from "i18next";
 import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
-import { Button } from "../../atoms";
-import { mutateData } from "../../../utils/mutateData";
 
-const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
+const AddCommision = ({ title, editData, setShow, refetch }) => {
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const [percentage, setPercentage] = useState(false);
   const [branchId, setBranchId] = useState<string>(0);
+
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
@@ -26,39 +27,25 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
 
   const cardsValidatingSchema = () =>
     Yup.object({
-      deduction_id: Yup.string().trim().required(requiredTranslation),
       branch_id: Yup.string().trim().required(requiredTranslation),
-      //   type: Yup.string().trim().required(requiredTranslation),
       employee_id: Yup.string().trim().required(requiredTranslation),
-      value: Yup.string().trim().required(requiredTranslation),
+      type: Yup.string().trim().required(requiredTranslation),
+      commission: Yup.string().trim().required(requiredTranslation),
     });
 
   const initialValues = {
-    deduction_id: editData?.deduction_id || "",
     branch_id: editData?.branch_id || "",
+    target_from: editData?.target_from || "",
+    target_to: editData?.target_to || "",
     employee_id: editData?.employee_id || "",
-    // type: editData?.type || "",
-    value: editData?.value || "",
+    type: editData?.type || "",
+    commission: editData?.commission || "",
   };
 
-  const {
-    data: employeeDeductionsData,
-    isLoading: isLoadingEmployeeDeductionsData,
-    refetch: refetchEmployeeDeductionsData,
-  } = useFetch({
-    endpoint: "/employeeSalary/api/v1/deductions",
-    queryKey: ["employeeDeduction"],
-    select: (employeeDeductions) =>
-      employeeDeductions.map((employeeDeduction) => {
-        return {
-          id: employeeDeduction.id,
-          value: employeeDeduction.id || "",
-          label: employeeDeduction.name_ar || "",
-          type: employeeDeduction.type || "",
-        };
-      }),
-    onError: (err) => console.log(err),
-  });
+  const typeOption = [
+    { id: 0, value: "نسبة", label: "نسبة" },
+    { id: 1, value: "نقدي", label: "نقدي" },
+  ];
 
   const {
     data: employeesOptions,
@@ -106,10 +93,10 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
     reset,
   } = useMutate({
     mutationFn: mutateData,
-    mutationKey: ["employeeDeductions"],
+    mutationKey: ["commission"],
     onSuccess: (data) => {
       notify("success");
-      queryClient.refetchQueries(["employeeDeductions"]);
+      queryClient.refetchQueries(["commission"]);
     },
     onError: (error) => {
       console.log(error);
@@ -119,7 +106,7 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
 
   function PostNewCard(values) {
     mutate({
-      endpointName: "/employeeSalary/api/v1/employee-deductions",
+      endpointName: "/employeeSalary/api/v1/commissions",
       values,
       method: "post",
     });
@@ -127,7 +114,7 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
 
   const PostCardEdit = (values) => {
     mutate({
-      endpointName: `/employeeSalary/api/v1/employee-deductions/${editData?.id}`,
+      endpointName: `/employeeSalary/api/v1/commissions/${editData?.id}`,
       values: {
         ...values,
         _method: "put",
@@ -150,16 +137,34 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
 
   return (
     <>
-      <OuterFormLayout header={t("add employee deductions policy")}>
+      <OuterFormLayout header={t("add commission policy")}>
         <Formik
           validationSchema={() => cardsValidatingSchema()}
           initialValues={initialValues}
-          onSubmit={(values, { resetForm }) => {}}
+          onSubmit={(values, { resetForm }) => {
+            if (values.target_from === "" && values.target_to === "") {
+              notify("error", `${t("please enter target from or target to")}`);
+              return;
+            }
+
+            if (editData) {
+              PostCardEdit({
+                ...values,
+              });
+            } else {
+              PostNewCard({
+                ...values,
+              });
+              console.log({
+                ...values,
+              });
+            }
+          }}
         >
           {({ values, setFieldValue, resetForm }) => (
             <Form>
               <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
-                <Select
+              <Select
                   id="branch_id"
                   label={`${t("branches")}`}
                   name="branch_id"
@@ -169,21 +174,6 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
                   isLoading={branchesLoading}
                   onChange={(e) => {
                     setBranchId(e.id);
-                  }}
-                />
-                <Select
-                  id="deduction_id"
-                  label={`${t("employee deduction")}`}
-                  name="deduction_id"
-                  placeholder={`${t("employee deduction")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={employeeDeductionsData}
-                  onChange={(e) => {
-                    if (e.type === "نسبة") {
-                      setPercentage(true);
-                    } else {
-                      setPercentage(false);
-                    }
                   }}
                 />
 
@@ -199,13 +189,30 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
                     //   setBranchId(e.id);
                   }}
                 />
+
+                <Select
+                  id="type"
+                  label={`${t("type")}`}
+                  name="type"
+                  placeholder={`${t("type")}`}
+                  loadingPlaceholder={`${t("loading")}`}
+                  options={typeOption}
+                  onChange={(e) => {
+                    if (e.value === "نسبة") {
+                      setPercentage(true);
+                    } else {
+                      setPercentage(false);
+                    }
+                  }}
+                />
+
                 <div className="relative">
                   <BaseInputField
-                    id="value"
-                    name="value"
+                    id="commission"
+                    name="commission"
                     type="text"
-                    label={`${t("value")}`}
-                    placeholder={`${t("value")}`}
+                    label={`${t("commission")}`}
+                    placeholder={`${t("commission")}`}
                   />
                   {percentage && (
                     <span className="absolute left-3 top-9 font-bold text-mainGreen">
@@ -213,26 +220,44 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
                     </span>
                   )}
                 </div>
+
+                <div>
+                  <BaseInputField
+                    id="target_from"
+                    name="target_from"
+                    type="text"
+                    label={`${t("target from")}`}
+                    placeholder={`${t("target from")}`}
+                  />
+                </div>
+
+                <div className="relative">
+                  <BaseInputField
+                    id="target_to"
+                    type="text"
+                    name="target_to"
+                    label={`${t("target to")}`}
+                    placeholder={`${t("target to")}`}
+                    className="relative"
+                  />
+                </div>
+
+                {/* <Select
+                    id="tax"
+                    label={`${t("tax")}`}
+                    name="tax"
+                    placeholder={`${t("tax")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={taxOption}
+                    fieldKey="id"
+                  /> */}
               </div>
               <div className="flex justify-end">
                 <Button
                   type="submit"
                   className="w-fit"
                   loading={editLoading}
-                  action={() => {
-                    if (editData) {
-                      PostCardEdit({
-                        ...values,
-                      });
-                    } else {
-                      PostNewCard({
-                        ...values,
-                      });
-                      console.log({
-                        ...values,
-                      });
-                    }
-                  }}
+                  // action={() => setShow(false)}
                 >
                   {t("save")}
                 </Button>
@@ -245,4 +270,4 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
   );
 };
 
-export default AddEmployeeDeductions;
+export default AddCommision;

@@ -55,6 +55,7 @@ const AddTaxExpensesPolicy = ({
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const [taxAdded, setTaxAdded] = useState<boolean>(false);
+  console.log("🚀 ~ taxAdded:", taxAdded)
   const [taxZero, setTaxZero] = useState<boolean>(false);
   const [taxExempt, setTaxExempt] = useState<boolean>(false);
   const dataSend = [];
@@ -139,6 +140,11 @@ const AddTaxExpensesPolicy = ({
           validationSchema={() => cardsValidatingSchema()}
           initialValues={initialValues}
           onSubmit={async (values, { resetForm }) => {
+            if (!taxAdded && !taxZero && !taxExempt) {
+              notify("error", t("please select a tax type"));
+              return;
+            }
+
             const taxTypes = [
               {
                 condition: taxAdded,
@@ -184,6 +190,14 @@ const AddTaxExpensesPolicy = ({
           {({ values, setFieldValue, resetForm }) => (
             <Form>
               <div className="grid grid-cols-4 gap-x-6 gap-y-4 items-end mb-8">
+                <SelectBranches
+                  required
+                  name="branch_id"
+                  editData={{
+                    branch_id: editData?.branch_id,
+                    branch_name: editData?.branch_name,
+                  }}
+                />
                 {editData && editData.name === "ضريبة القيمة المضافه" && (
                   <div className="space-y-2">
                     <input
@@ -353,15 +367,6 @@ const AddTaxExpensesPolicy = ({
                     </div>
                   </>
                 )}
-
-                <SelectBranches
-                  required
-                  name="branch_id"
-                  editData={{
-                    branch_id: editData?.branch_id,
-                    branch_name: editData?.branch_name,
-                  }}
-                />
               </div>
               <div className="flex justify-end">
                 <Button

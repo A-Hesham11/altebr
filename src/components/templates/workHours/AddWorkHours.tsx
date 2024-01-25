@@ -123,6 +123,14 @@ const AddWorkHours = ({ title, editData, setShow, refetch }) => {
           {({ values, setFieldValue, resetForm }) => (
             <Form>
               <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
+                <SelectBranches
+                  required
+                  name="branch_id"
+                  editData={{
+                    branch_id: editData?.branch_id,
+                    branch_name: editData?.branch_name,
+                  }}
+                />
                 <div>
                   <BaseInputField
                     type="text"
@@ -154,14 +162,6 @@ const AddWorkHours = ({ title, editData, setShow, refetch }) => {
                     onChange={(e) => {}}
                   />
                 </div>
-                <SelectBranches
-                  required
-                  name="branch_id"
-                  editData={{
-                    branch_id: editData?.branch_id,
-                    branch_name: editData?.branch_name,
-                  }}
-                />
               </div>
               <div className="flex justify-end">
                 <Button
