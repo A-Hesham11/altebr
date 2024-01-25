@@ -1,36 +1,117 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BiLogOut } from "react-icons/bi";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { t } from "i18next";
 import { sellingCards } from "../../utils/selling";
 import SellingHomeCard from "../../components/selling/sellingHomeCard";
-import { useIsRTL } from "../../hooks";
+import { useIsRTL, useMutate } from "../../hooks";
 import logo from "../../assets/altebr_logo.png";
 import { IoSettingsOutline } from "react-icons/io5";
 import { Button } from "../../components/atoms";
 import { useNavigate } from "react-router-dom";
+import Audience from "../../assets/audience.svg";
+import Departure from "../../assets/departure.svg";
+import { notify } from "../../utils/toast";
+import { mutateData } from "../../utils/mutateData";
+import { useQueryClient } from "@tanstack/react-query";
+import { GiCheckMark } from "react-icons/gi";
+import { formatDate } from "../../utils/date"
 
 const SellingHome = () => {
-  const { logOutHandler, userData } = useContext(authCtx);
+  const { logOutHandler, userData, isLoggingOut } = useContext(authCtx);
+  console.log("🚀 ~ SellingHome ~ isLoggingOut:", isLoggingOut);
+  console.log("🚀 ~ SellingHome ~ userData:", userData);
 
   const isRTL = useIsRTL();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const [audienceButton, setAudienceButton] = useState(
+    localStorage.getItem("audience")
+  );
+  const [departureButton, setDepartureButton] = useState(
+    localStorage.getItem("departure")
+  );
+
+  const {
+    mutate: mutateAudience,
+  } = useMutate({
+    mutationFn: mutateData,
+    mutationKey: ["Audience"],
+    onSuccess: (data) => {
+      notify("success");
+      queryClient.refetchQueries(["all-Audience"]);
+    },
+    onError: (error) => {
+      console.log(error);
+      notify("error");
+    },
+  });
+
+
+  const {
+    mutate : mutateDeparture,
+  } = useMutate({
+    mutationFn: mutateData,
+    mutationKey: ["departure"],
+    onSuccess: (data) => {
+      notify("success");
+      queryClient.refetchQueries(["all-departure"]);
+    },
+    onError: (error) => {
+      console.log(error);
+      notify("error");
+    },
+  });
+
+  useEffect(() => {
+    if (isLoggingOut === false) {
+      localStorage.setItem("departure", false);
+      setDepartureButton(localStorage.getItem("departure"))
+    }
+  }, []);
+
+  function PostNewCardAudience(values: any) {
+    console.log("🚀 ~ PostNewCardAudience ~ values:", values)
+    mutateAudience({
+      endpointName: "/banchSalary/api/v1/presences",
+      values,
+      method: "post",
+    });
+  }
+
+  function PostNewCardDeparture(values: any) {
+    mutateDeparture({
+      endpointName: "/banchSalary/api/v1/departures",
+      values,
+      method: "post",
+    });
+  }
 
   return (
-  <div className="selling h-screen pb-8 px-16">
-    <div className="flex justify-between pb-5 items-end">
-      <div className="bg-slate-100 pb-4 px-4 rounded-b-xl">
-        <img src={logo} alt="logo" className="w-[50px] mt-5"/>
+    <div className="selling h-screen pb-8 px-16">
+      <div className="flex justify-between pb-5 items-end">
+        <div className="bg-slate-100 pb-4 px-4 rounded-b-xl">
+          <img src={logo} alt="logo" className="w-[50px] mt-5" />
+        </div>
+        <h2 className="text-center font-bold md:text-xl text-white">
+          {t("welcome")}
+          <span className="text-mainOrange">
+            {" "}
+            {t("branch")} {userData?.branch_name}
+          </span>
+        </h2>
+        <div className="flex justify-end items-center gap-2 ">
+          <span className="text-white">
+            {t("welcome")} {userData?.name}
+          </span>
+          <BiLogOut
+            className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
+            size={30}
+            onClick={logOutHandler}
+          />
+        </div>
       </div>
-      <h2 className="text-center font-bold md:text-xl text-white">{t('welcome')} 
-        <span className="text-mainOrange"> {t("branch")} {userData?.branch_name}</span>
-      </h2>
-      <div className="flex justify-end items-center gap-2 ">
-        <span className="text-white">{t('welcome')} {userData?.name}</span>
-        <BiLogOut className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer" size={30} onClick={logOutHandler} />
-      </div>
-  </div>
-
 
       <div className="flex gap-12 lg:gap-16 h-[80%] justify-between py-7">
         <div className="flex flex-col gap-8 w-40">
@@ -58,7 +139,7 @@ const SellingHome = () => {
         </div>
       </div>
 
-      <div className="flex justify-start items-center gap-2 cursor-pointer">
+      <div className="flex justify-between items-center gap-2 cursor-pointer">
         <Button
           className="bg-transparent flex items-center gap-3 p-0"
           action={() => {
@@ -71,6 +152,69 @@ const SellingHome = () => {
           />
           <span className="text-white">{t("settings")}</span>
         </Button>
+
+        <div className="flex gap-3">
+          <Button
+            className="bg-white w-24 flex justify-center items-center"
+            action={() => {
+              const currentDate = new Date();
+              const currentTime = new Intl.DateTimeFormat('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              }).format(currentDate);
+              const currentDay =  formatDate(currentDate);
+
+              PostNewCardAudience({
+                employee_id: userData?.id,
+                branch_id: userData?.branch_id,
+                presences: currentTime,
+                day: currentDay,
+                is_presence: 1,
+              });
+
+              localStorage.setItem("audience", true);
+              setAudienceButton(localStorage.getItem("audience"))
+            }}
+            disabled={audienceButton == "true" || departureButton == "true"}
+          >
+            {audienceButton == "true" ? (
+              <GiCheckMark size={24} className="fill-mainGreen" />
+            ) : (
+              <img src={Audience} alt="Audience" />
+            )}
+          </Button>
+          <Button
+            className="bg-white w-24 flex justify-center items-center"
+            action={() => {
+              const currentDate = new Date();
+              const currentTime = new Intl.DateTimeFormat('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              }).format(currentDate);
+              const currentDay =  formatDate(currentDate);
+
+              PostNewCardDeparture({
+                employee_id: userData?.id,
+                branch_id: userData?.branch_id,
+                departure: currentTime,
+                day: currentDay,
+              });
+              localStorage.setItem("departure", true);
+              setDepartureButton(localStorage.getItem("departure"))
+              localStorage.setItem("audience", false);
+              setAudienceButton(localStorage.getItem("audience"))
+            }}
+            disabled={departureButton == "true"}
+          >
+            {departureButton == "true" ? (
+              <GiCheckMark size={24} className="fill-mainGreen" />
+            ) : (
+              <img src={Departure} alt="Departure" />
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

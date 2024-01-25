@@ -121,7 +121,11 @@ import ViewEtitlementsPolicies from "../components/templates/entitlements/ViewEt
 import ViewDeductionsPolicy from "../components/templates/deductions/ViewDeductionsPolicy";
 import ViewEmployeeBenefits from "../components/templates/employeeBenefits/ViewEmployeeBenefits";
 import ViewEmployeeDeductions from "../components/templates/employeeDeductions/ViewEmployeeDeductions";
+import SalariesPage from "../pages/expenses/SalariesPage";
+import AttendanceDeparture from "../components/selling/continuity/AttendanceDeparture";
+import ContinuityPage from "../pages/selling/ContinuityPage";
 import ViewCommision from "../components/templates/commision/ViewCommision";
+
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -421,9 +425,14 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/neighbors/payment" element={<>payment</>} />
           {/* neighbors end */}
           <Route path="/selling/reports" element={<Reports />} />
+          <Route path="/selling/continuity" element={<ContinuityPage />} />
           <Route
             path="/selling/reports/accounting-tree"
             element={<BranchAccountingTree />}
+          />
+          <Route
+            path="/selling/continuity/AttendanceDeparture"
+            element={<AttendanceDeparture />}
           />
           <Route
             path="/selling/item-information"
@@ -589,6 +598,10 @@ export const AllRoutesProvider = () => {
           <Route
             path="/buying/weightAdjustment"
             element={<WeightAdjustment />}
+          />
+          <Route
+            path="/expenses/Salaries"
+            element={<SalariesPage />}
           />
           <Route path="/buying/purchaseBonds" element={<PurchaseBonds />} />
           <Route
