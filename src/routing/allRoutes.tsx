@@ -124,6 +124,8 @@ import ViewEmployeeDeductions from "../components/templates/employeeDeductions/V
 import SalariesPage from "../pages/expenses/SalariesPage";
 import AttendanceDeparture from "../components/selling/continuity/AttendanceDeparture";
 import ContinuityPage from "../pages/selling/ContinuityPage";
+import ViewCommision from "../components/templates/commision/ViewCommision";
+
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -645,6 +647,9 @@ export const AllRoutesProvider = () => {
 
           {/* EMPLOYEE DEDUCTIONS */}
           <Route path="/system/employeeDeductionsPolicies" element={<ViewEmployeeDeductions />} />
+
+          {/* COMMISION */}
+          <Route path="/system/commisionPolicies" element={<ViewCommision />} />
 
 
           {/* EXPENSES END */}

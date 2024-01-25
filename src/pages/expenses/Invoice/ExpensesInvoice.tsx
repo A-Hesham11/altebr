@@ -39,6 +39,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   setTaxZero,
   setTaxExempt,
   taxAdded,
+  taxZero,
   setStage,
   invoiceNumber,
   subExpensesOption,
@@ -53,6 +54,8 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   sellingItemsData,
   setSellingItemsData,
 }) => {
+  console.log("🚀 ~ taxZero:", taxZero);
+  console.log("🚀 ~ taxAdded:", taxAdded);
   const { userData } = useContext(authCtx);
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
@@ -62,12 +65,12 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   }, 0);
 
   const { setFieldValue, values } = useFormikContext<Payment_TP>();
+  console.log("🚀 ~ values:", values);
 
   const [selectedCardName, setSelectedCardName] = useState(null);
   const [cardId, setCardId] = useState("");
   const [activeTaxBtn, setActiveTaxBtn] = useState(null);
 
-  // TODO: CALCULATE TAX EXPENSES DEPEND ON THE API
   const {
     data: taxExpensesData,
     isSuccess: taxExpensesIsSuccess,
@@ -76,6 +79,18 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   } = useFetch({
     endpoint: `/expenses/api/v1/expence-tax/${userData?.branch_id}`,
     queryKey: ["taxExpenses"],
+    onSuccess: (data) => {
+      console.log("🚀 ~ data:", data);
+      data?.map((item: any) => {
+        if (item.name === "ضريبة القيمة المضافه") {
+          setTaxAdded(item.value);
+        }
+
+        if (item.name === "ضريبة صفريه") {
+          setTaxZero(item.value);
+        }
+      });
+    },
     // select: (data) =>
     //   data.map((item) => {
     //     return {
@@ -89,37 +104,48 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
 
   const handleTaxClick = (id: any, taxValue: any, setTaxFunc: any) => {
     if (activeTaxBtn === id) {
-      setTaxFunc(null);
+      setTaxFunc(false);
       setActiveTaxBtn(null);
+      // setTaxAdded(false);
+      // setTaxZero(false);
+      // setTaxExempt(false);
       setFieldValue("expense_price_tax", 0);
-      setFieldValue("expense_price_after_tax", 0);
+      setFieldValue("expense_price_after_tax", "");
     } else {
-      setTaxAdded(null);
-      setTaxZero(null);
-      setTaxExempt(null);
+      if (taxAdded) {
+        setTaxAdded(taxAdded);
+      } else if (taxZero) {
+        setTaxZero(taxZero);
+      } else {
+        setTaxExempt(setTaxExempt);
+      }
+      console.log("🚀 ~ handleTaxClick ~ taxValue:", taxValue);
 
       setTaxFunc(taxValue);
       setActiveTaxBtn(id);
 
-      const priceTax = +values.expense_price * (+taxValue / 100);
+      const priceTax = +values.expense_price;
+      const taxModified = +taxValue / 100 + 1;
       const priceAfterTax =
-        +values.expense_price * (+taxValue / 100) + +values.expense_price;
-
+        +values.expense_price - +values.expense_price / taxModified;
+        
+        console.log("🚀 ~ handleTaxClick ~ taxModified:", taxModified)
+        console.log("🚀 ~ handleTaxClick ~ values.expense_price:", values.expense_price)
       setFieldValue("expense_price_tax", priceTax);
-      setFieldValue("expense_price_after_tax", priceAfterTax);
+      setFieldValue("expense_price_after_tax", priceAfterTax.toFixed(2));
     }
   };
 
-  const taxBtns = [
+  const taxButtons = [
     {
       id: 1,
       name: "value added tax",
-      handleClick: () => handleTaxClick(1, 15, setTaxAdded),
+      handleClick: () => handleTaxClick(1, taxAdded, setTaxAdded),
     },
     {
       id: 2,
       name: "zero tax",
-      handleClick: () => handleTaxClick(2, 0, setTaxZero),
+      handleClick: () => handleTaxClick(2, taxZero, setTaxZero),
     },
     {
       id: 3,
@@ -168,31 +194,49 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 items-end gap-12 mb-6">
-              <BaseInputField
-                placeholder={`${t("expense price")}`}
-                id="expense_price"
-                name="expense_price"
-                label={`${t("expense price")}`}
-                type="text"
-                required
-                className="w-80"
-                onChange={(e) => {
-                  setFieldValue("expense_price", +e.target.value);
-                  const priceAfterTax =
-                    +e.target.value * (+taxAdded / 100) + +e.target.value;
-                  setFieldValue("expense_price_after_tax", priceAfterTax);
-                }}
-              />
+              <div>
+                <BaseInputField
+                  placeholder={`${t("expense price")}`}
+                  id="expense_price"
+                  name="expense_price"
+                  label={`${t("expense price")}`}
+                  type="text"
+                  required
+                  className="w-80"
+                  onChange={(e) => {
+                    setFieldValue("expense_price", +e.target.value);
+                    let taxModified;
 
-              <BaseInputField
-                placeholder={`${t("expense price after tax")}`}
-                id="expense_price_after_tax"
-                name="expense_price_after_tax"
-                label={`${t("expense price after tax")}`}
-                type="text"
-                disabled
-                className="bg-mainDisabled border-mainDisabled"
-              />
+                    if (taxAdded) {
+                      taxModified = +taxAdded / 100 + 1;
+                    }else if (taxZero) {
+                      taxModified = +taxZero / 100 + 1;
+                    }
+
+                    const priceAfterTax =
+                      +e.target.value - +e.target.value / taxModified;
+
+                    if (activeTaxBtn) {
+                      setFieldValue(
+                        "expense_price_after_tax",
+                        priceAfterTax.toFixed(2)
+                      );
+                    }
+                  }}
+                />
+              </div>
+
+              <div>
+                <BaseInputField
+                  placeholder={`${t("expense price after tax")}`}
+                  id="expense_price_after_tax"
+                  name="expense_price_after_tax"
+                  label={`${t("expense price after tax")}`}
+                  type="text"
+                  disabled
+                  className="bg-mainDisabled border-mainDisabled"
+                />
+              </div>
             </div>
 
             <div className="grid md:grid-cols-2 items-end lg:grid-cols-3 gap-12">
@@ -254,7 +298,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
             {/* TAXES BUTTONS */}
             <div className="mt-2">
               <div className="flex gap-4">
-                {taxBtns.map((btn) => (
+                {taxButtons.map((btn) => (
                   <button
                     key={btn.id}
                     type="button"

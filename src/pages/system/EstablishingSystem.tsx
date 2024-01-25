@@ -35,7 +35,7 @@ const EstablishingSystem = ({
       <div className="flex items-center justify-between mb-6 border-2 border-mainGreen text-mainGreen px-4 py-1 rounded-md">
         <h2 className="under bold text-lg font-semibold">{t(titleKey)}</h2>
         <p className="text-sm">
-          ({index} {t("from")} 6) {t("From the founding")}
+          ({index} {t("from")} 7) {t("From the founding")}
         </p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

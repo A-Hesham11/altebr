@@ -38,6 +38,7 @@ import AddEntitlementsPolicies from "../../components/templates/entitlements/Add
 import AddDeductionsPolicy from "../../components/templates/deductions/AddDeductionsPolicy";
 import AddEmployeeBenefits from "../../components/templates/employeeBenefits/AddEmployeeBenefits";
 import AddEmployeeDeductions from "../../components/templates/employeeDeductions/AddEmployeeDeductions";
+import AddCommision from "../../components/templates/commision/AddCommision";
 ///
 /////////// Types
 ///
@@ -84,6 +85,7 @@ export const System = ({ title }: SystemProps_TP) => {
     deductions_policies: false,
     employee_benefits_policies: false,
     employee_deductions_policies: false,
+    commission_policies: false,
   });
 
   const systemCards: Card_TP<FormNames_TP>[] = [
@@ -379,6 +381,19 @@ export const System = ({ title }: SystemProps_TP) => {
       viewHandler: () => navigate("/system/employeeDeductionsPolicies"),
     },
 
+    // COMMISION POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("commission"),
+      name: "commission_policies",
+      addLabel: `${t("add commission")}`,
+      addComponent: (
+        <AddCommision title={`${t("add commission")}`} />
+      ),
+      viewLabel: `${t("view commission")}`,
+      viewHandler: () => navigate("/system/commisionPolicies"),
+    },
+
     // **************************************************************
     // إدارة الحسابات
     {
@@ -464,13 +479,19 @@ export const System = ({ title }: SystemProps_TP) => {
       titleKey: "Expense policies",
       index: 5,
       start: 18,
-      end: 27,
+      end: 21,
+    },
+    {
+      titleKey: "salary policies",
+      index: 6,
+      start: 21,
+      end: 28,
     },
     {
       titleKey: "Account management",
-      index: 6,
-      start: 27,
-      end: 32,
+      index: 7,
+      start: 28,
+      end: 33,
     },
   ];
 

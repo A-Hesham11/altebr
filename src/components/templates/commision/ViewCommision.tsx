@@ -1,46 +1,27 @@
-import { ColumnDef } from "@tanstack/react-table";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
-import { CImageFile_TP, SelectOption_TP } from "../../../types";
-import { notify } from "../../../utils/toast";
-import { mutateData } from "../../../utils/mutateData";
-import { useQueryClient } from "@tanstack/react-query";
-import { t } from "i18next";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import { Back } from "../../../utils/utils-components/Back";
 import { authCtx } from "../../../context/auth-and-perm/auth";
+import { t } from "i18next";
+import { Cards_Props_TP } from "../bankCards/ViewBankCards";
+import { ColumnDef } from "@tanstack/react-table";
 import { EditIcon } from "../../atoms/icons";
 import { SvgDelete } from "../../atoms/icons/SvgDelete";
+import { useQueryClient } from "@tanstack/react-query";
+import { mutateData } from "../../../utils/mutateData";
+import { notify } from "../../../utils/toast";
+import { Form, Formik } from "formik";
 import { AddButton } from "../../molecules/AddButton";
+import { Back } from "../../../utils/utils-components/Back";
+import { Modal, Select } from "../../molecules";
 import { Loading } from "../../organisms/Loading";
 import { Table } from "../reusableComponants/tantable/Table";
-import { Button } from "../../atoms";
-import { Modal, Select } from "../../molecules";
-import AddAccountsBank from "../accountsBank/AddAccountsBank";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import AddCommision from "./AddCommision";
 import { Header } from "../../atoms/Header";
-import { Formik, Form } from "formik";
-import AddSubExpensesPolicies from "./AddSubExpensesPolicies";
+import { Button } from "../../atoms";
 
-export type Cards_Props_TP = {
-  title: string;
-  main_address: any;
-  id: string;
-  address: string;
-  fax: string;
-  market_number: string;
-  name_ar: string;
-  name_en: string;
-
-  number: string;
-  phone: string;
-  files: CImageFile_TP[];
-};
-
-/**
- * Renders the component for viewing sub expenses policies.
- */
-const ViewSubExpensesPolicies = () => {
+const ViewCommision = () => {
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
@@ -69,48 +50,67 @@ const ViewSubExpensesPolicies = () => {
         cell: (info) => info.getValue(),
       },
       {
+        header: () => <span>{t("employee name")} </span>,
+        accessorKey: "employee_name",
+        cell: (info) => info.getValue(),
+      },
+      {
         header: () => <span>{t("branch")} </span>,
         accessorKey: "branch_name",
         cell: (info) => info.getValue(),
       },
       {
-        header: () => <span>{t("main expense")} </span>,
-        accessorKey: "major_name",
+        header: () => <span>{t("commission")} </span>,
+        accessorKey: "commission",
+        cell: (info) => info.row.original.type === "نسبة" ? `%${info.getValue()}` : info.getValue(),
+      },
+      {
+        header: () => <span>{t("target from")} </span>,
+        accessorKey: "target_from",
         cell: (info) => info.getValue(),
       },
       {
-        header: () => <span>{t("expenses name in arabic")} </span>,
-        accessorKey: "name_ar",
+        header: () => <span>{t("target to")} </span>,
+        accessorKey: "target_to",
         cell: (info) => info.getValue(),
       },
       {
-        header: () => <span>{`${t("expenses name in english")}`}</span>,
-        accessorKey: "name_en",
-        cell: (info) => info.getValue(),
+        header: () => <span>{t("actions")}</span>,
+        accessorKey: "action",
+        cell: (info) => {
+          return (
+            <div className="flex items-center justify-center gap-4">
+              <EditIcon
+                action={() => {
+                  setOpen((prev) => !prev);
+                  setEditData(info.row.original);
+                  setAction({
+                    edit: true,
+                    delete: false,
+                    view: false,
+                  });
+                  setModel(false);
+                }}
+                className="fill-mainGreen"
+              />
+
+              <SvgDelete
+                action={() => {
+                  setOpen((prev) => !prev);
+                  setDeleteData(info.row.original);
+                  setAction({
+                    delete: true,
+                    view: false,
+                    edit: false,
+                  });
+                  setModel(false);
+                }}
+                stroke="#ef4444"
+              />
+            </div>
+          );
+        },
       },
-      // {
-      //   header: () => <span>{t("actions")}</span>,
-      //   accessorKey: "action",
-      //   cell: (info) => {
-      //     return (
-      //       <div className="flex items-center justify-center gap-4">
-      //         <EditIcon
-      //           action={() => {
-      //             setOpen((prev) => !prev);
-      //             setEditData(info.row.original);
-      //             setAction({
-      //               edit: true,
-      //               delete: false,
-      //               view: false,
-      //             });
-      //             setModel(false);
-      //           }}
-      //           className="fill-mainGreen"
-      //         />
-      //       </div>
-      //     );
-      //   },
-      // },
     ],
     []
   );
@@ -125,8 +125,8 @@ const ViewSubExpensesPolicies = () => {
     refetch,
     isFetching,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/expenses/api/v1/sub-expence/${branchId}`,
-    queryKey: ["subExpensesPolicies"],
+    endpoint: `/employeeSalary/api/v1/employee-commission-per-branch/${branchId}`,
+    queryKey: ["commission"],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data);
@@ -156,7 +156,7 @@ const ViewSubExpensesPolicies = () => {
     isLoading: branchesLoading,
     refetch: refetchBranches,
     failureReason: branchesErrorReason,
-  } = useFetch<SelectOption_TP[]>({
+  } = useFetch({
     endpoint: "branch/api/v1/branches?per_page=10000",
     queryKey: ["branches"],
     select: (branches) =>
@@ -170,6 +170,27 @@ const ViewSubExpensesPolicies = () => {
     onError: (err) => console.log(err),
   });
 
+  const queryClient = useQueryClient();
+  const {
+    mutate,
+    error: mutateError,
+    isLoading: mutateLoading,
+  } = useMutate<Cards_Props_TP>({
+    mutationFn: mutateData,
+    onSuccess: () => {
+      queryClient.refetchQueries(["commission"]);
+      setOpen(false);
+      notify("success");
+    },
+  });
+
+  const handleDelete = () => {
+    mutate({
+      endpointName: `/employeeSalary/api/v1/delete-commission/${deleteData?.id}`,
+      method: "delete",
+    });
+  };
+
   return (
     <Formik
       className=""
@@ -179,7 +200,7 @@ const ViewSubExpensesPolicies = () => {
       <Form>
         <div className="flex justify-between items-center mb-8">
           <p className="font-semibold text-lg">
-            {t("view sub expenses policies")}
+            {t("view commission policies")}
           </p>
           <div className="flex gap-2">
             <AddButton
@@ -203,13 +224,13 @@ const ViewSubExpensesPolicies = () => {
 
         <div className="mb-6 w-52">
           {/* <SelectBranches
-            required
-            name="branch_id"
-            editData={{
-              branch_id: editData?.branch_id,
-              branch_name: editData?.branch_name,
-            }}
-          /> */}
+                required
+                name="branch_id"
+                editData={{
+                  branch_id: editData?.branch_id,
+                  branch_name: editData?.branch_name,
+                }}
+              /> */}
           <Select
             id="branch_id"
             label={`${t("branches")}`}
@@ -224,7 +245,7 @@ const ViewSubExpensesPolicies = () => {
           />
         </div>
 
-        {isFetching && <Loading mainTitle={t("sub expenses policies")} />}
+        {isFetching && <Loading mainTitle={t("commission policies")} />}
         {isSuccess && !isLoading && !isRefetching && dataSource.length ? (
           <Table data={dataSource} columns={columns}>
             <div className="mt-3 flex items-center justify-end gap-5 p-2">
@@ -266,7 +287,7 @@ const ViewSubExpensesPolicies = () => {
           !dataSource.length && (
             <div className="flex justify-center items-center mt-32">
               <p className="text-lg font-bold">
-                {t("there are no expenses policies available yet")}
+                {t("there are no commission policies available yet")}
               </p>
             </div>
           )
@@ -274,7 +295,7 @@ const ViewSubExpensesPolicies = () => {
 
         <Modal isOpen={open} onClose={() => setOpen(false)}>
           {action.edit && (
-            <AddSubExpensesPolicies
+            <AddCommision
               editData={editData}
               setDataSource={setDataSource}
               setShow={setOpen}
@@ -285,7 +306,7 @@ const ViewSubExpensesPolicies = () => {
             />
           )}
           {model && (
-            <AddSubExpensesPolicies
+            <AddCommision
               editData={editData}
               isFetching={isFetching}
               setDataSource={setDataSource}
@@ -295,13 +316,13 @@ const ViewSubExpensesPolicies = () => {
               isSuccess={isSuccess}
             />
           )}
-          {/* {action.delete && (
+          {action.delete && (
             <div className="flex flex-col gap-8 justify-center items-center">
-              <Header header={` حذف : ${deleteData?.job_type}`} />
+              <Header header={` حذف : ${deleteData?.employee_name}`} />
               <div className="flex gap-4 justify-center items-cent">
                 <Button
-                  action={handleDelete}
                   loading={mutateLoading}
+                  action={handleDelete}
                   variant="danger"
                 >
                   {`${t("confirm")}`}
@@ -309,11 +330,11 @@ const ViewSubExpensesPolicies = () => {
                 <Button action={() => setOpen(false)}>{`${t("close")}`}</Button>
               </div>
             </div>
-          )} */}
+          )}
         </Modal>
       </Form>
     </Formik>
   );
 };
 
-export default ViewSubExpensesPolicies;
+export default ViewCommision;

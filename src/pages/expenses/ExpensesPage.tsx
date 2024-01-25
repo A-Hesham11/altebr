@@ -87,6 +87,8 @@ const ExpensesPage = () => {
             setTaxZero={setTaxZero}
             setTaxExempt={setTaxExempt}
             taxAdded={taxAdded}
+            taxZero={taxZero}
+            taxExempt={taxExempt}
             files={files}
             setFiles={setFiles}
             paymentData={paymentData}

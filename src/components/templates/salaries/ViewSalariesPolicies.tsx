@@ -20,6 +20,8 @@ import { Button } from "../../atoms";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import AddSalariesPolicies from "./AddSalariesPolicies";
 import { Header } from "../../atoms/Header";
+import { BsEye } from "react-icons/bs";
+import ShiftsDetails from "./ShiftsDetails";
 
 const ViewSalariesPolicies = () => {
   const isRTL = useIsRTL();
@@ -35,6 +37,8 @@ const ViewSalariesPolicies = () => {
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
   const [page, setPage] = useState<number>(1);
   const { userData } = useContext(authCtx);
+  const [salaryModal, setOpenSalaryModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Cards_Props_TP>();
 
   const initialValues = {
     branch_id: "",
@@ -58,25 +62,10 @@ const ViewSalariesPolicies = () => {
         cell: (info) => info.getValue(),
       },
       {
-        header: () => <span>{t("housing allowance")} </span>,
-        accessorKey: "housing_allowance",
+        header: () => <span>{`${t("salary")}`}</span>,
+        accessorKey: "salary",
         cell: (info) => info.getValue(),
       },
-      {
-        header: () => <span>{`${t("transport allowance")}`}</span>,
-        accessorKey: "transport_allowance",
-        cell: (info) => info.getValue(),
-      },
-      {
-          header: () => <span>{`${t("insurance allowance")}`}</span>,
-          accessorKey: "insurance_allowance",
-        cell: (info) => `${info.getValue()} %`,
-      },
-          {
-            header: () => <span>{`${t("salary")}`}</span>,
-            accessorKey: "salary",
-            cell: (info) => info.getValue(),
-          },
       {
         header: () => <span>{t("actions")}</span>,
         accessorKey: "action",
@@ -108,6 +97,15 @@ const ViewSalariesPolicies = () => {
                   setModel(false);
                 }}
                 stroke="#ef4444"
+              />
+
+              <BsEye
+                onClick={() => {
+                  setOpenSalaryModal(true);
+                  setSelectedItem(info.row.original);
+                }}
+                size={23}
+                className="text-mainGreen cursor-pointer"
               />
             </div>
           );
@@ -296,6 +294,11 @@ const ViewSalariesPolicies = () => {
               </div>
             </div>
           )}
+        </Modal>
+
+        {/* 3) MODAL */}
+        <Modal isOpen={salaryModal} onClose={() => setOpenSalaryModal(false)}>
+          <ShiftsDetails item={selectedItem} />
         </Modal>
       </Form>
     </Formik>
