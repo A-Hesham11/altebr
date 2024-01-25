@@ -97,6 +97,7 @@ export const PhoneInput = ({
             }}
             style={{ direction: "ltr", ...(disabled && { backgroundColor: "#f2f2f2" }) }}
             disabled={disabled}
+            defaultCountry="SA"
           />
         </div>
         <FormikError name={name} />

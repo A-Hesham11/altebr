@@ -25,6 +25,8 @@ export const PermissionGroup = ({
   permissions,
   editData,
 }: PermissionGroupProps_TP) => {
+  console.log("🚀 ~ name:", name)
+  console.log("🚀 ~ permissions:", permissions)
   /////////// VARIABLES
   ///
 const memoizedEditData = useMemo(()=> editData, [])
@@ -67,7 +69,7 @@ const memoizedEditData = useMemo(()=> editData, [])
   return (
     <div className="flex flex-col w-full gap-4 border-b-2 border-mainGreen border-opacity-20 pb-5 border-dashed">
       <div className="flex items-center justify-between" >
-        <h4 className="flex items-center text-lg ml-8">{name}</h4>
+        <h4 className="flex items-center text-lg ml-8">{t(`${name}`)}</h4>
         <div>
         <input type="checkbox" id={name} checked={flag} name={name} onChange={handleChange} className="mx-2 text-mainGreen rounded"/>
         <label htmlFor={name} >{t('select group')}</label>

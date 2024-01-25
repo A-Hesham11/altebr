@@ -1,41 +1,41 @@
 /////////// IMPORTS
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik, FormikValues, useFormikContext } from "formik"
-import { t } from "i18next"
-import { useEffect, useState } from "react"
-import { SingleValue } from "react-select"
-import * as Yup from "yup"
-import { useFetch, useMutate } from "../../../hooks"
-import { SelectOption_TP } from "../../../types"
-import { requiredTranslation } from "../../../utils/helpers"
-import { mutateData } from "../../../utils/mutateData"
-import { notify } from "../../../utils/toast"
-import { HandleBackErrors } from "../../../utils/utils-components/HandleBackErrors"
-import { Button } from "../../atoms"
-import { BaseInputField, Select } from "../../molecules"
-import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik, FormikValues, useFormikContext } from "formik";
+import { t } from "i18next";
+import { useEffect, useState } from "react";
+import { SingleValue } from "react-select";
+import * as Yup from "yup";
+import { useFetch, useMutate } from "../../../hooks";
+import { SelectOption_TP } from "../../../types";
+import { requiredTranslation } from "../../../utils/helpers";
+import { mutateData } from "../../../utils/mutateData";
+import { notify } from "../../../utils/toast";
+import { HandleBackErrors } from "../../../utils/utils-components/HandleBackErrors";
+import { Button } from "../../atoms";
+import { BaseInputField, Select } from "../../molecules";
+import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler";
 
 /////////// Types
 type Countries_TP = {
-  setCountry: (value: { id: string; name: string }) => void
-  countryName: string
-  cityName?: string
-  distractName?: string
-  label?: string
-  editData?: { [key: string]: any }
-  fieldKey: "id" | "value" | undefined
-  isSuccessPost?: boolean
-  resetSelect?: () => void
-  disabled?:boolean
-}
+  setCountry: (value: { id: string; name: string }) => void;
+  countryName: string;
+  cityName?: string;
+  distractName?: string;
+  label?: string;
+  editData?: { [key: string]: any };
+  fieldKey: "id" | "value" | undefined;
+  isSuccessPost?: boolean;
+  resetSelect?: () => void;
+  disabled?: boolean;
+};
 type CountriesMutate_TP = {
-  name: string
-  id: string
-}
+  name: string;
+  id: string;
+};
 type Country_TP = {
-  id: string
-  name: string
-}
+  id: string;
+  name: string;
+};
 ///
 
 /////////// HELPER VARIABLES & FUNCTIONS
@@ -46,20 +46,20 @@ type Country_TP = {
 const validationSchema = Yup.object({
   name_ar: Yup.string().trim().required(requiredTranslation),
   name_en: Yup.string().trim().required(requiredTranslation),
-})
+});
 const NewCountryOptionComponent = ({
   value,
   onAdd,
 }: {
-  value: string
-  onAdd: (value: string) => void
+  value: string;
+  onAdd: (value: string) => void;
 }) => {
   const initialValues = {
     name_ar: value,
     name_en: "",
-  }
+  };
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate, isLoading, error } = useMutate<CountriesMutate_TP>({
     mutationFn: mutateData,
     onSuccess: (data) => {
@@ -71,12 +71,12 @@ const NewCountryOptionComponent = ({
             id: data.id,
             name: data?.name,
           },
-        ]
-      })
-      notify("success")
-      onAdd(value)
+        ];
+      });
+      notify("success");
+      onAdd(value);
     },
-  })
+  });
   const handleSubmit = (values: FormikValues) => {
     mutate({
       endpointName: "governorate/api/v1/countries",
@@ -84,14 +84,14 @@ const NewCountryOptionComponent = ({
         name_ar: values.name_ar,
         name_en: values.name_en,
       },
-    })
-  }
+    });
+  };
   return (
     <div className="flex items-center justify-between gap-2">
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          handleSubmit(values)
+          handleSubmit(values);
         }}
         validationSchema={validationSchema}
       >
@@ -128,8 +128,8 @@ const NewCountryOptionComponent = ({
         </HandleBackErrors>
       </Formik>
     </div>
-  )
-}
+  );
+};
 ///
 export const Countries = ({
   setCountry,
@@ -150,12 +150,13 @@ export const Countries = ({
   ///
   /////////// CUSTOM HOOKS
   ///
-  const { setFieldValue, values } = useFormikContext()
+  const { setFieldValue, values } = useFormikContext();
   ///
   /////////// STATES
   ///
-  const [newValue, setNewValue] = useState<SingleValue<SelectOption_TP> | null>()
-  
+  const [newValue, setNewValue] =
+    useState<SingleValue<SelectOption_TP> | null>();
+
   ///
   /////////// SIDE EFFECTS
   ///
@@ -170,22 +171,22 @@ export const Countries = ({
         editData?.nationalAddress?.country?.name ||
         editData?.country_name ||
         t("select country"),
-    })
-  }, [])
+    });
+  }, []);
 
-  
   useEffect(() => {
-    if ((!editData  || !editData?.nationalAddress?.country?.name) && isSuccessPost ) {      
+    if (
+      (!editData || !editData?.nationalAddress?.country?.name) &&
+      isSuccessPost
+    ) {
       setNewValue({
         id: "",
         value: "",
         label: t("select country"),
-      }
-      )
-      if (resetSelect) resetSelect()
-    } 
-
-  }, [isSuccessPost])
+      });
+      if (resetSelect) resetSelect();
+    }
+  }, [isSuccessPost]);
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
@@ -204,7 +205,10 @@ export const Countries = ({
         value: country.name,
         label: country.name,
       })),
-  })
+  });
+
+  const countriesOptionsReverse = countriesOptions?.reverse();
+  
   useEffect(() => {
     if (editData) {
       setCountry({
@@ -212,9 +216,9 @@ export const Countries = ({
         label: newValue?.label,
         value: newValue?.value,
         name: newValue?.name,
-      })
+      });
     }
-  }, [newValue])
+  }, [newValue]);
 
   ///
   return (
@@ -224,10 +228,10 @@ export const Countries = ({
         label={t(`${label}`).toString()}
         name={countryName}
         placeholder={t(`${label}`).toString()}
-        isDisabled={disabled || !countriesLoading && !!failureReason}
+        isDisabled={disabled || (!countriesLoading && !!failureReason)}
         loadingPlaceholder={`${t("loading")}`}
         loading={countriesLoading}
-        options={countriesOptions}
+        options={countriesOptionsReverse}
         creatable={true}
         CreateComponent={NewCountryOptionComponent}
         fieldKey={fieldKey}
@@ -236,13 +240,13 @@ export const Countries = ({
         required
         onChange={(option) => {
           //@ts-ignore
-          setFieldValue(countryName, option!.id)
+          setFieldValue(countryName, option!.id);
           // setFieldValue('country_value', option!.value)
           // if (cityName && editData) setFieldValue(cityName, editData?.city_id)
           // if (distractName && editData) setFieldValue(distractName,editData?.district_id)
           //@ts-ignore
-          setCountry(option)
-          setNewValue(option)
+          setCountry(option);
+          setNewValue(option);
         }}
         defaultValue={{
           value: editData ? editData?.country_name : "",
@@ -259,5 +263,5 @@ export const Countries = ({
         refetch={refetch}
       />
     </div>
-  )
-}
+  );
+};
