@@ -55,6 +55,8 @@ export const SelectNationality = ({
       }),
   })
 
+  const nationalityOptionsReverse = nationalityOptions?.reverse()
+
   ///
   /////////// STATES
   ///
@@ -98,7 +100,7 @@ export const SelectNationality = ({
         name={name}
         placeholder={`${t("nationality")}`}
         loadingPlaceholder={`${t("loading")}`}
-        options={nationalityOptions}
+        options={nationalityOptionsReverse}
         loading={nationalityLoading}
         creatable
         modalTitle={`${t("add nationality")}`}

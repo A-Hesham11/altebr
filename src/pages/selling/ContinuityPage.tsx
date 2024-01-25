@@ -1,28 +1,17 @@
-import receiveitem from "../../assets/receiveItems.svg";
-import receiveMoney from "../../assets/recieveMoney.svg";
-import SellingSubCard from "../../components/selling/SellingSubCard";
+import { GiReceiveMoney } from "react-icons/gi";
 import { useIsRTL } from "../../hooks";
+import receiveitem from "../../assets/receiveItems.svg";
 import { Back } from "../../utils/utils-components/Back";
-const Reports = () => {
+import SellingSubCard from "../../components/selling/SellingSubCard";
+
+const ContinuityPage = () => {
   const isRTL = useIsRTL();
   const data = [
     {
-      icon: receiveMoney,
-      title_ar: "ارصدة",
-      title_en: "stocks",
-      route: "/selling/reports/stocks",
-    },
-    {
       icon: receiveitem,
-      title_ar: "قيود",
-      title_en: "bonds",
-      route: "/selling/reports/bonds",
-    },
-    {
-      icon: receiveitem,
-      title_ar: "الشجرة المحاسبية",
-      title_en: "accounting tree",
-      route: "/selling/reports/accounting-tree",
+      title_ar: "الحضور والانصراف",
+      title_en: "Attendance and Departure",
+      route: "/selling/continuity/AttendanceDeparture",
     },
   ];
   return (
@@ -33,7 +22,7 @@ const Reports = () => {
 
       <div className="flex flex-wrap justify-center items-center gap-5">
         {data.map((item) => (
-          <div  key={crypto.randomUUID()}>
+          <div key={crypto.randomUUID()}>
             <SellingSubCard
               icon={item.icon}
               title={isRTL ? item.title_ar : item.title_en}
@@ -47,4 +36,4 @@ const Reports = () => {
   );
 };
 
-export default Reports;
+export default ContinuityPage;

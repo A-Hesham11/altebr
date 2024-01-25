@@ -35,21 +35,21 @@ const Expenses = () => {
       //   </Link>
       // ),
     },
-    //   {
-    //     icon: receiveitem,
-    //     title_ar: "تعديل الوزن",
-    //     title_en: "weight adjustment",
-    //     route: "/buying/weightAdjustment/",
-    //     underCardInfo: (
-    //       <Link
-    //         to="/buying/weightAdjustmentBonds/"
-    //         className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
-    //       >
-    //         <FaCubes className="text-mainGreen" size={25} />
-    //         <p className="text-mainGreen">{t("wegith adjustment bonds")}</p>
-    //       </Link>
-    //     ),
-    //   },
+      {
+        icon: receiveitem,
+        title_ar: "المرتبات",
+        title_en: "Salaries",
+        route: "/expenses/Salaries",
+        // underCardInfo: (
+        //   <Link
+        //     to="/buying/weightAdjustmentBonds/"
+        //     className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+        //   >
+        //     <FaCubes className="text-mainGreen" size={25} />
+        //     <p className="text-mainGreen">{t("wegith adjustment bonds")}</p>
+        //   </Link>
+        // ),
+      },
   ];
 
   return (
