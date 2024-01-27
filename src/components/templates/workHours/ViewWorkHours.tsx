@@ -72,6 +72,11 @@ const ViewWorkHours = () => {
         cell: (info) => info.getValue(),
       },
       {
+        header: () => <span>{`${t("work hours")}`}</span>,
+        accessorKey: "work_hours",
+        cell: (info) => info.getValue(),
+      },
+      {
         header: () => <span>{t("actions")}</span>,
         accessorKey: "action",
         cell: (info) => {
@@ -92,14 +97,14 @@ const ViewWorkHours = () => {
               />
               <SvgDelete
                 action={() => {
-                  setOpen((prev) => !prev)
-                  setDeleteData(info.row.original)
+                  setOpen((prev) => !prev);
+                  setDeleteData(info.row.original);
                   setAction({
                     delete: true,
                     view: false,
                     edit: false,
-                  })
-                  setModel(false)
+                  });
+                  setModel(false);
                 }}
                 stroke="#ef4444"
               />
@@ -162,7 +167,7 @@ const ViewWorkHours = () => {
     onError: (err) => console.log(err),
   });
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const {
     mutate,
     error: mutateError,
@@ -170,18 +175,18 @@ const ViewWorkHours = () => {
   } = useMutate<Cards_Props_TP>({
     mutationFn: mutateData,
     onSuccess: () => {
-      queryClient.refetchQueries(["shifts-per-branch"])
-      setOpen(false)
-      notify("success")
+      queryClient.refetchQueries(["shifts-per-branch"]);
+      setOpen(false);
+      notify("success");
     },
-  })
+  });
 
   const handleDelete = () => {
     mutate({
       endpointName: `/employeeSalary/api/v1/delete-shift/${deleteData?.id}`,
       method: "delete",
-    })
-  }
+    });
+  };
 
   return (
     <Formik
@@ -191,9 +196,7 @@ const ViewWorkHours = () => {
     >
       <Form>
         <div className="flex justify-between items-center mb-8">
-          <p className="font-semibold text-lg">
-            {t("view work shift policy")}
-          </p>
+          <p className="font-semibold text-lg">{t("view work shift policy")}</p>
           <div className="flex gap-2">
             <AddButton
               action={() => {
@@ -301,20 +304,20 @@ const ViewWorkHours = () => {
             />
           )}
           {action.delete && (
-              <div className="flex flex-col gap-8 justify-center items-center">
-                <Header header={` حذف : ${"test"}`} />
-                <div className="flex gap-4 justify-center items-cent">
-                  <Button
-                    action={handleDelete}
-                    loading={mutateLoading}
-                    variant="danger"
-                  >
-                    {`${t("confirm")}`}
-                  </Button>
-                  <Button action={() => setOpen(false)}>{`${t("close")}`}</Button>
-                </div>
+            <div className="flex flex-col gap-8 justify-center items-center">
+              <Header header={` حذف : ${"test"}`} />
+              <div className="flex gap-4 justify-center items-cent">
+                <Button
+                  action={handleDelete}
+                  loading={mutateLoading}
+                  variant="danger"
+                >
+                  {`${t("confirm")}`}
+                </Button>
+                <Button action={() => setOpen(false)}>{`${t("close")}`}</Button>
               </div>
-            )}
+            </div>
+          )}
         </Modal>
       </Form>
     </Formik>
