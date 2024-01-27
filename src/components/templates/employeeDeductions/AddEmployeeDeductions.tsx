@@ -12,7 +12,13 @@ import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
 import { Button } from "../../atoms";
 import { mutateData } from "../../../utils/mutateData";
 
-const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
+const AddEmployeeDeductions = ({
+  title,
+  editData,
+  setShow,
+  refetch,
+  deductionsData,
+}) => {
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
@@ -159,18 +165,20 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
           {({ values, setFieldValue, resetForm }) => (
             <Form>
               <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
-                <Select
-                  id="branch_id"
-                  label={`${t("branches")}`}
-                  name="branch_id"
-                  placeholder={`${t("branches")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={branchesOptions}
-                  isLoading={branchesLoading}
-                  onChange={(e) => {
-                    setBranchId(e.id);
-                  }}
-                />
+                {!deductionsData && (
+                  <Select
+                    id="branch_id"
+                    label={`${t("branches")}`}
+                    name="branch_id"
+                    placeholder={`${t("branches")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={branchesOptions}
+                    isLoading={branchesLoading}
+                    onChange={(e) => {
+                      setBranchId(e.id);
+                    }}
+                  />
+                )}
                 <Select
                   id="deduction_id"
                   label={`${t("employee deduction")}`}
@@ -186,19 +194,20 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
                     }
                   }}
                 />
-
-                <Select
-                  id="employee_id"
-                  label={`${t("employee")}`}
-                  name="employee_id"
-                  placeholder={`${t("employee")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={employeesOptions}
-                  isLoading={employeeLoading}
-                  onChange={(e) => {
-                    //   setBranchId(e.id);
-                  }}
-                />
+                {!deductionsData && (
+                  <Select
+                    id="employee_id"
+                    label={`${t("employee")}`}
+                    name="employee_id"
+                    placeholder={`${t("employee")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={employeesOptions}
+                    isLoading={employeeLoading}
+                    onChange={(e) => {
+                      //   setBranchId(e.id);
+                    }}
+                  />
+                )}
                 <div className="relative">
                   <BaseInputField
                     id="value"
@@ -221,9 +230,25 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
                   loading={editLoading}
                   action={() => {
                     if (editData) {
-                      PostCardEdit({
-                        ...values,
-                      });
+                      if (deductionsData) {
+                        PostCardEdit({
+                          ...values,
+                          branch_id: deductionsData[0]?.branch_id,
+                          employee_id: deductionsData[0]?.employee_id,
+                        });
+                      } else {
+                        if (deductionsData) {
+                          PostNewCard({
+                            ...values,
+                            branch_id: deductionsData[0]?.branch_id,
+                            employee_id: deductionsData[0]?.employee_id,
+                          });
+                        } else {
+                          PostNewCard({
+                            ...values,
+                          });
+                        }
+                      }
                     } else {
                       PostNewCard({
                         ...values,
