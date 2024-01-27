@@ -195,115 +195,112 @@ export const DashboardData = () => {
     <>
       <div>
         {codingGoldIsLoading &&
-          supplyDiamondIsLoading &&
-          supplyAccessoryIsLoading 
-            ? (
-              <Loading mainTitle="تحميل السند" />
-            )
-            : (
-              <>
-              <div>
-                <div className="flex items-center gap-2 bg-mainGreen text-white p-2">
-                  <AiOutlineGold className="w-6 h-6" />
-                  <h2>{t("gold")}</h2>
-                </div>
-                <div className="flex items-center gap-10 my-3">
-                  {goldCards.map(
-                    ({
-                      id,
-                      title,
-                      image,
-                      icon,
-                      textBondNumber,
-                      bondNumber,
-                      viewHandler,
-                      addHandler,
-                    }) => {
-                      return (
-                        <GoldDashboard
-                          key={id}
-                          image={image}
-                          title={title}
-                          icon={icon}
-                          textBondNumber={textBondNumber}
-                          bondNumber={bondNumber}
-                          viewHandler={viewHandler}
-                          addHandler={addHandler}
-                        />
-                      );
-                    }
-                  )}
-                </div>
+        supplyDiamondIsLoading &&
+        supplyAccessoryIsLoading ? (
+          <Loading mainTitle="تحميل السند" />
+        ) : (
+          <>
+            <div>
+              <div className="flex items-center gap-2 bg-mainGreen text-white p-2">
+                <AiOutlineGold className="w-6 h-6" />
+                <h2>{t("gold")}</h2>
               </div>
-              <div>
-                <div className="flex items-center gap-2 bg-mainGreen text-white p-2">
-                  <IoDiamondOutline className="w-6 h-6" />
-                  <h2>{t("diamond")}</h2>
-                </div>
-                <div className="flex items-center gap-10 my-3">
-                  {diamondCards.map(
-                    ({
-                      id,
-                      title,
-                      image,
-                      icon,
-                      textBondNumber,
-                      bondNumber,
-                      viewHandler,
-                      addHandler,
-                    }) => {
-                      return (
-                        <DiamondDashboard
-                          key={id}
-                          image={image}
-                          title={title}
-                          icon={icon}
-                          textBondNumber={textBondNumber}
-                          bondNumber={bondNumber}
-                          viewHandler={viewHandler}
-                          addHandler={addHandler}
-                        />
-                      );
-                    }
-                  )}
-                </div>
+              <div className="flex items-center gap-10 my-3">
+                {goldCards.map(
+                  ({
+                    id,
+                    title,
+                    image,
+                    icon,
+                    textBondNumber,
+                    bondNumber,
+                    viewHandler,
+                    addHandler,
+                  }) => {
+                    return (
+                      <GoldDashboard
+                        key={id}
+                        image={image}
+                        title={title}
+                        icon={icon}
+                        textBondNumber={textBondNumber}
+                        bondNumber={bondNumber}
+                        viewHandler={viewHandler}
+                        addHandler={addHandler}
+                      />
+                    );
+                  }
+                )}
               </div>
-              <div>
-                <div className="flex items-center gap-2 bg-mainGreen text-white p-2">
-                  <GiBigDiamondRing className="w-6 h-6" />
-                  <h2>{t("accessories")}</h2>
-                </div>
-                <div className="flex items-center gap-10 my-3">
-                  {accessoriesCards.map(
-                    ({
-                      id,
-                      title,
-                      image,
-                      icon,
-                      textBondNumber,
-                      bondNumber,
-                      viewHandler,
-                      addHandler,
-                    }) => {
-                      return (
-                        <AccessoriesDashboard
-                          key={id}
-                          image={image}
-                          title={title}
-                          icon={icon}
-                          textBondNumber={textBondNumber}
-                          bondNumber={bondNumber}
-                          viewHandler={viewHandler}
-                          addHandler={addHandler}
-                        />
-                      );
-                    }
-                  )}
-                </div>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 bg-mainGreen text-white p-2">
+                <IoDiamondOutline className="w-6 h-6" />
+                <h2>{t("diamond")}</h2>
               </div>
-            </>
-            )
-        }
+              <div className="flex items-center gap-10 my-3">
+                {diamondCards.map(
+                  ({
+                    id,
+                    title,
+                    image,
+                    icon,
+                    textBondNumber,
+                    bondNumber,
+                    viewHandler,
+                    addHandler,
+                  }) => {
+                    return (
+                      <DiamondDashboard
+                        key={id}
+                        image={image}
+                        title={title}
+                        icon={icon}
+                        textBondNumber={textBondNumber}
+                        bondNumber={bondNumber}
+                        viewHandler={viewHandler}
+                        addHandler={addHandler}
+                      />
+                    );
+                  }
+                )}
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 bg-mainGreen text-white p-2">
+                <GiBigDiamondRing className="w-6 h-6" />
+                <h2>{t("accessories")}</h2>
+              </div>
+              <div className="flex items-center gap-10 my-3">
+                {accessoriesCards.map(
+                  ({
+                    id,
+                    title,
+                    image,
+                    icon,
+                    textBondNumber,
+                    bondNumber,
+                    viewHandler,
+                    addHandler,
+                  }) => {
+                    return (
+                      <AccessoriesDashboard
+                        key={id}
+                        image={image}
+                        title={title}
+                        icon={icon}
+                        textBondNumber={textBondNumber}
+                        bondNumber={bondNumber}
+                        viewHandler={viewHandler}
+                        addHandler={addHandler}
+                      />
+                    );
+                  }
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

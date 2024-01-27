@@ -375,7 +375,9 @@ export const System = ({ title }: SystemProps_TP) => {
       name: "employee_deductions_policies",
       addLabel: `${t("add employee deductions policy")}`,
       addComponent: (
-        <AddEmployeeDeductions title={`${t("add employee deductions policy")}`} />
+        <AddEmployeeDeductions
+          title={`${t("add employee deductions policy")}`}
+        />
       ),
       viewLabel: `${t("view employee deductions policy")}`,
       viewHandler: () => navigate("/system/employeeDeductionsPolicies"),
@@ -387,9 +389,7 @@ export const System = ({ title }: SystemProps_TP) => {
       title: t("commission"),
       name: "commission_policies",
       addLabel: `${t("add commission")}`,
-      addComponent: (
-        <AddCommision title={`${t("add commission")}`} />
-      ),
+      addComponent: <AddCommision title={`${t("add commission")}`} />,
       viewLabel: `${t("view commission")}`,
       viewHandler: () => navigate("/system/commisionPolicies"),
     },
@@ -453,45 +453,31 @@ export const System = ({ title }: SystemProps_TP) => {
   const EstablishingSystemCard = [
     {
       titleKey: "Company structure data",
-      index: 1,
-      start: 0,
-      end: 6,
+      range: [0, 6],
     },
     {
       titleKey: "Bank data",
-      index: 2,
-      start: 6,
-      end: 10,
+      range: [6, 10],
     },
     {
       titleKey: "Item characteristics",
-      index: 3,
-      start: 10,
-      end: 14,
+      range: [10, 14],
     },
     {
       titleKey: "Sales and purchasing policy",
-      index: 4,
-      start: 14,
-      end: 18,
+      range: [14, 18],
     },
     {
       titleKey: "Expense policies",
-      index: 5,
-      start: 18,
-      end: 21,
+      range: [18, 21],
     },
     {
-      titleKey: "salary policies",
-      index: 6,
-      start: 21,
-      end: 28,
+      titleKey: "Salary policies",
+      range: [21, 28],
     },
     {
       titleKey: "Account management",
-      index: 7,
-      start: 28,
-      end: 33,
+      range: [28, 33],
     },
   ];
 
@@ -505,16 +491,22 @@ export const System = ({ title }: SystemProps_TP) => {
         {t("system establishment")}
       </h2>
 
-      {EstablishingSystemCard?.map((item) => (
-        <EstablishingSystem
-          titleKey={item?.titleKey}
-          index={item?.index}
-          start={item?.start}
-          end={item?.end}
-          systemCards={systemCards}
-          openPopup={openPopup}
-        />
-      ))}
+      {EstablishingSystemCard?.map((item, index) => {
+        const { range, titleKey } = item;
+
+        return (
+          <EstablishingSystem
+            key={index}
+            titleKey={titleKey}
+            index={index + 1}
+            start={range[0]}
+            end={range[1]}
+            systemCards={systemCards}
+            openPopup={openPopup}
+            total={EstablishingSystemCard.length}
+          />
+        );
+      })}
 
       <div className="my-8 bg-mainBlack h-[1px] rounded"></div>
       <GlobalAndStones title={t("Another")} />
