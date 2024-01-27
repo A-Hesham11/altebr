@@ -55,7 +55,7 @@ const AddTaxExpensesPolicy = ({
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const [taxAdded, setTaxAdded] = useState<boolean>(false);
-  console.log("🚀 ~ taxAdded:", taxAdded)
+  console.log("🚀 ~ taxAdded:", taxAdded);
   const [taxZero, setTaxZero] = useState<boolean>(false);
   const [taxExempt, setTaxExempt] = useState<boolean>(false);
   const dataSend = [];
@@ -173,13 +173,13 @@ const AddTaxExpensesPolicy = ({
             } else {
               taxTypes.forEach((taxType) => {
                 if (taxType.condition) {
-                  if (
-                    taxType.name === "ضريبة القيمة المضافه" &&
-                    taxType.value === ""
-                  ) {
-                    notify("error", "يجب ادخال قيمة ضريبة القيمة المضافة");
-                    return;
-                  }
+                  // if (
+                  //   taxType.name === "ضريبة القيمة المضافه" &&
+                  //   taxType.value === ""
+                  // ) {
+                  //   notify("error", "يجب ادخال قيمة ضريبة القيمة المضافة");
+                  //   return;
+                  // }
                   dataSend.push(createData(taxType.name, taxType.value));
                 }
               });

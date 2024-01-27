@@ -6,12 +6,7 @@ import { requiredTranslation } from "../systemEstablishment/partners/validation-
 import * as Yup from "yup";
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
-import {
-  BaseInputField,
-  DateInputField,
-  OuterFormLayout,
-  Select,
-} from "../../molecules";
+import { BaseInputField, OuterFormLayout } from "../../molecules";
 import { Form, Formik } from "formik";
 import { t } from "i18next";
 import { Button } from "../../atoms";
@@ -37,11 +32,6 @@ const AddWorkHours = ({ title, editData, setShow, refetch }) => {
       shift_name: Yup.string().trim().required(requiredTranslation),
       branch_id: Yup.string().trim().required(requiredTranslation),
     });
-
-  const shiftOptions = [
-    { value: 1, label: "الفترة الاولى" },
-    { value: 2, label: "الفترة الثانية" },
-  ];
 
   // Initial form values
   const initialValues = {

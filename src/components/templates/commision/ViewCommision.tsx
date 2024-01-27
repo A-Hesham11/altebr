@@ -62,16 +62,14 @@ const ViewCommision = () => {
       {
         header: () => <span>{t("commission")} </span>,
         accessorKey: "commission",
-        cell: (info) => info.row.original.type === "نسبة" ? `%${info.getValue()}` : info.getValue(),
+        cell: (info) =>
+          info.row.original.type === "نسبة"
+            ? `%${info.getValue()}`
+            : info.getValue(),
       },
       {
-        header: () => <span>{t("target from")} </span>,
-        accessorKey: "target_from",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("target to")} </span>,
-        accessorKey: "target_to",
+        header: () => <span>{t("target")} </span>,
+        accessorKey: "target",
         cell: (info) => info.getValue(),
       },
       {
