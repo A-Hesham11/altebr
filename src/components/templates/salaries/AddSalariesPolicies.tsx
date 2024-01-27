@@ -6,7 +6,6 @@ import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { BaseInputField, OuterFormLayout, Select } from "../../molecules";
 import { Form, Formik } from "formik";
-import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
 import { Button } from "../../atoms";
 import { t } from "i18next";
 import * as Yup from "yup";
@@ -20,7 +19,7 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
   const isRTL = useIsRTL();
   const [branchId, setBranchId] = useState<string>(0);
   const [shifts, setShifts] = useState<SelectOption_TP[]>([]);
-  console.log("🚀 ~ AddSalariesPolicies ~ shifts:", shifts)
+  console.log("🚀 ~ AddSalariesPolicies ~ shifts:", shifts);
 
   // Effect hook to handle RTL layout
   useEffect(() => {
@@ -174,7 +173,7 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
             } else {
               PostNewCard({
                 ...values,
-              workingshifts: shifts?.map((shift) => ({ id: shift.id })),
+                workingshifts: shifts?.map((shift) => ({ id: shift.id })),
               });
               console.log({
                 ...values,
@@ -212,20 +211,6 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
                     }}
                   />
                 </div>
-                {/* <div>
-                  <Select
-                    id="shifting"
-                    label={`${t("shift")}`}
-                    name="shifting"
-                    placeholder={`${t("shift")}`}
-                    loadingPlaceholder={`${t("loading")}`}
-                    options={employeesOptions}
-                    isLoading={employeeLoading}
-                    onChange={(e) => {
-                      //   setBranchId(e.id);
-                    }}
-                  />
-                </div> */}
                 <Select
                   id={"workingshifts"}
                   label={`${t("working shifts")}`}
@@ -233,21 +218,12 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
                   placeholder={`${t("working shifts")}`}
                   loadingPlaceholder={`${t("Loading...")}`}
                   options={shiftData}
-                  //@ts-ignore
-                  // onChange={(option: SingleValue<SelectOption_TP>) =>
-                  //   setFieldValue(name, option?.id)
-                  // }
-                  // loading={colorLoading}
+                  loading={shiftLoading}
                   isMulti
                   creatable
                   onChange={(e) => {
-                    setShifts(e)
+                    setShifts(e);
                   }}
-                  // modalTitle={modalTitle}
-                  // CreateComponent={CreateColor}
-                  // fieldKey={field}
-                  // onChange={onChange}
-                  // {...{ ...(value && { value }) }}
                 />
                 <div>
                   <BaseInputField
@@ -261,12 +237,7 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
                 </div>
               </div>
               <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  className="w-fit"
-                  loading={editLoading}
-                  // action={() => setShow(false)}
-                >
+                <Button type="submit" className="w-fit" loading={editLoading}>
                   {t("save")}
                 </Button>
               </div>

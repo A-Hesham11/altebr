@@ -204,8 +204,8 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
                     id="value"
                     name="value"
                     type="text"
-                    label={`${t("value")}`}
-                    placeholder={`${t("value")}`}
+                    label={`${percentage ? t("percentage") : t("value")}`}
+                    placeholder={`${percentage ? t("percentage") : t("value")}`}
                   />
                   {percentage && (
                     <span className="absolute left-3 top-9 font-bold text-mainGreen">

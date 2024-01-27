@@ -23,23 +23,24 @@ import PaymentProccessingToManagement, {
 import { notify } from "../../../utils/toast";
 
 interface ExpensesInvoiceProps {
-  setTaxAdded: (value: boolean) => void;
-  setTaxZero: (value: boolean) => void;
-  setTaxExempt: (value: boolean) => void;
-  showTax: boolean;
-  setShowTax: (value: boolean) => void;
-  taxAdded: boolean;
-  taxZero: boolean;
-  taxExempt: boolean;
   setStage: (value: number) => void;
+  invoiceNumber: string;
+  subExpensesOption: any;
+  setSubExpensesOption: (value: any) => void;
+  files: any[];
+  setFiles: (value: any[]) => void;
+  paymentData: any[];
+  setPaymentData: (value: any[]) => void;
+  selectedCardId: string;
+  setSelectedCardId: (value: string) => void;
+  setClientData: (value: any) => void;
+  sellingItemsData: any[];
+  setSellingItemsData: (value: any[]) => void;
+  taxType: any;
+  setTaxType: (value: any) => void;
 }
 
 const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
-  setTaxAdded,
-  setTaxZero,
-  setTaxExempt,
-  taxAdded,
-  taxZero,
   setStage,
   invoiceNumber,
   subExpensesOption,
@@ -53,120 +54,48 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   setClientData,
   sellingItemsData,
   setSellingItemsData,
+  taxType,
+  setTaxType,
 }) => {
-  console.log("🚀 ~ taxZero:", taxZero);
-  console.log("🚀 ~ taxAdded:", taxAdded);
+  const { setFieldValue, values } = useFormikContext<Payment_TP>();
   const { userData } = useContext(authCtx);
+
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
+  const [cardId, setCardId] = useState("");
+  const [selectedCardName, setSelectedCardName] = useState(null);
 
   const totalPaymentAmount = paymentData?.reduce((acc: any, item: any) => {
     return acc + +item.amount;
   }, 0);
 
-  const { setFieldValue, values } = useFormikContext<Payment_TP>();
-  console.log("🚀 ~ values:", values);
-
-  const [selectedCardName, setSelectedCardName] = useState(null);
-  const [cardId, setCardId] = useState("");
-  const [activeTaxBtn, setActiveTaxBtn] = useState(null);
-
   const {
     data: taxExpensesData,
-    isSuccess: taxExpensesIsSuccess,
     isLoading: taxExpensesIsLoading,
-    refetch: taxExpensesRefetch,
+    isRefetching: taxExpensesIsRefetching,
+    isFetching: taxExpensesIsFetching,
   } = useFetch({
     endpoint: `/expenses/api/v1/expence-tax/${userData?.branch_id}`,
     queryKey: ["taxExpenses"],
-    onSuccess: (data) => {
-      console.log("🚀 ~ data:", data);
-      data?.map((item: any) => {
-        if (item.name === "ضريبة القيمة المضافه") {
-          setTaxAdded(item.value);
-        }
-
-        if (item.name === "ضريبة صفريه") {
-          setTaxZero(item.value);
-        }
-      });
-    },
-    // select: (data) =>
-    //   data.map((item) => {
-    //     return {
-    //       id: item.id,
-    //       value: item.id || "",
-    //       label: item.name_ar || "",
-    //     };
-    //   }),
+    select: (data) =>
+      data.map((item: any) => {
+        return {
+          expencetax_id: item.id,
+          label: item.name,
+          value: item.name === "ضريبة معفاه" ? null : item.value,
+        };
+      }),
   });
-  console.log("🚀 ~ taxExpensesData:", taxExpensesData);
-
-  const handleTaxClick = (id: any, taxValue: any, setTaxFunc: any) => {
-    if (activeTaxBtn === id) {
-      setTaxFunc(false);
-      setActiveTaxBtn(null);
-      // setTaxAdded(false);
-      // setTaxZero(false);
-      // setTaxExempt(false);
-      setFieldValue("expense_price_tax", 0);
-      setFieldValue("expense_price_after_tax", "");
-    } else {
-      if (taxAdded) {
-        setTaxAdded(taxAdded);
-      } else if (taxZero) {
-        setTaxZero(taxZero);
-      } else {
-        setTaxExempt(setTaxExempt);
-      }
-      console.log("🚀 ~ handleTaxClick ~ taxValue:", taxValue);
-
-      setTaxFunc(taxValue);
-      setActiveTaxBtn(id);
-
-      const priceTax = +values.expense_price;
-      const taxModified = +taxValue / 100 + 1;
-      const priceAfterTax =
-        +values.expense_price - +values.expense_price / taxModified;
-        
-        console.log("🚀 ~ handleTaxClick ~ taxModified:", taxModified)
-        console.log("🚀 ~ handleTaxClick ~ values.expense_price:", values.expense_price)
-      setFieldValue("expense_price_tax", priceTax);
-      setFieldValue("expense_price_after_tax", priceAfterTax.toFixed(2));
-    }
-  };
-
-  const taxButtons = [
-    {
-      id: 1,
-      name: "value added tax",
-      handleClick: () => handleTaxClick(1, taxAdded, setTaxAdded),
-    },
-    {
-      id: 2,
-      name: "zero tax",
-      handleClick: () => handleTaxClick(2, taxZero, setTaxZero),
-    },
-    {
-      id: 3,
-      name: "tax exempt",
-      handleClick: () => handleTaxClick(3, null, setTaxExempt),
-    },
-  ];
 
   const {
     data: subExpensesOptionData,
-    isSuccess,
     isLoading,
-    isError,
-    error,
     isRefetching,
-    refetch,
     isFetching,
   } = useFetch({
     endpoint: `/expenses/api/v1/sub-expence/${userData?.branch_id}`,
     queryKey: ["subExpensesOption"],
-    select: (data) =>
+    select: (data: any) =>
       data.map((item: any) => {
         return {
           id: item.id,
@@ -202,26 +131,38 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                   label={`${t("expense price")}`}
                   type="text"
                   required
-                  className="w-80"
                   onChange={(e) => {
                     setFieldValue("expense_price", +e.target.value);
-                    let taxModified;
+                  }}
+                />
+              </div>
 
-                    if (taxAdded) {
-                      taxModified = +taxAdded / 100 + 1;
-                    }else if (taxZero) {
-                      taxModified = +taxZero / 100 + 1;
-                    }
+              <div>
+                <Select
+                  id="tax_type"
+                  label={`${t("tax type")}`}
+                  name="tax_type"
+                  value={taxType}
+                  placeholder={`${t("tax type")}`}
+                  loadingPlaceholder={`${t("loading")}`}
+                  isLoading={
+                    taxExpensesIsLoading ||
+                    taxExpensesIsRefetching ||
+                    taxExpensesIsFetching
+                  }
+                  options={taxExpensesData}
+                  onChange={(e: any) => {
+                    setTaxType(e);
 
-                    const priceAfterTax =
-                      +e.target.value - +e.target.value / taxModified;
+                    const taxModified = +e.value / 100 + 1;
+                    const taxCalculate =
+                      +values.expense_price -
+                      +values.expense_price / taxModified;
 
-                    if (activeTaxBtn) {
-                      setFieldValue(
-                        "expense_price_after_tax",
-                        priceAfterTax.toFixed(2)
-                      );
-                    }
+                    setFieldValue(
+                      "expense_price_after_tax",
+                      taxCalculate.toFixed(2)
+                    );
                   }}
                 />
               </div>
@@ -250,8 +191,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                   loadingPlaceholder={`${t("loading")}`}
                   isLoading={isLoading || isRefetching || isFetching}
                   options={subExpensesOptionData}
-                  onChange={(e) => {
-                    console.log("🚀 ~ e:", e);
+                  onChange={(e: any) => {
                     setSubExpensesOption(e);
                     setFieldValue("expense_type_name", e.label);
                   }}
@@ -292,26 +232,6 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                   required
                   rows={3}
                 />
-              </div>
-            </div>
-
-            {/* TAXES BUTTONS */}
-            <div className="mt-2">
-              <div className="flex gap-4">
-                {taxButtons.map((btn) => (
-                  <button
-                    key={btn.id}
-                    type="button"
-                    onClick={btn.handleClick}
-                    className={`${
-                      activeTaxBtn === btn.id
-                        ? "bg-mainGreen text-white"
-                        : "bg-gray-300 text-mainGreen"
-                    } px-4 py-2 rounded-lg`}
-                  >
-                    {t(`${btn.name}`)}
-                  </button>
-                ))}
               </div>
             </div>
           </div>
@@ -365,7 +285,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                 return;
               }
 
-              if (totalPaymentAmount > +values.expense_price_after_tax) {
+              if (totalPaymentAmount > +values.expense_price) {
                 notify(
                   "error",
                   t(
@@ -405,130 +325,3 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
 };
 
 export default ExpensesInvoice;
-
-// {/* INCLUDED TAX */}
-// <div className="">
-//   <div className="space-y-2 mb-6">
-//     <input
-//       type="checkbox"
-//       id="include_tax"
-//       name="include_tax"
-//       onChange={() => {
-//         setShowTax((prev) => !prev);
-//       }}
-//     />
-
-//     <label htmlFor="name" className="ms-2">
-//       {t("include tax")}
-//     </label>
-//   </div>
-
-//   {/* TAX INCLUDE OPTION */}
-//   {showTax && (
-//     <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end ">
-//       <div className="space-y-2">
-//         <input
-//           type="checkbox"
-//           id="name_added"
-//           name="name_added"
-//           onChange={() => {
-//             setTaxAdded(!taxAdded);
-//           }}
-//         />
-
-//         <label htmlFor="name" className="ms-2">
-//           {t("value added tax")}
-//         </label>
-//       </div>
-
-//       <div className="space-y-2">
-//         <input
-//           type="checkbox"
-//           id="name_zero"
-//           name="name_zero"
-//           onChange={() => {
-//             setTaxZero(!taxZero);
-//           }}
-//         />
-
-//         <label htmlFor="name" className="ms-2">
-//           {t("zero tax")}
-//         </label>
-//       </div>
-
-//       <div className="space-y-2">
-//         <input
-//           type="checkbox"
-//           id="name_exempt"
-//           name="name_exempt"
-//           onChange={() => {
-//             setTaxExempt(!taxExempt);
-//           }}
-//         />
-
-//         <label htmlFor="name" className="ms-2">
-//           {t("tax exempt")}
-//         </label>
-//       </div>
-//     </div>
-//   )}
-// </div>
-
-{
-  /* <div className="flex items-end my-6 gap-4">
-<BaseInputField
-  id="value"
-  name="value"
-  type="text"
-  label={
-    selectedCardName
-      ? `${selectedCardName}  ${
-          mainAccountNumber ? `(${mainAccountNumber})` : ""
-        }`
-      : t("Fund totals")
-  }
-  placeholder={
-    selectedCardName ? selectedCardName : t("Fund totals")
-  }
-  value={data?.value?.toFixed(2)}
-  disabled
-  className={`bg-mainDisabled text-mainGreen `}
-/>
-
-<div className="relative">
-  <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
-    <span>{t("remaining cost")} : </span>{" "}
-    {formatReyal(Number(costRemaining.toFixed(2)))}
-  </p>
-  <BaseInputField
-    id="amount"
-    name="amount"
-    type="text"
-    label={`${t("amount")}`}
-    placeholder={`${t("amount")}`}
-    onChange={(e) => {
-      setFieldValue("cost_after_tax", +e.target.value);
-    }}
-    className={` ${
-      +values.amount > +costRemaining && "bg-red-100"
-    }`}
-  />
-  <div>
-    {+values.amount > +costRemaining && (
-      <p className="text-mainRed">
-        <span>{t("Weight must be less than or equal to")}</span>
-        <span> {costRemaining}</span>
-      </p>
-    )}
-  </div>
-</div>
-
-<Button
-  type="submit"
-  className="animate_from_left animation_delay-11  transition-all duration-300 bg-mainOrange h-10"
-  disabled={+values.amount > +costRemaining}
->
-  {t("confirm")}
-</Button>
-</div> */
-}

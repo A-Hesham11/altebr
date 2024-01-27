@@ -19,7 +19,6 @@ const AddCommision = ({ title, editData, setShow, refetch }) => {
   const [percentage, setPercentage] = useState(false);
   const [branchId, setBranchId] = useState<string>(0);
 
-
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
     document.documentElement.lang = isRTL ? "ar" : "en";
@@ -31,12 +30,12 @@ const AddCommision = ({ title, editData, setShow, refetch }) => {
       employee_id: Yup.string().trim().required(requiredTranslation),
       type: Yup.string().trim().required(requiredTranslation),
       commission: Yup.string().trim().required(requiredTranslation),
+      target: Yup.string().trim().required(requiredTranslation),
     });
 
   const initialValues = {
     branch_id: editData?.branch_id || "",
-    target_from: editData?.target_from || "",
-    target_to: editData?.target_to || "",
+    target: editData?.target || "",
     employee_id: editData?.employee_id || "",
     type: editData?.type || "",
     commission: editData?.commission || "",
@@ -142,11 +141,6 @@ const AddCommision = ({ title, editData, setShow, refetch }) => {
           validationSchema={() => cardsValidatingSchema()}
           initialValues={initialValues}
           onSubmit={(values, { resetForm }) => {
-            if (values.target_from === "" && values.target_to === "") {
-              notify("error", `${t("please enter target from or target to")}`);
-              return;
-            }
-
             if (editData) {
               PostCardEdit({
                 ...values,
@@ -164,7 +158,7 @@ const AddCommision = ({ title, editData, setShow, refetch }) => {
           {({ values, setFieldValue, resetForm }) => (
             <Form>
               <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
-              <Select
+                <Select
                   id="branch_id"
                   label={`${t("branches")}`}
                   name="branch_id"
@@ -223,22 +217,11 @@ const AddCommision = ({ title, editData, setShow, refetch }) => {
 
                 <div>
                   <BaseInputField
-                    id="target_from"
-                    name="target_from"
+                    id="target"
+                    name="target"
                     type="text"
-                    label={`${t("target from")}`}
-                    placeholder={`${t("target from")}`}
-                  />
-                </div>
-
-                <div className="relative">
-                  <BaseInputField
-                    id="target_to"
-                    type="text"
-                    name="target_to"
-                    label={`${t("target to")}`}
-                    placeholder={`${t("target to")}`}
-                    className="relative"
+                    label={`${t("target")}`}
+                    placeholder={`${t("target")}`}
                   />
                 </div>
 

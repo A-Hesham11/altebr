@@ -28,6 +28,7 @@ const ExpensesPage = () => {
   const [taxExempt, setTaxExempt] = useState<boolean>(null);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [selectedCardId, setSelectedCardId] = useState<number>(null);
+  const [taxType, setTaxType] = useState<any>(null);
 
   const initialValues: Selling_TP = {
     include_tax: "",
@@ -42,9 +43,8 @@ const ExpensesPage = () => {
     expense_price_after_tax: "",
     expense_price_tax: "",
     sub_expense: "",
-    media: [...files] ,
+    media: [...files],
   };
-
 
   const validationSchema = Yup.object({
     expense_price: Yup.string().required("Expense price is required"),
@@ -97,6 +97,8 @@ const ExpensesPage = () => {
             setSubExpensesOption={setSubExpensesOption}
             selectedCardId={selectedCardId}
             setSelectedCardId={setSelectedCardId}
+            taxTypeType={taxType}
+            setTaxType={setTaxType}
           />
         )}
         {stage === 2 && (
@@ -110,6 +112,7 @@ const ExpensesPage = () => {
             odwyaTypeValue={odwyaTypeValue}
             setOdwyaTypeValue={setOdwyaTypeValue}
             files={files}
+            taxType={taxType}
           />
         )}
       </>
