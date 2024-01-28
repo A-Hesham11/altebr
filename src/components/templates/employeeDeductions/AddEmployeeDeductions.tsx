@@ -24,14 +24,6 @@ const AddEmployeeDeductions = ({
   const isRTL = useIsRTL();
   const [percentage, setPercentage] = useState(false);
   const [branchId, setBranchId] = useState<string>(0);
-  const [deduction, setDeduction] = useState<any>(null);
-  console.log("🚀 ~ AddEmployeeDeductions ~ deduction:", deduction);
-  const [employeeDeductionModifications, setEmployeeDeductionModifications] =
-    useState(null);
-  console.log(
-    "🚀 ~ AddEmployeeDeductions ~ employeeDeductionModifications:",
-    employeeDeductionModifications
-  );
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
@@ -73,11 +65,6 @@ const AddEmployeeDeductions = ({
       }),
     onError: (err) => console.log(err),
   });
-  console.log(
-    "🚀 ~ AddEmployeeDeductions ~ employeeDeductionsData:",
-    employeeDeductionsData
-  );
-
   const {
     data: employeesOptions,
     isLoading: employeeLoading,
@@ -86,9 +73,6 @@ const AddEmployeeDeductions = ({
   } = useFetch({
     endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}?per_page=10000`,
     queryKey: ["employees"],
-    onSuccess: (data) => {
-      // setEmployeeDeductionModifications(data);
-    },
     select: (employees) =>
       employees.map((employee) => {
         return {
@@ -101,19 +85,10 @@ const AddEmployeeDeductions = ({
       }),
     onError: (err) => console.log(err),
   });
-  console.log(
-    "🚀 ~ AddEmployeeDeductions ~ employeesOptions:",
-    employeesOptions
-  );
 
-  // useEffect(() => {
-  //   if (deduction?.id === 2) {
-  //     setEmployeeDeductionModifications(
-  //       employeesOptions?.filter((employee: any) => employee?.nationalityId !== 1)
-  //     );
-  //   }
-  // }, [deduction, employeesOptions]);
-  // console.log("🚀 ~ AddEmployeeDeductions ~ deduction:", deduction);
+  const test = employeesOptions?.filter(
+    (employee: any) => employee?.nationalityId === 1
+  );
 
   const {
     data: branchesOptions,
@@ -192,109 +167,116 @@ const AddEmployeeDeductions = ({
           initialValues={initialValues}
           onSubmit={(values, { resetForm }) => {}}
         >
-          {({ values, setFieldValue, resetForm }) => (
-            <Form>
-              <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
-                {!deductionsData && (
-                  <Select
-                    id="branch_id"
-                    label={`${t("branches")}`}
-                    name="branch_id"
-                    placeholder={`${t("branches")}`}
-                    loadingPlaceholder={`${t("loading")}`}
-                    options={branchesOptions}
-                    isLoading={branchesLoading}
-                    onChange={(e) => {
-                      setBranchId(e.id);
-                    }}
-                  />
-                )}
-                <Select
-                  id="deduction_id"
-                  label={`${t("employee deduction")}`}
-                  name="deduction_id"
-                  placeholder={`${t("employee deduction")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={employeeDeductionsData}
-                  onChange={(e) => {
-                    setDeduction(e);
-                    if (e.type === "نسبة") {
-                      setPercentage(true);
-                    } else {
-                      setPercentage(false);
-                    }
-                  }}
-                />
-                {!deductionsData && (
-                  <Select
-                    id="employee_id"
-                    label={`${t("employee")}`}
-                    name="employee_id"
-                    placeholder={`${t("employee")}`}
-                    loadingPlaceholder={`${t("loading")}`}
-                    options={employeesOptions}
-                    isLoading={employeeLoading}
-                    onChange={(e) => {
-                      //   setBranchId(e.id);
-                    }}
-                  />
-                )}
-                <div className="relative">
-                  <BaseInputField
-                    id="value"
-                    name="value"
-                    type="text"
-                    label={`${percentage ? t("percentage") : t("value")}`}
-                    placeholder={`${percentage ? t("percentage") : t("value")}`}
-                  />
-                  {percentage && (
-                    <span className="absolute left-3 top-9 font-bold text-mainGreen">
-                      %
-                    </span>
+          {({ values, setFieldValue, resetForm }) => {
+            console.log("🚀 ~ values:", values);
+
+            return (
+              <Form>
+                <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
+                  {!deductionsData && (
+                    <Select
+                      id="branch_id"
+                      label={`${t("branches")}`}
+                      name="branch_id"
+                      placeholder={`${t("branches")}`}
+                      loadingPlaceholder={`${t("loading")}`}
+                      options={branchesOptions}
+                      isLoading={branchesLoading}
+                      onChange={(e) => {
+                        setBranchId(e.id);
+                      }}
+                    />
                   )}
-                </div>
-              </div>
-              <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  className="w-fit"
-                  loading={editLoading}
-                  action={() => {
-                    if (editData) {
-                      if (deductionsData) {
-                        PostCardEdit({
-                          ...values,
-                          branch_id: deductionsData[0]?.branch_id,
-                          employee_id: deductionsData[0]?.employee_id,
-                        });
+                  <Select
+                    id="deduction_id"
+                    label={`${t("employee deduction")}`}
+                    name="deduction_id"
+                    placeholder={`${t("employee deduction")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={employeeDeductionsData}
+                    onChange={(e) => {
+                      if (e.type === "نسبة") {
+                        setPercentage(true);
                       } else {
+                        setPercentage(false);
+                      }
+                    }}
+                  />
+                  {!deductionsData && (
+                    <Select
+                      id="employee_id"
+                      label={`${t("employee")}`}
+                      name="employee_id"
+                      placeholder={`${t("employee")}`}
+                      loadingPlaceholder={`${t("loading")}`}
+                      options={
+                        values.deduction_id === 2 ? test : employeesOptions
+                      }
+                      isLoading={employeeLoading}
+                      onChange={(e) => {
+                        //   setBranchId(e.id);
+                      }}
+                    />
+                  )}
+                  <div className="relative">
+                    <BaseInputField
+                      id="value"
+                      name="value"
+                      type="text"
+                      label={`${percentage ? t("percentage") : t("value")}`}
+                      placeholder={`${
+                        percentage ? t("percentage") : t("value")
+                      }`}
+                    />
+                    {percentage && (
+                      <span className="absolute left-3 top-9 font-bold text-mainGreen">
+                        %
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    type="submit"
+                    className="w-fit"
+                    loading={editLoading}
+                    action={() => {
+                      if (editData) {
                         if (deductionsData) {
-                          PostNewCard({
+                          PostCardEdit({
                             ...values,
                             branch_id: deductionsData[0]?.branch_id,
                             employee_id: deductionsData[0]?.employee_id,
                           });
                         } else {
-                          PostNewCard({
-                            ...values,
-                          });
+                          if (deductionsData) {
+                            PostNewCard({
+                              ...values,
+                              branch_id: deductionsData[0]?.branch_id,
+                              employee_id: deductionsData[0]?.employee_id,
+                            });
+                          } else {
+                            PostNewCard({
+                              ...values,
+                            });
+                          }
                         }
+                      } else {
+                        PostNewCard({
+                          ...values,
+                        });
+                        console.log({
+                          ...values,
+                        });
                       }
-                    } else {
-                      PostNewCard({
-                        ...values,
-                      });
-                      console.log({
-                        ...values,
-                      });
-                    }
-                  }}
-                >
-                  {t("save")}
-                </Button>
-              </div>
-            </Form>
-          )}
+                    }}
+                  >
+                    {t("save")}
+                  </Button>
+                </div>
+              </Form>
+            );
+          }}
         </Formik>
       </OuterFormLayout>
     </>
