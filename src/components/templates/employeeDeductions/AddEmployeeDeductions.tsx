@@ -18,6 +18,14 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
   const isRTL = useIsRTL();
   const [percentage, setPercentage] = useState(false);
   const [branchId, setBranchId] = useState<string>(0);
+  const [deduction, setDeduction] = useState<any>(null);
+  console.log("🚀 ~ AddEmployeeDeductions ~ deduction:", deduction);
+  const [employeeDeductionModifications, setEmployeeDeductionModifications] =
+    useState(null);
+  console.log(
+    "🚀 ~ AddEmployeeDeductions ~ employeeDeductionModifications:",
+    employeeDeductionModifications
+  );
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
@@ -46,7 +54,7 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
     isLoading: isLoadingEmployeeDeductionsData,
     refetch: refetchEmployeeDeductionsData,
   } = useFetch({
-    endpoint: "/employeeSalary/api/v1/deductions",
+    endpoint: `/employeeSalary/api/v1/deductions?per_page=10000`,
     queryKey: ["employeeDeduction"],
     select: (employeeDeductions) =>
       employeeDeductions.map((employeeDeduction) => {
@@ -59,6 +67,10 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
       }),
     onError: (err) => console.log(err),
   });
+  console.log(
+    "🚀 ~ AddEmployeeDeductions ~ employeeDeductionsData:",
+    employeeDeductionsData
+  );
 
   const {
     data: employeesOptions,
@@ -66,18 +78,36 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
     refetch: refetchEmployees,
     failureReason: employeesErrorReason,
   } = useFetch({
-    endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}`,
+    endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}?per_page=10000`,
     queryKey: ["employees"],
+    onSuccess: (data) => {
+      // setEmployeeDeductionModifications(data);
+    },
     select: (employees) =>
       employees.map((employee) => {
         return {
           id: employee.id,
           value: employee.id || "",
           label: employee.name || "",
+          nationalityId: employee.nationality.id || "",
+          nationalityName: employee.nationality.name || "",
         };
       }),
     onError: (err) => console.log(err),
   });
+  console.log(
+    "🚀 ~ AddEmployeeDeductions ~ employeesOptions:",
+    employeesOptions
+  );
+
+  // useEffect(() => {
+  //   if (deduction?.id === 2) {
+  //     setEmployeeDeductionModifications(
+  //       employeesOptions?.filter((employee: any) => employee?.nationalityId !== 1)
+  //     );
+  //   }
+  // }, [deduction, employeesOptions]);
+  // console.log("🚀 ~ AddEmployeeDeductions ~ deduction:", deduction);
 
   const {
     data: branchesOptions,
@@ -179,6 +209,7 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
                   loadingPlaceholder={`${t("loading")}`}
                   options={employeeDeductionsData}
                   onChange={(e) => {
+                    setDeduction(e);
                     if (e.type === "نسبة") {
                       setPercentage(true);
                     } else {
@@ -193,6 +224,7 @@ const AddEmployeeDeductions = ({ title, editData, setShow, refetch }) => {
                   name="employee_id"
                   placeholder={`${t("employee")}`}
                   loadingPlaceholder={`${t("loading")}`}
+                  // options={employeeDeductionModifications}
                   options={employeesOptions}
                   isLoading={employeeLoading}
                   onChange={(e) => {

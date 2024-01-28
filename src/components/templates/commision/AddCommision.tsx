@@ -52,7 +52,7 @@ const AddCommision = ({ title, editData, setShow, refetch }) => {
     refetch: refetchEmployees,
     failureReason: employeesErrorReason,
   } = useFetch({
-    endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}`,
+    endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}?per_page=10000`,
     queryKey: ["employees"],
     select: (employees) =>
       employees.map((employee) => {

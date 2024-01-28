@@ -46,7 +46,7 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
     isLoading: isLoadingEmployeeBenefitsData,
     refetch: refetchEmployeeBenefitsData,
   } = useFetch({
-    endpoint: "/employeeSalary/api/v1/entitlements",
+    endpoint: "/employeeSalary/api/v1/entitlements?per_page=10000",
     queryKey: ["employeeBenefit"],
     select: (employeeBenefits) =>
       employeeBenefits.map((employeeBenefit) => {
@@ -66,7 +66,7 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
     refetch: refetchEmployees,
     failureReason: employeesErrorReason,
   } = useFetch<SelectOption_TP[]>({
-    endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}`,
+    endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}?per_page=10000`,
     queryKey: ["employees"],
     select: (employees) =>
       employees.map((employee) => {

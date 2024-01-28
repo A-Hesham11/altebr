@@ -15,7 +15,7 @@ const ShiftsDetails = ({ item }: { item?: {} }) => {
       () => [
         {
           cell: (info: any) => info.getValue(),
-          accessorKey: "category_name",
+          accessorKey: "shift_name",
           header: () => <span>{t("shift")}</span>,
         },
         {

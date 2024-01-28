@@ -115,8 +115,8 @@ const ViewEmployeeBenefits = () => {
     refetch,
     isFetching,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/employeeSalary/api/v1/employee-entitlement-per-branch/${branchId}`,
-    queryKey: ["employeeBenefits"],
+    endpoint: `/employeeSalary/api/v1/employee-entitlement-per-branch/${branchId}?page=${page}`,
+    queryKey: ["employeeBenefits", page],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data);
