@@ -21,7 +21,8 @@ import { Modal } from "../../../components/molecules";
 import AddEmployeeDeductions from "../../../components/templates/employeeDeductions/AddEmployeeDeductions";
 import { Header } from "../../../components/atoms/Header";
 
-const ViewDeductions = ({deductionsData}) => {
+const ViewDeductions = ({ employeeData }) => {
+  console.log("🚀 ~ ViewDeductions ~ employeeData:", employeeData.empDeduction)
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
@@ -42,6 +43,21 @@ const ViewDeductions = ({deductionsData}) => {
     branch_id: "",
   };
 
+  const totalReceivables = employeeData.empEntitlement?.reduce((acc, curr) => {
+    acc +=
+      curr.entitlement_id === 1
+        ? +curr.value * 0.01 * ((employeeData.salary / employeeData.basicNumberOfHours) * employeeData.extraTime)
+        : +curr.value;
+    return acc;
+  }, 0) || 0
+  console.log("🚀 ~ totalReceivables ~ totalReceivables:", totalReceivables)
+
+  const housingAllowance = employeeData.empEntitlement?.filter(item => item.entitlement_id === 2)[0]?.value
+  console.log("🚀 ~ ViewDeductions ~ HousingAllowance:", housingAllowance)
+
+  const watchPrice = +employeeData.salary / +employeeData.basicNumberOfHours;
+  console.log("🚀 ~ ViewDeductions ~ watchPrice:", watchPrice);
+
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
       {
@@ -57,7 +73,19 @@ const ViewDeductions = ({deductionsData}) => {
       {
         header: () => <span>{t("value")} </span>,
         accessorKey: "value",
-        cell: (info) => info.getValue(),
+        cell: (info) => {
+          const value =
+            +info.row.original.deduction_id === 2 // تأمين إجتماعي
+              ? ((+info.row.original.value * 0.01) * (housingAllowance + +employeeData.salary) / 2)
+              : +info.row.original.deduction_id === 3 //  تأمين مخاطر
+              ? ((+info.row.original.value * 0.01) * (housingAllowance + +employeeData.salary))
+              : +info.row.original.deduction_id === 1 // خصم
+              ? +info.row.original.value *
+                0.01 *
+                (watchPrice * employeeData.wastedTime)
+              : +info.row.original.value;
+          return value;
+        },
       },
       {
         header: () => <span>{t("actions")}</span>,
@@ -199,9 +227,14 @@ const ViewDeductions = ({deductionsData}) => {
           </div>
         </div>
 
-        {isFetching && <Loading mainTitle={t("employee deductions policies")} />}
-        {isSuccess && !isLoading && !isRefetching && deductionsData?.length ? (
-          <Table data={deductionsData} columns={columns}>
+        {isFetching && (
+          <Loading mainTitle={t("employee deductions policies")} />
+        )}
+        {isSuccess &&
+        !isLoading &&
+        !isRefetching &&
+        employeeData?.empDeduction?.length ? (
+          <Table data={employeeData?.empDeduction} columns={columns}>
             <div className="mt-3 flex items-center justify-end gap-5 p-2">
               <div className="flex items-center gap-2 font-bold">
                 {t("page")}
@@ -257,7 +290,7 @@ const ViewDeductions = ({deductionsData}) => {
               title={`${editData ? t("edit cards") : t("Add cards")}`}
               refetch={refetch}
               isSuccess={isSuccess}
-              deductionsData={deductionsData}
+              deductionsData={employeeData?.empDeduction}
             />
           )}
           {model && (
@@ -269,7 +302,7 @@ const ViewDeductions = ({deductionsData}) => {
               title={`${editData ? t("edit cards") : t("Add cards")}`}
               refetch={refetch}
               isSuccess={isSuccess}
-              deductionsData={deductionsData}
+              deductionsData={employeeData?.empDeduction}
             />
           )}
           {action.delete && (

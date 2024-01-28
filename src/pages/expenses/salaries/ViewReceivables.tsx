@@ -19,9 +19,13 @@ import { Button } from "../../../components/atoms";
 import { Modal } from "../../../components/molecules";
 import AddEmployeeBenefits from "../../../components/templates/employeeBenefits/AddEmployeeBenefits";
 import { Header } from "../../../components/atoms/Header";
+import { numberContext } from "../../../context/settings/number-formatter";
 
-const ViewReceivables = ({receivablesData}) => {
+const ViewReceivables = ({ employeeData }) => {
+console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
 
+  console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData.empEntitlement)
+  const {  formatReyal } = numberContext();
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
@@ -42,6 +46,10 @@ const ViewReceivables = ({receivablesData}) => {
     branch_id: "",
   };
 
+  const watchPrice = +employeeData.salary / +employeeData.basicNumberOfHours;
+  console.log("🚀 ~ ViewReceivables ~ watchPrice:", watchPrice)
+
+
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
       {
@@ -57,7 +65,15 @@ const ViewReceivables = ({receivablesData}) => {
       {
         header: () => <span>{t("value")} </span>,
         accessorKey: "value",
-        cell: (info) => info.getValue(),
+        cell: (info) => {
+          const value =
+            info.row.original.entitlement_id === 1
+              ? +info.row.original.value *
+                0.01 *
+                (watchPrice * employeeData.extraTime)
+              : +info.row.original.value;
+          return formatReyal(Number(value));
+        },
       },
       {
         header: () => <span>{t("actions")}</span>,
@@ -181,8 +197,11 @@ const ViewReceivables = ({receivablesData}) => {
         </div>
 
         {isFetching && <Loading mainTitle={t("employee benefits policies")} />}
-        {isSuccess && !isLoading && !isRefetching && receivablesData?.length ? (
-          <Table data={receivablesData} columns={columns}>
+        {isSuccess &&
+        !isLoading &&
+        !isRefetching &&
+        employeeData?.empEntitlement?.length ? (
+          <Table data={employeeData?.empEntitlement} columns={columns}>
             <div className="mt-3 flex items-center justify-end gap-5 p-2">
               <div className="flex items-center gap-2 font-bold">
                 {t("page")}
@@ -238,7 +257,7 @@ const ViewReceivables = ({receivablesData}) => {
               title={`${editData ? t("edit cards") : t("Add cards")}`}
               refetch={refetch}
               isSuccess={isSuccess}
-              receivablesData={receivablesData}
+              receivablesData={employeeData?.empEntitlement}
             />
           )}
           {model && (
@@ -250,14 +269,18 @@ const ViewReceivables = ({receivablesData}) => {
               title={`${editData ? t("edit cards") : t("Add cards")}`}
               refetch={refetch}
               isSuccess={isSuccess}
-              receivablesData={receivablesData}
+              receivablesData={employeeData?.empEntitlement}
             />
           )}
           {action.delete && (
             <div className="flex flex-col gap-8 justify-center items-center">
               <Header header={` حذف : ${deleteData?.employee_name}`} />
               <div className="flex gap-4 justify-center items-cent">
-                <Button loading={mutateLoading} action={handleDelete} variant="danger">
+                <Button
+                  loading={mutateLoading}
+                  action={handleDelete}
+                  variant="danger"
+                >
                   {`${t("confirm")}`}
                 </Button>
                 <Button action={() => setOpen(false)}>{`${t("close")}`}</Button>

@@ -53,7 +53,7 @@ const AddEmployeeBenefits = ({
     isLoading: isLoadingEmployeeBenefitsData,
     refetch: refetchEmployeeBenefitsData,
   } = useFetch({
-    endpoint: "/employeeSalary/api/v1/entitlements",
+    endpoint: "/employeeSalary/api/v1/entitlements?per_page=10000",
     queryKey: ["employeeBenefit"],
     select: (employeeBenefits) =>
       employeeBenefits.map((employeeBenefit) => {
@@ -243,22 +243,17 @@ const AddEmployeeBenefits = ({
                         });
                       }
                     } else {
-                      // if (receivablesData) {
-                      //   PostNewCard({
-                      //     ...values,
-                      //     branch_id: receivablesData[0]?.branch_id,
-                      //     employee_id: receivablesData[0]?.employee_id,
-                      //   });
-                      // } else {
-                      //   PostNewCard({
-                      //     ...values,
-                      //   });
-                      // }
-                    
-                      console.log("🚀 ~ receivablesData:",   {
-                        ...values,
-                      })
-
+                      if (receivablesData) {
+                        PostNewCard({
+                          ...values,
+                          branch_id: receivablesData[0]?.branch_id,
+                          employee_id: receivablesData[0]?.employee_id,
+                        });
+                      } else {
+                        PostNewCard({
+                          ...values,
+                        });
+                      }
                     }
                   }}
                 >

@@ -15,11 +15,13 @@ import { notify } from "../../utils/toast";
 import { mutateData } from "../../utils/mutateData";
 import { useQueryClient } from "@tanstack/react-query";
 import { GiCheckMark } from "react-icons/gi";
-import { formatDate } from "../../utils/date"
+import { formatDate } from "../../utils/date";
+import { Modal } from "../../components/molecules";
 
 const SellingHome = () => {
-  const { logOutHandler, userData, isLoggingOut } = useContext(authCtx);
-  console.log("🚀 ~ SellingHome ~ isLoggingOut:", isLoggingOut);
+  const { logOutHandler, userData, isLoggingOut, open, setOpen } =
+    useContext(authCtx);
+
   console.log("🚀 ~ SellingHome ~ userData:", userData);
 
   const isRTL = useIsRTL();
@@ -33,9 +35,9 @@ const SellingHome = () => {
     localStorage.getItem("departure")
   );
 
-  const {
-    mutate: mutateAudience,
-  } = useMutate({
+  const [isDeparture, setIsDeparture] = useState(false);
+
+  const { mutate: mutateAudience } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["Audience"],
     onSuccess: (data) => {
@@ -48,10 +50,42 @@ const SellingHome = () => {
     },
   });
 
+  // Assuming currentTime is in the format 'HH:mm:ss'
+  const targetTime = new Date(); // Replace this with the actual current time
+  const currentTime = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).format(targetTime);
 
-  const {
-    mutate : mutateDeparture,
-  } = useMutate({
+  const shifts = userData?.workingshifts || [];
+  console.log("🚀 ~ SellingHome ~ shifts:", shifts);
+
+  // Function to check if the current time is between shift_from and shift_to
+  function isTimeBetween(shift) {
+    const shiftFrom = new Date(`2000-01-01 ${shift.shift_from}`);
+    const shiftTo = new Date(`2000-01-01 ${shift.shift_to}`);
+    console.log("🚀 ~ isTimeBetween ~ shiftFrom:", shiftFrom);
+    console.log("🚀 ~ isTimeBetween ~ shiftTo:", shiftTo);
+    const currentTimeDate = new Date(`2000-01-01 ${currentTime}`);
+
+    console.log("🚀 ~ isTimeBetween ~ currentTimeDate:", currentTimeDate);
+    return currentTimeDate >= shiftFrom && currentTimeDate <= shiftTo;
+  }
+
+  // Find the shift that matches the condition
+  const currentShift = shifts && shifts?.find(isTimeBetween);
+  console.log("🚀 ~ SellingHome ~ currentShift:", currentShift);
+
+  // Print the result
+  if (currentShift) {
+    console.log("Current shift:", currentShift);
+  } else {
+    console.log("No shift currently");
+  }
+
+  const { mutate: mutateDeparture } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["departure"],
     onSuccess: (data) => {
@@ -67,12 +101,12 @@ const SellingHome = () => {
   useEffect(() => {
     if (isLoggingOut === false) {
       localStorage.setItem("departure", false);
-      setDepartureButton(localStorage.getItem("departure"))
+      setDepartureButton(localStorage.getItem("departure"));
     }
   }, []);
 
   function PostNewCardAudience(values: any) {
-    console.log("🚀 ~ PostNewCardAudience ~ values:", values)
+    console.log("🚀 ~ PostNewCardAudience ~ values:", values);
     mutateAudience({
       endpointName: "/banchSalary/api/v1/presences",
       values,
@@ -154,16 +188,16 @@ const SellingHome = () => {
         </Button>
 
         <div className="flex gap-3">
-          <Button
+          {/* <Button
             className="bg-white w-24 flex justify-center items-center"
             action={() => {
               const currentDate = new Date();
-              const currentTime = new Intl.DateTimeFormat('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
+              const currentTime = new Intl.DateTimeFormat("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
                 hour12: false,
               }).format(currentDate);
-              const currentDay =  formatDate(currentDate);
+              const currentDay = formatDate(currentDate);
 
               PostNewCardAudience({
                 employee_id: userData?.id,
@@ -174,7 +208,7 @@ const SellingHome = () => {
               });
 
               localStorage.setItem("audience", true);
-              setAudienceButton(localStorage.getItem("audience"))
+              setAudienceButton(localStorage.getItem("audience"));
             }}
             disabled={audienceButton == "true" || departureButton == "true"}
           >
@@ -183,28 +217,12 @@ const SellingHome = () => {
             ) : (
               <img src={Audience} alt="Audience" />
             )}
-          </Button>
+          </Button> */}
           <Button
             className="bg-white w-24 flex justify-center items-center"
             action={() => {
-              const currentDate = new Date();
-              const currentTime = new Intl.DateTimeFormat('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false,
-              }).format(currentDate);
-              const currentDay =  formatDate(currentDate);
-
-              PostNewCardDeparture({
-                employee_id: userData?.id,
-                branch_id: userData?.branch_id,
-                departure: currentTime,
-                day: currentDay,
-              });
-              localStorage.setItem("departure", true);
-              setDepartureButton(localStorage.getItem("departure"))
-              localStorage.setItem("audience", false);
-              setAudienceButton(localStorage.getItem("audience"))
+              setOpen(true);
+              setIsDeparture(true);
             }}
             disabled={departureButton == "true"}
           >
@@ -216,6 +234,100 @@ const SellingHome = () => {
           </Button>
         </div>
       </div>
+      {!isLoggingOut && (
+        <Modal isOpen={open} onClose={() => setOpen(false)}>
+          <div className="text-center mt-12">
+            <h2 className="font-bold text-lg my-4">
+              {t("Welcome")}{" "}
+              <span className="text-mainGreen">{userData?.name}</span>
+            </h2>
+            {!isDeparture ? (
+              <h2 className="font-bold text-lg">
+                {t("Attendance must be registered first")}{" "}
+                <span className="text-mainGreen">
+                  {currentShift?.shift_name}
+                </span>
+              </h2>
+            ) : (
+              <h2 className="font-bold text-lg">
+                {t("Check out registration")}{" "}
+                <span className="text-mainGreen">
+                  {currentShift?.shift_name}
+                </span>
+              </h2>
+            )}
+            <div className="flex gap-3 my-2 w-full m-auto">
+              {!isDeparture ? (
+                <Button
+                  className="bg-mainGray w-24 flex justify-center items-center shadow mx-auto mt-3"
+                  action={() => {
+                    const currentDate = new Date();
+                    const currentTime = new Intl.DateTimeFormat("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    }).format(currentDate);
+                    const currentDay = formatDate(currentDate);
+
+                    PostNewCardAudience({
+                      employee_id: userData?.id,
+                      branch_id: userData?.branch_id,
+                      presences: currentTime,
+                      day: currentDay,
+                      is_presence: 1,
+                      shift_id: currentShift?.id,
+                    });
+
+                    localStorage.setItem("audience", true);
+                    setAudienceButton(localStorage.getItem("audience"));
+                  }}
+                  disabled={
+                    audienceButton == "true" || departureButton == "true"
+                  }
+                >
+                  {audienceButton == "true" ? (
+                    <GiCheckMark size={24} className="fill-mainGreen" />
+                  ) : (
+                    <img src={Audience} alt="Audience" />
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  className="bg-mainGray w-24 flex justify-center items-center shadow mx-auto mt-3"
+                  action={() => {
+                    const currentDate = new Date();
+                    const currentTime = new Intl.DateTimeFormat("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    }).format(currentDate);
+                    const currentDay = formatDate(currentDate);
+
+                    PostNewCardDeparture({
+                      employee_id: userData?.id,
+                      branch_id: userData?.branch_id,
+                      departure: currentTime,
+                      day: currentDay,
+                      shift_id: currentShift?.id,
+                    });
+                    localStorage.setItem("departure", true);
+                    setDepartureButton(localStorage.getItem("departure"));
+                    localStorage.setItem("audience", false);
+                    setAudienceButton(localStorage.getItem("audience"));
+                  }}
+                  disabled={departureButton == "true"}
+                >
+                  {departureButton == "true" ? (
+                    <GiCheckMark size={24} className="fill-mainGreen" />
+                  ) : (
+                    <img src={Departure} alt="Departure" />
+                  )}
+                </Button>
+              )}
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

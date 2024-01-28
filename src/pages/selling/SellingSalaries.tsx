@@ -3,27 +3,21 @@ import { t } from "i18next";
 import { Form, Formik } from "formik";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { BsEye } from "react-icons/bs";
-import { useFetch, useIsRTL } from "../../../hooks";
-import { authCtx } from "../../../context/auth-and-perm/auth";
-import { Loading } from "../../../components/organisms/Loading";
-import { Back } from "../../../utils/utils-components/Back";
-import { formatDate, getDayAfter } from "../../../utils/date";
-import {
-  BaseInputField,
-  DateInputField,
-  Modal,
-} from "../../../components/molecules";
-import { SelectBranches } from "../../../components/templates/reusableComponants/branches/SelectBranches";
-import { Button } from "../../../components/atoms";
-import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
-import { NationalAddress } from "../../../components/templates";
-import { SelectNationality } from "../../../components/templates/systemEstablishment/SelectNationality";
-import { SelectRole } from "../../../components/templates/reusableComponants/roles/SelectRole";
-import PaymentBondsTable from "../../coding/branch bonds/PaymentBondsTable";
-import ViewReceivables from "./ViewReceivables";
-import ViewDeductions from "./ViewDeductions";
+import { useFetch, useIsRTL } from "../../hooks";
+import { authCtx } from "../../context/auth-and-perm/auth";
 import { IoMdAdd } from "react-icons/io";
-import { numberContext } from "../../../context/settings/number-formatter";
+import { Loading } from "../../components/organisms/Loading";
+import { Back } from "../../utils/utils-components/Back";
+import { formatDate, getDayAfter } from "../../utils/date";
+import { SelectNationality } from "../../components/templates/systemEstablishment/SelectNationality";
+import { SelectBranches } from "../../components/templates/reusableComponants/branches/SelectBranches";
+import { SelectRole } from "../../components/templates/reusableComponants/roles/SelectRole";
+import { Button } from "../../components/atoms";
+import { Table } from "../../components/templates/reusableComponants/tantable/Table";
+import { Modal } from "../../components/molecules";
+import ViewReceivables from "../expenses/salaries/ViewReceivables";
+import ViewDeductions from "../expenses/salaries/ViewDeductions";
+import { numberContext } from "../../context/settings/number-formatter";
 
 interface TableColumn {
   cell: (info: any) => ReactNode;
@@ -31,7 +25,7 @@ interface TableColumn {
   header: () => ReactNode;
 }
 
-const SalariesPage = () => {
+const SellingSalaries = () => {
   // STATE
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
@@ -82,7 +76,10 @@ const SalariesPage = () => {
         header: () => <span>{t("salary")}</span>,
       },
       {
-        cell: (info) => isNaN(info.row.original.commission_value)  ? 0 : +info.row.original.commission_value,
+        cell: (info) =>
+          isNaN(info.row.original.commission_value)
+            ? 0
+            : +info.row.original.commission_value,
         accessorKey: "commission_value",
         header: () => <span>{t("commission")}</span>,
       },
@@ -93,7 +90,7 @@ const SalariesPage = () => {
             info.row.original.empDeduction,
             info.row.original.salary,
             info.row.original.basicNumberOfHours,
-            info.row.original.extraTime,
+            info.row.original.extraTime
           );
           return (
             <div className="flex items-center justify-between">
@@ -165,18 +162,20 @@ const SalariesPage = () => {
       },
       {
         cell: (info) => {
-          const commissionValue = isNaN(info.row.original.commission_value)  ? 0 : +info.row.original.commission_value
-          console.log("🚀 ~ SalariesPage ~ commissionValue:", commissionValue)
+          const commissionValue = isNaN(info.row.original.commission_value)
+            ? 0
+            : +info.row.original.commission_value;
+          console.log("🚀 ~ SalariesPage ~ commissionValue:", commissionValue);
           const netSalary = calcNetSalary(
             info.row.original.empEntitlement,
             info.row.original.empDeduction,
             info.row.original.salary,
             info.row.original.basicNumberOfHours,
             info.row.original.extraTime,
-            info.row.original.wastedTime,
+            info.row.original.wastedTime
           );
-          console.log("🚀 ~ SalariesPage ~ netSalary:", Number(netSalary))
-          return  formatReyal(Number(netSalary + commissionValue));
+          console.log("🚀 ~ SalariesPage ~ netSalary:", Number(netSalary));
+          return formatReyal(Number(netSalary + commissionValue));
         },
         accessorKey: "net_salary",
         header: () => <span>{t("Net salary")}</span>,
@@ -186,12 +185,11 @@ const SalariesPage = () => {
   );
 
   const calcTotalReceivables = (
-
     entitlement: any[] | undefined,
     deductions: any[] | undefined,
     salary: number,
     basicNumberOfHours: number,
-    extraTime: number,
+    extraTime: number
   ): number => {
     return (
       entitlement?.reduce((acc, curr) => {
@@ -200,7 +198,7 @@ const SalariesPage = () => {
             ? +curr.value * 0.01 * ((salary / basicNumberOfHours) * extraTime)
             : +curr.value;
         return acc;
-      },  0) || 0
+      }, 0) || 0
     );
   };
 
@@ -235,16 +233,16 @@ const SalariesPage = () => {
     salary: number,
     basicNumberOfHours: number,
     extraTime: number,
-    wastedTime: number,
+    wastedTime: number
   ): number => {
     const totalReceivables = calcTotalReceivables(
       entitlement,
       deductions,
       salary,
       basicNumberOfHours,
-      extraTime,
+      extraTime
     );
-    console.log("🚀 ~ SalariesPage ~ totalReceivables:", totalReceivables)
+    console.log("🚀 ~ SalariesPage ~ totalReceivables:", totalReceivables);
     const totalDeductions = calcTotalDeductions(
       entitlement,
       deductions,
@@ -252,7 +250,7 @@ const SalariesPage = () => {
       basicNumberOfHours,
       wastedTime
     );
-    console.log("🚀 ~ SalariesPage ~ totalDeductions:", totalDeductions)
+    console.log("🚀 ~ SalariesPage ~ totalDeductions:", totalDeductions);
     return +salary + totalReceivables - totalDeductions;
   };
 
@@ -311,9 +309,6 @@ const SalariesPage = () => {
               <div className="flex items-end gap-3 w-full">
                 <div className="w-[230px]">
                   <SelectNationality name="nationality_id" />
-                </div>
-                <div className="w-[230px]">
-                  <SelectBranches required name="branch_id" />
                 </div>
                 <SelectRole name="role_id" required />
                 <Button
@@ -393,4 +388,4 @@ const SalariesPage = () => {
   );
 };
 
-export default SalariesPage;
+export default SellingSalaries;

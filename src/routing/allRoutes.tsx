@@ -125,6 +125,7 @@ import SalariesPage from "../pages/expenses/salaries/SalariesPage";
 import AttendanceDeparture from "../components/selling/continuity/AttendanceDeparture";
 import ContinuityPage from "../pages/selling/ContinuityPage";
 import ViewCommision from "../components/templates/commision/ViewCommision";
+import SellingSalaries from "../pages/selling/SellingSalaries";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -408,6 +409,7 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/buying" element={<BuyingPage />} />
           <Route path="/selling/management" element={<Management />} />
           <Route path="/selling/exchange" element={<Expenses />} />
+          <Route path="/selling/salaries" element={<SellingSalaries />} />
           <Route path="/selling/clients" element={<Clients />} />
           <Route path="/selling/customersData" element={<ClientsData />} />
           <Route path="/selling/reservePiece" element={<ReservePiece />} />
