@@ -52,6 +52,9 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
   const [userToken, setUserToken] = useState(initialToken)
   const [userData, setUserData] = useState(initialUserData)
   const [permissions, setPermissions] = useState(initialPermissions)
+
+  const [open, setOpen] = useState(false);
+
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -87,6 +90,7 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
 
           // login=true & notify & navigate
           setIsLoggedIn(true)
+          setOpen(true)
           notify("success", "Welcome")
           navigate("/")
           
@@ -226,6 +230,8 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
         userData,
         permissions,
         isLoadingUpdatedUserData: false,
+        open,
+        setOpen
         // isLoadingUpdatedUserData:
         // isLoadingUpdatedUserData || isLoadingUpdatedUserPermissions,
       }}

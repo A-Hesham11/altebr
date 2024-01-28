@@ -100,32 +100,32 @@ import BuyingPage from "../pages/Buying/BuyingPage";
 import ViewBuyingPolicies from "../components/templates/buyingPolicies/ViewBuyingPolicies";
 import BuyingInvoice from "../pages/Buying/BuyingInvoice";
 import WeightAdjustment from "../pages/Buying/WeightAdjustment/WeightAdjustment";
-import BuyingRestrictionsInvoice from "../pages/Buying/BuyingRestrictionsInvoice"
-import PaymentToManagementPage from "../pages/Payment/PaymentToManagementPage"
-import VeiwPaymentToManagement from "../pages/Payment/VeiwPaymentToManagement"
-import PurchaseBonds from "../pages/Buying/Bonds/PurchaseBonds"
-import WeightAdjustmentBonds from "../pages/Buying/Bonds/WeightAdjustmentBonds"
-import PaymentBonds from "../pages/coding/branch bonds/PaymentBonds"
-import ViewBondsFromBranchs from "../pages/coding/branch bonds/ViewBondsFromBranchs"
-import { ViewBonds } from "../pages/coding/branch bonds/ViewBonds"
-import Expenses from "../pages/expenses/Expenses"
-import ExpensesInvoice from "../pages/expenses/Invoice/ExpensesInvoice"
-import ExpensesBonds from "../pages/expenses/Bonds/ExpensesBonds"
-import ViewExpensesPolicies from "../components/templates/expensesPolicy/ViewExpensesPolicies"
-import ViewSubExpensesPolicies from "../components/templates/subExpensesPolicy/ViewSubExpensesPolicies"
-import ViewTaxExpensesPolicies from "../components/templates/taxExpensesPolicy/ViewTaxExpensesPolicies"
-import ExpensesPage from "../pages/expenses/ExpensesPage"
+import BuyingRestrictionsInvoice from "../pages/Buying/BuyingRestrictionsInvoice";
+import PaymentToManagementPage from "../pages/Payment/PaymentToManagementPage";
+import VeiwPaymentToManagement from "../pages/Payment/VeiwPaymentToManagement";
+import PurchaseBonds from "../pages/Buying/Bonds/PurchaseBonds";
+import WeightAdjustmentBonds from "../pages/Buying/Bonds/WeightAdjustmentBonds";
+import PaymentBonds from "../pages/coding/branch bonds/PaymentBonds";
+import ViewBondsFromBranchs from "../pages/coding/branch bonds/ViewBondsFromBranchs";
+import { ViewBonds } from "../pages/coding/branch bonds/ViewBonds";
+import Expenses from "../pages/expenses/Expenses";
+import ExpensesInvoice from "../pages/expenses/Invoice/ExpensesInvoice";
+import ExpensesBonds from "../pages/expenses/Bonds/ExpensesBonds";
+import ViewExpensesPolicies from "../components/templates/expensesPolicy/ViewExpensesPolicies";
+import ViewSubExpensesPolicies from "../components/templates/subExpensesPolicy/ViewSubExpensesPolicies";
+import ViewTaxExpensesPolicies from "../components/templates/taxExpensesPolicy/ViewTaxExpensesPolicies";
+import ExpensesPage from "../pages/expenses/ExpensesPage";
 import ViewWorkHours from "../components/templates/workHours/ViewWorkHours";
 import ViewSalariesPolicies from "../components/templates/salaries/ViewSalariesPolicies";
 import ViewEtitlementsPolicies from "../components/templates/entitlements/ViewEtitlementsPolicies";
 import ViewDeductionsPolicy from "../components/templates/deductions/ViewDeductionsPolicy";
 import ViewEmployeeBenefits from "../components/templates/employeeBenefits/ViewEmployeeBenefits";
 import ViewEmployeeDeductions from "../components/templates/employeeDeductions/ViewEmployeeDeductions";
-import SalariesPage from "../pages/expenses/SalariesPage";
+import SalariesPage from "../pages/expenses/salaries/SalariesPage";
 import AttendanceDeparture from "../components/selling/continuity/AttendanceDeparture";
 import ContinuityPage from "../pages/selling/ContinuityPage";
 import ViewCommision from "../components/templates/commision/ViewCommision";
-
+import SellingSalaries from "../pages/selling/SellingSalaries";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -140,7 +140,7 @@ export const AllRoutesProvider = () => {
             path="/settings"
             element={<Settings title={t("settings")} />}
           />
-          
+
           {/* CODING */}
           <Route path="/coding" element={<Coding title={t("coding")} />} />
           <Route
@@ -409,6 +409,7 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/buying" element={<BuyingPage />} />
           <Route path="/selling/management" element={<Management />} />
           <Route path="/selling/exchange" element={<Expenses />} />
+          <Route path="/selling/salaries" element={<SellingSalaries />} />
           <Route path="/selling/clients" element={<Clients />} />
           <Route path="/selling/customersData" element={<ClientsData />} />
           <Route path="/selling/reservePiece" element={<ReservePiece />} />
@@ -599,10 +600,7 @@ export const AllRoutesProvider = () => {
             path="/buying/weightAdjustment"
             element={<WeightAdjustment />}
           />
-          <Route
-            path="/expenses/Salaries"
-            element={<SalariesPage />}
-          />
+          <Route path="/expenses/Salaries" element={<SalariesPage />} />
           <Route path="/buying/purchaseBonds" element={<PurchaseBonds />} />
           <Route
             path="/buying/weightAdjustmentBonds"
@@ -614,7 +612,10 @@ export const AllRoutesProvider = () => {
           />
           {/* BUYING END */}
           {/* EXPENSES START */}
-          <Route path="/system/mainExpensesPolicies" element={<ViewExpensesPolicies />} />
+          <Route
+            path="/system/mainExpensesPolicies"
+            element={<ViewExpensesPolicies />}
+          />
           <Route path="/expenses/expensesInvoice" element={<ExpensesPage />} />
           <Route path="/expenses/expensesBonds" element={<ExpensesBonds />} />
 
@@ -634,23 +635,37 @@ export const AllRoutesProvider = () => {
           <Route path="/system/workHours" element={<ViewWorkHours />} />
 
           {/* SALARIES */}
-          <Route path="/system/salaryPolicies" element={<ViewSalariesPolicies />} />
+          <Route
+            path="/system/salaryPolicies"
+            element={<ViewSalariesPolicies />}
+          />
 
           {/* ENTITLEMENTS */}
-          <Route path="/system/entitlementsPolicies" element={<ViewEtitlementsPolicies />} />
+          <Route
+            path="/system/entitlementsPolicies"
+            element={<ViewEtitlementsPolicies />}
+          />
 
           {/* DEDUCTIONS */}
-          <Route path="/system/deductionsPolicies" element={<ViewDeductionsPolicy />} />
+          <Route
+            path="/system/deductionsPolicies"
+            element={<ViewDeductionsPolicy />}
+          />
 
           {/* EMPLOYEE BENEFITS */}
-          <Route path="/system/employeeBenefitsPolicies" element={<ViewEmployeeBenefits />} />
+          <Route
+            path="/system/employeeBenefitsPolicies"
+            element={<ViewEmployeeBenefits />}
+          />
 
           {/* EMPLOYEE DEDUCTIONS */}
-          <Route path="/system/employeeDeductionsPolicies" element={<ViewEmployeeDeductions />} />
+          <Route
+            path="/system/employeeDeductionsPolicies"
+            element={<ViewEmployeeDeductions />}
+          />
 
           {/* COMMISION */}
           <Route path="/system/commisionPolicies" element={<ViewCommision />} />
-
 
           {/* EXPENSES END */}
           <Route path="/system/cardsData" element={<ViewBankCardsData />} />

@@ -39,7 +39,7 @@ const Expenses = () => {
         icon: receiveitem,
         title_ar: "المرتبات",
         title_en: "Salaries",
-        route: "/expenses/Salaries",
+        route: "/selling/salaries",
         // underCardInfo: (
         //   <Link
         //     to="/buying/weightAdjustmentBonds/"

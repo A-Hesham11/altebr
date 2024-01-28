@@ -199,6 +199,20 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: 'Expenses',
+    icon: CiExport,
+        items: [
+          {
+            id: crypto.randomUUID(),
+            label: 'Salaries',
+            link: "/expenses/Salaries",
+            icon: CiExport,
+          },
+        ]
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: 'system setting',
     link: "/system",
     icon: CiSettings,

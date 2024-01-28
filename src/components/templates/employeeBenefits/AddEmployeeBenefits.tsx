@@ -12,7 +12,14 @@ import { t } from "i18next";
 import { mutateData } from "../../../utils/mutateData";
 import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
 
-const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
+const AddEmployeeBenefits = ({
+  title,
+  editData,
+  setShow,
+  refetch,
+  receivablesData,
+}) => {
+  console.log("🚀 ~ receivablesData:", receivablesData);
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
@@ -159,18 +166,20 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
           {({ values, setFieldValue, resetForm }) => (
             <Form>
               <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
-                <Select
-                  id="branch_id"
-                  label={`${t("branches")}`}
-                  name="branch_id"
-                  placeholder={`${t("branches")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={branchesOptions}
-                  isLoading={branchesLoading}
-                  onChange={(e) => {
-                    setBranchId(e.id);
-                  }}
-                />
+                {!receivablesData && (
+                  <Select
+                    id="branch_id"
+                    label={`${t("branches")}`}
+                    name="branch_id"
+                    placeholder={`${t("branches")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={branchesOptions}
+                    isLoading={branchesLoading}
+                    onChange={(e) => {
+                      setBranchId(e.id);
+                    }}
+                  />
+                )}
                 <Select
                   id="entitlement_id"
                   label={`${t("employee benefits")}`}
@@ -186,19 +195,20 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
                     }
                   }}
                 />
-
-                <Select
-                  id="employee_id"
-                  label={`${t("employee")}`}
-                  name="employee_id"
-                  placeholder={`${t("employee")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={employeesOptions}
-                  isLoading={employeeLoading}
-                  onChange={(e) => {
-                    //   setBranchId(e.id);
-                  }}
-                />
+                {!receivablesData && (
+                  <Select
+                    id="employee_id"
+                    label={`${t("employee")}`}
+                    name="employee_id"
+                    placeholder={`${t("employee")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={employeesOptions}
+                    isLoading={employeeLoading}
+                    onChange={(e) => {
+                      //   setBranchId(e.id);
+                    }}
+                  />
+                )}
                 <div className="relative">
                   <BaseInputField
                     id="value"
@@ -221,16 +231,29 @@ const AddEmployeeBenefits = ({ title, editData, setShow, refetch }) => {
                   loading={editLoading}
                   action={() => {
                     if (editData) {
-                      PostCardEdit({
-                        ...values,
-                      });
+                      if (receivablesData) {
+                        PostCardEdit({
+                          ...values,
+                          branch_id: receivablesData[0]?.branch_id,
+                          employee_id: receivablesData[0]?.employee_id,
+                        });
+                      } else {
+                        PostCardEdit({
+                          ...values,
+                        });
+                      }
                     } else {
-                      PostNewCard({
-                        ...values,
-                      });
-                      console.log({
-                        ...values,
-                      });
+                      if (receivablesData) {
+                        PostNewCard({
+                          ...values,
+                          branch_id: receivablesData[0]?.branch_id,
+                          employee_id: receivablesData[0]?.employee_id,
+                        });
+                      } else {
+                        PostNewCard({
+                          ...values,
+                        });
+                      }
                     }
                   }}
                 >
