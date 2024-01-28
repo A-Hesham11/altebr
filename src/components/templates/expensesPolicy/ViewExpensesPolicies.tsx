@@ -114,8 +114,8 @@ const ViewExpensesPolicies = () => {
     refetch,
     isFetching,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/expenses/api/v1/majorexpences`,
-    queryKey: ["expensesPolicies"],
+    endpoint: `/expenses/api/v1/majorexpences?page=${page}`,
+    queryKey: ["expensesPolicies", page],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data);

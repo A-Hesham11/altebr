@@ -122,8 +122,8 @@ const ViewTaxExpensesPolicies = () => {
     refetch,
     isFetching,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/expenses/api/v1/expence-tax/${branchId}`,
-    queryKey: ["taxExpensesPolicies"],
+    endpoint: `/expenses/api/v1/expence-tax/${branchId}?page=${page}`,
+    queryKey: ["taxExpensesPolicies", page],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data);

@@ -34,6 +34,7 @@ const ExpensesInvoiceSecond = ({
   taxType,
   files,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ taxType:", taxType)
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
@@ -137,7 +138,7 @@ const ExpensesInvoiceSecond = ({
       description: values.add_description,
       expence_amount: +values.expense_price,
       expence_tax: +values.expense_price_after_tax,
-      expencetax_id: taxType?.expencetax_id,
+      expencetax_id: taxType?.expencetax_id ? taxType?.expencetax_id : "",
     };
 
     console.log({ ...invoice });

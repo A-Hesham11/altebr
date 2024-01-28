@@ -81,7 +81,7 @@ const ViewDeductionsPolicy = () => {
                   }}
                   className="fill-mainGreen"
                 />
-                <SvgDelete
+                {/* <SvgDelete
                   action={() => {
                     setOpen((prev) => !prev);
                     setDeleteData(info.row.original);
@@ -93,7 +93,7 @@ const ViewDeductionsPolicy = () => {
                     setModel(false);
                   }}
                   stroke="#ef4444"
-                />
+                /> */}
               </div>
             );
           },
@@ -112,8 +112,8 @@ const ViewDeductionsPolicy = () => {
       refetch,
       isFetching,
     } = useFetch({
-      endpoint: `/employeeSalary/api/v1/deductions`,
-      queryKey: ["deductions"],
+      endpoint: `/employeeSalary/api/v1/deductions?page=${page}`,
+      queryKey: ["deductions", page],
       pagination: true,
       onSuccess(data) {
         setDataSource(data.data);

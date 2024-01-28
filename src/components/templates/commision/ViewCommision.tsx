@@ -123,8 +123,8 @@ const ViewCommision = () => {
     refetch,
     isFetching,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/employeeSalary/api/v1/employee-commission-per-branch/${branchId}`,
-    queryKey: ["commission"],
+    endpoint: `/employeeSalary/api/v1/employee-commission-per-branch/${branchId}?page=${page}`,
+    queryKey: ["commission", page],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data);

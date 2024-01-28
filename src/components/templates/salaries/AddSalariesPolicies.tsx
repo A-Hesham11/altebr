@@ -21,6 +21,8 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
   const [shifts, setShifts] = useState<SelectOption_TP[]>([]);
   console.log("🚀 ~ AddSalariesPolicies ~ shifts:", shifts);
 
+  // const []
+
   // Effect hook to handle RTL layout
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
@@ -48,7 +50,7 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
     refetch: refetchEmployees,
     failureReason: employeesErrorReason,
   } = useFetch<SelectOption_TP[]>({
-    endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}`,
+    endpoint: `/employeeSalary/api/v1/employee-per-branch/${branchId}?per_page=10000`,
     queryKey: ["employees"],
     select: (employees) =>
       employees.map((employee) => {
@@ -68,7 +70,7 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
     refetch: refetchShifts,
     failureReason: shiftErrorReason,
   } = useFetch<SelectOption_TP[]>({
-    endpoint: `/employeeSalary/api/v1/shifts-per-branch/${branchId}`,
+    endpoint: `/employeeSalary/api/v1/shifts-per-branch/${branchId}?per_page=10000`,
     queryKey: ["shifts"],
     select: (shifts) => {
       return shifts.map((shift) => {
@@ -156,6 +158,24 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
       refetch();
     }
   }, [isSuccessData]);
+
+  // useEffect(() => {
+  //   const best = {
+  //       id: editData?.job_type || "",
+  //       value: editData?.job_type || "",
+  //       label: editData?.job_type || `${t("job title")}` ,
+  //   }
+  //   // setJobType(best);
+  // }, []);
+
+  // useEffect(() => {
+  //   const best = {
+  //       id: editData?.max_buy_type || "",
+  //       value: editData?.max_buy_type || "",
+  //       label: editData?.max_buy_type || `${t("maximum buy type")}` ,
+  //   }
+  //   // setmaxBuyingType(best);
+  // }, []);
 
   // Return the component JSX
   return (

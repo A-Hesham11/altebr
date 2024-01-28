@@ -125,8 +125,8 @@ const ViewSalariesPolicies = () => {
     refetch,
     isFetching,
   } = useFetch({
-    endpoint: `/employeeSalary/api/v1/salaries`,
-    queryKey: ["salaries"],
+    endpoint: `/employeeSalary/api/v1/salaries?page=${page}`,
+    queryKey: ["salaries", page],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data);

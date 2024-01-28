@@ -73,7 +73,7 @@ const ViewWorkHours = () => {
       },
       {
         header: () => <span>{`${t("work hours")}`}</span>,
-        accessorKey: "work_hours",
+        accessorKey: "working_hours",
         cell: (info) => info.getValue(),
       },
       {
@@ -126,8 +126,8 @@ const ViewWorkHours = () => {
     refetch,
     isFetching,
   } = useFetch({
-    endpoint: `/employeeSalary/api/v1/shifts-per-branch/${branchId}`,
-    queryKey: ["shifts-per-branch"],
+    endpoint: `/employeeSalary/api/v1/shifts-per-branch/${branchId}?page=${page}`,
+    queryKey: ["shifts-per-branch", page],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data);

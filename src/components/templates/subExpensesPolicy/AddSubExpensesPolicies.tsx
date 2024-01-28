@@ -131,7 +131,7 @@ const AddSubExpensesPolicies = ({
     refetch,
     isFetching,
   } = useFetch({
-    endpoint: `/expenses/api/v1/majorexpences`,
+    endpoint: `/expenses/api/v1/majorexpences?per_page=10000`,
     queryKey: ["mainExpensesOption"],
     select: (data) =>
       data.map((item) => {

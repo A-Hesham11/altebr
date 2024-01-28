@@ -81,7 +81,7 @@ const ViewEtitlementsPolicies = () => {
                 }}
                 className="fill-mainGreen"
               />
-              <SvgDelete
+              {/* <SvgDelete
                 action={() => {
                   setOpen((prev) => !prev);
                   setDeleteData(info.row.original);
@@ -93,7 +93,7 @@ const ViewEtitlementsPolicies = () => {
                   setModel(false);
                 }}
                 stroke="#ef4444"
-              />
+              /> */}
             </div>
           );
         },
@@ -112,8 +112,8 @@ const ViewEtitlementsPolicies = () => {
     refetch,
     isFetching,
   } = useFetch({
-    endpoint: `/employeeSalary/api/v1/entitlements`,
-    queryKey: ["entitlements"],
+    endpoint: `/employeeSalary/api/v1/entitlements?page=${page}`,
+    queryKey: ["entitlements", page],
     pagination: true,
     onSuccess(data) {
       setDataSource(data.data);
