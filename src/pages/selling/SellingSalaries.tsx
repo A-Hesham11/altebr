@@ -53,7 +53,7 @@ const SellingSalaries = () => {
     queryKey: ["payment-invoice-inidara"],
     endpoint:
       search === ""
-        ? `/employeeSalary/api/v1/getAllEmployeeInEdraa?page=${page}`
+        ? `/employeeSalary/api/v1/getAllEmployeeInBranch/${userData?.branch_id}?page=${page}`
         : `${search}`,
     pagination: true,
   });
@@ -61,17 +61,17 @@ const SellingSalaries = () => {
   const tableColumn: TableColumn[] = useMemo(
     () => [
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
         accessorKey: "name",
         header: () => <span>{t("employee name")}</span>,
       },
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
         accessorKey: "role_name",
         header: () => <span>{t("job title")}</span>,
       },
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "salary",
         header: () => <span>{t("salary")}</span>,
       },
@@ -146,12 +146,12 @@ const SellingSalaries = () => {
                 curr.deduction_id === 2
                   ? (+curr.value *
                       0.01 *
-                      (+housingAllowance + +info.row.original.salary)) /
+                      ((+housingAllowance ? +housingAllowance : 0) + +info.row.original.salary)) /
                     2
                   : curr.deduction_id === 3
                   ? +curr.value *
                     0.01 *
-                    (+housingAllowance + +info.row.original.salary)
+                    ((+housingAllowance ? +housingAllowance : 0) + +info.row.original.salary)
                   : 0;
               return acc;
             }, 0) || 0;
@@ -165,7 +165,6 @@ const SellingSalaries = () => {
           const commissionValue = isNaN(info.row.original.commission_value)
             ? 0
             : +info.row.original.commission_value;
-          console.log("🚀 ~ SalariesPage ~ commissionValue:", commissionValue);
           const netSalary = calcNetSalary(
             info.row.original.empEntitlement,
             info.row.original.empDeduction,
@@ -174,7 +173,6 @@ const SellingSalaries = () => {
             info.row.original.extraTime,
             info.row.original.wastedTime
           );
-          console.log("🚀 ~ SalariesPage ~ netSalary:", Number(netSalary));
           return formatReyal(Number(netSalary + commissionValue));
         },
         accessorKey: "net_salary",
@@ -216,7 +214,7 @@ const SellingSalaries = () => {
       deductions?.reduce((acc, curr) => {
         acc +=
           curr.deduction_id === 2
-            ? (+curr.value * 0.01 * (+housingAllowance + +salary)) / 2
+            ? (+curr.value * 0.01 * ((+housingAllowance ? +housingAllowance : 0) + +salary)) / 2
             : curr.deduction_id === 3
             ? 0
             : curr.deduction_id === 1
@@ -242,7 +240,6 @@ const SellingSalaries = () => {
       basicNumberOfHours,
       extraTime
     );
-    console.log("🚀 ~ SalariesPage ~ totalReceivables:", totalReceivables);
     const totalDeductions = calcTotalDeductions(
       entitlement,
       deductions,
@@ -250,7 +247,6 @@ const SellingSalaries = () => {
       basicNumberOfHours,
       wastedTime
     );
-    console.log("🚀 ~ SalariesPage ~ totalDeductions:", totalDeductions);
     return +salary + totalReceivables - totalDeductions;
   };
 

@@ -22,7 +22,6 @@ import AddEmployeeDeductions from "../../../components/templates/employeeDeducti
 import { Header } from "../../../components/atoms/Header";
 
 const ViewDeductions = ({ employeeData }) => {
-  console.log("🚀 ~ ViewDeductions ~ employeeData:", employeeData.empDeduction)
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
@@ -50,13 +49,10 @@ const ViewDeductions = ({ employeeData }) => {
         : +curr.value;
     return acc;
   }, 0) || 0
-  console.log("🚀 ~ totalReceivables ~ totalReceivables:", totalReceivables)
 
-  const housingAllowance = employeeData.empEntitlement?.filter(item => item.entitlement_id === 2)[0]?.value
-  console.log("🚀 ~ ViewDeductions ~ HousingAllowance:", housingAllowance)
+  const housingAllowance = employeeData?.empEntitlement?.filter(item => item.entitlement_id === 2)[0]?.value
 
   const watchPrice = +employeeData.salary / +employeeData.basicNumberOfHours;
-  console.log("🚀 ~ ViewDeductions ~ watchPrice:", watchPrice);
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
@@ -76,9 +72,9 @@ const ViewDeductions = ({ employeeData }) => {
         cell: (info) => {
           const value =
             +info.row.original.deduction_id === 2 // تأمين إجتماعي
-              ? ((+info.row.original.value * 0.01) * (housingAllowance + +employeeData.salary) / 2)
+              ? ((+info.row.original.value * 0.01) * ((+housingAllowance ? +housingAllowance : 0) + +employeeData.salary) / 2)
               : +info.row.original.deduction_id === 3 //  تأمين مخاطر
-              ? ((+info.row.original.value * 0.01) * (housingAllowance + +employeeData.salary))
+              ? ((+info.row.original.value * 0.01) * ((+housingAllowance ? +housingAllowance : 0) + +employeeData.salary))
               : +info.row.original.deduction_id === 1 // خصم
               ? +info.row.original.value *
                 0.01 *

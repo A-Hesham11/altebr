@@ -67,17 +67,17 @@ const SalariesPage = () => {
   const tableColumn: TableColumn[] = useMemo(
     () => [
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
         accessorKey: "name",
         header: () => <span>{t("employee name")}</span>,
       },
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
         accessorKey: "role_name",
         header: () => <span>{t("job title")}</span>,
       },
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "salary",
         header: () => <span>{t("salary")}</span>,
       },
@@ -149,12 +149,12 @@ const SalariesPage = () => {
                 curr.deduction_id === 2
                   ? (+curr.value *
                       0.01 *
-                      (+housingAllowance + +info.row.original.salary)) /
+                      ((+housingAllowance ? +housingAllowance : 0) + +info.row.original.salary)) /
                     2
                   : curr.deduction_id === 3
                   ? +curr.value *
                     0.01 *
-                    (+housingAllowance + +info.row.original.salary)
+                    ((+housingAllowance ? +housingAllowance : 0) + +info.row.original.salary)
                   : 0;
               return acc;
             }, 0) || 0;
@@ -166,7 +166,6 @@ const SalariesPage = () => {
       {
         cell: (info) => {
           const commissionValue = isNaN(info.row.original.commission_value)  ? 0 : +info.row.original.commission_value
-          console.log("🚀 ~ SalariesPage ~ commissionValue:", commissionValue)
           const netSalary = calcNetSalary(
             info.row.original.empEntitlement,
             info.row.original.empDeduction,
@@ -175,7 +174,6 @@ const SalariesPage = () => {
             info.row.original.extraTime,
             info.row.original.wastedTime,
           );
-          console.log("🚀 ~ SalariesPage ~ netSalary:", Number(netSalary))
           return  formatReyal(Number(netSalary + commissionValue));
         },
         accessorKey: "net_salary",
@@ -218,7 +216,7 @@ const SalariesPage = () => {
       deductions?.reduce((acc, curr) => {
         acc +=
           curr.deduction_id === 2
-            ? (+curr.value * 0.01 * (+housingAllowance + +salary)) / 2
+            ? (+curr.value * 0.01 * ((+housingAllowance ? +housingAllowance : 0) + +salary)) / 2
             : curr.deduction_id === 3
             ? 0
             : curr.deduction_id === 1
@@ -244,7 +242,6 @@ const SalariesPage = () => {
       basicNumberOfHours,
       extraTime,
     );
-    console.log("🚀 ~ SalariesPage ~ totalReceivables:", totalReceivables)
     const totalDeductions = calcTotalDeductions(
       entitlement,
       deductions,
@@ -252,7 +249,6 @@ const SalariesPage = () => {
       basicNumberOfHours,
       wastedTime
     );
-    console.log("🚀 ~ SalariesPage ~ totalDeductions:", totalDeductions)
     return +salary + totalReceivables - totalDeductions;
   };
 

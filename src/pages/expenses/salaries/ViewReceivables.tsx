@@ -24,7 +24,6 @@ import { numberContext } from "../../../context/settings/number-formatter";
 const ViewReceivables = ({ employeeData }) => {
 console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
 
-  console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData.empEntitlement)
   const {  formatReyal } = numberContext();
   const isRTL = useIsRTL();
   const navigate = useNavigate();
@@ -47,8 +46,6 @@ console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
   };
 
   const watchPrice = +employeeData.salary / +employeeData.basicNumberOfHours;
-  console.log("🚀 ~ ViewReceivables ~ watchPrice:", watchPrice)
-
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [

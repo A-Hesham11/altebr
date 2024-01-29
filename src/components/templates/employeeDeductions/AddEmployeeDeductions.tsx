@@ -168,8 +168,6 @@ const AddEmployeeDeductions = ({
           onSubmit={(values, { resetForm }) => {}}
         >
           {({ values, setFieldValue, resetForm }) => {
-            console.log("🚀 ~ values:", values);
-
             return (
               <Form>
                 <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">

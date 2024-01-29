@@ -18,8 +18,6 @@ const AttendanceDeparture = () => {
   const [dataSource, setDataSource] = useState([]);
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
-  const [invoiceModal, setOpenInvoiceModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
 
   const searchValues = {
@@ -100,10 +98,31 @@ const AttendanceDeparture = () => {
           }${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 
           return formattedResult || "---";
-  
         },
         accessorKey: "numberHours",
         header: () => <span>{t("number of hours")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          const decimalHours = info.getValue();
+
+          const formattedTime = convertDecimalToTime(decimalHours);
+
+          return formattedTime;
+        },
+        accessorKey: "over_time",
+        header: () => <span>{t("extra time")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          const decimalHours = info.getValue();
+
+          const formattedTime = convertDecimalToTime(decimalHours);
+
+          return formattedTime;
+        },
+        accessorKey: "wastedTime",
+        header: () => <span>{t("waste time")}</span>,
       },
     ],
     []
@@ -144,6 +163,28 @@ const AttendanceDeparture = () => {
     });
     setSearch(url);
   };
+
+  // function convertDecimalToTime(decimalHours) {
+  //   const hours = Math.floor(decimalHours);
+  //   const minutes = Math.floor((decimalHours - hours) * 60);
+  //   const seconds = Math.floor(((decimalHours - hours) * 60 - minutes) * 60);
+
+  //   const formattedTime = `${String(hours).padStart(2, "0")}:${String(
+  //     minutes
+  //   ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  //   return formattedTime;
+  // }
+
+  function convertDecimalToTime(decimalHours) {
+    const totalSeconds = Math.round(decimalHours * 3600);
+  
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+  
+    const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    return formattedTime;
+  }
 
   // LOADING ....
   if (isLoading || isRefetching || isFetching)

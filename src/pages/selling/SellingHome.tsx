@@ -75,7 +75,7 @@ const SellingHome = () => {
   }
 
   // Find the shift that matches the condition
-  const currentShift = shifts && shifts?.find(isTimeBetween);
+  const currentShift = shifts && shifts?.find(isTimeBetween); 
   console.log("🚀 ~ SellingHome ~ currentShift:", currentShift);
 
   // Print the result
