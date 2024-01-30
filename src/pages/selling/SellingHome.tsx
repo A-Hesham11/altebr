@@ -17,6 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { GiCheckMark } from "react-icons/gi";
 import { formatDate } from "../../utils/date";
 import { Modal } from "../../components/molecules";
+import { SellingModal } from "../../components/molecules/SellingModal";
 
 const SellingHome = () => {
   const { logOutHandler, userData, isLoggingOut, open, setOpen } =
@@ -66,17 +67,14 @@ const SellingHome = () => {
   function isTimeBetween(shift) {
     const shiftFrom = new Date(`2000-01-01 ${shift.shift_from}`);
     const shiftTo = new Date(`2000-01-01 ${shift.shift_to}`);
-    console.log("🚀 ~ isTimeBetween ~ shiftFrom:", shiftFrom);
-    console.log("🚀 ~ isTimeBetween ~ shiftTo:", shiftTo);
     const currentTimeDate = new Date(`2000-01-01 ${currentTime}`);
 
-    console.log("🚀 ~ isTimeBetween ~ currentTimeDate:", currentTimeDate);
     return currentTimeDate >= shiftFrom && currentTimeDate <= shiftTo;
   }
 
   // Find the shift that matches the condition
-  const currentShift = shifts && shifts?.find(isTimeBetween); 
-  console.log("🚀 ~ SellingHome ~ currentShift:", currentShift);
+  const currentShift = shifts && shifts?.find(isTimeBetween);
+  console.log("🚀 ~ SellingHome ~ currentShift:", currentShift)
 
   // Print the result
   if (currentShift) {
@@ -106,7 +104,6 @@ const SellingHome = () => {
   }, []);
 
   function PostNewCardAudience(values: any) {
-    console.log("🚀 ~ PostNewCardAudience ~ values:", values);
     mutateAudience({
       endpointName: "/banchSalary/api/v1/presences",
       values,
@@ -124,7 +121,7 @@ const SellingHome = () => {
 
   return (
     <div className="selling h-screen pb-8 px-16">
-      <div className="flex justify-between pb-5 items-end">
+      <div className="flex justify-between pb-5 items-end px-20">
         <div className="bg-slate-100 pb-4 px-4 rounded-b-xl">
           <img src={logo} alt="logo" className="w-[50px] mt-5" />
         </div>
@@ -147,7 +144,7 @@ const SellingHome = () => {
         </div>
       </div>
 
-      <div className="flex gap-12 lg:gap-16 h-[80%] justify-between py-7">
+      <div className="flex h-[80%] justify-center py-7 gap-y-8 gap-x-6 lg:gap-x-8">
         <div className="flex flex-col gap-8 w-40">
           {sellingCards.slice(0, 2).map((card) => (
             <SellingHomeCard
@@ -160,7 +157,7 @@ const SellingHome = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-3 gap-y-8 gap-x-6 w-3/4 lg:gap-x-8">
+        <div className="grid grid-cols-3 w-3/4 gap-y-8 gap-x-6 lg:gap-x-8">
           {sellingCards.slice(2).map((card) => (
             <SellingHomeCard
               icon={card.icon}
@@ -173,7 +170,7 @@ const SellingHome = () => {
         </div>
       </div>
 
-      <div className="flex justify-between items-center gap-2 cursor-pointer">
+      <div className="flex justify-between items-center gap-2 cursor-pointer px-20 bl">
         <Button
           className="bg-transparent flex items-center gap-3 p-0"
           action={() => {
@@ -234,10 +231,16 @@ const SellingHome = () => {
           </Button>
         </div>
       </div>
+
       {!isLoggingOut && (
-        <Modal isOpen={open} onClose={() => setOpen(false)}>
-          <div className="text-center mt-12">
-            <h2 className="font-bold text-lg my-4">
+        <Modal
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          maxWidth="w-[40%]"
+          blur="backdrop-blur-[1.5px]"
+        >
+          <div className="text-center mt-3 ">
+            <h2 className="font-bold text-lg mb-14">
               {t("Welcome")}{" "}
               <span className="text-mainGreen">{userData?.name}</span>
             </h2>
@@ -256,7 +259,7 @@ const SellingHome = () => {
                 </span>
               </h2>
             )}
-            <div className="flex gap-3 my-2 w-full m-auto">
+            <div className="flex gap-3 mt-5 my-2 w-full m-auto">
               {!isDeparture ? (
                 <Button
                   className="bg-mainGray w-24 flex justify-center items-center shadow mx-auto mt-3"

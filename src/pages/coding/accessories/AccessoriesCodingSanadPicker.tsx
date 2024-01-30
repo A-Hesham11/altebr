@@ -98,7 +98,7 @@ export const AccessoriesCodingSanadPicker = () => {
     {
       name: "bond_number",
       label: t("attachment number"),
-      Cell: (info) => formatReyal(Number(info.value)) || "---",
+      Cell: (info) => info.value || "---",
     },
   ]
 

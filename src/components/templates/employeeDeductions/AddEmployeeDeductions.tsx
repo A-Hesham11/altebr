@@ -86,7 +86,7 @@ const AddEmployeeDeductions = ({
     onError: (err) => console.log(err),
   });
 
-  const test = employeesOptions?.filter(
+  const employeesOptionsNationality = employeesOptions?.filter(
     (employee: any) => employee?.nationalityId === 1
   );
 
@@ -200,22 +200,33 @@ const AddEmployeeDeductions = ({
                       }
                     }}
                   />
-                  {!deductionsData && (
-                    <Select
-                      id="employee_id"
-                      label={`${t("employee")}`}
-                      name="employee_id"
-                      placeholder={`${t("employee")}`}
-                      loadingPlaceholder={`${t("loading")}`}
-                      options={
-                        values.deduction_id === 2 ? test : employeesOptions
-                      }
-                      isLoading={employeeLoading}
-                      onChange={(e) => {
-                        //   setBranchId(e.id);
-                      }}
-                    />
-                  )}
+                  <div className="relative">
+                    {!deductionsData && (
+                      <>
+                        {values.deduction_id === 2 ? (
+                          <p className="absolute left-0 text-mainGreen">{isRTL ? "سعودي" : "Saudi"}</p>
+                        ) : (
+                          ""
+                        )}
+                        <Select
+                          id="employee_id"
+                          label={`${t("employee")}`}
+                          name="employee_id"
+                          placeholder={`${t("employee")}`}
+                          loadingPlaceholder={`${t("loading")}`}
+                          options={
+                            values.deduction_id === 2
+                              ? employeesOptionsNationality
+                              : employeesOptions
+                          }
+                          isLoading={employeeLoading}
+                          onChange={(e) => {
+                            //   setBranchId(e.id);
+                          }}
+                        />
+                      </>
+                    )}
+                  </div>
                   <div className="relative">
                     <BaseInputField
                       id="value"

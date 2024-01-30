@@ -32,11 +32,10 @@ const SellingSalaries = () => {
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [isOpenReceivables, setIsOpenReceivables] = useState(false);
-  const [isOpenDeductions, setIsOpenDeductions] = useState(false);
   const [employeeData, setEmployeeData] = useState(false);
   const [salary, setSalary] = useState(false);
   const { formatReyal } = numberContext();
+  const [open, setOpen] = useState(false);
 
   const searchValues = {
     invoice_number: "",
@@ -92,19 +91,7 @@ const SellingSalaries = () => {
             info.row.original.basicNumberOfHours,
             info.row.original.extraTime
           );
-          return (
-            <div className="flex items-center justify-between">
-              <span>{formatReyal(Number(totalReceivables))}</span>
-              <IoMdAdd
-                onClick={() => {
-                  setIsOpenReceivables(true);
-                  setEmployeeData(info.row.original);
-                }}
-                size={23}
-                className="text-mainGreen cursor-pointer"
-              />
-            </div>
-          );
+          return <span>{formatReyal(Number(totalReceivables))}</span>;
         },
         accessorKey: "dues",
         header: () => <span>{t("Dues")}</span>,
@@ -118,19 +105,7 @@ const SellingSalaries = () => {
             info.row.original.basicNumberOfHours,
             info.row.original.wastedTime
           );
-          return (
-            <div className="flex items-center justify-between">
-              <span>{formatReyal(Number(totalDeductions))}</span>
-              <IoMdAdd
-                onClick={() => {
-                  setIsOpenDeductions(true);
-                  setEmployeeData(info.row.original);
-                }}
-                size={23}
-                className="text-mainGreen cursor-pointer"
-              />
-            </div>
-          );
+          return <span>{formatReyal(Number(totalDeductions))}</span>;
         },
         accessorKey: "deductions",
         header: () => <span>{t("Deductions")}</span>,
@@ -146,12 +121,14 @@ const SellingSalaries = () => {
                 curr.deduction_id === 2
                   ? (+curr.value *
                       0.01 *
-                      ((+housingAllowance ? +housingAllowance : 0) + +info.row.original.salary)) /
+                      ((+housingAllowance ? +housingAllowance : 0) +
+                        +info.row.original.salary)) /
                     2
                   : curr.deduction_id === 3
                   ? +curr.value *
                     0.01 *
-                    ((+housingAllowance ? +housingAllowance : 0) + +info.row.original.salary)
+                    ((+housingAllowance ? +housingAllowance : 0) +
+                      +info.row.original.salary)
                   : 0;
               return acc;
             }, 0) || 0;
@@ -177,6 +154,20 @@ const SellingSalaries = () => {
         },
         accessorKey: "net_salary",
         header: () => <span>{t("Net salary")}</span>,
+      },
+      {
+        header: () => <span>{t("actions")}</span>,
+        accessorKey: "action",
+        cell: (info: any) => (
+          <BsEye
+            onClick={() => {
+              setOpen(true);
+              setEmployeeData(info.row.original);
+            }}
+            size={22}
+            className="text-mainGreen mx-auto cursor-pointer"
+          />
+        ),
       },
     ],
     []
@@ -214,7 +205,10 @@ const SellingSalaries = () => {
       deductions?.reduce((acc, curr) => {
         acc +=
           curr.deduction_id === 2
-            ? (+curr.value * 0.01 * ((+housingAllowance ? +housingAllowance : 0) + +salary)) / 2
+            ? (+curr.value *
+                0.01 *
+                ((+housingAllowance ? +housingAllowance : 0) + +salary)) /
+              2
             : curr.deduction_id === 3
             ? 0
             : curr.deduction_id === 1
@@ -358,27 +352,15 @@ const SellingSalaries = () => {
         </Table>
       </div>
 
-      <Modal
-        isOpen={isOpenReceivables}
-        onClose={() => setIsOpenReceivables(false)}
-      >
-        <ViewReceivables
-          employeeData={employeeData}
-          setIsOpenReceivables={setIsOpenReceivables}
-          refetch={refetch}
-        />
-      </Modal>
-
-      <Modal
-        isOpen={isOpenDeductions}
-        onClose={() => setIsOpenDeductions(false)}
-      >
-        <ViewDeductions
-          employeeData={employeeData}
-          salary={salary}
-          setIsOpenDeductions={setIsOpenDeductions}
-          refetch={refetch}
-        />
+      <Modal isOpen={open} onClose={() => setOpen(false)}>
+        <div className="mt-16">
+          <div className="mb-8">
+            <ViewReceivables employeeData={employeeData} />
+          </div>
+          <div className="mt-12 mb-3">
+            <ViewDeductions employeeData={employeeData} salary={salary} />
+          </div>
+        </div>
       </Modal>
     </div>
   );

@@ -9,13 +9,12 @@ type AccountingTreeNode_TP = {
 }
 
 export function AccountingTreeNode({ tree }: AccountingTreeNode_TP) {
-  console.log("🚀 ~ AccountingTreeNode ~ tree:", tree)
+  // console.log("🚀 ~ AccountingTreeNode ~ tree:", tree)
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData)
 
- 
+  // const test = tree.filter((item) => item.branch_id === 11)
+  // console.log("🚀 ~ AccountingTreeNode ~ test:", test)
 
-  
   return (
     <>
       {tree?.map((node, i) => {
@@ -25,15 +24,5 @@ export function AccountingTreeNode({ tree }: AccountingTreeNode_TP) {
         </TreeNode>
       )})}
     </>
-  //   <>
-  //   {(tree?.map((node, i) => node)?.filter((child) => ( child?.branch_id === null || child?.branch_id === 12 )) => {
-  //     // const test111 = tree?.map((node) => node)?.filter((child) => ( child?.branch_id === null || child?.branch_id === 12 ))
-  //     // console.log("🚀 ~ { ~ test111:", test111)
-  //     return(
-  //     <TreeNode label={t(`${node.label}`)} key={i}>
-  //       {(node ) && <AccountingTreeNode tree={node} />}
-  //     </TreeNode>
-  //   )})}
-  // </>
   )
 }

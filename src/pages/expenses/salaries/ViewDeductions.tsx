@@ -1,30 +1,26 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { useFetch, useIsRTL, useMutate } from "../../../hooks";
-import { useNavigate } from "react-router-dom";
-import { authCtx } from "../../../context/auth-and-perm/auth";
+import { useMutate } from "../../../hooks";
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { Form, Formik } from "formik";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { Cards_Props_TP } from "../../../components/templates/bankCards/ViewBankCards";
 import { EditIcon } from "../../../components/atoms/icons";
 import { SvgDelete } from "../../../components/atoms/icons/SvgDelete";
 import { AddButton } from "../../../components/molecules/AddButton";
-import { Back } from "../../../utils/utils-components/Back";
-import { Loading } from "../../../components/organisms/Loading";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { Button } from "../../../components/atoms";
 import { Modal } from "../../../components/molecules";
 import AddEmployeeDeductions from "../../../components/templates/employeeDeductions/AddEmployeeDeductions";
 import { Header } from "../../../components/atoms/Header";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 const ViewDeductions = ({ employeeData }) => {
-  const isRTL = useIsRTL();
-  const navigate = useNavigate();
+
   const [open, setOpen] = useState<boolean>(false);
+  const {  formatReyal } = numberContext();
   const [model, setModel] = useState(false);
   const [action, setAction] = useState({
     edit: false,
@@ -34,9 +30,6 @@ const ViewDeductions = ({ employeeData }) => {
   const [editData, setEditData] = useState<Cards_Props_TP>();
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>();
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const { userData } = useContext(authCtx);
-  const [branchId, setBranchId] = useState<string>(1);
 
   const initialValues = {
     branch_id: "",
@@ -80,7 +73,7 @@ const ViewDeductions = ({ employeeData }) => {
                 0.01 *
                 (watchPrice * employeeData.wastedTime)
               : +info.row.original.value;
-          return value;
+          return formatReyal(Number(value));
         },
       },
       {
@@ -124,56 +117,6 @@ const ViewDeductions = ({ employeeData }) => {
     []
   );
 
-  const {
-    data,
-    isSuccess,
-    isLoading,
-    isError,
-    error,
-    isRefetching,
-    refetch,
-    isFetching,
-  } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/employeeSalary/api/v1/employee-deduction-per-branch/${branchId}`,
-    queryKey: ["employeeDeductions"],
-    pagination: true,
-    onSuccess(data) {
-      setDataSource(data.data);
-    },
-    select: (data) => {
-      return {
-        ...data,
-        data: data.data.map((branches, i) => ({
-          ...branches,
-          index: i + 1,
-        })),
-      };
-    },
-  });
-
-  useEffect(() => {
-    refetch();
-  }, [branchId]);
-
-  const {
-    data: branchesOptions,
-    isLoading: branchesLoading,
-    refetch: refetchBranches,
-    failureReason: branchesErrorReason,
-  } = useFetch({
-    endpoint: "branch/api/v1/branches?per_page=10000",
-    queryKey: ["branches"],
-    select: (branches) =>
-      branches.map((branch) => {
-        return {
-          id: branch.id,
-          value: branch.name || "",
-          label: branch.name || "",
-        };
-      }),
-    onError: (err) => console.log(err),
-  });
-
   const queryClient = useQueryClient();
   const {
     mutate,
@@ -206,7 +149,7 @@ const ViewDeductions = ({ employeeData }) => {
           <p className="font-semibold text-lg mt-2">
             {t("view employee deductions policies")}
           </p>
-          <div className="flex gap-2 mt-16">
+          <div className="flex gap-2 ">
             <AddButton
               action={() => {
                 setEditData(undefined);
@@ -223,50 +166,11 @@ const ViewDeductions = ({ employeeData }) => {
           </div>
         </div>
 
-        {isFetching && (
-          <Loading mainTitle={t("employee deductions policies")} />
-        )}
-        {isSuccess &&
-        !isLoading &&
-        !isRefetching &&
-        employeeData?.empDeduction?.length ? (
+        {employeeData?.empDeduction?.length ? (
           <Table data={employeeData?.empDeduction} columns={columns}>
-            <div className="mt-3 flex items-center justify-end gap-5 p-2">
-              <div className="flex items-center gap-2 font-bold">
-                {t("page")}
-                <span className=" text-mainGreen">{data.current_page}</span>
-                {t("from")}
-                <span className=" text-mainGreen">{data.pages}</span>
-              </div>
-              <div className="flex items-center gap-2 ">
-                <Button
-                  className=" rounded bg-mainGreen p-[.12rem] "
-                  action={() => setPage((prev) => prev - 1)}
-                  disabled={page == 1}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-                <Button
-                  className=" rounded bg-mainGreen p-[.18rem]  "
-                  action={() => setPage((prev) => prev + 1)}
-                  disabled={page == data.pages}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-              </div>
-            </div>
+
           </Table>
         ) : (
-          !isLoading &&
-          !isRefetching &&
           !dataSource.length && (
             <div className="flex justify-center items-center mt-32">
               <p className="text-lg font-bold">
@@ -282,22 +186,16 @@ const ViewDeductions = ({ employeeData }) => {
               editData={editData}
               setDataSource={setDataSource}
               setShow={setOpen}
-              isFetching={isFetching}
               title={`${editData ? t("edit cards") : t("Add cards")}`}
-              refetch={refetch}
-              isSuccess={isSuccess}
               deductionsData={employeeData?.empDeduction}
             />
           )}
           {model && (
             <AddEmployeeDeductions
               editData={editData}
-              isFetching={isFetching}
               setDataSource={setDataSource}
               setShow={setOpen}
               title={`${editData ? t("edit cards") : t("Add cards")}`}
-              refetch={refetch}
-              isSuccess={isSuccess}
               deductionsData={employeeData?.empDeduction}
             />
           )}

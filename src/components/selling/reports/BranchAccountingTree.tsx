@@ -1,5 +1,5 @@
 
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { t } from "i18next"
 import { useFetch } from "../../../hooks"
 import AccountingTreeData, { TreeNode_TP } from "../../templates/systemEstablishment/AccountingTree/view/AccountingTreeData"
@@ -28,10 +28,33 @@ const BranchAccountingTree = () => {
   })
     console.log("🚀 ~ BranchAccountingTree ~ data:", data)
 
+    // const test = data[0].children[2].children[1].children
+    // console.log("🚀 ~ BranchAccountingTree ~ test:", test)
+
+    const xxx = data?.filter((item) => item.numeric_system == 1)[0].children?.filter((item) => item.numeric_system == 13)[0].children?.filter((item) => item.numeric_system == 1302)[0].children?.filter((item) => item.branch_id === null)
+    console.log("🚀 ~ BranchAccountingTree ~ xxx:", xxx)
+
   useEffect(() => {
     if (data && data.length > 0 && reset.current)
       reset.current.click()
   }, [data])  
+
+  // function filterByBranchId(array, targetBranchId) {
+  //   return array.reduce((acc, item) => {
+  //     if (item.branch_id === targetBranchId) {
+  //       acc.push(item);
+  //     }
+  //     if (item.children && item.children.length > 0) {
+  //       const filteredChildren = filterByBranchId(item.children, targetBranchId);
+  //       if (filteredChildren.length > 0) {
+  //         acc.push({ ...item, children: filteredChildren });
+  //       }
+  //     }
+  //     return acc;
+  //   }, []);
+  // }
+  
+  // const result = filterByBranchId(data, 11);
 
   return (
     <>
