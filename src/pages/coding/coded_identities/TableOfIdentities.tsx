@@ -90,12 +90,12 @@ const TableOfIdentities = ({
       {
         cell: (info: any) => info.getValue() || "---",
         accessorKey: "id",
-        header: () => <span>{t("#")}</span>,
+        header: () => <span>{t("Id number")}</span>,
       },
       {
         cell: (info: any) => info.getValue() || "---",
         accessorKey: "hwya",
-        header: () => <span>{t("hwya")}</span>,
+        header: () => <span>{t("id code")}</span>,
       },
       {
         cell: (info: any) => info.getValue() || "---",

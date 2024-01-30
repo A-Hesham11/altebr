@@ -40,6 +40,7 @@ export const GoldCodingSanadPicker = () => {
   const [isClosedBond, setIsClosedBond] = useState(false)
   const [page, setPage] = useState<number>(1)
   const [dataSource, setDataSource] = useState<GoldSanad_TP[]>([])
+  console.log("🚀 ~ GoldCodingSanadPicker ~ dataSource:", dataSource)
   const { formatGram, formatReyal } = numberContext();
 
   const searchValues: SearchValues_TP = {
@@ -53,6 +54,7 @@ export const GoldCodingSanadPicker = () => {
     {
       name: "id",
       label: t('bond number'),
+      Cell: (info) =>  info.value 
     },
     {
       name: "classification",
@@ -85,11 +87,12 @@ export const GoldCodingSanadPicker = () => {
     {
       name: "item_count",
       label: t('item count'),
+      Cell: (info) =>  info.value 
     },
     {
       name: "bond_number",
       label: t('attachment number'),
-      Cell: (info) => formatReyal(Number(info.value)) || "---"
+      Cell: (info) => info.value || "---"
     },
   ]
   

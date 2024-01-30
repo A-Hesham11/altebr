@@ -24,6 +24,7 @@ import ViewReceivables from "./ViewReceivables";
 import ViewDeductions from "./ViewDeductions";
 import { IoMdAdd } from "react-icons/io";
 import { numberContext } from "../../../context/settings/number-formatter";
+import { EditIcon } from "../../../components/atoms/icons";
 
 interface TableColumn {
   cell: (info: any) => ReactNode;
@@ -38,11 +39,12 @@ const SalariesPage = () => {
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [isOpenReceivables, setIsOpenReceivables] = useState(false);
-  const [isOpenDeductions, setIsOpenDeductions] = useState(false);
+  // const [isOpenReceivables, setIsOpenReceivables] = useState(false);
+  // const [isOpenDeductions, setIsOpenDeductions] = useState(false);
   const [employeeData, setEmployeeData] = useState(false);
   const [salary, setSalary] = useState(false);
   const { formatReyal } = numberContext();
+  const [open, setOpen] = useState(false);
 
   const searchValues = {
     invoice_number: "",
@@ -67,22 +69,25 @@ const SalariesPage = () => {
   const tableColumn: TableColumn[] = useMemo(
     () => [
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
         accessorKey: "name",
         header: () => <span>{t("employee name")}</span>,
       },
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => info.getValue() || "---",
         accessorKey: "role_name",
         header: () => <span>{t("job title")}</span>,
       },
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "salary",
         header: () => <span>{t("salary")}</span>,
       },
       {
-        cell: (info) => isNaN(info.row.original.commission_value)  ? 0 : +info.row.original.commission_value,
+        cell: (info) =>
+          isNaN(info.row.original.commission_value)
+            ? 0
+            : +info.row.original.commission_value,
         accessorKey: "commission_value",
         header: () => <span>{t("commission")}</span>,
       },
@@ -93,20 +98,21 @@ const SalariesPage = () => {
             info.row.original.empDeduction,
             info.row.original.salary,
             info.row.original.basicNumberOfHours,
-            info.row.original.extraTime,
+            info.row.original.extraTime
           );
           return (
-            <div className="flex items-center justify-between">
-              <span>{formatReyal(Number(totalReceivables))}</span>
-              <IoMdAdd
-                onClick={() => {
-                  setIsOpenReceivables(true);
-                  setEmployeeData(info.row.original);
-                }}
-                size={23}
-                className="text-mainGreen cursor-pointer"
-              />
-            </div>
+            // <div className="flex items-center justify-between">
+            //   <span>{formatReyal(Number(totalReceivables))}</span>
+            //   <IoMdAdd
+            //     onClick={() => {
+            //       setIsOpenReceivables(true);
+            //       setEmployeeData(info.row.original);
+            //     }}
+            //     size={23}
+            //     className="text-mainGreen cursor-pointer"
+            //   />
+            // </div>
+            <span>{formatReyal(Number(totalReceivables))}</span>
           );
         },
         accessorKey: "dues",
@@ -122,17 +128,18 @@ const SalariesPage = () => {
             info.row.original.wastedTime
           );
           return (
-            <div className="flex items-center justify-between">
-              <span>{formatReyal(Number(totalDeductions))}</span>
-              <IoMdAdd
-                onClick={() => {
-                  setIsOpenDeductions(true);
-                  setEmployeeData(info.row.original);
-                }}
-                size={23}
-                className="text-mainGreen cursor-pointer"
-              />
-            </div>
+            // <div className="flex items-center justify-between">
+            //   <span>{formatReyal(Number(totalDeductions))}</span>
+            //   <IoMdAdd
+            //     onClick={() => {
+            //       setIsOpenDeductions(true);
+            //       setEmployeeData(info.row.original);
+            //     }}
+            //     size={23}
+            //     className="text-mainGreen cursor-pointer"
+            //   />
+            // </div>
+            <span>{formatReyal(Number(totalDeductions))}</span>
           );
         },
         accessorKey: "deductions",
@@ -149,12 +156,14 @@ const SalariesPage = () => {
                 curr.deduction_id === 2
                   ? (+curr.value *
                       0.01 *
-                      (+housingAllowance + +info.row.original.salary)) /
+                      ((+housingAllowance ? +housingAllowance : 0) +
+                        +info.row.original.salary)) /
                     2
                   : curr.deduction_id === 3
                   ? +curr.value *
                     0.01 *
-                    (+housingAllowance + +info.row.original.salary)
+                    ((+housingAllowance ? +housingAllowance : 0) +
+                      +info.row.original.salary)
                   : 0;
               return acc;
             }, 0) || 0;
@@ -165,33 +174,46 @@ const SalariesPage = () => {
       },
       {
         cell: (info) => {
-          const commissionValue = isNaN(info.row.original.commission_value)  ? 0 : +info.row.original.commission_value
-          console.log("🚀 ~ SalariesPage ~ commissionValue:", commissionValue)
+          const commissionValue = isNaN(info.row.original.commission_value)
+            ? 0
+            : +info.row.original.commission_value;
           const netSalary = calcNetSalary(
             info.row.original.empEntitlement,
             info.row.original.empDeduction,
             info.row.original.salary,
             info.row.original.basicNumberOfHours,
             info.row.original.extraTime,
-            info.row.original.wastedTime,
+            info.row.original.wastedTime
           );
-          console.log("🚀 ~ SalariesPage ~ netSalary:", Number(netSalary))
-          return  formatReyal(Number(netSalary + commissionValue));
+          return formatReyal(Number(netSalary + commissionValue));
         },
         accessorKey: "net_salary",
         header: () => <span>{t("Net salary")}</span>,
+      },
+      {
+        header: () => <span>{t("actions")}</span>,
+        accessorKey: "action",
+        cell: (info: any) => (
+          <BsEye
+            onClick={() => {
+              setOpen(true);
+              setEmployeeData(info.row.original);
+            }}
+            size={22}
+            className="text-mainGreen mx-auto cursor-pointer"
+          />
+        ),
       },
     ],
     []
   );
 
   const calcTotalReceivables = (
-
     entitlement: any[] | undefined,
     deductions: any[] | undefined,
     salary: number,
     basicNumberOfHours: number,
-    extraTime: number,
+    extraTime: number
   ): number => {
     return (
       entitlement?.reduce((acc, curr) => {
@@ -200,7 +222,7 @@ const SalariesPage = () => {
             ? +curr.value * 0.01 * ((salary / basicNumberOfHours) * extraTime)
             : +curr.value;
         return acc;
-      },  0) || 0
+      }, 0) || 0
     );
   };
 
@@ -218,7 +240,10 @@ const SalariesPage = () => {
       deductions?.reduce((acc, curr) => {
         acc +=
           curr.deduction_id === 2
-            ? (+curr.value * 0.01 * (+housingAllowance + +salary)) / 2
+            ? (+curr.value *
+                0.01 *
+                ((+housingAllowance ? +housingAllowance : 0) + +salary)) /
+              2
             : curr.deduction_id === 3
             ? 0
             : curr.deduction_id === 1
@@ -235,16 +260,15 @@ const SalariesPage = () => {
     salary: number,
     basicNumberOfHours: number,
     extraTime: number,
-    wastedTime: number,
+    wastedTime: number
   ): number => {
     const totalReceivables = calcTotalReceivables(
       entitlement,
       deductions,
       salary,
       basicNumberOfHours,
-      extraTime,
+      extraTime
     );
-    console.log("🚀 ~ SalariesPage ~ totalReceivables:", totalReceivables)
     const totalDeductions = calcTotalDeductions(
       entitlement,
       deductions,
@@ -252,7 +276,6 @@ const SalariesPage = () => {
       basicNumberOfHours,
       wastedTime
     );
-    console.log("🚀 ~ SalariesPage ~ totalDeductions:", totalDeductions)
     return +salary + totalReceivables - totalDeductions;
   };
 
@@ -367,7 +390,7 @@ const SalariesPage = () => {
         </Table>
       </div>
 
-      <Modal
+      {/* <Modal
         isOpen={isOpenReceivables}
         onClose={() => setIsOpenReceivables(false)}
       >
@@ -388,6 +411,17 @@ const SalariesPage = () => {
           setIsOpenDeductions={setIsOpenDeductions}
           refetch={refetch}
         />
+      </Modal> */}
+
+      <Modal isOpen={open} onClose={() => setOpen(false)}>
+        <div className="mt-16">
+          <div className="mb-8">
+            <ViewReceivables employeeData={employeeData} />
+          </div>
+          <div className="mt-12 mb-3">
+            <ViewDeductions employeeData={employeeData} salary={salary} />
+          </div>
+        </div>
       </Modal>
     </div>
   );

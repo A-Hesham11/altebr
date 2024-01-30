@@ -128,17 +128,17 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-center gap-8 ">
               <BaseInputField
                 id="id"
-                label={`${t("id")}`}
+                label={`${t("Id number")}`}
                 name="id"
                 type="text"
-                placeholder={`${t("id")}`}
+                placeholder={`${t("Id number")}`}
               />
               <BaseInputField
                 id="hwya"
-                label={`${t("hwya")}`}
+                label={`${t("id code")}`}
                 name="hwya"
                 type="text"
-                placeholder={`${t("hwya")}`}
+                placeholder={`${t("id code")}`}
               />
               <div className="">
                 <Select

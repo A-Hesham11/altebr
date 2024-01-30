@@ -19,7 +19,6 @@ const AddEmployeeBenefits = ({
   refetch,
   receivablesData,
 }) => {
-  console.log("🚀 ~ receivablesData:", receivablesData);
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();

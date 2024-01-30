@@ -24,10 +24,7 @@ import { numberContext } from "../../../context/settings/number-formatter";
 const ViewReceivables = ({ employeeData }) => {
 console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
 
-  console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData.empEntitlement)
   const {  formatReyal } = numberContext();
-  const isRTL = useIsRTL();
-  const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   const [model, setModel] = useState(false);
   const [action, setAction] = useState({
@@ -38,17 +35,12 @@ console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
   const [editData, setEditData] = useState<Cards_Props_TP>();
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>();
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const { userData } = useContext(authCtx);
-  const [branchId, setBranchId] = useState<string>(1);
 
   const initialValues = {
     branch_id: "",
   };
 
   const watchPrice = +employeeData.salary / +employeeData.basicNumberOfHours;
-  console.log("🚀 ~ ViewReceivables ~ watchPrice:", watchPrice)
-
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
@@ -116,37 +108,6 @@ console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
     []
   );
 
-  const {
-    data,
-    isSuccess,
-    isLoading,
-    isError,
-    error,
-    isRefetching,
-    refetch,
-    isFetching,
-  } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/employeeSalary/api/v1/employee-entitlement-per-branch/${branchId}`,
-    queryKey: ["employeeBenefits"],
-    pagination: true,
-    onSuccess(data) {
-      setDataSource(data.data);
-    },
-    select: (data) => {
-      return {
-        ...data,
-        data: data.data.map((branches, i) => ({
-          ...branches,
-          index: i + 1,
-        })),
-      };
-    },
-  });
-
-  useEffect(() => {
-    refetch();
-  }, [branchId]);
-
   const queryClient = useQueryClient();
   const {
     mutate,
@@ -179,7 +140,7 @@ console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
           <p className="font-semibold text-lg mt-2">
             {t("view employee benefits policies")}
           </p>
-          <div className="flex gap-2 mt-16">
+          <div className="flex gap-2">
             <AddButton
               action={() => {
                 setEditData(undefined);
@@ -196,48 +157,12 @@ console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
           </div>
         </div>
 
-        {isFetching && <Loading mainTitle={t("employee benefits policies")} />}
-        {isSuccess &&
-        !isLoading &&
-        !isRefetching &&
+        {/* {isFetching && <Loading mainTitle={t("employee benefits policies")} />} */}
+        {
         employeeData?.empEntitlement?.length ? (
           <Table data={employeeData?.empEntitlement} columns={columns}>
-            <div className="mt-3 flex items-center justify-end gap-5 p-2">
-              <div className="flex items-center gap-2 font-bold">
-                {t("page")}
-                <span className=" text-mainGreen">{data.current_page}</span>
-                {t("from")}
-                <span className=" text-mainGreen">{data.pages}</span>
-              </div>
-              <div className="flex items-center gap-2 ">
-                <Button
-                  className=" rounded bg-mainGreen p-[.12rem] "
-                  action={() => setPage((prev) => prev - 1)}
-                  disabled={page == 1}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-                <Button
-                  className=" rounded bg-mainGreen p-[.18rem]  "
-                  action={() => setPage((prev) => prev + 1)}
-                  disabled={page == data.pages}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-              </div>
-            </div>
           </Table>
         ) : (
-          !isLoading &&
-          !isRefetching &&
           !dataSource.length && (
             <div className="flex justify-center items-center mt-32">
               <p className="text-lg font-bold">
@@ -253,22 +178,16 @@ console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
               editData={editData}
               setDataSource={setDataSource}
               setShow={setOpen}
-              isFetching={isFetching}
               title={`${editData ? t("edit cards") : t("Add cards")}`}
-              refetch={refetch}
-              isSuccess={isSuccess}
               receivablesData={employeeData?.empEntitlement}
             />
           )}
           {model && (
             <AddEmployeeBenefits
               editData={editData}
-              isFetching={isFetching}
               setDataSource={setDataSource}
               setShow={setOpen}
               title={`${editData ? t("edit cards") : t("Add cards")}`}
-              refetch={refetch}
-              isSuccess={isSuccess}
               receivablesData={employeeData?.empEntitlement}
             />
           )}

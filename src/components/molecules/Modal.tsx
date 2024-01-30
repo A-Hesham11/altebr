@@ -12,6 +12,7 @@ type ModalProps_TP = {
   title?: string;
   children: ReactNode;
   maxWidth?: `max-w-[${number}px]`;
+  blur?: `max-w-[${number}px]`;
 };
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -23,6 +24,7 @@ export const Modal = ({
   title,
   children,
   maxWidth,
+  blur
 }: ModalProps_TP) => {
   /////////// VARIABLES
   ///
@@ -55,7 +57,7 @@ export const Modal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
+          <div className={`fixed inset-0 bg-black bg-opacity-25 ${blur}`} />
         </Transition.Child>
 
         <div className={`fixed inset-0 overflow-y-auto mx-auto`}>
