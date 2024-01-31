@@ -161,21 +161,12 @@ const AddExpensesPolicies = ({
                     className="relative"
                   />
                 </div>
-                {/* <SelectBranches
-                  required
-                  name="branch_id"
-                  editData={{
-                    branch_id: editData?.branch_id,
-                    branch_name: editData?.branch_name,
-                  }}
-                /> */}
               </div>
               <div className="flex justify-end">
                 <Button
                   type="submit"
                   className="w-fit"
                   loading={editLoading}
-                  // action={() => setShow(false)}
                 >
                   {t("save")}
                 </Button>

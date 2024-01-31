@@ -142,7 +142,6 @@ const ViewWorkHours = () => {
       };
     },
   });
-  console.log("🚀 ~ ViewSubExpensesPolicies ~ data:", data);
 
   useEffect(() => {
     refetch();

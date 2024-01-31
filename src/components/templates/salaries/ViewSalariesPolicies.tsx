@@ -141,7 +141,6 @@ const ViewSalariesPolicies = () => {
       };
     },
   });
-  console.log("🚀 ~ ViewSubExpensesPolicies ~ data:", data);
 
   const queryClient = useQueryClient();
   const {
@@ -192,21 +191,6 @@ const ViewSalariesPolicies = () => {
             </div>
           </div>
         </div>
-
-        {/* <div className="mb-6 w-52">
-          <Select
-            id="branch_id"
-            label={`${t("branches")}`}
-            name="branch_id"
-            placeholder={`${t("branches")}`}
-            loadingPlaceholder={`${t("loading")}`}
-            options={branchesOptions}
-            isLoading={branchesLoading}
-            onChange={(e) => {
-              setBranchId(e.id);
-            }}
-          />
-        </div> */}
 
         {isFetching && <Loading mainTitle={t("sub expenses policies")} />}
         {isSuccess && !isLoading && !isRefetching && dataSource.length ? (

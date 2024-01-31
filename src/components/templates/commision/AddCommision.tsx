@@ -225,15 +225,6 @@ const AddCommision = ({ title, editData, setShow, refetch }) => {
                   />
                 </div>
 
-                {/* <Select
-                    id="tax"
-                    label={`${t("tax")}`}
-                    name="tax"
-                    placeholder={`${t("tax")}`}
-                    loadingPlaceholder={`${t("loading")}`}
-                    options={taxOption}
-                    fieldKey="id"
-                  /> */}
               </div>
               <div className="flex justify-end">
                 <Button

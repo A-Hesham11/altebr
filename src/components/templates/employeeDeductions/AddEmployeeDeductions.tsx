@@ -34,7 +34,6 @@ const AddEmployeeDeductions = ({
     Yup.object({
       deduction_id: Yup.string().trim().required(requiredTranslation),
       branch_id: Yup.string().trim().required(requiredTranslation),
-      //   type: Yup.string().trim().required(requiredTranslation),
       employee_id: Yup.string().trim().required(requiredTranslation),
       value: Yup.string().trim().required(requiredTranslation),
     });
@@ -43,7 +42,6 @@ const AddEmployeeDeductions = ({
     deduction_id: editData?.deduction_id || "",
     branch_id: editData?.branch_id || "",
     employee_id: editData?.employee_id || "",
-    // type: editData?.type || "",
     value: editData?.value || "",
   };
 
@@ -78,7 +76,14 @@ const AddEmployeeDeductions = ({
         return {
           id: employee.id,
           value: employee.id || "",
-          label: employee.name || "",
+          label: (
+            <p>
+              {employee.name}{" "}
+              <span className="text-[9px] text-white p-[5px] rounded-lg bg-mainGreen">
+                {employee.nationality.name}
+              </span>
+            </p>
+          ),
           nationalityId: employee.nationality.id || "",
           nationalityName: employee.nationality.name || "",
         };
@@ -203,11 +208,6 @@ const AddEmployeeDeductions = ({
                   <div className="relative">
                     {!deductionsData && (
                       <>
-                        {values.deduction_id === 2 ? (
-                          <p className="absolute left-0 text-mainGreen">{isRTL ? "سعودي" : "Saudi"}</p>
-                        ) : (
-                          ""
-                        )}
                         <Select
                           id="employee_id"
                           label={`${t("employee")}`}

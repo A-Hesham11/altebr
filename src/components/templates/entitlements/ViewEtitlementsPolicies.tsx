@@ -81,19 +81,6 @@ const ViewEtitlementsPolicies = () => {
                 }}
                 className="fill-mainGreen"
               />
-              {/* <SvgDelete
-                action={() => {
-                  setOpen((prev) => !prev);
-                  setDeleteData(info.row.original);
-                  setAction({
-                    delete: true,
-                    view: false,
-                    edit: false,
-                  });
-                  setModel(false);
-                }}
-                stroke="#ef4444"
-              /> */}
             </div>
           );
         },

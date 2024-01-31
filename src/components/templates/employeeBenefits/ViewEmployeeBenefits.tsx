@@ -131,11 +131,6 @@ const ViewEmployeeBenefits = () => {
       };
     },
   });
-  console.log("🚀 ~ ViewSubExpensesPolicies ~ data:", data);
-  console.log(
-    "🚀 ~ file: ViewExpensesPolicies.tsx:164 ~ ViewExpensesPolicies ~ data:",
-    data
-  );
 
   useEffect(() => {
     refetch();
@@ -213,14 +208,6 @@ const ViewEmployeeBenefits = () => {
         </div>
 
         <div className="mb-6 w-52">
-          {/* <SelectBranches
-              required
-              name="branch_id"
-              editData={{
-                branch_id: editData?.branch_id,
-                branch_name: editData?.branch_name,
-              }}
-            /> */}
           <Select
             id="branch_id"
             label={`${t("branches")}`}

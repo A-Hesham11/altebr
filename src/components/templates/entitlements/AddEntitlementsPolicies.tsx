@@ -27,14 +27,12 @@ const AddEntitlementsPolicies = ({ title, editData, setShow, refetch }) => {
       name_ar: Yup.string().trim().required(requiredTranslation),
       name_en: Yup.string().trim().required(requiredTranslation),
       type: Yup.string().trim().required(requiredTranslation),
-    //   tax: Yup.string().trim().required(requiredTranslation),
     });
 
   const initialValues = {
     name_ar: editData?.name_ar || "",
     name_en: editData?.name_en || "",
     type: editData?.type || "",
-    // tax: editData?.tax || "",
   };
 
   const typeOption = [
@@ -142,22 +140,12 @@ const AddEntitlementsPolicies = ({ title, editData, setShow, refetch }) => {
                   loadingPlaceholder={`${t("loading")}`}
                   options={typeOption}
                 />
-                {/* <Select
-                  id="tax"
-                  label={`${t("tax")}`}
-                  name="tax"
-                  placeholder={`${t("tax")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={taxOption}
-                  fieldKey="id"
-                /> */}
               </div>
               <div className="flex justify-end">
                 <Button
                   type="submit"
                   className="w-fit"
                   loading={editLoading}
-                  // action={() => setShow(false)}
                 >
                   {t("save")}
                 </Button>
