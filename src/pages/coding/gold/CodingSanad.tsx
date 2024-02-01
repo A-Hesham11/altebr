@@ -2,7 +2,7 @@
 ///
 import { Formik } from "formik";
 import { t } from "i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Header } from "../../../components/atoms/Header";
 import { useFetch, useLocalStorage } from "../../../hooks";
@@ -19,6 +19,7 @@ import {
   codingSanad_schema,
 } from "../coding-types-and-helpers";
 import { GoldCodingSanadFormHandler } from "./GoldCodingSanadFormHandler";
+import QRCode from "react-qr-code";
 ///
 /////////// Types
 ///
@@ -182,7 +183,7 @@ export const CodingSanad = ({
     //   return { ...curr, leftWeight: curr?.leftWeight - values.weight }
     // })
   }
-  ///
+
   return (
     <>
       <div className="flex w-full flex-col gap-6">
