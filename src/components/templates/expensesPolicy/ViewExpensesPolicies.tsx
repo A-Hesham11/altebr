@@ -54,7 +54,6 @@ const ViewExpensesPolicies = () => {
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
   const [page, setPage] = useState<number>(1);
   const { userData } = useContext(authCtx);
-  // const [branchId, setBranchId] = useState<string>(1);
 
   const initialValues = {
     branch_id: "",
@@ -130,14 +129,6 @@ const ViewExpensesPolicies = () => {
       };
     },
   });
-  console.log(
-    "🚀 ~ file: ViewExpensesPolicies.tsx:164 ~ ViewExpensesPolicies ~ data:",
-    data
-  );
-
-  // useEffect(() => {
-  //   refetch();
-  // }, [branchId]);
 
   const {
     data: branchesOptions,
@@ -187,29 +178,6 @@ const ViewExpensesPolicies = () => {
               <Back />
             </div>
           </div>
-        </div>
-
-        <div className="mb-6 w-52">
-          {/* <SelectBranches
-            required
-            name="branch_id"
-            editData={{
-              branch_id: editData?.branch_id,
-              branch_name: editData?.branch_name,
-            }}
-          /> */}
-          {/* <Select
-            id="branch_id"
-            label={`${t("branches")}`}
-            name="branch_id"
-            placeholder={`${t("branches")}`}
-            loadingPlaceholder={`${t("loading")}`}
-            options={branchesOptions}
-            isLoading={branchesLoading}
-            onChange={(e) => {
-              setBranchId(e.id);
-            }}
-          /> */}
         </div>
 
         {isFetching && <Loading mainTitle={t("expenses policies")} />}
@@ -283,21 +251,6 @@ const ViewExpensesPolicies = () => {
               isSuccess={isSuccess}
             />
           )}
-          {/* {action.delete && (
-            <div className="flex flex-col gap-8 justify-center items-center">
-              <Header header={` حذف : ${deleteData?.job_type}`} />
-              <div className="flex gap-4 justify-center items-cent">
-                <Button
-                  action={handleDelete}
-                  loading={mutateLoading}
-                  variant="danger"
-                >
-                  {`${t("confirm")}`}
-                </Button>
-                <Button action={() => setOpen(false)}>{`${t("close")}`}</Button>
-              </div>
-            </div>
-          )} */}
         </Modal>
       </Form>
     </Formik>

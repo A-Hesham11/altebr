@@ -81,19 +81,6 @@ const ViewDeductionsPolicy = () => {
                   }}
                   className="fill-mainGreen"
                 />
-                {/* <SvgDelete
-                  action={() => {
-                    setOpen((prev) => !prev);
-                    setDeleteData(info.row.original);
-                    setAction({
-                      delete: true,
-                      view: false,
-                      edit: false,
-                    });
-                    setModel(false);
-                  }}
-                  stroke="#ef4444"
-                /> */}
               </div>
             );
           },
@@ -128,7 +115,6 @@ const ViewDeductionsPolicy = () => {
         };
       },
     });
-    console.log("🚀 ~ ViewSubExpensesPolicies ~ data:", data);
   
     const queryClient = useQueryClient();
     const {

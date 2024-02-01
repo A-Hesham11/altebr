@@ -34,7 +34,6 @@ const AddEmployeeBenefits = ({
     Yup.object({
       entitlement_id: Yup.string().trim().required(requiredTranslation),
       branch_id: Yup.string().trim().required(requiredTranslation),
-      //   type: Yup.string().trim().required(requiredTranslation),
       employee_id: Yup.string().trim().required(requiredTranslation),
       value: Yup.string().trim().required(requiredTranslation),
     });
@@ -43,7 +42,6 @@ const AddEmployeeBenefits = ({
     entitlement_id: editData?.entitlement_id || "",
     branch_id: editData?.branch_id || "",
     employee_id: editData?.employee_id || "",
-    // type: editData?.type || "",
     value: editData?.value || "",
   };
 

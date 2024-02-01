@@ -4,10 +4,6 @@ import { t } from 'i18next';
 import { Table } from '../reusableComponants/tantable/Table';
 
 const ShiftsDetails = ({ item }: { item?: {} }) => {
-    console.log(
-      "🚀 ~ file: PurchaseInvoiceBondsPreview.tsx:7 ~ PurchaseInvoiceBondsPreview ~ item:",
-      item.workingshifts
-    );
     const { formatReyal } = numberContext();
   
     // COLUMNS FOR THE TABLE
@@ -20,7 +16,6 @@ const ShiftsDetails = ({ item }: { item?: {} }) => {
         },
         {
           cell: (info: any) => info.getValue() || "-",
-          // accessorKey: "old_weight",
           accessorKey: "shift_from",
           header: () => <span>{t("shift from")}</span>,
         },
