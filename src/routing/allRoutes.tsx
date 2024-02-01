@@ -126,6 +126,7 @@ import AttendanceDeparture from "../components/selling/continuity/AttendanceDepa
 import ContinuityPage from "../pages/selling/ContinuityPage";
 import ViewCommision from "../components/templates/commision/ViewCommision";
 import SellingSalaries from "../pages/selling/SellingSalaries";
+import Print from "../pages/Print";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -479,10 +480,6 @@ export const AllRoutesProvider = () => {
             path="/selling/management/receive-items"
             element={<RecieveItems />}
           />
-          <Route
-            path="/selling/management/edit-items-weight"
-            element={<>edit-items-weight</>}
-          />
           <Route path="/selling/payoff/payoff" element={<Payoff />} />
           <Route
             path="/selling/branchSetting"
@@ -583,7 +580,7 @@ export const AllRoutesProvider = () => {
           />
           <Route
             path="/selling/management/edit-items-weight"
-            element={<>edit-items-weight</>}
+            element={<Print/>}
           />
           <Route path="/selling/payoff/payoff" element={<Payoff />} />
           <Route

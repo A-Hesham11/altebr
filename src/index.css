@@ -227,21 +227,6 @@ input[type="file"] {
     }
 } */
 
-@media print {
-  body {
-    visibility: hidden;
-  }
-
-  .print-section {
-    width: 96%;
-    visibility: visible;
-    position: absolute;
-    left: 2%;
-    top: 5%;
-    /* transform: translate(-50%, -50%); */
-  }
-}
-
 .PieceDetails div:nth-child(19) {
   grid-column: 1 / -3;
   grid-row: span 7 / span 2;

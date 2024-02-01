@@ -1,6 +1,7 @@
 import QRCode from "react-qr-code";
 type QRCodeGen_TP = {
     value: any
+    ref:any
 }
 const QRCodeGen = ({ value }: QRCodeGen_TP) => {
     return (
