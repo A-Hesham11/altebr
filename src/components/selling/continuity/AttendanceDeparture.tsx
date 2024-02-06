@@ -115,6 +115,8 @@ const AttendanceDeparture = () => {
       },
       {
         cell: (info: any) => {
+          console.log("🚀 ~ AttendanceDeparture ~ info:", info.row.original)
+          
           const decimalHours = info.getValue();
 
           const formattedTime = convertDecimalToTime(decimalHours);

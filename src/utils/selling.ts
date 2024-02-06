@@ -13,6 +13,7 @@ import selling from "../assets/selling.svg"
 import trading from "../assets/trading.svg"
 import neighbors from "../assets/neighbors.svg"
 import { StoneRow_TP } from "../pages/coding/gold/AddStone"
+
 export const sellingCards = [
   {
     icon: selling,
