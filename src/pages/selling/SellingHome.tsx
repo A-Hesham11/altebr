@@ -38,19 +38,6 @@ const SellingHome = () => {
 
   const [isDeparture, setIsDeparture] = useState(false);
 
-  const { mutate: mutateAudience } = useMutate({
-    mutationFn: mutateData,
-    mutationKey: ["Audience"],
-    onSuccess: (data) => {
-      notify("success");
-      queryClient.refetchQueries(["all-Audience"]);
-    },
-    onError: (error) => {
-      console.log(error);
-      notify("error");
-    },
-  });
-
   // Assuming currentTime is in the format 'HH:mm:ss'
   const targetTime = new Date(); // Replace this with the actual current time
   const currentTime = new Intl.DateTimeFormat("en-US", {
@@ -83,7 +70,20 @@ const SellingHome = () => {
     console.log("No shift currently");
   }
 
-  const { mutate: mutateDeparture } = useMutate({
+  const { mutate: mutateAudience, isSuccess: isSuccessAudience } = useMutate({
+    mutationFn: mutateData,
+    mutationKey: ["Audience"],
+    onSuccess: (data) => {
+      notify("success");
+      queryClient.refetchQueries(["all-Audience"]);
+    },
+    onError: (error) => {
+      console.log(error);
+      notify("error");
+    },
+  });
+
+  const { mutate: mutateDeparture, isSuccess: isSuccessDeparture  } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["departure"],
     onSuccess: (data) => {
@@ -285,10 +285,10 @@ const SellingHome = () => {
                     setAudienceButton(localStorage.getItem("audience"));
                   }}
                   disabled={
-                    audienceButton == "true" || departureButton == "true"
+                    (audienceButton == "true" && !!isSuccessAudience) || departureButton == "true"
                   }
                 >
-                  {audienceButton == "true" ? (
+                  {audienceButton == "true" && !!isSuccessAudience ? (
                     <GiCheckMark size={24} className="fill-mainGreen" />
                   ) : (
                     <img src={Audience} alt="Audience" />
@@ -318,9 +318,9 @@ const SellingHome = () => {
                     localStorage.setItem("audience", false);
                     setAudienceButton(localStorage.getItem("audience"));
                   }}
-                  disabled={departureButton == "true"}
+                  disabled={departureButton == "true" && !!isSuccessDeparture}
                 >
-                  {departureButton == "true" ? (
+                  {departureButton == "true" && !!isSuccessDeparture ? (
                     <GiCheckMark size={24} className="fill-mainGreen" />
                   ) : (
                     <img src={Departure} alt="Departure" />
