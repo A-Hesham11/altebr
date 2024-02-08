@@ -32,6 +32,7 @@ const SellingInvoiceData = ({
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData)
 
   const TaxRateOfBranch =
     sellingItemsData && sellingItemsData[0]?.tax_rate / 100;
@@ -207,6 +208,8 @@ const SellingInvoiceData = ({
       karat_price: sellingItemsData[0].gold_price,
     };
     const items = sellingItemsData.map((item) => {
+    console.log("🚀 ~ items ~ item:", item)
+
       const rowTaxEquation = +item.tax_rate / 100 + 1;
       const taklfaFromOneItem =
         +item.taklfa_after_tax + +ratioForOneItem + +ratioForOneItemTaxes;
@@ -232,6 +235,7 @@ const SellingInvoiceData = ({
         weight: item.weight,
         selling_price: item.selling_price,
         cost: +totalCostFromOneItem,
+        cost_value: item.cost,
         vat: +totalTaxFromOneRow,
         total: +taklfaFromOneItem,
         kitSellingItems: item.itemDetails,

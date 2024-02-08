@@ -6,25 +6,25 @@ import Logo from "../assets/qr-logo.png";
 const Print = () => {
   // console.log("🚀 ~ ZebraPrintWrapper:", new ZebraBrowserPrintWrapper().device);
 
-  // const handlePrintClick = () => {
-  //   const contentToPrint = document.getElementById("content-to-print");
-  //   const printWindow = window.open("");
-  //   if (printWindow) {
-  //     printWindow.document.write(`
-  //           <html>
-  //             <body>
-  //               ${contentToPrint.innerHTML}
-  //             </body>
-  //           </html>
-  //         `);
-  //     printWindow.print();
-  //     printWindow.document.close();
-  //   } else {
-  //     alert(
-  //       "Pop-up blocked. Please enable pop-ups for this website and try again."
-  //     );
-  //   }
-  // };
+  const handlePrintClick = () => {
+    const contentToPrint = document.getElementById("content-to-print");
+    const printWindow = window.open("");
+    if (printWindow) {
+      printWindow.document.write(`
+            <html>
+              <body>
+                ${contentToPrint.innerHTML}
+              </body>
+            </html>
+          `);
+      printWindow.print();
+      printWindow.document.close();
+    } else {
+      alert(
+        "Pop-up blocked. Please enable pop-ups for this website and try again."
+      );
+    }
+  };
 
   // const handlePrintClick = () => {
   //   // Get the HTML content you want to print
@@ -72,7 +72,7 @@ const Print = () => {
 
   return (
     <div>
-      {/* <div
+      <div
         id="content-to-print"
         style={{
           width: "60px",
@@ -104,12 +104,11 @@ const Print = () => {
         type="submit"
         onClick={() => {
           console.log("dkfmskvmekm");
-
-          printBarcode("12345678");
+          handlePrintClick();
         }}
       >
         Print
-      </button> */}
+      </button>
     </div>
   );
 };
