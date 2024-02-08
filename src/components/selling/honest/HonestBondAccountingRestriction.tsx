@@ -7,7 +7,7 @@ import { t } from "i18next"
 import { useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import { numberContext } from "../../../context/settings/number-formatter"
-import { useFetch } from "../../../hooks"
+import { useFetch, useIsRTL } from "../../../hooks"
 import { notify } from "../../../utils/toast"
 import { Back } from "../../../utils/utils-components/Back"
 import { Loading } from "../../organisms/Loading"
@@ -25,6 +25,8 @@ export const HonestBondAccountingRestriction = ({ sanadId }: { sanadId?: number 
     /////////// CUSTOM HOOKS
     ///
     const { formatReyal } = numberContext()
+
+    const isRTL = useIsRTL()
 
     const cols1 = useMemo<any>(
         () => [
@@ -125,13 +127,13 @@ export const HonestBondAccountingRestriction = ({ sanadId }: { sanadId?: number 
         ({ account, computational_movement, unit_id, value }) => ({
             bian: account,
             debtor_gram:
-                computational_movement === "debtor" && unit_id === "gram" ? value : 0,
+                computational_movement === "debtor" && unit_id === ("جرام" || "gram") ? value : 0,
             debtor_SRA:
-                computational_movement === "debtor" && unit_id === "reyal" ? value : 0,
+                computational_movement === "debtor" && unit_id === ("ريال" || "reyal") ? value : 0,
             creditor_gram:
-                computational_movement === "creditor" && unit_id === "gram" ? value : 0,
+                computational_movement === "creditor" && unit_id === ("جرام" || "gram") ? value : 0,
             creditor_SRA:
-                computational_movement === "creditor" && unit_id === "reyal" ? value : 0,
+                computational_movement === "creditor" && unit_id === ("ريال" || "reyal") ? value : 0,
         })
     );
     console.log("🚀 ~ HonestBondAccountingRestriction ~ restrictions:", restrictions)

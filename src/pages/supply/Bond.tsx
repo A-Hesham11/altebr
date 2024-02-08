@@ -7,7 +7,7 @@ import { Loading } from "../../components/organisms/Loading"
 import { BondTotals } from "../../components/supply/BondTotals"
 import { Table } from "../../components/templates/reusableComponants/tantable/Table"
 import { numberContext } from "../../context/settings/number-formatter"
-import { useFetch } from "../../hooks"
+import { useFetch, useIsRTL } from "../../hooks"
 
 type BondProps_TP = {
   title: string
@@ -80,7 +80,9 @@ export const Bond = ({ title }: BondProps_TP) => {
   const [factorialValue , setFactorialValue] = useState(1)
   const { formatGram, formatReyal } = numberContext()
   const location = useLocation()
-  const path = location.pathname
+  const path = location.pathname;
+
+  const isRTL = useIsRTL()
 
   const { 
     data: contract, 
@@ -426,13 +428,13 @@ export const Bond = ({ title }: BondProps_TP) => {
     ({ account, computational_movement, unit_id, value }) => ({
       bian: account,
       debtor_gram:
-        computational_movement === "debtor" && unit_id === "gram" ? value : 0,
+        computational_movement === "debtor" && unit_id === ("جرام" || "gram") ? value : 0,
       debtor_SRA:
-        computational_movement === "debtor" && unit_id === "reyal" ? value : 0,
+        computational_movement === "debtor" && unit_id === ("ريال" || "reyal") ? value : 0,
       creditor_gram:
-        computational_movement === "creditor" && unit_id === "gram" ? value : 0,
+        computational_movement === "creditor" && unit_id === ("جرام" || "gram") ? value : 0,
       creditor_SRA:
-        computational_movement === "creditor" && unit_id === "reyal" ? value : 0,
+        computational_movement === "creditor" && unit_id === ("ريال" || "reyal") ? value : 0,
     })
   );
 

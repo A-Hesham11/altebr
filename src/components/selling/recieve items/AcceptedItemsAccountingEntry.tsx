@@ -1,5 +1,5 @@
 import { useContext, useMemo, useState } from "react"
-import { useFetch } from "../../../hooks"
+import { useFetch, useIsRTL } from "../../../hooks"
 import { t } from "i18next"
 import { authCtx } from "../../../context/auth-and-perm/auth"
 import { Button } from "../../atoms"
@@ -18,6 +18,8 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
     /////////// VARIABLES
     ///
     const { formatGram, formatReyal } = numberContext()
+
+    const isRTL = useIsRTL()
 
     const goldCols = useMemo<any>(() => [
         {
@@ -154,13 +156,13 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
         ({ account, computational_movement, unit_id, value }) => ({
             bian: account,
             debtor_gram:
-                computational_movement === "debtor" && unit_id === "gram" ? value : 0,
+                computational_movement === "debtor" && unit_id === ("جرام" || "gram") ? value : 0,
             debtor_SRA:
-                computational_movement === "debtor" && unit_id === "reyal" ? value : 0,
+                computational_movement === "debtor" && unit_id === ("ريال" || "reyal") ? value : 0,
             creditor_gram:
-                computational_movement === "creditor" && unit_id === "gram" ? value : 0,
+                computational_movement === "creditor" && unit_id === ("جرام" || "gram") ? value : 0,
             creditor_SRA:
-                computational_movement === "creditor" && unit_id === "reyal" ? value : 0,
+                computational_movement === "creditor" && unit_id === ("ريال" || "reyal") ? value : 0,
         })
     );
 

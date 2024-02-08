@@ -4,6 +4,7 @@ import { numberContext } from "../../../context/settings/number-formatter";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Box_TP } from "../../supply/Bond";
+import { useIsRTL } from "../../../hooks";
 
 type TableRow_TP = {
   itemType: string;
@@ -60,6 +61,8 @@ const TableOfBranchBondsModal = ({ item }: { item?: {} }) => {
 console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsModal ~ item:", item)
 
   const { formatGram, formatReyal } = numberContext();
+
+  const isRTL = useIsRTL()
 
   // COLUMNS FOR THE TABLE OF DETAILS BOND DETAILS
   const tableColumn = useMemo<any>(
@@ -153,13 +156,13 @@ console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsMod
     ({ account, computational_movement, unit_id, value }) => ({
       bian: account,
       debtor_gram:
-        computational_movement === "debtor" && unit_id === "gram" ? value : 0,
+        computational_movement === "debtor" && unit_id === ("جرام" || "gram") ? value : 0,
       debtor_SRA:
-        computational_movement === "debtor" && unit_id === "reyal" ? value : 0,
+        computational_movement === "debtor" && unit_id === ("ريال" || "reyal") ? value : 0,
       creditor_gram:
-        computational_movement === "creditor" && unit_id === "gram" ? value : 0,
+        computational_movement === "creditor" && unit_id === ("جرام" || "gram") ? value : 0,
       creditor_SRA:
-        computational_movement === "creditor" && unit_id === "reyal"
+        computational_movement === "creditor" && unit_id === ("ريال" || "reyal")
           ? value
           : 0,
     })

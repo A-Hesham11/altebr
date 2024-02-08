@@ -49,6 +49,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ dataSource:", dataSource)
 
   const [search, setSearch] = useState(""); 
   const [openDetails, setOpenDetails] = useState<boolean>(false);
@@ -61,6 +62,7 @@ export const SellingTableInputData = ({
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] = useState("")
 
   const { userData } = useContext(authCtx)
+  console.log("🚀 ~ userData:", userData)
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100 ;
   

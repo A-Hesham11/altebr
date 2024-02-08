@@ -5,7 +5,7 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { ColumnDef } from "@tanstack/react-table";
 import { Box_TP } from "../../supply/Bond";
 import { Button } from "../../../components/atoms";
-import { useFetch, useMutate } from "../../../hooks";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { notify } from "../../../utils/toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { mutateData } from "../../../utils/mutateData";
@@ -68,6 +68,8 @@ console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item)
   // const [endpointApi, setEndpointApi] = useState("");
   const [test, setTest] = useState(false);
   const [constraintID, setConstraintID] = useState("")
+
+  const isRTL = useIsRTL()
 
   // const { data: entryAccounting, refetch: entryAccountingRefetch, isLoading, isFetching } = useFetch({
   //   endpoint: `/identity/api/v1/accept/${constraintID}`,
@@ -196,17 +198,18 @@ console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item)
     ({ account, computational_movement, unit_id, value }) => ({
       bian: account,
       debtor_gram:
-        computational_movement === "debtor" && unit_id === "gram" ? value : 0,
+        computational_movement === "debtor" && unit_id === ("جرام" || "gram") ? value : 0,
       debtor_SRA:
-        computational_movement === "debtor" && unit_id === "reyal" ? value : 0,
+        computational_movement === "debtor" && unit_id ===  ("ريال" || "reyal") ? value : 0,
       creditor_gram:
-        computational_movement === "creditor" && unit_id === "gram" ? value : 0,
+        computational_movement === "creditor" && unit_id === ("جرام" || "gram") ? value : 0,
       creditor_SRA:
-        computational_movement === "creditor" && unit_id === "reyal"
+        computational_movement === "creditor" && unit_id === ("ريال" || "reyal")
           ? value
           : 0,
     })
   );
+  console.log("🚀 ~ TableOfReturnBondsModal ~ restrictions:", restrictions)
 
   // group by account
   const restrictionsWithoutTotals = restrictions?.reduce(

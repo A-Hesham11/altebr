@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { t } from "i18next"
 import { useMemo, useState } from "react"
 import { numberContext } from "../../../context/settings/number-formatter"
-import { useFetch } from "../../../hooks"
+import { useFetch, useIsRTL } from "../../../hooks"
 import { notify } from "../../../utils/toast"
 import { Button } from "../../atoms"
 import { BoxesDataBase } from "../../atoms/card/BoxesDataBase"
@@ -15,6 +15,8 @@ export const RejectedItemsAccountingEntry = ({ sanadId, isInPopup, setStage }: R
     /////////// VARIABLES
     ///
     const { formatGram, formatReyal } = numberContext()
+
+    const isRTL = useIsRTL()
 
     const goldCols = useMemo<any>(() => [
         {
@@ -164,13 +166,13 @@ export const RejectedItemsAccountingEntry = ({ sanadId, isInPopup, setStage }: R
         ({ account, computational_movement, unit_id, value }) => ({
             bian: account,
             debtor_gram:
-                computational_movement === "debtor" && unit_id === "gram" ? value : 0,
+                computational_movement === "debtor" && unit_id === ("جرام" || "gram") ? value : 0,
             debtor_SRA:
-                computational_movement === "debtor" && unit_id === "reyal" ? value : 0,
+                computational_movement === "debtor" && unit_id === ("ريال" || "reyal") ? value : 0,
             creditor_gram:
-                computational_movement === "creditor" && unit_id === "gram" ? value : 0,
+                computational_movement === "creditor" && unit_id === ("جرام" || "gram") ? value : 0,
             creditor_SRA:
-                computational_movement === "creditor" && unit_id === "reyal" ? value : 0,
+                computational_movement === "creditor" && unit_id === ("ريال" || "reyal") ? value : 0,
         })
     );
 
