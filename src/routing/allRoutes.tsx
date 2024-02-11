@@ -127,6 +127,7 @@ import ContinuityPage from "../pages/selling/ContinuityPage";
 import ViewCommision from "../components/templates/commision/ViewCommision";
 import SellingSalaries from "../pages/selling/SellingSalaries";
 import Print from "../pages/Print";
+import Support from "../pages/Support/Support";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -201,6 +202,13 @@ export const AllRoutesProvider = () => {
           />
           {/* ./CODING */}
           <Route path="/system" element={<System title={t("system")} />} />
+
+          {/* SUPPORT */}
+          <Route
+            path="/support"
+            element={<Support title={t("helper center")} />}
+          />
+
           <Route
             path="/system/company-profile"
             element={<ViewCompanyDetails />}
@@ -580,7 +588,7 @@ export const AllRoutesProvider = () => {
           />
           <Route
             path="/selling/management/edit-items-weight"
-            element={<Print/>}
+            element={<Print />}
           />
           <Route path="/selling/payoff/payoff" element={<Payoff />} />
           <Route

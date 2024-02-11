@@ -6,23 +6,25 @@ import { IconType } from "react-icons/lib";
 import { RiVipCrownLine } from "react-icons/ri";
 import { TbSmartHome } from "react-icons/tb";
 import { TebrLogo } from "../components/atoms/icons/TebrLogo";
+
 // import {altebrLogo}  from "../components/atoms/icons/altebrLogo.svg";
 // import {sideBarLogo} from "../assets/sideBar-logo.svg";
 import { t } from "i18next";
+import { SupportIcon } from "../components/atoms/icons/SupportIcon";
 export type MenuItem_TP = {
-  id: string
-  icon: IconType
-  label?: string
-  link?: string
+  id: string;
+  icon: IconType;
+  label?: string;
+  link?: string;
 
   items?: {
-    id: string
-    icon: IconType
-    label?: string
-    link?: string
-    items?: MenuItem_TP[]
-  }[]
-}
+    id: string;
+    icon: IconType;
+    label?: string;
+    link?: string;
+    items?: MenuItem_TP[];
+  }[];
+};
 
 export const sideBarItems: MenuItem_TP[] = [
   {
@@ -32,84 +34,84 @@ export const sideBarItems: MenuItem_TP[] = [
   {
     id: crypto.randomUUID(),
     icon: TbSmartHome,
-    label: 'home',
+    label: "home",
     link: "/",
   },
 
   {
     id: crypto.randomUUID(),
-    label: 'supply',
+    label: "supply",
     icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "gold",
+        icon: AiOutlineGold,
         items: [
           {
             id: crypto.randomUUID(),
-            label: 'gold',
-            icon: AiOutlineGold,
-            items: [
-              {
-                id: crypto.randomUUID(),
-                label: 'gold bonds',
-                link: "/gold-bonds",
-                icon: RiVipCrownLine,
-              },
-              {
-                id: crypto.randomUUID(),
-                label: 'gold bond supply',
-                link: "/bonds/gold",
-                icon: AiFillGolden,
-              },
-            ]
+            label: "gold bonds",
+            link: "/gold-bonds",
+            icon: RiVipCrownLine,
           },
           {
             id: crypto.randomUUID(),
-            label: 'diamond',
-            icon: IoDiamondOutline,
-            items: [
-              {
-                id: crypto.randomUUID(),
-                label: 'diamond bonds',
-                link: "/diamond-bonds",
-                icon: RiVipCrownLine,
-              },
-              {
-                id: crypto.randomUUID(),
-                label: 'diamond bond supply',
-                link: "/bonds/diamond",
-                icon: GiCutDiamond,
-              },
-            ]
+            label: "gold bond supply",
+            link: "/bonds/gold",
+            icon: AiFillGolden,
           },
-          {
-            id: crypto.randomUUID(),
-            label: 'accessory',
-            icon: GiBigDiamondRing,
-            items: [
-              {
-                id: crypto.randomUUID(),
-                label: 'accessory bonds',
-                link: "/accessory-bonds",
-                icon: RiVipCrownLine,
-              },
-              {
-                id: crypto.randomUUID(),
-                label: 'accessories bond supply',
-                link: "/bonds/accessories",
-                icon: GiGems,
-              },
-            ]
-          },
-          // {
-          //   id: crypto.randomUUID(),
-          //   label: 'accessories bond supply',
-          //   link: "accessories",
-          //   icon: BiDiamond,
-          // },
         ],
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "diamond",
+        icon: IoDiamondOutline,
+        items: [
+          {
+            id: crypto.randomUUID(),
+            label: "diamond bonds",
+            link: "/diamond-bonds",
+            icon: RiVipCrownLine,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: "diamond bond supply",
+            link: "/bonds/diamond",
+            icon: GiCutDiamond,
+          },
+        ],
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "accessory",
+        icon: GiBigDiamondRing,
+        items: [
+          {
+            id: crypto.randomUUID(),
+            label: "accessory bonds",
+            link: "/accessory-bonds",
+            icon: RiVipCrownLine,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: "accessories bond supply",
+            link: "/bonds/accessories",
+            icon: GiGems,
+          },
+        ],
+      },
+      // {
+      //   id: crypto.randomUUID(),
+      //   label: 'accessories bond supply',
+      //   link: "accessories",
+      //   icon: BiDiamond,
+      // },
+    ],
   },
 
   {
     id: crypto.randomUUID(),
-    label: 'coding',
+    label: "coding",
     icon: CiExport,
     items: [
       // {
@@ -122,26 +124,26 @@ export const sideBarItems: MenuItem_TP[] = [
       // الهويات المرقمة
       {
         id: crypto.randomUUID(),
-        label: 'coded identities',
+        label: "coded identities",
         link: "/coding-react",
         icon: RiVipCrownLine,
       },
       // REACT
       {
         id: crypto.randomUUID(),
-        label: 'gold coding',
+        label: "gold coding",
         link: "/coding/gold",
         icon: RiVipCrownLine,
       },
       {
         id: crypto.randomUUID(),
-        label: 'diamond coding',
+        label: "diamond coding",
         link: "/coding/diamond",
         icon: GiCutDiamond,
       },
       {
         id: crypto.randomUUID(),
-        label: 'accessories coding',
+        label: "accessories coding",
         link: "/coding/accessories",
         icon: GiCutDiamond,
       },
@@ -150,74 +152,80 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
-    label: 'branches',
+    label: "branches",
     icon: CiExport,
+    items: [
+      // {
+      //   id: crypto.randomUUID(),
+      //   label: 'branch bonds',
+      //   link: "/branch-bonds",
+      //   icon: CiExport,
+      // },
+
+      // REACT
+      // سندات الفروع
+      {
+        id: crypto.randomUUID(),
+        label: "branch bonds",
+        link: "/branch-bonds-react",
+        icon: CiExport,
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "return bonds",
+        link: "/return-bonds-react",
+        icon: CiExport,
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "Branches payment",
+        icon: CiExport,
         items: [
-          // {
-          //   id: crypto.randomUUID(),
-          //   label: 'branch bonds',
-          //   link: "/branch-bonds",
-          //   icon: CiExport,
-          // },
-          
-          // REACT
-          // سندات الفروع
           {
             id: crypto.randomUUID(),
-            label: 'branch bonds',
-            link: "/branch-bonds-react",
-            icon: CiExport,
+            label: "Payment bonds",
+            link: "/payment-bonds",
+            icon: AiOutlineGold,
           },
           {
             id: crypto.randomUUID(),
-            label: 'return bonds',
-            link: "/return-bonds-react",
-            icon: CiExport,
+            label: "branches payment view",
+            link: "/view-bonds",
+            icon: AiOutlineGold,
           },
-          {
-            id: crypto.randomUUID(),
-            label: 'Branches payment',
-            icon: CiExport,
-            items: [
-              {
-                id: crypto.randomUUID(),
-                label: 'Payment bonds',
-                link: "/payment-bonds",
-                icon: AiOutlineGold,
-              },
-              {
-                id: crypto.randomUUID(),
-                label: 'branches payment view',
-                link: "/view-bonds",
-                icon: AiOutlineGold,
-              },
-            ],
-          },
-          // REACT
-        ]
+        ],
+      },
+      // REACT
+    ],
   },
 
   {
     id: crypto.randomUUID(),
-    label: 'Expenses',
+    label: "Expenses",
     icon: CiExport,
-        items: [
-          {
-            id: crypto.randomUUID(),
-            label: 'Salaries',
-            link: "/expenses/Salaries",
-            icon: CiExport,
-          },
-        ]
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "Salaries",
+        link: "/expenses/Salaries",
+        icon: CiExport,
+      },
+    ],
   },
 
   {
     id: crypto.randomUUID(),
-    label: 'system setting',
+    label: "system setting",
     link: "/system",
     icon: CiSettings,
   },
-  
+  {
+    id: crypto.randomUUID(),
+    label: "helper center",
+    link: "/support",
+    icon: SupportIcon,
+  },
+
   // {
   //   id: crypto.randomUUID(),
   //   label: 'bonds',
@@ -329,7 +337,7 @@ export const sideBarItems: MenuItem_TP[] = [
   //     //   label: "employees",
   //     //   link: "/employees",
   //     //   icon: GrGroup,
-  //     // }, 
+  //     // },
   //     // {
   //     //   id: crypto.randomUUID(),
   //     //   label: 'reserve gold',
@@ -339,68 +347,64 @@ export const sideBarItems: MenuItem_TP[] = [
   //   ],
   // },
 
+  // {1
+  //   id: crypto.randomUUID(),
+  //   label: 'payment',
+  //   icon: MdOutlineAttachMoney,
 
-
-
-
-      // {1
-      //   id: crypto.randomUUID(),
-      //   label: 'payment',
-      //   icon: MdOutlineAttachMoney,
-
-      //   items: [
-      //     {
-      //       id: crypto.randomUUID(),
-      //       label: 'bond payment',
-      //       link: "/return-payment",
-      //       icon: CiImport,
-      //     },
-      //   ],
-      // },
-      // {
-      //   id: crypto.randomUUID(),
-      //   label: 'payoff',
-      //   link: "Return",
-      //   icon: MdOutlinePayments,
-      //   items: [
-      //     {
-      //       id: crypto.randomUUID(),
-      //       label: 'supply payoff',
-      //       link: "return-table",
-      //       icon: MdOutlinePayments,
-      //     },
-      //     {
-      //       id: crypto.randomUUID(),
-      //       label: 'gold payoff',
-      //       link: "return-gold",
-      //       icon: AiFillGolden,
-      //     },
-      //     {
-      //       id: crypto.randomUUID(),
-      //       label: 'diamond payoff',
-      //       link: "return-diamond",
-      //       icon: AiFillGolden,
-      //     },
-      //     {
-      //       id: crypto.randomUUID(),
-      //       label: 'accessories payoff',
-      //       link: "return-accessories",
-      //       icon: AiFillGolden,
-      //     },
-      //   ],
-      // },
-      // {
-      //   id: crypto.randomUUID(),
-      //   label: "employees",
-      //   link: "/employees",
-      //   icon: GrGroup,
-      // }, 
-      // {
-      //   id: crypto.randomUUID(),
-      //   label: 'reserve gold',
-      //   link: "accessories",
-      //   icon: MdOutlinePayments,
-      // },
+  //   items: [
+  //     {
+  //       id: crypto.randomUUID(),
+  //       label: 'bond payment',
+  //       link: "/return-payment",
+  //       icon: CiImport,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: crypto.randomUUID(),
+  //   label: 'payoff',
+  //   link: "Return",
+  //   icon: MdOutlinePayments,
+  //   items: [
+  //     {
+  //       id: crypto.randomUUID(),
+  //       label: 'supply payoff',
+  //       link: "return-table",
+  //       icon: MdOutlinePayments,
+  //     },
+  //     {
+  //       id: crypto.randomUUID(),
+  //       label: 'gold payoff',
+  //       link: "return-gold",
+  //       icon: AiFillGolden,
+  //     },
+  //     {
+  //       id: crypto.randomUUID(),
+  //       label: 'diamond payoff',
+  //       link: "return-diamond",
+  //       icon: AiFillGolden,
+  //     },
+  //     {
+  //       id: crypto.randomUUID(),
+  //       label: 'accessories payoff',
+  //       link: "return-accessories",
+  //       icon: AiFillGolden,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: crypto.randomUUID(),
+  //   label: "employees",
+  //   link: "/employees",
+  //   icon: GrGroup,
+  // },
+  // {
+  //   id: crypto.randomUUID(),
+  //   label: 'reserve gold',
+  //   link: "accessories",
+  //   icon: MdOutlinePayments,
+  // },
   // Desimal Number
   // {
   //   id: crypto.randomUUID(),
@@ -408,4 +412,4 @@ export const sideBarItems: MenuItem_TP[] = [
   //   link: "/settings",
   //   icon: CiSettings,
   // },
-]
+];
