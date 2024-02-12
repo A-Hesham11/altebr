@@ -36,6 +36,7 @@ export const Table = <T extends object>({
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   })
+  
   const isRTL = useIsRTL()
   
   return (

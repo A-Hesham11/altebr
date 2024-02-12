@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { Table } from "../../../templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../../../context/settings/number-formatter";
 import { ColumnDef } from "@tanstack/react-table";
+import TableEntry from "../../../templates/reusableComponants/tantable/TableEntry";
 
 type Entry_TP = {
   bian: string;
@@ -13,7 +14,7 @@ type Entry_TP = {
 };
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
+  console.log("🚀 ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE
@@ -98,58 +99,6 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     []
   );
 
-  // FOR TABLE ACCOUNTING ENTRY
-  let restrictions = item.boxes?.map(
-    ({ account, computational_movement, unit_id, value }) => ({
-      bian: account,
-      debtor_gram:
-        computational_movement === "debtor" && unit_id === ("جرام" || "gram")
-          ? value
-          : 0,
-      debtor_SRA:
-        computational_movement === "debtor" && unit_id === ("ريال" || "reyal")
-          ? value
-          : 0,
-      creditor_gram:
-        computational_movement === "creditor" && unit_id === ("جرام" || "gram")
-          ? value
-          : 0,
-      creditor_SRA:
-        computational_movement === "creditor" && unit_id === ("ريال" || "reyal")
-          ? value
-          : 0,
-    })
-  );
-
-  // group by account
-  const restrictionsWithoutTotals = restrictions?.reduce((prev, curr) => {
-    const index = prev.findIndex((item) => item.bian === curr.bian);
-    if (index === -1) {
-      prev.push(curr);
-    } else {
-      prev[index].debtor_gram += curr.debtor_gram;
-      prev[index].debtor_SRA += curr.debtor_SRA;
-      prev[index].creditor_gram += curr.creditor_gram;
-      prev[index].creditor_SRA += curr.creditor_SRA;
-    }
-    return prev;
-  }, [] as typeof restrictions);
-
-  restrictions = restrictionsWithoutTotals;
-
-  let restrictionsTotals;
-  if (restrictions && !!restrictions.length) {
-    restrictionsTotals = restrictions?.reduce((prev, curr) => ({
-      bian: `${t("totals")}`,
-      debtor_gram: prev.debtor_gram + curr.debtor_gram,
-      debtor_SRA: prev.debtor_SRA + curr.debtor_SRA,
-      creditor_gram: prev.creditor_gram + curr.creditor_gram,
-      creditor_SRA: prev.creditor_SRA + curr.creditor_SRA,
-    }));
-  }
-
-  if (restrictionsTotals) restrictions?.push(restrictionsTotals!);
-
   return (
     <>
       <div className="mt-16">
@@ -157,9 +106,8 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
           <p className="mb-4 font-semibold text-lg">{t("pieces details")}</p>
           <Table data={item?.items} columns={tableColumn}></Table>
         </div>
-        <div className="mt-8">
-          <h2 className="text-xl mb-5 font-bold">{t("accounting entry")}</h2>
-          <Table data={restrictions} footered columns={cols2} />
+        <div>
+          <TableEntry item={item} />
         </div>
       </div>
     </>
