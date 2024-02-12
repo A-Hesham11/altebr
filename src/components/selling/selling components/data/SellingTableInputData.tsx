@@ -65,6 +65,7 @@ export const SellingTableInputData = ({
   console.log("🚀 ~ userData:", userData)
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100 ;
+  console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch)
   
   const priceWithCommissionRate =
   dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);

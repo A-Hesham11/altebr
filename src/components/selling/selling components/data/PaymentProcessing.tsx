@@ -46,20 +46,15 @@ const PaymentProcessing = ({
 }: Payment_TP) => {
   console.log("🚀 ~ paymentData:", paymentData)
   const [card, setCard] = useState<string | undefined>("");
-  console.log("🚀 ~ PaymentProcessing ~ card:", card);
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [selectedCardId, setSelectedCardId] = useState(null);
-  console.log("🚀 ~ PaymentProcessing ~ selectedCardId:", selectedCardId);
   const [editData, setEditData] = useState<Payment_TP>();
-  console.log("🚀 ~ PaymentProcessing ~ editData:", editData);
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>(
     {}
   );
-  console.log(
-    "🚀 ~ PaymentProcessing ~ cardDiscountPercentage:",
-    cardDiscountPercentage
-  );
+  console.log("🚀 ~ cardDiscountPercentage:", cardDiscountPercentage)
+  
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
   const { formatGram, formatReyal } = numberContext();
@@ -112,6 +107,7 @@ const PaymentProcessing = ({
         initialValues={initialValues}
         validationSchema={() => validationSchema()}
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
+          console.log("🚀 ~ values:", values)
           // const commissionValue =
           //   values.cost_after_tax * (values.discount_percentage / 100);
           const commissionValue =
@@ -153,6 +149,7 @@ const PaymentProcessing = ({
                       ? commissionRiyals
                       : 0,
                   max_discount_limit_value: cardDiscountPercentage?.max_discount_limit_value,
+                  max_discount_limit: cardDiscountPercentage?.max_discount_limit,
                   cardImage: cardImage,
                   frontkey: cardFrontKey,
                   frontKeyAccept: frontKeyAccept,

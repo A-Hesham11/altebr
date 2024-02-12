@@ -32,7 +32,7 @@ const SellingInvoiceData = ({
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData)
+  console.log("🚀 ~ userData:", userData);
 
   const TaxRateOfBranch =
     sellingItemsData && sellingItemsData[0]?.tax_rate / 100;
@@ -208,7 +208,7 @@ const SellingInvoiceData = ({
       karat_price: sellingItemsData[0].gold_price,
     };
     const items = sellingItemsData.map((item) => {
-    console.log("🚀 ~ items ~ item:", item)
+      console.log("🚀 ~ items ~ item:", item);
 
       const rowTaxEquation = +item.tax_rate / 100 + 1;
       const taklfaFromOneItem =
@@ -251,7 +251,7 @@ const SellingInvoiceData = ({
     //   return acc;
     // }, {});
     const card = paymentData.reduce((acc, curr) => {
-      console.log("🚀 ~ card ~ curr:", curr)
+      console.log("🚀 ~ card ~ curr:", curr);
       // const maxDiscountOrNOt =
       //   curr.max_discount_limit_value
       //     ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
@@ -260,12 +260,13 @@ const SellingInvoiceData = ({
       // acc[curr.sellingFrontKey] = +maxDiscountOrNOt + Number(curr.commission_tax);
 
       const maxDiscountOrNOt =
-      curr.max_discount_limit_value
-        ? Number(curr.amount) + Number(curr?.max_discount_limit_value) 
-        : Number(curr.amount) + Number(curr.commission_riyals);
-          
-      acc[curr.sellingFrontKey] = +maxDiscountOrNOt  + Number(curr.commission_tax);
-      
+        curr.amount >= curr.max_discount_limit
+          ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
+          : Number(curr.amount) + Number(curr.commission_riyals);
+
+      acc[curr.sellingFrontKey] =
+        +maxDiscountOrNOt + Number(curr.commission_tax);
+
       return acc;
     }, {});
     mutate({
