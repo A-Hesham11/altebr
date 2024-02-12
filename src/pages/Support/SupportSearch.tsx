@@ -2,7 +2,19 @@ import React from "react";
 import { BaseInputField, Select } from "../../components/molecules";
 import { t } from "i18next";
 
-const SupportSearch = ({
+type Props = {
+  searchOption: {
+    id: number;
+    label: string;
+    name: string;
+    value: string;
+  }[];
+
+  selectedOption?: string;
+  handleSelectedOption?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+};
+
+const SupportSearch: React.FC<Props> = ({
   searchOption,
   selectedOption,
   handleSelectedOption,
@@ -17,23 +29,23 @@ const SupportSearch = ({
           {t("search here to get answers to your questions")}
         </p>
 
-        <div className="flex relative">
+        <div className="flex gap-1 relative">
           <BaseInputField
             id="search"
             name="search"
             type="text"
-            className="rounded-xl h-12 w-[580px] text-black"
+            className="h-10 w-[450px] text-black"
             placeholder={`${t("search here")}`}
           />
 
-          <div className="absolute left-0">
-            <select
+          <div className="w-28">
+            {/* <select
               id="searchOption"
               value={selectedOption}
               onChange={handleSelectedOption}
               className="rounded-l-xl text-black h-12 w-28 cursor-pointer text-center"
             >
-              {searchOption.map((option) => (
+              {searchOption.map((option: any) => (
                 <option
                   className="text-center"
                   key={option.id}
@@ -42,13 +54,13 @@ const SupportSearch = ({
                   {option.label}
                 </option>
               ))}
-            </select>
-            {/* <Select
+            </select> */}
+            <Select
               name="all"
-              className="rounded-xl !h-12 text-black "
+              className="rounded-xl !h-12 text-black"
               placeholder={`${t("all")}`}
               options={searchOption}
-            /> */}
+            />
           </div>
         </div>
       </div>
