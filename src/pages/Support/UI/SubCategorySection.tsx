@@ -3,7 +3,18 @@ import React, { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { Link } from "react-router-dom";
 
-const SubCategorySection = ({
+type Props = {
+  icon: JSX.Element;
+  sectionHead: string;
+  sectionDescription: string;
+  sectionList: {
+    id: number;
+    text: string;
+    link: string;
+  }[];
+};
+
+const SubCategorySection: React.FC<Props> = ({
   icon,
   sectionHead,
   sectionDescription,

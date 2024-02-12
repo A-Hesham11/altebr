@@ -2,31 +2,21 @@ import { Formik } from "formik";
 import { t } from "i18next";
 import SupportSearch from "./SupportSearch";
 import { useState } from "react";
-import {
-  searchCategoryFive,
-  searchCategoryFour,
-  searchCategoryOne,
-  searchCategoryThree,
-  searchCategoryTwo,
-} from "../../components/atoms/icons/SearchCategoryIcon";
 import { GiChessKing } from "react-icons/gi";
-import {
-  IoDiamondSharp,
-  IoSettingsOutline,
-  IoSettingsSharp,
-} from "react-icons/io5";
+import { IoDiamondSharp, IoSettingsSharp } from "react-icons/io5";
 import SubCategorySection from "./UI/SubCategorySection";
-import { BsArrowUpRightCircleFill } from "react-icons/bs";
+import { BsArrowUpRightCircleFill, BsFileTextFill } from "react-icons/bs";
 import { AiFillDollarCircle } from "react-icons/ai";
+import { FaSitemap } from "react-icons/fa";
 
 const searchOption = [
   { id: 1, label: t("all"), name: "all", value: "all" },
   { id: 2, label: t("supply"), name: "supply", value: "supply" },
   { id: 3, label: t("numbering"), name: "numbering", value: "numbering" },
-  { id: 3, label: t("branches"), name: "branches", value: "branches" },
-  { id: 3, label: t("expenses"), name: "expenses", value: "expenses" },
+  { id: 4, label: t("branches"), name: "branches", value: "branches" },
+  { id: 5, label: t("expenses"), name: "expenses", value: "expenses" },
   {
-    id: 3,
+    id: 6,
     label: t("system sitting"),
     name: "system_sitting",
     value: "system sitting",
@@ -35,8 +25,8 @@ const searchOption = [
 
 const searchCategory = [
   { id: 1, icon: BsArrowUpRightCircleFill, title: t("supply") },
-  { id: 2, icon: searchCategoryTwo, title: t("numbering") },
-  { id: 3, icon: searchCategoryThree, title: t("branches") },
+  { id: 2, icon: BsFileTextFill, title: t("numbering") },
+  { id: 3, icon: FaSitemap, title: t("branches") },
   { id: 4, icon: AiFillDollarCircle, title: t("expenses") },
   { id: 5, icon: IoSettingsSharp, title: t("system sitting") },
 ];
@@ -64,11 +54,11 @@ const data = [
   },
 ];
 
-const Support = ({ title }) => {
+const Support = ({ title }: { title: string }) => {
   const [selectedOption, setSelectedOption] = useState(searchOption[0].value);
   const [categoryActiveId, setCategoryActiveId] = useState(1);
 
-  const handleSelectedOption = (e) => {
+  const handleSelectedOption = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(e.target.value);
   };
 
