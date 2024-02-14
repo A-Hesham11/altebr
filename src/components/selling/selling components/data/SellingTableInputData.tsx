@@ -47,37 +47,42 @@ export const SellingTableInputData = ({
   selectedItemDetails,
   setSelectedItemDetails,
   sellingItemsOfWeigth,
-  setSellingItemsOfWeight
+  setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ dataSource:", dataSource)
+  console.log("🚀 ~ dataSource:", dataSource);
 
-  const [search, setSearch] = useState(""); 
+  const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
   const [kitDetails, setKitDetails] = useState([]);
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
-  const [page, setPage] = useState<number>(1)
+  const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
-  const [editSellingTaklfa, setEditSellingTaklfa] = useState("")
-  const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] = useState("")
+  const [editSellingTaklfa, setEditSellingTaklfa] = useState("");
+  const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] =
+    useState("");
 
-  const { userData } = useContext(authCtx)
-  console.log("🚀 ~ userData:", userData)
+  const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData);
 
-  const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100 ;
-  console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch)
-  
+  const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
+  console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch);
+
   const priceWithCommissionRate =
-  dataSource && (+dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) + +dataSource[0]?.cost);
-  
-  const priceWithCommissionCash = dataSource && (+dataSource[0]?.cost + +dataSource[0]?.min_selling);
-  
+    dataSource &&
+    +dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) +
+      +dataSource[0]?.cost;
+
+  const priceWithCommissionCash =
+    dataSource && +dataSource[0]?.cost + +dataSource[0]?.min_selling;
+
   const priceWithSellingPolicy =
-  dataSource && dataSource[0]?.min_selling_type === "نسبة"
-  ? priceWithCommissionRate
-  : priceWithCommissionCash;
-  
-  const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
+    dataSource && dataSource[0]?.min_selling_type === "نسبة"
+      ? priceWithCommissionRate
+      : priceWithCommissionCash;
+
+  const taklfaAfterTax =
+    priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy;
 
   const { values, setFieldValue } = useFormikContext<any>();
 
@@ -89,7 +94,7 @@ export const SellingTableInputData = ({
         : `${search}`,
     onSuccess: (data) => {
       setDataSource(data);
-    }, 
+    },
   });
 
   const { data: karatValues } = useFetch<KaratValues_TP[]>({
@@ -112,37 +117,48 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{t("classification")} </span>,
         accessorKey: "category_name",
-        cell: (info) => (info.row.original.selsal.length === 0 ) ? info.getValue() : `${info.getValue()} مع سلسال`,
+        cell: (info) =>
+          info.row.original.selsal.length === 0
+            ? info.getValue()
+            : `${info.getValue()} مع سلسال`,
       },
       {
         header: () => <span>{t("weight")} </span>,
         accessorKey: "weight",
-        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatGram(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("remaining weight")} </span>,
         accessorKey: "remaining_weight",
-        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatGram(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
-        cell: (info: any) => info.row.original.classification_id === 1 ?  formatReyal(Number(info.getValue())) : formatGram(Number(info.row.original.karatmineral_name)),
+        cell: (info: any) =>
+          info.row.original.classification_id === 1
+            ? formatReyal(Number(info.getValue()))
+            : formatGram(Number(info.row.original.karatmineral_name)),
       },
       {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("selling price")} </span>,
         accessorKey: "taklfa",
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("selling price after tax")} </span>,
         accessorKey: "taklfa_after_tax",
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
     ],
     []
@@ -150,9 +166,9 @@ export const SellingTableInputData = ({
 
   useEffect(() => {
     if (dataSource?.length) {
-      setKitDetails(dataSource?.find(item=> item.weightitems)?.weightitems)
+      setKitDetails(dataSource?.find((item) => item.weightitems)?.weightitems);
     }
-  }, [dataSource])
+  }, [dataSource]);
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -162,20 +178,29 @@ export const SellingTableInputData = ({
         cell: (info: any) => {
           return (
             <div className="flex items-center justify-center gap-4">
-              <input type="checkbox" className={`border-mainGreen text-mainGreen rounded bg-red-600' ${info.row.original.status && "bg-neutral-400"}`} 
-                id={info.row.original.id} 
-                name="selectedItem" 
+              <input
+                type="checkbox"
+                className={`border-mainGreen text-mainGreen rounded bg-red-600' ${
+                  info.row.original.status && "bg-neutral-400"
+                }`}
+                id={info.row.original.id}
+                name="selectedItem"
                 onChange={(e) => {
                   if (e.target.checked) {
-                      setSelectedItemDetails((prev) => [...prev, {...info.row.original, index:info.row.index}]);
+                    setSelectedItemDetails((prev) => [
+                      ...prev,
+                      { ...info.row.original, index: info.row.index },
+                    ]);
                   } else {
-                      setSelectedItemDetails((prev) => prev.filter((item) => item.index !== info.row.index));
+                    setSelectedItemDetails((prev) =>
+                      prev.filter((item) => item.index !== info.row.index)
+                    );
                   }
-                }}  
-                disabled={info.row.original.status} 
+                }}
+                disabled={info.row.original.status}
               />
             </div>
-          )
+          );
         },
       },
       {
@@ -186,12 +211,14 @@ export const SellingTableInputData = ({
       {
         header: () => <span>{t("weight")}</span>,
         accessorKey: "weight",
-        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatGram(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("cost")}</span>,
         accessorKey: "selling_price",
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
     ],
     []
@@ -225,30 +252,34 @@ export const SellingTableInputData = ({
     setSellingItemsData(newData);
   };
 
-    useEffect(() => {
-      const { client_id, bond_date, client_value, client_name, ...restValues } = values;
-      Object.keys(restValues).map((key) => {
-        if (dataSource?.length === 1) {
-          setFieldValue(key, dataSource[0][key]);
+  useEffect(() => {
+    const { client_id, bond_date, client_value, client_name, ...restValues } =
+      values;
+    Object.keys(restValues).map((key) => {
+      if (dataSource?.length === 1) {
+        setFieldValue(key, dataSource[0][key]);
 
-          setFieldValue("cost", dataSource[0]?.cost?.toFixed(2));
+        setFieldValue("cost", dataSource[0]?.cost?.toFixed(2));
 
-          setFieldValue("weight", dataSource[0]?.remaining_weight);
-          
-          if (values.classification_id === 1) {
-            setFieldValue("karat_name", dataSource[0]?.karat_name)
-          } else {
-            setFieldValue("karatmineral_name", dataSource[0]?.karatmineral_name);
-          }
+        setFieldValue("weight", dataSource[0]?.remaining_weight);
 
-          setFieldValue("taklfa", priceWithSellingPolicy?.toFixed(2));
-          setFieldValue(
-            "taklfa_after_tax",
-            (priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy).toFixed(2)
-          );
+        if (values.classification_id === 1) {
+          setFieldValue("karat_name", dataSource[0]?.karat_name);
+        } else {
+          setFieldValue("karatmineral_name", dataSource[0]?.karatmineral_name);
         }
-      });
-    }, [dataSource, search]);
+
+        setFieldValue("taklfa", priceWithSellingPolicy?.toFixed(2));
+        setFieldValue(
+          "taklfa_after_tax",
+          (
+            priceWithSellingPolicy * TaxRateOfBranch +
+            priceWithSellingPolicy
+          ).toFixed(2)
+        );
+      }
+    });
+  }, [dataSource, search]);
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
@@ -260,18 +291,13 @@ export const SellingTableInputData = ({
   };
 
   const handleAddItemsToSelling = () => {
-    const {
-      client_id,
-      bond_date,
-      client_value,
-      client_name,
-      ...restValues
-    } = values;
+    const { client_id, bond_date, client_value, client_name, ...restValues } =
+      values;
     Object.keys(restValues).forEach((key) => {
       setFieldValue(key, "");
     });
     setFieldValue("taklfa_after_tax", "");
-  }
+  };
 
   const getSearchResults = async (hwya: any) => {
     let uri = `branchManage/api/v1/all-accepted/${userData?.branch_id}`;
@@ -294,30 +320,31 @@ export const SellingTableInputData = ({
   }, [search]);
 
   useEffect(() => {
-      if (page == 1) {
-          refetch()
-      } else {
-          setPage(1)
-      }
-  }, [search])
+    if (page == 1) {
+      refetch();
+    } else {
+      setPage(1);
+    }
+  }, [search]);
 
   useEffect(() => {
-    setEditSellingTaklfa(+values?.taklfa)
-  }, [values?.weight, priceWithSellingPolicy])
+    setEditSellingTaklfa(+values?.taklfa);
+  }, [values?.weight, priceWithSellingPolicy]);
 
   useEffect(() => {
-    setEditSellingTaklfaAfterTax(+values?.taklfa_after_tax)
-  }, [values?.weight, priceWithSellingPolicy])
+    setEditSellingTaklfaAfterTax(+values?.taklfa_after_tax);
+  }, [values?.weight, priceWithSellingPolicy]);
 
   return (
     <Form className="overflow-y-auto">
       <p className="font-semibold text-center text-lg text-mainGreen">
-        {isRefetching || isFetching && (
-          <div className="flex items-center justify-center gap-3">
-            {t("loading data")}
-            <Spinner />
-          </div>
-        )}
+        {isRefetching ||
+          (isFetching && (
+            <div className="flex items-center justify-center gap-3">
+              {t("loading data")}
+              <Spinner />
+            </div>
+          ))}
       </p>
       <table className="mt-8 min-w-[815px] lg:w-full">
         <thead className="bg-mainGreen text-white">
@@ -406,42 +433,54 @@ export const SellingTableInputData = ({
                 type="text"
                 required
                 onChange={(e) => {
-                  
-                const remainingWeight = +dataSource[0]?.remaining_weight - +e.target.value
+                  const remainingWeight =
+                    +dataSource[0]?.remaining_weight - +e.target.value;
 
-                const costItem = (+values.karat_price + +values.wage) * +e.target.value
+                  const costItem =
+                    (+values.karat_price + +values.wage) * +e.target.value;
 
-                const priceWithCommissionRate = +costItem * (+values?.min_selling * 0.01) + +costItem;
-                const priceWithCommissionCash = +costItem + +values?.min_selling;
-            
-                const priceWithSellingPolicy =
-                values?.min_selling_type === "نسبة"
-                  ? priceWithCommissionRate
-                  : priceWithCommissionCash;
-                
-                  const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
+                  const priceWithCommissionRate =
+                    +costItem * (+values?.min_selling * 0.01) + +costItem;
+                  const priceWithCommissionCash =
+                    +costItem + +values?.min_selling;
 
-                 if (+e.target.value > +dataSource[0]?.weight) {
-                    notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي")
+                  const priceWithSellingPolicy =
+                    values?.min_selling_type === "نسبة"
+                      ? priceWithCommissionRate
+                      : priceWithCommissionCash;
+
+                  const taklfaAfterTax =
+                    priceWithSellingPolicy * TaxRateOfBranch +
+                    priceWithSellingPolicy;
+
+                  if (+e.target.value > +dataSource[0]?.weight) {
+                    notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي");
                   } else {
+                    setFieldValue("remaining_weight", +remainingWeight);
 
-                    setFieldValue("remaining_weight", +remainingWeight)
+                    setFieldValue("cost", +costItem.toFixed(3));
 
-                    setFieldValue("cost", +costItem.toFixed(3))
-                    
-                    setFieldValue("taklfa", +priceWithSellingPolicy.toFixed(3))
-                    
-                    setFieldValue("taklfa_after_tax", +taklfaAfterTax.toFixed(3))
+                    setFieldValue("taklfa", +priceWithSellingPolicy.toFixed(3));
+
+                    setFieldValue(
+                      "taklfa_after_tax",
+                      +taklfaAfterTax.toFixed(3)
+                    );
 
                     setOpenDetails(false);
-
                   }
-
-
-
                 }}
-                className={`${(!isSuccess || values.category_selling_type !== "all" || values?.weight === 0) && "bg-mainDisabled"} text-center`}
-                disabled={!isSuccess || values.category_selling_type !== "all" || values?.weight === 0}
+                className={`${
+                  (!isSuccess ||
+                    values.category_selling_type !== "all" ||
+                    values?.weight === 0) &&
+                  "bg-mainDisabled"
+                } text-center`}
+                disabled={
+                  !isSuccess ||
+                  values.category_selling_type !== "all" ||
+                  values?.weight === 0
+                }
               />
             </td>
             <td>
@@ -459,11 +498,18 @@ export const SellingTableInputData = ({
             <td className="border-l-2 border-l-flatWhite">
               <SelectKarat
                 field="id"
-                name={values.classification_id === 1 ? "karat_name" : "karatmineral_name"}
+                name={
+                  values.classification_id === 1
+                    ? "karat_name"
+                    : "karatmineral_name"
+                }
                 noMb={true}
                 placement="top"
                 onChange={(option) => {
-                  setFieldValue("karat_name" || "karatmineral_name", option!.value);
+                  setFieldValue(
+                    "karat_name" || "karatmineral_name",
+                    option!.value
+                  );
                   setFieldValue(
                     "stock",
                     karatValues!.find(
@@ -472,9 +518,18 @@ export const SellingTableInputData = ({
                   );
                 }}
                 value={{
-                  id: values.karat_id !== 0 ? values.karat_id : values.karatmineral_id,
-                  value: values.karat_id !== 0 ? values.karat_id : values.karatmineral_id,
-                  label: values.karat_name || values.karatmineral_name || t("karat value"),
+                  id:
+                    values.karat_id !== 0
+                      ? values.karat_id
+                      : values.karatmineral_id,
+                  value:
+                    values.karat_id !== 0
+                      ? values.karat_id
+                      : values.karatmineral_id,
+                  label:
+                    values.karat_name ||
+                    values.karatmineral_name ||
+                    t("karat value"),
                 }}
                 disabled={!isCategoryDisabled}
               />
@@ -486,7 +541,7 @@ export const SellingTableInputData = ({
                 name="cost"
                 type="text"
                 onChange={(e) => {
-                  setFieldValue("cost", (values.value).toFixed(2));
+                  setFieldValue("cost", values.value.toFixed(2));
                 }}
                 disabled={!isCategoryDisabled}
                 className={`${
@@ -505,10 +560,19 @@ export const SellingTableInputData = ({
                   setFieldValue("taklfa", (+values?.taklfa).toFixed(2));
                   setFieldValue(
                     "taklfa_after_tax",
-                    (+e.target.value * TaxRateOfBranch + +e.target.value).toFixed(2)
+                    (
+                      +e.target.value * TaxRateOfBranch +
+                      +e.target.value
+                    ).toFixed(2)
                   );
                 }}
-                className={`${!isSuccess || userData?.include_tax === "1" ? "bg-mainDisabled" : (values?.taklfa && +values?.taklfa < +editSellingTaklfa) ? "bg-red-100" : ""} text-center`}
+                className={`${
+                  !isSuccess || userData?.include_tax === "1"
+                    ? "bg-mainDisabled"
+                    : values?.taklfa && +values?.taklfa < +editSellingTaklfa
+                    ? "bg-red-100"
+                    : ""
+                } text-center`}
                 disabled={!isSuccess || userData?.include_tax === "1"}
               />
             </td>
@@ -523,16 +587,22 @@ export const SellingTableInputData = ({
                   setFieldValue("taklfa", (+e.target.value / 1.15).toFixed(2));
                 }}
                 disabled={userData?.include_tax === "0"}
-                className={`${!isSuccess || userData?.include_tax === "0" ? "bg-mainDisabled" : (values?.taklfa_after_tax && +values?.taklfa_after_tax < +editSellingTaklfaAfterTax) ? "bg-red-100" : ""} text-center`}
+                className={`${
+                  !isSuccess || userData?.include_tax === "0"
+                    ? "bg-mainDisabled"
+                    : values?.taklfa_after_tax &&
+                      +values?.taklfa_after_tax < +editSellingTaklfaAfterTax
+                    ? "bg-red-100"
+                    : ""
+                } text-center`}
               />
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
-              {dataSource?.length == 1 && dataSource[0]?.category_type === "multi"
-                && (
+              {dataSource?.length == 1 &&
+                dataSource[0]?.category_type === "multi" && (
                   <Button
                     loading={values.hwya && isFetching}
                     action={() => {
-
                       if ((values.hwya && values.classification_id) === "") {
                         notify("info", `${t("add piece first")}`);
                         return;
@@ -547,86 +617,101 @@ export const SellingTableInputData = ({
                         return;
                       }
 
-                      setOpenDetails(true)
-
+                      setOpenDetails(true);
                     }}
                     className="bg-transparent px-2"
                   >
                     <EditIcon className="fill-mainGreen w-6 h-6" />
                   </Button>
-                )
-              }
-              {dataSource?.length == 1 && dataSource[0]?.has_selsal === 1
-                && (
-                  <Button
-                    loading={values.hwya && isFetching}
-                    action={() => {
-                        setOpenSelsal(true)
-                    }}
-                    className="bg-transparent px-2"
-                  >
-                    <HiViewGridAdd className="fill-mainGreen w-6 h-6" />
-                  </Button>
-                )
-              }
-            <Button
-              loading={values.hwya && isFetching}
-              action={() => {
+                )}
+              {dataSource?.length == 1 && dataSource[0]?.has_selsal === 1 && (
+                <Button
+                  loading={values.hwya && isFetching}
+                  action={() => {
+                    setOpenSelsal(true);
+                  }}
+                  type="button"
+                  className="bg-transparent px-2"
+                >
+                  <HiViewGridAdd className="fill-mainGreen w-6 h-6" />
+                </Button>
+              )}
+              <Button
+                loading={values.hwya && isFetching}
+                action={() => {
+                  if ((values.hwya && values.classification_id) === "") {
+                    notify("info", `${t("add piece first")}`);
+                    return;
+                  }
 
-                if ((values.hwya && values.classification_id) === "") {
-                  notify("info", `${t("add piece first")}`);
-                  return;
-                }
+                  const pieceCheck = sellingItemsData?.findIndex((item) => {
+                    return item.hwya == values.hwya;
+                  });
 
-                const pieceCheck = sellingItemsData?.findIndex((item) => {
-                  return item.hwya == values.hwya;
-                });
+                  if (pieceCheck !== -1) {
+                    notify("info", `${t("item exists")}`);
+                    return;
+                  }
 
-                if (pieceCheck !== -1) {
-                  notify("info", `${t("item exists")}`);
-                  return;
-                }
+                  if (values.weight == 0) {
+                    notify("info", `${t("The lot is sold out")}`);
+                    return;
+                  }
 
-                if (values.weight == 0) {
-                  notify("info", `${t("The lot is sold out")}`);
-                  return;
-                }
+                  if (!selectedItemDetails.length) {
+                    const kitAllDetails = kitDetails.filter(
+                      (item) => item.status !== 1
+                    );
 
-                if (!selectedItemDetails.length) {
-                  const kitAllDetails = kitDetails.filter((item) => item.status !== 1)
-  
-                  selectedItemDetails.push(kitAllDetails)
-                }
+                    selectedItemDetails.push(kitAllDetails);
+                  }
 
-                if (+values?.taklfa < +editSellingTaklfa) {
-                  notify("info", `${t("The selling price may not be less than the minimum")}`)
-                  return
-                }
+                  if (+values?.taklfa < +editSellingTaklfa) {
+                    notify(
+                      "info",
+                      `${t(
+                        "The selling price may not be less than the minimum"
+                      )}`
+                    );
+                    return;
+                  }
 
-                const weight_percentage = +values.remaining_weight * 0.05;
+                  const weight_percentage = +values.remaining_weight * 0.05;
 
-                const stone_weight_percentage =  (dataSource && values.classification_id === 1)  
-                  ? dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.weight 
-                  : dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.diamondWeight
-                  
-                const stoneWeitgh = (values.classification_id === (2 || 3) || +stone_weight_percentage > +weight_percentage) ? +stone_weight_percentage : "v"
+                  const stone_weight_percentage =
+                    dataSource && values.classification_id === 1
+                      ? dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.weight
+                      : dataSource[0]?.detailsItem[0]?.stonesDetails[0]
+                          ?.diamondWeight;
 
-                setSellingItemsData((prev) => [
-                  ...prev,
-                  {...values, itemDetails: selectedItemDetails.flat(Infinity), selsal: sellingItemsOfWeigth, stone_weight: +stoneWeitgh},
-                ].reverse());
+                  const stoneWeitgh =
+                    values.classification_id === (2 || 3) ||
+                    +stone_weight_percentage > +weight_percentage
+                      ? +stone_weight_percentage
+                      : "v";
 
-                handleAddItemsToSelling()
-                setDataSource([]);
-                setSearch("");
-                setSelectedItemDetails([])
-                setSellingItemsOfWeight([])
+                  setSellingItemsData((prev) =>
+                    [
+                      ...prev,
+                      {
+                        ...values,
+                        itemDetails: selectedItemDetails.flat(Infinity),
+                        selsal: sellingItemsOfWeigth,
+                        stone_weight: +stoneWeitgh,
+                      },
+                    ].reverse()
+                  );
 
-              }}
-              className="bg-transparent px-2 m-auto"
-            >
-              <IoMdAdd className="fill-mainGreen w-6 h-6" />
-            </Button>
+                  handleAddItemsToSelling();
+                  setDataSource([]);
+                  setSearch("");
+                  setSelectedItemDetails([]);
+                  setSellingItemsOfWeight([]);
+                }}
+                className="bg-transparent px-2 m-auto"
+              >
+                <IoMdAdd className="fill-mainGreen w-6 h-6" />
+              </Button>
             </td>
           </tr>
           {table.getRowModel().rows.map((row) => {
@@ -664,8 +749,8 @@ export const SellingTableInputData = ({
                     </Button>
                     <Button
                       action={() => {
-                        handleDeleteRow(row?.original?.item_id)
-                        setSelectedItemDetails([])
+                        handleDeleteRow(row?.original?.item_id);
+                        setSelectedItemDetails([]);
                       }}
                       className="bg-transparent px-2 "
                     >
@@ -679,183 +764,202 @@ export const SellingTableInputData = ({
         </tbody>
       </table>
 
-
       <Modal isOpen={openDetails} onClose={() => setOpenDetails(false)}>
-          <div className="flex flex-col gap-8 justify-center items-center">
-            <Header
-              header={t("kit details")}
-            />
-              {dataSource && dataSource[0]?.weightitems.find(itemWeight => itemWeight.weight == 0) 
-                  ? (
-                    <>
-                      <div className="bg-flatWhite rounded-lg bill-shadow p-5 my-3 w-full">
-                        <div className="flex items-center justify-between py-4">
-                          {dataSource[0]?.weightitems?.map((item) => {
-                            return (
-                              <BaseInputField
-                                placeholder={item?.category_name}
-                                id={item?.category_name}
-                                name={item?.category_name}
-                                type="text"
-                                label={item?.category_name}
-                                disabled={item.weight != 0}
-                                className={`${item.weight != 0 && "bg-mainDisabled"}`}
-                                onChange={(e) => {
+        <div className="flex flex-col gap-8 justify-center items-center">
+          <Header header={t("kit details")} />
+          {dataSource &&
+          dataSource[0]?.weightitems.find(
+            (itemWeight) => itemWeight.weight == 0
+          ) ? (
+            <>
+              <div className="bg-flatWhite rounded-lg bill-shadow p-5 my-3 w-full">
+                <div className="flex items-center justify-between py-4">
+                  {dataSource[0]?.weightitems?.map((item) => {
+                    return (
+                      <BaseInputField
+                        placeholder={item?.category_name}
+                        id={item?.category_name}
+                        name={item?.category_name}
+                        type="text"
+                        label={item?.category_name}
+                        disabled={item.weight != 0}
+                        className={`${item.weight != 0 && "bg-mainDisabled"}`}
+                        onChange={(e) => {
+                          setSelectedItemDetails((prev: any) => {
+                            const index = prev.findIndex(
+                              (prevItem) =>
+                                item?.category_id === prevItem?.category_id
+                            );
+                            const updatedState = [...prev];
 
-                                  setSelectedItemDetails((prev: any) => {
-                                    const index = prev.findIndex((prevItem) => item?.category_id === prevItem?.category_id);
-                                    const updatedState = [...prev];
-                                  
-                                    if (index !== -1) {
-                                      updatedState[index] = {
-                                        category_id: item.category_id,
-                                        category_name: item.category_name,
-                                        weight: e.target.value,
-                                      };
-                                    } else {
-                                      updatedState.push({
-                                        category_id: item.category_id,
-                                        category_name: item.category_name,
-                                        weight: e.target.value,
-                                      });
-                                    }
-                                  
-                                    return updatedState;
-                                  });
-                                  
-                                 setFieldValue(`weightitems-${item.category_name}`, {
-                                    category_id: item.category_id,
-                                    category_name: item.category_name,
-                                    weight: e.target.value,
-                                  })
-                                }}
-                              />
-                            )
-                          })}
-                        </div>
-                      </div>
-                    </>
-                  )
-                  : (
-                    <>
-                      <table className="mt-8 w-[815px] lg:w-full">
-                          <thead className="bg-mainGreen text-white text-center">
-                              {tablePopup.getHeaderGroups().map((headerGroup) => (
-                                <tr key={headerGroup.id} className="py-4 px-2 w-full">
-                                  {headerGroup.headers.map((header) => (
-                                    <th
-                                      key={header.id}
-                                      className="py-4 px-2 text-sm font-medium text-white border w-[11%]"
-                                    >
-                                      {header.isPlaceholder
-                                        ? null
-                                        : flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext()
-                                          )}
-                                    </th>
-                                  ))}
-                                </tr>
-                              ))}
-                          </thead>
-                          <tbody>
-                            {tablePopup.getRowModel().rows.map((row) => {
-                              return (
-                                <tr key={row.id} className="text-center">
-                                  {row.getVisibleCells().map((cell, i) => (
-                                    <td
-                                      className="px-2 py-2 bg-lightGreen bg-[#295E5608] gap-x-2 items-center border border-[#C4C4C4]"
-                                      key={cell.id}
-                                    >
-                                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </td>
-                                  ))}
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                      </table>
-                    </>
-                  )
-              }
-              <div className="flex gap-4 justify-end items-center w-full">
-                  <Button
-                    type="submit"
-                    action={() => {
+                            if (index !== -1) {
+                              updatedState[index] = {
+                                category_id: item.category_id,
+                                category_name: item.category_name,
+                                weight: e.target.value,
+                              };
+                            } else {
+                              updatedState.push({
+                                category_id: item.category_id,
+                                category_name: item.category_name,
+                                weight: e.target.value,
+                              });
+                            }
 
-                      const clacSelectedWeight = selectedItemDetails.reduce((acc, item) => {
-                          acc += +item.weight
-                          return acc
-                      }, 0)
+                            return updatedState;
+                          });
 
-                      const clacSelectedCost = selectedItemDetails.reduce((acc, item) => {
-                        acc += +item.selling_price
-                        return acc
-                    }, 0)
-
-                      const remainingWeight = +values?.remaining_weight - +clacSelectedWeight
-
-                      const costItem = values.classification_id === 1 ?  (+values.karat_price + +values.wage) * clacSelectedWeight : +clacSelectedCost
-
-                      const priceWithCommissionRate = +costItem * (+values?.min_selling * 0.01) + +costItem;
-                      const priceWithCommissionCash = +costItem + +values?.min_selling;
-                  
-                    const priceWithSellingPolicy =
-                    values?.min_selling_type === "نسبة"
-                      ? priceWithCommissionRate
-                      : priceWithCommissionCash;
-
-                      const taklfaAfterTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
-
-                      const checkedFromWeight = selectedItemDetails?.every((item) => item.weight !== "")
-
-                      const checkedFromPeiceisLength = selectedItemDetails.length == dataSource[0].weightitems.length
-
-                      if (+clacSelectedWeight > +dataSource[0]?.weight) {
-                        notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي")
-                      } else if (checkedFromWeight && checkedFromPeiceisLength &&  +clacSelectedWeight < +remainingWeight ) {
-                        notify("error", "تجميعة الأوزان أقل من الوزن المتبقي")
-                      } else {
-                        setFieldValue("taklfa", priceWithSellingPolicy)
-
-                        setFieldValue("taklfa_after_tax", +taklfaAfterTax)
-                      
-                        setFieldValue("remaining_weight", remainingWeight)
-  
-                        setFieldValue("cost", costItem)
-
-                        setFieldValue("weight", clacSelectedWeight)
-
-                        setOpenDetails(false);
-
-                      }
-
-                      setEditSellingTaklfa(+priceWithSellingPolicy)
-                      setEditSellingTaklfaAfterTax(+priceWithSellingPolicy)
-                    }}
-                  >
-                    {`${t("confirm")}`}
-                  </Button>
+                          setFieldValue(`weightitems-${item.category_name}`, {
+                            category_id: item.category_id,
+                            category_name: item.category_name,
+                            weight: e.target.value,
+                          });
+                        }}
+                      />
+                    );
+                  })}
+                </div>
               </div>
+            </>
+          ) : (
+            <>
+              <table className="mt-8 w-[815px] lg:w-full">
+                <thead className="bg-mainGreen text-white text-center">
+                  {tablePopup.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id} className="py-4 px-2 w-full">
+                      {headerGroup.headers.map((header) => (
+                        <th
+                          key={header.id}
+                          className="py-4 px-2 text-sm font-medium text-white border w-[11%]"
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
+                <tbody>
+                  {tablePopup.getRowModel().rows.map((row) => {
+                    return (
+                      <tr key={row.id} className="text-center">
+                        {row.getVisibleCells().map((cell, i) => (
+                          <td
+                            className="px-2 py-2 bg-lightGreen bg-[#295E5608] gap-x-2 items-center border border-[#C4C4C4]"
+                            key={cell.id}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </>
+          )}
+          <div className="flex gap-4 justify-end items-center w-full">
+            <Button
+              type="submit"
+              action={() => {
+                const clacSelectedWeight = selectedItemDetails.reduce(
+                  (acc, item) => {
+                    acc += +item.weight;
+                    return acc;
+                  },
+                  0
+                );
+
+                const clacSelectedCost = selectedItemDetails.reduce(
+                  (acc, item) => {
+                    acc += +item.selling_price;
+                    return acc;
+                  },
+                  0
+                );
+
+                const remainingWeight =
+                  +values?.remaining_weight - +clacSelectedWeight;
+
+                const costItem =
+                  values.classification_id === 1
+                    ? (+values.karat_price + +values.wage) * clacSelectedWeight
+                    : +clacSelectedCost;
+
+                const priceWithCommissionRate =
+                  +costItem * (+values?.min_selling * 0.01) + +costItem;
+                const priceWithCommissionCash =
+                  +costItem + +values?.min_selling;
+
+                const priceWithSellingPolicy =
+                  values?.min_selling_type === "نسبة"
+                    ? priceWithCommissionRate
+                    : priceWithCommissionCash;
+
+                const taklfaAfterTax =
+                  priceWithSellingPolicy * TaxRateOfBranch +
+                  priceWithSellingPolicy;
+
+                const checkedFromWeight = selectedItemDetails?.every(
+                  (item) => item.weight !== ""
+                );
+
+                const checkedFromPeiceisLength =
+                  selectedItemDetails.length ==
+                  dataSource[0].weightitems.length;
+
+                if (+clacSelectedWeight > +dataSource[0]?.remaining_weight) {
+                  notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي");
+                } else if (
+                  checkedFromWeight &&
+                  checkedFromPeiceisLength &&
+                  +clacSelectedWeight < +remainingWeight
+                ) {
+                  notify("error", "تجميعة الأوزان أقل من الوزن المتبقي");
+                } else {
+                  setFieldValue("taklfa", priceWithSellingPolicy);
+
+                  setFieldValue("taklfa_after_tax", +taklfaAfterTax);
+
+                  setFieldValue("remaining_weight", remainingWeight);
+
+                  setFieldValue("cost", costItem);
+
+                  setFieldValue("weight", clacSelectedWeight);
+
+                  setOpenDetails(false);
+                }
+
+                setEditSellingTaklfa(+priceWithSellingPolicy);
+                setEditSellingTaklfaAfterTax(+priceWithSellingPolicy);
+              }}
+            >
+              {`${t("confirm")}`}
+            </Button>
           </div>
+        </div>
       </Modal>
-      
+
       <Modal isOpen={openSelsal} onClose={() => setOpenSelsal(false)}>
-          <div className="flex flex-col gap-8 justify-center items-center">
-            <Header
-              header={t("Add a chain")}
-            />
-              <SellingTableInputWeight
-                handleDeleteRow={handleDeleteRow}
-                sellingItemsOfWeigth={sellingItemsOfWeigth}
-                setSellingItemsOfWeight={setSellingItemsOfWeight}
-                dataSource={dataSource}
-                setOpenSelsal={setOpenSelsal}
-                TaxRateOfBranch={TaxRateOfBranch}
-              />
-          </div>
+        <div className="flex flex-col gap-8 justify-center items-center">
+          <Header header={t("Add a chain")} />
+          <SellingTableInputWeight
+            handleDeleteRow={handleDeleteRow}
+            sellingItemsOfWeigth={sellingItemsOfWeigth}
+            setSellingItemsOfWeight={setSellingItemsOfWeight}
+            dataSource={dataSource}
+            setOpenSelsal={setOpenSelsal}
+            TaxRateOfBranch={TaxRateOfBranch}
+          />
+        </div>
       </Modal>
     </Form>
   );
 };
-
