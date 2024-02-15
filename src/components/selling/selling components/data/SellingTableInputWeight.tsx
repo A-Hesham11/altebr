@@ -57,7 +57,7 @@ const SellingTableInputWeight = ({
   console.log("🚀 ~ values:", values);
 
   const costItem = values?.classification_id === 1 
-  ? +values?.karat_price * +values?.remaining_weight + +values?.wage_total
+  ? +values?.remaining_weight * (+values?.wage + +values?.karat_price)  
   : values?.selling_price;
   console.log("🚀 ~ cost:", costItem);
 
