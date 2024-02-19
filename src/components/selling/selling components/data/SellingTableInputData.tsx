@@ -49,6 +49,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   console.log("🚀 ~ dataSource:", dataSource);
 
   const [search, setSearch] = useState("");
@@ -956,6 +957,7 @@ export const SellingTableInputData = ({
             setSellingItemsOfWeight={setSellingItemsOfWeight}
             dataSource={dataSource}
             setOpenSelsal={setOpenSelsal}
+            openSelsal={openSelsal}
             TaxRateOfBranch={TaxRateOfBranch}
           />
         </div>

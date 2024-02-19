@@ -56,40 +56,25 @@ const SellingTableInputWeight = ({
     useFormikContext<any>();
   console.log("🚀 ~ values:", values);
 
-  const costItem = values?.classification_id === 1 
-  ? +values?.remaining_weight * (+values?.wage + +values?.karat_price)  
-  : values?.selling_price;
-  console.log("🚀 ~ cost:", costItem);
+  const costItem =
+    values?.classification_id === 1
+      ? +values?.remaining_weight * (+values?.wage + +values?.karat_price)
+      : values?.selling_price;
 
-//   const priceWithCommissionRate =
-//     dataSource &&
-//     (+sellingItemsOfWeigth[0]?.cost + +values.cost) *
-//       (+dataSource[0]?.min_selling * 0.01) +
-//       (+sellingItemsOfWeigth[0]?.cost + +values.cost);
+  const priceWithCommissionRate =
+    dataSource &&
+    (+sellingItemsOfWeigth[0]?.cost + +costItem) *
+      (+dataSource[0]?.min_selling * 0.01) +
+      (+sellingItemsOfWeigth[0]?.cost + +costItem);
 
-//   const priceWithCommissionCash =
-//     dataSource &&
-//     +sellingItemsOfWeigth[0]?.cost + +values.cost + +dataSource[0]?.min_selling;
+  const priceWithCommissionCash =
+    dataSource &&
+    +sellingItemsOfWeigth[0]?.cost + +costItem + +dataSource[0]?.min_selling;
 
-//   const priceWithSellingPolicy =
-//     dataSource && dataSource[0]?.min_selling_type === "نسبة"
-//       ? priceWithCommissionRate
-//       : priceWithCommissionCash;
-
-const priceWithCommissionRate =
-dataSource &&
-(+sellingItemsOfWeigth[0]?.cost + +costItem) *
-  (+dataSource[0]?.min_selling * 0.01) +
-  (+sellingItemsOfWeigth[0]?.cost + +costItem);
-
-const priceWithCommissionCash =
-dataSource &&
-+sellingItemsOfWeigth[0]?.cost + +costItem + +dataSource[0]?.min_selling;
-
-const priceWithSellingPolicy =
-dataSource && dataSource[0]?.min_selling_type === "نسبة"
-  ? priceWithCommissionRate
-  : priceWithCommissionCash;
+  const priceWithSellingPolicy =
+    dataSource && dataSource[0]?.min_selling_type === "نسبة"
+      ? priceWithCommissionRate
+      : priceWithCommissionCash;
 
   console.log("🚀 ~ priceWithSellingPolicy:", priceWithSellingPolicy);
 
@@ -189,18 +174,6 @@ dataSource && dataSource[0]?.min_selling_type === "نسبة"
     setSearchWeight(uri);
   };
 
-  const handleDeleteRow = (itemId) => {
-    sellingItemsOfWeigth?.findIndex((item) => {
-      return item.hwya == itemId;
-    });
-
-    const newData = sellingItemsOfWeigth?.filter((item) => {
-      return item.hwya != itemId;
-    });
-
-    setSellingItemsOfWeight(newData);
-  };
-
   useEffect(() => {
     refetch();
   }, [searchWeight]);
@@ -213,40 +186,16 @@ dataSource && dataSource[0]?.min_selling_type === "نسبة"
     }
   }, [searchWeight]);
 
-  //   const [calcOfSelsalWeight, setCalcOfSelsalWeight] = useState(0);
-  //   console.log("🚀 ~ calcOfSelsalWeight:", calcOfSelsalWeight);
-  //   const [calcOfSelsalCost, setCalcOfSelsalCost] = useState(0);
-  //   console.log("🚀 ~ calcOfSelsalCost:", calcOfSelsalCost);
-
-  //   useEffect(() => {
-  //     const newCalcOfSelsalWeight = sellingItemsOfWeigth.reduce((acc, item) => {
-  //       acc += +item.weight;
-  //       return acc;
-  //     }, 0);
-  //     setCalcOfSelsalWeight(newCalcOfSelsalWeight);
-  //   }, [sellingItemsOfWeigth]);
-
   const calcOfSelsalWeight = sellingItemsOfWeigth.reduce((acc, item) => {
     acc += +item.weight;
     return acc;
   }, 0);
-  //   console.log("🚀 ~ calcOfSelsalWeight ~ calcOfSelsalWeight:", calcOfSelsalWeight)
+  console.log("🚀 ~ calcOfSelsalWeight ~ calcOfSelsalWeight:", calcOfSelsalWeight)
 
   const calcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
     acc += +item.cost;
     return acc;
   }, 0);
-  console.log("🚀 ~ calcOfSelsalCost ~ calcOfSelsalCost:", calcOfSelsalCost)
-  //   console.log("🚀 ~ calcOfSelsalCost ~ calcOfSelsalCost:", calcOfSelsalCost)
-
-  //   useEffect(() => {
-  //     const newCalcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
-  //       acc += +item.cost;
-  //       return acc;
-  //     }, 0);
-  //     setCalcOfSelsalCost(newCalcOfSelsalCost);
-  //   }, [sellingItemsOfWeigth]);
-  console.log("🚀 ~ handleAddSelsalToPieces ~ values.cost:", values.cost);
 
   const handleAddSelsalToPieces = () => {
     setFieldValue("weight", +values.remaining_weight + +calcOfSelsalWeight);
@@ -259,8 +208,21 @@ dataSource && dataSource[0]?.min_selling_type === "نسبة"
         priceWithSellingPolicy
       ).toFixed(2)
     );
-  };
+  }; 
 
+  const handleDeleteRow = (itemId) => {
+    sellingItemsOfWeigth?.findIndex((item) => {
+      return item.hwya == itemId;
+    });
+
+    const newData = sellingItemsOfWeigth?.filter((item) => {
+      return item.hwya != itemId;
+    });
+
+    setSellingItemsOfWeight(newData);
+
+    handleAddSelsalToPieces();
+  };
 
   return (
     <Formik
@@ -506,6 +468,8 @@ dataSource && dataSource[0]?.min_selling_type === "نسبة"
                           <Button
                             action={() => {
                               handleDeleteRow(row?.original?.hwya);
+
+                              handleAddSelsalToPieces();
                             }}
                             className="bg-transparent px-2 "
                           >
@@ -524,7 +488,7 @@ dataSource && dataSource[0]?.min_selling_type === "نسبة"
                   handleAddSelsalToPieces();
                   setOpenSelsal(false);
                 }}
-                disabled={!sellingItemsOfWeigth.length}
+                // disabled={!sellingItemsOfWeigth.length}
               >
                 {t("confirm")}
               </Button>
