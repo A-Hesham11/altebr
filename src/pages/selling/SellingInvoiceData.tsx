@@ -29,6 +29,7 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData)
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
