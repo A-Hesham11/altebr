@@ -15,6 +15,12 @@ input[type="radio"] {
   color: #295e56;
 }
 
+.supportBg {
+  background-image: url("./assets/support-bg.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 @layer base {
   * {
     font-family: "Almarai" !important;
@@ -159,7 +165,7 @@ input::placeholder {
 .content input[type="password"]::-ms-reveal,
 .content input[type="password"]::-webkit-contacts-auto-fill-button,
 .content input[type="password"]::-webkit-credentials-auto-fill-button {
-    display: none !important;
+  display: none !important;
 }
 .css-b62m3t-container {
   position: relative;
@@ -409,4 +415,3 @@ nav.css-vj11vy > ul > li:first-child a {
 } */
 
 /* GLOBAL ANIMATION */
-

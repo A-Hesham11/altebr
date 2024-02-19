@@ -11,6 +11,7 @@ import { Loading } from "../../../components/organisms/Loading";
 import { useFetch } from "../../../hooks";
 import { Back } from "../../../utils/utils-components/Back";
 import { formatDate } from "../../../utils/date";
+import { ExportToExcel } from "./ExportToFile";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -62,7 +63,21 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ file: CodedIdentities.tsx:65 ~ CodedIdentities ~ data:", data)
+  console.log(
+    "🚀 ~ file: CodedIdentities.tsx:65 ~ CodedIdentities ~ data:",
+    data
+  );
+
+  // // FETCHING DATA FROM API TO EXPORT ALL THE DATA TO EXCEL
+  // const { data: dataExcel, refetch: dataExcelRefetch } = useFetch({
+  //   queryKey: fetchKey,
+  //   endpoint:
+  //     search === `${fetchEndPoint}?page=${page}` || search === ""
+  //       ? `${fetchEndPoint}?page=${page}`
+  //       : `${search}`,
+  // });
+
+  // console.log(dataExcel);
 
   // HANDLE MANAGEMENT EDARA
   const handleManagement = () => {
@@ -101,8 +116,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
         if (first) {
-          if (key === "created_at")
-            url += `?cAt[lk]=${formatDate(req[key])}`;
+          if (key === "created_at") url += `?cAt[lk]=${formatDate(req[key])}`;
           else if (key === "coding_date_from")
             url += `?cAt[gte]=${formatDate(req[key])}`;
           else if (key === "coding_date_to")
@@ -111,8 +125,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
           first = false;
         } else {
-          if (key === "created_at")
-            url += `&cAt[lk]=${formatDate(req[key])}`;
+          if (key === "created_at") url += `&cAt[lk]=${formatDate(req[key])}`;
           else if (key === "coding_date_from")
             url += `&cAt[gte]=${formatDate(req[key])}`;
           else if (key === "coding_date_to")
@@ -133,6 +146,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
   useEffect(() => {
     refetch();
+    // dataExcelRefetch();
   }, [page, isSuccessPost, search]);
 
   useEffect(() => {
@@ -268,18 +282,35 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
       {/* TABLE OF IDENTITIES */}
       <div className="flex flex-col gap-4 mt-8">
-        <Button
-          action={() => {
-            // setCheckboxChecked(false)
-            // refetch();
-            // setPage(1)
-            setOperationTypeSelect([]);
-            // localStorage.clear()
-          }}
-          className="bg-mainGreen text-white self-end"
-        >
-          تفريغ الجدول
-        </Button>
+        <div className="flex items-center gap-4 self-end">
+          <Button
+            action={() => {
+              // setCheckboxChecked(false)
+              // refetch();
+              // setPage(1)
+              setOperationTypeSelect([]);
+              // localStorage.clear()
+            }}
+            className="bg-mainGreen text-white"
+          >
+            {t("empty table")}
+          </Button>
+          <Button
+            action={(e) => {
+              // setCheckboxChecked(false)
+              // refetch();
+              // setPage(1)
+              // setOperationTypeSelect([]);
+              // localStorage.clear()
+
+              // COMPONENT FOR EXPORT DATA TO EXCEL FILE ACCEPT DATA AND THE NAME OF THE FILE
+              ExportToExcel(data.data, activeClass);
+            }}
+            className="bg-mainGreen text-white"
+          >
+            {t("export")}
+          </Button>
+        </div>
         <TableOfIdentities
           dataSource={dataSource}
           setPage={setPage}
