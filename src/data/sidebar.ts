@@ -9,8 +9,7 @@ import { TebrLogo } from "../components/atoms/icons/TebrLogo";
 
 // import {altebrLogo}  from "../components/atoms/icons/altebrLogo.svg";
 // import {sideBarLogo} from "../assets/sideBar-logo.svg";
-import { t } from "i18next";
-import { SupportIcon } from "../components/atoms/icons/SupportIcon";
+import { BsQuestionSquare } from "react-icons/bs";
 export type MenuItem_TP = {
   id: string;
   icon: IconType;
@@ -223,7 +222,7 @@ export const sideBarItems: MenuItem_TP[] = [
     id: crypto.randomUUID(),
     label: "helper center",
     link: "/support",
-    icon: SupportIcon,
+    icon: BsQuestionSquare,
   },
 
   // {

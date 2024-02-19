@@ -1188,5 +1188,8 @@
   "numbering": "الترقيم",
   "expenses": "المصروفات",
   "system sitting": "اعدادات النظام",
-  "all": "الكل"
+  "all": "الكل",
+  "there is no data for your search": "لا يوجد بيانات لهذا البحث",
+  "empty table": "تفريغ الجدول",
+  "export": "تصدير"
 }

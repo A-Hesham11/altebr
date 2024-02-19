@@ -1,70 +1,53 @@
 import { Formik } from "formik";
 import { t } from "i18next";
 import SupportSearch from "./SupportSearch";
-import { useState } from "react";
-import { GiChessKing } from "react-icons/gi";
-import { IoDiamondSharp, IoSettingsSharp } from "react-icons/io5";
+import { SetStateAction, useEffect, useState } from "react";
 import SubCategorySection from "./UI/SubCategorySection";
-import { BsArrowUpRightCircleFill, BsFileTextFill } from "react-icons/bs";
-import { AiFillDollarCircle } from "react-icons/ai";
-import { FaSitemap } from "react-icons/fa";
-
-const searchOption = [
-  { id: 1, label: t("all"), name: "all", value: "all" },
-  { id: 2, label: t("supply"), name: "supply", value: "supply" },
-  { id: 3, label: t("numbering"), name: "numbering", value: "numbering" },
-  { id: 4, label: t("branches"), name: "branches", value: "branches" },
-  { id: 5, label: t("expenses"), name: "expenses", value: "expenses" },
-  {
-    id: 6,
-    label: t("system sitting"),
-    name: "system_sitting",
-    value: "system sitting",
-  },
-];
-
-const searchCategory = [
-  { id: 1, icon: BsArrowUpRightCircleFill, title: t("supply") },
-  { id: 2, icon: BsFileTextFill, title: t("numbering") },
-  { id: 3, icon: FaSitemap, title: t("branches") },
-  { id: 4, icon: AiFillDollarCircle, title: t("expenses") },
-  { id: 5, icon: IoSettingsSharp, title: t("system sitting") },
-];
-
-const data = [
-  {
-    icon: <GiChessKing className="text-xl" />,
-    sectionHead: "supply",
-    sectionDescription:
-      "توريد الذهب هو عملية نقل الذهب من مكان إلى آخر، سواء كان ذلك لأغراض تجارية أو استثمارية أو تخزينية. يشمل ذلك جميع الخطوات من استخراج الذهب من المناجم إلى تصنيعه وتوزيعه، بما في ذلك التعامل مع الشحنات والتخزين والتأمين. تتم عملية توريد الذهب وفقاً للمعايير والقوانين الدولية المتعلقة بالتجارة والنقل والتخزين لضمان سلامته وسلامة المعاملات المرتبطة به.",
-    sectionList: [
-      { id: 1, text: "سندات توريد الذهب", link: "/sanad" },
-      { id: 2, text: "سندات الذهب", link: "/sanadGold" },
-    ],
-  },
-  {
-    icon: <IoDiamondSharp className="text-xl" />,
-    sectionHead: "expenses",
-    sectionDescription:
-      "توريد الذهب هو عملية نقل الذهب من مكان إلى آخر، سواء كان ذلك لأغراض تجارية أو استثمارية أو تخزينية. يشمل ذلك جميع الخطوات من استخراج الذهب من المناجم إلى تصنيعه وتوزيعه، بما في ذلك التعامل مع الشحنات والتخزين والتأمين. تتم عملية توريد الذهب وفقاً للمعايير والقوانين الدولية المتعلقة بالتجارة والنقل والتخزين لضمان سلامته وسلامة المعاملات المرتبطة به.",
-    sectionList: [
-      { id: 1, text: "Item 1", link: "/sanad" },
-      { id: 2, text: "Item 2", link: "/sanad" },
-    ],
-  },
-];
+import { useFetch } from "../../hooks";
+import { Loading } from "../../components/organisms/Loading";
 
 const Support = ({ title }: { title: string }) => {
-  const [selectedOption, setSelectedOption] = useState(searchOption[0].value);
+  const [selectedOption, setSelectedOption] = useState("");
   const [categoryActiveId, setCategoryActiveId] = useState(1);
+  const [support, setSupport] = useState([]);
+  console.log("🚀 ~ Support ~ support:", support);
+  const [searchOption, setSearchOption] = useState([]);
 
   const handleSelectedOption = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(e.target.value);
+    setCategoryActiveId(e.id);
   };
 
   const initialValue = {
     search: "",
   };
+
+  const {
+    data: supportData,
+    refetch: supportDataRefetch,
+    isFetching,
+    isLoading,
+    isRefetching,
+  } = useFetch({
+    endpoint: `/attachment/api/v1/categories`,
+    queryKey: ["support-data"],
+    onSuccess(data: any) {
+      setSupport(data);
+
+      const selectedOptions = data?.map((el: any) => ({
+        id: el.id,
+        label: el.name,
+        value: el.name,
+      }));
+
+      setSearchOption(selectedOptions);
+    },
+  });
+
+  const targetCategory = support?.find((el: any) => el.id == categoryActiveId);
+
+  // LOADING ....
+  if (isLoading || isRefetching || isFetching)
+    return <Loading mainTitle={`${t("loading")}`} />;
 
   return (
     <Formik
@@ -85,34 +68,26 @@ const Support = ({ title }: { title: string }) => {
             />
 
             {/* SEARCH CATEGORY */}
-            <div className="my-12 grid gap-6  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-              {searchCategory.map((searchBox) => {
+            <div className="my-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+              {support?.map((searchBox: any) => {
                 return (
                   <div
                     key={searchBox.id}
                     onClick={() => setCategoryActiveId(searchBox.id)}
                     className={`flex flex-col items-center gap-4 rounded-xl cursor-pointer ${
                       searchBox.id === categoryActiveId
-                        ? "bg-mainOrange/5 border-2 border-mainOrange/10 "
+                        ? "border-2 border-mainGreen "
                         : "bg-mainGreen/5 border-2 border-mainGreen/10 "
                     } justify-center  h-32`}
                   >
-                    <searchBox.icon
-                      className={`${
-                        searchBox.id === categoryActiveId
-                          ? "text-mainOrange "
-                          : "text-mainGreen"
-                      } w-10 h-10`}
+                    <img
+                      src={searchBox.image}
+                      alt={searchBox.name}
+                      className="w-10 h-10"
                     />
 
-                    <p
-                      className={`${
-                        searchBox.id === categoryActiveId
-                          ? "text-mainOrange"
-                          : "text-mainGreen"
-                      } font-bold`}
-                    >
-                      {searchBox.title}
+                    <p className={`text-mainGreen font-bold`}>
+                      {searchBox.name}
                     </p>
                   </div>
                 );
@@ -121,12 +96,13 @@ const Support = ({ title }: { title: string }) => {
 
             {/* SEARCH SUBCATEGORY */}
             <div className="mb-12">
-              <h3 className="text-xl mb-6">{t("supply")}</h3>
+              <h3 className="text-xl mb-6">{targetCategory?.name}</h3>
 
               <div>
-                {data.map((item) => {
-                  return <SubCategorySection {...item} />;
-                })}
+                {support &&
+                  targetCategory?.children?.map((item: any) => {
+                    return <SubCategorySection {...item} />;
+                  })}
               </div>
             </div>
           </>

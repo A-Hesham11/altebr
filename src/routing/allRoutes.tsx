@@ -128,6 +128,8 @@ import ViewCommision from "../components/templates/commision/ViewCommision";
 import SellingSalaries from "../pages/selling/SellingSalaries";
 import Print from "../pages/Print";
 import Support from "../pages/Support/Support";
+import CategoryLink from "../pages/Support/CategoryLink";
+import SearchSupportLink from "../pages/Support/SearchSupportLink";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -207,6 +209,11 @@ export const AllRoutesProvider = () => {
           <Route
             path="/support"
             element={<Support title={t("helper center")} />}
+          />
+          <Route path="/supportLinks/:supportId" element={<CategoryLink />} />
+          <Route
+            path="/searchLinks/:searchLinksId"
+            element={<SearchSupportLink />}
           />
 
           <Route
