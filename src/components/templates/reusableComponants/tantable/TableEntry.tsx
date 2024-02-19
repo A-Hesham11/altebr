@@ -94,7 +94,7 @@ const TableEntry = ({ item }: { item?: {} }) => {
               console.log("🚀 ~ {restrictions?.map ~ item:", item);
               return (
                 <>
-                  <tr className="border-b">
+                  <tr key={i} className="border-b">
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
                         i == item.boxes.length - 0
