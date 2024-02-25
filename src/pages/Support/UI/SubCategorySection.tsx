@@ -48,7 +48,7 @@ const SubCategorySection: React.FC<Props> = ({
         <div className="transition-all duration-500">
           <p className="mx-5 text-black/70">{desc}</p>
 
-          <ul className="flex flex-wrap items-center gap-8 mt-8 mx-9 list-disc">
+          <ul className="flex flex-wrap items-center gap-14 mt-8 mx-9 list-disc">
             {links?.map((li: any) => {
               return (
                 <li className="font-bold" key={li.id}>

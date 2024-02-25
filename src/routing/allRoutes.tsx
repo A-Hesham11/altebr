@@ -130,6 +130,9 @@ import Print from "../pages/Print";
 import Support from "../pages/Support/Support";
 import CategoryLink from "../pages/Support/CategoryLink";
 import SearchSupportLink from "../pages/Support/SearchSupportLink";
+import AddSupport from "../pages/Support/AddSupport/AddSupport";
+import ViewMainSupport from "../pages/Support/viewSupport/ViewMainSupport";
+import ViewSubSupport from "../pages/Support/viewSupport/ViewSubSupport";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -215,6 +218,8 @@ export const AllRoutesProvider = () => {
             path="/searchLinks/:searchLinksId"
             element={<SearchSupportLink />}
           />
+          <Route path="/support/mainSupport" element={<ViewMainSupport />} />
+          <Route path="/support/subSupport" element={<ViewSubSupport />} />
 
           <Route
             path="/system/company-profile"

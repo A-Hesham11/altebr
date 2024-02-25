@@ -21,6 +21,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const navigate = useNavigate();
   const [activeClass, setActiveClass] = useState("هويات في الإدارة");
   const [dataSource, setDataSource] = useState([]);
+  console.log("🚀 ~ CodedIdentities ~ dataSource:", dataSource);
   const [page, setPage] = useState(1);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
   // const [operationTypeSelect, setOperationTypeSelect] = useState(() => {
