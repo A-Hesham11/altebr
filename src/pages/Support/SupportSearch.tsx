@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { BaseInputField, Select } from "../../components/molecules";
+import { BaseInputField } from "../../components/molecules";
 import { t } from "i18next";
 import { useFetch } from "../../hooks";
 import { Link } from "react-router-dom";
 import "./searchResultLoading.css";
-import test from "../../assets/support-bg.svg";
 
 type Props = {
   searchOption: {
@@ -18,13 +17,8 @@ type Props = {
   onSelectedOptionChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
-const SupportSearch: React.FC<Props> = ({
-  searchOption,
-  selectedOption,
-  onSelectedOptionChange,
-}) => {
+const SupportSearch: React.FC<Props> = () => {
   const [searchWord, setSearchWord] = useState("");
-  console.log("🚀 ~ searchWord:", searchWord);
 
   const {
     data: searchResult,
@@ -40,14 +34,6 @@ const SupportSearch: React.FC<Props> = ({
   useEffect(() => {
     searchResultRefetch();
   }, [searchWord]);
-
-  // if (isFetching || isLoading || isRefetching) {
-  //   return (
-  //     <div className="loader">
-  //       <div className="justify-content-center jimu-primary-loading"></div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="flex supportBg flex-col items-center justify-center text-center mt-6 text-white rounded-lg p-8">
@@ -87,7 +73,6 @@ const SupportSearch: React.FC<Props> = ({
                         className="py-4 text-start cursor-pointer px-2 hover:px-5 transition-all duration-300 border-b hover:bg-mainGreen/10 border-gray-300 text-mainGreen"
                         key={search.id}
                       >
-                        {/* TODO HERE FOR ROUTE `searchLinks/${search.id}` */}
                         <Link to={`/searchLinks/${search.id}`}>
                           {search.name}
                         </Link>
@@ -97,32 +82,6 @@ const SupportSearch: React.FC<Props> = ({
                 )}
               </div>
             )}
-          </div>
-
-          <div className="w-28">
-            {/* <select
-              id="searchOption"
-              value={selectedOption}
-              onChange={handleSelectedOption}
-              className="rounded-l-xl text-black h-12 w-28 cursor-pointer text-center"
-            >
-              {searchOption.map((option: any) => (
-                <option
-                  className="text-center"
-                  key={option.id}
-                  value={option.value}
-                >
-                  {option.label}
-                </option>
-              ))}
-            </select> */}
-            <Select
-              name="all"
-              className="rounded-xl !h-12 text-black"
-              placeholder={`${t("all")}`}
-              onChange={onSelectedOptionChange}
-              options={searchOption}
-            />
           </div>
         </div>
       </div>

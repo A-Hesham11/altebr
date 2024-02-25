@@ -1,9 +1,10 @@
-import { useNavigate, useNavigation, useParams } from "react-router-dom";
+import { Link, useNavigate, useNavigation, useParams } from "react-router-dom";
 import { useFetch } from "../../hooks";
 import { useEffect, useState } from "react";
 import { t } from "i18next";
 import { Loading } from "../../components/organisms/Loading";
 import { Back } from "../../utils/utils-components/Back";
+import { MdKeyboardArrowLeft } from "react-icons/md";
 
 function hashId(id: string | number) {
   return `${crypto.randomUUID()}${id}${crypto.randomUUID()}`;
@@ -41,14 +42,21 @@ const CategoryLink = () => {
 
   return (
     <div>
-      <div className="w-full flex justify-end">
+      <div className="w-full flex justify-between">
+        <div className="flex items-center gap-x-1">
+          <Link className="font-bold" to={"/support"}>
+            {t("helper center")}
+          </Link>
+          <MdKeyboardArrowLeft />
+          <p className="font-bold">{supportCategoryData[0]?.parent}</p>
+        </div>
         <Back />
       </div>
       <div>
         {supportCategoryData &&
           supportCategoryData?.map((category: any, categoryIndex: any) => {
             return (
-              <div>
+              <div key={categoryIndex}>
                 <div className="flex items-center gap-2 my-8">
                   <p className="w-8 h-8 flex justify-center items-center font-bold bg-gray-200 rounded-full">
                     {categoryIndex + 1}

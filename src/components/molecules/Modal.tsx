@@ -11,7 +11,7 @@ type ModalProps_TP = {
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
   title?: string;
   children: ReactNode;
-  maxWidth?: `max-w-[${number}px]`;
+  maxWidth?: string;
   blur?: `max-w-[${number}px]`;
 };
 /////////// HELPER VARIABLES & FUNCTIONS
@@ -24,7 +24,7 @@ export const Modal = ({
   title,
   children,
   maxWidth,
-  blur
+  blur,
 }: ModalProps_TP) => {
   /////////// VARIABLES
   ///

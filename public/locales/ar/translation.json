@@ -1191,5 +1191,15 @@
   "all": "الكل",
   "there is no data for your search": "لا يوجد بيانات لهذا البحث",
   "empty table": "تفريغ الجدول",
-  "export": "تصدير"
+  "export": "تصدير",
+  "add sub section": "اضافة قسم فرعي",
+  "add section": "اضافة قسم",
+  "forked": "متفرع",
+  "section": "قسم",
+  "final forked": "متفرع نهائي",
+  "view main section": "عرض الاقسام الرئيسية",
+  "view sub section": "عرض الاقسام الفرعية",
+  "main section": "القسم الرئيسي",
+  "sub section": "القسم الفرعي",
+  "section is added successfully": "تم اضافة القسم بنجاح"
 }

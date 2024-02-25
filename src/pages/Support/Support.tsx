@@ -1,10 +1,14 @@
 import { Formik } from "formik";
 import { t } from "i18next";
 import SupportSearch from "./SupportSearch";
-import { SetStateAction, useEffect, useState } from "react";
+import { useState } from "react";
 import SubCategorySection from "./UI/SubCategorySection";
 import { useFetch } from "../../hooks";
 import { Loading } from "../../components/organisms/Loading";
+import { Button } from "../../components/atoms";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "../../components/molecules";
+import AddSupport from "./AddSupport/AddSupport";
 
 const Support = ({ title }: { title: string }) => {
   const [selectedOption, setSelectedOption] = useState("");
@@ -12,6 +16,9 @@ const Support = ({ title }: { title: string }) => {
   const [support, setSupport] = useState([]);
   console.log("🚀 ~ Support ~ support:", support);
   const [searchOption, setSearchOption] = useState([]);
+  const navigate = useNavigate();
+  const [supportModal, setSupportModal] = useState(false);
+  const [showSupportModal, setShowSupportModal] = useState(false);
 
   const handleSelectedOption = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategoryActiveId(e.id);
@@ -59,7 +66,25 @@ const Support = ({ title }: { title: string }) => {
       {(values) => {
         return (
           <>
-            <h2 className="text-xl font-bold text-slate-700">{title}</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-slate-700">{title}</h2>
+              <div className="flex items-center gap-3">
+                <Button
+                  action={() => {
+                    setShowSupportModal(true);
+                  }}
+                >
+                  {t("view")}
+                </Button>
+                <Button
+                  action={() => {
+                    setSupportModal(true);
+                  }}
+                >
+                  {t("add")}
+                </Button>
+              </div>
+            </div>
 
             <SupportSearch
               selectedOption={selectedOption}
@@ -68,7 +93,7 @@ const Support = ({ title }: { title: string }) => {
             />
 
             {/* SEARCH CATEGORY */}
-            <div className="my-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <div className="my-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
               {support?.map((searchBox: any) => {
                 return (
                   <div
@@ -105,6 +130,27 @@ const Support = ({ title }: { title: string }) => {
                   })}
               </div>
             </div>
+
+            {/* ADD MODAL */}
+            <Modal isOpen={supportModal} onClose={() => setSupportModal(false)}>
+              <AddSupport />
+            </Modal>
+
+            {/* SHOW MODAL */}
+            <Modal
+              maxWidth="max-w-xl"
+              isOpen={showSupportModal}
+              onClose={() => setShowSupportModal(false)}
+            >
+              <div className="my-14 mt-24 flex gap-6 justify-center">
+                <Button action={() => navigate("/support/mainSupport")}>
+                  {t("view main section")}
+                </Button>
+                <Button action={() => navigate("/support/subSupport")}>
+                  {t("view sub section")}
+                </Button>
+              </div>
+            </Modal>
           </>
         );
       }}
