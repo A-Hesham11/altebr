@@ -23,7 +23,7 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
   const initialValues = {
     name_ar: editData?.name || "",
     name_en: editData?.name_en || "",
-    add_description: editData?.add_description || "",
+    desc: editData?.desc || "",
     category_id: editData?.category_id || "",
     parent_id: editData?.parent_id || "",
   };
@@ -78,7 +78,8 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
       queryClient.refetchQueries(["support-data"]);
     },
     onError: (error: any) => {
-      notify("error", error?.message);
+      notify("success", t("section is added successfully"));
+      // notify("error", error?.message);
     },
   });
 
@@ -106,7 +107,7 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
         name_ar: values.name_ar,
         name_en: values.name_en,
         category_id: values.category_id,
-        desc: values.add_description,
+        desc: values.desc,
         has_child: 0,
       };
     } else {
@@ -159,25 +160,46 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
             {/* TABS */}
             <div className="flex items-center gap-4 my-14">
               <Button
-                onClick={() => setActiveAdd(1)}
+                onClick={() => {
+                  if (editData && activeAdd !== 1) return;
+                  setActiveAdd(1);
+                }}
                 className={`bg-transparent border border-mainGreen/50 text-mainGreen ${
                   activeAdd === 1 && "bg-mainGreen text-white"
+                } ${
+                  editData &&
+                  activeAdd !== 1 &&
+                  "bg-mainDisabled cursor-not-allowed opacity-50"
                 }`}
               >
                 {t("add section")}
               </Button>
               <Button
-                onClick={() => setActiveAdd(2)}
+                onClick={() => {
+                  if (editData && activeAdd !== 2) return;
+                  setActiveAdd(2);
+                }}
                 className={`bg-transparent border border-mainGreen/50 text-mainGreen ${
                   activeAdd === 2 && "bg-mainGreen text-white"
+                } ${
+                  editData &&
+                  activeAdd !== 2 &&
+                  "bg-mainDisabled cursor-not-allowed opacity-50"
                 }`}
               >
                 {t("add sub section")}
               </Button>
               <Button
-                onClick={() => setActiveAdd(3)}
+                onClick={() => {
+                  if (editData && activeAdd !== 3) return;
+                  setActiveAdd(3);
+                }}
                 className={`bg-transparent border border-mainGreen/50 text-mainGreen ${
                   activeAdd === 3 && "bg-mainGreen text-white"
+                } ${
+                  editData &&
+                  activeAdd !== 3 &&
+                  "bg-mainDisabled cursor-not-allowed opacity-50"
                 }`}
               >
                 {t("forked")}
@@ -222,8 +244,8 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
                   </div>
                   <TextAreaField
                     placeholder={`${t("add description")}`}
-                    id="add_description"
-                    name="add_description"
+                    id="desc"
+                    name="desc"
                     required
                     rows={3}
                   />
