@@ -70,7 +70,8 @@ export const SellingTableInputData = ({
       Number(dataSource[0]?.cost);
 
   const priceWithCommissionCash =
-    dataSource && Number(dataSource[0]?.cost) + Number(dataSource[0]?.min_selling);
+    dataSource &&
+    Number(dataSource[0]?.cost) + Number(dataSource[0]?.min_selling);
 
   const priceWithSellingPolicy =
     dataSource && dataSource[0]?.min_selling_type === "نسبة"
@@ -961,6 +962,7 @@ export const SellingTableInputData = ({
           />
         </div>
       </Modal>
+
     </Form>
   );
 };
