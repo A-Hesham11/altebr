@@ -17,13 +17,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { GiCheckMark } from "react-icons/gi";
 import { formatDate } from "../../utils/date";
 import { Modal } from "../../components/molecules";
-import { SellingModal } from "../../components/molecules/SellingModal";
 
 const SellingHome = () => {
   const { logOutHandler, userData, isLoggingOut, open, setOpen } =
     useContext(authCtx);
-
-  console.log("🚀 ~ SellingHome ~ userData:", userData);
 
   const isRTL = useIsRTL();
   const navigate = useNavigate();

@@ -34,6 +34,7 @@ type SellingTableInputWeight_TP = {
   dataSource?: any;
   setOpenSelsal?: any;
   TaxRateOfBranch?: any;
+  selectedItemDetails?: any;
 };
 
 const SellingTableInputWeight = ({
@@ -42,6 +43,7 @@ const SellingTableInputWeight = ({
   dataSource,
   setOpenSelsal,
   TaxRateOfBranch,
+  selectedItemDetails,
 }: SellingTableInputWeight_TP) => {
   console.log("🚀 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth);
   const [searchWeight, setSearchWeight] = useState("");
@@ -52,29 +54,47 @@ const SellingTableInputWeight = ({
   const { formatGram, formatReyal } = numberContext();
   const [page, setPage] = useState<number>(1);
 
-  const { values, setFieldValue, resetForm, isSubmitting } =
-    useFormikContext<any>();
+  const { values, setFieldValue } = useFormikContext<any>();
   console.log("🚀 ~ values:", values);
+
+  const calcselectedItemDetails = selectedItemDetails.reduce((acc, item) => {
+    acc += +item.weight;
+    return acc;
+  }, 0);
+
+  const weightItem =
+    values?.weightitems?.length > 0
+      ? Number(calcselectedItemDetails)
+      : Number(values.remaining_weight);
 
   const costItem =
     values?.classification_id === 1
-      ? +values?.remaining_weight * (+values?.wage + +values?.karat_price)
-      : values?.selling_price;
+      ? Number(weightItem) *
+        (Number(values?.wage) + Number(values?.karat_price))
+      : Number(values?.selling_price);
+
+  console.log("🚀 ~ costItem:", costItem);
 
   const priceWithCommissionRate =
     dataSource &&
-    (+sellingItemsOfWeigth[0]?.cost + +costItem) *
-      (+dataSource[0]?.min_selling * 0.01) +
-      (+sellingItemsOfWeigth[0]?.cost + +costItem);
+    (Number(sellingItemsOfWeigth[0]?.cost || 0) + Number(costItem)) *
+      (Number(dataSource[0]?.min_selling) * 0.01) +
+      (Number(sellingItemsOfWeigth[0]?.cost || 0) + Number(costItem));
+
+  console.log("🚀 ~ priceWithCommissionRate:", priceWithCommissionRate);
 
   const priceWithCommissionCash =
     dataSource &&
-    +sellingItemsOfWeigth[0]?.cost + +costItem + +dataSource[0]?.min_selling;
+    Number(sellingItemsOfWeigth[0]?.cost || 0) +
+      Number(costItem) +
+      Number(dataSource[0]?.min_selling);
+
+  console.log("🚀 ~ priceWithCommissionCash:", priceWithCommissionCash);
 
   const priceWithSellingPolicy =
     dataSource && dataSource[0]?.min_selling_type === "نسبة"
-      ? priceWithCommissionRate
-      : priceWithCommissionCash;
+      ? Number(priceWithCommissionRate)
+      : Number(priceWithCommissionCash);
 
   console.log("🚀 ~ priceWithSellingPolicy:", priceWithSellingPolicy);
 
@@ -190,7 +210,6 @@ const SellingTableInputWeight = ({
     acc += +item.weight;
     return acc;
   }, 0);
-  console.log("🚀 ~ calcOfSelsalWeight ~ calcOfSelsalWeight:", calcOfSelsalWeight)
 
   const calcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
     acc += +item.cost;
@@ -198,9 +217,12 @@ const SellingTableInputWeight = ({
   }, 0);
 
   const handleAddSelsalToPieces = () => {
-    setFieldValue("weight", +values.remaining_weight + +calcOfSelsalWeight);
-    setFieldValue("cost", (+costItem + +calcOfSelsalCost).toFixed(2));
-    setFieldValue("taklfa", +priceWithSellingPolicy.toFixed(2));
+    setFieldValue("weight", Number(weightItem) + Number(calcOfSelsalWeight));
+    setFieldValue(
+      "cost",
+      (Number(costItem) + Number(calcOfSelsalCost)).toFixed(2)
+    );
+    setFieldValue("taklfa", Number(priceWithSellingPolicy).toFixed(2));
     setFieldValue(
       "taklfa_after_tax",
       (
@@ -208,7 +230,7 @@ const SellingTableInputWeight = ({
         priceWithSellingPolicy
       ).toFixed(2)
     );
-  }; 
+  };
 
   const handleDeleteRow = (itemId) => {
     sellingItemsOfWeigth?.findIndex((item) => {
@@ -220,10 +242,11 @@ const SellingTableInputWeight = ({
     });
 
     setSellingItemsOfWeight(newData);
-
-    handleAddSelsalToPieces();
   };
 
+  useEffect(() => {
+    handleAddSelsalToPieces();
+  }, [calcOfSelsalWeight]);
   return (
     <Formik
       initialValues={initialValuesWeight}
@@ -468,8 +491,6 @@ const SellingTableInputWeight = ({
                           <Button
                             action={() => {
                               handleDeleteRow(row?.original?.hwya);
-
-                              handleAddSelsalToPieces();
                             }}
                             className="bg-transparent px-2 "
                           >
@@ -488,7 +509,7 @@ const SellingTableInputWeight = ({
                   handleAddSelsalToPieces();
                   setOpenSelsal(false);
                 }}
-                // disabled={!sellingItemsOfWeigth.length}
+                disabled={!sellingItemsOfWeigth.length}
               >
                 {t("confirm")}
               </Button>

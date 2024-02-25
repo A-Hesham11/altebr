@@ -27,7 +27,7 @@ import SellingTableInputWeight from "./SellingTableInputWeight";
 import { HiViewGridAdd } from "react-icons/hi";
 
 type SellingTableInputData_TP = {
-  dataSource: Selling_TP;
+  dataSource: any;
   sellingItemsData: Selling_TP;
   setDataSource: any;
   setSellingItemsData: any;
@@ -49,9 +49,6 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
-  console.log("🚀 ~ dataSource:", dataSource);
-
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
@@ -59,23 +56,22 @@ export const SellingTableInputData = ({
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
   const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
-  const [editSellingTaklfa, setEditSellingTaklfa] = useState("");
+  const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] =
-    useState("");
+    useState<number>();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
-  console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch);
 
   const priceWithCommissionRate =
     dataSource &&
-    +dataSource[0]?.cost * (+dataSource[0]?.min_selling * 0.01) +
-      +dataSource[0]?.cost;
+    Number(dataSource[0]?.cost) * (Number(dataSource[0]?.min_selling) * 0.01) +
+      Number(dataSource[0]?.cost);
 
   const priceWithCommissionCash =
-    dataSource && +dataSource[0]?.cost + +dataSource[0]?.min_selling;
+    dataSource &&
+    Number(dataSource[0]?.cost) + Number(dataSource[0]?.min_selling);
 
   const priceWithSellingPolicy =
     dataSource && dataSource[0]?.min_selling_type === "نسبة"
@@ -872,7 +868,7 @@ export const SellingTableInputData = ({
               action={() => {
                 const clacSelectedWeight = selectedItemDetails.reduce(
                   (acc, item) => {
-                    acc += +item.weight;
+                    acc += Number(item.weight);
                     return acc;
                   },
                   0
@@ -880,24 +876,27 @@ export const SellingTableInputData = ({
 
                 const clacSelectedCost = selectedItemDetails.reduce(
                   (acc, item) => {
-                    acc += +item.selling_price;
+                    acc += Number(item.selling_price);
                     return acc;
                   },
                   0
                 );
 
                 const remainingWeight =
-                  +values?.remaining_weight - +clacSelectedWeight;
+                  Number(values?.sel_weight) - Number(clacSelectedWeight);
 
                 const costItem =
                   values.classification_id === 1
-                    ? (+values.karat_price + +values.wage) * clacSelectedWeight
-                    : +clacSelectedCost;
+                    ? (Number(values.karat_price) + Number(values.wage)) *
+                      Number(clacSelectedWeight)
+                    : Number(clacSelectedCost);
 
                 const priceWithCommissionRate =
-                  +costItem * (+values?.min_selling * 0.01) + +costItem;
+                  Number(costItem) * (Number(values?.min_selling) * 0.01) +
+                  Number(costItem);
+
                 const priceWithCommissionCash =
-                  +costItem + +values?.min_selling;
+                  Number(costItem) + Number(values?.min_selling);
 
                 const priceWithSellingPolicy =
                   values?.min_selling_type === "نسبة"
@@ -921,13 +920,13 @@ export const SellingTableInputData = ({
                 } else if (
                   checkedFromWeight &&
                   checkedFromPeiceisLength &&
-                  +clacSelectedWeight < +remainingWeight
+                  Number(clacSelectedWeight) < Number(values?.sel_weight)
                 ) {
                   notify("error", "تجميعة الأوزان أقل من الوزن المتبقي");
                 } else {
                   setFieldValue("taklfa", priceWithSellingPolicy);
 
-                  setFieldValue("taklfa_after_tax", +taklfaAfterTax);
+                  setFieldValue("taklfa_after_tax", Number(taklfaAfterTax));
 
                   setFieldValue("remaining_weight", remainingWeight);
 
@@ -938,8 +937,8 @@ export const SellingTableInputData = ({
                   setOpenDetails(false);
                 }
 
-                setEditSellingTaklfa(+priceWithSellingPolicy);
-                setEditSellingTaklfaAfterTax(+priceWithSellingPolicy);
+                setEditSellingTaklfa(Number(priceWithSellingPolicy));
+                setEditSellingTaklfaAfterTax(Number(priceWithSellingPolicy));
               }}
             >
               {`${t("confirm")}`}
@@ -959,9 +958,11 @@ export const SellingTableInputData = ({
             setOpenSelsal={setOpenSelsal}
             openSelsal={openSelsal}
             TaxRateOfBranch={TaxRateOfBranch}
+            selectedItemDetails={selectedItemDetails}
           />
         </div>
       </Modal>
+
     </Form>
   );
 };
