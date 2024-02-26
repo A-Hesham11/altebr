@@ -55,14 +55,24 @@ const CategoryLink = () => {
       <div>
         {supportCategoryData &&
           supportCategoryData?.map((category: any, categoryIndex: any) => {
+            const steps = category?.ck?.split("\r\n");
+            console.log("🚀 ~ CategoryLink ~ steps:", steps);
+
             return (
               <div key={categoryIndex}>
-                <div className="flex items-center gap-2 my-8">
-                  <p className="w-8 h-8 flex justify-center items-center font-bold bg-gray-200 rounded-full">
+                <div className="flex items-center gap-2 mt-8 mb-4">
+                  <p className="w-8 h-8 flex justify-center items-center font-bold bg-mainGreen text-white rounded-full">
                     {categoryIndex + 1}
                   </p>
-                  <h2>{category.name}</h2>
+                  <h2 className="text-mainGreen font-bold text-lg">
+                    {category.name}
+                  </h2>
                 </div>
+                <dl className="mr-8 mb-4 space-y-1">
+                  {steps?.map((step: string, index: number) => {
+                    return <li key={index}>{step}</li>;
+                  })}
+                </dl>
                 <img src={category.image} alt={category.name} />
               </div>
             );

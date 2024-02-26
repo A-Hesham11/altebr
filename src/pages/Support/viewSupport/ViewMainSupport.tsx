@@ -81,16 +81,16 @@ const ViewMainSupport = () => {
     refetch,
     isFetching,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/attachment/api/v1/categories`,
+    endpoint: `/attachment/api/v1/categories?page=${page}`,
     queryKey: ["main-section", page],
     pagination: true,
     onSuccess(data) {
-      setDataSource(data.data);
+      setDataSource(data?.data);
     },
     select: (data) => {
       return {
         ...data,
-        data: data.data.map((branches, i) => ({
+        data: data?.data?.map((branches, i) => ({
           ...branches,
           index: i + 1,
         })),
@@ -132,7 +132,7 @@ const ViewMainSupport = () => {
         </div>
 
         {isFetching && <Loading mainTitle={t("view main section")} />}
-        {isSuccess && !isLoading && !isRefetching && dataSource.length ? (
+        {isSuccess && !isLoading && !isRefetching && dataSource?.length ? (
           <Table data={dataSource} columns={columns}>
             <div className="mt-3 flex items-center justify-end gap-5 p-2">
               <div className="flex items-center gap-2 font-bold">
@@ -170,7 +170,7 @@ const ViewMainSupport = () => {
         ) : (
           !isLoading &&
           !isRefetching &&
-          !dataSource.length && (
+          !dataSource?.length && (
             <div className="flex justify-center items-center mt-32">
               <p className="text-lg font-bold">
                 {t("there are no main section available yet")}

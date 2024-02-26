@@ -6,8 +6,6 @@ export const ExportToExcel = (apiData, fileName) => {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
   const fileExtension = ".xlsx";
 
-  console.log(XLSX.utils);
-
   const ws = XLSX.utils.json_to_sheet(apiData);
 
   const wb = { Sheets: { data: ws }, SheetNames: ["data"] };

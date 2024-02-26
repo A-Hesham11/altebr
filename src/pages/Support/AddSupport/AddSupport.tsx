@@ -21,11 +21,12 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
   const queryClient = useQueryClient();
 
   const initialValues = {
-    name_ar: editData?.name || "",
+    name_ar: "",
     name_en: editData?.name_en || "",
     desc: editData?.desc || "",
     category_id: editData?.category_id || "",
     parent_id: editData?.parent_id || "",
+    ck: "",
   };
 
   const {
@@ -116,6 +117,7 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
         name_en: values.name_en,
         parent_id: values.parent_id,
         has_child: hasChildCheck ? 1 : 0,
+        ck: values.ck,
       };
     }
 
@@ -266,6 +268,16 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
                       }
                     />
                   </div>
+
+                  {hasChildCheck && (
+                    <TextAreaField
+                      placeholder={`${t("add description")}`}
+                      id="ck"
+                      name="ck"
+                      required
+                      rows={3}
+                    />
+                  )}
 
                   <div className="flex items-center">
                     <Checkbox
