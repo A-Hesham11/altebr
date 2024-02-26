@@ -9,6 +9,8 @@ import { Button } from "../../components/atoms";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../../components/molecules";
 import AddSupport from "./AddSupport/AddSupport";
+import Slider from "react-slick";
+import { GrNext, GrPrevious } from "react-icons/gr";
 
 const Support = ({ title }: { title: string }) => {
   const [selectedOption, setSelectedOption] = useState("");
@@ -52,6 +54,16 @@ const Support = ({ title }: { title: string }) => {
 
   const targetCategory = support?.find((el: any) => el.id == categoryActiveId);
 
+  const sliderSettings = {
+    className: "center",
+    centerMode: true,
+    centerPadding: "60px",
+    slidesToShow: 5,
+    speed: 500,
+    nextArrow: <GrNext size={30} />,
+    prevArrow: <GrPrevious size={30} />,
+  };
+
   // LOADING ....
   if (isLoading || isRefetching || isFetching)
     return <Loading mainTitle={`${t("loading")}`} />;
@@ -93,7 +105,34 @@ const Support = ({ title }: { title: string }) => {
             />
 
             {/* SEARCH CATEGORY */}
-            <div className="my-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            <Slider {...sliderSettings}>
+              {support?.map((searchBox: any) => {
+                return (
+                  <div
+                    key={searchBox.id}
+                    onClick={() => setCategoryActiveId(searchBox.id)}
+                    className={`flex flex-col items-center gap-4 rounded-xl cursor-pointer ${
+                      searchBox.id === categoryActiveId
+                        ? "border-2 border-mainGreen "
+                        : "bg-mainGreen/5 border-2 border-mainGreen/10 "
+                    } justify-center  h-32`}
+                  >
+                    <div className="flex flex-col justify-center items-center gap-2 h-full">
+                      <img
+                        src={searchBox.image}
+                        alt={searchBox.name}
+                        className="w-10 h-10"
+                      />
+
+                      <p className={`text-mainGreen font-bold`}>
+                        {searchBox.name}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </Slider>
+            {/* <div className="my-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
               {support?.map((searchBox: any) => {
                 return (
                   <div
@@ -117,7 +156,7 @@ const Support = ({ title }: { title: string }) => {
                   </div>
                 );
               })}
-            </div>
+            </div> */}
 
             {/* SEARCH SUBCATEGORY */}
             <div className="mb-12">

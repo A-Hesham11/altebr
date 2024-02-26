@@ -13,6 +13,7 @@ import { Button } from "../../../components/atoms";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import AddSupport from "../AddSupport/AddSupport";
 import { Modal } from "../../../components/molecules";
+import axios from "axios";
 
 const ViewSubSupport = () => {
   const isRTL = useIsRTL();
@@ -78,6 +79,38 @@ const ViewSubSupport = () => {
     []
   );
 
+  // async function fetchData() {
+  //   try {
+  //     const response = await axios.get(`/attachment/api/v1/subcategories`);
+
+  //     console.log("🚀 ~ fetchData ~ response:", response);
+  //     // Manipulate data as needed
+  //     const manipulatedData = {
+  //       ...response.data,
+  //       data: response.data.data.map((branches, i) => ({
+  //         ...branches,
+  //         index: i + 1,
+  //       })),
+  //     };
+
+  //     console.log("🚀 ~ fetchData ~ manipulatedData:", manipulatedData);
+
+  //     // Call the success callback manually
+  //     onSuccessCallback(manipulatedData);
+  //   } catch (error) {
+  //     // Handle errors
+  //     console.error("Error fetching data:", error);
+  //   }
+  // }
+
+  // // Define your onSuccess callback function
+  // function onSuccessCallback(data) {
+  //   setDataSource(data.data);
+  // }
+
+  // // Call the fetch function when needed
+  // fetchData();
+
   const {
     data,
     isSuccess,
@@ -88,7 +121,7 @@ const ViewSubSupport = () => {
     refetch,
     isFetching,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/attachment/api/v1/subcategories`,
+    endpoint: `/attachment/api/v1/subcategories?page=${page}`,
     queryKey: ["sub-section", page],
     pagination: true,
     onSuccess(data) {
