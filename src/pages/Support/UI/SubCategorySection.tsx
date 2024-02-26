@@ -18,7 +18,7 @@ type Props = {
 const SubCategorySection: React.FC<Props> = ({
   id,
   image,
-  name,
+  name_ar,
   desc,
   links,
 }) => {
@@ -36,7 +36,7 @@ const SubCategorySection: React.FC<Props> = ({
         }`}
       >
         <img src={image} alt="Sub Category Image" className="fill-mainGreen" />
-        <p className="font-bold">{t(`${name}`)}</p>
+        <p className="font-bold">{t(`${name_ar}`)}</p>
         <IoIosArrowDown
           className={`${
             subIsOpen ? "rotate-180 transition-all duration-300" : ""
@@ -52,7 +52,7 @@ const SubCategorySection: React.FC<Props> = ({
             {links?.map((li: any) => {
               return (
                 <li className="font-bold" key={li.id}>
-                  <Link to={`/supportLinks/${li.id}`}>{li.name}</Link>
+                  <Link to={`/supportLinks/${li.id}`}>{li.name_ar}</Link>
                 </li>
               );
             })}

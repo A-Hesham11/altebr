@@ -65,7 +65,7 @@ const CategoryLink = () => {
                     {categoryIndex + 1}
                   </p>
                   <h2 className="text-mainGreen font-bold text-lg">
-                    {category.name}
+                    {category.name_ar}
                   </h2>
                 </div>
                 <dl className="mr-8 mb-4 space-y-1">
@@ -73,7 +73,7 @@ const CategoryLink = () => {
                     return <li key={index}>{step}</li>;
                   })}
                 </dl>
-                <img src={category.image} alt={category.name} />
+                <img src={category.image} alt={category.name_ar} />
               </div>
             );
           })}

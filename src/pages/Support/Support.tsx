@@ -53,6 +53,7 @@ const Support = ({ title }: { title: string }) => {
   });
 
   const targetCategory = support?.find((el: any) => el.id == categoryActiveId);
+  console.log("🚀 ~ Support ~ targetCategory:", targetCategory);
 
   const sliderSettings = {
     className: "center",
@@ -120,12 +121,12 @@ const Support = ({ title }: { title: string }) => {
                     <div className="flex flex-col justify-center items-center gap-2 h-full">
                       <img
                         src={searchBox.image}
-                        alt={searchBox.name}
+                        alt={searchBox.name_ar}
                         className="w-10 h-10"
                       />
 
                       <p className={`text-mainGreen font-bold`}>
-                        {searchBox.name}
+                        {searchBox.name_ar}
                       </p>
                     </div>
                   </div>
@@ -160,11 +161,12 @@ const Support = ({ title }: { title: string }) => {
 
             {/* SEARCH SUBCATEGORY */}
             <div className="mb-12">
-              <h3 className="text-xl mb-6">{targetCategory?.name}</h3>
+              <h3 className="text-xl mb-6">{targetCategory?.name_ar}</h3>
 
               <div>
                 {support &&
                   targetCategory?.children?.map((item: any) => {
+                    console.log(item);
                     return <SubCategorySection {...item} />;
                   })}
               </div>

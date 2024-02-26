@@ -1201,5 +1201,7 @@
   "view sub section": "عرض الاقسام الفرعية",
   "main section": "القسم الرئيسي",
   "sub section": "القسم الفرعي",
-  "section is added successfully": "تم اضافة القسم بنجاح"
+  "section is added successfully": "تم اضافة القسم بنجاح",
+  "forked section in arabic": "القسم المتفرع بالعربي",
+  "forked section in english": "القسم المتفرع بالانجليزي"
 }
