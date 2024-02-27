@@ -54,16 +54,23 @@ const SellingTableInputWeight = ({
 
   const { values, setFieldValue } = useFormikContext<any>();
 
-  const existWeightitems = values?.weightitems.filter((item) => !item.status);
+  const existWeightitems = values?.weightitems.filter((item) => !item.status || item.status === 0);
   console.log("🚀 ~ existWeightitems:", existWeightitems);
 
   const selectedItemsDetail =
-    selectedItemDetails?.length > 0 ? selectedItemDetails : existWeightitems;
+  selectedItemDetails?.length > 0 ? selectedItemDetails : existWeightitems;
+  console.log("🚀 ~ selectedItemsDetail:", selectedItemsDetail)
 
   const calcselectedItemDetails = selectedItemsDetail.reduce((acc, item) => {
     acc += +item.weight;
     return acc;
   }, 0);
+
+  const calcselectedItemCost = selectedItemsDetail.reduce((acc, item) => {
+    acc += +item.selling_price;
+    return acc;
+  }, 0);
+  console.log("🚀 ~ calcselectedItemCost ~ calcselectedItemCost:", calcselectedItemCost)
 
   const weightItem =
     values?.weightitems?.length > 0
@@ -74,7 +81,7 @@ const SellingTableInputWeight = ({
     values?.classification_id === 1
       ? Number(weightItem) *
         (Number(values?.wage) + Number(values?.karat_price))
-      : Number(values?.selling_price);
+      : values.weightitems ? Number(calcselectedItemCost) : Number(values?.selling_price);
 
   const priceWithCommissionRate =
     dataSource &&
