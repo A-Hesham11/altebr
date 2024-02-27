@@ -45,19 +45,22 @@ const SellingTableInputWeight = ({
   TaxRateOfBranch,
   selectedItemDetails,
 }: SellingTableInputWeight_TP) => {
-  console.log("🚀 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth);
   const [searchWeight, setSearchWeight] = useState("");
   const [itemsOfWeight, setItemsOfWeight] = useState([]);
-  console.log("🚀 ~ itemsOfWeight:", itemsOfWeight);
   const { userData } = useContext(authCtx);
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
   const { formatGram, formatReyal } = numberContext();
   const [page, setPage] = useState<number>(1);
 
   const { values, setFieldValue } = useFormikContext<any>();
-  console.log("🚀 ~ values:", values);
 
-  const calcselectedItemDetails = selectedItemDetails.reduce((acc, item) => {
+  const existWeightitems = values?.weightitems.filter((item) => !item.status);
+  console.log("🚀 ~ existWeightitems:", existWeightitems);
+
+  const selectedItemsDetail =
+    selectedItemDetails?.length > 0 ? selectedItemDetails : existWeightitems;
+
+  const calcselectedItemDetails = selectedItemsDetail.reduce((acc, item) => {
     acc += +item.weight;
     return acc;
   }, 0);
@@ -73,15 +76,11 @@ const SellingTableInputWeight = ({
         (Number(values?.wage) + Number(values?.karat_price))
       : Number(values?.selling_price);
 
-  console.log("🚀 ~ costItem:", costItem);
-
   const priceWithCommissionRate =
     dataSource &&
     (Number(sellingItemsOfWeigth[0]?.cost || 0) + Number(costItem)) *
       (Number(dataSource[0]?.min_selling) * 0.01) +
       (Number(sellingItemsOfWeigth[0]?.cost || 0) + Number(costItem));
-
-  console.log("🚀 ~ priceWithCommissionRate:", priceWithCommissionRate);
 
   const priceWithCommissionCash =
     dataSource &&
@@ -89,14 +88,10 @@ const SellingTableInputWeight = ({
       Number(costItem) +
       Number(dataSource[0]?.min_selling);
 
-  console.log("🚀 ~ priceWithCommissionCash:", priceWithCommissionCash);
-
   const priceWithSellingPolicy =
     dataSource && dataSource[0]?.min_selling_type === "نسبة"
       ? Number(priceWithCommissionRate)
       : Number(priceWithCommissionCash);
-
-  console.log("🚀 ~ priceWithSellingPolicy:", priceWithSellingPolicy);
 
   const initialValuesWeight = {
     hwya: "",
@@ -247,6 +242,7 @@ const SellingTableInputWeight = ({
   useEffect(() => {
     handleAddSelsalToPieces();
   }, [calcOfSelsalWeight]);
+
   return (
     <Formik
       initialValues={initialValuesWeight}

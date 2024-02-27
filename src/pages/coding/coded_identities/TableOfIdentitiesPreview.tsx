@@ -8,13 +8,10 @@ import { BiLinkExternal } from "react-icons/bi";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { BaseInputField } from "../../../components/molecules";
 import { Form, Formik } from "formik";
-import { initialValues } from "../../System";
 
 const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
-  console.log(
-    "🚀 ~ file: TableOfIdentitiesPreview.tsx:11 ~ TableOfIdentitiesPreview ~ item:",
-    item?.category_items
-  );
+  console.log("🚀 ~ TableOfIdentitiesPreview ~ item:", item.full_hwya);
+
   const { formatReyal } = numberContext();
 
   const initialValues = {};
@@ -23,48 +20,53 @@ const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
   const tableColumn = useMemo<any>(
     () => [
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "full_hwya",
+        header: () => <span>{t("hwya")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "category",
         header: () => <span>{t("classification")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "country",
         header: () => <span>{t("source")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "color",
         header: () => <span>{t("color")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "model_number",
         header: () => <span>{t("modal number")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "sizeType",
         header: () => <span>{t("size type")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "size",
         header: () => <span>{t("size")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "karat_name",
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
       {
         cell: (info: any) =>
-          formatReyal(Number(info.getValue()).toFixed(2)) || "-",
+          formatReyal(Number(info.getValue()).toFixed(2)) || "---",
         accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },
