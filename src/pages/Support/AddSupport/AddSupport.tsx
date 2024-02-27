@@ -15,18 +15,20 @@ import { mutateData } from "../../../utils/mutateData";
 import { useQueryClient } from "@tanstack/react-query";
 
 const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
+  console.log("🚀 ~ AddSupport ~ editData:", editData);
   const [activeAdd, setActiveAdd] = useState(activeBtn || 1);
   const [hasChildCheck, setHasChildCheck] = useState(false);
   const [files, setFiles] = useState([]);
   const queryClient = useQueryClient();
+  const [editValues, setEditValues] = useState();
 
   const initialValues = {
-    name_ar: "",
+    name_ar: editData?.name_ar || "",
     name_en: editData?.name_en || "",
-    desc: editData?.desc || "",
+    desc: editData?.has_child === 1 ? editData?.ck : editData?.desc,
     category_id: editData?.category_id || "",
     parent_id: editData?.parent_id || "",
-    ck: "",
+    ck: editData?.ck || "",
   };
 
   const {
@@ -43,7 +45,7 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
         return {
           id: el.id,
           value: el.id || "",
-          label: el.name || "",
+          label: el.name_ar || "",
         };
       }),
   });
@@ -62,10 +64,11 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
         return {
           id: el.id,
           value: el.id || "",
-          label: el.name || "",
+          label: el.name_ar || "",
         };
       }),
   });
+  console.log("🚀 ~ AddSupport ~ forkedOption:", forkedOption);
 
   const {
     mutate,
@@ -80,6 +83,7 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
     },
     onError: (error: any) => {
       notify("success", t("section is added successfully"));
+      queryClient.refetchQueries(["support-data"]);
       // notify("error", error?.message);
     },
   });
@@ -139,6 +143,15 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
       refetch();
     }
   }, [isSuccess]);
+
+  useEffect(() => {
+    const best = {
+      id: editData?.id || "",
+      value: editData?.id || "",
+      label: editData?.name_ar || `${t("section")}`,
+    };
+    setEditValues(best);
+  }, []);
 
   return (
     <Formik
@@ -241,6 +254,7 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
                       className="rounded-xl !h-12 text-black"
                       placeholder={`${t("section")}`}
                       options={sectionOption}
+                      value={editValues}
                       loading={isLoading || isFetching || isRefetching}
                     />
                   </div>
@@ -249,6 +263,7 @@ const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
                     id="desc"
                     name="desc"
                     required
+                    value={values?.desc}
                     rows={3}
                   />
                 </>

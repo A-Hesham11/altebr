@@ -42,20 +42,27 @@ const ViewSubSupport = () => {
         accessorKey: "index",
         cell: (info) => info.getValue(),
       },
+
       {
-        header: () => <span>{t("main section")} </span>,
-        accessorKey: "parent",
-        cell: (info) => info.getValue() || "-",
+        header: () => <span>{t("forked section in arabic")} </span>,
+        accessorKey: "name_ar",
+        cell: (info) => info.getValue(),
+      },
+      {
+        header: () => <span>{t("forked section in english")} </span>,
+        accessorKey: "name_en",
+        cell: (info) => info.getValue(),
       },
       {
         header: () => <span>{t("sub section")} </span>,
-        accessorKey: "name",
-        cell: (info) => info.getValue(),
+        accessorKey: "parent",
+        cell: (info) => info.getValue() || "-",
       },
       {
         header: () => <span>{t("actions")}</span>,
         accessorKey: "action",
         cell: (info) => {
+          console.log("🚀 ~ ViewSubSupport ~ info:", info);
           return (
             <div className="flex items-center justify-center gap-4">
               <EditIcon
