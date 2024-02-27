@@ -49,6 +49,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails)
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
@@ -78,10 +79,8 @@ export const SellingTableInputData = ({
       ? priceWithCommissionRate
       : priceWithCommissionCash;
 
-  const taklfaAfterTax =
-    priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy;
-
   const { values, setFieldValue } = useFormikContext<any>();
+  console.log("🚀 ~ values:", values)
 
   const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
     queryKey: ["branch-all-accepted-selling"],
