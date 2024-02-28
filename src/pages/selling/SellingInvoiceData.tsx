@@ -218,6 +218,14 @@ const SellingInvoiceData = ({
         +item.taklfa_after_tax / +rowTaxEquation + +ratioForOneItem;
       const totalTaxFromOneRow = +taklfaFromOneItem - +totalCostFromOneItem;
 
+      const weightOfSelsal = item.selsal?.reduce((acc, item) => {
+        acc += +item.weight;
+        return acc;
+      }, 0);
+
+      const isSelsal = (item.selsal && item.selsal?.length > 0) ? Number(weightOfSelsal) : 0
+      console.log("🚀 ~ items ~ isSelsal:", isSelsal)
+
       return {
         category_id: item.category_id,
         category_name: item.category_name,
@@ -233,7 +241,7 @@ const SellingInvoiceData = ({
         karatmineral_name: item.karatmineral_name,
         wage: item.wage,
         wage_total: item.wage_total,
-        weight: item.weight,
+        weight: item.weight - isSelsal,
         selling_price: item.selling_price,
         cost: +totalCostFromOneItem,
         cost_value: item.cost,

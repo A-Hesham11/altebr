@@ -49,6 +49,8 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ dataSource:", dataSource)
+  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
@@ -78,10 +80,8 @@ export const SellingTableInputData = ({
       ? priceWithCommissionRate
       : priceWithCommissionCash;
 
-  const taklfaAfterTax =
-    priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy;
-
   const { values, setFieldValue } = useFormikContext<any>();
+  console.log("🚀 ~ values:", values);
 
   const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
     queryKey: ["branch-all-accepted-selling"],
@@ -167,12 +167,16 @@ export const SellingTableInputData = ({
     }
   }, [dataSource]);
 
+  // const checkedItem = setSelectedItemDetails.filter((item) => item.status === 0);
+
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
       {
         header: () => "#",
         accessorKey: "action",
         cell: (info: any) => {
+        console.log("🚀 ~ info:", info.row.index)
+
           return (
             <div className="flex items-center justify-center gap-4">
               <input
@@ -962,7 +966,6 @@ export const SellingTableInputData = ({
           />
         </div>
       </Modal>
-
     </Form>
   );
 };
