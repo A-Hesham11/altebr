@@ -71,7 +71,9 @@ const Print = () => {
   // };
 
   return (
-    <div>
+    <div style={{
+      width:"22px"
+    }}>
       <div
         id="content-to-print"
         style={{
@@ -91,7 +93,7 @@ const Print = () => {
           value={`${Math.round(12355)}`}
           viewBox={`0 0 300 300`}
         />
-        <p style={{ fontSize: "5px", fontWeight: "700" }}>2305w1</p>
+        <p style={{ fontSize: "5px", fontWeight: "900", color:"#000000" }}>2305w1</p>
         <div style={{ marginTop: "6px" }}>
           <p style={{ fontSize: "6px", fontWeight: "700" }}>G:12</p>
           <p style={{ fontSize: "6px", fontWeight: "700" }}>K:12</p>

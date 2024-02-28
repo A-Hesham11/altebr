@@ -81,7 +81,10 @@ const SellingTableInputWeight = ({
     values?.classification_id === 1
       ? Number(weightItem) *
         (Number(values?.wage) + Number(values?.karat_price))
-      : values.weightitems ? Number(calcselectedItemCost) : Number(values?.selling_price);
+      : values.weightitems?.length > 0 ? Number(calcselectedItemCost) : Number(values?.selling_price);
+
+    console.log("🚀 ~ costItem:", costItem)
+
 
   const priceWithCommissionRate =
     dataSource &&
