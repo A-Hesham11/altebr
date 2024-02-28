@@ -133,6 +133,7 @@ import SearchSupportLink from "../pages/Support/SearchSupportLink";
 import AddSupport from "../pages/Support/AddSupport/AddSupport";
 import ViewMainSupport from "../pages/Support/viewSupport/ViewMainSupport";
 import ViewSubSupport from "../pages/Support/viewSupport/ViewSubSupport";
+import ViewSupport from "../pages/Support/viewSupport/ViewSupport";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -208,7 +209,7 @@ export const AllRoutesProvider = () => {
           {/* ./CODING */}
           <Route path="/system" element={<System title={t("system")} />} />
 
-          {/* SUPPORT */}
+          {/* START SUPPORT */}
           <Route
             path="/support"
             element={<Support title={t("helper center")} />}
@@ -218,8 +219,14 @@ export const AllRoutesProvider = () => {
             path="/searchLinks/:searchLinksId"
             element={<SearchSupportLink />}
           />
+
+          {/* TODO HERE (WILL REMOVE) */}
           <Route path="/support/mainSupport" element={<ViewMainSupport />} />
           <Route path="/support/subSupport" element={<ViewSubSupport />} />
+
+          <Route path="/addSupport" element={<AddSupport />} />
+          <Route path="/viewSupport" element={<ViewSupport />} />
+          {/* END SUPPORT */}
 
           <Route
             path="/system/company-profile"

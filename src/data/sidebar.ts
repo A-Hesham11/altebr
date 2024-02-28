@@ -214,15 +214,35 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: "support",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "helper center",
+        link: "/support",
+        icon: BsQuestionSquare,
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "add",
+        link: "/addSupport",
+        icon: BsQuestionSquare,
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "view",
+        link: "/viewSupport",
+        icon: BsQuestionSquare,
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: "system setting",
     link: "/system",
     icon: CiSettings,
-  },
-  {
-    id: crypto.randomUUID(),
-    label: "helper center",
-    link: "/support",
-    icon: BsQuestionSquare,
   },
 
   // {
