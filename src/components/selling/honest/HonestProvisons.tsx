@@ -31,6 +31,7 @@ type HonestProvisonsProps_TP = {
 }
 ///
 export const HonestProvisons = ({ data, setData }: HonestProvisonsProps_TP) => {
+    console.log("🚀 ~ HonestProvisons ~ data:", data)
     /////////// STATES
     ///
     const [files, setFiles] = useState<any>([])

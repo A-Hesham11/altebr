@@ -25,7 +25,9 @@ export const HonestFinalScreen = ({
   sanadData,
   setStage,
 }: HonestFinalScreenProps_TP) => {
+
   console.log("🚀 ~ sanadData:", sanadData.card);
+
   /////////// VARIABLES
   const { userData } = useContext(authCtx);
   const { formatGram, formatReyal } = numberContext();
@@ -117,6 +119,7 @@ export const HonestFinalScreen = ({
   /////////// STATES
   ///
   const [dataSource, setDataSource] = useState([]);
+  console.log("🚀 ~ dataSource:", dataSource)
   ///
   /////////// SIDE EFFECTS
   ///

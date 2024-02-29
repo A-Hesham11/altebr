@@ -223,6 +223,12 @@ const SellingInvoiceData = ({
         return acc;
       }, 0);
 
+      const costOfSelsal = item.selsal?.reduce((acc, item) => {
+        acc += +item.cost;
+        return acc;
+      }, 0);
+      console.log("🚀 ~ costOfSelsal ~ costOfSelsal:", costOfSelsal)
+
       const isSelsal = (item.selsal && item.selsal?.length > 0) ? Number(weightOfSelsal) : 0
       console.log("🚀 ~ items ~ isSelsal:", isSelsal)
 
@@ -248,6 +254,7 @@ const SellingInvoiceData = ({
         vat: +totalTaxFromOneRow,
         total: +taklfaFromOneItem,
         kitSellingItems: item.itemDetails,
+        sel_cost: costOfSelsal || 0,
         selsal: item.selsal,
         has_selsal: item.has_selsal,
       };
