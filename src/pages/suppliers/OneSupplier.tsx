@@ -1,34 +1,34 @@
 /////////// IMPORTS
 ///
-import { t } from "i18next"
-import { Helmet } from "react-helmet-async"
-import { useNavigate, useParams } from "react-router-dom"
-import blankPerson from "../../assets/blank-person-image.png"
-import { Button } from "../../components/atoms"
+import { t } from "i18next";
+import { Helmet } from "react-helmet-async";
+import { useNavigate, useParams } from "react-router-dom";
+import blankPerson from "../../assets/blank-person-image.png";
+import { Button } from "../../components/atoms";
 import {
   InnerFormLayout,
   Modal,
   OuterFormLayout,
-} from "../../components/molecules"
-import { Loading } from "../../components/organisms/Loading"
-import { TextLine } from "../../components/templates/employee/TextLine"
-import { useFetch } from "../../hooks"
-import { formatDate } from "../../utils/date"
-import { useState } from "react"
-import { FilesPreviewOutFormik } from "../../components/molecules/files/FilesPreviewOutFormik"
-import { FaCity, FaHome } from "react-icons/fa"
-import { BiStreetView } from "react-icons/bi"
-import { TbHomeHand } from "react-icons/tb"
-import { AiOutlineFieldNumber } from "react-icons/ai"
-import { BsCalendarDate, BsMailbox } from "react-icons/bs"
-import { GrDocument, GrDocumentTest, GrDocumentText } from "react-icons/gr"
-import { MdEditDocument } from "react-icons/md"
+} from "../../components/molecules";
+import { Loading } from "../../components/organisms/Loading";
+import { TextLine } from "../../components/templates/employee/TextLine";
+import { useFetch } from "../../hooks";
+import { formatDate } from "../../utils/date";
+import { useState } from "react";
+import { FilesPreviewOutFormik } from "../../components/molecules/files/FilesPreviewOutFormik";
+import { FaCity, FaHome } from "react-icons/fa";
+import { BiStreetView } from "react-icons/bi";
+import { TbHomeHand } from "react-icons/tb";
+import { AiOutlineFieldNumber } from "react-icons/ai";
+import { BsCalendarDate, BsMailbox } from "react-icons/bs";
+import { GrDocument, GrDocumentTest, GrDocumentText } from "react-icons/gr";
+import { MdEditDocument } from "react-icons/md";
 ///
 /////////// Types
 ///
 type OneSupplierProps_TP = {
-  title?: string
-}
+  title?: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -36,8 +36,8 @@ type OneSupplierProps_TP = {
 export const OneSupplier = ({ title }: OneSupplierProps_TP) => {
   /////////// VARIABLES
   ///
-  const { supplierID } = useParams()
-  const navigate = useNavigate()
+  const { supplierID } = useParams();
+  const navigate = useNavigate();
   ///
 
   /////////// CUSTOM HOOKS
@@ -49,11 +49,11 @@ export const OneSupplier = ({ title }: OneSupplierProps_TP) => {
   } = useFetch<any>({
     endpoint: `supplier/api/v1/suppliers/${supplierID}`,
     queryKey: ["suppliers", supplierID!],
-  })
+  });
 
   /////////// STATES
   ///
-  const [documentOpen, setDocumentOpen] = useState(false)
+  const [documentOpen, setDocumentOpen] = useState(false);
 
   ///
   /////////// SIDE EFFECTS
@@ -68,7 +68,7 @@ export const OneSupplier = ({ title }: OneSupplierProps_TP) => {
         mainTitle={`${t("supplier data is loading")}`}
         subTitle={`${t("loading")}`}
       />
-    )
+    );
   ///
   return (
     <>
@@ -523,5 +523,5 @@ export const OneSupplier = ({ title }: OneSupplierProps_TP) => {
         </InnerFormLayout>
       </OuterFormLayout>
     </>
-  )
-}
+  );
+};

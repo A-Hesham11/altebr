@@ -25,7 +25,7 @@ export const HonestFinalScreen = ({
   sanadData,
   setStage,
 }: HonestFinalScreenProps_TP) => {
-  console.log("🚀 ~ sanadData:", sanadData.card)
+  console.log("🚀 ~ sanadData:", sanadData.card);
   /////////// VARIABLES
   const { userData } = useContext(authCtx);
   const { formatGram, formatReyal } = numberContext();
@@ -54,7 +54,7 @@ export const HonestFinalScreen = ({
     card: sanadData.card,
     items,
   };
-  console.log("🚀 ~ finalData:", finalData)
+  console.log("🚀 ~ finalData:", finalData);
   ///
   const Cols = useMemo<any>(
     () => [
@@ -74,7 +74,8 @@ export const HonestFinalScreen = ({
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
         accessorKey: "cost",
         header: () => <span>{t("approximate cost")}</span>,
       },
@@ -90,6 +91,7 @@ export const HonestFinalScreen = ({
             path: URL.createObjectURL(file),
             preview: URL.createObjectURL(file),
           }));
+
           return (
             <FilesPreviewOutFormik images={media || []} preview pdfs={[]} />
           );

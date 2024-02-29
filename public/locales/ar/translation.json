@@ -1220,5 +1220,11 @@
   "article step": "اسم الخطوة",
   "article title": "عنوان المقال",
   "article section": "اقسام المقال",
-  "steps": "الخطوات"
+  "steps": "الخطوات",
+  "add article": "اضافة مقال",
+  "level is added successfully": "تم اضافة المستوي بنجاح",
+  "article name in arabic": "اسم المقال بالعربي",
+  "article name in english": "اسم المقال بالانجليزي",
+  "steps in arabic": "الخطوات بالعربي",
+  "steps in english": "الخطوات بالانجليزي"
 }
