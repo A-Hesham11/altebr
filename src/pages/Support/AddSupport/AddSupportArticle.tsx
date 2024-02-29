@@ -4,9 +4,13 @@ import {
   Select,
   TextAreaField,
 } from "../../../components/molecules";
-import { IoMdAdd } from "react-icons/io";
+import { IoIosArrowDropup, IoMdAdd } from "react-icons/io";
 import { Button } from "../../../components/atoms";
-import { DeleteIcon, EditIcon } from "../../../components/atoms/icons";
+import {
+  DeleteIcon,
+  EditIcon,
+  ViewSvgIcon,
+} from "../../../components/atoms/icons";
 import SelectKarat from "../../../components/templates/reusableComponants/karats/select/SelectKarat";
 import SelectCategory from "../../../components/templates/reusableComponants/categories/select/SelectCategory";
 import { useMemo, useState } from "react";
@@ -20,12 +24,25 @@ import {
 } from "@tanstack/react-table";
 import { Selling_TP } from "../../selling/PaymentSellingPage";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
+import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { useIsRTL } from "../../../hooks";
+import { useFormikContext } from "formik";
+import { CLightbox } from "../../../components/molecules/files/CLightbox";
+import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
+import { FilesPreview } from "../../../components/molecules/files/FilesPreview";
+import { DropFile } from "../../../components/molecules/files/DropFile";
 
 interface AddSupportArticle_TP {
   supportArticleData: object[];
   dataSource: object[];
   setSupportArticleData: any;
   setDataSource: any;
+  stepFile: object[];
+  setStepFile: any;
+  articlesData: object[];
+  setArticlesData: any;
+  levelThreeOption: object;
 }
 
 const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({
@@ -35,26 +52,68 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({
   setDataSource,
   stepFile,
   setStepFile,
+  articlesData,
+  setArticlesData,
+  levelThreeOption,
 }) => {
+  console.log("🚀 ~ articlesData:", articlesData);
+  const isRTL = useIsRTL();
+  const [levelFourVisible, setLevelFourVisible] = useState(false);
+  const { values, setFieldValue } = useFormikContext();
+  console.log("🚀 ~ values:", values);
+
   const supportArticleColumns = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
       {
-        header: () => <span>{t("article name")} </span>,
-        accessorKey: "article_name",
+        header: () => <span>{t("article name in arabic")} </span>,
+        accessorKey: "name_ar",
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("steps")}</span>,
-        accessorKey: "step",
+        header: () => <span>{t("article name in english")} </span>,
+        accessorKey: "name_en",
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("attachment")}</span>,
-        accessorKey: "attachment",
+        header: () => <span>{t("steps in arabic")}</span>,
+        accessorKey: "step_ar",
         cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("steps in english")}</span>,
+        accessorKey: "step_en",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("actions")}</span>,
+        accessorKey: "actions_id",
+        cell: (info) => {
+          const media = info?.row?.original?.media?.map((file) => ({
+            id: info.row.id,
+            path: URL.createObjectURL(file),
+            preview: URL.createObjectURL(file),
+          }));
+
+          return (
+            <span className="flex items-center justify-center">
+              <DeleteIcon
+                size={16}
+                action={() => {
+                  const itemId = info.row.original.id;
+                  setArticlesData((curr) =>
+                    curr.filter((item) => item.id !== itemId)
+                  );
+                }}
+                className="!w-6 !h-6 ml-4"
+              />
+
+              <FilesPreviewOutFormik images={media || []} preview pdfs={[]} />
+            </span>
+          );
+        },
       },
     ],
-    []
+    [stepFile]
   );
 
   const table = useReactTable({
@@ -67,46 +126,147 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({
 
   return (
     <div>
-      <div className="mt-6">
+      <div
+        // className="mt-6 flex items-center justify-between bg-mainGreen/5 p-4 cursor-pointer rounded-lg"
+        className="mt-6"
+        // onClick={() => setLevelFourVisible((prev) => !prev)}
+      >
         <BaseInputField
           id="article_title"
           name="article_title"
-          className="w-60"
+          className="w-60 bg-mainDisabled"
           type="text"
-          label={`${t("article title")}`}
-          placeholder={`${t("article title")}`}
+          label={`${t("level four")}`}
+          disabled
+          placeholder={`${levelThreeOption.label}`}
           onChange={() => {}}
         />
+        {/* <h3 className="text-lg">{t("level four")}</h3>
+        <IoIosArrowDropup
+          className={`${levelFourVisible && "rotate-180"} text-2xl`}
+        /> */}
       </div>
 
       <div className="mt-10 p-6 bg-mainGreen/5 border border-mainGreen/10 flex flex-col gap-4 rounded-lg ">
         <h4 className="font-bold text-lg">{t("article section")}</h4>
 
-        <BaseInputField
-          id="article_name"
-          name="article_name"
-          className="w-60"
-          type="text"
-          label={`${t("article name")}`}
-          placeholder={`${t("article name")}`}
-          onChange={() => {}}
-        />
+        <div className="flex items-center gap-8 mb-4">
+          <BaseInputField
+            id="article_name_ar"
+            name="article_name_ar"
+            className="w-60"
+            type="text"
+            label={`${t("article name in arabic")}`}
+            placeholder={`${t("article name in arabic")}`}
+            onChange={() => {}}
+          />
+          <BaseInputField
+            id="article_name_en"
+            name="article_name_en"
+            className="w-60"
+            type="text"
+            label={`${t("article name in english")}`}
+            placeholder={`${t("article name in english")}`}
+            onChange={() => {}}
+          />
+        </div>
 
-        <TextAreaField
-          placeholder={`${t("type here")}`}
-          id="steps"
-          name="steps"
-          required
-          className=""
-          label={`${t("steps")}`}
-          // value={values?.desc}
-          rows={4}
-        />
+        <div className="flex items-center gap-8">
+          <TextAreaField
+            placeholder={`${t("type here")}`}
+            id="steps_ar"
+            name="steps_ar"
+            required
+            className=""
+            label={`${t("steps in arabic")}`}
+            // value={values?.desc}
+            rows={4}
+          />
+          <TextAreaField
+            placeholder={`${t("type here")}`}
+            id="steps_en"
+            name="steps_en"
+            required
+            className=""
+            label={`${t("steps in english")}`}
+            // value={values?.desc}
+            rows={4}
+          />
+        </div>
 
         <div className="w-44">
           <FilesUpload files={stepFile} setFiles={setStepFile} />
         </div>
+
+        <div className="flex items-center justify-end mt-8">
+          <Button
+            type="button"
+            className=""
+            action={() => {
+              setArticlesData((prev) => [
+                ...prev,
+                {
+                  id: crypto.randomUUID(),
+                  name_ar: values?.article_name_ar,
+                  name_en: values?.article_name_en,
+                  step_ar: values?.steps_ar,
+                  step_en: values?.steps_en,
+                  media: stepFile,
+                },
+              ]);
+
+              setFieldValue("article_name_ar", "");
+              setFieldValue("article_name_en", "");
+              setFieldValue("steps_ar", "");
+              setFieldValue("steps_en", "");
+              setStepFile([]);
+            }}
+          >
+            {t("add article")}
+          </Button>
+        </div>
       </div>
+
+      {articlesData.length !== 0 && (
+        <div className="mt-12">
+          <Table data={articlesData || []} columns={supportArticleColumns}>
+            {/* <div className="mt-3 flex items-center justify-center gap-5 p-2">
+          <div className="flex items-center gap-2 font-bold">
+            {t("page")}
+            <span className=" text-mainGreen">
+              {honestBondsData?.current_page}
+            </span>
+            {t("from")}
+            {<span className=" text-mainGreen">{honestBondsData?.total}</span>}
+          </div>
+          <div className="flex items-center gap-2 ">
+            <Button
+              className=" rounded bg-mainGreen p-[.18rem]"
+              action={() => setPage((prev) => prev - 1)}
+              disabled={page == 1}
+            >
+              {isRTL ? (
+                <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+              ) : (
+                <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+              )}
+            </Button>
+            <Button
+              className="rounded bg-mainGreen p-[.18rem]"
+              action={() => setPage((prev) => prev + 1)}
+              disabled={page == honestBondsData?.pages}
+            >
+              {isRTL ? (
+                <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+              ) : (
+                <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+              )}
+            </Button>
+          </div>
+        </div> */}
+          </Table>
+        </div>
+      )}
 
       {/* <table className="mt-8 ">
         <thead className="bg-mainGreen text-white">
