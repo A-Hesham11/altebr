@@ -34,29 +34,26 @@ import { FilesPreview } from "../../../components/molecules/files/FilesPreview";
 import { DropFile } from "../../../components/molecules/files/DropFile";
 
 interface AddSupportArticle_TP {
-  supportArticleData: object[];
   dataSource: object[];
-  setSupportArticleData: any;
   setDataSource: any;
   stepFile: object[];
   setStepFile: any;
   articlesData: object[];
   setArticlesData: any;
   levelThreeOption: object;
+  editData: any;
+  imagePreview: object[];
 }
 
 const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({
-  supportArticleData,
-  dataSource,
-  setSupportArticleData,
-  setDataSource,
   stepFile,
   setStepFile,
   articlesData,
   setArticlesData,
   levelThreeOption,
+  editData,
+  imagePreview,
 }) => {
-  console.log("🚀 ~ articlesData:", articlesData);
   const isRTL = useIsRTL();
   const [levelFourVisible, setLevelFourVisible] = useState(false);
   const { values, setFieldValue } = useFormikContext();
@@ -77,12 +74,30 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({
       {
         header: () => <span>{t("steps in arabic")}</span>,
         accessorKey: "step_ar",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => {
+          const step = info.getValue().split("\n");
+          return (
+            <ol className="space-y-1 list-disc list-inside">
+              {step.map((el) => (
+                <li key={el}>{el}</li>
+              ))}
+            </ol>
+          );
+        },
       },
       {
         header: () => <span>{t("steps in english")}</span>,
         accessorKey: "step_en",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => {
+          const step = info.getValue().split("\n");
+          return (
+            <ol className="space-y-1 list-disc list-inside">
+              {step.map((el) => (
+                <li key={el}>{el}</li>
+              ))}
+            </ol>
+          );
+        },
       },
       {
         header: () => <span>{t("actions")}</span>,
@@ -116,14 +131,6 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({
     [stepFile]
   );
 
-  const table = useReactTable({
-    data: supportArticleData,
-    columns: supportArticleColumns,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
-
   return (
     <div>
       <div
@@ -136,7 +143,7 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({
           name="article_title"
           className="w-60 bg-mainDisabled"
           type="text"
-          label={`${t("level four")}`}
+          label={`${t("article title")}`}
           disabled
           placeholder={`${levelThreeOption.label}`}
           onChange={() => {}}
@@ -179,8 +186,8 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({
             required
             className=""
             label={`${t("steps in arabic")}`}
-            // value={values?.desc}
             rows={4}
+            value={values?.steps_ar}
           />
           <TextAreaField
             placeholder={`${t("type here")}`}
@@ -189,13 +196,17 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({
             required
             className=""
             label={`${t("steps in english")}`}
-            // value={values?.desc}
+            value={values?.steps_en}
             rows={4}
           />
         </div>
 
         <div className="w-44">
-          <FilesUpload files={stepFile} setFiles={setStepFile} />
+          {editData ? (
+            <FilesPreview preview images={[...imagePreview] || []} pdfs={[]} />
+          ) : (
+            <FilesUpload files={stepFile} setFiles={setStepFile} />
+          )}
         </div>
 
         <div className="flex items-center justify-end mt-8">

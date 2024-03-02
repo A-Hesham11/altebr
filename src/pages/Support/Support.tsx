@@ -1,9 +1,9 @@
 import { Formik } from "formik";
 import { t } from "i18next";
 import SupportSearch from "./SupportSearch";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SubCategorySection from "./UI/SubCategorySection";
-import { useFetch } from "../../hooks";
+import { useFetch, useIsRTL } from "../../hooks";
 import { Loading } from "../../components/organisms/Loading";
 import { Button } from "../../components/atoms";
 import { useNavigate } from "react-router-dom";
@@ -15,12 +15,14 @@ import { GrNext, GrPrevious } from "react-icons/gr";
 const Support = ({ title }: { title: string }) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [categoryActiveId, setCategoryActiveId] = useState(1);
+  console.log("🚀 ~ Support ~ categoryActiveId:", categoryActiveId);
   const [support, setSupport] = useState([]);
   console.log("🚀 ~ Support ~ support:", support);
   const [searchOption, setSearchOption] = useState([]);
   const navigate = useNavigate();
   const [supportModal, setSupportModal] = useState(false);
   const [showSupportModal, setShowSupportModal] = useState(false);
+  const isRTL = useIsRTL();
 
   const handleSelectedOption = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategoryActiveId(e.id);
@@ -30,6 +32,7 @@ const Support = ({ title }: { title: string }) => {
     search: "",
   };
 
+  // LEVEL ONE DATA
   const {
     data: supportData,
     refetch: supportDataRefetch,
@@ -37,23 +40,38 @@ const Support = ({ title }: { title: string }) => {
     isLoading,
     isRefetching,
   } = useFetch({
-    endpoint: `/attachment/api/v1/categories`,
+    endpoint: `/support/api/v1/catSupport`,
     queryKey: ["support-data"],
     onSuccess(data: any) {
       setSupport(data);
 
       const selectedOptions = data?.map((el: any) => ({
         id: el.id,
-        label: el.name,
-        value: el.name,
+        label: el.name_ar,
+        value: el.name_ar,
       }));
 
       setSearchOption(selectedOptions);
     },
   });
 
+  // LEVEL TWO DATA
+  const {
+    data: levelTwoData,
+    refetch: levelTwoDataRefetch,
+    isFetching: levelTwoIsFetching,
+    isLoading: levelTwoIsLoading,
+    isRefetching: levelTwoRefetching,
+  } = useFetch({
+    endpoint: `/support/api/v1/levelTwoSupport/${categoryActiveId}`,
+    queryKey: ["level-two-data", categoryActiveId],
+    onSuccess(data: any) {
+      console.log(data);
+    },
+  });
+  console.log("🚀 ~ Support ~ levelTwoData:", levelTwoData);
+
   const targetCategory = support?.find((el: any) => el.id == categoryActiveId);
-  console.log("🚀 ~ Support ~ targetCategory:", targetCategory);
 
   const sliderSettings = {
     className: "center",
@@ -81,7 +99,7 @@ const Support = ({ title }: { title: string }) => {
           <>
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-slate-700">{title}</h2>
-              <div className="flex items-center gap-3">
+              {/* <div className="flex items-center gap-3">
                 <Button
                   action={() => {
                     setShowSupportModal(true);
@@ -96,7 +114,7 @@ const Support = ({ title }: { title: string }) => {
                 >
                   {t("add")}
                 </Button>
-              </div>
+              </div> */}
             </div>
 
             <SupportSearch
@@ -120,53 +138,29 @@ const Support = ({ title }: { title: string }) => {
                   >
                     <div className="flex flex-col justify-center items-center gap-2 h-full">
                       <img
-                        src={searchBox.image}
+                        src={searchBox.images[0].preview}
                         alt={searchBox.name_ar}
                         className="w-10 h-10"
                       />
 
                       <p className={`text-mainGreen font-bold`}>
-                        {searchBox.name_ar}
+                        {isRTL ? searchBox.name_ar : searchBox.name_en}
                       </p>
                     </div>
                   </div>
                 );
               })}
             </Slider>
-            {/* <div className="my-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-              {support?.map((searchBox: any) => {
-                return (
-                  <div
-                    key={searchBox.id}
-                    onClick={() => setCategoryActiveId(searchBox.id)}
-                    className={`flex flex-col items-center gap-4 rounded-xl cursor-pointer ${
-                      searchBox.id === categoryActiveId
-                        ? "border-2 border-mainGreen "
-                        : "bg-mainGreen/5 border-2 border-mainGreen/10 "
-                    } justify-center  h-32`}
-                  >
-                    <img
-                      src={searchBox.image}
-                      alt={searchBox.name}
-                      className="w-10 h-10"
-                    />
-
-                    <p className={`text-mainGreen font-bold`}>
-                      {searchBox.name}
-                    </p>
-                  </div>
-                );
-              })}
-            </div> */}
 
             {/* SEARCH SUBCATEGORY */}
             <div className="mb-12">
-              <h3 className="text-xl mb-6">{targetCategory?.name_ar}</h3>
+              <h3 className="text-xl mb-6">
+                {levelTwoData && levelTwoData[0]?.cat_support_name}
+              </h3>
 
               <div>
-                {support &&
-                  targetCategory?.children?.map((item: any) => {
-                    console.log(item);
+                {levelTwoData &&
+                  levelTwoData?.map((item: any) => {
                     return <SubCategorySection {...item} />;
                   })}
               </div>
