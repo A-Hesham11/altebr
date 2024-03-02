@@ -2,6 +2,7 @@ import { t } from "i18next";
 import React, { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { useIsRTL } from "../../../hooks";
 
 type Props = {
   id: string;
@@ -17,13 +18,15 @@ type Props = {
 
 const SubCategorySection: React.FC<Props> = ({
   id,
-  image,
+  images,
   name_ar,
+  name_en,
   desc,
   links,
 }) => {
   console.log("🚀 ~ id:", id);
   const [subIsOpen, setSubIsOpen] = useState(false);
+  const isRTL = useIsRTL();
 
   const handleSubOpen = () => setSubIsOpen((prev) => !prev);
 
@@ -35,8 +38,12 @@ const SubCategorySection: React.FC<Props> = ({
           subIsOpen ? "text-mainGreen" : ""
         }`}
       >
-        <img src={image} alt="Sub Category Image" className="fill-mainGreen" />
-        <p className="font-bold">{t(`${name_ar}`)}</p>
+        <img
+          src={images[0].preview}
+          alt="Sub Category Image"
+          className="fill-mainGreen"
+        />
+        <p className="font-bold">{t(`${isRTL ? name_ar : name_en}`)}</p>
         <IoIosArrowDown
           className={`${
             subIsOpen ? "rotate-180 transition-all duration-300" : ""

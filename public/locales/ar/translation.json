@@ -1181,7 +1181,7 @@
   "the amount of payment is greater than the value of the invoice": "مبلغ الدفع اكبر من قيمة الفاتورة",
   "work hours": "ساعات العمل",
   "Salary policies": "الرواتب",
-  "?how can we help you": "كيف يمكننا مساعدتك",
+  "how can we help you": "كيف يمكننا مساعدتك",
   "search here to get answers to your questions": "ابحث هنا للحصول على إجابات لأسئلتك",
   "search here": "ابحث هنا",
   "helper center": "مركز المساعده",
@@ -1226,5 +1226,7 @@
   "article name in arabic": "اسم المقال بالعربي",
   "article name in english": "اسم المقال بالانجليزي",
   "steps in arabic": "الخطوات بالعربي",
-  "steps in english": "الخطوات بالانجليزي"
+  "steps in english": "الخطوات بالانجليزي",
+  "level": "المستوي",
+  "view levels": "عرض المستويات"
 }
