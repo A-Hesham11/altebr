@@ -277,7 +277,7 @@ export const SellingBranchIdentity = () => {
                                 <SelectClassification
                                     name="classification_id"
                                     field="id"
-                                    label={`${t('classification')}`}
+                                    label={`${t('category')}`}
                                 />
                             </div>
                             <Button type="submit" disabled={isRefetching} className="flex h-[38px] mr-auto">
