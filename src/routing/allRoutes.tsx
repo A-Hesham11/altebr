@@ -134,6 +134,8 @@ import AddSupport from "../pages/Support/AddSupport/AddSupport";
 import ViewMainSupport from "../pages/Support/viewSupport/ViewMainSupport";
 import ViewSubSupport from "../pages/Support/viewSupport/ViewSubSupport";
 import ViewSupport from "../pages/Support/viewSupport/ViewSupport";
+import AddSupportArticle from "../pages/Support/AddSupport/AddSupportArticle";
+import ViewSupportArticle from "../pages/Support/viewSupport/ViewSupportArticle";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -226,6 +228,9 @@ export const AllRoutesProvider = () => {
 
           <Route path="/addSupport" element={<AddSupport />} />
           <Route path="/viewSupport" element={<ViewSupport />} />
+
+          <Route path="/addSupportArticle" element={<AddSupportArticle />} />
+          <Route path="/viewSupportArticle" element={<ViewSupportArticle />} />
           {/* END SUPPORT */}
 
           <Route

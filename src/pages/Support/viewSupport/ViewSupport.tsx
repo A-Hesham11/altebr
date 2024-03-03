@@ -241,74 +241,6 @@ const ViewSupport = () => {
     []
   );
 
-  // LEVEL FOUR COLUMNS
-  const levelFourColumns = useMemo<ColumnDef<Cards_Props_TP>[]>(
-    () => [
-      {
-        header: () => <span>{t("Sequence")} </span>,
-        accessorKey: "index",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("level one")} </span>,
-        accessorKey: "cat_support_name",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("level two")} </span>,
-        accessorKey: "level_two_support_name",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("name in arabic")} </span>,
-        accessorKey: "name_ar",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("name in english")} </span>,
-        accessorKey: "name_en",
-        cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("actions")}</span>,
-        accessorKey: "action",
-        cell: (info) => {
-          const imagePreview = info?.row?.original?.images?.map((image) => ({
-            preview: image.preview,
-            path: image.preview,
-            type: "image",
-          }));
-
-          return (
-            <div className="flex items-center justify-center gap-4">
-              <EditIcon
-                action={() => {
-                  setOpen((prev) => !prev);
-                  setEditData(info.row.original);
-                  setAction({
-                    edit: true,
-                    delete: false,
-                    view: false,
-                  });
-                  setModel(false);
-                }}
-                className="fill-mainGreen"
-              />
-              {info?.row?.original?.images && (
-                <FilesPreview
-                  preview
-                  images={[...imagePreview] || []}
-                  pdfs={[]}
-                />
-              )}
-            </div>
-          );
-        },
-      },
-    ],
-    []
-  );
-
   const {
     data,
     isSuccess,
@@ -402,11 +334,11 @@ const ViewSupport = () => {
                       label={t("level three")}
                       id="3"
                     />
-                    <RadioGroup.RadioButton
+                    {/* <RadioGroup.RadioButton
                       value="4"
                       label={t("level four")}
                       id="4"
-                    />
+                    /> */}
                   </RadioGroup>
                 </div>
 

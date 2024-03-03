@@ -28,10 +28,9 @@ const SupportSearch: React.FC<Props> = () => {
     isLoading,
     isRefetching,
   } = useFetch({
-    endpoint: `/attachment/api/v1/search?query=${searchWord.trim()}`,
+    endpoint: `/support/api/v1/search?query=${searchWord.trim()}`,
     queryKey: ["search-data"],
   });
-  console.log("🚀 ~ searchResult:", searchResult);
 
   useEffect(() => {
     searchResultRefetch();

@@ -15,9 +15,7 @@ import { GrNext, GrPrevious } from "react-icons/gr";
 const Support = ({ title }: { title: string }) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [categoryActiveId, setCategoryActiveId] = useState(1);
-  console.log("🚀 ~ Support ~ categoryActiveId:", categoryActiveId);
   const [support, setSupport] = useState([]);
-  console.log("🚀 ~ Support ~ support:", support);
   const [searchOption, setSearchOption] = useState([]);
   const navigate = useNavigate();
   const [supportModal, setSupportModal] = useState(false);
@@ -69,9 +67,6 @@ const Support = ({ title }: { title: string }) => {
       console.log(data);
     },
   });
-  console.log("🚀 ~ Support ~ levelTwoData:", levelTwoData);
-
-  const targetCategory = support?.find((el: any) => el.id == categoryActiveId);
 
   const sliderSettings = {
     className: "center",
@@ -125,7 +120,7 @@ const Support = ({ title }: { title: string }) => {
 
             {/* SEARCH CATEGORY */}
             <Slider {...sliderSettings}>
-              {support?.map((searchBox: any) => {
+              {support?.reverse()?.map((searchBox: any) => {
                 return (
                   <div
                     key={searchBox.id}
@@ -167,12 +162,12 @@ const Support = ({ title }: { title: string }) => {
             </div>
 
             {/* ADD MODAL */}
-            <Modal isOpen={supportModal} onClose={() => setSupportModal(false)}>
+            {/* <Modal isOpen={supportModal} onClose={() => setSupportModal(false)}>
               <AddSupport />
-            </Modal>
+            </Modal> */}
 
             {/* SHOW MODAL */}
-            <Modal
+            {/* <Modal
               maxWidth="max-w-xl"
               isOpen={showSupportModal}
               onClose={() => setShowSupportModal(false)}
@@ -185,7 +180,7 @@ const Support = ({ title }: { title: string }) => {
                   {t("view sub section")}
                 </Button>
               </div>
-            </Modal>
+            </Modal> */}
           </>
         );
       }}

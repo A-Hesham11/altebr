@@ -225,15 +225,41 @@ export const sideBarItems: MenuItem_TP[] = [
       },
       {
         id: crypto.randomUUID(),
-        label: "add",
-        link: "/addSupport",
-        icon: BsQuestionSquare,
+        label: "level management",
+        icon: CiExport,
+        items: [
+          {
+            id: crypto.randomUUID(),
+            label: "add",
+            link: "/addSupport",
+            icon: BsQuestionSquare,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: "view",
+            link: "/viewSupport",
+            icon: BsQuestionSquare,
+          },
+        ],
       },
       {
         id: crypto.randomUUID(),
-        label: "view",
-        link: "/viewSupport",
-        icon: BsQuestionSquare,
+        label: "article management",
+        icon: CiExport,
+        items: [
+          {
+            id: crypto.randomUUID(),
+            label: "add",
+            link: "/addSupportArticle",
+            icon: BsQuestionSquare,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: "view",
+            link: "/viewSupportArticle",
+            icon: BsQuestionSquare,
+          },
+        ],
       },
     ],
   },
