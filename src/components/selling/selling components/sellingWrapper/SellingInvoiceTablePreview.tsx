@@ -14,7 +14,7 @@ type Entry_TP = {
 };
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ item:", item);
+  
   const { formatGram, formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE
@@ -44,7 +44,12 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "---",
+        cell: (info: any) => {
+          return (
+            Number(info.getValue() + Number(info.row.original.sel_weight)) ||
+            "---"
+          );
+        },
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },

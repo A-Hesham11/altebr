@@ -49,6 +49,7 @@ const AddSellingInvoice = () => {
         wage:"",
         taklfa: "",
         wage_total:"",
+        category_type:"",
         weightitems:[],
 
         client_id:  "",
