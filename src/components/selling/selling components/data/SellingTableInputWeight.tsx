@@ -75,7 +75,8 @@ const SellingTableInputWeight = ({
   const weightItem =
     values?.weightitems?.length > 0
       ? Number(calcselectedItemDetails)
-      : Number(values.remaining_weight);
+      : values.category_selling_type === "all" ? (Number(values.sel_weight) - Number(values.remaining_weight)) :  Number(values.remaining_weight);
+      console.log("🚀 ~ weightItem:", weightItem)
 
   const costItem =
     values?.classification_id === 1
@@ -215,6 +216,7 @@ const SellingTableInputWeight = ({
     acc += +item.weight;
     return acc;
   }, 0);
+  console.log("🚀 ~ calcOfSelsalWeight ~ calcOfSelsalWeight:", calcOfSelsalWeight)
 
   const calcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
     acc += +item.cost;

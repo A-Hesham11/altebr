@@ -25,6 +25,7 @@ import { DeleteIcon, EditIcon } from "../../../atoms/icons";
 import { Header } from "../../../atoms/Header";
 import SellingTableInputWeight from "./SellingTableInputWeight";
 import { HiViewGridAdd } from "react-icons/hi";
+import { CLightbox } from "../../../molecules/files/CLightbox";
 
 type SellingTableInputData_TP = {
   dataSource: any;
@@ -473,13 +474,13 @@ export const SellingTableInputData = ({
                 }}
                 className={`${
                   (!isSuccess ||
-                    values.category_selling_type !== "all" ||
+                    (values.category_selling_type !== "all") ||
                     values?.weight === 0) &&
                   "bg-mainDisabled"
                 } text-center`}
                 disabled={
                   !isSuccess ||
-                  values.category_selling_type !== "all" ||
+                  (values.category_selling_type !== "all" ) ||
                   values?.weight === 0
                 }
               />
@@ -966,6 +967,7 @@ export const SellingTableInputData = ({
           />
         </div>
       </Modal>
+
     </Form>
   );
 };
