@@ -1228,5 +1228,8 @@
   "steps in arabic": "الخطوات بالعربي",
   "steps in english": "الخطوات بالانجليزي",
   "level": "المستوي",
-  "view levels": "عرض المستويات"
+  "view levels": "عرض المستويات",
+  "level management": "ادارة المستويات",
+  "article management": "ادارة المقالات",
+  "view article": "عرض المقالات"
 }

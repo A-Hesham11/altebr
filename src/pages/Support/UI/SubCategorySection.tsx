@@ -6,10 +6,11 @@ import { useIsRTL } from "../../../hooks";
 
 type Props = {
   id: string;
-  image: JSX.Element;
-  name: string;
+  images: JSX.Element;
+  name_ar: string;
+  name_en: string;
   desc: string;
-  links: {
+  LevelThird: {
     id: number;
     text: string;
     link: string;
@@ -22,7 +23,7 @@ const SubCategorySection: React.FC<Props> = ({
   name_ar,
   name_en,
   desc,
-  links,
+  LevelThird,
 }) => {
   console.log("🚀 ~ id:", id);
   const [subIsOpen, setSubIsOpen] = useState(false);
@@ -56,10 +57,12 @@ const SubCategorySection: React.FC<Props> = ({
           <p className="mx-5 text-black/70">{desc}</p>
 
           <ul className="flex flex-wrap items-center gap-14 mt-8 mx-9 list-disc">
-            {links?.map((li: any) => {
+            {LevelThird?.map((li: any) => {
               return (
                 <li className="font-bold" key={li.id}>
-                  <Link to={`/supportLinks/${li.id}`}>{li.name_ar}</Link>
+                  <Link to={`/supportLinks/${li.id}`}>
+                    {isRTL ? li.name_ar : li.name_en}
+                  </Link>
                 </li>
               );
             })}

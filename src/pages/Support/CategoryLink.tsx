@@ -1,10 +1,11 @@
 import { Link, useNavigate, useNavigation, useParams } from "react-router-dom";
-import { useFetch } from "../../hooks";
+import { useFetch, useIsRTL } from "../../hooks";
 import { useEffect, useState } from "react";
 import { t } from "i18next";
 import { Loading } from "../../components/organisms/Loading";
 import { Back } from "../../utils/utils-components/Back";
 import { MdKeyboardArrowLeft } from "react-icons/md";
+import { GrNext, GrPrevious } from "react-icons/gr";
 
 function hashId(id: string | number) {
   return `${crypto.randomUUID()}${id}${crypto.randomUUID()}`;
@@ -13,9 +14,8 @@ function hashId(id: string | number) {
 const CategoryLink = () => {
   const supportIdParam = useParams().supportId;
   const navigate = useNavigate();
-  console.log("🚀 ~ CategoryLink ~ supportIdParam:", supportIdParam);
   const [supportCategoryData, setSupportCategoryData] = useState(null);
-  console.log("🚀 ~ CategoryLink ~ supportCategoryData:", supportCategoryData);
+  const isRTL = useIsRTL();
 
   // useEffect(() => {
   //   const id = hashId(supportIdParam);
@@ -29,7 +29,7 @@ const CategoryLink = () => {
     isLoading,
     isRefetching,
   } = useFetch({
-    endpoint: `/attachment/api/v1/categories/${supportIdParam}`,
+    endpoint: `/support/api/v1/levelFourthSupport/${supportIdParam}`,
     queryKey: ["support-data"],
     onSuccess(data) {
       setSupportCategoryData(data);
@@ -48,15 +48,18 @@ const CategoryLink = () => {
             {t("helper center")}
           </Link>
           <MdKeyboardArrowLeft />
-          <p className="font-bold">{supportCategoryData[0]?.parent}</p>
+          <p className="font-bold text-[#7D7D7D]">
+            {supportCategoryData?.level_third_support_name}
+          </p>
         </div>
         <Back />
       </div>
       <div>
         {supportCategoryData &&
           supportCategoryData?.map((category: any, categoryIndex: any) => {
-            const steps = category?.ck?.split("\r\n");
-            console.log("🚀 ~ CategoryLink ~ steps:", steps);
+            const steps = isRTL
+              ? category?.desc_ar?.split("\n")
+              : category?.desc_en?.split("\n");
 
             return (
               <div key={categoryIndex}>
@@ -73,7 +76,7 @@ const CategoryLink = () => {
                     return <li key={index}>{step}</li>;
                   })}
                 </dl>
-                <img src={category.image} alt={category.name_ar} />
+                <img src={category.images[0]?.preview} alt={category.name_ar} />
               </div>
             );
           })}

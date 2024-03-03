@@ -64,7 +64,6 @@ const AddSupport: React.FC<AddSupport_TP> = ({
   const [supportArticleData, setSupportArticleData] = useState([]);
   const [dataSource, setDataSource] = useState([]);
   const [articlesData, setArticlesData] = useState([]);
-  console.log("🚀 ~ AddSupport ~ articlesData:", articlesData);
   const [levelOneId, setLevelOneId] = useState(null);
   const [levelTwoId, setLevelTwoId] = useState(null);
   const [levelThreeId, setLevelThreeId] = useState(null);
@@ -82,7 +81,7 @@ const AddSupport: React.FC<AddSupport_TP> = ({
   const initialValues: InitialValues = {
     level_one_id: editData?.cat_support_id || "",
     level_two_id: editData?.level_two_support_id || "",
-    level_three_id: editData?.level_three_id || "",
+    level_three_id: editData?.level_third_support_id || "",
     level_four_id: editData?.level_four_id || "",
     level_one_name_ar: editData?.name_ar || "",
     level_one_name_en: editData?.name_en || "",
@@ -93,11 +92,11 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     level_four_name_ar: editData?.name_ar || "",
     level_four_name_en: editData?.name_en || "",
     level_two_desc: editData?.desc || "",
-    steps_ar: editData?.steps_ar || "",
-    steps_en: editData?.steps_en || "",
-    article_name_ar: editData?.article_name_ar || "",
-    article_name_en: editData?.article_name_en || "",
-    article_title: editData?.article_title || "",
+    steps_ar: editData?.desc_ar || "",
+    steps_en: editData?.desc_en || "",
+    article_name_ar: editData?.name_ar || "",
+    article_name_en: editData?.name_en || "",
+    article_title: editData?.level_third_support_name || "",
   };
 
   useEffect(() => {
@@ -234,25 +233,27 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     console.log({ ...invoice });
   };
 
-  // LEVEL FOUR HANDLE ADD
-  const postLevelFourHandler = (values: any) => {
-    const invoice = articlesData?.map((article: any) => {
-      return {
-        name_ar: article.name_ar,
-        name_en: article.name_en,
-        desc_ar: article.step_ar,
-        desc_en: article.step_en,
-        level_third_support_id: values.level_three_id,
-        media: article.media,
-      };
-    });
+  // // LEVEL FOUR HANDLE ADD
+  // const postLevelFourHandler = (values: any) => {
+  //   const invoice = articlesData?.map((article: any) => {
+  //     return {
+  //       name_ar: article.name_ar,
+  //       name_en: article.name_en,
+  //       desc_ar: article.step_ar,
+  //       desc_en: article.step_en,
+  //       cat_support_id: values.level_one_id,
+  //       level_two_support_id: values.level_two_id,
+  //       level_third_support_id: values.level_three_id,
+  //       media: article.media,
+  //     };
+  //   });
 
-    mutate({
-      endpointName: "/support/api/v1/levelFourthSupport",
-      values: { items: invoice },
-      dataType: "formData",
-    });
-  };
+  //   mutate({
+  //     endpointName: "/support/api/v1/levelFourthSupport",
+  //     values: { items: invoice },
+  //     dataType: "formData",
+  //   });
+  // };
 
   // LEVEL ONE HANDLE EDIT
   const PostLevelOneEdit = (values: any) => {
@@ -298,7 +299,7 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     };
 
     mutate({
-      endpointName: `/support/api/v1/levelTwoSupport/${editData?.id}`,
+      endpointName: `/support/api/v1/levelThirdSupport/${editData?.id}`,
       values: {
         ...invoice,
         _method: "put",
@@ -306,23 +307,26 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     });
   };
 
-  // LEVEL FOUR HANDLE EDIT
-  const PostLevelFourEdit = (values: any) => {
-    const invoice = {
-      name_ar: values.level_three_name_ar,
-      name_en: values.level_three_name_en,
-      cat_support_id: values.level_one_id,
-      level_two_support_id: values.level_two_id,
-    };
+  // // LEVEL FOUR HANDLE EDIT
+  // const PostLevelFourEdit = (values: any) => {
+  //   const invoice = {
+  //     name_ar: values?.article_name_ar,
+  //     name_en: values?.article_name_en,
+  //     desc_ar: values?.steps_ar,
+  //     desc_en: values?.steps_en,
+  //     cat_support_id: values.level_one_id,
+  //     level_two_support_id: values.level_two_id,
+  //     level_third_support_id: values.level_three_id,
+  //   };
 
-    mutate({
-      endpointName: `/support/api/v1/levelTwoSupport/${editData?.id}`,
-      values: {
-        ...invoice,
-        _method: "put",
-      },
-    });
-  };
+  //   mutate({
+  //     endpointName: `/support/api/v1/levelFourthSupport/${editData?.id}`,
+  //     values: {
+  //       ...invoice,
+  //       _method: "put",
+  //     },
+  //   });
+  // };
 
   // const handleDelete = () => {
   //   mutate({
@@ -355,9 +359,9 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     setLevelTwoSelectEdit(levelTwoSelecet);
 
     const levelThreeSelecet = {
-      id: editData?.level_two_support_id || "",
-      value: editData?.level_two_support_name || "",
-      label: editData?.level_two_support_name || `${t("level three")}`,
+      id: editData?.level_third_support_id || "",
+      value: editData?.level_third_support_name || "",
+      label: editData?.level_third_support_name || `${t("level three")}`,
     };
     setLevelThreeSelectEdit(levelThreeSelecet);
   }, []);
@@ -398,8 +402,10 @@ const AddSupport: React.FC<AddSupport_TP> = ({
                     options={levelOneOption}
                     fieldKey="id"
                     loading={levelOneIsLoading}
+                    value={levelOneSelectEdit}
                     onChange={(option) => {
                       setLevelOneId(option!.id);
+                      setLevelOneSelectEdit(option);
                     }}
                   />
                   <button
@@ -425,8 +431,10 @@ const AddSupport: React.FC<AddSupport_TP> = ({
                     fieldKey="id"
                     isDisabled={levelTwoIsFetching}
                     loading={levelTwoIsLoading}
+                    value={levelTwoSelectEdit}
                     onChange={(option) => {
                       setLevelTwoId(option!.id);
+                      setLevelTwoSelectEdit(option);
                     }}
                   />
                   <button
@@ -452,8 +460,10 @@ const AddSupport: React.FC<AddSupport_TP> = ({
                     isDisabled={levelThreeIsFetching}
                     fieldKey="id"
                     loading={levelThreeIsLoading}
+                    value={levelThreeSelectEdit}
                     onChange={(option) => {
                       setLevelThreeId(option);
+                      setLevelThreeSelectEdit(option);
                     }}
                   />
                   <button
@@ -494,7 +504,7 @@ const AddSupport: React.FC<AddSupport_TP> = ({
             </div>
 
             {/* ARTICLE */}
-            {levelThreeId && (
+            {/* {(levelThreeId || (editData && levelType == "4")) && (
               <AddSupportArticle
                 editData={editData}
                 stepFile={stepFile}
@@ -504,21 +514,7 @@ const AddSupport: React.FC<AddSupport_TP> = ({
                 levelThreeOption={levelThreeId}
                 imagePreview={imagePreview}
               />
-            )}
-
-            <div className="flex items-center justify-end mt-8">
-              <Button
-                type="submit"
-                className=""
-                loading={postIsLoading}
-                action={() => {
-                  postLevelFourHandler(values);
-                  setArticlesData([]);
-                }}
-              >
-                {t("save")}
-              </Button>
-            </div>
+            )} */}
 
             {levelOneModal && (
               <Modal

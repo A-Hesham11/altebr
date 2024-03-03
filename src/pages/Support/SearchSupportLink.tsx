@@ -5,12 +5,12 @@ import { useState } from "react";
 import { t } from "i18next";
 import { Back } from "../../utils/utils-components/Back";
 import { MdKeyboardArrowLeft } from "react-icons/md";
+import Slider from "react-slick";
+import { GrNext, GrPrevious } from "react-icons/gr";
 
 const SearchSupportLink = () => {
   const searchParamId = useParams().searchLinksId;
-  console.log("🚀 ~ SearchSupportLink ~ searchParamId:", searchParamId);
   const [searchData, setSearchData] = useState(null);
-  console.log("🚀 ~ SearchSupportLink ~ searchData:", searchData);
   const isRTL = useIsRTL();
 
   const {
@@ -20,12 +20,22 @@ const SearchSupportLink = () => {
     isLoading,
     isRefetching,
   } = useFetch({
-    endpoint: `/attachment/api/v1/searchshow/${searchParamId}`,
+    endpoint: `/support/api/v1/searchshow/${searchParamId}`,
     queryKey: ["search-show"],
     onSuccess(data) {
       setSearchData(data);
     },
   });
+
+  const sliderSettings = {
+    className: "center",
+    centerMode: true,
+    centerPadding: "60px",
+    slidesToShow: 1,
+    speed: 500,
+    nextArrow: <GrNext size={30} />,
+    prevArrow: <GrPrevious size={30} />,
+  };
 
   // LOADING ....
   if (isLoading || isRefetching || isFetching)
@@ -39,7 +49,9 @@ const SearchSupportLink = () => {
             {t("helper center")}
           </Link>
           <MdKeyboardArrowLeft />
-          <p className="font-bold">{searchData?.parent}</p>
+          <p className="font-bold text-[#7D7D7D]">
+            {searchData?.level_third_support_name}
+          </p>
         </div>
         <Back />
       </div>
@@ -48,10 +60,11 @@ const SearchSupportLink = () => {
           <div className="flex items-center gap-2 my-8">
             <h2>{isRTL ? searchData?.name_ar : searchData?.name_en}</h2>
           </div>
-          <img
-            src={searchData?.image}
-            alt={isRTL ? searchData?.name_ar : searchData?.name_en}
-          />
+          <Slider {...sliderSettings}>
+            {searchData?.images?.map((searchBox: any) => {
+              return <img src={searchBox?.preview} alt="leve four" />;
+            })}
+          </Slider>
         </div>
       </div>
     </div>
