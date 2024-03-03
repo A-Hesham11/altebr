@@ -222,6 +222,8 @@ const SellingInvoiceData = ({
         acc += +item.weight;
         return acc;
       }, 0);
+      console.log("🚀 ~ weightOfSelsal ~ weightOfSelsal:", weightOfSelsal)
+
 
       const costOfSelsal = item.selsal?.reduce((acc, item) => {
         acc += +item.cost;
@@ -255,25 +257,13 @@ const SellingInvoiceData = ({
         total: +taklfaFromOneItem,
         kitSellingItems: item.itemDetails,
         sel_cost: costOfSelsal || 0,
+        sel_weight: weightOfSelsal || 0,
         selsal: item.selsal,
         has_selsal: item.has_selsal,
       };
     });
-    // const card = paymentData.reduce((acc, curr) => {
-    //   acc[curr.sellingFrontKey] =
-    //     Number(curr.amount) * Number(curr.discount_percentage / 100) +
-    //     +curr.amount +
-    //     Number(curr.commission_tax);
-    //   return acc;
-    // }, {});
     const card = paymentData.reduce((acc, curr) => {
       console.log("🚀 ~ card ~ curr:", curr);
-      // const maxDiscountOrNOt =
-      //   curr.max_discount_limit_value
-      //     ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
-      //     : (Number(curr.amount) * Number(curr.discount_percentage / 100)) + Number(curr.amount);
-
-      // acc[curr.sellingFrontKey] = +maxDiscountOrNOt + Number(curr.commission_tax);
 
       const maxDiscountOrNOt =
         curr.amount >= curr.max_discount_limit

@@ -35,6 +35,8 @@ type SellingTableInputWeight_TP = {
   setOpenSelsal?: any;
   TaxRateOfBranch?: any;
   selectedItemDetails?: any;
+  editSelsal?: any;
+  setEditSelsal?: any;
 };
 
 const SellingTableInputWeight = ({
@@ -44,9 +46,13 @@ const SellingTableInputWeight = ({
   setOpenSelsal,
   TaxRateOfBranch,
   selectedItemDetails,
+  editSelsal,
+  setEditSelsal,
 }: SellingTableInputWeight_TP) => {
-  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
+  console.log("🚀 ~ editSelsal:", editSelsal);
+  console.log("🚀 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth);
   const [searchWeight, setSearchWeight] = useState("");
+  console.log("🚀 ~ searchWeight:", searchWeight)
   const [itemsOfWeight, setItemsOfWeight] = useState([]);
   const { userData } = useContext(authCtx);
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
@@ -59,10 +65,6 @@ const SellingTableInputWeight = ({
     acc += +item.weight;
     return acc;
   }, 0);
-  console.log(
-    "🚀 ~ calcSelectItemsOfWeight ~ calcSelectItemsOfWeight:",
-    calcSelectItemsOfWeight
-  );
 
   const calcSelectItemsOfCost = selectedItemDetails.reduce((acc, item) => {
     acc += item.selling_price
@@ -70,10 +72,16 @@ const SellingTableInputWeight = ({
       : (Number(item.karat_price) + Number(item.wage)) * Number(item.weight);
     return acc;
   }, 0);
-  console.log(
-    "🚀 ~ calcSelectItemsOfCost ~ calcSelectItemsOfCost:",
-    calcSelectItemsOfCost
-  );
+
+  const calcOfSelsalWeight = sellingItemsOfWeigth.reduce((acc, item) => {
+    acc += +item.weight;
+    return acc;
+  }, 0);
+
+  const calcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
+    acc += +item.cost;
+    return acc;
+  }, 0);
 
   const weightItem =
     selectedItemDetails?.length > 0
@@ -125,6 +133,10 @@ const SellingTableInputWeight = ({
     selling_price: "",
     wage: "",
     cost: "",
+    min_selling: "",
+    min_selling_type: "",
+    category_selling_type:"",
+    tax_rate:"",
   };
 
   const sellingColsOfWeight = useMemo<ColumnDef<Selling_TP>[]>(
@@ -179,7 +191,7 @@ const SellingTableInputWeight = ({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const { refetch, isFetching, isSuccess, isLoading, isRefetching } = useFetch({
+  const { refetch, isFetching, isSuccess } = useFetch({
     queryKey: ["branch-all-accepted-weight-selling"],
     endpoint:
       searchWeight === ""
@@ -218,19 +230,7 @@ const SellingTableInputWeight = ({
     }
   }, [searchWeight]);
 
-  const calcOfSelsalWeight = sellingItemsOfWeigth.reduce((acc, item) => {
-    acc += +item.weight;
-    return acc;
-  }, 0);
-  console.log(
-    "🚀 ~ calcOfSelsalWeight ~ calcOfSelsalWeight:",
-    calcOfSelsalWeight
-  );
 
-  const calcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
-    acc += +item.cost;
-    return acc;
-  }, 0);
 
   const handleAddSelsalToPieces = () => {
     setFieldValue("weight", Number(weightItem) + Number(calcOfSelsalWeight));
@@ -261,8 +261,14 @@ const SellingTableInputWeight = ({
   };
 
   useEffect(() => {
-    handleAddSelsalToPieces();
+    handleAddSelsalToPieces(); 
   }, [calcOfSelsalWeight]);
+
+  useEffect(() => {
+    if (editSelsal.length > 0) {
+      setSellingItemsOfWeight(editSelsal);
+    }
+  }, [editSelsal]);
 
   return (
     <Formik
@@ -270,7 +276,8 @@ const SellingTableInputWeight = ({
       validationSchema=""
       onSubmit={(values) => {}}
     >
-      {({ resetForm, values, setFieldValue }) => {
+      {({ values, setFieldValue }) => {
+        console.log("🚀 ~ values:", values);
         useEffect(() => {
           Object.keys(values).map((key) => {
             if (itemsOfWeight?.length === 1) {
