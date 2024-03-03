@@ -17,8 +17,42 @@ import { notify } from "../../../utils/toast";
 import { mutateData } from "../../../utils/mutateData";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { FilesPreview } from "../../../components/molecules/files/FilesPreview";
 
-const AddSupport = () => {
+interface AddSupport_TP {
+  editData?: any;
+  refetch?: () => void;
+  levelType?: string;
+  title?: string;
+}
+
+interface InitialValues {
+  level_one_id: string;
+  level_two_id: string;
+  level_three_id: string;
+  level_four_id: string;
+  level_one_name_ar: string;
+  level_one_name_en: string;
+  level_two_name_ar: string;
+  level_two_name_en: string;
+  level_three_name_ar: string;
+  level_three_name_en: string;
+  level_four_name_ar: string;
+  level_four_name_en: string;
+  level_two_desc: string;
+  steps_ar: string;
+  steps_en: string;
+  article_name_ar: string;
+  article_name_en: string;
+  article_title: string;
+}
+
+const AddSupport: React.FC<AddSupport_TP> = ({
+  editData,
+  refetch,
+  levelType,
+  title,
+}) => {
   const [levelOneModal, setLevelOneModal] = useState(false);
   const [levelTwoModal, setLevelTwoModal] = useState(false);
   const [levelThreeModal, setLevelThreeModal] = useState(false);
@@ -30,32 +64,46 @@ const AddSupport = () => {
   const [supportArticleData, setSupportArticleData] = useState([]);
   const [dataSource, setDataSource] = useState([]);
   const [articlesData, setArticlesData] = useState([]);
-  const queryClient = useQueryClient();
   const [levelOneId, setLevelOneId] = useState(null);
   const [levelTwoId, setLevelTwoId] = useState(null);
   const [levelThreeId, setLevelThreeId] = useState(null);
+  const [levelOneSelectEdit, setLevelOneSelectEdit] = useState<any>(null);
+  const [levelTwoSelectEdit, setLevelTwoSelectEdit] = useState<any>(null);
+  const [levelThreeSelectEdit, setLevelThreeSelectEdit] = useState<any>(null);
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const imagePreview = editData?.images?.map((image) => ({
+    preview: image.preview,
+    path: image.preview,
+    type: "image",
+  }));
 
-  const initialValues = {
-    level_one_id: "",
-    level_two_id: "",
-    level_three_id: "",
-    level_four_id: "",
-    level_one_name_ar: "",
-    level_one_name_en: "",
-    level_two_name_ar: "",
-    level_two_name_en: "",
-    level_three_name_ar: "",
-    level_three_name_en: "",
-    level_four_name_ar: "",
-    level_four_name_en: "",
-    level_two_desc: "",
-    steps_ar: "",
-    steps_en: "",
-    article_name_ar: "",
-    article_name_en: "",
-    article_title: "",
+  const initialValues: InitialValues = {
+    level_one_id: editData?.cat_support_id || "",
+    level_two_id: editData?.level_two_support_id || "",
+    level_three_id: editData?.level_third_support_id || "",
+    level_four_id: editData?.level_four_id || "",
+    level_one_name_ar: editData?.name_ar || "",
+    level_one_name_en: editData?.name_en || "",
+    level_two_name_ar: editData?.name_ar || "",
+    level_two_name_en: editData?.name_en || "",
+    level_three_name_ar: editData?.name_ar || "",
+    level_three_name_en: editData?.name_en || "",
+    level_four_name_ar: editData?.name_ar || "",
+    level_four_name_en: editData?.name_en || "",
+    level_two_desc: editData?.desc || "",
+    steps_ar: editData?.desc_ar || "",
+    steps_en: editData?.desc_en || "",
+    article_name_ar: editData?.name_ar || "",
+    article_name_en: editData?.name_en || "",
+    article_title: editData?.level_third_support_name || "",
   };
+
+  useEffect(() => {
+    if (editData && levelType == "1") setLevelOneModal(true);
+    else if (editData && levelType == "2") setLevelTwoModal(true);
+    else if (editData && levelType == "3") setLevelThreeModal(true);
+  }, []);
 
   const {
     data: levelOneOption,
@@ -66,8 +114,8 @@ const AddSupport = () => {
   } = useFetch({
     endpoint: `/support/api/v1/catSupport`,
     queryKey: ["level-one-option"],
-    select: (data) =>
-      data.map((el) => {
+    select: (data: any) =>
+      data.map((el: any) => {
         return {
           id: el.id,
           value: el.id || "",
@@ -124,6 +172,9 @@ const AddSupport = () => {
     onSuccess: (data) => {
       notify("success", t("level is added successfully"));
       queryClient.refetchQueries(["level-one-option"]);
+      queryClient.refetchQueries(["level-two-option"]);
+      queryClient.refetchQueries(["level-three-option"]);
+      queryClient.refetchQueries(["levels"]);
     },
     onError: (error: any) => {
       notify("error", error?.message);
@@ -182,25 +233,107 @@ const AddSupport = () => {
     console.log({ ...invoice });
   };
 
-  // LEVEL FOUR HANDLE ADD
-  const postLevelFourHandler = (values: any) => {
-    const invoice = articlesData?.map((article) => {
-      return {
-        name_ar: article.name_ar,
-        name_en: article.name_en,
-        desc_ar: article.step_ar,
-        desc_en: article.step_en,
-        level_third_support_id: values.level_three_id,
-        media: article.media,
-      };
-    });
+  // // LEVEL FOUR HANDLE ADD
+  // const postLevelFourHandler = (values: any) => {
+  //   const invoice = articlesData?.map((article: any) => {
+  //     return {
+  //       name_ar: article.name_ar,
+  //       name_en: article.name_en,
+  //       desc_ar: article.step_ar,
+  //       desc_en: article.step_en,
+  //       cat_support_id: values.level_one_id,
+  //       level_two_support_id: values.level_two_id,
+  //       level_third_support_id: values.level_three_id,
+  //       media: article.media,
+  //     };
+  //   });
+
+  //   mutate({
+  //     endpointName: "/support/api/v1/levelFourthSupport",
+  //     values: { items: invoice },
+  //     dataType: "formData",
+  //   });
+  // };
+
+  // LEVEL ONE HANDLE EDIT
+  const PostLevelOneEdit = (values: any) => {
+    const invoice = {
+      name_ar: values.level_one_name_ar,
+      name_en: values.level_one_name_en,
+    };
 
     mutate({
-      endpointName: "/support/api/v1/levelFourthSupport",
-      values: { items: invoice },
-      dataType: "formData",
+      endpointName: `/support/api/v1/catSupport/${editData?.id}`,
+      values: {
+        ...invoice,
+        _method: "put",
+      },
     });
   };
+
+  // LEVEL TWO HANDLE EDIT
+  const PostLevelTwoEdit = (values: any) => {
+    const invoice = {
+      name_ar: values.level_two_name_ar,
+      name_en: values.level_two_name_en,
+      cat_support_id: values.level_one_id,
+      desc: values.level_two_desc,
+    };
+
+    mutate({
+      endpointName: `/support/api/v1/levelTwoSupport/${editData?.id}`,
+      values: {
+        ...invoice,
+        _method: "put",
+      },
+    });
+  };
+
+  // LEVEL THREE HANDLE EDIT
+  const PostLevelThreeEdit = (values: any) => {
+    const invoice = {
+      name_ar: values.level_three_name_ar,
+      name_en: values.level_three_name_en,
+      cat_support_id: values.level_one_id,
+      level_two_support_id: values.level_two_id,
+    };
+
+    mutate({
+      endpointName: `/support/api/v1/levelThirdSupport/${editData?.id}`,
+      values: {
+        ...invoice,
+        _method: "put",
+      },
+    });
+  };
+
+  // // LEVEL FOUR HANDLE EDIT
+  // const PostLevelFourEdit = (values: any) => {
+  //   const invoice = {
+  //     name_ar: values?.article_name_ar,
+  //     name_en: values?.article_name_en,
+  //     desc_ar: values?.steps_ar,
+  //     desc_en: values?.steps_en,
+  //     cat_support_id: values.level_one_id,
+  //     level_two_support_id: values.level_two_id,
+  //     level_third_support_id: values.level_three_id,
+  //   };
+
+  //   mutate({
+  //     endpointName: `/support/api/v1/levelFourthSupport/${editData?.id}`,
+  //     values: {
+  //       ...invoice,
+  //       _method: "put",
+  //     },
+  //   });
+  // };
+
+  // const handleDelete = () => {
+  //   mutate({
+  //     endpointName: `/employeeSalary/api/v1/delete-deduction/${deleteData?.id}`,
+  //     method: "delete",
+  //   });
+  // };
 
   useEffect(() => {
     levelTwoRefetch();
@@ -209,6 +342,29 @@ const AddSupport = () => {
   useEffect(() => {
     levelThreeRefetch();
   }, [levelTwoId]);
+
+  useEffect(() => {
+    const levelOneSelecet = {
+      id: editData?.cat_support_id || "",
+      value: editData?.cat_support_name || "",
+      label: editData?.cat_support_name || `${t("level one")}`,
+    };
+    setLevelOneSelectEdit(levelOneSelecet);
+
+    const levelTwoSelecet = {
+      id: editData?.level_two_support_id || "",
+      value: editData?.level_two_support_name || "",
+      label: editData?.level_two_support_name || `${t("level two")}`,
+    };
+    setLevelTwoSelectEdit(levelTwoSelecet);
+
+    const levelThreeSelecet = {
+      id: editData?.level_third_support_id || "",
+      value: editData?.level_third_support_name || "",
+      label: editData?.level_third_support_name || `${t("level three")}`,
+    };
+    setLevelThreeSelectEdit(levelThreeSelecet);
+  }, []);
 
   return (
     <Formik
@@ -221,6 +377,7 @@ const AddSupport = () => {
       {({ values }) => {
         return (
           <Form>
+            {/* BREAD CRUMBS */}
             <div className="w-full flex justify-between mb-8">
               <div className="flex items-center gap-x-1">
                 <p className="font-bold">{t("helper center")}</p>
@@ -234,6 +391,7 @@ const AddSupport = () => {
               <h3 className="mb-4 text-xl font-bold">{t("add level")}</h3>
 
               <div className="rounded-xl p-8 flex items-center gap-8 bg-mainGreen/5">
+                {/* LEVEL ONE */}
                 <div className="flex items-end gap-3 w-1/3 lg:w-1/4">
                   <Select
                     id="level_one_id"
@@ -244,8 +402,10 @@ const AddSupport = () => {
                     options={levelOneOption}
                     fieldKey="id"
                     loading={levelOneIsLoading}
+                    value={levelOneSelectEdit}
                     onChange={(option) => {
                       setLevelOneId(option!.id);
+                      setLevelOneSelectEdit(option);
                     }}
                   />
                   <button
@@ -258,6 +418,8 @@ const AddSupport = () => {
                     <IoMdAdd className="fill-mainGreen w-6 h-6" />
                   </button>
                 </div>
+
+                {/* LEVEL TWO */}
                 <div className="flex items-end gap-3 w-1/3 lg:w-1/4">
                   <Select
                     id="level_two_id"
@@ -269,8 +431,10 @@ const AddSupport = () => {
                     fieldKey="id"
                     isDisabled={levelTwoIsFetching}
                     loading={levelTwoIsLoading}
+                    value={levelTwoSelectEdit}
                     onChange={(option) => {
                       setLevelTwoId(option!.id);
+                      setLevelTwoSelectEdit(option);
                     }}
                   />
                   <button
@@ -284,6 +448,7 @@ const AddSupport = () => {
                   </button>
                 </div>
 
+                {/* LEVEL THREE */}
                 <div className="flex items-end gap-3 w-1/3 lg:w-1/4">
                   <Select
                     id="level_three_id"
@@ -295,8 +460,10 @@ const AddSupport = () => {
                     isDisabled={levelThreeIsFetching}
                     fieldKey="id"
                     loading={levelThreeIsLoading}
+                    value={levelThreeSelectEdit}
                     onChange={(option) => {
                       setLevelThreeId(option);
+                      setLevelThreeSelectEdit(option);
                     }}
                   />
                   <button
@@ -337,32 +504,17 @@ const AddSupport = () => {
             </div>
 
             {/* ARTICLE */}
-            {levelThreeId && (
+            {/* {(levelThreeId || (editData && levelType == "4")) && (
               <AddSupportArticle
-                dataSource={dataSource}
-                setDataSource={setDataSource}
-                supportArticleData={supportArticleData}
-                setSupportArticleData={setSupportArticleData}
+                editData={editData}
                 stepFile={stepFile}
                 setStepFile={setStepFile}
                 articlesData={articlesData}
                 setArticlesData={setArticlesData}
                 levelThreeOption={levelThreeId}
+                imagePreview={imagePreview}
               />
-            )}
-
-            <div className="flex items-center justify-end mt-8">
-              <Button
-                type="submit"
-                className=""
-                action={() => {
-                  postLevelFourHandler(values);
-                  navigate("/addSupport");
-                }}
-              >
-                {t("save")}
-              </Button>
-            </div>
+            )} */}
 
             {levelOneModal && (
               <Modal
@@ -392,10 +544,18 @@ const AddSupport = () => {
 
                   {/* ATTACHMENT */}
                   <div className="w-44 self-end">
-                    <FilesUpload
-                      files={filesLevelOne}
-                      setFiles={setFilesLevelOne}
-                    />
+                    {editData ? (
+                      <FilesPreview
+                        preview
+                        images={[...imagePreview] || []}
+                        pdfs={[]}
+                      />
+                    ) : (
+                      <FilesUpload
+                        files={filesLevelOne}
+                        setFiles={setFilesLevelOne}
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -404,11 +564,15 @@ const AddSupport = () => {
                     type="button"
                     className=""
                     action={() => {
-                      postLevelOneHandler(values);
-                      // console.log(values.values);
+                      if (editData) {
+                        PostLevelOneEdit(values);
+                      } else {
+                        postLevelOneHandler(values);
+                      }
+                      setLevelOneModal(false);
                     }}
                   >
-                    {t("add")}
+                    {title || t("add")}
                   </Button>
                 </div>
               </Modal>
@@ -430,7 +594,8 @@ const AddSupport = () => {
                       placeholder={`${t("level one")}`}
                       label={`${t("level one")}`}
                       options={levelOneOption}
-                      // value={editValues}
+                      value={levelOneSelectEdit}
+                      onChange={(e) => setLevelOneSelectEdit(e)}
                       loading={
                         levelOneIsLoading ||
                         levelOneIsFetching ||
@@ -456,10 +621,18 @@ const AddSupport = () => {
                   />
                   {/* ATTACHMENT */}
                   <div className="w-44 self-end mb-2">
-                    <FilesUpload
-                      files={filesLevelTwo}
-                      setFiles={setFilesLevelTwo}
-                    />
+                    {editData ? (
+                      <FilesPreview
+                        preview
+                        images={[...imagePreview] || []}
+                        pdfs={[]}
+                      />
+                    ) : (
+                      <FilesUpload
+                        files={filesLevelTwo}
+                        setFiles={setFilesLevelTwo}
+                      />
+                    )}
                   </div>
                 </div>
                 <TextAreaField
@@ -469,7 +642,7 @@ const AddSupport = () => {
                   required
                   className="w-[92%]"
                   label={`${t("add description")}`}
-                  // value={values?.desc}
+                  value={values?.level_two_desc}
                   rows={3}
                 />
 
@@ -478,11 +651,15 @@ const AddSupport = () => {
                     type="button"
                     className=""
                     action={() => {
-                      // console.log(values.values);
-                      postLevelTwoHandler(values);
+                      if (editData) {
+                        PostLevelTwoEdit(values);
+                      } else {
+                        postLevelTwoHandler(values);
+                      }
+                      setLevelTwoModal(false);
                     }}
                   >
-                    {t("add")}
+                    {title || t("add")}
                   </Button>
                 </div>
               </Modal>
@@ -504,11 +681,12 @@ const AddSupport = () => {
                       placeholder={`${t("level one")}`}
                       label={`${t("level one")}`}
                       options={levelOneOption}
-                      // value={editValues}
+                      value={levelOneSelectEdit}
                       options={levelOneOption}
                       fieldKey="id"
                       onChange={(option) => {
                         setLevelOneId(option!.id);
+                        setLevelOneSelectEdit(option);
                       }}
                       loading={
                         levelOneIsLoading ||
@@ -524,9 +702,10 @@ const AddSupport = () => {
                       placeholder={`${t("level two")}`}
                       label={`${t("level two")}`}
                       options={levelTwoOption}
-                      // value={editValues}
+                      value={levelTwoSelectEdit}
                       onChange={(option) => {
                         setLevelTwoId(option!.id);
+                        setLevelTwoSelectEdit(option);
                       }}
                       loading={
                         levelTwoIsLoading ||
@@ -558,16 +737,21 @@ const AddSupport = () => {
                     type="button"
                     className=""
                     action={() => {
-                      // console.log(values.values);
-                      postLevelThreeHandler(values);
+                      if (editData) {
+                        PostLevelThreeEdit(values);
+                      } else {
+                        postLevelThreeHandler(values);
+                      }
+                      setLevelThreeModal(false);
                     }}
                   >
-                    {t("add")}
+                    {title || t("add")}
                   </Button>
                 </div>
               </Modal>
             )}
 
+            {/* TODO HERE (WILL REMOVE) */}
             {levelFourModal && (
               <Modal
                 isOpen={levelFourModal}
@@ -642,7 +826,7 @@ const AddSupport = () => {
                       // console.log(values.values);
                     }}
                   >
-                    {t("add")}
+                    {title || t("add")}
                   </Button>
                 </div>
               </Modal>

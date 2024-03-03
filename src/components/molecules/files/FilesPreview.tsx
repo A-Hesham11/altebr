@@ -1,25 +1,24 @@
-
 /////////// IMPORTS
 ///
 
-import { useFormikContext } from "formik"
-import { useEffect, useState } from "react"
-import { CFile_TP, CImageFile_TP } from "../../../types"
-import { pdfOrImage } from "../../../utils/helpers"
-import { PDFSvgIcon, SvgDeleteIcon, ViewSvgIcon } from "../../atoms/icons"
-import { Modal } from "../Modal"
-import { CLightbox } from "./CLightbox"
-import { PdfViewer } from "./PdfViewer"
+import { useFormikContext } from "formik";
+import { useEffect, useState } from "react";
+import { CFile_TP, CImageFile_TP } from "../../../types";
+import { pdfOrImage } from "../../../utils/helpers";
+import { PDFSvgIcon, SvgDeleteIcon, ViewSvgIcon } from "../../atoms/icons";
+import { Modal } from "../Modal";
+import { CLightbox } from "./CLightbox";
+import { PdfViewer } from "./PdfViewer";
 
 ///
 /////////// Types
 ///
 type FilesPreviewProps_TP = {
-  images: CImageFile_TP[]
-  pdfs: CFile_TP[]
-  formikFieldName?: string
-  preview?: boolean
-}
+  images: CImageFile_TP[];
+  pdfs: CFile_TP[];
+  formikFieldName?: string;
+  preview?: boolean;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -37,33 +36,33 @@ export const FilesPreview = ({
   /////////// CUSTOM HOOKS
   ///
   const { setFieldValue, values } = useFormikContext<{
-    [key: string]: any
-  }>()
+    [key: string]: any;
+  }>();
   ///
   /////////// STATES
   ///
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-  const [manyPdfsOpen, setManyPdfsOpen] = useState(false)
-  const [activePdf, setActivePdf] = useState<CFile_TP | null>()
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [manyPdfsOpen, setManyPdfsOpen] = useState(false);
+  const [activePdf, setActivePdf] = useState<CFile_TP | null>();
   ///
   /////////// SIDE EFFECTS
   ///
   // change lightbox open state to false if images.length === 0
   useEffect(() => {
     if (images.length === 0) {
-      setLightboxOpen(false)
+      setLightboxOpen(false);
     }
-  }, [images.length])
+  }, [images.length]);
   // change pdfs modal open state to false if pdfs.length === 0
   useEffect(() => {
     if (pdfs.length === 0) {
-      setManyPdfsOpen(false)
+      setManyPdfsOpen(false);
     }
-  }, [pdfs.length])
+  }, [pdfs.length]);
   // set first active pdf file
   useEffect(() => {
-    setActivePdf(pdfs[0])
-  }, [JSON.stringify(pdfs)])
+    setActivePdf(pdfs[0]);
+  }, [JSON.stringify(pdfs)]);
 
   ///
   /////////// FUNCTIONS | EVENTS | IF CASES
@@ -71,41 +70,41 @@ export const FilesPreview = ({
   // Delete file (image or pdf)
   const deleteFileHandler = (id: string) => {
     if (formikFieldName) {
-      const currFilesState: CFile_TP[] = values[formikFieldName]
+      const currFilesState: CFile_TP[] = values[formikFieldName];
       setFieldValue(
         formikFieldName,
         currFilesState.filter((file) => file.id !== id)
-      )
+      );
     }
-  }
+  };
 
   // Delete all images
   const deleteAllImagesHandler = () => {
     if (formikFieldName) {
-      const currFilesState: CFile_TP[] = values[formikFieldName]
+      const currFilesState: CFile_TP[] = values[formikFieldName];
       setFieldValue(
         formikFieldName,
         currFilesState.filter((file) => pdfOrImage(file) === "pdf")
-      )
+      );
     }
-  }
+  };
 
   // Delete all pdfs
   const deleteAllPdfsHandler = () => {
     if (formikFieldName) {
-      const currFilesState: CFile_TP[] = values[formikFieldName]
+      const currFilesState: CFile_TP[] = values[formikFieldName];
       setFieldValue(
         formikFieldName,
         currFilesState.filter((file) => pdfOrImage(file) === "image")
-      )
+      );
     }
-  }
-   const imagePreview = images.map(image => ({
-    preview: image?.type === 'image' ? image?.path : image?.preview,
+  };
+  const imagePreview = images.map((image) => ({
+    preview: image?.type === "image" ? image?.path : image?.preview,
     path: image.preview,
-    type: 'image'
-  }))
-  
+    type: "image",
+  }));
+
   return (
     <>
       <div
@@ -114,7 +113,7 @@ export const FilesPreview = ({
         }`}
       >
         {/* images*/}
-        <div className="flex items-center justify-center gap-2 m-3">
+        <div className="flex items-center justify-center gap-2 mx-3">
           {!!images.length && (
             <>
               <div className="flex flex-col  gap-1 justify-center">
@@ -233,5 +232,5 @@ export const FilesPreview = ({
         </Modal>
       )}
     </>
-  )
-}
+  );
+};

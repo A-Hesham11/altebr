@@ -2,13 +2,15 @@ import { t } from "i18next";
 import React, { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { useIsRTL } from "../../../hooks";
 
 type Props = {
   id: string;
-  image: JSX.Element;
-  name: string;
+  images: JSX.Element;
+  name_ar: string;
+  name_en: string;
   desc: string;
-  links: {
+  LevelThird: {
     id: number;
     text: string;
     link: string;
@@ -17,13 +19,15 @@ type Props = {
 
 const SubCategorySection: React.FC<Props> = ({
   id,
-  image,
+  images,
   name_ar,
+  name_en,
   desc,
-  links,
+  LevelThird,
 }) => {
   console.log("🚀 ~ id:", id);
   const [subIsOpen, setSubIsOpen] = useState(false);
+  const isRTL = useIsRTL();
 
   const handleSubOpen = () => setSubIsOpen((prev) => !prev);
 
@@ -35,8 +39,12 @@ const SubCategorySection: React.FC<Props> = ({
           subIsOpen ? "text-mainGreen" : ""
         }`}
       >
-        <img src={image} alt="Sub Category Image" className="fill-mainGreen" />
-        <p className="font-bold">{t(`${name_ar}`)}</p>
+        <img
+          src={images[0].preview}
+          alt="Sub Category Image"
+          className="fill-mainGreen"
+        />
+        <p className="font-bold">{t(`${isRTL ? name_ar : name_en}`)}</p>
         <IoIosArrowDown
           className={`${
             subIsOpen ? "rotate-180 transition-all duration-300" : ""
@@ -49,10 +57,12 @@ const SubCategorySection: React.FC<Props> = ({
           <p className="mx-5 text-black/70">{desc}</p>
 
           <ul className="flex flex-wrap items-center gap-14 mt-8 mx-9 list-disc">
-            {links?.map((li: any) => {
+            {LevelThird?.map((li: any) => {
               return (
                 <li className="font-bold" key={li.id}>
-                  <Link to={`/supportLinks/${li.id}`}>{li.name_ar}</Link>
+                  <Link to={`/supportLinks/${li.id}`}>
+                    {isRTL ? li.name_ar : li.name_en}
+                  </Link>
                 </li>
               );
             })}

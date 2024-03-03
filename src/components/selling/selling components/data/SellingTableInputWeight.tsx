@@ -45,6 +45,7 @@ const SellingTableInputWeight = ({
   TaxRateOfBranch,
   selectedItemDetails,
 }: SellingTableInputWeight_TP) => {
+  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
   const [searchWeight, setSearchWeight] = useState("");
   const [itemsOfWeight, setItemsOfWeight] = useState([]);
   const { userData } = useContext(authCtx);
@@ -54,38 +55,43 @@ const SellingTableInputWeight = ({
 
   const { values, setFieldValue } = useFormikContext<any>();
 
-  const existWeightitems = values?.weightitems.filter((item) => !item.status || item.status === 0);
-  console.log("🚀 ~ existWeightitems:", existWeightitems);
-
-  const selectedItemsDetail =
-  selectedItemDetails?.length > 0 ? selectedItemDetails : existWeightitems;
-  console.log("🚀 ~ selectedItemsDetail:", selectedItemsDetail)
-
-  const calcselectedItemDetails = selectedItemsDetail.reduce((acc, item) => {
+  const calcSelectItemsOfWeight = selectedItemDetails.reduce((acc, item) => {
     acc += +item.weight;
     return acc;
   }, 0);
+  console.log(
+    "🚀 ~ calcSelectItemsOfWeight ~ calcSelectItemsOfWeight:",
+    calcSelectItemsOfWeight
+  );
 
-  const calcselectedItemCost = selectedItemsDetail.reduce((acc, item) => {
-    acc += +item.selling_price;
+  const calcSelectItemsOfCost = selectedItemDetails.reduce((acc, item) => {
+    acc += item.selling_price
+      ? Number(item.selling_price)
+      : (Number(item.karat_price) + Number(item.wage)) * Number(item.weight);
     return acc;
   }, 0);
-  console.log("🚀 ~ calcselectedItemCost ~ calcselectedItemCost:", calcselectedItemCost)
+  console.log(
+    "🚀 ~ calcSelectItemsOfCost ~ calcSelectItemsOfCost:",
+    calcSelectItemsOfCost
+  );
 
   const weightItem =
-    values?.weightitems?.length > 0
-      ? Number(calcselectedItemDetails)
-      : values.category_selling_type === "all" ? (Number(values.sel_weight) - Number(values.remaining_weight)) :  Number(values.remaining_weight);
-      console.log("🚀 ~ weightItem:", weightItem)
+    selectedItemDetails?.length > 0
+      ? Number(calcSelectItemsOfWeight)
+      : values.category_selling_type === "all"
+      ? Number(values.sel_weight) - Number(values.remaining_weight)
+      : Number(values.remaining_weight);
+  console.log("🚀 ~ weightItem:", weightItem);
 
   const costItem =
     values?.classification_id === 1
       ? Number(weightItem) *
         (Number(values?.wage) + Number(values?.karat_price))
-      : values.weightitems?.length > 0 ? Number(calcselectedItemCost) : Number(values?.selling_price);
+      : selectedItemDetails.length > 0
+      ? Number(calcSelectItemsOfCost)
+      : Number(values?.selling_price);
 
-    console.log("🚀 ~ costItem:", costItem)
-
+  console.log("🚀 ~ costItem:", costItem);
 
   const priceWithCommissionRate =
     dataSource &&
@@ -216,7 +222,10 @@ const SellingTableInputWeight = ({
     acc += +item.weight;
     return acc;
   }, 0);
-  console.log("🚀 ~ calcOfSelsalWeight ~ calcOfSelsalWeight:", calcOfSelsalWeight)
+  console.log(
+    "🚀 ~ calcOfSelsalWeight ~ calcOfSelsalWeight:",
+    calcOfSelsalWeight
+  );
 
   const calcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
     acc += +item.cost;

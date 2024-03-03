@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BaseInputField } from "../../components/molecules";
 import { t } from "i18next";
-import { useFetch } from "../../hooks";
+import { useFetch, useIsRTL } from "../../hooks";
 import { Link } from "react-router-dom";
 import "./searchResultLoading.css";
 
@@ -19,6 +19,7 @@ type Props = {
 
 const SupportSearch: React.FC<Props> = () => {
   const [searchWord, setSearchWord] = useState("");
+  const isRTL = useIsRTL();
 
   const {
     data: searchResult,
@@ -27,7 +28,7 @@ const SupportSearch: React.FC<Props> = () => {
     isLoading,
     isRefetching,
   } = useFetch({
-    endpoint: `/attachment/api/v1/search?query=${searchWord.trim()}`,
+    endpoint: `/support/api/v1/search?query=${searchWord.trim()}`,
     queryKey: ["search-data"],
   });
 
@@ -36,11 +37,9 @@ const SupportSearch: React.FC<Props> = () => {
   }, [searchWord]);
 
   return (
-    <div className="flex supportBg flex-col items-center justify-center text-center mt-6 text-white rounded-lg p-8">
+    <div className="flex supportBg flex-col items-center justify-center text-center mt-6 text-white rounded-xl p-8">
       <div>
-        <h2 className="font-bold text-2xl mb-6 ">
-          {t("?how can we help you")}
-        </h2>
+        <h2 className="font-bold text-2xl mb-6 ">{t("how can we help you")}</h2>
         <p className="text-base mb-8 opacity-80">
           {t("search here to get answers to your questions")}
         </p>
@@ -74,7 +73,7 @@ const SupportSearch: React.FC<Props> = () => {
                         key={search.id}
                       >
                         <Link to={`/searchLinks/${search.id}`}>
-                          {search.name}
+                          {isRTL ? search.name_ar : search.name_en}
                         </Link>
                       </p>
                     );
