@@ -11,6 +11,7 @@ import { Modal } from "../../components/molecules";
 import AddSupport from "./AddSupport/AddSupport";
 import Slider from "react-slick";
 import { GrNext, GrPrevious } from "react-icons/gr";
+import "./levelTwoLoading.css";
 
 const Support = ({ title }: { title: string }) => {
   const [selectedOption, setSelectedOption] = useState("");
@@ -120,7 +121,7 @@ const Support = ({ title }: { title: string }) => {
 
             {/* SEARCH CATEGORY */}
             <Slider {...sliderSettings}>
-              {support?.reverse()?.map((searchBox: any) => {
+              {support?.map((searchBox: any) => {
                 return (
                   <div
                     key={searchBox.id}
@@ -148,18 +149,35 @@ const Support = ({ title }: { title: string }) => {
             </Slider>
 
             {/* SEARCH SUBCATEGORY */}
-            <div className="mb-12">
-              <h3 className="text-xl mb-6">
-                {levelTwoData && levelTwoData[0]?.cat_support_name}
-              </h3>
-
-              <div>
-                {levelTwoData &&
-                  levelTwoData?.map((item: any) => {
-                    return <SubCategorySection {...item} />;
-                  })}
+            {levelTwoRefetching || levelTwoIsFetching || levelTwoIsLoading ? (
+              <div className="flex justify-center items-center  my-6">
+                <div className="spinner">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="mb-12">
+                <h3 className="text-xl mb-6">
+                  {levelTwoData && levelTwoData[0]?.cat_support_name}
+                </h3>
+
+                <div>
+                  {levelTwoData &&
+                    levelTwoData?.map((item: any) => {
+                      return <SubCategorySection {...item} />;
+                    })}
+                </div>
+              </div>
+            )}
 
             {/* ADD MODAL */}
             {/* <Modal isOpen={supportModal} onClose={() => setSupportModal(false)}>

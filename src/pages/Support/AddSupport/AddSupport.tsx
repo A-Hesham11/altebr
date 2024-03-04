@@ -60,10 +60,6 @@ const AddSupport: React.FC<AddSupport_TP> = ({
   const [filesLevelOne, setFilesLevelOne] = useState([]);
   const [filesLevelTwo, setFilesLevelTwo] = useState([]);
   const [filesLevelThree, setFilesLevelThree] = useState([]);
-  const [stepFile, setStepFile] = useState([]);
-  const [supportArticleData, setSupportArticleData] = useState([]);
-  const [dataSource, setDataSource] = useState([]);
-  const [articlesData, setArticlesData] = useState([]);
   const [levelOneId, setLevelOneId] = useState(null);
   const [levelTwoId, setLevelTwoId] = useState(null);
   const [levelThreeId, setLevelThreeId] = useState(null);
@@ -71,7 +67,6 @@ const AddSupport: React.FC<AddSupport_TP> = ({
   const [levelTwoSelectEdit, setLevelTwoSelectEdit] = useState<any>(null);
   const [levelThreeSelectEdit, setLevelThreeSelectEdit] = useState<any>(null);
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const imagePreview = editData?.images?.map((image) => ({
     preview: image.preview,
     path: image.preview,
@@ -112,7 +107,7 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     isLoading: levelOneIsLoading,
     isRefetching: levelOneIsRefetching,
   } = useFetch({
-    endpoint: `/support/api/v1/catSupport`,
+    endpoint: `/support/api/v1/catSupport?per_page=10000`,
     queryKey: ["level-one-option"],
     select: (data: any) =>
       data.map((el: any) => {
@@ -131,7 +126,7 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     isLoading: levelTwoIsLoading,
     isRefetching: levelTwoIsRefetching,
   } = useFetch({
-    endpoint: `/support/api/v1/levelTwoSupport/${levelOneId}`,
+    endpoint: `/support/api/v1/levelTwoSupport/${levelOneId}?per_page=10000`,
     queryKey: ["level-two-option"],
     select: (data) =>
       data.map((el) => {
@@ -150,7 +145,7 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     isLoading: levelThreeIsLoading,
     isRefetching: levelThreeIsRefetching,
   } = useFetch({
-    endpoint: `/support/api/v1/levelThirdSupport/${levelTwoId}`,
+    endpoint: `/support/api/v1/levelThirdSupport/${levelTwoId}?per_page=10000`,
     queryKey: ["level-three-option"],
     select: (data) =>
       data.map((el) => {
@@ -195,6 +190,7 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     });
 
     console.log({ ...invoice, media: filesLevelOne });
+    setFilesLevelOne([]);
   };
 
   // LEVEL TWO HANDLE ADD
@@ -213,6 +209,7 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     });
 
     console.log({ ...invoice, media: filesLevelTwo });
+    setFilesLevelTwo([]);
   };
 
   // LEVEL THREE HANDLE ADD
