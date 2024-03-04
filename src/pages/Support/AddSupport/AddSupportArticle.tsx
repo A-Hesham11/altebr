@@ -76,7 +76,7 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
     isLoading: levelThreeIsLoading,
     isRefetching: levelThreeIsRefetching,
   } = useFetch({
-    endpoint: `/support/api/v1/levelThirdSupport`,
+    endpoint: `/support/api/v1/levelThirdSupport?per_page=10000`,
     queryKey: ["level-three-option"],
     select: (data) =>
       data.map((el) => {
@@ -109,9 +109,11 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
         cell: (info) => {
           const step = info.getValue().split("\n");
           return (
-            <ol className="space-y-1 list-disc list-inside">
+            <ol className="space-y-1 list-disc list-inside  max-w-2xl px-2">
               {step.map((el) => (
-                <li key={el}>{el}</li>
+                <li className="break-words whitespace-pre-wrap" key={el}>
+                  {el}
+                </li>
               ))}
             </ol>
           );
@@ -123,9 +125,11 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
         cell: (info) => {
           const step = info.getValue().split("\n");
           return (
-            <ol className="space-y-1 list-disc list-inside">
+            <ol className="space-y-1 list-disc list-inside  max-w-2xl px-2">
               {step.map((el) => (
-                <li key={el}>{el}</li>
+                <li className="break-words whitespace-pre-wrap" key={el}>
+                  {el}
+                </li>
               ))}
             </ol>
           );

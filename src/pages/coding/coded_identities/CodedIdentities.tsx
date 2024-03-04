@@ -64,26 +64,23 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         : `${search}`,
     pagination: true,
   });
-  console.log(
-    "🚀 ~ file: CodedIdentities.tsx:65 ~ CodedIdentities ~ data:",
-    data
-  );
 
-  // // FETCHING DATA FROM API TO EXPORT ALL THE DATA TO EXCEL
-  // const { data: dataExcel, refetch: dataExcelRefetch } = useFetch({
-  //   queryKey: fetchKey,
-  //   endpoint:
-  //     search === `${fetchEndPoint}?page=${page}` || search === ""
-  //       ? `${fetchEndPoint}?page=${page}`
-  //       : `${search}`,
-  // });
+  // FETCHING DATA FROM API TO EXPORT ALL THE DATA TO EXCEL
+  const { data: dataExcel, refetch: dataExcelRefetch } = useFetch({
+    queryKey: fetchKey,
+    endpoint:
+      search === `${fetchEndPoint}?page=${page}&per_page=10000` || search === ""
+        ? `${fetchEndPoint}?page=${page}&per_page=10000`
+        : `${search}`,
+    pagination: true,
+  });
 
-  // console.log(dataExcel);
+  console.log(dataExcel);
 
   // HANDLE MANAGEMENT EDARA
   const handleManagement = () => {
     setFetchKey(["edara-hwya"]);
-    setFetchEndPoint(`identity/api/v1/pieces_in_edara?`);
+    setFetchEndPoint(`identity/api/v1/pieces_in_edara`);
   };
 
   // HANDLE BRANCH

@@ -15,6 +15,7 @@ const CategoryLink = () => {
   const supportIdParam = useParams().supportId;
   const navigate = useNavigate();
   const [supportCategoryData, setSupportCategoryData] = useState(null);
+  console.log("🚀 ~ CategoryLink ~ supportCategoryData:", supportCategoryData);
   const isRTL = useIsRTL();
 
   // useEffect(() => {
@@ -49,7 +50,7 @@ const CategoryLink = () => {
           </Link>
           <MdKeyboardArrowLeft />
           <p className="font-bold text-[#7D7D7D]">
-            {supportCategoryData?.level_third_support_name}
+            {supportCategoryData[0]?.level_third_support_name}
           </p>
         </div>
         <Back />
