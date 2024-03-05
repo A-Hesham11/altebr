@@ -29,10 +29,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
   //   return storedData ? JSON.parse(storedData) : [];
   // });
-  console.log(
-    "🚀 ~ file: CodedIdentities.tsx:24 ~ CodedIdentities ~ operationTypeSelect:",
-    operationTypeSelect
-  );
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [search, setSearch] = useState("");
@@ -67,15 +63,13 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
   // FETCHING DATA FROM API TO EXPORT ALL THE DATA TO EXCEL
   const { data: dataExcel, refetch: dataExcelRefetch } = useFetch({
-    queryKey: fetchKey,
+    queryKey: ["excel-data"],
     endpoint:
       search === `${fetchEndPoint}?page=${page}&per_page=10000` || search === ""
         ? `${fetchEndPoint}?page=${page}&per_page=10000`
         : `${search}`,
     pagination: true,
   });
-
-  console.log(dataExcel);
 
   // HANDLE MANAGEMENT EDARA
   const handleManagement = () => {
@@ -302,7 +296,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
               // localStorage.clear()
 
               // COMPONENT FOR EXPORT DATA TO EXCEL FILE ACCEPT DATA AND THE NAME OF THE FILE
-              ExportToExcel(data.data, activeClass);
+              ExportToExcel(dataExcel, activeClass);
             }}
             className="bg-mainGreen text-white"
           >

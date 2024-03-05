@@ -99,29 +99,8 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("article name in english")} </span>,
-        accessorKey: "name_en",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
         header: () => <span>{t("steps in arabic")}</span>,
         accessorKey: "step_ar",
-        cell: (info) => {
-          const step = info.getValue().split("\n");
-          return (
-            <ol className="space-y-1 list-disc list-inside  max-w-2xl px-2">
-              {step.map((el) => (
-                <li className="break-words whitespace-pre-wrap" key={el}>
-                  {el}
-                </li>
-              ))}
-            </ol>
-          );
-        },
-      },
-      {
-        header: () => <span>{t("steps in english")}</span>,
-        accessorKey: "step_en",
         cell: (info) => {
           const step = info.getValue().split("\n");
           return (
@@ -214,9 +193,9 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
       name_en: values?.article_name_en,
       desc_ar: values?.steps_ar,
       desc_en: values?.steps_en,
-      cat_support_id: levelThreeOption.level_one_id,
-      level_two_support_id: levelThreeOption.level_two_id,
-      level_third_support_id: values.level_three_id,
+      cat_support_id: levelThreeOption[0]?.level_one_id,
+      level_two_support_id: levelThreeOption[0]?.level_two_id,
+      level_third_support_id: values?.level_three_id,
     };
 
     mutate({
@@ -226,6 +205,8 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
         _method: "put",
       },
     });
+
+    console.log(invoice);
   };
 
   useEffect(() => {
@@ -278,7 +259,7 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
                 <BaseInputField
                   id="article_name_ar"
                   name="article_name_ar"
-                  className="w-60"
+                  className="w-[31.5rem]"
                   type="text"
                   label={`${t("article name in arabic")}`}
                   placeholder={`${t("article name in arabic")}`}
@@ -287,7 +268,7 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
                 <BaseInputField
                   id="article_name_en"
                   name="article_name_en"
-                  className="w-60"
+                  className="w-[31.5rem]"
                   type="text"
                   label={`${t("article name in english")}`}
                   placeholder={`${t("article name in english")}`}
@@ -295,27 +276,30 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
                 />
               </div>
 
-              <div className="flex items-center gap-8">
-                <TextAreaField
-                  placeholder={`${t("type here")}`}
-                  id="steps_ar"
-                  name="steps_ar"
-                  required
-                  className=""
-                  label={`${t("steps in arabic")}`}
-                  rows={4}
-                  value={values?.steps_ar}
-                />
-                <TextAreaField
-                  placeholder={`${t("type here")}`}
-                  id="steps_en"
-                  name="steps_en"
-                  required
-                  className=""
-                  label={`${t("steps in english")}`}
-                  value={values?.steps_en}
-                  rows={4}
-                />
+              <div className="flex flex-col gap-8">
+                <div className="w-[65rem]">
+                  <TextAreaField
+                    placeholder={`${t("type here")}`}
+                    id="steps_ar"
+                    name="steps_ar"
+                    required
+                    label={`${t("steps in arabic")}`}
+                    rows={4}
+                    value={values?.steps_ar}
+                  />
+                </div>
+                <div className="w-[65rem]">
+                  <TextAreaField
+                    placeholder={`${t("type here")}`}
+                    id="steps_en"
+                    name="steps_en"
+                    required
+                    className=""
+                    label={`${t("steps in english")}`}
+                    value={values?.steps_en}
+                    rows={4}
+                  />
+                </div>
               </div>
 
               <div className="w-44">
@@ -355,7 +339,7 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
                       setStepFile([]);
                     }}
                   >
-                    {t("add article")}
+                    {t("add section")}
                   </Button>
                 )}
               </div>
@@ -419,7 +403,7 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
                   setArticlesData([]);
                 }}
               >
-                {t("save")}
+                {t("create article")}
               </Button>
             </div>
           </Form>
