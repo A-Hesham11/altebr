@@ -1,7 +1,7 @@
 import { AiFillGolden, AiOutlineGold } from "react-icons/ai";
-import { CiExport, CiSettings } from "react-icons/ci";
+import { CiExport, CiGrid2H, CiSettings } from "react-icons/ci";
 import { GiBigDiamondRing, GiCutDiamond, GiGems } from "react-icons/gi";
-import { IoDiamondOutline, IoDocumentsOutline } from "react-icons/io5";
+import { IoAdd, IoDiamondOutline, IoDocumentsOutline } from "react-icons/io5";
 import { IconType } from "react-icons/lib";
 import { RiVipCrownLine } from "react-icons/ri";
 import { TbSmartHome } from "react-icons/tb";
@@ -232,13 +232,13 @@ export const sideBarItems: MenuItem_TP[] = [
             id: crypto.randomUUID(),
             label: "add",
             link: "/addSupport",
-            icon: BsQuestionSquare,
+            icon: IoAdd,
           },
           {
             id: crypto.randomUUID(),
             label: "view",
             link: "/viewSupport",
-            icon: BsQuestionSquare,
+            icon: CiGrid2H,
           },
         ],
       },
@@ -251,13 +251,13 @@ export const sideBarItems: MenuItem_TP[] = [
             id: crypto.randomUUID(),
             label: "add",
             link: "/addSupportArticle",
-            icon: BsQuestionSquare,
+            icon: IoAdd,
           },
           {
             id: crypto.randomUUID(),
             label: "view",
             link: "/viewSupportArticle",
-            icon: BsQuestionSquare,
+            icon: CiGrid2H,
           },
         ],
       },
