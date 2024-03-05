@@ -14,7 +14,6 @@ type Entry_TP = {
 };
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
-  
   const { formatGram, formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE
@@ -26,9 +25,13 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         header: () => <span>{t("id code")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "---",
         accessorKey: "category_name",
         header: () => <span>{t("category")}</span>,
+        cell: (info: any) => {
+          return info.row.original.sel_weight === 0
+            ? info.getValue()
+            : `${info.getValue()} مع سلسال`;
+        },
       },
       {
         cell: (info: any) => info.getValue() || "---",
