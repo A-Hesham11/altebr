@@ -71,6 +71,7 @@ export const SellingTableInputData = ({
   const { userData } = useContext(authCtx);
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
+  console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch)
 
   const priceWithCommissionRate =
     dataSource &&
@@ -85,6 +86,12 @@ export const SellingTableInputData = ({
     dataSource && dataSource[0]?.min_selling_type === "نسبة"
       ? priceWithCommissionRate
       : priceWithCommissionCash;
+
+    console.log("🚀 ~ priceWithSellingPolicy:", priceWithSellingPolicy)
+
+    const priceWithSellingTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
+    console.log("🚀 ~ priceWithSellingtax:", priceWithSellingTax)
+
 
   const { values, setFieldValue } = useFormikContext<any>();
   console.log("🚀 ~ values:", values);
