@@ -2,9 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { Cards_Props_TP } from "../../../components/templates/bankCards/ViewBankCards";
 import { t } from "i18next";
-import { FilesPreview } from "../../../components/molecules/files/FilesPreview";
 import { useFetch, useIsRTL } from "../../../hooks";
-import { useQueryClient } from "@tanstack/react-query";
 import { EditIcon } from "../../../components/atoms/icons";
 import { Loading } from "../../../components/organisms/Loading";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
@@ -17,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 import { IoAdd } from "react-icons/io5";
 import AddSupportArticle from "../AddSupport/AddSupportArticle";
 import { Form, Formik } from "formik";
-import { init } from "i18next";
 
 const ViewSupportArticle = () => {
   const isRTL = useIsRTL();
@@ -29,10 +26,8 @@ const ViewSupportArticle = () => {
     view: false,
   });
   const [editData, setEditData] = useState<Cards_Props_TP>();
-  console.log("🚀 ~ ViewSupport ~ editData:", editData);
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>();
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
-  console.log("🚀 ~ ViewSupportArticle ~ dataSource:", dataSource);
   const navigate = useNavigate();
   const [levelThreeSelect, setLevelThreeSelect] = useState(null);
 

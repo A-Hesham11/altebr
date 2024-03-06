@@ -296,7 +296,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
               // localStorage.clear()
 
               // COMPONENT FOR EXPORT DATA TO EXCEL FILE ACCEPT DATA AND THE NAME OF THE FILE
-              ExportToExcel(dataExcel, activeClass);
+              ExportToExcel(dataExcel?.data, activeClass);
             }}
             className="bg-mainGreen text-white"
           >

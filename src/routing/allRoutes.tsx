@@ -131,8 +131,6 @@ import Support from "../pages/Support/Support";
 import CategoryLink from "../pages/Support/CategoryLink";
 import SearchSupportLink from "../pages/Support/SearchSupportLink";
 import AddSupport from "../pages/Support/AddSupport/AddSupport";
-import ViewMainSupport from "../pages/Support/viewSupport/ViewMainSupport";
-import ViewSubSupport from "../pages/Support/viewSupport/ViewSubSupport";
 import ViewSupport from "../pages/Support/viewSupport/ViewSupport";
 import AddSupportArticle from "../pages/Support/AddSupport/AddSupportArticle";
 import ViewSupportArticle from "../pages/Support/viewSupport/ViewSupportArticle";
@@ -221,10 +219,6 @@ export const AllRoutesProvider = () => {
             path="/searchLinks/:searchLinksId"
             element={<SearchSupportLink />}
           />
-
-          {/* TODO HERE (WILL REMOVE) */}
-          <Route path="/support/mainSupport" element={<ViewMainSupport />} />
-          <Route path="/support/subSupport" element={<ViewSubSupport />} />
 
           <Route path="/addSupport" element={<AddSupport />} />
           <Route path="/viewSupport" element={<ViewSupport />} />
