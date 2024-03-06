@@ -35,6 +35,8 @@ type SellingTableInputWeight_TP = {
   setOpenSelsal?: any;
   TaxRateOfBranch?: any;
   selectedItemDetails?: any;
+  editSelsal?: any;
+  setEditSelsal?: any;
 };
 
 const SellingTableInputWeight = ({
@@ -44,10 +46,12 @@ const SellingTableInputWeight = ({
   setOpenSelsal,
   TaxRateOfBranch,
   selectedItemDetails,
+  editSelsal,
+  setEditSelsal,
 }: SellingTableInputWeight_TP) => {
-  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
   const [searchWeight, setSearchWeight] = useState("");
   const [itemsOfWeight, setItemsOfWeight] = useState([]);
+  console.log("🚀 ~ itemsOfWeight:", itemsOfWeight)
   const { userData } = useContext(authCtx);
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
   const { formatGram, formatReyal } = numberContext();
@@ -59,10 +63,6 @@ const SellingTableInputWeight = ({
     acc += +item.weight;
     return acc;
   }, 0);
-  console.log(
-    "🚀 ~ calcSelectItemsOfWeight ~ calcSelectItemsOfWeight:",
-    calcSelectItemsOfWeight
-  );
 
   const calcSelectItemsOfCost = selectedItemDetails.reduce((acc, item) => {
     acc += item.selling_price
@@ -70,10 +70,26 @@ const SellingTableInputWeight = ({
       : (Number(item.karat_price) + Number(item.wage)) * Number(item.weight);
     return acc;
   }, 0);
-  console.log(
-    "🚀 ~ calcSelectItemsOfCost ~ calcSelectItemsOfCost:",
-    calcSelectItemsOfCost
-  );
+
+  const calcOfSelsalWeight = sellingItemsOfWeigth.reduce((acc, item) => {
+    acc += +item.weight;
+    return acc;
+  }, 0);
+
+  const calcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
+    acc += +item.cost;
+    return acc;
+  }, 0);
+
+  const calcOfSelsalTaklfa = sellingItemsOfWeigth.reduce((acc, item) => {
+    acc += +item.taklfa;
+    return acc;
+  }, 0);
+
+  const calcOfSelsalTaklfaTax = sellingItemsOfWeigth.reduce((acc, item) => {
+    acc += +item.taklfa_after_tax;
+    return acc;
+  }, 0);
 
   const weightItem =
     selectedItemDetails?.length > 0
@@ -81,7 +97,6 @@ const SellingTableInputWeight = ({
       : values.category_selling_type === "all"
       ? Number(values.sel_weight) - Number(values.remaining_weight)
       : Number(values.remaining_weight);
-  console.log("🚀 ~ weightItem:", weightItem);
 
   const costItem =
     values?.classification_id === 1
@@ -91,24 +106,9 @@ const SellingTableInputWeight = ({
       ? Number(calcSelectItemsOfCost)
       : Number(values?.selling_price);
 
-  console.log("🚀 ~ costItem:", costItem);
+  const taklfaItem = costItem * (values?.min_selling / 100) + costItem;
 
-  const priceWithCommissionRate =
-    dataSource &&
-    (Number(sellingItemsOfWeigth[0]?.cost || 0) + Number(costItem)) *
-      (Number(dataSource[0]?.min_selling) * 0.01) +
-      (Number(sellingItemsOfWeigth[0]?.cost || 0) + Number(costItem));
-
-  const priceWithCommissionCash =
-    dataSource &&
-    Number(sellingItemsOfWeigth[0]?.cost || 0) +
-      Number(costItem) +
-      Number(dataSource[0]?.min_selling);
-
-  const priceWithSellingPolicy =
-    dataSource && dataSource[0]?.min_selling_type === "نسبة"
-      ? Number(priceWithCommissionRate)
-      : Number(priceWithCommissionCash);
+  const taklfaTaxItem = taklfaItem * (values?.tax_rate / 100) + taklfaItem;
 
   const initialValuesWeight = {
     hwya: "",
@@ -125,6 +125,12 @@ const SellingTableInputWeight = ({
     selling_price: "",
     wage: "",
     cost: "",
+    min_selling: "",
+    min_selling_type: "",
+    category_selling_type: "",
+    tax_rate: "",
+    taklfa: "",
+    taklfa_after_tax: "",
   };
 
   const sellingColsOfWeight = useMemo<ColumnDef<Selling_TP>[]>(
@@ -179,7 +185,7 @@ const SellingTableInputWeight = ({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const { refetch, isFetching, isSuccess, isLoading, isRefetching } = useFetch({
+  const { refetch, isFetching, isSuccess } = useFetch({
     queryKey: ["branch-all-accepted-weight-selling"],
     endpoint:
       searchWeight === ""
@@ -218,33 +224,19 @@ const SellingTableInputWeight = ({
     }
   }, [searchWeight]);
 
-  const calcOfSelsalWeight = sellingItemsOfWeigth.reduce((acc, item) => {
-    acc += +item.weight;
-    return acc;
-  }, 0);
-  console.log(
-    "🚀 ~ calcOfSelsalWeight ~ calcOfSelsalWeight:",
-    calcOfSelsalWeight
-  );
-
-  const calcOfSelsalCost = sellingItemsOfWeigth.reduce((acc, item) => {
-    acc += +item.cost;
-    return acc;
-  }, 0);
-
   const handleAddSelsalToPieces = () => {
     setFieldValue("weight", Number(weightItem) + Number(calcOfSelsalWeight));
     setFieldValue(
       "cost",
-      (Number(costItem) + Number(calcOfSelsalCost)).toFixed(2)
+      (Number(costItem) + Number(calcOfSelsalCost)).toFixed(3)
     );
-    setFieldValue("taklfa", Number(priceWithSellingPolicy).toFixed(2));
+    setFieldValue(
+      "taklfa",
+      (Number(taklfaItem) + Number(calcOfSelsalTaklfa)).toFixed(3)
+    );
     setFieldValue(
       "taklfa_after_tax",
-      (
-        priceWithSellingPolicy * +TaxRateOfBranch +
-        priceWithSellingPolicy
-      ).toFixed(2)
+      (Number(taklfaTaxItem) + Number(calcOfSelsalTaklfaTax)).toFixed(3)
     );
   };
 
@@ -264,19 +256,55 @@ const SellingTableInputWeight = ({
     handleAddSelsalToPieces();
   }, [calcOfSelsalWeight]);
 
+  useEffect(() => {
+    if (editSelsal.length > 0) {
+      setSellingItemsOfWeight(editSelsal);
+    }
+  }, [editSelsal]);
+
   return (
     <Formik
       initialValues={initialValuesWeight}
       validationSchema=""
       onSubmit={(values) => {}}
     >
-      {({ resetForm, values, setFieldValue }) => {
+      {({ values, setFieldValue }) => {
+        console.log("🚀 ~ values:", values)
         useEffect(() => {
+          const costItemSelsal =
+            (Number(itemsOfWeight[0]?.karat_price) +
+              Number(itemsOfWeight[0]?.wage)) *
+            Number(itemsOfWeight[0]?.remaining_weight);
+
+          const priceWithCommissionRateOfSelsal =
+            +costItemSelsal * (+itemsOfWeight[0]?.min_selling * 0.01) +
+            +costItemSelsal;
+
+          const priceWithCommissionCashOfSelsal =
+            +costItemSelsal + +itemsOfWeight[0]?.min_selling;
+
+          const priceWithSellingPolicyOfSelsal =
+            itemsOfWeight[0]?.min_selling_type === "نسبة"
+              ? priceWithCommissionRateOfSelsal
+              : priceWithCommissionCashOfSelsal;
+
+          const taklfaAfterTaxOfSelsal =
+            priceWithSellingPolicyOfSelsal * TaxRateOfBranch +
+            priceWithSellingPolicyOfSelsal;
+
           Object.keys(values).map((key) => {
             if (itemsOfWeight?.length === 1) {
               setFieldValue(key, itemsOfWeight[0][key]);
               setFieldValue("weight", itemsOfWeight[0]?.remaining_weight);
-              setFieldValue("cost", itemsOfWeight[0]?.cost?.toFixed(2));
+              setFieldValue("cost", Number(itemsOfWeight[0]?.cost).toFixed(3));
+              setFieldValue(
+                "taklfa",
+                Number(priceWithSellingPolicyOfSelsal).toFixed(3)
+              );
+              setFieldValue(
+                "taklfa_after_tax",
+                Number(taklfaAfterTaxOfSelsal).toFixed(3)
+              );
             }
           });
         }, [itemsOfWeight, searchWeight]);
@@ -376,13 +404,43 @@ const SellingTableInputWeight = ({
                         const remainingWeight =
                           +itemsOfWeight[0]?.remaining_weight - +e.target.value;
 
-                        const costItem =
-                          (+values.karat_price + +values.wage) *
-                          +e.target.value;
+                          const costItemSelsal =
+                          (Number(values.karat_price) +
+                            Number(values.wage)) *
+                          Number(e.target.value);
+              
+                        const priceWithCommissionRateOfSelsal =
+                          +costItemSelsal * (+itemsOfWeight[0]?.min_selling * 0.01) +
+                          +costItemSelsal;
+              
+                        const priceWithCommissionCashOfSelsal =
+                          +costItemSelsal + +itemsOfWeight[0]?.min_selling;
+              
+                        const priceWithSellingPolicyOfSelsal =
+                          itemsOfWeight[0]?.min_selling_type === "نسبة"
+                            ? priceWithCommissionRateOfSelsal
+                            : priceWithCommissionCashOfSelsal;
+              
+                        const taklfaAfterTaxOfSelsal =
+                          priceWithSellingPolicyOfSelsal * TaxRateOfBranch +
+                          priceWithSellingPolicyOfSelsal;
 
-                        setFieldValue("cost", +costItem.toFixed(3));
+                        setFieldValue(
+                          "remaining_weight",
+                          Number(remainingWeight)
+                        );
 
-                        setFieldValue("remaining_weight", +remainingWeight);
+                        setFieldValue("cost", Number(costItemSelsal).toFixed(3));
+
+                        setFieldValue(
+                          "taklfa",
+                          Number(priceWithSellingPolicyOfSelsal).toFixed(3)
+                        );
+
+                        setFieldValue(
+                          "taklfa_after_tax",
+                          Number(taklfaAfterTaxOfSelsal).toFixed(3)
+                        );
                       }}
                     />
                   </td>

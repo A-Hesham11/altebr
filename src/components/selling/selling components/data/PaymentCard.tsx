@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from "react";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useFetch, useIsRTL } from "../../../../hooks";
 import { Cards_Props_TP } from "../../../templates/bankCards/ViewBankCards";
-// import Slider from "react-slick";
 import { t } from "i18next";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import Slider from "react-slick";

@@ -50,14 +50,18 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData)
-  console.log("🚀 ~ dataSource:", dataSource)
+  console.log("🚀 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth);
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
+  console.log("🚀 ~ dataSource:", dataSource);
   console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
   const [kitDetails, setKitDetails] = useState([]);
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
+  const [editSelsal, setEditSelsal] = useState([]);
+  const [editkit, setEditkit] = useState([]);
+  console.log("🚀 ~ editkit:", editkit)
   const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
@@ -67,6 +71,7 @@ export const SellingTableInputData = ({
   const { userData } = useContext(authCtx);
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
+  console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch)
 
   const priceWithCommissionRate =
     dataSource &&
@@ -82,10 +87,16 @@ export const SellingTableInputData = ({
       ? priceWithCommissionRate
       : priceWithCommissionCash;
 
+    console.log("🚀 ~ priceWithSellingPolicy:", priceWithSellingPolicy)
+
+    const priceWithSellingTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
+    console.log("🚀 ~ priceWithSellingtax:", priceWithSellingTax)
+
+
   const { values, setFieldValue } = useFormikContext<any>();
   console.log("🚀 ~ values:", values);
 
-  const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
+  const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
     queryKey: ["branch-all-accepted-selling"],
     endpoint:
       search === ""
@@ -177,7 +188,7 @@ export const SellingTableInputData = ({
         header: () => "#",
         accessorKey: "action",
         cell: (info: any) => {
-        console.log("🚀 ~ info:", info.row.index)
+          console.log("🚀 ~ info:", info.row.index);
 
           return (
             <div className="flex items-center justify-center gap-4">
@@ -475,13 +486,13 @@ export const SellingTableInputData = ({
                 }}
                 className={`${
                   (!isSuccess ||
-                    (values.category_selling_type !== "all") ||
+                    values.category_selling_type !== "all" ||
                     values?.weight === 0) &&
                   "bg-mainDisabled"
                 } text-center`}
                 disabled={
                   !isSuccess ||
-                  (values.category_selling_type !== "all" ) ||
+                  values.category_selling_type !== "all" ||
                   values?.weight === 0
                 }
               />
@@ -601,8 +612,7 @@ export const SellingTableInputData = ({
               />
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
-              {dataSource?.length == 1 &&
-                dataSource[0]?.category_type === "multi" && (
+              {values?.category_type === "multi" && (
                   <Button
                     loading={values.hwya && isFetching}
                     action={() => {
@@ -627,7 +637,7 @@ export const SellingTableInputData = ({
                     <EditIcon className="fill-mainGreen w-6 h-6" />
                   </Button>
                 )}
-              {dataSource?.length == 1 && dataSource[0]?.has_selsal === 1 && (
+              {values?.has_selsal === 1 && (
                 <Button
                   loading={values.hwya && isFetching}
                   action={() => {
@@ -693,13 +703,19 @@ export const SellingTableInputData = ({
                       ? +stone_weight_percentage
                       : "v";
 
+                  const isEditSelsal =
+                  editSelsal.length > 0 ? editSelsal : sellingItemsOfWeigth;
+
+                  const isEditKit =
+                  editkit.length > 0 ? editkit : selectedItemDetails.flat(Infinity);
+
                   setSellingItemsData((prev) =>
                     [
                       ...prev,
                       {
                         ...values,
-                        itemDetails: selectedItemDetails.flat(Infinity),
-                        selsal: sellingItemsOfWeigth,
+                        itemDetails: isEditKit,
+                        selsal: isEditSelsal,
                         stone_weight: +stoneWeitgh,
                       },
                     ].reverse()
@@ -710,6 +726,8 @@ export const SellingTableInputData = ({
                   setSearch("");
                   setSelectedItemDetails([]);
                   setSellingItemsOfWeight([]);
+                  setEditSelsal([]);
+                  setEditkit([])
                 }}
                 className="bg-transparent px-2 m-auto"
               >
@@ -742,6 +760,10 @@ export const SellingTableInputData = ({
                           setFieldValue(key, row?.original[key]);
                         });
                         handleDeleteRow(row?.original?.item_id);
+                        setEditSelsal(row?.original.selsal);
+                        setEditkit(row?.original.itemDetails);
+                        console.log("🚀 ~ {table.getRowModel ~  handleDeleteRow(row?.original?.item_id):",  row?.original)
+
                       }}
                       className="bg-transparent px-2"
                     >
@@ -965,10 +987,11 @@ export const SellingTableInputData = ({
             openSelsal={openSelsal}
             TaxRateOfBranch={TaxRateOfBranch}
             selectedItemDetails={selectedItemDetails}
+            editSelsal={editSelsal}
+            setEditSelsal={setEditSelsal}
           />
         </div>
       </Modal>
-
     </Form>
   );
 };
