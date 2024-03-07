@@ -253,6 +253,8 @@ const SellingInvoiceData = ({
         selling_price: item.selling_price,
         cost: +totalCostFromOneItem,
         cost_value: item.cost,
+        taklfa: item.taklfa,
+        taklfa_after_tax: item.taklfa_after_tax,
         vat: +totalTaxFromOneRow,
         total: +taklfaFromOneItem,
         kitSellingItems: item.itemDetails,
