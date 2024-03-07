@@ -134,6 +134,7 @@ import AddSupport from "../pages/Support/AddSupport/AddSupport";
 import ViewSupport from "../pages/Support/viewSupport/ViewSupport";
 import AddSupportArticle from "../pages/Support/AddSupport/AddSupportArticle";
 import ViewSupportArticle from "../pages/Support/viewSupport/ViewSupportArticle";
+import SalesReturnPage from "../pages/salesReturn/SalesReturnPage";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -608,6 +609,7 @@ export const AllRoutesProvider = () => {
             path="/selling/management/edit-items-weight"
             element={<Print />}
           />
+          <Route path="/selling/payoff/sales-return" element={<SalesReturnPage />} />
           <Route path="/selling/payoff/payoff" element={<Payoff />} />
           <Route
             path="/selling/branchSetting"

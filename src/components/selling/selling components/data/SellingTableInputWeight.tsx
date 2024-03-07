@@ -49,6 +49,7 @@ const SellingTableInputWeight = ({
   editSelsal,
   setEditSelsal,
 }: SellingTableInputWeight_TP) => {
+  console.log("🚀 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth)
   const [searchWeight, setSearchWeight] = useState("");
   const [itemsOfWeight, setItemsOfWeight] = useState([]);
   console.log("🚀 ~ itemsOfWeight:", itemsOfWeight)

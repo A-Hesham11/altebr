@@ -10,7 +10,7 @@ const Payoff = () => {
             icon:receiveMoney,
             title_ar:'مردود البيع',
             title_en:'selling payoff',
-            route:'/selling/payoff/'
+            route:'/selling/payoff/sales-return'
         },
         {
             icon:receiveitem,
