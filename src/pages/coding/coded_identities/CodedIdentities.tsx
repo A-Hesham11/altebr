@@ -8,10 +8,14 @@ import OperationType from "./OperationType";
 import { json, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Loading } from "../../../components/organisms/Loading";
-import { useFetch } from "../../../hooks";
+import { useFetch, useMutate } from "../../../hooks";
 import { Back } from "../../../utils/utils-components/Back";
 import { formatDate } from "../../../utils/date";
 import { ExportToExcel } from "./ExportToFile";
+import { Modal } from "../../../components/molecules";
+import { FilesUpload } from "../../../components/molecules/files/FileUpload";
+import { notify } from "../../../utils/toast";
+import { mutateData } from "../../../utils/mutateData";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -24,6 +28,9 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   console.log("🚀 ~ CodedIdentities ~ dataSource:", dataSource);
   const [page, setPage] = useState(1);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
+  const [importModal, setImportModal] = useState<boolean>(false);
+  const [importFiles, setImportFiles] = useState<any>([]);
+  console.log("🚀 ~ CodedIdentities ~ importFiles:", importFiles);
   // const [operationTypeSelect, setOperationTypeSelect] = useState(() => {
   //   const storedData = localStorage.getItem("operationTypeSelect");
 
@@ -69,6 +76,21 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         ? `${fetchEndPoint}?page=${page}&per_page=10000`
         : `${search}`,
     pagination: true,
+  });
+
+  const {
+    mutate,
+    isLoading: postIsLoading,
+    isSuccess,
+  } = useMutate({
+    mutationFn: mutateData,
+    mutationKey: ["files"],
+    onSuccess: (data) => {
+      notify("success", t("imported has successfully completed"));
+    },
+    onError: (error: any) => {
+      notify("error", error?.message);
+    },
   });
 
   // HANDLE MANAGEMENT EDARA
@@ -161,6 +183,15 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     if (buttonName === "هويات جاري تسليمها في الإدارة")
       setActiveClass("هويات جاري تسليمها في الإدارة");
     if (buttonName === "قطع بالوزن") setActiveClass("قطع بالوزن");
+  };
+
+  const handleImportFiles = () => {
+    mutate({
+      endpointName: "/tarqimGold/api/v1/import",
+      values: { file: importFiles[0] },
+      dataType: "formData",
+    });
+    console.log({ file: importFiles[0] });
   };
 
   return (
@@ -289,6 +320,14 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           </Button>
           <Button
             action={(e) => {
+              setImportModal(true);
+            }}
+            className="bg-mainGreen text-white"
+          >
+            {t("import")}
+          </Button>
+          <Button
+            action={(e) => {
               // setCheckboxChecked(false)
               // refetch();
               // setPage(1)
@@ -328,6 +367,34 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
       {/* BUTTON TO BACK */}
       <Back className="w-32 self-end mt-6" />
+
+      <Modal
+        maxWidth="w-[40rem]"
+        isOpen={importModal}
+        onClose={() => setImportModal(false)}
+      >
+        <div className="mt-14 flex flex-col gap-8">
+          <div className="self-start">
+            <FilesUpload
+              files={importFiles}
+              setFiles={setImportFiles}
+              importedFile={true}
+            />
+          </div>
+          {/* <input
+            type="file"
+            name="importFiles"
+            id="importFiles"
+            onChange={(e) => console.log(e.target.value)}
+          /> */}
+          <Button
+            action={handleImportFiles}
+            className="bg-mainGreen text-white self-end ml-9"
+          >
+            {t("save")}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };
