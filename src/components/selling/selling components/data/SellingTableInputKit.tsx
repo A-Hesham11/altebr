@@ -3,6 +3,7 @@ import { BaseInputField } from "../../../molecules";
 import { useFormikContext } from "formik";
 import {
   ColumnDef,
+  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -127,7 +128,7 @@ const SellingTableInputKit = ({
                     className={`${item.weight != 0 && "bg-mainDisabled"}`}
                     onChange={(e) => {
                       setSelectedItemDetails((prev: any) => {
-                        const index = prev.findIndex(
+                        const index = prev?.findIndex(
                           (prevItem) =>
                             item?.category_id === prevItem?.category_id
                         );

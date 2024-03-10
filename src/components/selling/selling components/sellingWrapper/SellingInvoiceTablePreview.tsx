@@ -76,36 +76,36 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     []
   );
 
-  const cols2 = useMemo<ColumnDef<Entry_TP>[]>(
-    () => [
-      {
-        header: `${t("description")}`,
-        cell: (info) => info.renderValue() || "-",
-        accessorKey: "bian",
-      },
-      {
-        header: `${t("gram (debtor)")}`,
-        cell: (info) => formatGram(Number(info.renderValue())) || "-",
-        accessorKey: "debtor_gram",
-      },
-      {
-        header: `${t("reyal (debtor)")}`,
-        cell: (info) => formatReyal(Number(info.renderValue())) || "-",
-        accessorKey: "debtor_SRA",
-      },
-      {
-        header: `${t("gram (creditor)")}`,
-        cell: (info) => formatGram(Number(info.renderValue())) || "-",
-        accessorKey: "creditor_gram",
-      },
-      {
-        header: `${t("reyal (creditor)")}`,
-        cell: (info) => formatReyal(Number(info.renderValue())) || "-",
-        accessorKey: "creditor_SRA",
-      },
-    ],
-    []
-  );
+  // const cols2 = useMemo<ColumnDef<Entry_TP>[]>(
+  //   () => [
+  //     {
+  //       header: `${t("description")}`,
+  //       cell: (info) => info.renderValue() || "-",
+  //       accessorKey: "bian",
+  //     },
+  //     {
+  //       header: `${t("gram (debtor)")}`,
+  //       cell: (info) => formatGram(Number(info.renderValue())) || "-",
+  //       accessorKey: "debtor_gram",
+  //     },
+  //     {
+  //       header: `${t("reyal (debtor)")}`,
+  //       cell: (info) => formatReyal(Number(info.renderValue())) || "-",
+  //       accessorKey: "debtor_SRA",
+  //     },
+  //     {
+  //       header: `${t("gram (creditor)")}`,
+  //       cell: (info) => formatGram(Number(info.renderValue())) || "-",
+  //       accessorKey: "creditor_gram",
+  //     },
+  //     {
+  //       header: `${t("reyal (creditor)")}`,
+  //       cell: (info) => formatReyal(Number(info.renderValue())) || "-",
+  //       accessorKey: "creditor_SRA",
+  //     },
+  //   ],
+  //   []
+  // );
 
   return (
     <>
