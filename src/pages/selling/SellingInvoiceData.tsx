@@ -101,16 +101,21 @@ const SellingInvoiceData = ({
         header: () => <span>{t("category")} </span>,
         accessorKey: "category_name",
         cell: (info) => {
+          console.log("🚀 ~ info:", info.row.original.selsal[0]?.karat_name)
           const finalCategoriesNames = info.row.original.itemDetails
             ?.map((category) => category.category_name)
             .join("-");
+            const finalKaratNamesOfSelsal = info.row.original.selsal
+            ?.map((karat) => karat.karat_name)
+            .join("-");
+            console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal)
           return info.row.original.itemDetails.length
             ? info.row.original.has_selsal === 0
               ? finalCategoriesNames
-              : `${finalCategoriesNames} مع سلسال`
+              : `${finalCategoriesNames} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`
             : info.row.original.selsal.length === 0
             ? info.getValue()
-            : `${info.getValue()} مع سلسال`;
+            : `${info.getValue()} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`;
         },
       },
       {
