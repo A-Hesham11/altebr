@@ -1,8 +1,9 @@
+
+
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
 import { useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClientData_TP, Selling_TP } from "./PaymentSellingPage";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useMutate } from "../../hooks";
@@ -10,6 +11,7 @@ import { mutateData } from "../../utils/mutateData";
 import { Button } from "../../components/atoms";
 import { SellingFinalPreview } from "../../components/selling/selling components/SellingFinalPreview";
 import { numberContext } from "../../context/settings/number-formatter";
+import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -20,7 +22,7 @@ type CreateHonestSanadProps_TP = {
   selectedItemDetails: any;
   sellingItemsOfWeigth: any;
 };
-const SellingInvoiceData = ({
+const SalesReturnInvoiceData = ({
   setStage,
   sellingItemsData,
   paymentData,
@@ -29,6 +31,7 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ paymentData:", paymentData)
   console.log("🚀 ~ sellingItemsData:", sellingItemsData)
   const { formatGram, formatReyal } = numberContext();
 
@@ -327,4 +330,4 @@ const SellingInvoiceData = ({
   );
 };
 
-export default SellingInvoiceData;
+export default SalesReturnInvoiceData;

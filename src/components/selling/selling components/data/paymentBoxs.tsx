@@ -16,7 +16,7 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
 
   const totalPriceInvoice = sellingItemsData.reduce((total, item) => +total + +item.taklfa_after_tax, 0);
 
-  const amountRemaining = paymentData.reduce((total, item) => total + item.cost_after_tax ,0);
+  const amountRemaining = paymentData.reduce((total, item) => Number(total) + Number(item.cost_after_tax) ,0);
 
   const totalPaymentByBank = paymentData.filter((item) => item.id < 10000).reduce((total, item) => +total + +item.amount, 0);
 
@@ -27,8 +27,8 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
   const totalPaymentByKarat22 = paymentData.filter((item) => item.id === 10003)[0]?.weight || 0; 
   const totalPaymentByKarat24 = paymentData.filter((item) => item.id === 10004)[0]?.weight || 0; 
 
-  const totalpaymentByGram = +totalPaymentByKarat18 + +totalPaymentByKarat21 + +totalPaymentByKarat22 + +totalPaymentByKarat24
-  const paymentByGram = (+totalPaymentByKarat18 * 18 / 24) + (+totalPaymentByKarat21 * 21 / 24 ) + (+totalPaymentByKarat22 * 22 / 24 ) + (+totalPaymentByKarat24 * 24 / 24 )
+  const totalpaymentByGram = Number(totalPaymentByKarat18) + Number(totalPaymentByKarat21) + Number(totalPaymentByKarat22) + Number(totalPaymentByKarat24)
+  const paymentByGram = (Number(totalPaymentByKarat18) * 18 / 24) + (Number(totalPaymentByKarat21) * 21 / 24 ) + (Number(totalPaymentByKarat22) * 22 / 24 ) + (Number(totalPaymentByKarat24) * 24 / 24 )
   
   const karatDifference = totalpaymentByGram - paymentByGram
 
@@ -36,19 +36,19 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
     {
       id: 1,
       account: `${t("total bill after tax")}` ,
-      value: formatReyal(Number((+totalPriceInvoice).toFixed(2))) ,
+      value: formatReyal(Number(totalPriceInvoice)) ,
       unit: "ر.س",
     },
     {
       id: 2,
       account: `${t("total tax")}` ,
-      value: formatReyal(Number((totalPriceInvoice - priceInvoice).toFixed(2))) ,
+      value: formatReyal(Number(totalPriceInvoice - priceInvoice)) ,
       unit: "ر.س",
     },
     {
       id: 3,
       account: `${t("remainder of payment")}`, 
-      value: formatReyal(Number((totalPriceInvoice - amountRemaining).toFixed(2))),
+      value: formatReyal(Number(totalPriceInvoice - amountRemaining || 0)),
       unit: "ر.س",
     },
   ]

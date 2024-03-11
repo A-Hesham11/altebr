@@ -98,11 +98,11 @@ const PaymentProccessingToManagement = ({
     weight: editData?.weight || "",
   };
 
-  const totalPriceInvoice = sellingItemsData?.reduce((total, item) => +total + +item.taklfa_after_tax, 0)
+  const totalPriceInvoice = sellingItemsData?.reduce((total, item) => Number(total) + Number(item.taklfa_after_tax), 0)
 
-  const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax ,0)
+  const amountRemaining = paymentData?.reduce((total, item) => Number(total) + Number(item.cost_after_tax) ,0)
 
-  const costRemaining = totalPriceInvoice - amountRemaining
+  const costRemaining = Number(totalPriceInvoice) - Number(amountRemaining)
 
 const {
     data,
