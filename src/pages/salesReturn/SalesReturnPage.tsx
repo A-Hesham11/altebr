@@ -7,6 +7,10 @@ import { useFetch } from '../../hooks';
 import SellingFirstPage from '../selling/SellingFirstPage';
 import SalesReturnFirstPage from './SalesReturnFirstPage';
 import * as Yup from "yup";
+import SellingSecondpage from '../../components/selling/selling components/SellingSecondpage';
+import SalesReturnSecondPage from './SalesReturnSecondPage';
+import SellingInvoiceData from '../selling/SellingInvoiceData';
+import SalesReturnInvoiceData from './SalesReturnInvoiceData';
 
 const SalesReturnPage = () => {
     const [dataSource, setDataSource] = useState<Selling_TP[]>();
@@ -21,6 +25,7 @@ const SalesReturnPage = () => {
     const { userData } = useContext(authCtx)
 
     const initialValues: Selling_TP = {
+        invoice_id:"",
         item_id: "",
         hwya: "",
         min_selling:"",
@@ -40,6 +45,7 @@ const SalesReturnPage = () => {
         karatmineral_id: "",
         karatmineral_name: "",
         gold_price:[],
+        selsal:[],
         karat_price:"",
         selling_price: "" ,
         tax_rate:"",
@@ -109,9 +115,9 @@ const SalesReturnPage = () => {
                     setSellingItemsOfWeight={setSellingItemsOfWeight}
                 />
             }
-            {/* {
+            {
                 stage === 2 &&
-                <SellingSecondpage 
+                <SalesReturnSecondPage
                     setStage={setStage} 
                     paymentData={paymentData} 
                     setPaymentData={setPaymentData} 
@@ -120,7 +126,7 @@ const SalesReturnPage = () => {
             }
             {
                 stage === 3 &&
-                <SellingInvoiceData 
+                <SalesReturnInvoiceData 
                     invoiceNumber={invoiceNumber}
                     sellingItemsData={sellingItemsData} 
                     paymentData={paymentData} 
@@ -129,7 +135,7 @@ const SalesReturnPage = () => {
                     selectedItemDetails={selectedItemDetails}
                     sellingItemsOfWeigth={sellingItemsOfWeigth}
                 />
-            } */}
+            }
         </>
     </Formik>
 
