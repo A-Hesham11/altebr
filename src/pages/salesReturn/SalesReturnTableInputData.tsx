@@ -24,8 +24,9 @@ import { notify } from "../../utils/toast";
 import { DeleteIcon, EditIcon } from "../../components/atoms/icons";
 import { HiViewGridAdd } from "react-icons/hi";
 import { Header } from "../../components/atoms/Header";
-import SellingTableInputWeight from "../../components/selling/selling components/data/SellingTableInputWeight";
 import SalesReturnTableInputOfSelsal from "./SalesReturnTableInputOfSelsal";
+import SellingTableInputKit from "../../components/selling/selling components/data/SellingTableInputKit";
+import SalesReturnTableInputKit from "./SalesReturnTableInputKit";
 
 type SellingTableInputData_TP = {
   dataSource: any;
@@ -55,14 +56,11 @@ export const SalesReturnTableInputData = ({
   console.log("🚀 ~ dataSource:", dataSource);
   console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ search:", search)
+  console.log("🚀 ~ search:", search);
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
   const [kitDetails, setKitDetails] = useState([]);
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
-  const [editSelsal, setEditSelsal] = useState([]);
-  const [editkit, setEditkit] = useState([]);
-  console.log("🚀 ~ editkit:", editkit);
   const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
@@ -72,7 +70,6 @@ export const SalesReturnTableInputData = ({
   const { userData } = useContext(authCtx);
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
-  console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch);
 
   const priceWithCommissionRate =
     dataSource &&
@@ -92,7 +89,6 @@ export const SalesReturnTableInputData = ({
     priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy;
 
   const { values, setFieldValue } = useFormikContext<any>();
-  console.log("🚀 ~ values:", values);
 
   const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
     queryKey: ["branch-all-return-selling"],
@@ -112,6 +108,11 @@ export const SalesReturnTableInputData = ({
 
   const sellingCols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
+      {
+        header: () => <span>{t("bill number")}</span>,
+        accessorKey: "invoice_id",
+        cell: (info) => info.getValue() || "---",
+      },
       {
         header: () => <span>{t("piece number")}</span>,
         accessorKey: "hwya",
@@ -277,7 +278,7 @@ export const SalesReturnTableInputData = ({
   };
 
   const getSearchResults = async (item: any) => {
-    console.log("🚀 ~ getSearchResults ~ item:", item)
+    console.log("🚀 ~ getSearchResults ~ item:", item);
     let uri = `/sellingReturn/api/v1/all-selling/${userData?.branch_id}?hwya[eq]=${item.hwya}&invoice_id[eq]=${item.invoice_id}`;
     setSearch(uri);
   };
@@ -313,17 +314,6 @@ export const SalesReturnTableInputData = ({
             </div>
           ))}
       </p>
-      <div>
-        <label htmlFor="invoice_id" >{`${t("bill number")}`}</label>
-        <BaseInputField
-          placeholder={`${t("bill number")}`}
-          id="invoice_id"
-          name="invoice_id"
-          type="number"
-          className={`${!isSuccess && "bg-mainDisabled"} text-center w-[300px] mt-2`}
-          disabled={!isSuccess}
-        />
-      </div>
       <table className="mt-8 min-w-[815px] lg:w-full">
         <thead className="bg-mainGreen text-white">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -331,7 +321,7 @@ export const SalesReturnTableInputData = ({
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="py-4 px-2 text-sm font-medium text-white border w-[12.5%]"
+                  className="py-4 px-2 text-sm font-medium text-white border w-[11%]"
                 >
                   {header.isPlaceholder
                     ? null
@@ -348,19 +338,32 @@ export const SalesReturnTableInputData = ({
           <tr className="border-b text-center table-shadow last:shadow-0">
             <td>
               <BaseInputField
+                placeholder={`${t("bill number")}`}
+                id="invoice_id"
+                name="invoice_id"
+                type="number"
+                className={`${!isSuccess && "bg-mainDisabled"} text-center`}
+                disabled={!isSuccess}
+              />
+            </td>
+            <td>
+              <BaseInputField
                 placeholder={`${t("piece number")}`}
                 id="hwya"
                 name="hwya"
                 type="text"
                 onChange={(e) => {
                   setFieldValue("hwya", e.target.value);
-                  getSearchResults({ hwya: e.target.value, invoice_id: values.invoice_id  });
+                  getSearchResults({
+                    hwya: e.target.value,
+                    invoice_id: values.invoice_id,
+                  });
                   handleInputChange(e);
                 }}
                 className={`${
-                  !isSuccess || (!values.invoiceNumSearch && "bg-mainDisabled")
+                  !isSuccess || (!values.invoice_id && "bg-mainDisabled")
                 } text-center`}
-                disabled={!isSuccess || !values.invoiceNumSearch}
+                disabled={!isSuccess || !values.invoice_id}
               />
             </td>
             <td>
@@ -425,18 +428,6 @@ export const SalesReturnTableInputData = ({
                 }
               />
             </td>
-            {/* <td>
-                <BaseInputField
-                  placeholder={`${t("remaining weight")}`}
-                  id="remaining_weight"
-                  name="remaining_weight"
-                  type="text"
-                  disabled={!isCategoryDisabled}
-                  className={`${
-                    !isCategoryDisabled && "bg-mainDisabled"
-                  } text-center`}
-                />
-              </td> */}
             <td className="border-l-2 border-l-flatWhite">
               <SelectKarat
                 field="id"
@@ -498,8 +489,6 @@ export const SalesReturnTableInputData = ({
                 className={`${
                   !isSuccess || userData?.include_tax === "1"
                     ? "bg-mainDisabled"
-                    : values?.taklfa && +values?.taklfa < +editSellingTaklfa
-                    ? "bg-red-100"
                     : ""
                 } text-center`}
                 disabled={!isSuccess || userData?.include_tax === "1"}
@@ -524,7 +513,7 @@ export const SalesReturnTableInputData = ({
               />
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
-              {values?.category_type === "multi" && (
+              {dataSource && dataSource[0]?.kitItem.length > 0 && (
                 <Button
                   loading={values.hwya && isFetching}
                   action={() => {
@@ -601,21 +590,11 @@ export const SalesReturnTableInputData = ({
                   //     ? +stone_weight_percentage
                   //     : "v";
 
-                  const isEditSelsal =
-                    editSelsal.length > 0 ? editSelsal : sellingItemsOfWeigth;
-
-                  const isEditKit =
-                    editkit.length > 0
-                      ? editkit
-                      : selectedItemDetails.flat(Infinity);
-
                   setSellingItemsData((prev) =>
                     [
                       ...prev,
                       {
                         ...values,
-                        itemDetails: isEditKit,
-                        selsal: isEditSelsal,
                         //   stone_weight: +stoneWeitgh,
                       },
                     ].reverse()
@@ -626,8 +605,6 @@ export const SalesReturnTableInputData = ({
                   setSearch("");
                   setSelectedItemDetails([]);
                   setSellingItemsOfWeight([]);
-                  setEditSelsal([]);
-                  setEditkit([]);
                 }}
                 className="bg-transparent px-2 m-auto"
               >
@@ -660,12 +637,6 @@ export const SalesReturnTableInputData = ({
                           setFieldValue(key, row?.original[key]);
                         });
                         handleDeleteRow(row?.original?.item_id);
-                        setEditSelsal(row?.original.selsal);
-                        setEditkit(row?.original.itemDetails);
-                        console.log(
-                          "🚀 ~ {table.getRowModel ~  handleDeleteRow(row?.original?.item_id):",
-                          row?.original
-                        );
                       }}
                       className="bg-transparent px-2"
                     >
@@ -692,37 +663,17 @@ export const SalesReturnTableInputData = ({
       </table>
 
       {/* Selling Kit */}
-      {/* <Modal isOpen={openDetails} onClose={() => setOpenDetails(false)}>
+      <Modal isOpen={openDetails} onClose={() => setOpenDetails(false)}>
         <div className="flex flex-col gap-8 justify-center items-center">
           <Header header={t("kit details")} />
-          <SellingTableInputKit
-            dataSource={dataSource}
-            selectedItemDetails={selectedItemDetails}
-            setSelectedItemDetails={setSelectedItemDetails}
-            kitDetails={kitDetails}
-            TaxRateOfBranch={TaxRateOfBranch}
-            setOpenDetails={setOpenDetails}
-            setEditSellingTaklfa={setEditSellingTaklfa}
-            setEditSellingTaklfaAfterTax={setEditSellingTaklfaAfterTax}
-          />
+          <SalesReturnTableInputKit />
         </div>
-      </Modal> */}
+      </Modal>
 
       <Modal isOpen={openSelsal} onClose={() => setOpenSelsal(false)}>
         <div className="flex flex-col gap-8 justify-center items-center">
           <Header header={t("chain")} />
-          <SalesReturnTableInputOfSelsal
-            handleDeleteRow={handleDeleteRow}
-            sellingItemsOfWeigth={sellingItemsOfWeigth}
-            setSellingItemsOfWeight={setSellingItemsOfWeight}
-            dataSource={dataSource}
-            setOpenSelsal={setOpenSelsal}
-            openSelsal={openSelsal}
-            TaxRateOfBranch={TaxRateOfBranch}
-            selectedItemDetails={selectedItemDetails}
-            editSelsal={editSelsal}
-            setEditSelsal={setEditSelsal}
-          />
+          <SalesReturnTableInputOfSelsal />
         </div>
       </Modal>
     </Form>

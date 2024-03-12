@@ -46,6 +46,7 @@ const SalesReturnPage = () => {
         karatmineral_name: "",
         gold_price:[],
         selsal:[],
+        kitItem:[],
         karat_price:"",
         selling_price: "" ,
         tax_rate:"",
@@ -56,7 +57,6 @@ const SalesReturnPage = () => {
         wage_total:"",
         category_type:"",
         weightitems:[],
-
         client_id:  "",
         client_value: "",
         bond_date: new Date,
@@ -82,8 +82,8 @@ const SalesReturnPage = () => {
     });
 
     const { data } = useFetch<ClientData_TP>({
-        endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}?per_page=10000`,
-        queryKey: [`invoices_data_${userData?.branch_id}`],
+        endpoint: `/sellingReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}?per_page=10000`,
+        queryKey: [`return_invoices_data_${userData?.branch_id}`],
         onSuccess(data) {
             setInvoiceNumber(data)
         },

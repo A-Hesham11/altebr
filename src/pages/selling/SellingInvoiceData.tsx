@@ -29,7 +29,7 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData)
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
@@ -101,21 +101,20 @@ const SellingInvoiceData = ({
         header: () => <span>{t("category")} </span>,
         accessorKey: "category_name",
         cell: (info) => {
-          console.log("🚀 ~ info:", info.row.original.selsal[0]?.karat_name)
+          console.log("🚀 ~ info:", info.row.original);
           const finalCategoriesNames = info.row.original.itemDetails
             ?.map((category) => category.category_name)
             .join("-");
-            const finalKaratNamesOfSelsal = info.row.original.selsal
+          const finalKaratNamesOfSelsal = info.row.original.selsal
             ?.map((karat) => karat.karat_name)
             .join("-");
-            console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal)
-          return info.row.original.itemDetails.length
-            ? info.row.original.has_selsal === 0
-              ? finalCategoriesNames
-              : `${finalCategoriesNames} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`
-            : info.row.original.selsal.length === 0
-            ? info.getValue()
-            : `${info.getValue()} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`;
+          console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal);
+          return info.row.original.itemDetails.length &&
+            info.row.original.selsal.length === 0
+            ? (finalCategoriesNames || info.getValue())
+            : `${(finalCategoriesNames || info.getValue())} مع سلسال (${
+                info.row.original.selsal && finalKaratNamesOfSelsal
+              })`;
         },
       },
       {
@@ -216,29 +215,32 @@ const SellingInvoiceData = ({
     const items = sellingItemsData.map((item) => {
       console.log("🚀 ~ items ~ item:", item);
 
-      const rowTaxEquation = (Number(item.tax_rate) / 100) + 1;
+      const rowTaxEquation = Number(item.tax_rate) / 100 + 1;
       const taklfaFromOneItem =
-        Number(item.taklfa_after_tax) + Number(ratioForOneItem) + Number(ratioForOneItemTaxes);
+        Number(item.taklfa_after_tax) +
+        Number(ratioForOneItem) +
+        Number(ratioForOneItemTaxes);
       const totalCostFromOneItem =
-      Number(item.taklfa_after_tax) / Number(rowTaxEquation) + Number(ratioForOneItem);
-      console.log("🚀 ~ items ~ totalCostFromOneItem:", totalCostFromOneItem)
+        Number(item.taklfa_after_tax) / Number(rowTaxEquation) +
+        Number(ratioForOneItem);
+      console.log("🚀 ~ items ~ totalCostFromOneItem:", totalCostFromOneItem);
       const totalTaxFromOneRow = +taklfaFromOneItem - +totalCostFromOneItem;
 
       const weightOfSelsal = item.selsal?.reduce((acc, item) => {
         acc += +item.weight;
         return acc;
       }, 0);
-      console.log("🚀 ~ weightOfSelsal ~ weightOfSelsal:", weightOfSelsal)
-
+      console.log("🚀 ~ weightOfSelsal ~ weightOfSelsal:", weightOfSelsal);
 
       const costOfSelsal = item.selsal?.reduce((acc, item) => {
         acc += +item.cost;
         return acc;
       }, 0);
-      console.log("🚀 ~ costOfSelsal ~ costOfSelsal:", costOfSelsal)
+      console.log("🚀 ~ costOfSelsal ~ costOfSelsal:", costOfSelsal);
 
-      const isSelsal = (item.selsal && item.selsal?.length > 0) ? Number(weightOfSelsal) : 0
-      console.log("🚀 ~ items ~ isSelsal:", isSelsal)
+      const isSelsal =
+        item.selsal && item.selsal?.length > 0 ? Number(weightOfSelsal) : 0;
+      console.log("🚀 ~ items ~ isSelsal:", isSelsal);
 
       return {
         category_id: item.category_id,
@@ -283,10 +285,10 @@ const SellingInvoiceData = ({
 
       return acc;
     }, {});
-    // mutate({
-    //     endpointName: '/selling/api/v1/add_Invoice',
-    //     values: { invoice, items, card }
-    // })
+    mutate({
+      endpointName: "/selling/api/v1/add_Invoice",
+      values: { invoice, items, card },
+    });
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
       { invoice, items, card }

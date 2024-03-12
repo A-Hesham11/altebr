@@ -654,6 +654,7 @@
   "items rejected": "قطع مرفوضه",
   "loading items": "تحميل القطع",
   "reject": "رفض",
+  "Sales return restrictions":"قيود مردود المبيعات",
   "The sum of weights is more than the remaining weight":"تجميعة الأوزان اكثر من الوزن المتبقي",
   "The sum of weights is less than the remaining weight":"تجميعة الأوزان أقل من الوزن المتبقي",
   "The weight must be distributed among the pieces":"يجب توزيع الوزن علي القطع",
