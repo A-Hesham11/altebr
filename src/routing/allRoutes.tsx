@@ -135,6 +135,7 @@ import ViewSupport from "../pages/Support/viewSupport/ViewSupport";
 import AddSupportArticle from "../pages/Support/AddSupport/AddSupportArticle";
 import ViewSupportArticle from "../pages/Support/viewSupport/ViewSupportArticle";
 import SalesReturnPage from "../pages/salesReturn/SalesReturnPage";
+import SalesReturnRestrictions from "../pages/salesReturn/SalesReturnRestrictions";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -534,6 +535,11 @@ export const AllRoutesProvider = () => {
             path="/selling/finalPreview"
             element={<SellingFinalPreview />}
           />
+          <Route
+            path="/selling/return-entry"
+            element={<SalesReturnRestrictions />}
+          />
+
           {/* <Route path="/selling/buying/test" element={<>butingh</>} /> */}
           <Route path="/selling/management" element={<Management />} />
           {/* <Route path="/selling/exchange" element={<>exchange</>} /> */}
@@ -609,7 +615,10 @@ export const AllRoutesProvider = () => {
             path="/selling/management/edit-items-weight"
             element={<Print />}
           />
-          <Route path="/selling/payoff/sales-return" element={<SalesReturnPage />} />
+          <Route
+            path="/selling/payoff/sales-return"
+            element={<SalesReturnPage />}
+          />
           <Route path="/selling/payoff/payoff" element={<Payoff />} />
           <Route
             path="/selling/branchSetting"

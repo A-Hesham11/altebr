@@ -268,7 +268,7 @@ const SellingTableInputKit = ({
             ) {
               notify(
                 "info",
-                "The sum of weights is more than the remaining weight"
+                `${t("The sum of weights is more than the remaining weight")}`
               );
             } else if (
               checkedFromWeight &&
@@ -277,18 +277,18 @@ const SellingTableInputKit = ({
             ) {
               notify(
                 "info",
-                "The sum of weights is less than the remaining weight"
+                `${t("The sum of weights is less than the remaining weight")}`
               );
             } else if (
               filterStatusOfKit.length !== selectedItemDetails.length &&
               Number(values.weight) === Number(clacSelectedWeight)
             ) {
-              notify("info", "The weight must be distributed among the pieces");
+              notify("info", `${t("The weight must be distributed among the pieces")}`);
             } else if (
               filterStatusOfKit.length === 1 &&
               Number(values.weight) !== Number(selectedItemDetails[0]?.weight)
             ) {
-              notify("info", "The full weight must be added");
+              notify("info", `${t("The full weight must be added")}`);
             } else {
               setFieldValue("taklfa", priceWithSellingPolicy);
 

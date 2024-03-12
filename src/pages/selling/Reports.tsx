@@ -1,8 +1,12 @@
+import { Link } from "react-router-dom";
 import receiveitem from "../../assets/receiveItems.svg";
 import receiveMoney from "../../assets/recieveMoney.svg";
 import SellingSubCard from "../../components/selling/SellingSubCard";
 import { useIsRTL } from "../../hooks";
 import { Back } from "../../utils/utils-components/Back";
+import { FaCubes } from "react-icons/fa";
+import { t } from "i18next";
+
 const Reports = () => {
   const isRTL = useIsRTL();
   const data = [

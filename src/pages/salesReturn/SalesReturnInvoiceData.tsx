@@ -28,15 +28,10 @@ const SalesReturnInvoiceData = ({
   paymentData,
   clientData,
   invoiceNumber,
-  selectedItemDetails,
-  sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData)
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData)
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
 
   const TaxRateOfBranch =
     sellingItemsData && sellingItemsData[0]?.tax_rate / 100;
