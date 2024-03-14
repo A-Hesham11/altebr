@@ -51,9 +51,12 @@ const SalesReturnPage = () => {
         selling_price: "" ,
         tax_rate:"",
         cost: "",
+        cost_value:"",
         wage:"",
         taklfa: "",
         taklfa_after_tax: "",
+        vat:"",
+        total:"",
         wage_total:"",
         category_type:"",
         weightitems:[],
@@ -89,6 +92,7 @@ const SalesReturnPage = () => {
         },
     });
 
+    console.log("🚀 ~ SalesReturnPage ~ data:", data)
   return (
     <Formik
         initialValues={initialValues}
