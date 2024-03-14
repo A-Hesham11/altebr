@@ -73,6 +73,7 @@ const PaymentProccessingToManagement = ({
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("")
+  const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("")
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx)
@@ -115,6 +116,7 @@ const {
     },
     enabled: (!!cardId && !!userData?.branch_id && !!cardFrontKey)
 });
+    console.log("🚀 ~ data:", data)
 
   useEffect(() => {
       if (cardId !== null && cardFrontKey !== null) {
@@ -157,6 +159,7 @@ const {
                   frontkey: cardFrontKey,
                   frontKeyAccept: frontKeyAccept,
                   sellingFrontKey: sellingFrontKey,
+                  salesReturnFrontKey: salesReturnFrontKey,
                 };
 
                 if (+data?.value === 0 || +values.amount > +data?.value || +values.weight > +data?.value) {
@@ -199,6 +202,7 @@ const {
                   setCardFrontKeyAccept={setCardFrontKeyAccept}
                   setSellingFrontKey={setSellingFrontKey}
                   setCardDiscountPercentage={setCardDiscountPercentage}
+                  setSalesReturnFrontKey={setSalesReturnFrontKey}
                   setCardId={setCardId}
                   setSelectedCardName={setSelectedCardName}
                 />

@@ -35,10 +35,10 @@ const SellingInvoiceData = ({
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ userData:", userData);
 
-  const TaxRateOfBranch =
-    sellingItemsData && sellingItemsData[0]?.tax_rate / 100;
+  // const TaxRateOfBranch =
+  //   sellingItemsData && sellingItemsData[0]?.tax_rate / 100;
 
-  const taxEquation = +TaxRateOfBranch + 1;
+  // const taxEquation = +TaxRateOfBranch + 1;
 
   const totalCommissionRatio = paymentData.reduce((acc, card) => {
     acc += +card.commission_riyals;
@@ -103,18 +103,23 @@ const SellingInvoiceData = ({
         cell: (info) => {
           console.log("🚀 ~ info:", info.row.original);
           const finalCategoriesNames = info.row.original.itemDetails
-            ?.map((category) => category.category_name)
-            .join("-");
+          ?.map((category) => category.category_name)
+          .join("-");
+          console.log("🚀 ~ finalCategoriesNames:", finalCategoriesNames)
+
           const finalKaratNamesOfSelsal = info.row.original.selsal
             ?.map((karat) => karat.karat_name)
             .join("-");
+            console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal)
+
           console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal);
-          return info.row.original.itemDetails.length &&
-            info.row.original.selsal.length === 0
-            ? (finalCategoriesNames || info.getValue())
-            : `${(finalCategoriesNames || info.getValue())} مع سلسال (${
-                info.row.original.selsal && finalKaratNamesOfSelsal
-              })`;
+            return info.row.original.itemDetails?.length
+              ? info.row.original.has_selsal === 0
+                ? finalCategoriesNames
+                : `${finalCategoriesNames} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`
+              : info.row.original.selsal.length === 0
+              ? info.getValue()
+              : `${info.getValue()} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`;
         },
       },
       {
@@ -270,6 +275,7 @@ const SellingInvoiceData = ({
         sel_weight: weightOfSelsal || 0,
         selsal: item.selsal,
         has_selsal: item.has_selsal,
+        tax_rate: item.tax_rate,
       };
     });
     const card = paymentData.reduce((acc, curr) => {

@@ -147,7 +147,7 @@ export const SalesReturnTableInputData = ({
       },
       {
         header: () => <span>{t("cost")} </span>,
-        accessorKey: "cost",
+        accessorKey: "cost_value",
         cell: (info) =>
           info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
@@ -471,7 +471,7 @@ export const SalesReturnTableInputData = ({
               <BaseInputField
                 placeholder={`${t("cost")}`}
                 id="cost"
-                name="cost"
+                name="cost_value"
                 type="text"
                 disabled={!isCategoryDisabled}
                 className={`${
@@ -501,15 +501,8 @@ export const SalesReturnTableInputData = ({
                 name="taklfa_after_tax"
                 type="text"
                 required
-                disabled={userData?.include_tax === "0"}
-                className={`${
-                  !isSuccess || userData?.include_tax === "0"
-                    ? "bg-mainDisabled"
-                    : values?.taklfa_after_tax &&
-                      +values?.taklfa_after_tax < +editSellingTaklfaAfterTax
-                    ? "bg-red-100"
-                    : ""
-                } text-center`}
+                disabled
+                className={`bg-mainDisabled text-center`}
               />
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
