@@ -148,12 +148,12 @@ const SalesReturnInvoiceData = ({
       {
         header: () => <span>{t("weight")}</span>,
         accessorKey: "weight",
-        cell: (info) => info.getValue() || `${t("no items")}`,
+        cell: (info) => formatGram(Number(info.getValue())) || `${t("no items")}`,
       },
       {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         // cell: (info: any) => {
         //   const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
         //   const totalCostFromRow =
@@ -165,7 +165,7 @@ const SalesReturnInvoiceData = ({
       {
         header: () => <span>{t("VAT")} </span>,
         accessorKey: "vat",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         // cell: (info: any) => {
         //   const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
         //   const totalCostFromRow =
@@ -183,7 +183,7 @@ const SalesReturnInvoiceData = ({
       {
         header: () => <span>{t("total")} </span>,
         accessorKey: "total",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         // cell: (info: any) => {
         //   const totaltaklfaFromRow =
         //     +info.row.original.taklfa_after_tax +
