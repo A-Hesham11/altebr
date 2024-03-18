@@ -60,6 +60,8 @@ const SalesReturnPage = () => {
         wage_total:"",
         category_type:"",
         weightitems:[],
+        commission_oneItem:"",
+        commissionTax_oneItem:"",
         client_id:  "",
         client_value: "",
         bond_date: new Date,

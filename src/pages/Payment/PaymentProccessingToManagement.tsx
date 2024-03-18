@@ -65,7 +65,7 @@ const PaymentProccessingToManagement = ({
   selectedCardName,
   setSelectedCardName,
 }: Payment_TP) => {
-  console.log("🚀 ~ cardId:", cardId)
+  console.log("🚀 ~ cardId:", cardId);
   console.log(
     "🚀 ~ file: PaymentProccessingToManagement.tsx:67 ~ paymentData:",
     paymentData
@@ -75,13 +75,18 @@ const PaymentProccessingToManagement = ({
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
   const [cardFrontKey, setCardFronKey] = useState<string>("");
-  console.log("🚀 ~ cardFrontKey:", cardFrontKey)
+  console.log("🚀 ~ cardFrontKey:", cardFrontKey);
   const [cardDiscountPercentage, setCardDiscountPercentage] =
     useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
   const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("");
   const { formatReyal } = numberContext();
+
+  const [isChecked, setIsChecked] = useState(false);
+  console.log("🚀 ~ isChecked:", isChecked)
+
+
 
   const locationPath = location.pathname;
 
@@ -113,19 +118,36 @@ const PaymentProccessingToManagement = ({
     0
   );
 
-  const amountRemaining = paymentData?.reduce(
-    (total, item) => Number(total) + Number(item.cost_after_tax),
+  const totalCommissionOfoneItem = sellingItemsData?.reduce(
+    (total, item) => Number(total) + Number(item.commission_oneItem),
     0
   );
 
-  const costRemaining = Number(totalPriceInvoice) - Number(amountRemaining);
+  const amountRemaining = paymentData?.reduce(
+    (total, item) =>
+      Number(total) + (Number(item.cost_after_tax) || Number(item.amount)),
+    0
+  );
+  console.log("🚀 ~ amountRemaining:", amountRemaining);
 
-  const cashId  = (locationPath === "/selling/payoff/sales-return" && cardFrontKey === "cash")
+  const invoiceTotalOfOfSalesReturn = sellingItemsData.reduce(
+    (total, item) => +total + +item.total,
+    0
+  );
+
+  const costRemaining =
+    (locationPath === "/selling/payoff/sales-return"
+      ? Number(invoiceTotalOfOfSalesReturn) - Number(totalCommissionOfoneItem)
+      : Number(totalPriceInvoice)) - Number(amountRemaining);
+  console.log("🚀 ~ costRemaining:", costRemaining);
+
+  const cashId =
+    locationPath === "/selling/payoff/sales-return" && cardFrontKey === "cash";
 
   const { data, refetch } = useFetch({
-    endpoint: `/sdad/api/v1/show/${cashId ? 10005 : cardId || 0}/${userData?.branch_id}/${
-       cardFrontKey || 0
-    }`,
+    endpoint: `/sdad/api/v1/show/${cashId ? 10005 : cardId || 0}/${
+      userData?.branch_id
+    }/${cardFrontKey || 0}`,
     queryKey: ["showValueOfCards"],
     onSuccess(data) {
       return data.data;
@@ -145,6 +167,10 @@ const PaymentProccessingToManagement = ({
     selectedCardId == 21 ||
     selectedCardId == 22 ||
     selectedCardId == 24;
+
+    const handleCheckboxChange = () => {
+      setIsChecked(!isChecked); // Toggle the value
+    };
 
   return (
     <>
@@ -243,6 +269,50 @@ const PaymentProccessingToManagement = ({
                   setSelectedCardName={setSelectedCardName}
                 />
               </div>
+              {locationPath === "/selling/payoff/sales-return" && (
+                <div className="flex gap-3 items-center">
+                  <input
+                    type="checkbox"
+                    className="border-mainGreen text-mainGreen rounded"
+                    id="checkbox"
+                    name="add_commission_ratio"
+                    // checked={true}
+                    // onChange={(e) => {
+                    //   handleCheckboxChange;
+                    //   // setFieldValue("add_commission_ratio", true);
+                    // }}
+                    onChange={() => {
+                      setIsChecked(!isChecked);
+                      setFieldValue("add_commission_ratio", isChecked);
+                    }}
+                  />
+                  <label htmlFor="checkbox">{t("add commission ratio")}</label>
+
+                  {/* <RadioGroup
+                    name="add_commission_ratio"
+                    onChange={(e) => {
+                      setFieldValue("add_commission_ratio", e);
+                    }}
+                  >
+                    <div className="flex gap-x-2 items-center">
+                      <label>{t("add commission ratio")}</label>
+                      <RadioGroup.RadioButton
+                        value="yes"
+                        label={`${t("yes")}`}
+                        id="yes"
+                      />
+                      <RadioGroup.RadioButton
+                        value="no"
+                        label={`${t("no")}`}
+                        id="no"
+                      />
+                    </div>
+                  </RadioGroup> */}
+                  <p className="bg-mainGreen text-white text-3 font-bold py-[3px] px-5 rounded-lg ms-4">
+                    {Number(totalCommissionOfoneItem)}
+                  </p>
+                </div>
+              )}
               <div
                 className={` my-6 grid grid-cols-2 lg:grid-cols-4 gap-6  ${
                   values.amount > +costRemaining ? "items-center" : "items-end"
@@ -279,6 +349,12 @@ const PaymentProccessingToManagement = ({
                   </div>
                 ) : (
                   <div className="relative">
+                    {locationPath === "/selling/payoff/sales-return" && (
+                      <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
+                        <span>{t("remaining cost")} : </span>{" "}
+                        {formatReyal(Number(costRemaining))}
+                      </p>
+                    )}
                     <BaseInputField
                       id="amount"
                       name="amount"
@@ -287,28 +363,6 @@ const PaymentProccessingToManagement = ({
                       placeholder={`${t("amount")}`}
                     />
                   </div>
-                )}
-                {locationPath === "/selling/payoff/sales-return" && (
-                  <RadioGroup
-                    name="add_commission_ratio"
-                    onChange={(e) => {
-                      setFieldValue("add_commission_ratio", e);
-                    }}
-                  >
-                    <div className="flex gap-x-2">
-                      <label>{t("add commission ratio")}</label>
-                      <RadioGroup.RadioButton
-                        value="yes"
-                        label={`${t("yes")}`}
-                        id="yes"
-                      />
-                      <RadioGroup.RadioButton
-                        value="no"
-                        label={`${t("no")}`}
-                        id="no"
-                      />
-                    </div>
-                  </RadioGroup>
                 )}
                 <Button
                   type="submit"

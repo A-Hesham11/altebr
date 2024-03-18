@@ -65,6 +65,8 @@ const SellingInvoiceData = ({
     +totalCommissionTaxes
   ).toFixed(2);
 
+  console.log("🚀 ~ totalFinalCost:", totalFinalCost)
+
   const totalCost = (totalCostBeforeTax + totalCommissionRatio).toFixed(2);
 
   const totalItemsTaxes = (+totalFinalCost - +totalCost).toFixed(2);
@@ -220,6 +222,7 @@ const SellingInvoiceData = ({
         Number(item.taklfa_after_tax) +
         Number(ratioForOneItem) +
         Number(ratioForOneItemTaxes);
+        
       const totalCostFromOneItem =
         Number(item.taklfa_after_tax) / Number(rowTaxEquation) +
         Number(ratioForOneItem);

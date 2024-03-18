@@ -24,17 +24,31 @@ const SalesReturnSecondPage = ({
   const [selectedCardName, setSelectedCardName] = useState(null);
   const [cardId, setCardId] = useState("");
 
-  const totalPriceInvoice = sellingItemsData?.reduce(
-    (total, item) => +total + +item.taklfa_after_tax,
-    0
-  );
+  // const totalPriceInvoice = sellingItemsData?.reduce(
+  //   (total, item) => +total + +item.taklfa_after_tax,
+  //   0
+  // );
+
+  const locationPath = location.pathname
 
   const amountRemaining = paymentData?.reduce(
     (total, item) => Number(total) + Number(item.amount),
     0
   );
 
-  const costRemaining = +totalPriceInvoice?.toFixed(1) - +amountRemaining;
+  
+  const totalCommissionOfoneItem = sellingItemsData?.reduce(
+    (total, item) => Number(total) + Number(item.commission_oneItem),
+    0
+  );
+
+  const invoiceTotalOfOfSalesReturn = sellingItemsData.reduce(
+    (total, item) => +total + +item.total,
+    0
+  );
+
+  const costRemaining = Number(invoiceTotalOfOfSalesReturn) - Number(totalCommissionOfoneItem) - Number(amountRemaining);
+  console.log("🚀 ~ costRemaining:", costRemaining)
 
   const handleSeccessedData = () => {
     if (paymentData.length === 0) {

@@ -147,19 +147,19 @@ export const SalesReturnTableInputData = ({
       },
       {
         header: () => <span>{t("cost")} </span>,
-        accessorKey: "cost_value",
+        accessorKey: "cost",
         cell: (info) =>
           info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
-        header: () => <span>{t("selling price")} </span>,
-        accessorKey: "taklfa",
+        header: () => <span>{t("VAT")} </span>,
+        accessorKey: "vat",
         cell: (info) =>
           info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
-        header: () => <span>{t("selling price after tax")} </span>,
-        accessorKey: "taklfa_after_tax",
+        header: () => <span>{t("total")} </span>,
+        accessorKey: "total",
         cell: (info) =>
           info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
@@ -471,7 +471,7 @@ export const SalesReturnTableInputData = ({
               <BaseInputField
                 placeholder={`${t("cost")}`}
                 id="cost"
-                name="cost_value"
+                name="cost"
                 type="text"
                 disabled={!isCategoryDisabled}
                 className={`${
@@ -481,9 +481,9 @@ export const SalesReturnTableInputData = ({
             </td>
             <td>
               <BaseInputField
-                placeholder={`${t("selling price")}`}
-                id="taklfa"
-                name="taklfa"
+                placeholder={`${t("VAT")}`}
+                id="vat"
+                name="vat"
                 type="text"
                 required
                 className={`${
@@ -496,9 +496,9 @@ export const SalesReturnTableInputData = ({
             </td>
             <td>
               <BaseInputField
-                placeholder={`${t("selling price after tax")}`}
-                id="taklfa_after_tax"
-                name="taklfa_after_tax"
+                placeholder={`${t("total")}`}
+                id="total"
+                name="total"
                 type="text"
                 required
                 disabled

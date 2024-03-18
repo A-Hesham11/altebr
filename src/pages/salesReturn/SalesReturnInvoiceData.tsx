@@ -69,11 +69,12 @@ const SalesReturnInvoiceData = ({
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
   console.log("🚀 ~ ratioForOneItemTaxes:", ratioForOneItemTaxes)
 
-  // const totalFinalCost = (
-  //   +totalCostAfterTax +
-  //   +totalCommissionRatio +
-  //   +totalCommissionTaxes
-  // ).toFixed(2);
+  const totalFinalCost = (
+    +totalCostAfterTax +
+    +totalCommissionRatio +
+    +totalCommissionTaxes
+  ).toFixed(2);
+  console.log("🚀 ~ totalFinalCost:", totalFinalCost)
 
   const totalCost = sellingItemsData.reduce((acc, card) => {
     acc += +card.cost;
@@ -85,10 +86,11 @@ const SalesReturnInvoiceData = ({
     return acc;
   }, 0);
 
-  const totalFinalCost = sellingItemsData.reduce((acc, card) => {
-    acc += +card.taklfa_after_tax;
-    return acc;
-  }, 0);
+  // const totalFinalCost = sellingItemsData.reduce((acc, card) => {
+  //   acc += +card.taklfa_after_tax;
+  //   return acc;
+  // }, 0);
+  // console.log("🚀 ~ totalFinalCost ~ totalFinalCost:", totalFinalCost)
 
   const costDataAsProps = {
     totalCommissionRatio,
