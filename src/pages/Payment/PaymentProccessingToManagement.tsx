@@ -11,6 +11,8 @@ import { numberContext } from "../../context/settings/number-formatter";
 import { useFetch } from "../../hooks";
 import { Loading } from "../../components/organisms/Loading";
 import { authCtx } from "../../context/auth-and-perm/auth";
+import RadioGroup from "../../components/molecules/RadioGroup";
+import PaymentProccessingTable from "../../components/selling/selling components/data/PaymentProccessingTable";
 
 export type Payment_TP = {
   id: string;
@@ -46,37 +48,49 @@ const validationSchemaOfAmount = () =>
     amount: Yup.number().required(`${t("required")}`),
   });
 
-  const validationSchemaOfWeight= () =>
+const validationSchemaOfWeight = () =>
   Yup.object({
     id: Yup.string(),
     weight: Yup.string().required(`${t("required")}`),
   });
 
-
-const PaymentProccessingToManagement = ({ 
-    paymentData,
-    setPaymentData,
-    sellingItemsData,
-    selectedCardId,
-    setSelectedCardId,
-    setCardId,
-    cardId,
-    selectedCardName,
-    setSelectedCardName
- }: Payment_TP) => {
-    console.log("🚀 ~ file: PaymentProccessingToManagement.tsx:67 ~ paymentData:", paymentData)
+const PaymentProccessingToManagement = ({
+  paymentData,
+  setPaymentData,
+  sellingItemsData,
+  selectedCardId,
+  setSelectedCardId,
+  setCardId,
+  cardId,
+  selectedCardName,
+  setSelectedCardName,
+}: Payment_TP) => {
+  console.log("🚀 ~ cardId:", cardId);
+  console.log(
+    "🚀 ~ file: PaymentProccessingToManagement.tsx:67 ~ paymentData:",
+    paymentData
+  );
 
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
   const [cardFrontKey, setCardFronKey] = useState<string>("");
-  const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>("");
+  console.log("🚀 ~ cardFrontKey:", cardFrontKey);
+  const [cardDiscountPercentage, setCardDiscountPercentage] =
+    useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
-  const [sellingFrontKey, setSellingFrontKey] = useState<string>("")
-  const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("")
-  const { formatGram, formatReyal } = numberContext();
+  const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
+  const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("");
+  const { formatReyal } = numberContext();
 
-  const { userData } = useContext(authCtx)
+  const [isChecked, setIsChecked] = useState(false);
+  console.log("🚀 ~ isChecked:", isChecked)
+
+
+
+  const locationPath = location.pathname;
+
+  const { userData } = useContext(authCtx);
 
   const handleCardSelection = (
     selectedCardType: string,
@@ -99,38 +113,74 @@ const PaymentProccessingToManagement = ({
     weight: editData?.weight || "",
   };
 
-  const totalPriceInvoice = sellingItemsData?.reduce((total, item) => Number(total) + Number(item.taklfa_after_tax), 0)
+  const totalPriceInvoice = sellingItemsData?.reduce(
+    (total, item) => Number(total) + Number(item.taklfa_after_tax),
+    0
+  );
 
-  const amountRemaining = paymentData?.reduce((total, item) => Number(total) + Number(item.cost_after_tax) ,0)
+  const totalCommissionOfoneItem = sellingItemsData?.reduce(
+    (total, item) => Number(total) + Number(item.commission_oneItem),
+    0
+  );
 
-  const costRemaining = Number(totalPriceInvoice) - Number(amountRemaining)
+  const amountRemaining = paymentData?.reduce(
+    (total, item) =>
+      Number(total) + (Number(item.cost_after_tax) || Number(item.amount)),
+    0
+  );
+  console.log("🚀 ~ amountRemaining:", amountRemaining);
 
-const {
-    data,
-    refetch,
-} = useFetch ({
-    endpoint:  `/sdad/api/v1/show/${cardId || 0}/${userData?.branch_id}/${cardFrontKey || 0}`,
+  const invoiceTotalOfOfSalesReturn = sellingItemsData.reduce(
+    (total, item) => +total + +item.total,
+    0
+  );
+
+  const costRemaining =
+    (locationPath === "/selling/payoff/sales-return"
+      ? Number(invoiceTotalOfOfSalesReturn) - Number(totalCommissionOfoneItem)
+      : Number(totalPriceInvoice)) - Number(amountRemaining);
+  console.log("🚀 ~ costRemaining:", costRemaining);
+
+  const cashId =
+    locationPath === "/selling/payoff/sales-return" && cardFrontKey === "cash";
+
+  const { data, refetch } = useFetch({
+    endpoint: `/sdad/api/v1/show/${cashId ? 10005 : cardId || 0}/${
+      userData?.branch_id
+    }/${cardFrontKey || 0}`,
     queryKey: ["showValueOfCards"],
     onSuccess(data) {
-      return data.data
+      return data.data;
     },
-    enabled: (!!cardId && !!userData?.branch_id && !!cardFrontKey)
-});
-    console.log("🚀 ~ data:", data)
+    enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
+  });
+  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
-      if (cardId !== null && cardFrontKey !== null) {
-          refetch();
-      }
-  }, [cardId, cardFrontKey])
+    if (cardId !== null && cardFrontKey !== null) {
+      refetch();
+    }
+  }, [cardId, cardFrontKey]);
 
-  const weightOrAmount = (selectedCardId == 18 || selectedCardId == 21 || selectedCardId == 22 || selectedCardId == 24)
+  const weightOrAmount =
+    selectedCardId == 18 ||
+    selectedCardId == 21 ||
+    selectedCardId == 22 ||
+    selectedCardId == 24;
+
+    const handleCheckboxChange = () => {
+      setIsChecked(!isChecked); // Toggle the value
+    };
 
   return (
     <>
       <Formik
         initialValues={initialValues}
-        validationSchema={() => weightOrAmount ? validationSchemaOfWeight() : validationSchemaOfAmount()}
+        validationSchema={() =>
+          weightOrAmount
+            ? validationSchemaOfWeight()
+            : validationSchemaOfAmount()
+        }
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
           if (selectedCardId) {
             if (editData) {
@@ -162,9 +212,16 @@ const {
                   salesReturnFrontKey: salesReturnFrontKey,
                 };
 
-                if (+data?.value === 0 || +values.amount > +data?.value || +values.weight > +data?.value) {
-                  notify("info", `${t("value is greater than the value in box")}`);
-                  return
+                if (
+                  +data?.value === 0 ||
+                  +values.amount > +data?.value ||
+                  +values.weight > +data?.value
+                ) {
+                  notify(
+                    "info",
+                    `${t("value is greater than the value in box")}`
+                  );
+                  return;
                 }
                 setPaymentData((prevData) => [newItem, ...prevData]);
                 setSelectedCardId(null);
@@ -182,15 +239,20 @@ const {
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
-            useEffect(() => {
-              if (cardId === 10001 || cardId === 10002 || cardId === 10003 || cardId === 10004) {
-                setFieldValue("amount", "")
-                setFieldValue("value", (data?.value)?.toFixed(2))
-              } else {
-                setFieldValue("weight", "")
-                setFieldValue("value", (data?.value)?.toFixed(2))
-              }
-            }, [cardId])
+          useEffect(() => {
+            if (
+              cardId === 10001 ||
+              cardId === 10002 ||
+              cardId === 10003 ||
+              cardId === 10004
+            ) {
+              setFieldValue("amount", "");
+              setFieldValue("value", data?.value?.toFixed(2));
+            } else {
+              setFieldValue("weight", "");
+              setFieldValue("value", data?.value?.toFixed(2));
+            }
+          }, [cardId]);
           return (
             <Form>
               <div>
@@ -207,42 +269,101 @@ const {
                   setSelectedCardName={setSelectedCardName}
                 />
               </div>
-              <div className={` my-6 grid grid-cols-2 lg:grid-cols-4 gap-6  ${values.amount > +costRemaining ? "items-center" : "items-end"}`}>                          
+              {locationPath === "/selling/payoff/sales-return" && (
+                <div className="flex gap-3 items-center">
+                  <input
+                    type="checkbox"
+                    className="border-mainGreen text-mainGreen rounded"
+                    id="checkbox"
+                    name="add_commission_ratio"
+                    // checked={true}
+                    // onChange={(e) => {
+                    //   handleCheckboxChange;
+                    //   // setFieldValue("add_commission_ratio", true);
+                    // }}
+                    onChange={() => {
+                      setIsChecked(!isChecked);
+                      setFieldValue("add_commission_ratio", isChecked);
+                    }}
+                  />
+                  <label htmlFor="checkbox">{t("add commission ratio")}</label>
+
+                  {/* <RadioGroup
+                    name="add_commission_ratio"
+                    onChange={(e) => {
+                      setFieldValue("add_commission_ratio", e);
+                    }}
+                  >
+                    <div className="flex gap-x-2 items-center">
+                      <label>{t("add commission ratio")}</label>
+                      <RadioGroup.RadioButton
+                        value="yes"
+                        label={`${t("yes")}`}
+                        id="yes"
+                      />
+                      <RadioGroup.RadioButton
+                        value="no"
+                        label={`${t("no")}`}
+                        id="no"
+                      />
+                    </div>
+                  </RadioGroup> */}
+                  <p className="bg-mainGreen text-white text-3 font-bold py-[3px] px-5 rounded-lg ms-4">
+                    {Number(totalCommissionOfoneItem)}
+                  </p>
+                </div>
+              )}
+              <div
+                className={` my-6 grid grid-cols-2 lg:grid-cols-4 gap-6  ${
+                  values.amount > +costRemaining ? "items-center" : "items-end"
+                }`}
+              >
                 <BaseInputField
-                    id="value"
-                    name="value"
-                    type="text"
-                    label={selectedCardName ?  `${selectedCardName} ` : t("Fund totals")}
-                    placeholder={selectedCardName ? selectedCardName : t("Fund totals")}
-                    value={formatReyal(Number(data?.value))}
-                    disabled
-                    className={`bg-mainDisabled text-mainGreen ${selectedCardName && "font-semibold"}`}
+                  id="value"
+                  name="value"
+                  type="text"
+                  label={
+                    selectedCardName ? `${selectedCardName} ` : t("Fund totals")
+                  }
+                  placeholder={
+                    selectedCardName ? selectedCardName : t("Fund totals")
+                  }
+                  value={formatReyal(Number(data?.value))}
+                  disabled
+                  className={`bg-mainDisabled text-mainGreen ${
+                    selectedCardName && "font-semibold"
+                  }`}
                 />
-                {
-                   (selectedCardId == 18 || selectedCardId == 21 || selectedCardId == 22 || selectedCardId == 24) 
-                   ? (
-                        <div className="relative">
-                            <BaseInputField
-                                id="weight"
-                                type="text"
-                                name="weight"
-                                label={`${t("Gold value (in grams)")}`}
-                                placeholder={`${t("Gold value (in grams)")}`}
-                            />
-                        </div>
-                   )
-                    : (
-                        <div className="relative">
-                            <BaseInputField
-                                id="amount"
-                                name="amount"
-                                type="text"
-                                label={`${t("amount")}`}
-                                placeholder={`${t("amount")}`}
-                            />
-                        </div>
-                     )
-                } 
+                {selectedCardId == 18 ||
+                selectedCardId == 21 ||
+                selectedCardId == 22 ||
+                selectedCardId == 24 ? (
+                  <div className="relative">
+                    <BaseInputField
+                      id="weight"
+                      type="text"
+                      name="weight"
+                      label={`${t("Gold value (in grams)")}`}
+                      placeholder={`${t("Gold value (in grams)")}`}
+                    />
+                  </div>
+                ) : (
+                  <div className="relative">
+                    {locationPath === "/selling/payoff/sales-return" && (
+                      <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
+                        <span>{t("remaining cost")} : </span>{" "}
+                        {formatReyal(Number(costRemaining))}
+                      </p>
+                    )}
+                    <BaseInputField
+                      id="amount"
+                      name="amount"
+                      type="text"
+                      label={`${t("amount")}`}
+                      placeholder={`${t("amount")}`}
+                    />
+                  </div>
+                )}
                 <Button
                   type="submit"
                   className="animate_from_left animation_delay-11 hover:bg-orange-600 transition-all duration-300 bg-mainOrange h-10"

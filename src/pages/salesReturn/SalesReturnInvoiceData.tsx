@@ -69,11 +69,12 @@ const SalesReturnInvoiceData = ({
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
   console.log("🚀 ~ ratioForOneItemTaxes:", ratioForOneItemTaxes)
 
-  // const totalFinalCost = (
-  //   +totalCostAfterTax +
-  //   +totalCommissionRatio +
-  //   +totalCommissionTaxes
-  // ).toFixed(2);
+  const totalFinalCost = (
+    +totalCostAfterTax +
+    +totalCommissionRatio +
+    +totalCommissionTaxes
+  ).toFixed(2);
+  console.log("🚀 ~ totalFinalCost:", totalFinalCost)
 
   const totalCost = sellingItemsData.reduce((acc, card) => {
     acc += +card.cost;
@@ -85,10 +86,11 @@ const SalesReturnInvoiceData = ({
     return acc;
   }, 0);
 
-  const totalFinalCost = sellingItemsData.reduce((acc, card) => {
-    acc += +card.taklfa_after_tax;
-    return acc;
-  }, 0);
+  // const totalFinalCost = sellingItemsData.reduce((acc, card) => {
+  //   acc += +card.taklfa_after_tax;
+  //   return acc;
+  // }, 0);
+  // console.log("🚀 ~ totalFinalCost ~ totalFinalCost:", totalFinalCost)
 
   const costDataAsProps = {
     totalCommissionRatio,
@@ -148,12 +150,12 @@ const SalesReturnInvoiceData = ({
       {
         header: () => <span>{t("weight")}</span>,
         accessorKey: "weight",
-        cell: (info) => info.getValue() || `${t("no items")}`,
+        cell: (info) => formatGram(Number(info.getValue())) || `${t("no items")}`,
       },
       {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         // cell: (info: any) => {
         //   const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
         //   const totalCostFromRow =
@@ -165,7 +167,7 @@ const SalesReturnInvoiceData = ({
       {
         header: () => <span>{t("VAT")} </span>,
         accessorKey: "vat",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         // cell: (info: any) => {
         //   const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
         //   const totalCostFromRow =
@@ -183,7 +185,7 @@ const SalesReturnInvoiceData = ({
       {
         header: () => <span>{t("total")} </span>,
         accessorKey: "total",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
         // cell: (info: any) => {
         //   const totaltaklfaFromRow =
         //     +info.row.original.taklfa_after_tax +

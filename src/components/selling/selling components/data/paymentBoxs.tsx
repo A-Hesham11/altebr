@@ -12,11 +12,10 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
 
   const { formatGram, formatReyal } = numberContext();
 
-  const priceInvoice = sellingItemsData.reduce((total, item) => +total + +item.taklfa, 0);
+  const locationPath = location.pathname
 
-  const totalPriceInvoice = sellingItemsData.reduce((total, item) => +total + +item.taklfa_after_tax, 0);
-
-  const amountRemaining = paymentData.reduce((total, item) => Number(total) + Number(item.cost_after_tax) ,0);
+  const amountRemaining = paymentData.reduce((total, item) => Number(total) + (Number(item.cost_after_tax) || Number(item.amount)) ,0);
+  console.log("🚀 ~ PaymentBoxes ~ amountRemaining:", amountRemaining)
 
   const totalPaymentByBank = paymentData.filter((item) => item.id < 10000).reduce((total, item) => +total + +item.amount, 0);
 
@@ -32,23 +31,45 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
   
   const karatDifference = totalpaymentByGram - paymentByGram
 
+  const invoiceValueOfSelling = sellingItemsData.reduce(
+    (total, item) => +total + +item.taklfa,
+    0
+  );
+  const invoiceValueOfSalesReturn = sellingItemsData.reduce(
+    (total, item) => +total + +item.cost,
+    0
+  );
+
+  const invoiceTotalOfSelling = sellingItemsData.reduce(
+    (total, item) => +total + +item.taklfa_after_tax,
+    0
+  );
+  const invoiceTotalOfOfSalesReturn = sellingItemsData.reduce(
+    (total, item) => +total + +item.total,
+    0
+  );
+
+  const sellingORSalesReturnOfCost = locationPath === "/selling/payoff/sales-return" ? Number(invoiceValueOfSalesReturn) : Number(invoiceValueOfSelling)
+
+  const sellingORSalesReturnOfTotal = locationPath === "/selling/payoff/sales-return" ? Number(invoiceTotalOfOfSalesReturn) : Number(invoiceTotalOfSelling)
+
   const boxsSellingData = [
     {
       id: 1,
       account: `${t("total bill after tax")}` ,
-      value: formatReyal(Number(totalPriceInvoice)) ,
+      value: formatReyal(sellingORSalesReturnOfCost) || 0,
       unit: "ر.س",
     },
     {
       id: 2,
       account: `${t("total tax")}` ,
-      value: formatReyal(Number(totalPriceInvoice - priceInvoice)) ,
+      value: formatReyal(Number(sellingORSalesReturnOfTotal - sellingORSalesReturnOfCost)) || 0,
       unit: "ر.س",
     },
     {
       id: 3,
       account: `${t("remainder of payment")}`, 
-      value: formatReyal(Number(totalPriceInvoice - amountRemaining || 0)),
+      value: formatReyal(Number(sellingORSalesReturnOfTotal - +amountRemaining)) || 0,
       unit: "ر.س",
     },
   ]
@@ -57,30 +78,28 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
       {
         id: 1,
         account: `${t("Total gold fraction converted to 24")}` ,
-        value: formatReyal(Number((+paymentByGram).toFixed(2))) ,
+        value: formatReyal(Number(paymentByGram)) ,
         unit: "ر.س",
       },
       {
         id: 2,
         account: `${t("Caliber difference")}` ,
-        value: formatReyal(Number((+karatDifference).toFixed(2))) ,
+        value: formatReyal(Number(karatDifference)) ,
         unit: "ر.س",
       },
       {
         id: 3,
         account: `${t("cash")}` ,
-        value: formatReyal(Number((+totalPaymentByCash).toFixed(2))) ,
+        value: formatReyal(Number(totalPaymentByCash)) ,
         unit: "ر.س",
       },
       {
         id: 4,
         account: `${t("bank")}`, 
-        value: formatReyal(Number(totalPaymentByBank.toFixed(2))),
+        value: formatReyal(Number(totalPaymentByBank)),
         unit: "ر.س",
       },
   ]
-
-  const locationPath = location.pathname
 
   const boxsData = locationPath === "/selling/reimbursement" ? boxsPaymnetData : boxsSellingData
 

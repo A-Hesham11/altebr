@@ -29,16 +29,11 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ paymentData:", paymentData)
   console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
-
-  // const TaxRateOfBranch =
-  //   sellingItemsData && sellingItemsData[0]?.tax_rate / 100;
-
-  // const taxEquation = +TaxRateOfBranch + 1;
 
   const totalCommissionRatio = paymentData.reduce((acc, card) => {
     acc += +card.commission_riyals;
@@ -69,6 +64,8 @@ const SellingInvoiceData = ({
     +totalCommissionRatio +
     +totalCommissionTaxes
   ).toFixed(2);
+
+  console.log("🚀 ~ totalFinalCost:", totalFinalCost)
 
   const totalCost = (totalCostBeforeTax + totalCommissionRatio).toFixed(2);
 
@@ -225,23 +222,22 @@ const SellingInvoiceData = ({
         Number(item.taklfa_after_tax) +
         Number(ratioForOneItem) +
         Number(ratioForOneItemTaxes);
+        
       const totalCostFromOneItem =
         Number(item.taklfa_after_tax) / Number(rowTaxEquation) +
         Number(ratioForOneItem);
-      console.log("🚀 ~ items ~ totalCostFromOneItem:", totalCostFromOneItem);
+
       const totalTaxFromOneRow = +taklfaFromOneItem - +totalCostFromOneItem;
 
       const weightOfSelsal = item.selsal?.reduce((acc, item) => {
         acc += +item.weight;
         return acc;
       }, 0);
-      console.log("🚀 ~ weightOfSelsal ~ weightOfSelsal:", weightOfSelsal);
 
       const costOfSelsal = item.selsal?.reduce((acc, item) => {
         acc += +item.cost;
         return acc;
       }, 0);
-      console.log("🚀 ~ costOfSelsal ~ costOfSelsal:", costOfSelsal);
 
       const isSelsal =
         item.selsal && item.selsal?.length > 0 ? Number(weightOfSelsal) : 0;
@@ -276,6 +272,8 @@ const SellingInvoiceData = ({
         selsal: item.selsal,
         has_selsal: item.has_selsal,
         tax_rate: item.tax_rate,
+        commission_oneItem: ratioForOneItem,
+        commissionTax_oneItem: ratioForOneItemTaxes, 
       };
     });
     const card = paymentData.reduce((acc, curr) => {
