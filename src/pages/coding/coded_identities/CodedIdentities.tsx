@@ -11,11 +11,13 @@ import { Loading } from "../../../components/organisms/Loading";
 import { useFetch, useMutate } from "../../../hooks";
 import { Back } from "../../../utils/utils-components/Back";
 import { formatDate } from "../../../utils/date";
-import { ExportToExcel } from "./ExportToFile";
+import { ExportToExcel } from "../../../components/ExportToFile";
 import { Modal } from "../../../components/molecules";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
 import { notify } from "../../../utils/toast";
 import { mutateData } from "../../../utils/mutateData";
+import { useQueryClient } from "@tanstack/react-query";
+import ImportTotals from "./ImportTotals";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -30,7 +32,9 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
   const [importModal, setImportModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
-  console.log("🚀 ~ CodedIdentities ~ importFiles:", importFiles);
+  const [importData, setImportData] = useState(null);
+  console.log("🚀 ~ CodedIdentities ~ importData:", importData);
+  const queryClient = useQueryClient();
   // const [operationTypeSelect, setOperationTypeSelect] = useState(() => {
   //   const storedData = localStorage.getItem("operationTypeSelect");
 
@@ -86,7 +90,9 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     mutationFn: mutateData,
     mutationKey: ["files"],
     onSuccess: (data) => {
-      notify("success", t("imported has successfully completed"));
+      setImportData(data);
+      notify("success", t("imported has successfully"));
+      queryClient.refetchQueries(fetchKey);
     },
     onError: (error: any) => {
       notify("error", error?.message);
@@ -191,6 +197,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       values: { file: importFiles[0] },
       dataType: "formData",
     });
+
+    setImportFiles([]);
     console.log({ file: importFiles[0] });
   };
 
@@ -320,6 +328,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           </Button>
           <Button
             action={(e) => {
+              setImportData(null);
               setImportModal(true);
             }}
             className="bg-mainGreen text-white"
@@ -369,18 +378,16 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       <Back className="w-32 self-end mt-6" />
 
       <Modal
-        maxWidth="w-[40rem]"
+        maxWidth="w-[50rem]"
         isOpen={importModal}
         onClose={() => setImportModal(false)}
       >
-        <div className="mt-14 flex flex-col gap-8">
-          <div className="self-start">
-            <FilesUpload
-              files={importFiles}
-              setFiles={setImportFiles}
-              importedFile={true}
-            />
-          </div>
+        <div className="mt-14 mb-10 flex items-center gap-8">
+          <FilesUpload
+            files={importFiles}
+            setFiles={setImportFiles}
+            importedFile={true}
+          />
           {/* <input
             type="file"
             name="importFiles"
@@ -394,6 +401,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
             {t("save")}
           </Button>
         </div>
+
+        {importData && (
+          <ImportTotals importData={importData} postIsLoading={postIsLoading} />
+        )}
       </Modal>
     </div>
   );

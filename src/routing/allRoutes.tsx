@@ -135,7 +135,10 @@ import ViewSupport from "../pages/Support/viewSupport/ViewSupport";
 import AddSupportArticle from "../pages/Support/AddSupport/AddSupportArticle";
 import ViewSupportArticle from "../pages/Support/viewSupport/ViewSupportArticle";
 import SalesReturnPage from "../pages/salesReturn/SalesReturnPage";
-import SalesReturnRestrictions from "../pages/salesReturn/SalesReturnRestrictions";
+import ImportTotals from "../pages/coding/coded_identities/ImportTotals";
+import Stocks from "../pages/selling/Stocks";
+import EdaraStocks from "../pages/stocksInEdara/edaraStocks";
+import BranchStocks from "../pages/stocksInEdara/branchStocks";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -174,6 +177,7 @@ export const AllRoutesProvider = () => {
               <CodedIdentities title={t("identity and numbering management")} />
             }
           />
+          <Route path="/import-data" element={<ImportTotals />} />
           <Route
             path="/branch-bonds-react"
             element={<BranchBondsReact title={t("branch bonds")} />}
@@ -456,6 +460,9 @@ export const AllRoutesProvider = () => {
           {/* neighbors end */}
           <Route path="/selling/reports" element={<Reports />} />
           <Route path="/selling/continuity" element={<ContinuityPage />} />
+          <Route path="/selling/reports/stocks" element={<Stocks />} />
+          <Route path="/credits/edara" element={<EdaraStocks />} />
+          <Route path="/credits/branch" element={<BranchStocks />} />
           <Route
             path="/selling/reports/accounting-tree"
             element={<BranchAccountingTree />}
@@ -614,6 +621,10 @@ export const AllRoutesProvider = () => {
           <Route
             path="/selling/management/edit-items-weight"
             element={<Print />}
+          />
+          <Route
+            path="/selling/payoff/sales-return"
+            element={<SalesReturnPage />}
           />
           <Route
             path="/selling/payoff/sales-return"
