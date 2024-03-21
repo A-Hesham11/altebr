@@ -1,9 +1,10 @@
+
+
 import { t } from "i18next";
-import React, { useMemo } from "react";
-import { Table } from "../../../templates/reusableComponants/tantable/Table";
-import { numberContext } from "../../../../context/settings/number-formatter";
-import { ColumnDef } from "@tanstack/react-table";
-import TableEntry from "../../../templates/reusableComponants/tantable/TableEntry";
+import { useMemo } from "react";
+import { numberContext } from "../../context/settings/number-formatter";
+import { Table } from "../../components/templates/reusableComponants/tantable/Table";
+import TableEntry from "../../components/templates/reusableComponants/tantable/TableEntry";
 
 type Entry_TP = {
   bian: string;
@@ -13,8 +14,8 @@ type Entry_TP = {
   creditor_SRA: number;
 };
 
-const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
-  const { formatGram, formatReyal } = numberContext();
+const SalesReturnInvoiceTablePreview = ({ item }: { item?: {} }) => {
+  const { formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -76,37 +77,6 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     []
   );
 
-  // const cols2 = useMemo<ColumnDef<Entry_TP>[]>(
-  //   () => [
-  //     {
-  //       header: `${t("description")}`,
-  //       cell: (info) => info.renderValue() || "-",
-  //       accessorKey: "bian",
-  //     },
-  //     {
-  //       header: `${t("gram (debtor)")}`,
-  //       cell: (info) => formatGram(Number(info.renderValue())) || "-",
-  //       accessorKey: "debtor_gram",
-  //     },
-  //     {
-  //       header: `${t("reyal (debtor)")}`,
-  //       cell: (info) => formatReyal(Number(info.renderValue())) || "-",
-  //       accessorKey: "debtor_SRA",
-  //     },
-  //     {
-  //       header: `${t("gram (creditor)")}`,
-  //       cell: (info) => formatGram(Number(info.renderValue())) || "-",
-  //       accessorKey: "creditor_gram",
-  //     },
-  //     {
-  //       header: `${t("reyal (creditor)")}`,
-  //       cell: (info) => formatReyal(Number(info.renderValue())) || "-",
-  //       accessorKey: "creditor_SRA",
-  //     },
-  //   ],
-  //   []
-  // );
-
   return (
     <>
       <div className="mt-16">
@@ -122,4 +92,4 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   );
 };
 
-export default SellingInvoiceTablePreview;
+export default SalesReturnInvoiceTablePreview;

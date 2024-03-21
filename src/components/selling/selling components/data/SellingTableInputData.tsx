@@ -26,6 +26,7 @@ import { Header } from "../../../atoms/Header";
 import SellingTableInputWeight from "./SellingTableInputWeight";
 import { HiViewGridAdd } from "react-icons/hi";
 import { CLightbox } from "../../../molecules/files/CLightbox";
+import SellingTableInputKit from "./SellingTableInputKit";
 
 type SellingTableInputData_TP = {
   dataSource: any;
@@ -50,10 +51,11 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth);
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
-  console.log("🚀 ~ dataSource:", dataSource);
-  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
+  console.log("🚀 ~ dataSource:", dataSource)
+  console.log("🚀 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth)
+  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails)
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData)
+
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
@@ -61,7 +63,6 @@ export const SellingTableInputData = ({
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
   const [editSelsal, setEditSelsal] = useState([]);
   const [editkit, setEditkit] = useState([]);
-  console.log("🚀 ~ editkit:", editkit)
   const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
@@ -71,7 +72,6 @@ export const SellingTableInputData = ({
   const { userData } = useContext(authCtx);
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
-  console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch)
 
   const priceWithCommissionRate =
     dataSource &&
@@ -87,14 +87,10 @@ export const SellingTableInputData = ({
       ? priceWithCommissionRate
       : priceWithCommissionCash;
 
-    console.log("🚀 ~ priceWithSellingPolicy:", priceWithSellingPolicy)
-
-    const priceWithSellingTax = (priceWithSellingPolicy * TaxRateOfBranch) + priceWithSellingPolicy
-    console.log("🚀 ~ priceWithSellingtax:", priceWithSellingTax)
-
+  const priceWithSellingTax =
+    priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy;
 
   const { values, setFieldValue } = useFormikContext<any>();
-  console.log("🚀 ~ values:", values);
 
   const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
     queryKey: ["branch-all-accepted-selling"],
@@ -180,64 +176,6 @@ export const SellingTableInputData = ({
     }
   }, [dataSource]);
 
-  // const checkedItem = setSelectedItemDetails.filter((item) => item.status === 0);
-
-  const Cols = useMemo<ColumnDef<Selling_TP>[]>(
-    () => [
-      {
-        header: () => "#",
-        accessorKey: "action",
-        cell: (info: any) => {
-          console.log("🚀 ~ info:", info.row.index);
-
-          return (
-            <div className="flex items-center justify-center gap-4">
-              <input
-                type="checkbox"
-                className={`border-mainGreen text-mainGreen rounded bg-red-600' ${
-                  info.row.original.status && "bg-neutral-400"
-                }`}
-                id={info.row.original.id}
-                name="selectedItem"
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setSelectedItemDetails((prev) => [
-                      ...prev,
-                      { ...info.row.original, index: info.row.index },
-                    ]);
-                  } else {
-                    setSelectedItemDetails((prev) =>
-                      prev.filter((item) => item.index !== info.row.index)
-                    );
-                  }
-                }}
-                disabled={info.row.original.status}
-              />
-            </div>
-          );
-        },
-      },
-      {
-        header: () => <span>{t("classification")}</span>,
-        accessorKey: "category_name",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
-        header: () => <span>{t("weight")}</span>,
-        accessorKey: "weight",
-        cell: (info) =>
-          info.getValue() ? formatGram(Number(info.getValue())) : "---",
-      },
-      {
-        header: () => <span>{t("cost")}</span>,
-        accessorKey: "selling_price",
-        cell: (info) =>
-          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
-      },
-    ],
-    []
-  );
-
   const table = useReactTable({
     data: sellingItemsData,
     columns: sellingCols,
@@ -246,13 +184,6 @@ export const SellingTableInputData = ({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const tablePopup = useReactTable({
-    data: kitDetails,
-    columns: Cols,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
 
   const handleDeleteRow = (itemId) => {
     sellingItemsData?.findIndex((item) => {
@@ -613,30 +544,30 @@ export const SellingTableInputData = ({
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
               {values?.category_type === "multi" && (
-                  <Button
-                    loading={values.hwya && isFetching}
-                    action={() => {
-                      if ((values.hwya && values.classification_id) === "") {
-                        notify("info", `${t("add piece first")}`);
-                        return;
-                      }
+                <Button
+                  loading={values.hwya && isFetching}
+                  action={() => {
+                    if ((values.hwya && values.classification_id) === "") {
+                      notify("info", `${t("add piece first")}`);
+                      return;
+                    }
 
-                      const pieceCheck = sellingItemsData?.findIndex((item) => {
-                        return item.hwya == values.hwya;
-                      });
+                    const pieceCheck = sellingItemsData?.findIndex((item) => {
+                      return item.hwya == values.hwya;
+                    });
 
-                      if (pieceCheck !== -1) {
-                        notify("info", `${t("item exists")}`);
-                        return;
-                      }
+                    if (pieceCheck !== -1) {
+                      notify("info", `${t("item exists")}`);
+                      return;
+                    }
 
-                      setOpenDetails(true);
-                    }}
-                    className="bg-transparent px-2"
-                  >
-                    <EditIcon className="fill-mainGreen w-6 h-6" />
-                  </Button>
-                )}
+                    setOpenDetails(true);
+                  }}
+                  className="bg-transparent px-2"
+                >
+                  <EditIcon className="fill-mainGreen w-6 h-6" />
+                </Button>
+              )}
               {values?.has_selsal === 1 && (
                 <Button
                   loading={values.hwya && isFetching}
@@ -704,10 +635,12 @@ export const SellingTableInputData = ({
                       : "v";
 
                   const isEditSelsal =
-                  editSelsal.length > 0 ? editSelsal : sellingItemsOfWeigth;
+                    editSelsal.length > 0 ? editSelsal : sellingItemsOfWeigth;
 
                   const isEditKit =
-                  editkit.length > 0 ? editkit : selectedItemDetails.flat(Infinity);
+                    editkit.length > 0
+                      ? editkit
+                      : selectedItemDetails.flat(Infinity);
 
                   setSellingItemsData((prev) =>
                     [
@@ -727,7 +660,7 @@ export const SellingTableInputData = ({
                   setSelectedItemDetails([]);
                   setSellingItemsOfWeight([]);
                   setEditSelsal([]);
-                  setEditkit([])
+                  setEditkit([]);
                 }}
                 className="bg-transparent px-2 m-auto"
               >
@@ -762,8 +695,6 @@ export const SellingTableInputData = ({
                         handleDeleteRow(row?.original?.item_id);
                         setEditSelsal(row?.original.selsal);
                         setEditkit(row?.original.itemDetails);
-                        console.log("🚀 ~ {table.getRowModel ~  handleDeleteRow(row?.original?.item_id):",  row?.original)
-
                       }}
                       className="bg-transparent px-2"
                     >
@@ -789,192 +720,24 @@ export const SellingTableInputData = ({
         </tbody>
       </table>
 
+      {/* Selling Kit */}
       <Modal isOpen={openDetails} onClose={() => setOpenDetails(false)}>
         <div className="flex flex-col gap-8 justify-center items-center">
           <Header header={t("kit details")} />
-          {dataSource &&
-          dataSource[0]?.weightitems.find(
-            (itemWeight) => itemWeight.weight == 0
-          ) ? (
-            <>
-              <div className="bg-flatWhite rounded-lg bill-shadow p-5 my-3 w-full">
-                <div className="flex items-center justify-between py-4">
-                  {dataSource[0]?.weightitems?.map((item) => {
-                    return (
-                      <BaseInputField
-                        placeholder={item?.category_name}
-                        id={item?.category_name}
-                        name={item?.category_name}
-                        type="text"
-                        label={item?.category_name}
-                        disabled={item.weight != 0}
-                        className={`${item.weight != 0 && "bg-mainDisabled"}`}
-                        onChange={(e) => {
-                          setSelectedItemDetails((prev: any) => {
-                            const index = prev.findIndex(
-                              (prevItem) =>
-                                item?.category_id === prevItem?.category_id
-                            );
-                            const updatedState = [...prev];
-
-                            if (index !== -1) {
-                              updatedState[index] = {
-                                category_id: item.category_id,
-                                category_name: item.category_name,
-                                weight: e.target.value,
-                              };
-                            } else {
-                              updatedState.push({
-                                category_id: item.category_id,
-                                category_name: item.category_name,
-                                weight: e.target.value,
-                              });
-                            }
-
-                            return updatedState;
-                          });
-
-                          setFieldValue(`weightitems-${item.category_name}`, {
-                            category_id: item.category_id,
-                            category_name: item.category_name,
-                            weight: e.target.value,
-                          });
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <table className="mt-8 w-[815px] lg:w-full">
-                <thead className="bg-mainGreen text-white text-center">
-                  {tablePopup.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id} className="py-4 px-2 w-full">
-                      {headerGroup.headers.map((header) => (
-                        <th
-                          key={header.id}
-                          className="py-4 px-2 text-sm font-medium text-white border w-[11%]"
-                        >
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody>
-                  {tablePopup.getRowModel().rows.map((row) => {
-                    return (
-                      <tr key={row.id} className="text-center">
-                        {row.getVisibleCells().map((cell, i) => (
-                          <td
-                            className="px-2 py-2 bg-lightGreen bg-[#295E5608] gap-x-2 items-center border border-[#C4C4C4]"
-                            key={cell.id}
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </td>
-                        ))}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </>
-          )}
-          <div className="flex gap-4 justify-end items-center w-full">
-            <Button
-              type="submit"
-              action={() => {
-                const clacSelectedWeight = selectedItemDetails.reduce(
-                  (acc, item) => {
-                    acc += Number(item.weight);
-                    return acc;
-                  },
-                  0
-                );
-
-                const clacSelectedCost = selectedItemDetails.reduce(
-                  (acc, item) => {
-                    acc += Number(item.selling_price);
-                    return acc;
-                  },
-                  0
-                );
-
-                const remainingWeight =
-                  Number(values?.sel_weight) - Number(clacSelectedWeight);
-
-                const costItem =
-                  values.classification_id === 1
-                    ? (Number(values.karat_price) + Number(values.wage)) *
-                      Number(clacSelectedWeight)
-                    : Number(clacSelectedCost);
-
-                const priceWithCommissionRate =
-                  Number(costItem) * (Number(values?.min_selling) * 0.01) +
-                  Number(costItem);
-
-                const priceWithCommissionCash =
-                  Number(costItem) + Number(values?.min_selling);
-
-                const priceWithSellingPolicy =
-                  values?.min_selling_type === "نسبة"
-                    ? priceWithCommissionRate
-                    : priceWithCommissionCash;
-
-                const taklfaAfterTax =
-                  priceWithSellingPolicy * TaxRateOfBranch +
-                  priceWithSellingPolicy;
-
-                const checkedFromWeight = selectedItemDetails?.every(
-                  (item) => item.weight !== ""
-                );
-
-                const checkedFromPeiceisLength =
-                  selectedItemDetails.length ==
-                  dataSource[0].weightitems.length;
-
-                if (+clacSelectedWeight > +dataSource[0]?.remaining_weight) {
-                  notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي");
-                } else if (
-                  checkedFromWeight &&
-                  checkedFromPeiceisLength &&
-                  Number(clacSelectedWeight) < Number(values?.sel_weight)
-                ) {
-                  notify("error", "تجميعة الأوزان أقل من الوزن المتبقي");
-                } else {
-                  setFieldValue("taklfa", priceWithSellingPolicy);
-
-                  setFieldValue("taklfa_after_tax", Number(taklfaAfterTax));
-
-                  setFieldValue("remaining_weight", remainingWeight);
-
-                  setFieldValue("cost", costItem);
-
-                  setFieldValue("weight", clacSelectedWeight);
-
-                  setOpenDetails(false);
-                }
-
-                setEditSellingTaklfa(Number(priceWithSellingPolicy));
-                setEditSellingTaklfaAfterTax(Number(priceWithSellingPolicy));
-              }}
-            >
-              {`${t("confirm")}`}
-            </Button>
-          </div>
+          <SellingTableInputKit
+            dataSource={dataSource}
+            selectedItemDetails={selectedItemDetails}
+            setSelectedItemDetails={setSelectedItemDetails}
+            kitDetails={kitDetails}
+            TaxRateOfBranch={TaxRateOfBranch}
+            setOpenDetails={setOpenDetails}
+            setEditSellingTaklfa={setEditSellingTaklfa}
+            setEditSellingTaklfaAfterTax={setEditSellingTaklfaAfterTax}
+          />
         </div>
       </Modal>
 
+      {/* Add Selsal Of Items */}
       <Modal isOpen={openSelsal} onClose={() => setOpenSelsal(false)}>
         <div className="flex flex-col gap-8 justify-center items-center">
           <Header header={t("Add a chain")} />

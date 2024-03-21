@@ -7,6 +7,10 @@ import { useFetch } from '../../hooks';
 import SellingFirstPage from '../selling/SellingFirstPage';
 import SalesReturnFirstPage from './SalesReturnFirstPage';
 import * as Yup from "yup";
+import SellingSecondpage from '../../components/selling/selling components/SellingSecondpage';
+import SalesReturnSecondPage from './SalesReturnSecondPage';
+import SellingInvoiceData from '../selling/SellingInvoiceData';
+import SalesReturnInvoiceData from './SalesReturnInvoiceData';
 
 const SalesReturnPage = () => {
     const [dataSource, setDataSource] = useState<Selling_TP[]>();
@@ -21,6 +25,7 @@ const SalesReturnPage = () => {
     const { userData } = useContext(authCtx)
 
     const initialValues: Selling_TP = {
+        invoice_id:"",
         item_id: "",
         hwya: "",
         min_selling:"",
@@ -40,17 +45,23 @@ const SalesReturnPage = () => {
         karatmineral_id: "",
         karatmineral_name: "",
         gold_price:[],
+        selsal:[],
+        kitItem:[],
         karat_price:"",
         selling_price: "" ,
         tax_rate:"",
         cost: "",
+        cost_value:"",
         wage:"",
         taklfa: "",
         taklfa_after_tax: "",
+        vat:"",
+        total:"",
         wage_total:"",
         category_type:"",
         weightitems:[],
-
+        commission_oneItem:"",
+        commissionTax_oneItem:"",
         client_id:  "",
         client_value: "",
         bond_date: new Date,
@@ -76,13 +87,14 @@ const SalesReturnPage = () => {
     });
 
     const { data } = useFetch<ClientData_TP>({
-        endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}?per_page=10000`,
-        queryKey: [`invoices_data_${userData?.branch_id}`],
+        endpoint: `/sellingReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}?per_page=10000`,
+        queryKey: [`return_invoices_data_${userData?.branch_id}`],
         onSuccess(data) {
             setInvoiceNumber(data)
         },
     });
 
+    console.log("🚀 ~ SalesReturnPage ~ data:", data)
   return (
     <Formik
         initialValues={initialValues}
@@ -109,9 +121,9 @@ const SalesReturnPage = () => {
                     setSellingItemsOfWeight={setSellingItemsOfWeight}
                 />
             }
-            {/* {
+            {
                 stage === 2 &&
-                <SellingSecondpage 
+                <SalesReturnSecondPage
                     setStage={setStage} 
                     paymentData={paymentData} 
                     setPaymentData={setPaymentData} 
@@ -120,7 +132,7 @@ const SalesReturnPage = () => {
             }
             {
                 stage === 3 &&
-                <SellingInvoiceData 
+                <SalesReturnInvoiceData 
                     invoiceNumber={invoiceNumber}
                     sellingItemsData={sellingItemsData} 
                     paymentData={paymentData} 
@@ -129,7 +141,7 @@ const SalesReturnPage = () => {
                     selectedItemDetails={selectedItemDetails}
                     sellingItemsOfWeigth={sellingItemsOfWeigth}
                 />
-            } */}
+            }
         </>
     </Formik>
 

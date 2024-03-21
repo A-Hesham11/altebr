@@ -542,6 +542,11 @@ export const AllRoutesProvider = () => {
             path="/selling/finalPreview"
             element={<SellingFinalPreview />}
           />
+          <Route
+            path="/selling/return-entry"
+            element={<SalesReturnRestrictions />}
+          />
+
           {/* <Route path="/selling/buying/test" element={<>butingh</>} /> */}
           <Route path="/selling/management" element={<Management />} />
           {/* <Route path="/selling/exchange" element={<>exchange</>} /> */}
@@ -616,6 +621,10 @@ export const AllRoutesProvider = () => {
           <Route
             path="/selling/management/edit-items-weight"
             element={<Print />}
+          />
+          <Route
+            path="/selling/payoff/sales-return"
+            element={<SalesReturnPage />}
           />
           <Route
             path="/selling/payoff/sales-return"

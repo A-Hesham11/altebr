@@ -27,8 +27,6 @@ const TableEntry = ({ item }: { item?: {} }) => {
     })
   );
 
-  console.log("🚀 ~ restrictions:", restrictions);
-
   // group by account
 
   const restrictionsWithoutTotals = restrictions?.reduce((prev, curr) => {
@@ -42,10 +40,10 @@ const TableEntry = ({ item }: { item?: {} }) => {
     //     prev[index].creditor_SRA += curr.creditor_SRA;
     // }
 
-        prev.push(curr);
+    prev.push(curr);
 
     return prev;
-}, [] as typeof restrictions);
+  }, [] as typeof restrictions);
 
   restrictions = restrictionsWithoutTotals;
 
@@ -91,7 +89,6 @@ const TableEntry = ({ item }: { item?: {} }) => {
           </thead>
           <tbody>
             {restrictions?.map((restriction, i) => {
-              console.log("🚀 ~ {restrictions?.map ~ item:", item);
               return (
                 <>
                   <tr key={i} className="border-b">
@@ -111,24 +108,6 @@ const TableEntry = ({ item }: { item?: {} }) => {
                           : "!bg-lightGreen !text-gray-900"
                       } `}
                     >
-                      {formatGram(restriction.creditor_gram)}
-                    </td>
-                    <td
-                      className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
-                          ? "!bg-mainGreen !text-white"
-                          : "!bg-lightGreen !text-gray-900"
-                      } `}
-                    >
-                      {formatReyal(restriction.creditor_SRA)}
-                    </td>
-                    <td
-                      className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
-                          ? "!bg-mainGreen !text-white"
-                          : "!bg-lightGreen !text-gray-900"
-                      } `}
-                    >
                       {formatGram(restriction.debtor_gram)}
                     </td>
                     <td
@@ -139,6 +118,24 @@ const TableEntry = ({ item }: { item?: {} }) => {
                       } `}
                     >
                       {formatReyal(restriction.debtor_SRA)}
+                    </td>
+                    <td
+                      className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
+                        i == item.boxes.length - 0
+                          ? "!bg-mainGreen !text-white"
+                          : "!bg-lightGreen !text-gray-900"
+                      } `}
+                    >
+                      {formatGram(restriction.creditor_gram)}
+                    </td>
+                    <td
+                      className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
+                        i == item.boxes.length - 0
+                          ? "!bg-mainGreen !text-white"
+                          : "!bg-lightGreen !text-gray-900"
+                      } `}
+                    >
+                      {formatReyal(restriction.creditor_SRA)}
                     </td>
                   </tr>
                 </>

@@ -59,7 +59,7 @@ const SalesReturnFirstPage = ({
               <div className="bg-flatWhite rounded-lg bill-shadow py-5 px-6 h-41 my-5">
                   <h2 className='mb-4 text-base font-bold'>{t("search by part number")}</h2>
                   <>
-                    <SalesReturnTableInputData 
+                    <SalesReturnTableInputData
                       dataSource={dataSource}
                       setDataSource={setDataSource}
                       sellingItemsData={sellingItemsData} 

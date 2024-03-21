@@ -1,8 +1,9 @@
+
+
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
 import { useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClientData_TP, Selling_TP } from "./PaymentSellingPage";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useMutate } from "../../hooks";
@@ -10,6 +11,7 @@ import { mutateData } from "../../utils/mutateData";
 import { Button } from "../../components/atoms";
 import { SellingFinalPreview } from "../../components/selling/selling components/SellingFinalPreview";
 import { numberContext } from "../../context/settings/number-formatter";
+import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -20,66 +22,83 @@ type CreateHonestSanadProps_TP = {
   selectedItemDetails: any;
   sellingItemsOfWeigth: any;
 };
-const SellingInvoiceData = ({
+const SalesReturnInvoiceData = ({
   setStage,
   sellingItemsData,
   paymentData,
   clientData,
   invoiceNumber,
-  selectedItemDetails,
-  sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
   console.log("🚀 ~ paymentData:", paymentData)
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData)
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
+
+  // const TaxRateOfBranch =
+  // sellingItemsData && sellingItemsData[0]?.tax_rate / 100;
+  // console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch)
 
   const totalCommissionRatio = paymentData.reduce((acc, card) => {
     acc += +card.commission_riyals;
     return acc;
   }, 0);
+  console.log("🚀 ~ totalCommissionRatio ~ totalCommissionRatio:", totalCommissionRatio)
 
   const totalCostAfterTax = sellingItemsData.reduce((acc, curr) => {
     acc += +curr.taklfa_after_tax;
     return acc;
   }, 0);
+  console.log("🚀 ~ totalCostAfterTax ~ totalCostAfterTax:", totalCostAfterTax)
 
   const totalCostBeforeTax = sellingItemsData.reduce((acc, curr) => {
     acc += +curr.taklfa_after_tax / (curr.tax_rate / 100 + 1);
     return acc;
   }, 0);
+  console.log("🚀 ~ totalCostBeforeTax ~ totalCostBeforeTax:", totalCostBeforeTax)
 
   const totalCommissionTaxes = paymentData.reduce((acc, card) => {
     acc += +card.commission_tax;
     return acc;
   }, 0);
+  console.log("🚀 ~ totalCommissionTaxes ~ totalCommissionTaxes:", totalCommissionTaxes)
 
   const ratioForOneItem = totalCommissionRatio / sellingItemsData.length;
+  console.log("🚀 ~ ratioForOneItem:", ratioForOneItem)
 
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
+  console.log("🚀 ~ ratioForOneItemTaxes:", ratioForOneItemTaxes)
 
   const totalFinalCost = (
     +totalCostAfterTax +
     +totalCommissionRatio +
     +totalCommissionTaxes
   ).toFixed(2);
-
   console.log("🚀 ~ totalFinalCost:", totalFinalCost)
 
-  const totalCost = (totalCostBeforeTax + totalCommissionRatio).toFixed(2);
+  const totalCost = sellingItemsData.reduce((acc, card) => {
+    acc += +card.cost;
+    return acc;
+  }, 0);
 
-  const totalItemsTaxes = (+totalFinalCost - +totalCost).toFixed(2);
+  const totalItemsTaxes = sellingItemsData.reduce((acc, card) => {
+    acc += +card.vat;
+    return acc;
+  }, 0);
 
-  const totalItemsTax = (+totalItemsTaxes + +totalCommissionTaxes).toFixed(2);
+  // const totalFinalCost = sellingItemsData.reduce((acc, card) => {
+  //   acc += +card.taklfa_after_tax;
+  //   return acc;
+  // }, 0);
+  // console.log("🚀 ~ totalFinalCost ~ totalFinalCost:", totalFinalCost)
 
   const costDataAsProps = {
     totalCommissionRatio,
     ratioForOneItem,
     totalCommissionTaxes,
+    totalCost,
     totalItemsTaxes,
     totalFinalCost,
-    totalCost,
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -98,25 +117,21 @@ const SellingInvoiceData = ({
         header: () => <span>{t("category")} </span>,
         accessorKey: "category_name",
         cell: (info) => {
-          console.log("🚀 ~ info:", info.row.original);
+          console.log("🚀 ~ info:", info.row.original.selsal[0]?.karat_name)
           const finalCategoriesNames = info.row.original.itemDetails
-          ?.map((category) => category.category_name)
-          .join("-");
-          console.log("🚀 ~ finalCategoriesNames:", finalCategoriesNames)
-
-          const finalKaratNamesOfSelsal = info.row.original.selsal
+            ?.map((category) => category.category_name)
+            .join("-");
+            const finalKaratNamesOfSelsal = info.row.original.selsal
             ?.map((karat) => karat.karat_name)
             .join("-");
             console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal)
-
-          console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal);
-            return info.row.original.itemDetails?.length
-              ? info.row.original.has_selsal === 0
-                ? finalCategoriesNames
-                : `${finalCategoriesNames} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`
-              : info.row.original.selsal.length === 0
-              ? info.getValue()
-              : `${info.getValue()} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`;
+          return info.row.original.itemDetails?.length
+            ? info.row.original.has_selsal === 0
+              ? finalCategoriesNames
+              : `${finalCategoriesNames} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`
+            : info.row.original.selsal.length === 0
+            ? info.getValue()
+            : `${info.getValue()} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`;
         },
       },
       {
@@ -135,47 +150,49 @@ const SellingInvoiceData = ({
       {
         header: () => <span>{t("weight")}</span>,
         accessorKey: "weight",
-        cell: (info) => info.getValue() || `${t("no items")}`,
+        cell: (info) => formatGram(Number(info.getValue())) || `${t("no items")}`,
       },
       {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
-        cell: (info: any) => {
-          const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
-          const totalCostFromRow =
-            +info.row.original.taklfa_after_tax / +rowTaxEquation +
-            +ratioForOneItem;
-          return <div>{formatReyal(Number(totalCostFromRow))}</div>;
-        },
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        // cell: (info: any) => {
+        //   const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
+        //   const totalCostFromRow =
+        //     +info.row.original.taklfa_after_tax / +rowTaxEquation +
+        //     +ratioForOneItem;
+        //   return <div>{formatReyal(Number(totalCostFromRow))}</div>;
+        // },
       },
       {
         header: () => <span>{t("VAT")} </span>,
-        accessorKey: "VAT",
-        cell: (info: any) => {
-          const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
-          const totalCostFromRow =
-            +info.row.original.taklfa_after_tax / +rowTaxEquation +
-            +ratioForOneItem;
-          const totaltaklfaFromRow =
-            +info.row.original.taklfa_after_tax +
-            ratioForOneItem +
-            ratioForOneItemTaxes;
-          const totalTaxFromRow = +totaltaklfaFromRow - +totalCostFromRow;
+        accessorKey: "vat",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        // cell: (info: any) => {
+        //   const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
+        //   const totalCostFromRow =
+        //     +info.row.original.taklfa_after_tax / +rowTaxEquation +
+        //     +ratioForOneItem;
+        //   const totaltaklfaFromRow =
+        //     +info.row.original.taklfa_after_tax +
+        //     ratioForOneItem +
+        //     ratioForOneItemTaxes;
+        //   const totalTaxFromRow = +totaltaklfaFromRow - +totalCostFromRow;
 
-          return <div>{formatReyal(Number(totalTaxFromRow))}</div>;
-        },
+        //   return <div>{formatReyal(Number(totalTaxFromRow))}</div>;
+        // },
       },
       {
         header: () => <span>{t("total")} </span>,
         accessorKey: "total",
-        cell: (info: any) => {
-          const totaltaklfaFromRow =
-            +info.row.original.taklfa_after_tax +
-            ratioForOneItem +
-            ratioForOneItemTaxes;
-
-          return <div>{formatReyal(Number(totaltaklfaFromRow))}</div>;
-        },
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        // cell: (info: any) => {
+        //   const totaltaklfaFromRow =
+        //     +info.row.original.taklfa_after_tax +
+        //     ratioForOneItem +
+        //     ratioForOneItemTaxes;
+        //   return <div>{formatReyal(Number(totaltaklfaFromRow))}</div>;
+        // },
       },
     ],
     []
@@ -211,22 +228,18 @@ const SellingInvoiceData = ({
       invoice_date: clientData.bond_date,
       invoice_number: invoiceNumber.length + 1,
       count: sellingItemsData.length,
-      total_vat: totalItemsTax,
+      // total_vat: totalItemsTax,
       karat_price: sellingItemsData[0].gold_price,
     };
     const items = sellingItemsData.map((item) => {
       console.log("🚀 ~ items ~ item:", item);
 
-      const rowTaxEquation = Number(item.tax_rate) / 100 + 1;
+      const rowTaxEquation = (Number(item.tax_rate) / 100) + 1;
       const taklfaFromOneItem =
-        Number(item.taklfa_after_tax) +
-        Number(ratioForOneItem) +
-        Number(ratioForOneItemTaxes);
-        
+        Number(item.taklfa_after_tax) + Number(ratioForOneItem) + Number(ratioForOneItemTaxes);
       const totalCostFromOneItem =
-        Number(item.taklfa_after_tax) / Number(rowTaxEquation) +
-        Number(ratioForOneItem);
-
+      Number(item.taklfa_after_tax) / Number(rowTaxEquation) + Number(ratioForOneItem);
+      console.log("🚀 ~ items ~ totalCostFromOneItem:", totalCostFromOneItem)
       const totalTaxFromOneRow = +taklfaFromOneItem - +totalCostFromOneItem;
 
       const weightOfSelsal = item.selsal?.reduce((acc, item) => {
@@ -239,9 +252,7 @@ const SellingInvoiceData = ({
         return acc;
       }, 0);
 
-      const isSelsal =
-        item.selsal && item.selsal?.length > 0 ? Number(weightOfSelsal) : 0;
-      console.log("🚀 ~ items ~ isSelsal:", isSelsal);
+      const isSelsal = (item.selsal && item.selsal?.length > 0) ? Number(weightOfSelsal) : 0
 
       return {
         category_id: item.category_id,
@@ -271,9 +282,6 @@ const SellingInvoiceData = ({
         sel_weight: weightOfSelsal || 0,
         selsal: item.selsal,
         has_selsal: item.has_selsal,
-        tax_rate: item.tax_rate,
-        commission_oneItem: ratioForOneItem,
-        commissionTax_oneItem: ratioForOneItemTaxes, 
       };
     });
     const card = paymentData.reduce((acc, curr) => {
@@ -284,15 +292,15 @@ const SellingInvoiceData = ({
           ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
           : Number(curr.amount) + Number(curr.commission_riyals);
 
-      acc[curr.sellingFrontKey] =
+      acc[curr.salesReturnFrontKey] =
         +maxDiscountOrNOt + Number(curr.commission_tax);
 
       return acc;
     }, {});
-    mutate({
-      endpointName: "/selling/api/v1/add_Invoice",
-      values: { invoice, items, card },
-    });
+    // mutate({
+    //     endpointName: '/selling/api/v1/add_Invoice',
+    //     values: { invoice, items, card }
+    // })
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
       { invoice, items, card }
@@ -333,4 +341,4 @@ const SellingInvoiceData = ({
   );
 };
 
-export default SellingInvoiceData;
+export default SalesReturnInvoiceData;

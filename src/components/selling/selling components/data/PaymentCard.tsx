@@ -28,6 +28,7 @@ type Payment_TP = {
   setCardDiscountPercentage?: any
   setSelectedCardName?: any
   setIsMaxDiscountLimit?: any
+  setSalesReturnFrontKey?: any
 };
 
 const PaymentCard = ({
@@ -41,6 +42,7 @@ const PaymentCard = ({
   setSellingFrontKey,
   setCardDiscountPercentage,
   setCardId,
+  setSalesReturnFrontKey,
   setSelectedCardName,
   setIsMaxDiscountLimit
 }: Payment_TP) => {
@@ -147,7 +149,7 @@ const PaymentCard = ({
 
   const cardCash = locationPath === "/selling/reimbursement" ? cardReimbursement : cardOfCash
 
-  const bankscard = (locationPath === "/selling/reimbursement" || locationPath === "/expenses/expensesInvoice") ? "" :  dataSource 
+  const bankscard = (locationPath === "/selling/reimbursement" || locationPath === "/expenses/expensesInvoice" || locationPath === "/selling/payoff/sales-return") ? "" :  dataSource 
 
   const cardsData = fetchShowMainCards
   ? [...dataSource].reverse()
@@ -182,6 +184,8 @@ const PaymentCard = ({
       setCardFronKey(selectNewCard[0]?.front_key);
       if (locationPath === "/selling/addInvoice/") {
         setSellingFrontKey?.(selectNewCard[0]?.selling_front_key || "cash")
+      } else if (locationPath === "/selling/payoff/sales-return") {
+        setSalesReturnFrontKey?.(selectNewCard[0]?.return_selling_front_key || "cash")
       } else {
         setCardFrontKeyAccept?.(selectNewCard[0]?.front_key_accept || "cash");
       }
