@@ -214,6 +214,26 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: "credits",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "edara credits",
+        link: "/credits/edara",
+        icon: CiExport,
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "branch credits",
+        link: "/credits/branch",
+        icon: CiExport,
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: "support",
     icon: CiExport,
     items: [

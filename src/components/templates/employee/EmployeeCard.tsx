@@ -1,35 +1,42 @@
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { t } from "i18next"
-import { Dispatch, SetStateAction, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import blankPerson from "../../../assets/blank-person-image.png"
-import { useMutate } from "../../../hooks"
-import { Employee_TP } from "../../../pages/employees/employees-types"
-import { mutateData } from "../../../utils/mutateData"
-import { notify } from "../../../utils/toast"
-import { Button } from "../../atoms"
-import { DeleteIcon, EditIcon, ViewIcon } from "../../atoms/icons"
-import { Modal } from "../../molecules"
-import { AddEmployee } from "./AddEmployee"
-import { InitialValues_TP } from "./validation-and-types"
-
+import { useQueryClient } from "@tanstack/react-query";
+import { t } from "i18next";
+import { Dispatch, SetStateAction, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import blankPerson from "../../../assets/blank-person-image.png";
+import { useMutate } from "../../../hooks";
+import { Employee_TP } from "../../../pages/employees/employees-types";
+import { mutateData } from "../../../utils/mutateData";
+import { notify } from "../../../utils/toast";
+import { Button } from "../../atoms";
+import { DeleteIcon, EditIcon, ViewIcon } from "../../atoms/icons";
+import { Modal } from "../../molecules";
+import { AddEmployee } from "./AddEmployee";
+import { InitialValues_TP } from "./validation-and-types";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 ///
 /////////// Types
 ///
 interface EmployeeCardProps_TP
   extends Pick<Employee_TP, "id" | "name" | "img"> {
-    setEditEmployeeData:Dispatch<SetStateAction<InitialValues_TP | undefined>>
-    rest:any
-    editEmployeeData:InitialValues_TP | undefined
-  }
+  setEditEmployeeData: Dispatch<SetStateAction<InitialValues_TP | undefined>>;
+  rest: any;
+  editEmployeeData: InitialValues_TP | undefined;
+}
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
 ///
-export const EmployeeCard = ({ id, img, name , setEditEmployeeData , rest , editEmployeeData }: EmployeeCardProps_TP) => {
+export const EmployeeCard = ({
+  id,
+  img,
+  name,
+  setEditEmployeeData,
+  rest,
+  editEmployeeData,
+}: EmployeeCardProps_TP) => {
   /////////// VARIABLES
   ///
 
@@ -37,29 +44,29 @@ export const EmployeeCard = ({ id, img, name , setEditEmployeeData , rest , edit
   /////////// CUSTOM HOOKS
   ///
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const {
-      mutate,
-      error: errorQuery,
-      isLoading: deleteLoading
+    mutate,
+    error: errorQuery,
+    isLoading: deleteLoading,
   } = useMutate({
-      mutationFn: mutateData,
-      onSuccess: (data) => {
-        queryClient.setQueriesData(['employees'], (old:any)=>{
-          return old.filter((item:any)=> id !== item.id)
-         })
-         notify('success',`${t('deleted successfully')}`)
-      },
-      onError:(error) => {
-          notify("error")
-      }
-  })
+    mutationFn: mutateData,
+    onSuccess: (data) => {
+      queryClient.setQueriesData(["employees"], (old: any) => {
+        return old.filter((item: any) => id !== item.id);
+      });
+      notify("success", `${t("deleted successfully")}`);
+    },
+    onError: (error) => {
+      notify("error");
+    },
+  });
 
   ///
   /////////// STATES
   ///
-  const [open, setOpen] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false);
 
   ///
   /////////// SIDE EFFECTS
@@ -67,12 +74,12 @@ export const EmployeeCard = ({ id, img, name , setEditEmployeeData , rest , edit
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
-  const deleteHandler = (id:string)=>{
+  const deleteHandler = (id: string) => {
     mutate({
       endpointName: `employee/api/v1/employees/${id}`,
-      method:"delete"
-  })
-  }
+      method: "delete",
+    });
+  };
   ///
   return (
     <div className="col-span-1 shadow-md shadow-slate-400 px-9 py-5 rounded-lg m-5">
@@ -104,8 +111,8 @@ export const EmployeeCard = ({ id, img, name , setEditEmployeeData , rest , edit
               img,
               id,
               name,
-            })
-            setOpen(true)
+            });
+            setOpen(true);
           }}
         >
           <EditIcon />
@@ -117,18 +124,16 @@ export const EmployeeCard = ({ id, img, name , setEditEmployeeData , rest , edit
           action={() => deleteHandler(id)}
           loading={deleteLoading}
         >
-          <DeleteIcon />
+          <DeleteIcon className="fill-white" />
           {/* حذف */}
         </Button>
       </div>
       <Modal isOpen={open} onClose={() => setOpen(false)}>
         <AddEmployee
-          title={`${
-            editEmployeeData ? t("edit employee") : t("add employee")
-          }`}
+          title={`${editEmployeeData ? t("edit employee") : t("add employee")}`}
           editEmployeeData={editEmployeeData}
         />
       </Modal>
     </div>
-  )
-}
+  );
+};

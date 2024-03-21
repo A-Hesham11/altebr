@@ -439,7 +439,7 @@
   "payment": "السداد",
   "bond payment": "سند السداد",
   "payoff": "المردود",
-  "sales return":"مردود المبيعات",
+  "sales return": "مردود المبيعات",
   "supply payoff": "مردود التوريد",
   "gold payoff": "مردود الذهب",
   "diamond payoff": "مردود الالماس",
@@ -1234,5 +1234,13 @@
   "article management": "ادارة المقالات",
   "view article": "عرض المقالات",
   "create article": "انشاء مقال",
-  "import": "استيراد"
+  "import": "استيراد",
+  "total diamond": "اجمالي الالماس",
+  "total motafreqat": "اجمالي المتفرقات",
+  "imported has successfully": "تم استيراد القطع بنجاح",
+  "loading credits": "تحميل الارصدة",
+  "credits": "الارصدة",
+  "account name": "اسم الحساب",
+  "branch credits": "ارصدة الفروع",
+  "edara credits": "ارصدة الادارة"
 }
