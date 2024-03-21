@@ -1,5 +1,3 @@
-
-
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
 import { useContext, useMemo } from "react";
@@ -29,68 +27,61 @@ const SalesReturnInvoiceData = ({
   clientData,
   invoiceNumber,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData)
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData)
+  console.log("🚀 ~ clientData:", clientData);
+  console.log("🚀 ~ paymentData:", paymentData);
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
 
-  // const TaxRateOfBranch =
-  // sellingItemsData && sellingItemsData[0]?.tax_rate / 100;
-  // console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch)
+  const isCheckedCommission = paymentData.some(
+    (item) => item.add_commission_ratio === true
+  );
+  console.log("🚀 ~ isCheckedCommission:", isCheckedCommission);
 
-  const totalCommissionRatio = paymentData.reduce((acc, card) => {
-    acc += +card.commission_riyals;
+  const totalCommissionRatio = sellingItemsData.reduce((acc, card) => {
+    acc += +card.commission_oneItem;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalCommissionRatio ~ totalCommissionRatio:", totalCommissionRatio)
 
-  const totalCostAfterTax = sellingItemsData.reduce((acc, curr) => {
-    acc += +curr.taklfa_after_tax;
+  const totalCommissionRatioTax = sellingItemsData.reduce((acc, card) => {
+    acc += +card.commissionTax_oneItem;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalCostAfterTax ~ totalCostAfterTax:", totalCostAfterTax)
-
-  const totalCostBeforeTax = sellingItemsData.reduce((acc, curr) => {
-    acc += +curr.taklfa_after_tax / (curr.tax_rate / 100 + 1);
-    return acc;
-  }, 0);
-  console.log("🚀 ~ totalCostBeforeTax ~ totalCostBeforeTax:", totalCostBeforeTax)
 
   const totalCommissionTaxes = paymentData.reduce((acc, card) => {
     acc += +card.commission_tax;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalCommissionTaxes ~ totalCommissionTaxes:", totalCommissionTaxes)
 
   const ratioForOneItem = totalCommissionRatio / sellingItemsData.length;
-  console.log("🚀 ~ ratioForOneItem:", ratioForOneItem)
+  console.log("🚀 ~ ratioForOneItem:", ratioForOneItem);
 
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
-  console.log("🚀 ~ ratioForOneItemTaxes:", ratioForOneItemTaxes)
+  console.log("🚀 ~ ratioForOneItemTaxes:", ratioForOneItemTaxes);
 
-  const totalFinalCost = (
-    +totalCostAfterTax +
-    +totalCommissionRatio +
-    +totalCommissionTaxes
-  ).toFixed(2);
-  console.log("🚀 ~ totalFinalCost:", totalFinalCost)
-
-  const totalCost = sellingItemsData.reduce((acc, card) => {
+  const totalOfCost = sellingItemsData.reduce((acc, card) => {
     acc += +card.cost;
     return acc;
   }, 0);
 
-  const totalItemsTaxes = sellingItemsData.reduce((acc, card) => {
+  const totalCost = isCheckedCommission
+    ? totalOfCost
+    : totalOfCost - totalCommissionRatio;
+  console.log("🚀 ~ totalCost ~ totalCost:", totalCost);
+
+  const totalItemsOfTaxes = sellingItemsData.reduce((acc, card) => {
     acc += +card.vat;
     return acc;
   }, 0);
 
-  // const totalFinalCost = sellingItemsData.reduce((acc, card) => {
-  //   acc += +card.taklfa_after_tax;
-  //   return acc;
-  // }, 0);
-  // console.log("🚀 ~ totalFinalCost ~ totalFinalCost:", totalFinalCost)
+  const totalItemsTaxes = isCheckedCommission
+    ? totalItemsOfTaxes
+    : totalItemsOfTaxes - totalCommissionRatioTax;
+
+  const totalFinalCost = Number(totalCost) + Number(totalItemsTaxes);
+
+  console.log("🚀 ~ totalFinalCost:", totalFinalCost);
 
   const costDataAsProps = {
     totalCommissionRatio,
@@ -117,21 +108,25 @@ const SalesReturnInvoiceData = ({
         header: () => <span>{t("category")} </span>,
         accessorKey: "category_name",
         cell: (info) => {
-          console.log("🚀 ~ info:", info.row.original.selsal[0]?.karat_name)
+          console.log("🚀 ~ info:", info.row.original.selsal[0]?.karat_name);
           const finalCategoriesNames = info.row.original.itemDetails
             ?.map((category) => category.category_name)
             .join("-");
-            const finalKaratNamesOfSelsal = info.row.original.selsal
+          const finalKaratNamesOfSelsal = info.row.original.selsal
             ?.map((karat) => karat.karat_name)
             .join("-");
-            console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal)
+          console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal);
           return info.row.original.itemDetails?.length
             ? info.row.original.has_selsal === 0
               ? finalCategoriesNames
-              : `${finalCategoriesNames} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`
+              : `${finalCategoriesNames} مع سلسال (${
+                  info.row.original.selsal && finalKaratNamesOfSelsal
+                })`
             : info.row.original.selsal.length === 0
             ? info.getValue()
-            : `${info.getValue()} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`;
+            : `${info.getValue()} مع سلسال (${
+                info.row.original.selsal && finalKaratNamesOfSelsal
+              })`;
         },
       },
       {
@@ -150,49 +145,43 @@ const SalesReturnInvoiceData = ({
       {
         header: () => <span>{t("weight")}</span>,
         accessorKey: "weight",
-        cell: (info) => formatGram(Number(info.getValue())) || `${t("no items")}`,
+        cell: (info) =>
+          formatGram(Number(info.getValue()) + (info.row.original.sel_weight && Number(info.row.original.sel_weight))) || `${t("no items")}`,
       },
       {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
-        // cell: (info: any) => {
-        //   const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
-        //   const totalCostFromRow =
-        //     +info.row.original.taklfa_after_tax / +rowTaxEquation +
-        //     +ratioForOneItem;
-        //   return <div>{formatReyal(Number(totalCostFromRow))}</div>;
-        // },
+        cell: (info) =>
+          isCheckedCommission
+            ? formatReyal(Number(info.getValue()))
+            : formatReyal(
+                Number(info.getValue()) -
+                  Number(info.row.original.commission_oneItem)
+              ) || "---",
       },
       {
         header: () => <span>{t("VAT")} </span>,
         accessorKey: "vat",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
-        // cell: (info: any) => {
-        //   const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
-        //   const totalCostFromRow =
-        //     +info.row.original.taklfa_after_tax / +rowTaxEquation +
-        //     +ratioForOneItem;
-        //   const totaltaklfaFromRow =
-        //     +info.row.original.taklfa_after_tax +
-        //     ratioForOneItem +
-        //     ratioForOneItemTaxes;
-        //   const totalTaxFromRow = +totaltaklfaFromRow - +totalCostFromRow;
-
-        //   return <div>{formatReyal(Number(totalTaxFromRow))}</div>;
-        // },
+        cell: (info) =>
+          isCheckedCommission
+            ? formatReyal(Number(info.getValue()))
+            : formatReyal(
+                Number(info.getValue()) -
+                  Number(info.row.original.commissionTax_oneItem)
+              ) || "---",
       },
       {
         header: () => <span>{t("total")} </span>,
         accessorKey: "total",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
-        // cell: (info: any) => {
-        //   const totaltaklfaFromRow =
-        //     +info.row.original.taklfa_after_tax +
-        //     ratioForOneItem +
-        //     ratioForOneItemTaxes;
-        //   return <div>{formatReyal(Number(totaltaklfaFromRow))}</div>;
-        // },
+        cell: (info) =>
+          isCheckedCommission
+            ? formatReyal(Number(info.getValue()))
+            : formatReyal(
+                Number(info.row.original.cost) -
+                  Number(info.row.original.commission_oneItem) +
+                  (Number(info.row.original.vat) -
+                    Number(info.row.original.commissionTax_oneItem))
+              ) || "---",
       },
     ],
     []
@@ -214,7 +203,7 @@ const SalesReturnInvoiceData = ({
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      navigate(`/selling/viewInvoice/`);
+      navigate(`/selling/return-entry`);
     },
   });
 
@@ -227,19 +216,19 @@ const SalesReturnInvoiceData = ({
       client_value: clientData.client_value,
       invoice_date: clientData.bond_date,
       invoice_number: invoiceNumber.length + 1,
+      base_invoice: sellingItemsData[0]?.invoice_id,
       count: sellingItemsData.length,
-      // total_vat: totalItemsTax,
-      karat_price: sellingItemsData[0].gold_price,
     };
     const items = sellingItemsData.map((item) => {
-      console.log("🚀 ~ items ~ item:", item);
-
-      const rowTaxEquation = (Number(item.tax_rate) / 100) + 1;
+      const rowTaxEquation = Number(item.tax_rate) / 100 + 1;
       const taklfaFromOneItem =
-        Number(item.taklfa_after_tax) + Number(ratioForOneItem) + Number(ratioForOneItemTaxes);
+        Number(item.taklfa_after_tax) +
+        Number(ratioForOneItem) +
+        Number(ratioForOneItemTaxes);
       const totalCostFromOneItem =
-      Number(item.taklfa_after_tax) / Number(rowTaxEquation) + Number(ratioForOneItem);
-      console.log("🚀 ~ items ~ totalCostFromOneItem:", totalCostFromOneItem)
+        Number(item.taklfa_after_tax) / Number(rowTaxEquation) +
+        Number(ratioForOneItem);
+      console.log("🚀 ~ items ~ totalCostFromOneItem:", totalCostFromOneItem);
       const totalTaxFromOneRow = +taklfaFromOneItem - +totalCostFromOneItem;
 
       const weightOfSelsal = item.selsal?.reduce((acc, item) => {
@@ -252,7 +241,8 @@ const SalesReturnInvoiceData = ({
         return acc;
       }, 0);
 
-      const isSelsal = (item.selsal && item.selsal?.length > 0) ? Number(weightOfSelsal) : 0
+      const isSelsal =
+        item.selsal && item.selsal?.length > 0 ? Number(weightOfSelsal) : 0;
 
       return {
         category_id: item.category_id,
@@ -269,38 +259,29 @@ const SalesReturnInvoiceData = ({
         karatmineral_name: item.karatmineral_name,
         wage: item.wage,
         wage_total: item.wage_total,
-        weight: item.weight - isSelsal,
-        selling_price: item.selling_price,
-        cost: +totalCostFromOneItem,
-        cost_value: item.cost,
-        taklfa: item.taklfa,
-        taklfa_after_tax: item.taklfa_after_tax,
-        vat: +totalTaxFromOneRow,
-        total: +taklfaFromOneItem,
-        kitSellingItems: item.itemDetails,
+        weight: item.weight,
+        cost: +totalCost,
+        vat: +totalItemsTaxes,
+        total: +totalFinalCost,
+        kitItems: item.kitItem,
         sel_cost: costOfSelsal || 0,
         sel_weight: weightOfSelsal || 0,
         selsal: item.selsal,
         has_selsal: item.has_selsal,
+        base_invoice_id: item.invoice_id,
       };
     });
     const card = paymentData.reduce((acc, curr) => {
       console.log("🚀 ~ card ~ curr:", curr);
 
-      const maxDiscountOrNOt =
-        curr.amount >= curr.max_discount_limit
-          ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
-          : Number(curr.amount) + Number(curr.commission_riyals);
-
-      acc[curr.salesReturnFrontKey] =
-        +maxDiscountOrNOt + Number(curr.commission_tax);
+      acc[curr.salesReturnFrontKey] = Number(curr.amount);
 
       return acc;
     }, {});
-    // mutate({
-    //     endpointName: '/selling/api/v1/add_Invoice',
-    //     values: { invoice, items, card }
-    // })
+    mutate({
+        endpointName: '/sellingReturn/api/v1/add_selling_return',
+        values: { invoice, items, card }
+    })
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
       { invoice, items, card }

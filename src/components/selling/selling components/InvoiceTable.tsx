@@ -29,6 +29,10 @@ const InvoiceTable = <T extends object>({ data,
         return acc
     }, 0)
 
+    const totalWeightOfSelsal = data.reduce((acc, item) => {
+        return acc + item.selsal.reduce((subAcc, curr) => subAcc + +curr.weight, 0);
+    }, 0);
+
     const totalCost = data?.reduce((acc, curr) => {
         acc += +curr.cost
         return acc
@@ -44,16 +48,18 @@ const InvoiceTable = <T extends object>({ data,
         return acc
     }, 0)
 
-    const totalFinalCost = +totalCost + +totalCommissionRatio + +totalCost * 0.15 + +totalCommissionTaxes
+    const totalFinalCost = Number(totalCost) + Number(totalCommissionRatio) + Number(totalCost) * 0.15 + Number(totalCommissionTaxes)
 
     const locationPath = location.pathname 
 
     const totalFinalCostIntoArabic = convertNumToArWord(Math.round(locationPath === "/selling/addInvoice/" ? costDataAsProps?.totalFinalCost : totalFinalCost))
 
+    const hasSelsal = (locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal) ? totalWeightOfSelsal : 0
+
     const resultTable = [
         {
             number: t('totals'),
-            weight: totalWeight,
+            weight: formatGram(Number(totalWeight) + Number(hasSelsal)),
             cost: costDataAsProps ? formatReyal(Number(costDataAsProps?.totalCost)) : formatReyal(Number((totalCost + totalCommissionRatio))),
             vat: costDataAsProps ? formatReyal(Number(costDataAsProps?.totalItemsTaxes)) : formatReyal(Number((totalCost * 0.15 + totalCommissionTaxes))),
             total: costDataAsProps ? formatReyal(Number(costDataAsProps?.totalFinalCost)) : formatReyal(Number(totalFinalCost))
