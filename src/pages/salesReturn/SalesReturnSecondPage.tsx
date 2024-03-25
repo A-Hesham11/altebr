@@ -12,6 +12,7 @@ type SellingSecondpage_TP = {
   paymentData: Payment_TP[];
   setPaymentData: any;
   setStage: any;
+  stage: any;
   sellingItemsData: any;
 };
 const SalesReturnSecondPage = ({
@@ -19,12 +20,16 @@ const SalesReturnSecondPage = ({
   setPaymentData,
   sellingItemsData,
   setStage,
+  stage,
 }: SellingSecondpage_TP) => {
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [selectedCardName, setSelectedCardName] = useState(null);
   const [cardId, setCardId] = useState("");
   const [isCheckedCommission, setIsCheckedCommission] = useState(false);
   console.log("🚀 ~ isCheckedCommission:", isCheckedCommission);
+
+  const addCommissionRatio = paymentData.some((item) => item.add_commission_ratio === true)
+  console.log("🚀 ~ addCommissionRatio:", addCommissionRatio)
 
   const totalPriceInvoice = sellingItemsData?.reduce(
     (total, item) => +total + +item.taklfa_after_tax,
@@ -43,7 +48,6 @@ const SalesReturnSecondPage = ({
     (total, item) => Number(total) + Number(item.amount),
     0
   );
-  console.log("🚀 ~ amountRemaining:", amountRemaining)
 
   const totalCommissionOfoneItem = sellingItemsData?.reduce(
     (total, item) => Number(total) + Number(item.commission_oneItem),
@@ -62,13 +66,15 @@ const SalesReturnSecondPage = ({
   );
   console.log("🚀 ~ invoiceTotalOfOfSalesReturn:", invoiceTotalOfOfSalesReturn);
 
-  const totalCommission = Number(totalCommissionOfoneItem) + Number(totalCommissionTaxOfoneItem)
-
   const costRemaining =
     Number(invoiceTotalOfOfSalesReturn) -
-    // (!isCheckedCommission ? totalCommission : 0) - 
+    (!isCheckedCommission ? Number(totalCommissionOfoneItem) + Number(totalCommissionTaxOfoneItem) : 0) - 
     Number(amountRemaining);
   console.log("🚀 ~ costRemaining:", costRemaining);
+
+  useEffect(() => {
+    setIsCheckedCommission(addCommissionRatio)
+  }, [stage === 2])
 
   const handleSeccessedData = () => {
     if (paymentData.length === 0) {
@@ -81,7 +87,6 @@ const SalesReturnSecondPage = ({
       return;
     }
 
-    setIsCheckedCommission(false)
     setStage(3);
     notify("success");
   };
