@@ -76,8 +76,11 @@ const PaymentProccessingToManagement = ({
   const { formatReyal } = numberContext();
 
   const locationPath = location.pathname;
+  console.log("🚀 ~ locationPath:", locationPath)
 
   const { userData } = useContext(authCtx);
+
+
 
   const handleCardSelection = (
     selectedCardType: string,
@@ -112,7 +115,7 @@ const PaymentProccessingToManagement = ({
     (total, item) => Number(total) + Number(item.commission_oneItem),
     0
   );
-  console.log("🚀 ~ totalCommissionOfoneItem:", totalCommissionOfoneItem)
+  console.log("🚀 ~ totalCommissionOfoneItem:", totalCommissionOfoneItem);
 
   const totalCommissionTaxOfoneItem = sellingItemsData?.reduce(
     (total, item) => Number(total) + Number(item.commissionTax_oneItem),
@@ -130,12 +133,21 @@ const PaymentProccessingToManagement = ({
     (total, item) => Number(total) + Number(item.total),
     0
   );
-  console.log("🚀 ~ invoiceTotalOfSalesReturn:", invoiceTotalOfSalesReturn)
+  console.log("🚀 ~ invoiceTotalOfSalesReturn:", invoiceTotalOfSalesReturn);
 
+  const amountIsPaid = isCheckedCommission === true ? Number(invoiceTotalOfSalesReturn) : Number(totalPriceInvoice)
+
+  // const costRemaining =
+  //   (locationPath === "/selling/payoff/sales-return"
+  //     ? Number(invoiceTotalOfSalesReturn) - Number(totalCommissionOfoneItem)
+  //     : Number(totalPriceInvoice)) - Number(amountRemaining) - Number(totalCommissionTaxOfoneItem);
+  // console.log("🚀 ~ costRemaining:", costRemaining);
+
+  
   const costRemaining =
     (locationPath === "/selling/payoff/sales-return"
-      ? Number(invoiceTotalOfSalesReturn) - Number(totalCommissionOfoneItem)
-      : Number(totalPriceInvoice)) - Number(amountRemaining) - Number(totalCommissionTaxOfoneItem);
+      ? amountIsPaid - Number(amountRemaining)
+      : Number(totalPriceInvoice)  - Number(amountRemaining))
   console.log("🚀 ~ costRemaining:", costRemaining);
 
   const cashId =
@@ -325,10 +337,17 @@ const PaymentProccessingToManagement = ({
                     {locationPath === "/selling/payoff/sales-return" && (
                       <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
                         <span>{t("remaining cost")} : </span>{" "}
-                        {isCheckedCommission
+                        {/* {isCheckedCommission
                           ? formatReyal(
                               Number(costRemaining) +
-                                Number(totalCommissionOfoneItem) + Number(totalCommissionTaxOfoneItem)
+                                Number(totalCommissionOfoneItem) +
+                                Number(totalCommissionTaxOfoneItem)
+                            )
+                          : formatReyal(Number(costRemaining))} */}
+
+{isCheckedCommission
+                          ? formatReyal(
+                              Number(costRemaining) 
                             )
                           : formatReyal(Number(costRemaining))}
                       </p>

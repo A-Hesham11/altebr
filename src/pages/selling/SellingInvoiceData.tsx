@@ -29,7 +29,7 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData)
+  console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const { formatGram, formatReyal } = numberContext();
 
@@ -65,7 +65,7 @@ const SellingInvoiceData = ({
     +totalCommissionTaxes
   ).toFixed(2);
 
-  console.log("🚀 ~ totalFinalCost:", totalFinalCost)
+  console.log("🚀 ~ totalFinalCost:", totalFinalCost);
 
   const totalCost = (totalCostBeforeTax + totalCommissionRatio).toFixed(2);
 
@@ -98,25 +98,26 @@ const SellingInvoiceData = ({
         header: () => <span>{t("category")} </span>,
         accessorKey: "category_name",
         cell: (info) => {
-          console.log("🚀 ~ info:", info.row.original);
           const finalCategoriesNames = info.row.original.itemDetails
-          ?.map((category) => category.category_name)
-          .join("-");
-          console.log("🚀 ~ finalCategoriesNames:", finalCategoriesNames)
+            ?.map((category) => category.category_name)
+            .join("-");
 
           const finalKaratNamesOfSelsal = info.row.original.selsal
             ?.map((karat) => karat.karat_name)
             .join("-");
-            console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal)
 
-          console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal);
-            return info.row.original.itemDetails?.length
-              ? info.row.original.has_selsal === 0
-                ? finalCategoriesNames
-                : `${finalCategoriesNames} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`
-              : info.row.original.selsal.length === 0
-              ? info.getValue()
-              : `${info.getValue()} مع سلسال (${info.row.original.selsal && finalKaratNamesOfSelsal})`;
+          const checkedKaratName =
+            info.row.original.selsal && finalKaratNamesOfSelsal
+              ? `مع سلسال (${finalKaratNamesOfSelsal})`
+              : "";
+
+          return info.row.original.itemDetails?.length
+            ? info.row.original.has_selsal === 0
+              ? finalCategoriesNames
+              : `${finalCategoriesNames} ${checkedKaratName}`
+            : info.row.original.selsal.length === 0
+            ? info.getValue()
+            : `${info.getValue()} ${checkedKaratName}`;
         },
       },
       {
@@ -209,7 +210,7 @@ const SellingInvoiceData = ({
       client_id: clientData.client_id,
       client_value: clientData.client_value,
       invoice_date: clientData.bond_date,
-      invoice_number: invoiceNumber.length + 1,
+      invoice_number: invoiceNumber.total + 1,
       count: sellingItemsData.length,
       total_vat: totalItemsTax,
       karat_price: sellingItemsData[0].gold_price,
@@ -222,7 +223,7 @@ const SellingInvoiceData = ({
         Number(item.taklfa_after_tax) +
         Number(ratioForOneItem) +
         Number(ratioForOneItemTaxes);
-        
+
       const totalCostFromOneItem =
         Number(item.taklfa_after_tax) / Number(rowTaxEquation) +
         Number(ratioForOneItem);
@@ -273,7 +274,7 @@ const SellingInvoiceData = ({
         has_selsal: item.has_selsal,
         tax_rate: item.tax_rate,
         commission_oneItem: ratioForOneItem,
-        commissionTax_oneItem: ratioForOneItemTaxes, 
+        commissionTax_oneItem: ratioForOneItemTaxes,
       };
     });
     const card = paymentData.reduce((acc, curr) => {

@@ -139,6 +139,7 @@ import ImportTotals from "../pages/coding/coded_identities/ImportTotals";
 import Stocks from "../pages/selling/Stocks";
 import EdaraStocks from "../pages/stocksInEdara/edaraStocks";
 import BranchStocks from "../pages/stocksInEdara/branchStocks";
+import SalesReturnRestrictions from "../pages/salesReturn/SalesReturnRestrictions";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);

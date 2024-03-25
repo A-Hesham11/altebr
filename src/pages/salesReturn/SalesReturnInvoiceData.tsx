@@ -27,6 +27,7 @@ const SalesReturnInvoiceData = ({
   clientData,
   invoiceNumber,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ invoiceNumber:", invoiceNumber)
   console.log("🚀 ~ clientData:", clientData);
   console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ sellingItemsData:", sellingItemsData);
@@ -146,7 +147,11 @@ const SalesReturnInvoiceData = ({
         header: () => <span>{t("weight")}</span>,
         accessorKey: "weight",
         cell: (info) =>
-          formatGram(Number(info.getValue()) + (info.row.original.sel_weight && Number(info.row.original.sel_weight))) || `${t("no items")}`,
+          formatGram(
+            Number(info.getValue()) +
+              (info.row.original.sel_weight &&
+                Number(info.row.original.sel_weight))
+          ) || `${t("no items")}`,
       },
       {
         header: () => <span>{t("cost")} </span>,
@@ -215,7 +220,7 @@ const SalesReturnInvoiceData = ({
       client_id: clientData.client_id,
       client_value: clientData.client_value,
       invoice_date: clientData.bond_date,
-      invoice_number: invoiceNumber.length + 1,
+      invoice_number: invoiceNumber.total + 1,
       base_invoice: sellingItemsData[0]?.invoice_id,
       count: sellingItemsData.length,
     };
@@ -244,6 +249,11 @@ const SalesReturnInvoiceData = ({
       const isSelsal =
         item.selsal && item.selsal?.length > 0 ? Number(weightOfSelsal) : 0;
 
+      const costWithoutCommission =
+        Number(item.cost) - Number(item.commission_oneItem);
+      const vatWithoutCommission =
+        Number(item.vat) - Number(item.commissionTax_oneItem);
+
       return {
         category_id: item.category_id,
         category_name: item.category_name,
@@ -260,15 +270,25 @@ const SalesReturnInvoiceData = ({
         wage: item.wage,
         wage_total: item.wage_total,
         weight: item.weight,
-        cost: +totalCost,
-        vat: +totalItemsTaxes,
-        total: +totalFinalCost,
+        // cost: +totalCost,
+        // vat: +totalItemsTaxes,
+        // total: +totalFinalCost,
+        cost: isCheckedCommission ? Number(item.cost) : costWithoutCommission,
+        vat: isCheckedCommission ? Number(item.vat) : vatWithoutCommission,
+        total: isCheckedCommission
+          ? Number(item.cost) + Number(item.vat)
+          : costWithoutCommission + vatWithoutCommission,
         kitItems: item.kitItem,
         sel_cost: costOfSelsal || 0,
         sel_weight: weightOfSelsal || 0,
         selsal: item.selsal,
         has_selsal: item.has_selsal,
         base_invoice_id: item.invoice_id,
+        commission_oneItem: item.commission_oneItem,
+        total_commission_ratio: totalCommissionRatio,
+        commissionTax_oneItem: item.commissionTax_oneItem,
+        total_commission_ratio_tax: totalCommissionRatioTax,
+        add_commission_ratio: isCheckedCommission,
       };
     });
     const card = paymentData.reduce((acc, curr) => {

@@ -33,6 +33,8 @@ const RecieveItemsFirstScreen = ({ sanadId, selectedItem, setSelectedItem, setSt
     const [dataSource, setDataSource] = useState([])
     const [page, setPage] = useState<number>(1)
     const [sortItems, setSortItems] = useState(false)
+    // const [sortItems, setSortItems] = useState(localStorage.getItem("sortItems"))
+    console.log("🚀 ~ RecieveItemsFirstScreen ~ sortItems:", sortItems)
     const [search, setSearch] = useState('')
     const [openModal, setOpenModal] = useState(false)
     const [openMardodModal, setOpenMardodModal] = useState(false)
@@ -51,6 +53,11 @@ const RecieveItemsFirstScreen = ({ sanadId, selectedItem, setSelectedItem, setSt
             setDataSource(data.data)
         }
     })
+        console.log("🚀 ~ RecieveItemsFirstScreen ~ data:", data)
+
+    // useEffect(() => {
+    //     localStorage.setItem("sortItems", sortItems)
+    // }, [sortItems])
 
     const {
         data: sortData,
