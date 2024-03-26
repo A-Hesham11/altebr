@@ -30,11 +30,15 @@ const RecieveItemsFirstScreen = ({ sanadId, selectedItem, setSelectedItem, setSt
     const isRTL = useIsRTL()
     const navigate = useNavigate()
     const { userData } = useContext(authCtx)
-    const [dataSource, setDataSource] = useState([])
+    // const [dataSource, setDataSource] = useState([])
+    const [newData, setNewData] = useState([])
+    const [sortsData, setSortsData] = useState([])
     const [page, setPage] = useState<number>(1)
-    const [sortItems, setSortItems] = useState(false)
-    // const [sortItems, setSortItems] = useState(localStorage.getItem("sortItems"))
+    // const [sortItems, setSortItems] = useState(false)
+    const [sortItems, setSortItems] = useState(localStorage.getItem("sortItems"))
     console.log("🚀 ~ RecieveItemsFirstScreen ~ sortItems:", sortItems)
+    const dataSource = Boolean(sortItems) == true ? sortsData : newData
+    console.log("🚀 ~ RecieveItemsFirstScreen ~ dataSource:", dataSource)
     const [search, setSearch] = useState('')
     const [openModal, setOpenModal] = useState(false)
     const [openMardodModal, setOpenMardodModal] = useState(false)
@@ -50,14 +54,14 @@ const RecieveItemsFirstScreen = ({ sanadId, selectedItem, setSelectedItem, setSt
         queryKey: ['get-bonds'],
         pagination: true,
         onSuccess(data) {
-            setDataSource(data.data)
+            setNewData(data.data)
         }
     })
         console.log("🚀 ~ RecieveItemsFirstScreen ~ data:", data)
 
-    // useEffect(() => {
-    //     localStorage.setItem("sortItems", sortItems)
-    // }, [sortItems])
+    useEffect(() => {
+        localStorage.setItem("sortItems", sortItems)
+    }, [sortItems])
 
     const {
         data: sortData,
@@ -70,10 +74,12 @@ const RecieveItemsFirstScreen = ({ sanadId, selectedItem, setSelectedItem, setSt
         queryKey: ['sort-items'],
         pagination: true,
         onSuccess(data) {
-            setDataSource(data.data)
+            // setDataSource(data.data)
+            setSortsData(data.data)
         },
-        enabled: false
+        // enabled: false
     })
+        console.log("🚀 ~ RecieveItemsFirstScreen ~ sortData:", sortData)
 
     const goldCols = useMemo<any>(() => [
 
