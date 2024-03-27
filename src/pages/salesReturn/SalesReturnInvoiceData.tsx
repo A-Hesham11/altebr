@@ -232,7 +232,7 @@ const SalesReturnInvoiceData = ({
         Number(item.taklfa_after_tax) / Number(rowTaxEquation) +
         Number(ratioForOneItem);
       console.log("🚀 ~ items ~ totalCostFromOneItem:", totalCostFromOneItem);
-      const totalTaxFromOneRow = +taklfaFromOneItem - +totalCostFromOneItem;
+      // const totalTaxFromOneRow = +taklfaFromOneItem - +totalCostFromOneItem;
 
       const weightOfSelsal = item.selsal?.reduce((acc, item) => {
         acc += +item.weight;

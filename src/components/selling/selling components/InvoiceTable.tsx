@@ -52,7 +52,7 @@ const InvoiceTable = <T extends object>({ data,
 
     const locationPath = location.pathname 
 
-    const totalFinalCostIntoArabic = convertNumToArWord(Math.round(locationPath === "/selling/addInvoice/" ? costDataAsProps?.totalFinalCost : totalFinalCost))
+    const totalFinalCostIntoArabic = convertNumToArWord(Math.round(locationPath === "/selling/addInvoice/" ? costDataAsProps?.totalFinalCost : locationPath === "/selling/payoff/sales-return" ? costDataAsProps?.totalFinalCost : totalFinalCost))
 
     const hasSelsal = (locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal) ? totalWeightOfSelsal : 0
 

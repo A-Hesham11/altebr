@@ -191,7 +191,7 @@ const ViewSellingInvoice = () => {
                 {invoiceData?.current_page}
               </span>
               {t("from")}
-              {<span className=" text-mainGreen">{invoiceData?.total}</span>}
+              {<span className=" text-mainGreen">{invoiceData?.pages}</span>}
             </div>
             <div className="flex items-center gap-2 ">
               <Button
