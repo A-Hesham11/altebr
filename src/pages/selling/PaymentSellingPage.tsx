@@ -1,12 +1,4 @@
-import React, { useState } from 'react'
-import SellingFirstPage from './SellingFirstPage'
-import SellingSecondpage from '../../components/selling/selling components/SellingSecondpage'
-import { SellingFinalPreview } from '../../components/selling/selling components/SellingFinalPreview'
-import { Payment_TP } from '../../components/selling/selling components/data/PaymentProcessing'
 import { ClientData_TP } from '../../components/selling/SellingClientForm'
-import { Formik } from 'formik'
-import * as Yup from "yup";
-import SellingInvoiceData from './SellingInvoiceData'
 import { useIsRTL } from '../../hooks'
 import SellingSubCard from '../../components/selling/SellingSubCard'
 import { Back } from '../../utils/utils-components/Back'
