@@ -76,11 +76,9 @@ const PaymentProccessingToManagement = ({
   const { formatReyal } = numberContext();
 
   const locationPath = location.pathname;
-  console.log("🚀 ~ locationPath:", locationPath)
+  console.log("🚀 ~ locationPath:", locationPath);
 
   const { userData } = useContext(authCtx);
-
-
 
   const handleCardSelection = (
     selectedCardType: string,
@@ -135,7 +133,10 @@ const PaymentProccessingToManagement = ({
   );
   console.log("🚀 ~ invoiceTotalOfSalesReturn:", invoiceTotalOfSalesReturn);
 
-  const amountIsPaid = isCheckedCommission === true ? Number(invoiceTotalOfSalesReturn) : Number(totalPriceInvoice)
+  const amountIsPaid =
+    isCheckedCommission === true
+      ? Number(invoiceTotalOfSalesReturn)
+      : Number(totalPriceInvoice);
 
   // const costRemaining =
   //   (locationPath === "/selling/payoff/sales-return"
@@ -143,11 +144,10 @@ const PaymentProccessingToManagement = ({
   //     : Number(totalPriceInvoice)) - Number(amountRemaining) - Number(totalCommissionTaxOfoneItem);
   // console.log("🚀 ~ costRemaining:", costRemaining);
 
-  
   const costRemaining =
-    (locationPath === "/selling/payoff/sales-return"
+    locationPath === "/selling/payoff/sales-return"
       ? amountIsPaid - Number(amountRemaining)
-      : Number(totalPriceInvoice)  - Number(amountRemaining))
+      : Number(totalPriceInvoice) - Number(amountRemaining);
   console.log("🚀 ~ costRemaining:", costRemaining);
 
   const cashId =
@@ -344,11 +344,8 @@ const PaymentProccessingToManagement = ({
                                 Number(totalCommissionTaxOfoneItem)
                             )
                           : formatReyal(Number(costRemaining))} */}
-
-{isCheckedCommission
-                          ? formatReyal(
-                              Number(costRemaining) 
-                            )
+                        {isCheckedCommission
+                          ? formatReyal(Number(costRemaining))
                           : formatReyal(Number(costRemaining))}
                       </p>
                     )}
