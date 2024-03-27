@@ -27,7 +27,7 @@ const SalesReturnInvoiceData = ({
   clientData,
   invoiceNumber,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ invoiceNumber:", invoiceNumber)
+  console.log("🚀 ~ invoiceNumber:", invoiceNumber);
   console.log("🚀 ~ clientData:", clientData);
   console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ sellingItemsData:", sellingItemsData);
@@ -109,14 +109,12 @@ const SalesReturnInvoiceData = ({
         header: () => <span>{t("category")} </span>,
         accessorKey: "category_name",
         cell: (info) => {
-          console.log("🚀 ~ info:", info.row.original.selsal[0]?.karat_name);
           const finalCategoriesNames = info.row.original.itemDetails
             ?.map((category) => category.category_name)
             .join("-");
           const finalKaratNamesOfSelsal = info.row.original.selsal
             ?.map((karat) => karat.karat_name)
             .join("-");
-          console.log("🚀 ~ finalKaratNamesOfSelsal:", finalKaratNamesOfSelsal);
           return info.row.original.itemDetails?.length
             ? info.row.original.has_selsal === 0
               ? finalCategoriesNames
@@ -246,8 +244,10 @@ const SalesReturnInvoiceData = ({
         return acc;
       }, 0);
 
-      const isSelsal =
-        item.selsal && item.selsal?.length > 0 ? Number(weightOfSelsal) : 0;
+      const taklfaOfSelsal = item.selsal?.reduce((acc, item) => {
+        acc += +item.taklfa;
+        return acc;
+      }, 0);
 
       const costWithoutCommission =
         Number(item.cost) - Number(item.commission_oneItem);
@@ -280,6 +280,7 @@ const SalesReturnInvoiceData = ({
           : costWithoutCommission + vatWithoutCommission,
         kitItems: item.kitItem,
         sel_cost: costOfSelsal || 0,
+        sel_taklfa: taklfaOfSelsal || 0,
         sel_weight: weightOfSelsal || 0,
         selsal: item.selsal,
         has_selsal: item.has_selsal,
@@ -292,16 +293,13 @@ const SalesReturnInvoiceData = ({
       };
     });
     const card = paymentData.reduce((acc, curr) => {
-      console.log("🚀 ~ card ~ curr:", curr);
-
       acc[curr.salesReturnFrontKey] = Number(curr.amount);
-
       return acc;
     }, {});
     mutate({
-        endpointName: '/sellingReturn/api/v1/add_selling_return',
-        values: { invoice, items, card }
-    })
+      endpointName: "/sellingReturn/api/v1/add_selling_return",
+      values: { invoice, items, card },
+    });
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
       { invoice, items, card }
