@@ -5,14 +5,12 @@ import * as Yup from "yup";
 import { notify } from "../../utils/toast";
 import PaymentCard from "../../components/selling/selling components/data/PaymentCard";
 import PaymentProccessingTableToManagement from "./PaymentProccessingTableToManagement";
-import { Button, Spinner } from "../../components/atoms";
-import { BaseInputField, Select } from "../../components/molecules";
+import { Button } from "../../components/atoms";
+import { BaseInputField } from "../../components/molecules";
 import { numberContext } from "../../context/settings/number-formatter";
 import { useFetch } from "../../hooks";
-import { Loading } from "../../components/organisms/Loading";
 import { authCtx } from "../../context/auth-and-perm/auth";
-import RadioGroup from "../../components/molecules/RadioGroup";
-import PaymentProccessingTable from "../../components/selling/selling components/data/PaymentProccessingTable";
+import PaymentProccessingTableToSalesReturn from "../salesReturn/PaymentProccessingTableToSalesReturn";
 
 export type Payment_TP = {
   id: string;
@@ -37,11 +35,6 @@ export type Payment_TP = {
   selectedCardName?: any;
 };
 
-type CardSelection_TP = {
-  selectedCardType: string;
-  selectedCardImage: string;
-};
-
 const validationSchemaOfAmount = () =>
   Yup.object({
     id: Yup.string(),
@@ -64,6 +57,8 @@ const PaymentProccessingToManagement = ({
   cardId,
   selectedCardName,
   setSelectedCardName,
+  isCheckedCommission,
+  setIsCheckedCommission,
 }: Payment_TP) => {
   console.log("🚀 ~ cardId:", cardId);
   console.log(
@@ -75,20 +70,13 @@ const PaymentProccessingToManagement = ({
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
   const [cardFrontKey, setCardFronKey] = useState<string>("");
-  console.log("🚀 ~ cardFrontKey:", cardFrontKey);
-  const [cardDiscountPercentage, setCardDiscountPercentage] =
-    useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
   const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("");
   const { formatReyal } = numberContext();
 
-  const [isChecked, setIsChecked] = useState(false);
-  console.log("🚀 ~ isChecked:", isChecked)
-
-
-
   const locationPath = location.pathname;
+  console.log("🚀 ~ locationPath:", locationPath);
 
   const { userData } = useContext(authCtx);
 
@@ -111,6 +99,9 @@ const PaymentProccessingToManagement = ({
     front_key: selectedCardId || "",
     amount: editData?.amount || "",
     weight: editData?.weight || "",
+    add_commission_ratio: editData?.add_commission_ratio || "",
+    commission_ratio: editData?.commission_ratio || "",
+    commission_oneItem: editData?.commission_oneItem || "",
   };
 
   const totalPriceInvoice = sellingItemsData?.reduce(
@@ -122,6 +113,12 @@ const PaymentProccessingToManagement = ({
     (total, item) => Number(total) + Number(item.commission_oneItem),
     0
   );
+  console.log("🚀 ~ totalCommissionOfoneItem:", totalCommissionOfoneItem);
+
+  const totalCommissionTaxOfoneItem = sellingItemsData?.reduce(
+    (total, item) => Number(total) + Number(item.commissionTax_oneItem),
+    0
+  );
 
   const amountRemaining = paymentData?.reduce(
     (total, item) =>
@@ -130,15 +127,27 @@ const PaymentProccessingToManagement = ({
   );
   console.log("🚀 ~ amountRemaining:", amountRemaining);
 
-  const invoiceTotalOfOfSalesReturn = sellingItemsData.reduce(
-    (total, item) => +total + +item.total,
+  const invoiceTotalOfSalesReturn = sellingItemsData.reduce(
+    (total, item) => Number(total) + Number(item.total),
     0
   );
+  console.log("🚀 ~ invoiceTotalOfSalesReturn:", invoiceTotalOfSalesReturn);
+
+  const amountIsPaid =
+    isCheckedCommission === true
+      ? Number(invoiceTotalOfSalesReturn)
+      : Number(totalPriceInvoice);
+
+  // const costRemaining =
+  //   (locationPath === "/selling/payoff/sales-return"
+  //     ? Number(invoiceTotalOfSalesReturn) - Number(totalCommissionOfoneItem)
+  //     : Number(totalPriceInvoice)) - Number(amountRemaining) - Number(totalCommissionTaxOfoneItem);
+  // console.log("🚀 ~ costRemaining:", costRemaining);
 
   const costRemaining =
-    (locationPath === "/selling/payoff/sales-return"
-      ? Number(invoiceTotalOfOfSalesReturn) - Number(totalCommissionOfoneItem)
-      : Number(totalPriceInvoice)) - Number(amountRemaining);
+    locationPath === "/selling/payoff/sales-return"
+      ? amountIsPaid - Number(amountRemaining)
+      : Number(totalPriceInvoice) - Number(amountRemaining);
   console.log("🚀 ~ costRemaining:", costRemaining);
 
   const cashId =
@@ -167,10 +176,6 @@ const PaymentProccessingToManagement = ({
     selectedCardId == 21 ||
     selectedCardId == 22 ||
     selectedCardId == 24;
-
-    const handleCheckboxChange = () => {
-      setIsChecked(!isChecked); // Toggle the value
-    };
 
   return (
     <>
@@ -263,7 +268,6 @@ const PaymentProccessingToManagement = ({
                   setCardFronKey={setCardFronKey}
                   setCardFrontKeyAccept={setCardFrontKeyAccept}
                   setSellingFrontKey={setSellingFrontKey}
-                  setCardDiscountPercentage={setCardDiscountPercentage}
                   setSalesReturnFrontKey={setSalesReturnFrontKey}
                   setCardId={setCardId}
                   setSelectedCardName={setSelectedCardName}
@@ -276,38 +280,19 @@ const PaymentProccessingToManagement = ({
                     className="border-mainGreen text-mainGreen rounded"
                     id="checkbox"
                     name="add_commission_ratio"
-                    // checked={true}
-                    // onChange={(e) => {
-                    //   handleCheckboxChange;
-                    //   // setFieldValue("add_commission_ratio", true);
-                    // }}
                     onChange={() => {
-                      setIsChecked(!isChecked);
-                      setFieldValue("add_commission_ratio", isChecked);
+                      setIsCheckedCommission(!isCheckedCommission);
+                      setFieldValue(
+                        "add_commission_ratio",
+                        !isCheckedCommission
+                      );
+                      setFieldValue(
+                        "commission_oneItem",
+                        totalCommissionOfoneItem
+                      );
                     }}
                   />
                   <label htmlFor="checkbox">{t("add commission ratio")}</label>
-
-                  {/* <RadioGroup
-                    name="add_commission_ratio"
-                    onChange={(e) => {
-                      setFieldValue("add_commission_ratio", e);
-                    }}
-                  >
-                    <div className="flex gap-x-2 items-center">
-                      <label>{t("add commission ratio")}</label>
-                      <RadioGroup.RadioButton
-                        value="yes"
-                        label={`${t("yes")}`}
-                        id="yes"
-                      />
-                      <RadioGroup.RadioButton
-                        value="no"
-                        label={`${t("no")}`}
-                        id="no"
-                      />
-                    </div>
-                  </RadioGroup> */}
                   <p className="bg-mainGreen text-white text-3 font-bold py-[3px] px-5 rounded-lg ms-4">
                     {Number(totalCommissionOfoneItem)}
                   </p>
@@ -352,7 +337,16 @@ const PaymentProccessingToManagement = ({
                     {locationPath === "/selling/payoff/sales-return" && (
                       <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
                         <span>{t("remaining cost")} : </span>{" "}
-                        {formatReyal(Number(costRemaining))}
+                        {/* {isCheckedCommission
+                          ? formatReyal(
+                              Number(costRemaining) +
+                                Number(totalCommissionOfoneItem) +
+                                Number(totalCommissionTaxOfoneItem)
+                            )
+                          : formatReyal(Number(costRemaining))} */}
+                        {isCheckedCommission
+                          ? formatReyal(Number(costRemaining))
+                          : formatReyal(Number(costRemaining))}
                       </p>
                     )}
                     <BaseInputField
@@ -371,11 +365,19 @@ const PaymentProccessingToManagement = ({
                   {t("Addition")}
                 </Button>
               </div>
-              <PaymentProccessingTableToManagement
-                paymentData={paymentData}
-                setEditData={setEditData}
-                setPaymentData={setPaymentData}
-              />
+              {locationPath === "/selling/payoff/sales-return" ? (
+                <PaymentProccessingTableToSalesReturn
+                  paymentData={paymentData}
+                  setEditData={setEditData}
+                  setPaymentData={setPaymentData}
+                />
+              ) : (
+                <PaymentProccessingTableToManagement
+                  paymentData={paymentData}
+                  setEditData={setEditData}
+                  setPaymentData={setPaymentData}
+                />
+              )}
             </Form>
           );
         }}

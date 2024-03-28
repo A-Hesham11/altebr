@@ -17,6 +17,7 @@ const SalesReturnRestrictions = () => {
   // STATE
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
+  console.log("🚀 ~ SalesReturnRestrictions ~ dataSource:", dataSource)
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);

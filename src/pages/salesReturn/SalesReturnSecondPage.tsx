@@ -6,12 +6,13 @@ import PaymentProcessing, {
   Payment_TP,
 } from "../../components/selling/selling components/data/PaymentProcessing";
 import PaymentProccessingToManagement from "../Payment/PaymentProccessingToManagement";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type SellingSecondpage_TP = {
   paymentData: Payment_TP[];
   setPaymentData: any;
   setStage: any;
+  stage: any;
   sellingItemsData: any;
 };
 const SalesReturnSecondPage = ({
@@ -19,26 +20,43 @@ const SalesReturnSecondPage = ({
   setPaymentData,
   sellingItemsData,
   setStage,
+  stage,
 }: SellingSecondpage_TP) => {
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [selectedCardName, setSelectedCardName] = useState(null);
   const [cardId, setCardId] = useState("");
+  const [isCheckedCommission, setIsCheckedCommission] = useState(false);
+  console.log("🚀 ~ isCheckedCommission:", isCheckedCommission);
 
-  // const totalPriceInvoice = sellingItemsData?.reduce(
-  //   (total, item) => +total + +item.taklfa_after_tax,
-  //   0
-  // );
+  const addCommissionRatio = paymentData.some((item) => item.add_commission_ratio === true)
+  console.log("🚀 ~ addCommissionRatio:", addCommissionRatio)
 
-  const locationPath = location.pathname
+  const totalPriceInvoice = sellingItemsData?.reduce(
+    (total, item) => +total + +item.taklfa_after_tax,
+    0
+  );
+
+  const commissionTaxOneItemTotal = sellingItemsData?.reduce(
+    (total, item) => +total + +item.commissionTax_oneItem,
+    0
+  );
+  console.log("🚀 ~ commissionTaxOneItemTotal:", commissionTaxOneItemTotal);
+
+  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice);
 
   const amountRemaining = paymentData?.reduce(
     (total, item) => Number(total) + Number(item.amount),
     0
   );
 
-  
   const totalCommissionOfoneItem = sellingItemsData?.reduce(
     (total, item) => Number(total) + Number(item.commission_oneItem),
+    0
+  );
+  console.log("🚀 ~ totalCommissionOfoneItem:", totalCommissionOfoneItem);
+
+  const totalCommissionTaxOfoneItem = sellingItemsData?.reduce(
+    (total, item) => Number(total) + Number(item.commissionTax_oneItem),
     0
   );
 
@@ -46,9 +64,17 @@ const SalesReturnSecondPage = ({
     (total, item) => +total + +item.total,
     0
   );
+  console.log("🚀 ~ invoiceTotalOfOfSalesReturn:", invoiceTotalOfOfSalesReturn);
 
-  const costRemaining = Number(invoiceTotalOfOfSalesReturn) - Number(totalCommissionOfoneItem) - Number(amountRemaining);
-  console.log("🚀 ~ costRemaining:", costRemaining)
+  const costRemaining =
+    Number(invoiceTotalOfOfSalesReturn) -
+    (!isCheckedCommission ? Number(totalCommissionOfoneItem) + Number(totalCommissionTaxOfoneItem) : 0) - 
+    Number(amountRemaining);
+  console.log("🚀 ~ costRemaining:", costRemaining);
+
+  useEffect(() => {
+    setIsCheckedCommission(addCommissionRatio)
+  }, [stage === 2])
 
   const handleSeccessedData = () => {
     if (paymentData.length === 0) {
@@ -92,6 +118,8 @@ const SalesReturnSecondPage = ({
               cardId={cardId}
               setSelectedCardName={setSelectedCardName}
               selectedCardName={selectedCardName}
+              isCheckedCommission={isCheckedCommission}
+              setIsCheckedCommission={setIsCheckedCommission}
             />
           </div>
         </div>

@@ -9,6 +9,8 @@ import { Payment_TP } from '../data/PaymentProcessing';
 import * as Yup from "yup";
 import { useFetch } from '../../../../hooks';
 import { authCtx } from '../../../../context/auth-and-perm/auth';
+import { Loading } from '../../../organisms/Loading';
+import { t } from 'i18next';
 
 const AddSellingInvoice = () => {
     const [dataSource, setDataSource] = useState<Selling_TP[]>();
@@ -18,6 +20,7 @@ const AddSellingInvoice = () => {
     const [sellingItemsOfWeigth, setSellingItemsOfWeight] = useState([]);
     const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
     const [invoiceNumber, setInvoiceNumber] = useState([]);
+    console.log("🚀 ~ AddSellingInvoice ~ invoiceNumber:", invoiceNumber)
     const [selectedItemDetails, setSelectedItemDetails] = useState([]);
 
     const { userData } = useContext(authCtx)
@@ -77,13 +80,15 @@ const AddSellingInvoice = () => {
     });
 
     const { data } = useFetch<ClientData_TP>({
-        endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}?per_page=10000`,
+        endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}`,
         queryKey: [`invoices_data_${userData?.branch_id}`],
         onSuccess(data) {
             setInvoiceNumber(data)
         },
+        pagination:true
     });
 
+    console.log("🚀 ~ AddSellingInvoice ~ data:", data)
   return (
     <Formik
         initialValues={initialValues}

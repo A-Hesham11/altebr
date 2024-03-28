@@ -9,6 +9,7 @@ const FinalPreviewBillPayment = ({
   paymentData: never[];
   costDataAsProps: any;
 }) => {
+  console.log("🚀 ~ paymentData:", paymentData)
 
   const { formatGram, formatReyal } = numberContext();
 
@@ -40,7 +41,7 @@ const FinalPreviewBillPayment = ({
                 />
               </div>
               <p className="mt-3">
-                {formatReyal(Number(card.cost_after_tax + card.commission_riyals + +card.commission_tax)) }
+                {formatReyal(Number(card.cost_after_tax + card.commission_riyals + +card.commission_tax) || Number(card.amount)) }
               </p>
             </div>
           ))}
