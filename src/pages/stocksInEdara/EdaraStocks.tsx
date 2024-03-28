@@ -58,8 +58,8 @@ const EdaraStocks = () => {
       {
         cell: (info: any) => {
           return info.row.original.unit_id === 1
-            ? formatReyal(Number(info.getValue()))
-            : formatGram(Number(info.getValue()));
+            ? formatReyal(Number(info.getValue()).toFixed(2))
+            : formatGram(Number(info.getValue()).toFixed(2));
         },
         accessorKey: "debtor",
         header: () => <span>{t("debtor")}</span>,
@@ -67,11 +67,35 @@ const EdaraStocks = () => {
       {
         cell: (info: any) => {
           return info.row.original.unit_id === 1
-            ? formatReyal(Number(info.getValue()))
-            : formatGram(Number(info.getValue()));
+            ? formatReyal(Number(info.getValue()).toFixed(2))
+            : formatGram(Number(info.getValue()).toFixed(2));
         },
         accessorKey: "creditor",
         header: () => <span>{t("creditor")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          const balance =
+            Number(info?.row?.original?.debtor) -
+            Number(info?.row?.original?.creditor);
+
+          return balance > 0 ? formatReyal(balance.toFixed(2)) : "---";
+        },
+        accessorKey: "debtor_balance",
+        header: () => <span>{t("debtor balance")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          const balance =
+            Number(info?.row?.original?.debtor) -
+            Number(info?.row?.original?.creditor);
+
+          return balance > 0
+            ? "---"
+            : formatReyal(Math.abs(balance.toFixed(2)));
+        },
+        accessorKey: "creditor_balance",
+        header: () => <span>{t("creditor balance")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),

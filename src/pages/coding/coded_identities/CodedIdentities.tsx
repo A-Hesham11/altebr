@@ -18,6 +18,9 @@ import { notify } from "../../../utils/toast";
 import { mutateData } from "../../../utils/mutateData";
 import { useQueryClient } from "@tanstack/react-query";
 import ImportTotals from "./ImportTotals";
+import { FilesPreview } from "../../../components/molecules/files/FilesPreview";
+import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
+import { DropFile } from "../../../components/molecules/files/DropFile";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -27,13 +30,11 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const navigate = useNavigate();
   const [activeClass, setActiveClass] = useState("هويات في الإدارة");
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ CodedIdentities ~ dataSource:", dataSource);
   const [page, setPage] = useState(1);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
   const [importModal, setImportModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
   const [importData, setImportData] = useState(null);
-  console.log("🚀 ~ CodedIdentities ~ importData:", importData);
   const queryClient = useQueryClient();
   // const [operationTypeSelect, setOperationTypeSelect] = useState(() => {
   //   const storedData = localStorage.getItem("operationTypeSelect");
@@ -93,6 +94,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       setImportData(data);
       notify("success", t("imported has successfully"));
       queryClient.refetchQueries(fetchKey);
+      navigate("/coding/total/import");
     },
     onError: (error: any) => {
       notify("error", error?.message);
@@ -191,15 +193,14 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     if (buttonName === "قطع بالوزن") setActiveClass("قطع بالوزن");
   };
 
-  const handleImportFiles = () => {
-    mutate({
+  const handleImportFiles = async () => {
+    await mutate({
       endpointName: "/tarqimGold/api/v1/import",
       values: { file: importFiles[0] },
       dataType: "formData",
     });
 
     setImportFiles([]);
-    console.log({ file: importFiles[0] });
   };
 
   return (
@@ -207,6 +208,12 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       <div className="flex justify-between items-center gap-4 flex-wrap">
         <h2 className="text-xl font-bold text-slate-700">{title}</h2>
         <div className="flex flex-wrap gap-6 items-center">
+          <Button
+            action={() => navigate("/coding/total/import")}
+            className="border-2 border-mainGreen bg-mainGreen text-white flex items-center gap-2"
+          >
+            {t("import total")}
+          </Button>
           <Button
             action={() => navigate("/coding/gold")}
             className="border-2 border-mainOrange bg-transparent text-mainOrange flex items-center gap-2"
@@ -388,6 +395,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
             setFiles={setImportFiles}
             importedFile={true}
           />
+
+          {/* <DropFile key={importFiles} /> */}
           {/* <input
             type="file"
             name="importFiles"
@@ -402,9 +411,9 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           </Button>
         </div>
 
-        {importData && (
+        {/* {importData && (
           <ImportTotals importData={importData} postIsLoading={postIsLoading} />
-        )}
+        )} */}
       </Modal>
     </div>
   );

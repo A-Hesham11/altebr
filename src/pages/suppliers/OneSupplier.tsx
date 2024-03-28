@@ -173,9 +173,7 @@ export const OneSupplier = ({ title }: OneSupplierProps_TP) => {
                   {supplier.national_expire_date && (
                     <TextLine
                       boldText={t("hiring date")}
-                      lightString={formatDate(
-                        new Date(supplier.national_expire_date)
-                      )}
+                      lightString={supplier.national_expire_date}
                     />
                   )}
                 </div>
