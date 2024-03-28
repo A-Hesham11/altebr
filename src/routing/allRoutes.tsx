@@ -178,7 +178,7 @@ export const AllRoutesProvider = () => {
               <CodedIdentities title={t("identity and numbering management")} />
             }
           />
-          <Route path="/import-data" element={<ImportTotals />} />
+          <Route path="/coding/total/import" element={<ImportTotals />} />
           <Route
             path="/branch-bonds-react"
             element={<BranchBondsReact title={t("branch bonds")} />}

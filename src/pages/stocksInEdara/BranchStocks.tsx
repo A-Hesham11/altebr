@@ -81,6 +81,30 @@ const BranchStocks = () => {
         header: () => <span>{t("creditor")}</span>,
       },
       {
+        cell: (info: any) => {
+          const balance =
+            Number(info?.row?.original?.debtor) -
+            Number(info?.row?.original?.creditor);
+
+          return balance > 0 ? formatReyal(balance.toFixed(2)) : "---";
+        },
+        accessorKey: "debtor_balance",
+        header: () => <span>{t("debtor balance")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          const balance =
+            Number(info?.row?.original?.debtor) -
+            Number(info?.row?.original?.creditor);
+
+          return balance > 0
+            ? "---"
+            : formatReyal(Math.abs(balance.toFixed(2)));
+        },
+        accessorKey: "creditor_balance",
+        header: () => <span>{t("creditor balance")}</span>,
+      },
+      {
         cell: (info: any) => info.getValue(),
         accessorKey: "unit",
         header: () => <span>{t("unit id")}</span>,

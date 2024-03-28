@@ -68,7 +68,6 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
         address: employee?.address,
       })),
   });
-  console.log("🚀 ~ Employees ~ employees:", employeesExcel);
 
   const navigate = useNavigate();
   ///
@@ -87,19 +86,18 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
       queryClient.refetchQueries(["employees"]);
     },
     onError: (error: any) => {
-      notify("error", error?.message);
+      notify("error", error?.response?.data?.message);
     },
   });
 
   const handleImportFiles = () => {
-    // mutate({
-    //   endpointName: "/tarqimGold/api/v1/import",
-    //   values: { file: importFiles[0] },
-    //   dataType: "formData",
-    // });
+    mutate({
+      endpointName: "/employee/api/import-employees",
+      values: { file: importFiles[0] },
+      dataType: "formData",
+    });
 
     setImportFiles([]);
-    console.log({ file: importFiles[0] });
   };
 
   ///

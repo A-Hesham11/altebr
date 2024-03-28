@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -15,7 +15,7 @@ module.exports = {
         lightGray: "#e9eeed",
         flatWhite: "#F8F9FB",
         mainGray: "#DEE1E5",
-        mainDisabled:"#f2f2f2"
+        mainDisabled: "#f2f2f2",
       },
       gridTemplateColumns: {
         view: "max-content 1fr",
@@ -34,5 +34,5 @@ module.exports = {
   variants: {
     scrollbar: ["rounded"],
   },
-}
+};
 //   plugins: [...(process.env.NODE_ENV === "production" ? { cssnano: {} } : {})],

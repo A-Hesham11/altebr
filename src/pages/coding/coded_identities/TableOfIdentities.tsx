@@ -19,15 +19,13 @@ const TableOfIdentities = ({
   checkboxChecked,
   operationTypeSelect,
 }) => {
-  console.log("🚀 ~ dataSource:", dataSource)
   // STATE
   const isRTL = useIsRTL();
   const { formatReyal, formatGram } = numberContext();
   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
-  console.log("🚀 ~ file: TableOfIdentities.tsx:27 ~ selectedItem:", selectedItem)
 
-  const isChecked = (id) => operationTypeSelect.some((item) => item.id === id)
+  const isChecked = (id) => operationTypeSelect.some((item) => item.id === id);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -37,7 +35,7 @@ const TableOfIdentities = ({
           return (
             <input
               max={3000}
-              checked={ isChecked(info.row.original.id)}
+              checked={isChecked(info.row.original.id)}
               disabled={info.row.original.weight === "0" ? true : false}
               className={`${
                 info.row.original.weight === "0" &&
@@ -154,7 +152,8 @@ const TableOfIdentities = ({
         header: () => <span>{t("wages")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
         accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },

@@ -18,38 +18,24 @@ const SeperateHwya = ({
   setPage,
   setOpenSeperateModal,
   setOperationTypeSelect,
-  seperateModal
+  seperateModal,
 }) => {
-  console.log(
-    "🚀 ~ file: SeperateHwya.tsx:7 ~ SeperateHwya ~ operationTypeSelect:",
-    operationTypeSelect
-  );
   const [selectedOption, setSelectedOption] = useState("normal supply"); // Initialize the selected option.
   const [totalWeight, setTotalWeight] = useState(
     +operationTypeSelect[0]?.weight
   );
-  console.log("🚀 ~ file: SeperateHwya.tsx:24 ~ totalWeight:", totalWeight);
   const valuesOfForm = Object.values(formData);
-  const isAnyPieceEmpty = valuesOfForm.some((el) => (+el === 0 || el === ""))
-  console.log("🚀 ~ file: SeperateHwya.tsx:34 ~ isAnyPieceEmpty:", isAnyPieceEmpty)
+  const isAnyPieceEmpty = valuesOfForm.some((el) => +el === 0 || el === "");
   const totalOfValuesOfForm = valuesOfForm.reduce((acc: any, curr: any) => {
     return +acc + +curr;
   }, 0);
-  console.log(
-    "🚀 ~ file: SeperateHwya.tsx:142 ~ totalOfValuesOfForm ~ totalOfValuesOfForm:",
-    totalOfValuesOfForm
-  );
-  
+
   useEffect(() => {
     const formula = +operationTypeSelect[0]?.weight - +totalOfValuesOfForm;
-    console.log(
-      "🚀 ~ file: SeperateHwya.tsx:33 ~ useEffect ~ formula:",
-      formula
-    );
     setTotalWeight(formula);
 
     if (+formula < 0) {
-      notify("error", t("available weight is negative"))
+      notify("error", t("available weight is negative"));
     }
   }, [totalOfValuesOfForm]);
 
@@ -141,7 +127,11 @@ const SeperateHwya = ({
                         !weightInputDisabledCheck && "bg-mainDisabled"
                       }`}
                       key={item.id}
-                      placeholder={(!weightInputDisabledCheck && item.item_weight !== 0) ? item.item_weight : t("type weight")}
+                      placeholder={
+                        !weightInputDisabledCheck && item.item_weight !== 0
+                          ? item.item_weight
+                          : t("type weight")
+                      }
                       label={`${item.child}`}
                       disabled={!weightInputDisabledCheck}
                       onChange={handleChange}
@@ -159,34 +149,15 @@ const SeperateHwya = ({
             <Button
               type="submit"
               action={() => {
-                console.log({
-                  category_id: operationTypeSelect[0]?.id,
-                  items: operationTypeSelect[0]?.id,
-                  weights:
-                    valuesOfForm.length === 0
-                      ? operationTypeSelect[0]?.category_items.map(
-                          (item) => `${item.item_weight}`
-                        )
-                      : valuesOfForm,
-                });
-
-                console.log(
-                  "🚀 ~ file: SeperateHwya.tsx:135 ~ valuesOfForm:",
-                  valuesOfForm
-                );
-
-                console.log(formData);
-
-                console.log("🚀 ~ file: SeperateHwya.tsx:181 ~ isAnyPieceEmpty:", isAnyPieceEmpty)
                 if (isAnyPieceEmpty) {
-                  notify("error", t("type details weight per piece"))
+                  notify("error", t("type details weight per piece"));
                   return;
                 }
 
                 if (totalOfValuesOfForm > +operationTypeSelect[0]?.weight) {
                   notify(
                     "error",
-                    t("total edited weight greater than available weight") 
+                    t("total edited weight greater than available weight")
                   );
                   return;
                 }
@@ -204,8 +175,8 @@ const SeperateHwya = ({
 
                 // refetch();
                 // setOpenSeperateModal(false);
-                setOperationTypeSelect([])
-                setPage(1)
+                setOperationTypeSelect([]);
+                setPage(1);
               }}
               className="bg-mainGreen text-white self-end"
             >
