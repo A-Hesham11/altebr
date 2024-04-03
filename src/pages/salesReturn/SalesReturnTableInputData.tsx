@@ -25,7 +25,6 @@ import { DeleteIcon, EditIcon } from "../../components/atoms/icons";
 import { HiViewGridAdd } from "react-icons/hi";
 import { Header } from "../../components/atoms/Header";
 import SalesReturnTableInputOfSelsal from "./SalesReturnTableInputOfSelsal";
-import SellingTableInputKit from "../../components/selling/selling components/data/SellingTableInputKit";
 import SalesReturnTableInputKit from "./SalesReturnTableInputKit";
 
 type SellingTableInputData_TP = {
@@ -59,17 +58,17 @@ export const SalesReturnTableInputData = ({
   console.log("🚀 ~ search:", search);
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
-  const [kitDetails, setKitDetails] = useState([]);
+  // const [kitDetails, setKitDetails] = useState([]);
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
   const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
-  const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] =
-    useState<number>();
+  // const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] =
+  //   useState<number>();
 
   const { userData } = useContext(authCtx);
 
-  const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
+  // const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
 
   const priceWithCommissionRate =
     dataSource &&
@@ -85,8 +84,8 @@ export const SalesReturnTableInputData = ({
       ? priceWithCommissionRate
       : priceWithCommissionCash;
 
-  const priceWithSellingTax =
-    priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy;
+  // const priceWithSellingTax =
+  //   priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy;
 
   const { values, setFieldValue } = useFormikContext<any>();
 
@@ -167,67 +166,67 @@ export const SalesReturnTableInputData = ({
     []
   );
 
-  useEffect(() => {
-    if (dataSource?.length) {
-      setKitDetails(dataSource?.find((item) => item.weightitems)?.weightitems);
-    }
-  }, [dataSource]);
+  // useEffect(() => {
+  //   if (dataSource?.length) {
+  //     setKitDetails(dataSource?.find((item) => item.weightitems)?.weightitems);
+  //   }
+  // }, [dataSource]);
 
-  const Cols = useMemo<ColumnDef<Selling_TP>[]>(
-    () => [
-      {
-        header: () => "#",
-        accessorKey: "action",
-        cell: (info: any) => {
-          console.log("🚀 ~ info:", info.row.index);
+  // const Cols = useMemo<ColumnDef<Selling_TP>[]>(
+  //   () => [
+  //     {
+  //       header: () => "#",
+  //       accessorKey: "action",
+  //       cell: (info: any) => {
+  //         console.log("🚀 ~ info:", info.row.index);
 
-          return (
-            <div className="flex items-center justify-center gap-4">
-              <input
-                type="checkbox"
-                className={`border-mainGreen text-mainGreen rounded bg-red-600' ${
-                  info.row.original.status && "bg-neutral-400"
-                }`}
-                id={info.row.original.id}
-                name="selectedItem"
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setSelectedItemDetails((prev) => [
-                      ...prev,
-                      { ...info.row.original, index: info.row.index },
-                    ]);
-                  } else {
-                    setSelectedItemDetails((prev) =>
-                      prev.filter((item) => item.index !== info.row.index)
-                    );
-                  }
-                }}
-                disabled={info.row.original.status}
-              />
-            </div>
-          );
-        },
-      },
-      {
-        header: () => <span>{t("classification")}</span>,
-        accessorKey: "category_name",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
-        header: () => <span>{t("weight")}</span>,
-        accessorKey: "weight",
-        cell: (info) =>
-          info.getValue() ? formatGram(Number(info.getValue())) : "---",
-      },
-      {
-        header: () => <span>{t("cost")}</span>,
-        accessorKey: "selling_price",
-        cell: (info) =>
-          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
-      },
-    ],
-    []
-  );
+  //         return (
+  //           <div className="flex items-center justify-center gap-4">
+  //             <input
+  //               type="checkbox"
+  //               className={`border-mainGreen text-mainGreen rounded bg-red-600' ${
+  //                 info.row.original.status && "bg-neutral-400"
+  //               }`}
+  //               id={info.row.original.id}
+  //               name="selectedItem"
+  //               onChange={(e) => {
+  //                 if (e.target.checked) {
+  //                   setSelectedItemDetails((prev) => [
+  //                     ...prev,
+  //                     { ...info.row.original, index: info.row.index },
+  //                   ]);
+  //                 } else {
+  //                   setSelectedItemDetails((prev) =>
+  //                     prev.filter((item) => item.index !== info.row.index)
+  //                   );
+  //                 }
+  //               }}
+  //               disabled={info.row.original.status}
+  //             />
+  //           </div>
+  //         );
+  //       },
+  //     },
+  //     {
+  //       header: () => <span>{t("classification")}</span>,
+  //       accessorKey: "category_name",
+  //       cell: (info) => info.getValue() || "---",
+  //     },
+  //     {
+  //       header: () => <span>{t("weight")}</span>,
+  //       accessorKey: "weight",
+  //       cell: (info) =>
+  //         info.getValue() ? formatGram(Number(info.getValue())) : "---",
+  //     },
+  //     {
+  //       header: () => <span>{t("cost")}</span>,
+  //       accessorKey: "selling_price",
+  //       cell: (info) =>
+  //         info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+  //     },
+  //   ],
+  //   []
+  // );
 
   const table = useReactTable({
     data: sellingItemsData,
@@ -299,9 +298,9 @@ export const SalesReturnTableInputData = ({
     setEditSellingTaklfa(+values?.taklfa);
   }, [values?.weight, priceWithSellingPolicy]);
 
-  useEffect(() => {
-    setEditSellingTaklfaAfterTax(+values?.taklfa_after_tax);
-  }, [values?.weight, priceWithSellingPolicy]);
+  // useEffect(() => {
+  //   setEditSellingTaklfaAfterTax(+values?.taklfa_after_tax);
+  // }, [values?.weight, priceWithSellingPolicy]);
 
   return (
     <Form className="overflow-y-auto">
