@@ -1,14 +1,11 @@
 import { t } from "i18next";
-import React, { useContext, useState } from "react";
-import { Back } from "../../../utils/utils-components/Back";
+import React, { useContext } from "react";
 import { Button } from "../../atoms";
 import FinalPreviewBillData from "./bill/FinalPreviewBillData";
 import FinalPreviewBillPayment from "./bill/FinalPreviewBillPayment";
-import FinalPreviewBoxs from "./data/FinalPreviewBoxs";
-import { Payment_TP } from "./data/PaymentProcessing";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { useFetch } from "../../../hooks";
-import BillFinalPreview from "./bill/BillFinalPreview";
+
 type Client_TP = {
   amount: number;
   bond_date: string;

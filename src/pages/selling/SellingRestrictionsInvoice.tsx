@@ -6,7 +6,11 @@ import { useFetch, useIsRTL } from "../../hooks";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { Loading } from "../../components/organisms/Loading";
 import { formatDate, getDayAfter } from "../../utils/date";
-import { BaseInputField, DateInputField, Modal } from "../../components/molecules";
+import {
+  BaseInputField,
+  DateInputField,
+  Modal,
+} from "../../components/molecules";
 import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
@@ -44,7 +48,6 @@ const SellingRestrictionsInvoice = () => {
         : `${search}`,
     pagination: true,
   });
-    console.log("🚀 ~ ViewSellingInvoice ~ invoiceData:", invoiceData)
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -123,8 +126,6 @@ const SellingRestrictionsInvoice = () => {
     setSearch(url);
   };
 
-  
-
   // LOADING ....
   if (isLoading || isRefetching || isFetching)
     return <Loading mainTitle={`${t("loading items")}`} />;
@@ -132,7 +133,6 @@ const SellingRestrictionsInvoice = () => {
   return (
     <div className="p-16">
       <div className="mb-8 flex flex-col items-center gap-6 lg:flex-row lg:items-end lg:justify-between">
-        {/* 1) FORM */}
         <Formik
           initialValues={searchValues}
           onSubmit={(values) => {
@@ -222,11 +222,10 @@ const SellingRestrictionsInvoice = () => {
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
-        <SellingInvoiceTablePreview item={selectedItem}/>
+        <SellingInvoiceTablePreview item={selectedItem} />
       </Modal>
     </div>
   );
 };
 
 export default SellingRestrictionsInvoice;
-

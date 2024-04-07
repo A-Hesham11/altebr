@@ -4,12 +4,9 @@ import { ClientData_TP, Selling_TP } from "../selling/PaymentSellingPage";
 import { Payment_TP } from "../Payment/PaymentProccessingToManagement";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useFetch } from "../../hooks";
-import SellingFirstPage from "../selling/SellingFirstPage";
 import SalesReturnFirstPage from "./SalesReturnFirstPage";
 import * as Yup from "yup";
-import SellingSecondpage from "../../components/selling/selling components/SellingSecondpage";
 import SalesReturnSecondPage from "./SalesReturnSecondPage";
-import SellingInvoiceData from "../selling/SellingInvoiceData";
 import SalesReturnInvoiceData from "./SalesReturnInvoiceData";
 
 const SalesReturnPage = () => {
