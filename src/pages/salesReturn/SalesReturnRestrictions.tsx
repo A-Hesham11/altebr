@@ -17,7 +17,6 @@ const SalesReturnRestrictions = () => {
   // STATE
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ SalesReturnRestrictions ~ dataSource:", dataSource)
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
@@ -187,7 +186,7 @@ const SalesReturnRestrictions = () => {
                 {invoiceData?.current_page}
               </span>
               {t("from")}
-              {<span className=" text-mainGreen">{invoiceData?.total}</span>}
+              {<span className=" text-mainGreen">{invoiceData?.pages}</span>}
             </div>
             <div className="flex items-center gap-2 ">
               <Button
