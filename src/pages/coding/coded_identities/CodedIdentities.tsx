@@ -21,6 +21,7 @@ import ImportTotals from "./ImportTotals";
 import { FilesPreview } from "../../../components/molecules/files/FilesPreview";
 import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
 import { DropFile } from "../../../components/molecules/files/DropFile";
+import { removeKeysFromArray } from "../../../utils/removeKeysFromArray";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -35,6 +36,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [importModal, setImportModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
   const [importData, setImportData] = useState(null);
+  console.log("🚀 ~ CodedIdentities ~ importData:", importData);
   const queryClient = useQueryClient();
   // const [operationTypeSelect, setOperationTypeSelect] = useState(() => {
   //   const storedData = localStorage.getItem("operationTypeSelect");
@@ -73,6 +75,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     pagination: true,
   });
 
+  console.log("🚀 ~ CodedIdentities ~ data:", data);
   // FETCHING DATA FROM API TO EXPORT ALL THE DATA TO EXCEL
   const { data: dataExcel, refetch: dataExcelRefetch } = useFetch({
     queryKey: ["excel-data"],
@@ -81,8 +84,32 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         ? `${fetchEndPoint}?page=${page}&per_page=10000`
         : `${search}`,
     pagination: true,
+    select: (data: any) =>
+      data?.data?.map((arr: any) => ({
+        hwya: arr?.hwya,
+        classification_id: arr?.classification_id,
+        category_id: arr?.category_id,
+        karat_id: arr?.karat_id,
+        karat_mineral_id: arr?.karat_mineral_id,
+        model_number: arr?.model_number,
+        weight: arr?.weight,
+        wage: arr?.wage,
+        selling_price: arr?.sellign_price,
+        bond_id: arr?.bond_id,
+        mineral_id: arr?.mineral_id,
+        country_id: arr?.country_id,
+        color_id: arr?.color_id,
+        size_unit_id: arr?.size_unit_id,
+        has_stones: arr?.has_stones,
+        mezan_type: arr?.mezan_type,
+        cost: arr?.cost,
+        cost_item: arr?.cost_item,
+        ahgar_count: arr?.ahgar_count,
+        ahgar_weight: arr?.ahgar_weight,
+      })),
   });
 
+  console.log("🚀 ~ CodedIdentities ~ dataExcel:", dataExcel);
   const {
     mutate,
     isLoading: postIsLoading,
@@ -91,8 +118,20 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     mutationFn: mutateData,
     mutationKey: ["files"],
     onSuccess: (data) => {
+      console.log("🚀 ~ CodedIdentities ~ data:", data);
       setImportData(data);
       notify("success", t("imported has successfully"));
+    },
+    onError: (error: any) => {
+      notify("error", error?.message);
+    },
+  });
+
+  const { mutate: finalMutate } = useMutate({
+    mutationFn: mutateData,
+    mutationKey: ["final-files"],
+    onSuccess: (data) => {
+      notify("success", t("confirmed successfully"));
       queryClient.refetchQueries(fetchKey);
       navigate("/coding/total/import");
     },
@@ -196,7 +235,15 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const handleImportFiles = async () => {
     await mutate({
       endpointName: "/tarqimGold/api/v1/import",
-      values: { file: importFiles[0] },
+      values: { file: importFiles[0], key: "get" },
+      dataType: "formData",
+    });
+  };
+
+  const handleFinalImportFiles = async () => {
+    await finalMutate({
+      endpointName: "/tarqimGold/api/v1/import",
+      values: { file: importFiles[0], key: "post" },
       dataType: "formData",
     });
 
@@ -344,14 +391,9 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           </Button>
           <Button
             action={(e) => {
-              // setCheckboxChecked(false)
-              // refetch();
-              // setPage(1)
-              // setOperationTypeSelect([]);
-              // localStorage.clear()
-
               // COMPONENT FOR EXPORT DATA TO EXCEL FILE ACCEPT DATA AND THE NAME OF THE FILE
-              ExportToExcel(dataExcel?.data, activeClass);
+
+              ExportToExcel(dataExcel, formatDate(new Date()));
             }}
             className="bg-mainGreen text-white"
           >
@@ -384,32 +426,44 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       {/* BUTTON TO BACK */}
       <Back className="w-32 self-end mt-6" />
 
-      <Modal
-        maxWidth="w-[50rem]"
-        isOpen={importModal}
-        onClose={() => setImportModal(false)}
-      >
+      <Modal isOpen={importModal} onClose={() => setImportModal(false)}>
         <div className="mt-14 mb-10 flex items-center gap-8">
-          <FilesUpload
-            files={importFiles}
-            setFiles={setImportFiles}
-            importedFile={true}
-          />
+          <FilesUpload files={importFiles} setFiles={setImportFiles} />
 
-          {/* <DropFile key={importFiles} /> */}
-          {/* <input
-            type="file"
-            name="importFiles"
-            id="importFiles"
-            onChange={(e) => console.log(e.target.value)}
-          /> */}
           <Button
             action={handleImportFiles}
             className="bg-mainGreen text-white self-end ml-9"
           >
-            {t("save")}
+            {t("add")}
           </Button>
         </div>
+
+        {importData && (
+          <>
+            <div>
+              <ImportTotals totals={importData?.collect} pieces={importData} />
+            </div>
+
+            <div className="flex justify-end my-6 gap-4">
+              <Button
+                action={() => {
+                  setImportFiles([]);
+                  setImportData(null);
+                  setImportModal(false);
+                }}
+                className="bg-mainGreen text-white"
+              >
+                {t("refuse")}
+              </Button>
+              <Button
+                action={handleFinalImportFiles}
+                className="bg-mainGreen text-white"
+              >
+                {t("confirm")}
+              </Button>
+            </div>
+          </>
+        )}
 
         {/* {importData && (
           <ImportTotals importData={importData} postIsLoading={postIsLoading} />

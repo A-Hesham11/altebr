@@ -13,12 +13,13 @@ import { Button } from "../../../components/atoms";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { notify } from "../../../utils/toast";
 
-interface importTotals_TP {
-  importData: object;
-  postIsLoading: boolean;
+interface ImportTotals_TP {
+  totals?: object;
+  pieces?: object[];
 }
 
-const ImportTotals: React.FC<importTotals_TP> = ({}) => {
+const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
+  console.log("🚀 ~ totals:", totals);
   const { formatReyal, formatGram } = numberContext();
   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
@@ -37,6 +38,7 @@ const ImportTotals: React.FC<importTotals_TP> = ({}) => {
       notify("error", error?.response?.data?.errors);
     },
   });
+  console.log("🚀 ~ importData:", importData);
 
   const {
     data: imprtPieces,
@@ -206,61 +208,136 @@ const ImportTotals: React.FC<importTotals_TP> = ({}) => {
     {
       account: "total pieces",
       id: 1,
-      value: imprtPieces?.data?.length,
+      value: pieces?.data?.length || imprtPieces?.data?.length,
       unit: "piece",
     },
     {
       account: "total wages",
       id: 6,
-      value: formatReyal(importData?.total_wage),
+      value: totals
+        ? formatReyal(totals?.total_wage)
+        : formatReyal(importData?.total_wage),
       unit: "ryal",
     },
     {
       account: "total weight of 18 karat",
       id: 7,
-      value: formatGram(importData?.total_weight_karat18),
+      value: totals
+        ? formatGram(totals?.total_weight_karat18)
+        : formatGram(importData?.total_weight_karat18),
       unit: "gram",
     },
     {
       account: "total weight of 21 karat",
       id: 8,
-      value: formatGram(importData?.total_weight_karat21),
+      value: totals
+        ? formatGram(totals?.total_weight_karat21)
+        : formatGram(importData?.total_weight_karat21),
       unit: "gram",
     },
     {
       account: "total weight of 22 karat",
       id: 9,
-      value: formatGram(importData?.total_weight_karat22),
+      value: totals
+        ? formatGram(totals?.total_weight_karat22)
+        : formatGram(importData?.total_weight_karat22),
       unit: "gram",
     },
     {
       account: "total weight of 24 karat",
       id: 10,
-      value: formatGram(importData?.total_weight_karat24),
+      value: totals
+        ? formatGram(totals?.total_weight_karat24)
+        : formatGram(importData?.total_weight_karat24),
+      unit: "gram",
+    },
+    {
+      account: "total weight converted to 24",
+      id: 11,
+      value: totals
+        ? formatGram(totals?.karat_diffrence)
+        : formatGram(importData?.karat_diffrence),
       unit: "gram",
     },
     {
       account: "karat difference",
       id: 11,
-      value: formatGram(importData?.karat_diffrence),
+      value: totals
+        ? formatGram(totals?.farq_karat)
+        : formatGram(importData?.farq_karat),
       unit: "gram",
     },
     {
       account: "total tax",
       id: 12,
-      value: formatReyal(importData?.total_tax),
+      value: totals
+        ? formatReyal(totals?.total_tax)
+        : formatReyal(importData?.total_tax),
       unit: "ryal",
     },
     {
       account: "total diamond",
       id: 13,
-      value: formatGram(importData?.diamond_total_selling_price),
+      value: totals
+        ? formatGram(totals?.diamond_total_selling_price)
+        : formatGram(importData?.diamond_total_selling_price),
       unit: "gram",
     },
     {
       account: "total motafreqat",
       id: 14,
-      value: formatGram(importData?.motafreqat_total_selling_price),
+      value: totals
+        ? formatGram(totals?.motafreqat_total_selling_price)
+        : formatGram(importData?.motafreqat_total_selling_price),
+      unit: "gram",
+    },
+
+    {
+      account: "total gold stones",
+      id: 14,
+      value: totals
+        ? formatGram(totals?.gold_ahgar_count)
+        : formatGram(importData?.gold_ahgar_count),
+      unit: "pieces",
+    },
+    {
+      account: "total gold stones weight",
+      id: 14,
+      value: totals
+        ? formatGram(totals?.gold_ahgar_weight)
+        : formatGram(importData?.gold_ahgar_weight),
+      unit: "gram",
+    },
+    {
+      account: "total diamond stones",
+      id: 14,
+      value: totals
+        ? formatGram(totals?.diamond_ahgar_count)
+        : formatGram(importData?.diamond_ahgar_count),
+      unit: "piece",
+    },
+    {
+      account: "total diamond stones weight",
+      id: 14,
+      value: totals
+        ? formatGram(totals?.diamond_ahgar_weight)
+        : formatGram(importData?.diamond_ahgar_weight),
+      unit: "gram",
+    },
+    {
+      account: "total motafreqat stones",
+      id: 14,
+      value: totals
+        ? formatGram(totals?.motafreqat_ahgar_count)
+        : formatGram(importData?.motafreqat_ahgar_count),
+      unit: "piece",
+    },
+    {
+      account: "total motafreqat stones weight",
+      id: 14,
+      value: totals
+        ? formatGram(totals?.motafreqat_ahgar_weight)
+        : formatGram(importData?.motafreqat_ahgar_weight),
       unit: "gram",
     },
   ];
@@ -283,9 +360,9 @@ const ImportTotals: React.FC<importTotals_TP> = ({}) => {
           <h3 className="text-xl font-bold text-slate-700">
             {t("totals of imported pieces")}
           </h3>
-          <Back />
+          {/* {totals ? <>lk</> : <Back />} */}
         </div>
-        {importData?.total_wage ? (
+        {totals?.total_wage || importData?.total_wage ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {tarqimBoxes?.map((data: any) => (
               <li
@@ -310,7 +387,10 @@ const ImportTotals: React.FC<importTotals_TP> = ({}) => {
         )}
       </div>
 
-      <Table data={imprtPieces?.data || []} columns={tableColumn}>
+      <Table
+        data={pieces?.data || imprtPieces?.data || []}
+        columns={tableColumn}
+      >
         <div className="mt-3 flex items-center justify-center gap-5 p-2">
           <div className="flex items-center gap-2 font-bold">
             {t("page")}

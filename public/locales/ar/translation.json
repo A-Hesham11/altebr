@@ -1255,5 +1255,13 @@
   "import total": "اجمالي المستورد",
   "totals of imported pieces": "اجماليات القطع المستورده",
   "loading totals": "تحميل الاجماليات",
-  "total pieces": "اجمالي القطع"
+  "total pieces": "اجمالي القطع",
+  "refuse": "رفض",
+  "total gold stones": "اجمالي احجار الذهب",
+  "total gold stones weight": "الوزن الاجمالي لاحجار الذهب",
+  "total diamond stones": "اجمالي احجار الالماس",
+  "total diamond stones weight": "الوزن الاجمالي لاحجار الالماس",
+  "total motafreqat stones": "اجمالي احجار المتفرقات",
+  "total motafreqat stones weight": "الوزن الاجمالي لاحجار المتفرقات",
+  "total weight converted to 24": "اجمالي الوزن المحول ل 24"
 }
