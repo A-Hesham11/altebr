@@ -5,7 +5,7 @@ import TarqeemTotals from "./TarqeemTotals";
 import SearchFilter from "./SearchFilter";
 import TableOfIdentities from "./TableOfIdentities";
 import OperationType from "./OperationType";
-import { json, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Loading } from "../../../components/organisms/Loading";
 import { useFetch, useMutate } from "../../../hooks";
@@ -18,10 +18,6 @@ import { notify } from "../../../utils/toast";
 import { mutateData } from "../../../utils/mutateData";
 import { useQueryClient } from "@tanstack/react-query";
 import ImportTotals from "./ImportTotals";
-import { FilesPreview } from "../../../components/molecules/files/FilesPreview";
-import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
-import { DropFile } from "../../../components/molecules/files/DropFile";
-import { removeKeysFromArray } from "../../../utils/removeKeysFromArray";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -90,7 +86,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         classification_id: arr?.classification_id,
         category_id: arr?.category_id,
         karat_id: arr?.karat_id,
-        karat_mineral_id: arr?.karat_mineral_id,
+        karatmineral_id: arr?.karatmineral_id,
+        karat_name: arr?.karat_name,
         model_number: arr?.model_number,
         weight: arr?.weight,
         wage: arr?.wage,
@@ -109,7 +106,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       })),
   });
 
-  console.log("🚀 ~ CodedIdentities ~ dataExcel:", dataExcel);
   const {
     mutate,
     isLoading: postIsLoading,
@@ -117,8 +113,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["files"],
-    onSuccess: (data) => {
-      console.log("🚀 ~ CodedIdentities ~ data:", data);
+    onSuccess: (data: any) => {
       setImportData(data);
       notify("success", t("imported has successfully"));
     },
