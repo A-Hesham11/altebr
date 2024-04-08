@@ -9,10 +9,12 @@ import i18n from "../i18n";
 import { notify } from "./toast";
 
 const baseURL =
-  // import.meta.env.VITE_BASE_URL || "https://alexon.api.altebr.jewelry/";
+
   import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
-// import.meta.env.VITE_BASE_URL || "https://dinaa.api.altebr.jewelry";
-// import.meta.env.VITE_BASE_URL || "https://fuga.api.altebr.jewelry/";
+  // import.meta.env.VITE_BASE_URL || "https://alexon.api.altebr.jewelry/";
+  // import.meta.env.VITE_BASE_URL || "https://dinaa.api.altebr.jewelry";
+  // import.meta.env.VITE_BASE_URL || "https://fuga.api.altebr.jewelry/";
+
 
 const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 

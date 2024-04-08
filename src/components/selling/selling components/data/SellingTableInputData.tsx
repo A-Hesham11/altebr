@@ -51,10 +51,10 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ dataSource:", dataSource)
-  console.log("🚀 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth)
-  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails)
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData)
+  console.log("🚀 ~ dataSource:", dataSource);
+  console.log("🚀 ~ sellingItemsOfWeigth:", sellingItemsOfWeigth);
+  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
 
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
@@ -183,7 +183,6 @@ export const SellingTableInputData = ({
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-
 
   const handleDeleteRow = (itemId) => {
     sellingItemsData?.findIndex((item) => {
