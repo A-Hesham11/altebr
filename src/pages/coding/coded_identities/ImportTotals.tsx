@@ -362,7 +362,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
           </h3>
           {/* {totals ? <>lk</> : <Back />} */}
         </div>
-        {totals?.total_wage || importData?.total_wage ? (
+        {pieces?.data?.length > 0 || imprtPieces?.data?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {tarqimBoxes?.map((data: any) => (
               <li
