@@ -10,7 +10,6 @@ import { BaseInputField } from "../../../components/molecules";
 import { Form, Formik } from "formik";
 
 const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
-
   const { formatReyal } = numberContext();
 
   const initialValues = {};
