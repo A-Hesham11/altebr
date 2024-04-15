@@ -54,63 +54,8 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [
-      // {
-      //   cell: (info: any) => {
-      //     return (
-      //       <input
-      //         max={3000}
-      //         checked={isChecked(info.row.original.id)}
-      //         disabled={info.row.original.weight === "0" ? true : false}
-      //         className={`${
-      //           info.row.original.weight === "0" &&
-      //           "border border-gray-300 opacity-60"
-      //         }`}
-      //         type="checkbox"
-      //         onChange={(e) => {
-      //           // setCheckboxChecked(!checkboxChecked)
-
-      //           if (e.target.checked) {
-      //             setOperationTypeSelect((prev) => [
-      //               ...prev,
-      //               { ...info.row.original, index: info.row.index },
-      //             ]);
-      //           } else {
-      //             setOperationTypeSelect((prev) =>
-      //               prev.filter((item) => item.id !== info.row.original.id)
-      //             );
-      //           }
-      //         }}
-      //         // onChange={(e) => {
-      //         //   const index = info.row.index;
-
-      //         //   // Check if the item is already in local storage
-      //         //   const isItemInLocalStorage = operationTypeSelect.some((item) => item.index === index);
-
-      //         //   if (e.target.checked) {
-      //         //     if (!isItemInLocalStorage) {
-      //         //       // If not, add it to local storage
-      //         //       setOperationTypeSelect((prev) => [
-      //         //         ...prev,
-      //         //         { ...info.row.original, index: index },
-      //         //       ]);
-      //         //     }
-      //         //     // Perform your action here when the checkbox is checked
-      //         //   } else {
-      //         //     // Uncheck the checkbox and remove the item from local storage
-      //         //     setOperationTypeSelect((prev) =>
-      //         //       prev.filter((item) => item.index !== index)
-      //         //     );
-      //         //     // Perform your action here when the checkbox is unchecked
-      //         //   }
-      //         // }}
-      //       />
-      //     );
-      //   },
-      //   accessorKey: "checkbox",
-      //   header: () => <span>{t("")}</span>,
-      // },
       {
-        cell: (info: any) => info.getValue() || "---",
+        cell: (info: any) => info.getValue() || ++info.row.index || "---",
         accessorKey: "id",
         header: () => <span>{t("Id number")}</span>,
       },
@@ -362,7 +307,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
           </h3>
           {/* {totals ? <>lk</> : <Back />} */}
         </div>
-        {totals?.total_wage || importData?.total_wage ? (
+        {pieces?.data?.length > 0 || imprtPieces?.data?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {tarqimBoxes?.map((data: any) => (
               <li
