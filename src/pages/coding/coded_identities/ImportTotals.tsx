@@ -19,7 +19,6 @@ interface ImportTotals_TP {
 }
 
 const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
-  console.log("🚀 ~ totals:", totals);
   const { formatReyal, formatGram } = numberContext();
   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
@@ -46,10 +45,11 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
     isRefetching: imprtPiecesIsRefetching,
     isLoading: imprtPiecesIsLoading,
   } = useFetch({
-    queryKey: ["pieces-data"],
-    endpoint: "/tarqimGold/api/v1/imported-items-details",
+    queryKey: ["pieces-data", page],
+    endpoint: `/tarqimGold/api/v1/imported-items-details?page=${page}`,
     pagination: true,
   });
+  console.log("🚀 ~ imprtPieces:", imprtPieces);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -153,136 +153,136 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
     {
       account: "total pieces",
       id: 1,
-      value: pieces?.data?.length || imprtPieces?.data?.length,
+      value: (pieces && pieces[1].data?.length) || imprtPieces?.total,
       unit: "piece",
     },
     {
       account: "total wages",
       id: 6,
-      value: totals
-        ? formatReyal(totals?.total_wage)
-        : formatReyal(importData?.total_wage),
+      value: pieces[0]
+        ? formatReyal(pieces && pieces[0].total_wage)
+        : formatReyal(importData.total_wage),
       unit: "ryal",
     },
     {
       account: "total weight of 18 karat",
       id: 7,
-      value: totals
-        ? formatGram(totals?.total_weight_karat18)
-        : formatGram(importData?.total_weight_karat18),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].total_weight_karat18)
+        : formatGram(importData.total_weight_karat18),
       unit: "gram",
     },
     {
       account: "total weight of 21 karat",
       id: 8,
-      value: totals
-        ? formatGram(totals?.total_weight_karat21)
-        : formatGram(importData?.total_weight_karat21),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].total_weight_karat21)
+        : formatGram(importData.total_weight_karat21),
       unit: "gram",
     },
     {
       account: "total weight of 22 karat",
       id: 9,
-      value: totals
-        ? formatGram(totals?.total_weight_karat22)
-        : formatGram(importData?.total_weight_karat22),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].total_weight_karat22)
+        : formatGram(importData.total_weight_karat22),
       unit: "gram",
     },
     {
       account: "total weight of 24 karat",
       id: 10,
-      value: totals
-        ? formatGram(totals?.total_weight_karat24)
-        : formatGram(importData?.total_weight_karat24),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].total_weight_karat24)
+        : formatGram(importData.total_weight_karat24),
       unit: "gram",
     },
     {
       account: "total weight converted to 24",
       id: 11,
-      value: totals
-        ? formatGram(totals?.karat_diffrence)
-        : formatGram(importData?.karat_diffrence),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].karat_diffrence)
+        : formatGram(importData.karat_diffrence),
       unit: "gram",
     },
     {
-      account: "karat difference",
+      account: "total karat difference",
       id: 11,
-      value: totals
-        ? formatGram(totals?.farq_karat)
-        : formatGram(importData?.farq_karat),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].farq_karat)
+        : formatGram(importData.farq_karat),
       unit: "gram",
     },
     {
       account: "total tax",
       id: 12,
-      value: totals
-        ? formatReyal(totals?.total_tax)
-        : formatReyal(importData?.total_tax),
+      value: pieces[0]
+        ? formatReyal(pieces && pieces[0].total_tax)
+        : formatReyal(importData.total_tax),
       unit: "ryal",
     },
     {
       account: "total diamond",
       id: 13,
-      value: totals
-        ? formatGram(totals?.diamond_total_selling_price)
-        : formatGram(importData?.diamond_total_selling_price),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].diamond_total_selling_price)
+        : formatGram(importData.diamond_total_selling_price),
       unit: "gram",
     },
     {
       account: "total motafreqat",
       id: 14,
-      value: totals
-        ? formatGram(totals?.motafreqat_total_selling_price)
-        : formatGram(importData?.motafreqat_total_selling_price),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].motafreqat_total_selling_price)
+        : formatGram(importData.motafreqat_total_selling_price),
       unit: "gram",
     },
 
     {
       account: "total gold stones",
       id: 14,
-      value: totals
-        ? formatGram(totals?.gold_ahgar_count)
-        : formatGram(importData?.gold_ahgar_count),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].gold_ahgar_count)
+        : formatGram(importData.gold_ahgar_count),
       unit: "pieces",
     },
     {
       account: "total gold stones weight",
       id: 14,
-      value: totals
-        ? formatGram(totals?.gold_ahgar_weight)
-        : formatGram(importData?.gold_ahgar_weight),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].gold_ahgar_weight)
+        : formatGram(importData.gold_ahgar_weight),
       unit: "gram",
     },
     {
       account: "total diamond stones",
       id: 14,
-      value: totals
-        ? formatGram(totals?.diamond_ahgar_count)
-        : formatGram(importData?.diamond_ahgar_count),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].diamond_ahgar_count)
+        : formatGram(importData.diamond_ahgar_count),
       unit: "piece",
     },
     {
       account: "total diamond stones weight",
       id: 14,
-      value: totals
-        ? formatGram(totals?.diamond_ahgar_weight)
-        : formatGram(importData?.diamond_ahgar_weight),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].diamond_ahgar_weight)
+        : formatGram(importData.diamond_ahgar_weight),
       unit: "gram",
     },
     {
       account: "total motafreqat stones",
       id: 14,
-      value: totals
-        ? formatGram(totals?.motafreqat_ahgar_count)
-        : formatGram(importData?.motafreqat_ahgar_count),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].motafreqat_ahgar_count)
+        : formatGram(importData.motafreqat_ahgar_count),
       unit: "piece",
     },
     {
       account: "total motafreqat stones weight",
       id: 14,
-      value: totals
-        ? formatGram(totals?.motafreqat_ahgar_weight)
-        : formatGram(importData?.motafreqat_ahgar_weight),
+      value: pieces[0]
+        ? formatGram(pieces && pieces[0].motafreqat_ahgar_weight)
+        : formatGram(importData.motafreqat_ahgar_weight),
       unit: "gram",
     },
   ];
@@ -307,7 +307,8 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
           </h3>
           {/* {totals ? <>lk</> : <Back />} */}
         </div>
-        {pieces?.data?.length > 0 || imprtPieces?.data?.length > 0 ? (
+        {(pieces && pieces[1].data?.length > 0) ||
+        imprtPieces?.data?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {tarqimBoxes?.map((data: any) => (
               <li
@@ -333,7 +334,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
       </div>
 
       <Table
-        data={pieces?.data || imprtPieces?.data || []}
+        data={(pieces && pieces[1].data) || imprtPieces?.data || []}
         columns={tableColumn}
       >
         <div className="mt-3 flex items-center justify-center gap-5 p-2">
@@ -341,7 +342,11 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
             {t("page")}
             <span className=" text-mainGreen">{page}</span>
             {t("from")}
-            {<span className=" text-mainGreen">{imprtPieces?.pages}</span>}
+            {
+              <span className=" text-mainGreen">
+                {(pieces && pieces[1]?.pages) || imprtPieces?.pages}
+              </span>
+            }
           </div>
           <div className="flex items-center gap-2 ">
             <Button
@@ -359,7 +364,9 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
             <Button
               className="rounded bg-mainGreen p-[.18rem]"
               action={() => setPage((prev: any) => prev + 1)}
-              disabled={page == imprtPieces?.pages}
+              disabled={
+                page == (pieces && pieces[1]?.pages) || imprtPieces?.pages
+              }
             >
               {isRTL ? (
                 <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
