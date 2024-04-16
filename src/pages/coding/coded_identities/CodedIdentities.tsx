@@ -28,7 +28,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [activeClass, setActiveClass] = useState("هويات في الإدارة");
   const [dataSource, setDataSource] = useState([]);
   const [page, setPage] = useState(1);
-  const [importPageResponse, setImportPageResponse] = useState(2);
+  const [importPageResponse, setImportPageResponse] = useState(1);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
   const [importModal, setImportModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
@@ -92,6 +92,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         has_stones: arr?.has_stones,
         mezan_type: arr?.mezan_type,
         cost: arr?.cost,
+        mezan_weight: arr?.mezan_weight,
         cost_item: arr?.cost_item,
         ahgar_count: arr?.ahgar_count,
         ahgar_weight: arr?.ahgar_weight,
@@ -236,10 +237,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
     setImportFiles([]);
   };
-
-  // useEffect(() => {
-  //   handleImportFiles();
-  // }, [importPageResponse]);
 
   return (
     <div className="flex flex-col">
@@ -435,8 +432,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
               <ImportTotals
                 totals={importData && importData[0]}
                 pieces={importData && importData[1]}
-                importPageResponse={importPageResponse}
-                setImportPageResponse={setImportPageResponse}
               />
             </div>
 
