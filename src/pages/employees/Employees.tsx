@@ -62,7 +62,7 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
         email: employee?.email,
         is_active: employee?.is_active,
         username: employee?.username,
-        //password,
+        password: "",
         city_id: employee?.city?.id,
         nationality_id: employee?.nationality?.id,
         country_id: employee?.country?.id,

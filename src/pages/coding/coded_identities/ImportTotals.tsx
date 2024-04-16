@@ -6,7 +6,7 @@ import { useFetch, useIsRTL } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../../../components/molecules";
 import TableOfIdentitiesPreview from "./TableOfIdentitiesPreview";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BsEye } from "react-icons/bs";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { Button } from "../../../components/atoms";
@@ -16,16 +16,9 @@ import { notify } from "../../../utils/toast";
 interface ImportTotals_TP {
   totals?: object;
   pieces?: object[];
-  importPageResponse: number;
-  setImportPageResponse: any;
 }
 
-const ImportTotals: React.FC<ImportTotals_TP> = ({
-  totals,
-  pieces,
-  setImportPageResponse,
-  importPageResponse,
-}) => {
+const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
   console.log("🚀 ~ pieces:", pieces);
   // DATA FROM THE RESPONSE ON MUTATE (WITH KEY "get")
   const { formatReyal, formatGram } = numberContext();
@@ -33,6 +26,24 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [page, setPage] = useState(1);
   const isRTL = useIsRTL();
+
+  // CUSTOM PAGINATION
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentItems, setCurrentItems] = useState([]);
+  console.log("🚀 ~ currentItems:", currentItems);
+
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setCurrentItems(pieces?.slice(startIndex, endIndex));
+  }, [pieces, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(pieces?.length / itemsPerPage);
+  console.log("🚀 ~ totalPages:", totalPages);
+
+  // const handlePageClick = (pageNumber) => setCurrentPage(pageNumber);
+  // CUSTOM PAGINATION
 
   const {
     data: importData,
@@ -62,7 +73,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
   const tableColumn = useMemo<any>(
     () => [
       {
-        cell: (info: any) => info.getValue() || ++info.row.index || "---",
+        cell: (info: any) => info.getValue() || info.row.index + 1 || "---",
         accessorKey: "id",
         header: () => <span>{t("Id number")}</span>,
       },
@@ -160,7 +171,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
     {
       account: "total pieces",
       id: 1,
-      value: pieces?.total || imprtPieces?.total,
+      value: pieces?.length || imprtPieces?.total,
       unit: "piece",
     },
     {
@@ -313,7 +324,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
             {t("totals of imported pieces")}
           </h3>
         </div>
-        {pieces?.data?.length > 0 || imprtPieces?.data?.length > 0 ? (
+        {pieces?.length > 0 || imprtPieces?.data?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {tarqimBoxes?.map((data: any) => (
               <li
@@ -339,19 +350,19 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
       </div>
 
       <Table
-        data={pieces?.data || imprtPieces?.data || []}
+        data={currentItems || imprtPieces?.data || []}
         columns={tableColumn}
       >
         <div className="mt-3 flex items-center justify-center gap-5 p-2">
           <div className="flex items-center gap-2 font-bold">
             {t("page")}
             <span className=" text-mainGreen">
-              {importPageResponse || page}
+              {pieces?.length > 0 ? currentPage : page}
             </span>
             {t("from")}
             {
               <span className=" text-mainGreen">
-                {pieces?.pages || imprtPieces?.pages}
+                {totalPages || imprtPieces?.pages}
               </span>
             }
           </div>
@@ -359,15 +370,13 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
             <Button
               className=" rounded bg-mainGreen p-[.18rem]"
               action={() => {
-                if (pieces?.data?.length > 0) {
-                  setImportPageResponse((prev: number) => prev - 1);
+                if (pieces?.length > 0) {
+                  setCurrentPage((prev: number) => prev - 1);
                 } else {
                   setPage((prev: any) => prev - 1);
                 }
               }}
-              disabled={
-                pieces?.data?.length > 0 ? importPageResponse == 1 : page == 1
-              }
+              disabled={pieces?.length > 0 ? currentPage == 1 : page == 1}
             >
               {isRTL ? (
                 <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
@@ -379,13 +388,17 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
             <Button
               className="rounded bg-mainGreen p-[.18rem]"
               action={() => {
-                if (pieces?.data?.length > 0) {
-                  setImportPageResponse((prev: number) => prev + 1);
+                if (pieces?.length > 0) {
+                  setCurrentPage((prev: number) => prev + 1);
                 } else {
                   setPage((prev: any) => prev + 1);
                 }
               }}
-              disabled={page == (pieces?.pages || imprtPieces?.pages)}
+              disabled={
+                pieces?.length > 0
+                  ? currentPage == totalPages
+                  : page == imprtPieces?.pages
+              }
             >
               {isRTL ? (
                 <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
