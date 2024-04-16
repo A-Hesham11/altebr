@@ -28,17 +28,13 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [activeClass, setActiveClass] = useState("هويات في الإدارة");
   const [dataSource, setDataSource] = useState([]);
   const [page, setPage] = useState(1);
+  const [importPageResponse, setImportPageResponse] = useState(2);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
   const [importModal, setImportModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
   const [importData, setImportData] = useState(null);
   console.log("🚀 ~ CodedIdentities ~ importData:", importData);
   const queryClient = useQueryClient();
-  // const [operationTypeSelect, setOperationTypeSelect] = useState(() => {
-  //   const storedData = localStorage.getItem("operationTypeSelect");
-
-  //   return storedData ? JSON.parse(storedData) : [];
-  // });
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [search, setSearch] = useState("");
@@ -57,10 +53,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     }
   }, [shouldCheck]);
 
-  // useEffect(() => {
-  //   localStorage.setItem("operationTypeSelect", JSON.stringify(operationTypeSelect))
-  // }, [operationTypeSelect])
-
   // FETCHING DATA FROM API
   const { data, isLoading, isFetching, isRefetching, refetch } = useFetch({
     queryKey: fetchKey,
@@ -70,8 +62,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         : `${search}`,
     pagination: true,
   });
-
   console.log("🚀 ~ CodedIdentities ~ data:", data);
+
   // FETCHING DATA FROM API TO EXPORT ALL THE DATA TO EXCEL
   const { data: dataExcel, refetch: dataExcelRefetch } = useFetch({
     queryKey: ["excel-data"],
@@ -229,7 +221,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
   const handleImportFiles = async () => {
     await mutate({
-      endpointName: "/tarqimGold/api/v1/import",
+      endpointName: `/tarqimGold/api/v1/import?page=${importPageResponse}`,
       values: { file: importFiles[0], key: "get" },
       dataType: "formData",
     });
@@ -244,6 +236,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
     setImportFiles([]);
   };
+
+  // useEffect(() => {
+  //   handleImportFiles();
+  // }, [importPageResponse]);
 
   return (
     <div className="flex flex-col">
@@ -436,7 +432,12 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         {importData && (
           <>
             <div>
-              <ImportTotals totals={importData?.collect} pieces={importData} />
+              <ImportTotals
+                totals={importData && importData[0]}
+                pieces={importData && importData[1]}
+                importPageResponse={importPageResponse}
+                setImportPageResponse={setImportPageResponse}
+              />
             </div>
 
             <div className="flex justify-end my-6 gap-4">
@@ -459,10 +460,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
             </div>
           </>
         )}
-
-        {/* {importData && (
-          <ImportTotals importData={importData} postIsLoading={postIsLoading} />
-        )} */}
       </Modal>
     </div>
   );

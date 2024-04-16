@@ -199,12 +199,13 @@ export const AllSuppliers = ({ title }: SupplierProps_TP) => {
         ? `supplier/api/v1/suppliers?page=${page}&per_page=10000`
         : `supplier/api/v1/suppliers?page=${page}&name[lk]=${search}&per_page=10000`,
     queryKey: ["suppliers-excel"],
-    select: (data) =>
+    select: (data: any) =>
       data.map((supplier) => ({
         name: supplier?.name,
         company_name: supplier?.company_name,
         city_id: supplier?.city?.id,
         country_id: supplier?.country?.id,
+        district_id: supplier?.district_id,
         nationality_id: supplier?.nationality?.id,
         national_number: supplier?.national_number,
         type: supplier?.type,
@@ -215,7 +216,6 @@ export const AllSuppliers = ({ title }: SupplierProps_TP) => {
         phone: supplier?.phone,
         fax: supplier?.fax,
         email: supplier?.email,
-        district_id: supplier?.district_id,
       })),
     onError: (err) => console.log(err),
   });

@@ -54,14 +54,20 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
   const { data: employeesExcel } = useFetch<Employee_TP[]>({
     endpoint: "employee/api/v1/employees?per_page=10000",
     queryKey: ["employees-excel"],
-    select: (data) =>
-      data.map((employee) => ({
+    select: (data: any) =>
+      data?.map((employee: any) => ({
         name: employee?.name,
         phone: employee?.phone,
         mobile: employee?.mobile,
         email: employee?.email,
         is_active: employee?.is_active,
         username: employee?.username,
+        //password,
+        city_id: employee?.city?.id,
+        nationality_id: employee?.nationality?.id,
+        country_id: employee?.country?.id,
+        role_id: employee?.role?.id,
+        branch_id: employee?.branch?.id,
         date_of_birth: employee?.date_of_birth,
         national_number: employee?.national_number,
         national_expire_date: employee?.national_expire_date,
