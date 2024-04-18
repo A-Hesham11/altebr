@@ -366,7 +366,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
             }}
             className="bg-mainGreen text-white"
           >
-            {t("empty table")}
+            {t("unselect all")}
           </Button>
           <Button
             action={(e) => {
