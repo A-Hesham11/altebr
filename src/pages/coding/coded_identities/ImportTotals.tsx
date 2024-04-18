@@ -12,7 +12,7 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { Button } from "../../../components/atoms";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { notify } from "../../../utils/toast";
-
+import * as XLSX from "xlsx";
 interface ImportTotals_TP {
   totals?: object;
   pieces?: object[];
@@ -26,12 +26,18 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [page, setPage] = useState(1);
   const isRTL = useIsRTL();
+  const [selectedPieces, setSelectedPieces] = useState([]);
+  console.log("🚀 ~ selectedPieces:", selectedPieces);
+  const [editedExcelData, setEditedExcelData] = useState([]);
+  console.log("🚀 ~ editedExcelData:", editedExcelData);
+
+  const isChecked = (hwya: string) =>
+    selectedPieces.some((item) => item.hwya === hwya);
 
   // CUSTOM PAGINATION
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [currentItems, setCurrentItems] = useState([]);
-  console.log("🚀 ~ currentItems:", currentItems);
 
   useEffect(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -40,9 +46,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
   }, [pieces, currentPage, itemsPerPage]);
 
   const totalPages = Math.ceil(pieces?.length / itemsPerPage);
-  console.log("🚀 ~ totalPages:", totalPages);
 
-  // const handlePageClick = (pageNumber) => setCurrentPage(pageNumber);
   // CUSTOM PAGINATION
 
   const {
@@ -164,7 +168,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
         header: () => <span>{t("details")}</span>,
       },
     ],
-    []
+    [isChecked]
   );
 
   const tarqimBoxes = [
@@ -230,14 +234,14 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
         : formatGram(importData?.farq_karat),
       unit: "gram",
     },
-    {
-      account: "total tax",
-      id: 12,
-      value: totals
-        ? formatReyal(totals?.total_tax)
-        : formatReyal(importData?.total_tax),
-      unit: "ryal",
-    },
+    // {
+    //   account: "total tax",
+    //   id: 12,
+    //   value: totals
+    //     ? formatReyal(totals?.total_tax)
+    //     : formatReyal(importData?.total_tax),
+    //   unit: "ryal",
+    // },
     {
       account: "total diamond",
       id: 13,
@@ -304,6 +308,47 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
       unit: "gram",
     },
   ];
+
+  const selectedPiecesObj = {
+    cell: (info: any) => {
+      return (
+        <input
+          max={3000}
+          checked={isChecked(info.row.original.hwya)}
+          type="checkbox"
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedPieces((prev: any) => [
+                ...prev,
+                { ...info.row.original, index: info.row.index },
+              ]);
+            } else {
+              setSelectedPieces((prev) =>
+                prev.filter((item: any) => item.hwya !== info.row.original.hwya)
+              );
+            }
+          }}
+        />
+      );
+    },
+    accessorKey: "checkbox",
+    header: () => <span>{t("")}</span>,
+  };
+
+  if (pieces?.length > 0) tableColumn.unshift(selectedPiecesObj);
+
+  // useEffect(() => {
+  //   const fileType =
+  //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  //   const fileExtension = ".xlsx";
+
+  //   const ws = XLSX.utils.json_to_sheet(selectedPieces);
+
+  //   const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+  //   const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+  //   const data = new Blob([excelBuffer], { type: fileType });
+  //   setEditedExcelData(data);
+  // }, [selectedPieces]);
 
   // LOADING ....
   if (
