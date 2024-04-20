@@ -18,6 +18,7 @@ import { notify } from "../../../utils/toast";
 import { mutateData } from "../../../utils/mutateData";
 import { useQueryClient } from "@tanstack/react-query";
 import ImportTotals from "./ImportTotals";
+import * as fileSaver from "file-saver";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -33,10 +34,11 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [importModal, setImportModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
   const [importData, setImportData] = useState(null);
-  console.log("🚀 ~ CodedIdentities ~ importData:", importData);
   const queryClient = useQueryClient();
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
+  const [rejectedPieces, setRejectedPieces] = useState([]);
+  const [piecesState, setPiecesState] = useState([]);
   const [search, setSearch] = useState("");
   const [isSuccessPost, setIsSuccessPost] = useState(false);
   const [fetchEndPoint, setFetchEndPoint] = useState(
@@ -108,6 +110,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     mutationKey: ["files"],
     onSuccess: (data: any) => {
       setImportData(data);
+      setPiecesState(data[1]);
       notify("success", t("imported has successfully"));
     },
     onError: (error: any) => {
@@ -235,7 +238,9 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       dataType: "formData",
     });
 
+    ExportToExcel(rejectedPieces, `rejected pieces ${formatDate(new Date())}`);
     setImportFiles([]);
+    setRejectedPieces([]);
   };
 
   return (
@@ -431,7 +436,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
             <div>
               <ImportTotals
                 totals={importData && importData[0]}
-                pieces={importData && importData[1]}
+                pieces={piecesState}
+                setPiecesState={setPiecesState}
+                setRejectedPieces={setRejectedPieces}
+                setImportFiles={setImportFiles}
               />
             </div>
 
