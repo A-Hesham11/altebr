@@ -330,7 +330,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
 
-    const ws = XLSX.utils.json_to_sheet(pieces);
+    const ws = XLSX.utils.json_to_sheet(filterPieces);
 
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
