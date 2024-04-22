@@ -79,7 +79,6 @@ export const CreateCity = ({ value, onAdd }: CreateCity_TP) => {
     },
     onError: (error) => {
       notify("error")
-      console.log("🚀 ~ file: CreateCity.tsx:71 ~ error:", error)
     },
   })
   /////////// SIDE EFFECTS

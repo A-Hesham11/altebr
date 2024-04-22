@@ -22,6 +22,7 @@ export type Payment_TP = {
   cost_after_tax: string;
   cardFrontKey?: string;
   setCardFronKey: React.Dispatch<React.SetStateAction<Payment_TP>>;
+  setCardFrontKeySadad: React.Dispatch<React.SetStateAction<Payment_TP>>;
 };
 
 type CardSelection_TP = {
@@ -56,6 +57,7 @@ const PaymentProcessing = ({
   console.log("🚀 ~ cardDiscountPercentage:", cardDiscountPercentage)
   
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
+  const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
   const { formatGram, formatReyal } = numberContext();
 
@@ -153,6 +155,7 @@ const PaymentProcessing = ({
                   cardImage: cardImage,
                   frontkey: cardFrontKey,
                   frontKeyAccept: frontKeyAccept,
+                  frontKeySadad: frontKeySadad,
                   sellingFrontKey: sellingFrontKey,
                   commission_tax:
                     values.add_commission_ratio === "yes" ? commissionTax : 0,
@@ -199,6 +202,7 @@ const PaymentProcessing = ({
                   setSelectedCardId={setSelectedCardId}
                   setCardFronKey={setCardFronKey}
                   setCardFrontKeyAccept={setCardFrontKeyAccept}
+                  setCardFrontKeySadad={setCardFrontKeySadad}
                   setSellingFrontKey={setSellingFrontKey}
                   setCardDiscountPercentage={setCardDiscountPercentage}
                 />
