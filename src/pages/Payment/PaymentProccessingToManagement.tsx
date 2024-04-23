@@ -60,23 +60,17 @@ const PaymentProccessingToManagement = ({
   isCheckedCommission,
   setIsCheckedCommission,
 }: Payment_TP) => {
-  console.log("🚀 ~ cardId:", cardId);
-  console.log(
-    "🚀 ~ file: PaymentProccessingToManagement.tsx:67 ~ paymentData:",
-    paymentData
-  );
-
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
+  const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
   const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("");
   const { formatReyal } = numberContext();
 
   const locationPath = location.pathname;
-  console.log("🚀 ~ locationPath:", locationPath);
 
   const { userData } = useContext(authCtx);
 
@@ -113,25 +107,17 @@ const PaymentProccessingToManagement = ({
     (total, item) => Number(total) + Number(item.commission_oneItem),
     0
   );
-  console.log("🚀 ~ totalCommissionOfoneItem:", totalCommissionOfoneItem);
-
-  const totalCommissionTaxOfoneItem = sellingItemsData?.reduce(
-    (total, item) => Number(total) + Number(item.commissionTax_oneItem),
-    0
-  );
 
   const amountRemaining = paymentData?.reduce(
     (total, item) =>
       Number(total) + (Number(item.cost_after_tax) || Number(item.amount)),
     0
   );
-  console.log("🚀 ~ amountRemaining:", amountRemaining);
 
   const invoiceTotalOfSalesReturn = sellingItemsData.reduce(
     (total, item) => Number(total) + Number(item.total),
     0
   );
-  console.log("🚀 ~ invoiceTotalOfSalesReturn:", invoiceTotalOfSalesReturn);
 
   const amountIsPaid =
     isCheckedCommission === true
@@ -213,6 +199,7 @@ const PaymentProccessingToManagement = ({
                   cardImage: cardImage,
                   frontkey: cardFrontKey,
                   frontKeyAccept: frontKeyAccept,
+                  frontKeySadad:frontKeySadad,
                   sellingFrontKey: sellingFrontKey,
                   salesReturnFrontKey: salesReturnFrontKey,
                 };
@@ -268,6 +255,7 @@ const PaymentProccessingToManagement = ({
                   setCardFronKey={setCardFronKey}
                   setCardFrontKeyAccept={setCardFrontKeyAccept}
                   setSellingFrontKey={setSellingFrontKey}
+                  setCardFrontKeySadad={setCardFrontKeySadad}
                   setSalesReturnFrontKey={setSalesReturnFrontKey}
                   setCardId={setCardId}
                   setSelectedCardName={setSelectedCardName}
@@ -337,13 +325,7 @@ const PaymentProccessingToManagement = ({
                     {locationPath === "/selling/payoff/sales-return" && (
                       <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
                         <span>{t("remaining cost")} : </span>{" "}
-                        {/* {isCheckedCommission
-                          ? formatReyal(
-                              Number(costRemaining) +
-                                Number(totalCommissionOfoneItem) +
-                                Number(totalCommissionTaxOfoneItem)
-                            )
-                          : formatReyal(Number(costRemaining))} */}
+ 
                         {isCheckedCommission
                           ? formatReyal(Number(costRemaining))
                           : formatReyal(Number(costRemaining))}

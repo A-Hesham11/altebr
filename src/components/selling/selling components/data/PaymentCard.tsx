@@ -29,6 +29,7 @@ type Payment_TP = {
   setSelectedCardName?: any
   setIsMaxDiscountLimit?: any
   setSalesReturnFrontKey?: any
+  setCardFrontKeySadad?: any
 };
 
 const PaymentCard = ({
@@ -44,7 +45,8 @@ const PaymentCard = ({
   setCardId,
   setSalesReturnFrontKey,
   setSelectedCardName,
-  setIsMaxDiscountLimit
+  setIsMaxDiscountLimit,
+  setCardFrontKeySadad
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
@@ -167,6 +169,8 @@ const PaymentCard = ({
       const selectNewCard = cardsData?.filter(
         (item) => item?.front_key === frontKey
       );
+      console.log("🚀 ~ handleChooseCard ~ selectNewCard:", selectNewCard)
+
 
       const selectCradIDOrBankId = selectNewCard[0]?.bank_id ? selectNewCard[0]?.bank_id : selectNewCard[0]?.id;
 
@@ -186,6 +190,8 @@ const PaymentCard = ({
         setSellingFrontKey?.(selectNewCard[0]?.selling_front_key || "cash")
       } else if (locationPath === "/selling/payoff/sales-return") {
         setSalesReturnFrontKey?.(selectNewCard[0]?.return_selling_front_key || "cash")
+      } else if (locationPath === "/selling/reimbursement") {
+        setCardFrontKeySadad?.(selectNewCard[0]?.sadad_aladra_front_key || selectNewCard[0]?.front_key || "cash");
       } else {
         setCardFrontKeyAccept?.(selectNewCard[0]?.front_key_accept || "cash");
       }

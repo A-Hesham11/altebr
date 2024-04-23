@@ -13,6 +13,7 @@ import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import PaymentToManagementTable from "./PaymentToManagementTable";
+import { BiSpreadsheet } from "react-icons/bi";
 
 const VeiwPaymentToManagement = () => {
   // STATE
@@ -66,7 +67,7 @@ const VeiwPaymentToManagement = () => {
       },
       {
         cell: (info: any) => (
-          <BsEye
+          <BiSpreadsheet
             onClick={() => {
               setOpenInvoiceModal(true);
               setSelectedItem(info.row.original);
