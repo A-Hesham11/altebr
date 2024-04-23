@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../context/settings/number-formatter";
 import {
+  ColumnDef,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -65,22 +66,22 @@ const PaymentToManagementTable = ({ item }: { item?: {} }) => {
       },
       {
         header: `${t("gram (debtor)")}`,
-        cell: (info) => formatGram(Number(info.renderValue())) || "-",
+        cell: (info) => info.renderValue() !== 0 ? formatGram(Number(info.renderValue())) : "---",
         accessorKey: "debtor_gram",
       },
       {
         header: `${t("reyal (debtor)")}`,
-        cell: (info) => formatReyal(Number(info.renderValue())) || "-",
+        cell: (info) => info.renderValue() !== 0 ? formatReyal(Number(info.renderValue())) : "---",
         accessorKey: "debtor_SRA",
       },
       {
         header: `${t("gram (creditor)")}`,
-        cell: (info) => formatGram(Number(info.renderValue())) || "-",
+        cell: (info) => info.renderValue() !== 0 ? formatGram(Number(info.renderValue())) : "---",
         accessorKey: "creditor_gram",
       },
       {
         header: `${t("reyal (creditor)")}`,
-        cell: (info) => formatReyal(Number(info.renderValue())) || "-",
+        cell: (info) => info.renderValue() !== 0 ? formatReyal(Number(info.renderValue())) : "---",
         accessorKey: "creditor_SRA",
       },
     ],

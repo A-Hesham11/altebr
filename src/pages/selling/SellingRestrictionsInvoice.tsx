@@ -42,7 +42,7 @@ const SellingRestrictionsInvoice = () => {
   } = useFetch({
     queryKey: ["selling-invoice"],
     endpoint:
-      search === `selling/api/v1/invoices_per_branch/${userData?.branch_id}` ||
+      search === `selling/api/v1/invoices_per_branch/${userData?.branch_id}` || 
       search === ""
         ? `selling/api/v1/invoices_per_branch/${userData?.branch_id}?page=${page}`
         : `${search}`,
