@@ -140,6 +140,13 @@ import Stocks from "../pages/selling/Stocks";
 import EdaraStocks from "../pages/stocksInEdara/edaraStocks";
 import BranchStocks from "../pages/stocksInEdara/branchStocks";
 import SalesReturnRestrictions from "../pages/salesReturn/SalesReturnRestrictions";
+import PurchaseInvoice from "../pages/reserveGold/invoices/purchaseInvoice/PurchaseInvoice";
+import SellingInvoice from "../pages/reserveGold/invoices/sellingInvoice/SellingInvoice";
+import ReversePurchaseBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
+import ReservePurchaseBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
+import ReserveSellingBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
+import PurchaseInvoiceSecondPage from "../pages/reserveGold/invoices/purchaseInvoice/PurchaseInvoiceSecondPage";
+import SellingInvoiceSecondPage from "../pages/reserveGold/invoices/sellingInvoice/SellingInvoiceSecondPage";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -233,6 +240,24 @@ export const AllRoutesProvider = () => {
           <Route path="/addSupportArticle" element={<AddSupportArticle />} />
           <Route path="/viewSupportArticle" element={<ViewSupportArticle />} />
           {/* END SUPPORT */}
+
+          {/* START RESERVE GOLDS */}
+          {/* PURCHASE */}
+          <Route path="/addPurchaseBond" element={<PurchaseInvoice />} />
+          <Route
+            path="/reservePurchaseBondInvoice"
+            element={<PurchaseInvoiceSecondPage />}
+          />
+          <Route path="/viewPurchaseBonds" element={<ReservePurchaseBonds />} />
+
+          {/* SELLING */}
+          <Route path="/addSellingBond" element={<SellingInvoice />} />
+          <Route
+            path="/reserveSellingBondInvoice"
+            element={<SellingInvoiceSecondPage />}
+          />
+          <Route path="/viewSellingBonds" element={<ReserveSellingBonds />} />
+          {/* END RESERVE GOLDS */}
 
           <Route
             path="/system/company-profile"

@@ -21,11 +21,6 @@ const BuyingInvoice = () => {
   const [invoiceNumber, setInvoiceNumber] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const [odwyaTypeValue, setOdwyaTypeValue] = useState();
-  console.log(
-    "🚀 ~ file: BuyingFirstPage.tsx:46 ~ odwyaTypeValue:",
-    odwyaTypeValue
-  );
-
 
   const initialValues: Selling_TP = {
     client_id: "",

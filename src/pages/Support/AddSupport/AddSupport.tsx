@@ -230,28 +230,6 @@ const AddSupport: React.FC<AddSupport_TP> = ({
     console.log({ ...invoice });
   };
 
-  // // LEVEL FOUR HANDLE ADD
-  // const postLevelFourHandler = (values: any) => {
-  //   const invoice = articlesData?.map((article: any) => {
-  //     return {
-  //       name_ar: article.name_ar,
-  //       name_en: article.name_en,
-  //       desc_ar: article.step_ar,
-  //       desc_en: article.step_en,
-  //       cat_support_id: values.level_one_id,
-  //       level_two_support_id: values.level_two_id,
-  //       level_third_support_id: values.level_three_id,
-  //       media: article.media,
-  //     };
-  //   });
-
-  //   mutate({
-  //     endpointName: "/support/api/v1/levelFourthSupport",
-  //     values: { items: invoice },
-  //     dataType: "formData",
-  //   });
-  // };
-
   // LEVEL ONE HANDLE EDIT
   const PostLevelOneEdit = (values: any) => {
     const invoice = {
@@ -303,34 +281,6 @@ const AddSupport: React.FC<AddSupport_TP> = ({
       },
     });
   };
-
-  // // LEVEL FOUR HANDLE EDIT
-  // const PostLevelFourEdit = (values: any) => {
-  //   const invoice = {
-  //     name_ar: values?.article_name_ar,
-  //     name_en: values?.article_name_en,
-  //     desc_ar: values?.steps_ar,
-  //     desc_en: values?.steps_en,
-  //     cat_support_id: values.level_one_id,
-  //     level_two_support_id: values.level_two_id,
-  //     level_third_support_id: values.level_three_id,
-  //   };
-
-  //   mutate({
-  //     endpointName: `/support/api/v1/levelFourthSupport/${editData?.id}`,
-  //     values: {
-  //       ...invoice,
-  //       _method: "put",
-  //     },
-  //   });
-  // };
-
-  // const handleDelete = () => {
-  //   mutate({
-  //     endpointName: `/employeeSalary/api/v1/delete-deduction/${deleteData?.id}`,
-  //     method: "delete",
-  //   });
-  // };
 
   useEffect(() => {
     levelTwoRefetch();
