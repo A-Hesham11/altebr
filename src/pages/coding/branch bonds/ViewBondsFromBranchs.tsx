@@ -11,6 +11,7 @@ import PaymentBondsTable from "./PaymentBondsTable";
 import { BsEye } from "react-icons/bs";
 import { Loading } from "../../../components/organisms/Loading";
 import { numberContext } from "../../../context/settings/number-formatter";
+import { BiSpreadsheet } from "react-icons/bi";
 
 const ViewBondsFromBranchs = () => {
   const isRTL = useIsRTL();
@@ -61,7 +62,7 @@ const ViewBondsFromBranchs = () => {
       },
       {
         cell: (info: any) => (
-          <BsEye
+          <BiSpreadsheet
             onClick={() => {
               setOpenInvoiceModal(true);
               setSelectedItem(info.row.original);
