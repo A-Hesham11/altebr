@@ -1267,5 +1267,13 @@
   "confirmed successfully": "تم التاكيد بنجاح",
   "total karat difference": "اجمالي فرق العيارات",
   "pieces": "قطع",
-  "unselect all": "الغاء تحديد الكل"
+  "unselect all": "الغاء تحديد الكل",
+  "file date": "تاريخ الملف",
+  "gold selling bonds": "سندات بيع الذهب",
+  "gold purchase bonds": "سندات شراء الذهب",
+  "view bonds": "عرض السندات",
+  "gold reservation purchase invoice": "فاتورة شراء حجز الذهب",
+  "gold reservation selling invoice": "فاتورة بيع حجز الذهب",
+  "files": "الملفات",
+  "images": "الصور"
 }

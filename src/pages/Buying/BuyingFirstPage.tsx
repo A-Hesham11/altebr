@@ -42,7 +42,6 @@ const BuyingFirstPage = ({
 }: SellingFirstPage_TP) => {
   const { formatGram, formatReyal } = numberContext();
   const { values } = useFormikContext();
-  console.log("🚀 ~ file: BuyingFirstPage.tsx:43 ~ values:", values);
   const { userData } = useContext(authCtx);
 
   // FORMULA FOR RESULT
@@ -112,8 +111,8 @@ const BuyingFirstPage = ({
     endpoint: `/buyingUsedGold/api/v1/get-nadya-box/${userData?.branch_id}`,
     queryKey: ["naqdya"],
     onError: (error) => {
-      notify("info", error?.response?.data?.msg)
-    }
+      notify("info", error?.response?.data?.msg);
+    },
   });
 
   // CLIENT OPTIONS
@@ -129,17 +128,9 @@ const BuyingFirstPage = ({
       })),
     onError: (err) => console.log(err),
   });
-  console.log(
-    "🚀 ~ file: BuyingBillInput.tsx:46 ~ clientsAndSuppliers:",
-    clientsAndSuppliers
-  );
 
   const odwyaFind = clientsAndSuppliers?.find(
     (item: any) => item?.id === values?.client_id
-  );
-  console.log(
-    "🚀 ~ file: BuyingFirstPage.tsx:134 ~ odwyaFind:",
-    odwyaFind?.type
   );
 
   useEffect(() => {

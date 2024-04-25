@@ -4,7 +4,7 @@ import { Loading } from "../../../components/organisms/Loading";
 import { Back } from "../../../utils/utils-components/Back";
 import { useFetch, useIsRTL } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
-import { Modal } from "../../../components/molecules";
+import { DateInputField, Modal } from "../../../components/molecules";
 import TableOfIdentitiesPreview from "./TableOfIdentitiesPreview";
 import { useEffect, useMemo, useState } from "react";
 import { BsEye } from "react-icons/bs";
@@ -13,9 +13,10 @@ import { Button } from "../../../components/atoms";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { notify } from "../../../utils/toast";
 import { IoCloseCircleSharp } from "react-icons/io5";
-import { formatDate } from "../../../utils/date";
+import { formatDate, getDayAfter } from "../../../utils/date";
 import * as XLSX from "xlsx";
 import { Delete } from "../../../components/atoms/icons/Delete";
+import { Form, Formik } from "formik";
 
 interface ImportTotals_TP {
   totals?: object;
@@ -32,10 +33,16 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
   setRejectedPieces,
   setImportFiles,
 }) => {
+  const initialValues = {
+    file_date: "",
+  };
+
   // DATA FROM THE RESPONSE ON MUTATE (WITH KEY "get")
   const { formatReyal, formatGram } = numberContext();
   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
+  const [search, setSearch] = useState("");
+  console.log("🚀 ~ search:", search);
   const [page, setPage] = useState(1);
   const isRTL = useIsRTL();
 
@@ -71,11 +78,27 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
     isFetching: imprtPiecesIsFetching,
     isRefetching: imprtPiecesIsRefetching,
     isLoading: imprtPiecesIsLoading,
+    refetch,
   } = useFetch({
-    queryKey: ["pieces-data", page],
-    endpoint: `/tarqimGold/api/v1/imported-items-details?page=${page}`,
+    queryKey: ["pieces-data"],
+    endpoint:
+      search === `/tarqimGold/api/v1/imported-items-details?` || search === ""
+        ? `/tarqimGold/api/v1/imported-items-details?page=${page}`
+        : `${search}`,
     pagination: true,
   });
+  console.log("🚀 ~ imprtPieces:", imprtPieces);
+  useEffect(() => {
+    refetch();
+  }, [page]);
+
+  useEffect(() => {
+    if (page == 1) {
+      refetch();
+    } else {
+      setPage(1);
+    }
+  }, [search]);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -342,6 +365,22 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
     setImportFiles([file]);
   };
 
+  const getSearchResults = async (req: any) => {
+    let url = `/tarqimGold/api/v1/imported-items-details?`;
+    let first = false;
+    Object.keys(req).forEach((key) => {
+      if (req[key] !== "") {
+        if (first) {
+          url += `?${key}=${req[key]}`;
+          first = false;
+        } else {
+          url += `&${key}=${req[key]}`;
+        }
+      }
+    });
+    setSearch(url);
+  };
+
   // LOADING ....
   if (
     isFetching ||
@@ -354,106 +393,138 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
     return <Loading mainTitle={`${t("loading totals")}`} />;
 
   return (
-    <div>
-      <div className="py-10">
-        <div className="flex justify-between items-center mb-10">
-          <h3 className="text-xl font-bold text-slate-700">
-            {t("totals of imported pieces")}
-          </h3>
-        </div>
-        {pieces?.length > 0 || imprtPieces?.data?.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {tarqimBoxes?.map((data: any) => (
-              <li
-                key={data?.id}
-                className="flex flex-col h-28 justify-center rounded-xl text-center text-sm font-bold shadow-md"
-              >
-                <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
-                  {t(`${data?.account}`)}
-                </p>
-                <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                  {data?.value} <span>{t(`${data?.unit}`)}</span>
-                </p>
-              </li>
-            ))}
-          </div>
-        ) : (
-          <div className="flex justify-center items-center my-10">
-            <h3 className="text-2xl font-bold text-mainGreen">
-              {t("there is no imported data")}
-            </h3>
-          </div>
-        )}
-      </div>
-
-      <Table
-        data={currentItems || imprtPieces?.data || []}
-        columns={tableColumn}
-      >
-        <div className="mt-3 flex items-center justify-center gap-5 p-2">
-          <div className="flex items-center gap-2 font-bold">
-            {t("page")}
-            <span className=" text-mainGreen">
-              {pieces?.length > 0 ? currentPage : page}
-            </span>
-            {t("from")}
-            {
-              <span className=" text-mainGreen">
-                {totalPages || imprtPieces?.pages}
-              </span>
-            }
-          </div>
-          <div className="flex items-center gap-2 ">
-            <Button
-              className=" rounded bg-mainGreen p-[.18rem]"
-              action={() => {
-                if (pieces?.length > 0) {
-                  setCurrentPage((prev: number) => prev - 1);
-                } else {
-                  setPage((prev: any) => prev - 1);
-                }
-              }}
-              disabled={pieces?.length > 0 ? currentPage == 1 : page == 1}
-            >
-              {isRTL ? (
-                <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+    <Formik
+      initialValues={initialValues}
+      onSubmit={(values) => {
+        getSearchResults({
+          ...values,
+          file_date: values.file_date
+            ? formatDate(getDayAfter(new Date(values.file_date)))
+            : "",
+        });
+      }}
+    >
+      {(formik) => (
+        <Form>
+          <div>
+            <div className="py-10">
+              <div className="flex justify-between items-center mb-10">
+                <h3 className="text-xl font-bold text-slate-700">
+                  {t("totals of imported pieces")}
+                </h3>
+              </div>
+              {pieces?.length > 0 || imprtPieces?.data?.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {tarqimBoxes?.map((data: any) => (
+                    <li
+                      key={data?.id}
+                      className="flex flex-col h-28 justify-center rounded-xl text-center text-sm font-bold shadow-md"
+                    >
+                      <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
+                        {t(`${data?.account}`)}
+                      </p>
+                      <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
+                        {data?.value} <span>{t(`${data?.unit}`)}</span>
+                      </p>
+                    </li>
+                  ))}
+                </div>
               ) : (
-                <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                <div className="flex justify-center items-center my-10">
+                  <h3 className="text-2xl font-bold text-mainGreen">
+                    {t("there is no imported data")}
+                  </h3>
+                </div>
               )}
-            </Button>
+            </div>
 
-            <Button
-              className="rounded bg-mainGreen p-[.18rem]"
-              action={() => {
-                if (pieces?.length > 0) {
-                  setCurrentPage((prev: number) => prev + 1);
-                } else {
-                  setPage((prev: any) => prev + 1);
-                }
-              }}
-              disabled={
-                pieces?.length > 0
-                  ? currentPage == totalPages
-                  : page == imprtPieces?.pages
-              }
+            {!pieces && (
+              <div className="my-8 flex self-start">
+                <div className="flex items-end gap-8">
+                  <DateInputField
+                    label={`${t("file date")}`}
+                    placeholder={`${t("file date")}`}
+                    name="file_date"
+                    labelProps={{ className: "mt--10" }}
+                  />
+                  <Button type="submit" className="bg-mainGreen text-white">
+                    بحث
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <Table
+              data={currentItems || imprtPieces?.data || []}
+              columns={tableColumn}
             >
-              {isRTL ? (
-                <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-              ) : (
-                <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-              )}
-            </Button>
-          </div>
-        </div>
-      </Table>
+              <div className="mt-3 flex items-center justify-center gap-5 p-2">
+                <div className="flex items-center gap-2 font-bold">
+                  {t("page")}
+                  <span className=" text-mainGreen">
+                    {pieces?.length > 0 ? currentPage : page}
+                  </span>
+                  {t("from")}
+                  {
+                    <span className=" text-mainGreen">
+                      {totalPages || imprtPieces?.pages}
+                    </span>
+                  }
+                </div>
+                <div className="flex items-center gap-2 ">
+                  <Button
+                    className=" rounded bg-mainGreen p-[.18rem]"
+                    action={() => {
+                      if (pieces?.length > 0) {
+                        setCurrentPage((prev: number) => prev - 1);
+                      } else {
+                        setPage((prev: any) => prev - 1);
+                      }
+                    }}
+                    disabled={pieces?.length > 0 ? currentPage == 1 : page == 1}
+                  >
+                    {isRTL ? (
+                      <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                    ) : (
+                      <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                    )}
+                  </Button>
 
-      <Modal
-        isOpen={IdentitiesModal}
-        onClose={() => setOpenIdentitiesModal(false)}
-      >
-        <TableOfIdentitiesPreview item={selectedItem} />
-      </Modal>
-    </div>
+                  <Button
+                    className="rounded bg-mainGreen p-[.18rem]"
+                    action={() => {
+                      if (pieces?.length > 0) {
+                        setCurrentPage((prev: number) => prev + 1);
+                      } else {
+                        setPage((prev: any) => prev + 1);
+                      }
+                    }}
+                    disabled={
+                      pieces?.length > 0
+                        ? currentPage == totalPages
+                        : page == imprtPieces?.pages
+                    }
+                  >
+                    {isRTL ? (
+                      <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                    ) : (
+                      <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </Table>
+
+            <Modal
+              isOpen={IdentitiesModal}
+              onClose={() => setOpenIdentitiesModal(false)}
+            >
+              <TableOfIdentitiesPreview item={selectedItem} />
+            </Modal>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

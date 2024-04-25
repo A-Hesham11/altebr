@@ -200,6 +200,52 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: "reserve gold",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "gold selling bonds",
+        icon: CiExport,
+        items: [
+          {
+            id: crypto.randomUUID(),
+            label: "add bond",
+            link: "/addSellingBond",
+            icon: IoAdd,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: "view bonds",
+            link: "/viewSellingBonds",
+            icon: CiGrid2H,
+          },
+        ],
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "gold purchase bonds",
+        icon: CiExport,
+        items: [
+          {
+            id: crypto.randomUUID(),
+            label: "add bond",
+            link: "/addPurchaseBond",
+            icon: IoAdd,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: "view bonds",
+            link: "/viewPurchaseBonds",
+            icon: CiGrid2H,
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: "Expenses",
     icon: CiExport,
     items: [

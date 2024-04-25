@@ -64,7 +64,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ CodedIdentities ~ data:", data);
 
   // FETCHING DATA FROM API TO EXPORT ALL THE DATA TO EXCEL
   const { data: dataExcel, refetch: dataExcelRefetch } = useFetch({
@@ -238,7 +237,12 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       dataType: "formData",
     });
 
-    ExportToExcel(rejectedPieces, `rejected pieces ${formatDate(new Date())}`);
+    if (rejectedPieces?.length > 0) {
+      ExportToExcel(
+        rejectedPieces,
+        `rejected pieces ${formatDate(new Date())}`
+      );
+    }
     setImportFiles([]);
     setRejectedPieces([]);
   };

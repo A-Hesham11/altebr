@@ -1,12 +1,13 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { BsImageFill } from "react-icons/bs";
+import { BsFileEarmarkExcelFill, BsImageFill } from "react-icons/bs";
 import { useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { ViewSvgIcon } from "../../atoms/icons";
 import { CLightbox } from "./CLightbox";
+import { FaFile } from "react-icons/fa";
 
 type FilesUploadProps = {
   setFiles: React.Dispatch<React.SetStateAction<File[]>>;
@@ -17,6 +18,7 @@ export const FilesUpload: React.FC<FilesUploadProps> = ({
   files,
   setFiles,
 }: FilesUploadProps) => {
+  console.log("🚀 ~ files:", files);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +85,11 @@ export const FilesUpload: React.FC<FilesUploadProps> = ({
               className="hidden"
             />
             <span className="icon flex gap-4 items-center bg-mainGray px-6 py-2 rounded-lg cursor-pointer border-2 border-dashed border-[#0000001A] ">
-              <BsImageFill size={20} />
+              {files[0]?.type !== "image/png" ? (
+                <BsFileEarmarkExcelFill size={20} />
+              ) : (
+                <BsImageFill size={20} />
+              )}
               <span className="text-base font-medium">{t("attachments")}</span>
             </span>
           </label>
@@ -92,7 +98,7 @@ export const FilesUpload: React.FC<FilesUploadProps> = ({
               <>
                 <div className="flex flex-col  gap-1 justify-center">
                   <span className="text-[8px] text-gray-700 text-center">
-                    الصور
+                    {files[0]?.type !== "image/png" ? t("files") : t("images")}
                   </span>
                   <div className="bg-lightGray rounded-md p-1 relative ">
                     <div
@@ -102,7 +108,11 @@ export const FilesUpload: React.FC<FilesUploadProps> = ({
                       <span className=" absolute -top-1 -right-3 bg-mainGreen px-2 py-1 text-[7px] rounded-full text-white">
                         {files?.length}
                       </span>
-                      <ViewSvgIcon stroke="#292D32" />
+                      {files[0]?.type !== "image/png" ? (
+                        <FaFile stroke="#292D32" />
+                      ) : (
+                        <ViewSvgIcon stroke="#292D32" />
+                      )}
                     </div>
                   </div>
                 </div>

@@ -41,15 +41,9 @@ export const BuyingTable = ({
   odwyaTypeValue,
   defaultTax,
 }: SellingTableInputData_TP) => {
-  // console.log(
-  //   "🚀 ~ file: BuyingTable.tsx:44 ~ odwyaTypeValue:",
-  //   odwyaTypeValue
-  // );
   const { formatGram, formatReyal } = numberContext();
   const { values, setFieldValue } = useFormikContext();
-  // console.log("🚀 ~ file: BuyingTable.tsx:46 ~ values:", values);
   const { userData } = useContext(authCtx);
-  // console.log("🚀 ~ file: BuyingTable.tsx:45 ~ userData:", userData);
   const [data, setData] = useState("");
 
   // CASH VALUE API
@@ -57,7 +51,6 @@ export const BuyingTable = ({
     endpoint: `/employee/api/max-buy-user`,
     queryKey: ["maxingUser"],
   });
-  console.log("🚀 ~ file: BuyingTable.tsx:60 ~ maxingUser:", maxingUser)
 
   const { data: taxes, isLoading: loadingTaxs } = useFetch({
     endpoint: `/selling/api/v1/tax-include/${userData?.branch_id}?per_page=10000`,
@@ -77,15 +70,15 @@ export const BuyingTable = ({
   // FORMULA
   const totalValues = (+values.piece_per_gram * +values?.weight).toFixed(2);
   const priceWithCommissionRate =
-  +totalValues - +totalValues * (+maxingUser?.max_buy * 0.01);
+    +totalValues - +totalValues * (+maxingUser?.max_buy * 0.01);
 
   const priceWithCommissionCash = +totalValues - +maxingUser?.max_buy;
 
   const priceWithSellingPolicy =
-  maxingUser?.max_buy_type === "نسبة"
-  ? +priceWithCommissionRate
-  : +priceWithCommissionCash;
-  
+    maxingUser?.max_buy_type === "نسبة"
+      ? +priceWithCommissionRate
+      : +priceWithCommissionCash;
+
   // STONES OPTION SELECT
   const stonesOption = [
     {
@@ -118,17 +111,20 @@ export const BuyingTable = ({
       {
         header: () => <span>{t("weight")} </span>,
         accessorKey: "weight",
-        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatGram(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
-        cell: (info: any) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("piece per gram")} </span>,
         accessorKey: "piece_per_gram",
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("value")} </span>,
@@ -146,12 +142,14 @@ export const BuyingTable = ({
       {
         header: () => <span>{t("value added tax")} </span>,
         accessorKey: "value_added_tax",
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("total value")} </span>,
         accessorKey: "total_value",
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       }
     );
 
@@ -276,24 +274,42 @@ export const BuyingTable = ({
                   const priceWithCommissionCash =
                     +totalValues - +maxingUser?.max_buy;
                   const priceWithSellingPolicy =
-                  maxingUser?.max_buy_type === "نسبة"
-                  ? priceWithCommissionRate
-                  : priceWithCommissionCash;
+                    maxingUser?.max_buy_type === "نسبة"
+                      ? priceWithCommissionRate
+                      : priceWithCommissionCash;
 
                   setFieldValue("value", +priceWithSellingPolicy);
 
-                  const foundedTax = taxes?.find(item => {
+                  const foundedTax = taxes?.find((item) => {
                     return (
-                      (item.karat_name === "" && item.karat_name !== option?.value && item.category_id === null && item.category_id !== values?.category_id) ||
-                      (item.karat_name !== "" && item.karat_name === option?.value && item.category_id !== null  && item.category_id === values?.category_id) ||
-                      (item.karat_name === "" && item.karat_name !== option?.value && item.category_id !== null  && item.category_id === values?.category_id) ||
-                      (item.karat_name !== "" && item.karat_name === option?.value && item.category_id === null &&   item.category_id !== values?.category_id)
+                      (item.karat_name === "" &&
+                        item.karat_name !== option?.value &&
+                        item.category_id === null &&
+                        item.category_id !== values?.category_id) ||
+                      (item.karat_name !== "" &&
+                        item.karat_name === option?.value &&
+                        item.category_id !== null &&
+                        item.category_id === values?.category_id) ||
+                      (item.karat_name === "" &&
+                        item.karat_name !== option?.value &&
+                        item.category_id !== null &&
+                        item.category_id === values?.category_id) ||
+                      (item.karat_name !== "" &&
+                        item.karat_name === option?.value &&
+                        item.category_id === null &&
+                        item.category_id !== values?.category_id)
                     );
-                  });     
+                  });
 
-                  setFieldValue("value_added_tax", +priceWithSellingPolicy * +foundedTax?.tax_rate * 0.01);
-                  setFieldValue("total_value", +priceWithSellingPolicy * +foundedTax?.tax_rate * 0.01 + +priceWithSellingPolicy);                  
-
+                  setFieldValue(
+                    "value_added_tax",
+                    +priceWithSellingPolicy * +foundedTax?.tax_rate * 0.01
+                  );
+                  setFieldValue(
+                    "total_value",
+                    +priceWithSellingPolicy * +foundedTax?.tax_rate * 0.01 +
+                      +priceWithSellingPolicy
+                  );
                 }}
                 value={{
                   id: values.karat_id,
