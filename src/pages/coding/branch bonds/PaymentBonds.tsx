@@ -77,11 +77,11 @@ const PaymentBonds = () => {
         accessorKey: "payment_date",
         header: () => <span>{t("date")}</span>,
       },
-      {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "employee_name",
-        header: () => <span>{t("employee name")}</span>,
-      },
+      // {
+      //   cell: (info: any) => info.getValue(),
+      //   accessorKey: "employee_name",
+      //   header: () => <span>{t("employee name")}</span>,
+      // },
       {
         cell: (info: any) => (
           <BsEye
@@ -250,7 +250,6 @@ const PaymentBonds = () => {
                   <SelectBranches
                     required
                     name="branch_id"
-                    
                   />
                 </div>
                 <Button

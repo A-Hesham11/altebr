@@ -40,7 +40,7 @@ const PaymentToManagement = () => {
     },
   });
 
-  const { mutate: mutatePaymentsData } = useMutate({
+  const { mutate: mutatePaymentsData, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
       notify("success");
@@ -210,7 +210,6 @@ const PaymentToManagement = () => {
       <div className="flex gap-3 justify-end mt-14">
         <Button
           type="submit"
-          loading={false}
           action={() => {
             setStage(1);
           }}
@@ -218,7 +217,7 @@ const PaymentToManagement = () => {
         >
           {t("back")}
         </Button>
-        <Button action={handleSeccessedData}>{t("save")}</Button>
+        <Button action={handleSeccessedData} loading={isLoading}>{t("save")}</Button>
       </div>
     </div>
   );
