@@ -2,7 +2,7 @@ import { t } from "i18next";
 import { useContext } from "react";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useFetch } from "../../../../hooks";
-import { formatDate } from "../../../../utils/date";
+import { formatDate, getDayAfter } from "../../../../utils/date";
 import billLogo from "../../../../assets/bill-logo.png";
 import { useLocation } from "react-router-dom";
 
@@ -22,7 +22,7 @@ type Client_TP = {
 };
 
 const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
-  const { client_id, client_value } = clientData;
+  const { client_id, client_value, bond_date } = clientData;
 
   const { data } = useFetch<Client_TP>({
     endpoint: `branchManage/api/v1/clients/${client_id}`,
@@ -42,6 +42,8 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   const billNumber =
     path === "/selling/honesty/return-honest"
       ? honestBondsData?.length + 1
+      : path === "/addSellingBond"
+      ? invoiceNumber
       : invoiceNumber?.total + 1;
 
   return (
@@ -52,7 +54,9 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
         </p>
         <p className="text-xs font-bold">
           {t("bill date")} :{" "}
-          <span className="font-medium">{formatDate(new Date())}</span>{" "}
+          <span className="font-medium">
+            {formatDate(getDayAfter(bond_date)) || formatDate(new Date())}
+          </span>{" "}
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">

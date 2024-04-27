@@ -1,7 +1,7 @@
 import React from "react";
 import { t } from "i18next";
 import { BsDatabase } from "react-icons/bs";
-import { useFetch } from "../../../../hooks";
+import { useFetch } from "../../../../../hooks";
 
 interface ReserveSellingHeader_TP {
   sellingInvoiceNumber: number;
@@ -30,9 +30,6 @@ const ReserveSellingHeader: React.FC<ReserveSellingHeader_TP> = ({
         <h2>
           {t("bill number")} - {`${sellingInvoiceNumber}`}
         </h2>
-        <p className="bg-mainGreen text-white text-[9px] font-bold py-1 px-2 rounded-lg">
-          {t("selling policy applies")}
-        </p>
       </div>
       <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
         <BsDatabase className="fill-white" />
