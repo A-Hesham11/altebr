@@ -31,6 +31,7 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
   const navigate = useNavigate();
   const { formatReyal, formatGram } = numberContext();
   const { values } = useFormikContext();
+  console.log("🚀 ~ values:", values);
 
   // FORMULA FOR RESULT
   const totalValues = sellingItemsData.reduce(
@@ -67,7 +68,7 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
       unit: "gram",
     },
     {
-      account: "total net weight",
+      account: "total weight converted to 24",
       id: 2,
       value: formatGram(totalNetWeight.toFixed(2)),
       unit: "gram",
@@ -163,7 +164,6 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
               return;
             }
 
-            console.log("🚀 ~ !values?.supplier_id:", values?.supplier_id);
             if (!values?.supplier_id) {
               notify("info", `${t("choose supplier's name first")}`);
               return;

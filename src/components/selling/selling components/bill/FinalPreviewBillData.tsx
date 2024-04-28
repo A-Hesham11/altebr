@@ -55,7 +55,9 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
         <p className="text-xs font-bold">
           {t("bill date")} :{" "}
           <span className="font-medium">
-            {formatDate(getDayAfter(bond_date)) || formatDate(new Date())}
+            {bond_date === ""
+              ? formatDate(new Date())
+              : formatDate(getDayAfter(bond_date))}
           </span>{" "}
         </p>
       </div>

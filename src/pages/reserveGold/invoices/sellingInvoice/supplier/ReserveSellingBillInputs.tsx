@@ -1,9 +1,10 @@
 import { useFormikContext } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   DateInputField,
   Modal,
   Select,
+  TextAreaField,
 } from "../../../../../components/molecules";
 import { t } from "i18next";
 import { IoMdAdd } from "react-icons/io";
@@ -32,20 +33,7 @@ const ReserveSellingBillInputs: React.FC<ReserveSellingBillInputs_TP> = (
   const { isLoading, supplierNameOptions } = props;
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
-  const { formatGram, formatReyal } = numberContext();
   const { setFieldValue, values } = useFormikContext();
-
-  const { data: supplierAccount, refetch } = useFetch({
-    endpoint:
-      values!.supplier_id &&
-      `/reserveGold/api/v1/supplier_accounts/${values!.supplier_id}`,
-    queryKey: ["supplier-accounts-data"],
-  });
-  console.log("🚀 ~ supplierAccount:", supplierAccount);
-
-  useEffect(() => {
-    refetch();
-  }, [values!.supplier_id]);
 
   return (
     <div>
@@ -88,29 +76,18 @@ const ReserveSellingBillInputs: React.FC<ReserveSellingBillInputs_TP> = (
             placeholder={`${formatDate(new Date())}`}
           />
         </div>
-
-        {values!.supplier_id && (
-          <>
-            <div className="flex items-center self-end bg-mainOrange p-2 rounded-lg text-white font-base text-xs w-[29%]">
-              <BsDatabase className="fill-white" />
-              <p className=" border-l border-[#FFA34B] px-1">
-                {t("24 gold credit for supplier")}
-              </p>
-              <p className="px-1">
-                {formatGram(supplierAccount?.gram)} {t("gram")}
-              </p>
-            </div>
-            <div className="flex items-center self-end bg-mainOrange p-2 rounded-lg text-white font-base text-xs w-[27%]">
-              <BsDatabase className="fill-white" />
-              <p className=" border-l border-[#FFA34B] px-1">
-                {t("supplier cash balance")}
-              </p>
-              <p className="px-1">
-                {formatReyal(supplierAccount?.reyal)} {t("reyal")}
-              </p>
-            </div>
-          </>
-        )}
+        <div>
+          <TextAreaField
+            id="notes"
+            label={t("notes")}
+            name="notes"
+            placeholder={t("notes")}
+            cols={50}
+            onChange={(option) => {
+              setFieldValue("notes", option!.target!.value);
+            }}
+          />
+        </div>
       </div>
 
       {model && (

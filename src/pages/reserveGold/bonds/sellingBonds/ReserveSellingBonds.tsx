@@ -20,7 +20,7 @@ const ReverseSellingBonds = () => {
       {({ values }) => {
         return (
           <>
-            <div className="flex items-center justify-between px-12">
+            <div className="flex items-center justify-between px-1">
               <h2 className="text-xl font-bold">
                 {t("gold reservation selling bonds")}
               </h2>

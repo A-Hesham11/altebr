@@ -148,6 +148,7 @@ import PurchaseInvoiceSecondPage from "../pages/reserveGold/invoices/purchaseInv
 import SellingInvoiceSecondPage from "../pages/reserveGold/invoices/sellingInvoice/supplier/SellingInvoiceSecondPage";
 import SellingBond from "../pages/reserveGold/invoices/sellingInvoice/SellingBond";
 import ReverseSellingBonds from "../pages/reserveGold/bonds/sellingBonds/ReserveSellingBonds";
+import ReserveSellingSupplierEntry from "../pages/reserveGold/invoices/sellingInvoice/supplier/ReserveSellingSupplierEntry";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -258,6 +259,10 @@ export const AllRoutesProvider = () => {
             element={<SellingInvoiceSecondPage />}
           />
           <Route path="/viewSellingBonds" element={<ReverseSellingBonds />} />
+          <Route
+            path="/addSellingBond/entry"
+            element={<ReserveSellingSupplierEntry />}
+          />
           {/* END RESERVE GOLDS */}
 
           <Route

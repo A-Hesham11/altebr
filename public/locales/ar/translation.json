@@ -1286,5 +1286,8 @@
   "supplier cash balance": "حساب النقدية للمورد",
   "reserve gold bonds": "سندات حجز الذهب",
   "choose supplier's name first": "اختر اسم العميل اولا",
-  "gold reservation selling bonds": "سندات بيع حجز الذهب"
+  "gold reservation selling bonds": "سندات بيع حجز الذهب",
+  "bond created successfully": "تم انشاء السند بنجاح",
+  "weight converted to 24": "اجمالي الوزن محول ل 24",
+  "total value after tax": "اجمالي القيمة بعد الضريبه"
 }
