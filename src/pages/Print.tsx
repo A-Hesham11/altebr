@@ -75,7 +75,7 @@ const Print = () => {
 
   return (
     <>
-      <div style={{ width: "100%", height: "55px" }}>
+      {/* <div style={{ width: "100%", height: "55px" }}>
         <div
           ref={componentRef}
           style={{
@@ -119,7 +119,7 @@ const Print = () => {
                   width: "35px",
                   height: "35px",
                   padding: "4px",
-                  transform: "rotate(90deg)",
+                  transform: "rotate(270deg)",
                 }}
               />
               <div
@@ -172,6 +172,115 @@ const Print = () => {
               <p style={{ fontSize: "7px", fontWeight: "800" }}>K:12</p>
               <p style={{ fontSize: "7px", fontWeight: "800" }}>D:0.71</p>
               <p style={{ fontSize: "7px", fontWeight: "800" }}>S</p>
+            </div>
+          </div>
+        </div>
+      </div> */}
+      <div style={{ width: "160px" }}>
+        <div
+          ref={componentRef}
+          style={
+            {
+              // width: "22px",
+              // transform: "rotate(270deg)",
+              // marginRight: "62px"
+            }
+          }
+        >
+          <div
+            // id="content-to-print"
+            style={{
+              // width: "60px",
+              height: "40px",
+              // padding: "3.7px",
+              // transform: "rotate(90deg)",
+              display: "flex",
+              gap: "10px",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+              <img
+                src={Logo}
+                alt="logo"
+                className="img"
+                style={{
+                  width: "28px",
+                  height: "28px",
+                  // marginLeft: "5px",
+                  transform: "rotate(270deg)",
+                }}
+              />
+              <QRCode
+                style={{
+                  width: "22px",
+                  height: "22px",
+                  // display: "block",
+                  transform: "rotate(270deg)",
+                  margin: "0px 5px 0px 3px",
+
+                }}
+                value={`${Math.round(12355)}`}
+                viewBox={`0 0 300 300`}
+              />
+              <p
+                style={{
+                  fontSize: "8px",
+                  fontWeight: "900",
+                  // color: "#000000",
+                  height:"0px",
+                  textAlign:"left",
+                  transform: "rotate(270deg)",
+                }}
+              >
+                2305w1
+              </p>
+            </div>
+
+            <div
+              style={{
+                //  marginTop: "6px", textAlign: "center"
+                // display: "flex",
+                // gap: "10px",
+                transform: "rotate(270deg)",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "10px",
+                  fontWeight: "700",
+                  textAlign: "center",
+                }}
+              >
+                G:12
+              </p>
+              <p
+                style={{
+                  fontSize: "10px",
+                  fontWeight: "700",
+                  textAlign: "center",
+                }}
+              >
+                K:12
+              </p>
+              <p
+                style={{
+                  fontSize: "10px",
+                  fontWeight: "700",
+                  textAlign: "center",
+                }}
+              >
+                D:0.71
+              </p>
+              <p
+                style={{
+                  fontSize: "10px",
+                  fontWeight: "700",
+                  textAlign: "center",
+                }}
+              >
+                S
+              </p>
             </div>
           </div>
         </div>
