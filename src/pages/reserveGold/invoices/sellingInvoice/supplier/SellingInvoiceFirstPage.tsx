@@ -2,18 +2,20 @@ import { t } from "i18next";
 import React, { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 import ReserveSellingHeader from "./ReserveSellingHeader";
-import { Button } from "../../../../components/atoms";
-import { useFetch } from "../../../../hooks";
+import { Button } from "../../../../../components/atoms";
+import { useFetch } from "../../../../../hooks";
 import ReserveSellingBillInputs from "./ReserveSellingBillInputs";
 import ReserveSellingTable from "./ReserveSellingTable";
-import { numberContext } from "../../../../context/settings/number-formatter";
+import { numberContext } from "../../../../../context/settings/number-formatter";
+import { notify } from "../../../../../utils/toast";
+import { useFormikContext } from "formik";
 
 interface purchaseInvoicesFirstPage_TP {
   setStage?: Dispatch<SetStateAction<number>>;
   sellingInvoiceNumber: number;
   setSellingItemsData: Dispatch<SetStateAction<any>>;
   sellingItemsData: any;
-  goldPrice: number;
+  goldPrice: any;
 }
 
 const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
@@ -28,6 +30,7 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
   } = props;
   const navigate = useNavigate();
   const { formatReyal, formatGram } = numberContext();
+  const { values } = useFormikContext();
 
   // FORMULA FOR RESULT
   const totalValues = sellingItemsData.reduce(
@@ -99,10 +102,8 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
 
   return (
     <div className="relative h-full p-10">
-      <h2 className="mb-4 text-xl font-bold">
-        {t("gold reservation selling invoice")}
-      </h2>
       <div className="bg-lightGreen rounded-lg sales-shadow px-6 py-5">
+        <h3 className="text-xl font-bold mb-4">{t("reserve gold data")}</h3>
         <div className="bg-flatWhite rounded-lg bill-shadow p-5 h-41 ">
           <div className="mb-8">
             <ReserveSellingHeader sellingInvoiceNumber={sellingInvoiceNumber} />
@@ -115,39 +116,40 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
           </div>
         </div>
 
+        <h2 className="text-xl font-bold my-4">{t("reserve gold bonds")}</h2>
         <div className="bg-flatWhite rounded-lg bill-shadow py-5 px-6 h-41 my-5">
-          <h2 className="mb-4 text-base font-bold">
-            {t("selling voucher data")}
-          </h2>
           <>
             <ReserveSellingTable
               sellingItemsData={sellingItemsData}
               setSellingItemsData={setSellingItemsData}
               goldPrice={goldPrice}
             />
-            <div className="border-t-2 border-mainGray pt-12 py-5">
-              <h2 className="mb-4 text-base font-bold">{t("total invoice")}</h2>
-              <div>
-                <div
-                  className={`grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8`}
-                >
-                  {tarqimBoxes?.map((data: any) => (
-                    <li
-                      key={data.id}
-                      className="flex flex-col h-28 rounded-xl text-center text-sm font-bold shadow-md"
-                    >
-                      <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
-                        {t(`${data.account}`)}
-                      </p>
-                      <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                        {data.value} <span>{t(`${data.unit}`)}</span>
-                      </p>
-                    </li>
-                  ))}
-                </div>
+          </>
+        </div>
+
+        <h2 className="my-4 text-xl font-bold">{t("totals")}</h2>
+        <div className="bg-flatWhite rounded-lg bill-shadow py-5 px-6 h-41 my-5">
+          <div className="">
+            <div>
+              <div
+                className={`grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8`}
+              >
+                {tarqimBoxes?.map((data: any) => (
+                  <li
+                    key={data.id}
+                    className="flex flex-col h-28 rounded-xl text-center text-sm font-bold shadow-md"
+                  >
+                    <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
+                      {t(`${data.account}`)}
+                    </p>
+                    <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
+                      {data.value} <span>{t(`${data.unit}`)}</span>
+                    </p>
+                  </li>
+                ))}
               </div>
             </div>
-          </>
+          </div>
         </div>
       </div>
 
@@ -156,6 +158,17 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
           type="submit"
           loading={false}
           action={() => {
+            if (sellingItemsData.length === 0) {
+              notify("info", `${t("please add data first")}`);
+              return;
+            }
+
+            console.log("🚀 ~ !values?.supplier_id:", values?.supplier_id);
+            if (!values?.supplier_id) {
+              notify("info", `${t("choose supplier's name first")}`);
+              return;
+            }
+
             setStage(2);
           }}
         >

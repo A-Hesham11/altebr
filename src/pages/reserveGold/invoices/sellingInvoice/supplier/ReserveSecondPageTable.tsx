@@ -1,30 +1,17 @@
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import React from "react";
+import { numberContext } from "../../../../../context/settings/number-formatter";
 import { t } from "i18next";
-import { numberContext } from "../../context/settings/number-formatter";
-import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
+import { convertNumToArWord } from "../../../../../utils/number to arabic words/convertNumToArWord";
 
-interface ReactTableProps<T extends object> {
-  data: T[];
-  columns: ColumnDef<T>[];
-  paymentData: any;
-  costDataAsProps?: any;
-}
-
-const BuyingInvoiceTable = <T extends object>({
-  data,
-  columns,
-  paymentData,
-  costDataAsProps,
-  setOdwyaTypeValue,
-  odwyaTypeValue,
-}: ReactTableProps<T>) => {
+const ReserveSecondPageTable = (props: any) => {
+  const { costDataAsProps, data, columns } = props;
   const { formatGram, formatReyal } = numberContext();
 
   // CUSTOM CONFIGURE FOR TABLE
@@ -37,11 +24,6 @@ const BuyingInvoiceTable = <T extends object>({
   });
 
   // FORMULA TO CALC TOTAL COST, VALUE ADDED TAX, TOTAL VALUE
-  const totalWeight = data.reduce((acc: number, curr: any) => {
-    acc += +curr.weight;
-    return acc;
-  }, 0);
-
   const totalCost = data.reduce((acc: number, curr: any) => {
     acc += +curr.value;
     return acc;
@@ -56,44 +38,18 @@ const BuyingInvoiceTable = <T extends object>({
     return acc;
   }, 0);
 
-  let totalFinalCostIntoArabic;
+  let totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(costDataAsProps?.totalValueAfterTax)
+  );
 
-  if (odwyaTypeValue === "supplier") {
-    totalFinalCostIntoArabic = convertNumToArWord(
-      Math.round(costDataAsProps?.totalValueAfterTax)
-    );
-  } else {
-    totalFinalCostIntoArabic = convertNumToArWord(
-      Math.round(costDataAsProps?.totalCost)
-    );
-  }
-
-  const totalItemsTax =
-    +costDataAsProps?.totalItemsTaxes?.toFixed(2) +
-    costDataAsProps?.totalCommissionTaxes;
-
-  const totalItemsCost =
-    costDataAsProps?.totalCommissionRatio + costDataAsProps?.totalCost;
-
-  let resultTable;
-
-  if (odwyaTypeValue === "supplier") {
-    resultTable = [
-      {
-        number: t("totals"),
-        cost: formatReyal(totalCost),
-        value_added_tax: formatReyal(valueAddedTax),
-        total_value: formatReyal(totalValue.toFixed(2)),
-      },
-    ];
-  } else {
-    resultTable = [
-      {
-        number: t("totals"),
-        cost: formatReyal(totalCost),
-      },
-    ];
-  }
+  let resultTable = [
+    {
+      number: t("totals"),
+      cost: formatReyal(totalCost),
+      value_added_tax: formatReyal(valueAddedTax),
+      total_value: formatReyal(totalValue.toFixed(2)),
+    },
+  ];
 
   return (
     <>
@@ -146,7 +102,7 @@ const BuyingInvoiceTable = <T extends object>({
                   return (
                     <td
                       className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                      colSpan={index === 0 ? 5 : 1}
+                      colSpan={index === 0 ? 3 : 1}
                     >
                       {resultTable[0][key]}
                     </td>
@@ -172,4 +128,4 @@ const BuyingInvoiceTable = <T extends object>({
   );
 };
 
-export default BuyingInvoiceTable;
+export default ReserveSecondPageTable;

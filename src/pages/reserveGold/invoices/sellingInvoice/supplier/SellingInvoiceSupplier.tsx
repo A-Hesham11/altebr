@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import SellingInvoiceFirstPage from "./SellingInvoiceFirstPage";
 import SellingInvoiceSecondPage from "./SellingInvoiceSecondPage";
 import { Form, Formik } from "formik";
-import { useFetch } from "../../../../hooks";
+import { useFetch } from "../../../../../hooks";
 
-const SellingInvoice = () => {
+const SellingInvoiceSupplier = (props) => {
+  const { stage, setStage } = props;
+
   // STATE
-  const [stage, setStage] = useState<number>(1);
   const [reserveSellingInvoiceNumber, setReserveSellingInvoiceNumber] =
     useState<number>(1);
   const [sellingItemsData, setSellingItemsData] = useState([]);
@@ -22,15 +23,21 @@ const SellingInvoice = () => {
     piece_per_gram: "",
     karat_id: "",
     weight: "",
-    category_id: "",
     karat_name: "",
-    category_name: "",
   };
 
   // TODAY GOLD PRICE API
   const { data: goldPrice } = useFetch({
     endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
     queryKey: ["get-gold-price"],
+  });
+
+  const { data: bondsList } = useFetch({
+    endpoint: `/reserveGold/api/v1/list_reserve_buying_Invoice`,
+    queryKey: ["selling-bonds-list"],
+    onSuccess: (data: any) => {
+      setReserveSellingInvoiceNumber(data?.data?.length + 1);
+    },
   });
 
   return (
@@ -70,4 +77,4 @@ const SellingInvoice = () => {
   );
 };
 
-export default SellingInvoice;
+export default SellingInvoiceSupplier;

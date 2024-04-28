@@ -141,12 +141,13 @@ import EdaraStocks from "../pages/stocksInEdara/edaraStocks";
 import BranchStocks from "../pages/stocksInEdara/branchStocks";
 import SalesReturnRestrictions from "../pages/salesReturn/SalesReturnRestrictions";
 import PurchaseInvoice from "../pages/reserveGold/invoices/purchaseInvoice/PurchaseInvoice";
-import SellingInvoice from "../pages/reserveGold/invoices/sellingInvoice/SellingInvoice";
+import SellingInvoice from "../pages/reserveGold/invoices/sellingInvoice/supplier/SellingInvoiceSupplier";
 import ReversePurchaseBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
 import ReservePurchaseBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
-import ReserveSellingBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
 import PurchaseInvoiceSecondPage from "../pages/reserveGold/invoices/purchaseInvoice/PurchaseInvoiceSecondPage";
-import SellingInvoiceSecondPage from "../pages/reserveGold/invoices/sellingInvoice/SellingInvoiceSecondPage";
+import SellingInvoiceSecondPage from "../pages/reserveGold/invoices/sellingInvoice/supplier/SellingInvoiceSecondPage";
+import SellingBond from "../pages/reserveGold/invoices/sellingInvoice/SellingBond";
+import ReverseSellingBonds from "../pages/reserveGold/bonds/sellingBonds/ReserveSellingBonds";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -251,12 +252,12 @@ export const AllRoutesProvider = () => {
           <Route path="/viewPurchaseBonds" element={<ReservePurchaseBonds />} />
 
           {/* SELLING */}
-          <Route path="/addSellingBond" element={<SellingInvoice />} />
+          <Route path="/addSellingBond" element={<SellingBond />} />
           <Route
             path="/reserveSellingBondInvoice"
             element={<SellingInvoiceSecondPage />}
           />
-          <Route path="/viewSellingBonds" element={<ReserveSellingBonds />} />
+          <Route path="/viewSellingBonds" element={<ReverseSellingBonds />} />
           {/* END RESERVE GOLDS */}
 
           <Route

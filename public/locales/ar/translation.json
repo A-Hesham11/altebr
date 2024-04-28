@@ -1273,8 +1273,18 @@
   "gold selling bonds": "سندات بيع الذهب",
   "gold purchase bonds": "سندات شراء الذهب",
   "view bonds": "عرض السندات",
-  "gold reservation purchase invoice": "فاتورة شراء حجز الذهب",
-  "gold reservation selling invoice": "فاتورة بيع حجز الذهب",
+  "gold reservation purchase bond": "سند شراء حجز الذهب",
+  "gold reservation selling bond": "سند بيع حجز الذهب",
   "files": "الملفات",
-  "images": "الصور"
+  "images": "الصور",
+  "client type": "نوع العميل",
+  "direct client": "عميل مباشر",
+  "retail": "تجزئه",
+  "wholesale": "جمله",
+  "reserve gold data": "بيانات حجز الذهب",
+  "24 gold credit for supplier": "حساب الذهب المحول ل 24 للمورد",
+  "supplier cash balance": "حساب النقدية للمورد",
+  "reserve gold bonds": "سندات حجز الذهب",
+  "choose supplier's name first": "اختر اسم العميل اولا",
+  "gold reservation selling bonds": "سندات بيع حجز الذهب"
 }
