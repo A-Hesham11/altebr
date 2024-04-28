@@ -19,6 +19,7 @@ import { DeleteIcon, EditIcon } from "../../../../../components/atoms/icons";
 import { IoMdAdd } from "react-icons/io";
 import { authCtx } from "../../../../../context/auth-and-perm/auth";
 import { notify } from "../../../../../utils/toast";
+import { useFetch } from "../../../../../hooks";
 
 interface ReserveSellingTable_TP {
   setSellingItemsData: Dispatch<SetStateAction<any>>;
@@ -99,6 +100,7 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
       reserve_selling_data,
       supplier_value,
       supplier_name,
+      notes,
       ...restValues
     } = values;
 
@@ -106,6 +108,18 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
       setFieldValue(key, "");
     });
   };
+
+  const {
+    data: taxes,
+    isLoading,
+    isFetching,
+    isRefetching,
+    refetch,
+  } = useFetch({
+    queryKey: ["tax"],
+    endpoint: `/selling/api/v1/tax-include/${userData?.branch_id}`,
+  });
+  console.log("🚀 ~ taxes:", taxes);
 
   return (
     <>
@@ -149,7 +163,7 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
                 placement="top"
                 onChange={(option) => {
                   const value = +goldPrice[option!.value] * +values!.weight;
-                  const valueAddedTax = +value * +userData?.tax_rate * 0.01;
+                  const valueAddedTax = +value * +taxes[0]?.tax_rate * 0.01;
                   const totalValue = +value + +valueAddedTax;
 
                   setFieldValue("karat_name", option!.value);

@@ -11,40 +11,20 @@ const SellingBondsSupplierPreview = ({ item }: { item?: {} }) => {
     () => [
       {
         cell: (info: any) => info.getValue(),
-        accessorKey: "category_name",
-        header: () => <span>{t("classification")}</span>,
-      },
-      {
-        cell: (info: any) => {
-          if (info.getValue() == 1) {
-            return <span>{t("there are stones")}</span>;
-          } else {
-            return <span>{t("there are no stones")}</span>;
-          }
-        },
-        accessorKey: "has_stones",
-        header: () => <span>{t("stones")}</span>,
-      },
-      {
-        cell: (info: any) => info.getValue() || "-",
-        // accessorKey: "old_weight",
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
       {
-        cell: (info: any) => info.renderValue(),
+        cell: (info: any) => info.getValue() || "-",
         accessorKey: "karat_name",
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(Number(info.renderValue())),
-        accessorKey: "gram_price",
-        header: () => <span>{t("piece per gram")}</span>,
-      },
-      {
         cell: (info: any) =>
-          formatReyal(Number(info.renderValue()).toFixed(2)) || "-",
-        accessorKey: "value",
+          formatReyal(Number(info.renderValue()).toFixed(2)) == 0
+            ? "-"
+            : formatReyal(Number(info.renderValue()).toFixed(2)),
+        accessorKey: "cost",
         header: () => <span>{t("value")}</span>,
       },
       {
@@ -52,15 +32,15 @@ const SellingBondsSupplierPreview = ({ item }: { item?: {} }) => {
           formatReyal(Number(info.renderValue()).toFixed(2)) == 0
             ? "-"
             : formatReyal(Number(info.renderValue()).toFixed(2)),
-        accessorKey: "value_added_tax",
+        accessorKey: "tax",
         header: () => <span>{t("VAT")}</span>,
       },
       {
         cell: (info: any) =>
           formatReyal(Number(info.renderValue()).toFixed(2)) == 0
-            ? formatReyal(Number(info.row.original.value).toFixed(2))
+            ? formatReyal(Number(info.row.original.cost_after_tax).toFixed(2))
             : formatReyal(Number(info.renderValue()).toFixed(2)),
-        accessorKey: "total_value",
+        accessorKey: "cost_after_tax",
         header: () => <span>{t("total value")}</span>,
       },
     ],

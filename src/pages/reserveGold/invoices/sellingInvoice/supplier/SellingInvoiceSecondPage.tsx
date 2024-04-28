@@ -35,6 +35,7 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
   const { values } = useFormikContext();
+  console.log("🚀 ~ values:", values);
 
   // FORMULA TO CALC THE TOTAL COST OF BUYING INVOICE
   const totalNetWeight = sellingItemsData.reduce((acc: number, curr: any) => {
@@ -120,7 +121,8 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      // navigate(`/buying/purchaseBonds`);
+      notify("success", t("bond created successfully"));
+      navigate(`/addSellingBond/entry`);
     },
   });
 
@@ -130,7 +132,7 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
       supplier_id: values!.supplier_id,
       invoice_date: values!.reserve_selling_data || new Date(),
       branch_id: userData?.branch_id,
-      notes: "fdjk",
+      notes: values!.notes,
       weight: totalNetWeight,
       tax: totalValueAddedTax,
       total: totalCost,
@@ -150,7 +152,7 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
     console.log({ invoice, items });
 
     mutate({
-      endpointName: "/reserveGold/api/v1/reserve_buying_Invoice",
+      endpointName: "/reserveGold/api/v1/reserve_selling_Invoice",
       values: { invoice, items },
     });
   };

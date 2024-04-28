@@ -17,11 +17,12 @@ const ReserveSecondPageFinalPreview = (props: any) => {
     ItemsTableContent,
   } = props;
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ ReserveSecondPageFinalPreview ~ userData:", userData);
   const { values } = useFormikContext();
   const clientData = {
-    client_value: values.supplier_name,
-    client_id: values.supplier_id,
-    bond_date: values.reserve_selling_data,
+    client_value: values!.supplier_name,
+    client_id: values!.supplier_id,
+    bond_date: values!.reserve_selling_data,
   };
 
   // SENTENCE API

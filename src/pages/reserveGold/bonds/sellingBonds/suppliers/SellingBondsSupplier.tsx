@@ -15,6 +15,7 @@ import { Button } from "../../../../../components/atoms";
 import { Table } from "../../../../../components/templates/reusableComponants/tantable/Table";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import SellingBondsSupplierPreview from "./SellingBondsSupplierPreview";
+import { numberContext } from "../../../../../context/settings/number-formatter";
 
 const SellingBondsSupplier = () => {
   // STATE
@@ -25,13 +26,14 @@ const SellingBondsSupplier = () => {
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
+  const { formatReyal } = numberContext();
 
   const searchValues = {
     invoice_number: "",
     invoice_date: "",
   };
 
-  // FETCHING INVOICES DATA FROM API
+  // FETCHING BONDS DATA FROM API
   const {
     data: sellingBondsSupplier,
     isLoading,
@@ -41,12 +43,16 @@ const SellingBondsSupplier = () => {
   } = useFetch({
     queryKey: ["selling-bonds-supplier"],
     endpoint:
-      search === `/reserveGold/api/v1/list_reserve_buying_Invoice?` ||
+      search === `/reserveGold/api/v1/list_reserve_selling_Invoice?` ||
       search === ""
-        ? `/reserveGold/api/v1/list_reserve_buying_Invoice?page=${page}`
+        ? `/reserveGold/api/v1/list_reserve_selling_Invoice?page=${page}`
         : `${search}`,
     pagination: true,
   });
+  console.log(
+    "🚀 ~ SellingBondsSupplier ~ sellingBondsSupplier:",
+    sellingBondsSupplier
+  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -62,23 +68,38 @@ const SellingBondsSupplier = () => {
         header: () => <span>{t("date")}</span>,
       },
       {
-        cell: (info: any) => {
-          return (
-            info.row.original.client_name || info.row.original.supplier_name
-          );
-        },
-        accessorKey: "client_name",
-        header: () => <span>{t("client name")}</span>,
+        cell: (info: any) => info.getValue(),
+        accessorKey: "supplier_name",
+        header: () => <span>{t("supplier name")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
-        accessorKey: "employee_name",
-        header: () => <span>{t("employee name")}</span>,
+        accessorKey: "weight",
+        header: () => <span>{t("weight converted to 24")}</span>,
       },
       {
-        cell: (info: any) => info.row.original.items.length,
-        accessorKey: "count",
-        header: () => <span>{t("pieces count")}</span>,
+        cell: (info: any) =>
+          formatReyal(Number(info.renderValue()).toFixed(2)) == 0
+            ? "-"
+            : formatReyal(Number(info.renderValue()).toFixed(2)),
+        accessorKey: "total",
+        header: () => <span>{t("value")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          formatReyal(Number(info.renderValue()).toFixed(2)) == 0
+            ? "-"
+            : formatReyal(Number(info.renderValue()).toFixed(2)),
+        accessorKey: "tax",
+        header: () => <span>{t("VAT")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          formatReyal(Number(info.renderValue()).toFixed(2)) == 0
+            ? "-"
+            : formatReyal(Number(info.renderValue()).toFixed(2)),
+        accessorKey: "total_after_tax",
+        header: () => <span>{t("total value after tax")}</span>,
       },
       {
         cell: (info: any) => (
@@ -119,7 +140,7 @@ const SellingBondsSupplier = () => {
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
-    let url = `/reserveGold/api/v1/list_reserve_buying_Invoice?`;
+    let url = `/reserveGold/api/v1/list_reserve_selling_Invoice?`;
     let first = false;
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
@@ -139,7 +160,7 @@ const SellingBondsSupplier = () => {
     return <Loading mainTitle={`${t("loading items")}`} />;
 
   return (
-    <div className="p-16">
+    <div className="py-14">
       <div className="mb-8 flex flex-col items-center gap-6 lg:flex-row lg:items-end lg:justify-between">
         {/* 1) FORM */}
         <Formik
@@ -160,16 +181,16 @@ const SellingBondsSupplier = () => {
                   <BaseInputField
                     id="invoice_number"
                     name="invoice_number"
-                    label={`${t("invoice number")}`}
-                    placeholder={`${t("invoice number")}`}
+                    label={`${t("bond number")}`}
+                    placeholder={`${t("bond number")}`}
                     className="shadow-xs"
                     type="text"
                   />
                 </div>
                 <div className="">
                   <DateInputField
-                    label={`${t("invoice date")}`}
-                    placeholder={`${t("invoice date")}`}
+                    label={`${t("bond date")}`}
+                    placeholder={`${t("bond date")}`}
                     name="invoice_date"
                     labelProps={{ className: "mt-10" }}
                   />
