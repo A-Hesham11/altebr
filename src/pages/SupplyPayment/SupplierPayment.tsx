@@ -1,3 +1,13 @@
+// import React from 'react'
+
+// const SupplierPayment = () => {
+//   return (
+//     <div>SupplierPayment</div>
+//   )
+// }
+
+// export default SupplierPayment
+
 import { t } from "i18next";
 import { notify } from "../../utils/toast";
 import PaymentBoxes from "../../components/selling/selling components/data/paymentBoxs";
@@ -5,15 +15,20 @@ import PaymentProcessing, {
   Payment_TP,
 } from "../../components/selling/selling components/data/PaymentProcessing";
 import { Button } from "../../components/atoms";
-import { useContext, useState } from "react";
-import PaymentProccessingToManagement from "./PaymentProccessingToManagement";
+import { useContext, useEffect, useState } from "react";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useFetch, useMutate } from "../../hooks";
 import { mutateData } from "../../utils/mutateData";
 import { numberContext } from "../../context/settings/number-formatter";
 import { useNavigate } from "react-router-dom";
+import PaymentProccessingToManagement from "../Payment/PaymentProccessingToManagement";
+import SupplierPaymentProccessing from "./SupplierPaymentProccessing";
+import { Select } from "../../components/molecules";
+import { SelectOption_TP } from "../../types";
+import { Supplier_TP } from "../../components/templates/systemEstablishment/supplier/supplier-types";
+import { Form, Formik } from "formik";
 
-const PaymentToManagement = () => {
+const SupplierPayment = () => {
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [stage, setStage] = useState<number>(1);
@@ -23,10 +38,12 @@ const PaymentToManagement = () => {
   const navigate = useNavigate();
   const { userData } = useContext(authCtx);
   const { formatGram, formatReyal } = numberContext();
+  const [supplierId, setSupplierId] = useState(0);
+  console.log("🚀 ~ SupplierPayment ~ supplierId:", supplierId);
 
-  const { data } = useFetch({
-    endpoint: `/sdad/api/v1/get-count/${userData?.branch_id}`,
-    queryKey: ["dataOfPaymentToManagement"],
+  const { data, refetch: supplierGetCount } = useFetch({
+    endpoint: `/sadadSupplier/api/v1/get-count/${supplierId}`,
+    queryKey: ["dataOfPaymentToSupplier"],
     onSuccess(data) {
       return data.data;
     },
@@ -40,6 +57,31 @@ const PaymentToManagement = () => {
     },
   });
 
+  const {
+    data: suppliers,
+    isLoading: suppliersLoading,
+    failureReason: suppliersErrorReason,
+    refetch: refetchSupplier,
+  } = useFetch<SelectOption_TP[], Supplier_TP[]>({
+    endpoint: "/supplier/api/v1/suppliers?per_page=10000",
+    queryKey: ["suppliers"],
+    onSuccess(data) {},
+    select: (suppliers) =>
+      suppliers.map((supplier) => {
+        return {
+          //@ts-ignore
+          id: supplier.id,
+          value: supplier.name,
+          label: supplier.name,
+          name: supplier.name,
+        };
+      }),
+  });
+
+  useEffect(() => {
+    supplierGetCount();
+  }, [supplierId]);
+
   const { mutate: mutatePaymentsData, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
@@ -47,15 +89,6 @@ const PaymentToManagement = () => {
       navigate(`/selling/viewPayment`);
     },
   });
-
-  //   const { mutate: mutateAllPaymentsData } = useMutate({
-  //     mutationFn: mutateData,
-  //     onSuccess: (data) => {
-  //       //   navigate(`/selling/viewPayment`);
-  //     },
-  //   });
-
-
 
   const handleSeccessedData = () => {
     const postPaymentData: any = [];
@@ -128,20 +161,6 @@ const PaymentToManagement = () => {
       card: card,
       total_payment: totalPayment,
     });
-
-    // mutateAllPaymentsData({
-    //   endpointName: "/sdad/api/v1/create",
-    //   values: {
-    //     invoice_number: invoiceDataNumber.length + 1,
-    //     payment_date: new Date()?.toISOString().slice(0, 10),
-    //     employee_id: userData?.id,
-    //     branch_id: userData?.branch_id,
-    //     payment: postPaymentAllData,
-    //   },
-    //   method: "post",
-    // });
-
-
   };
 
   const paymentDataToManagement = [
@@ -161,12 +180,31 @@ const PaymentToManagement = () => {
 
   return (
     <div className="relative p-10">
-      <h2 className="mb-8 text-base font-bold">{t("payment")}</h2>
+      <h2 className="mb-8 text-base font-bold">{t("supplier payment")}</h2>
       <div className="bg-lightGreen h-[100%] rounded-lg sales-shadow px-6 py-5">
         <div className="bg-flatWhite rounded-lg bill-shadow  py-5 px-6 h-41 my-5">
           <h2 className="mb-8 text-base font-bold">
-            {t("Payment data from the branch to the administration")}
+            {t("Payment data from the supplier to management")}
           </h2>
+          <Formik initialValues={{ supplier_id: null }} onSubmit={() => {}}>
+            <Form className="mb-8 w-1/3">
+              <Select
+                id="supplier_id"
+                label={`${t("supplier name")}`}
+                name="supplier_id"
+                placeholder={`${t("supplier name")}`}
+                loadingPlaceholder={`${t("loading")}`}
+                options={suppliers}
+                fieldKey="id"
+                loading={suppliersLoading}
+                isDisabled={!suppliersLoading && !!suppliersErrorReason}
+                onChange={(option: any) => {
+                  setSupplierId(option?.id);
+                }}
+              />
+            </Form>
+          </Formik>
+
           <ul className="flex justify-around py-1 w-full mb-2">
             {paymentDataToManagement.map(({ name, key, unit, value }) => (
               <li className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12">
@@ -186,7 +224,7 @@ const PaymentToManagement = () => {
             {t("Choose your payment method")}
           </h2>
           <div>
-            <PaymentProccessingToManagement
+            <SupplierPaymentProccessing
               paymentData={paymentData}
               setPaymentData={setPaymentData}
               sellingItemsData={sellingItemsData}
@@ -221,10 +259,12 @@ const PaymentToManagement = () => {
         >
           {t("back")}
         </Button>
-        <Button action={handleSeccessedData} loading={isLoading}>{t("save")}</Button>
+        <Button action={handleSeccessedData} loading={isLoading}>
+          {t("save")}
+        </Button>
       </div>
     </div>
   );
 };
 
-export default PaymentToManagement;
+export default SupplierPayment;
