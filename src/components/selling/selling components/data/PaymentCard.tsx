@@ -7,6 +7,7 @@ import { t } from "i18next";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import Slider from "react-slick";
 import cashImg from "../../../../assets/cash.png";
+import DiscountEarned from "../../../../assets/Discount-earned.jpeg";
 import brokenGoldImg from "../../../../assets/Frame 26085625.svg";
 
 type Payment_TP = {
@@ -147,9 +148,99 @@ const PaymentCard = ({
     },
   ];
 
+  const cardReimbursementSupplier = [
+    {
+      front_key: "discount",
+      name_ar: "خصم مكتسب",
+      name_en: "Discount earned",
+      discount_percentage: 0,
+      card: {
+        bank_id: 2,
+        name_ar: "خصم مكتسب",
+        name_en: "Discount earned",
+        front_key: "discount",
+        images: [{ preview: `${DiscountEarned}` }],
+      },
+    },
+    {
+      front_key: "cash",
+      name_ar: "نقدي",
+      name_en: "cash",
+      discount_percentage: 0,
+      bank_id: 10005,
+      card: {
+        id: 10005,
+        name_ar: "نقدي",
+        name_en: "cash",
+        front_key: "cash",
+        images: [{ preview: `${cashImg}` }],
+      },
+    },
+    {
+      front_key: "18",
+      name_ar: "صندوق ذهب الكسر عيار 18",
+      name_en: "gold box 18 karat",
+      karat: 18,
+      discount_percentage: 0,
+      bank_id: 10001,
+      card: {
+        id: 10001,
+        name_ar: "صندوق ذهب الكسر عيار 18",
+        name_en: "gold box 18 karat",
+        front_key: "18",
+        images: [{ preview: `${brokenGoldImg}` }],
+      },
+    },
+    {
+      front_key: "21",
+      name_ar: "صندوق ذهب الكسر عيار 21",
+      name_en: "gold box 21 karat",
+      karat: 21,
+      discount_percentage: 0,
+      bank_id: 10002,
+      card: {
+        id: 10002,
+        name_ar: "صندوق ذهب الكسر عيار 21",
+        name_en: "gold box 21 karat",
+        front_key: "21",
+        images: [{ preview: `${brokenGoldImg}` }],
+      },
+    },
+    {
+      front_key: "22",
+      name_ar: "صندوق ذهب الكسر عيار 22",
+      name_en: "gold box 22 karat",
+      discount_percentage: 0,
+      karat: 22,
+      bank_id: 10003,
+      card: {
+        id: 10003,
+        name_ar: "صندوق ذهب الكسر عيار 22",
+        name_en: "gold box 22 karat",
+        front_key: "22",
+        images: [{ preview: `${brokenGoldImg}` }],
+      },
+    },
+    {
+      front_key: "24",
+      name_ar: "صندوق ذهب الكسر عيار 24",
+      name_en: "gold box 24 karat",
+      discount_percentage: 0,
+      karat: 24,
+      bank_id: 10004,
+      card: {
+        id: 10004,
+        name_ar: "صندوق ذهب الكسر عيار 24",
+        name_en: "gold box 24 karat",
+        front_key: "24",
+        images: [{ preview: `${brokenGoldImg}` }],
+      },
+    },
+  ];
+
   const locationPath = location.pathname;
 
-  const cardCash = locationPath === "/selling/reimbursement" ? cardReimbursement : cardOfCash
+  const cardCash = locationPath === "/selling/reimbursement" ? cardReimbursement : locationPath === "/supplier-payment" ? cardReimbursementSupplier : cardOfCash
 
   const bankscard = (locationPath === "/selling/reimbursement" || locationPath === "/expenses/expensesInvoice" || locationPath === "/selling/payoff/sales-return") ? "" :  dataSource 
 

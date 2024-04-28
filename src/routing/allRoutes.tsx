@@ -148,6 +148,8 @@ import PurchaseInvoiceSecondPage from "../pages/reserveGold/invoices/purchaseInv
 import SellingInvoiceSecondPage from "../pages/reserveGold/invoices/sellingInvoice/supplier/SellingInvoiceSecondPage";
 import SellingBond from "../pages/reserveGold/invoices/sellingInvoice/SellingBond";
 import ReverseSellingBonds from "../pages/reserveGold/bonds/sellingBonds/ReserveSellingBonds";
+import SupplierPayment from "../pages/SupplyPayment/SupplierPayment";
+import SupplierPaymentBonds from "../pages/SupplyPayment/SupplierPaymentBonds";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -449,6 +451,14 @@ export const AllRoutesProvider = () => {
           <Route
             path="/accessory-bonds/:bondID"
             element={<Bond title={t("accessory bond")} />}
+          />
+          <Route
+            path="/supplier-payment"
+            element={<SupplierPayment title={t("supplier payment")} />}
+          />
+          <Route
+            path="/bonds/supplier-payment"
+            element={<SupplierPaymentBonds title={t("supplier payment bonds")} />}
           />
 
           {/* المبعات */}
