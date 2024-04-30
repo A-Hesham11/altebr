@@ -260,8 +260,6 @@ const PaymentCard = ({
       const selectNewCard = cardsData?.filter(
         (item) => item?.front_key === frontKey
       );
-      console.log("🚀 ~ handleChooseCard ~ selectNewCard:", selectNewCard)
-
 
       const selectCradIDOrBankId = selectNewCard[0]?.bank_id ? selectNewCard[0]?.bank_id : selectNewCard[0]?.id;
 

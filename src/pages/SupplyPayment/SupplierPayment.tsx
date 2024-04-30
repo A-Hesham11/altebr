@@ -24,12 +24,13 @@ import { useNavigate } from "react-router-dom";
 import PaymentProccessingToManagement from "../Payment/PaymentProccessingToManagement";
 import SupplierPaymentProccessing from "./SupplierPaymentProccessing";
 import { Select } from "../../components/molecules";
-import { SelectOption_TP } from "../../types";
+import { KaratValues_TP, SelectOption_TP } from "../../types";
 import { Supplier_TP } from "../../components/templates/systemEstablishment/supplier/supplier-types";
 import { Form, Formik } from "formik";
 
 const SupplierPayment = () => {
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
+  console.log("🚀 ~ SupplierPayment ~ paymentData:", paymentData);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [stage, setStage] = useState<number>(1);
   const [selectedCardId, setSelectedCardId] = useState(null);
@@ -39,7 +40,8 @@ const SupplierPayment = () => {
   const { userData } = useContext(authCtx);
   const { formatGram, formatReyal } = numberContext();
   const [supplierId, setSupplierId] = useState(0);
-  console.log("🚀 ~ SupplierPayment ~ supplierId:", supplierId);
+  console.log("🚀 ~ SupplierPayment ~ supplierId:", supplierId)
+  const [boxValues, setBoxValues] = useState();
 
   const { data, refetch: supplierGetCount } = useFetch({
     endpoint: `/sadadSupplier/api/v1/get-count/${supplierId}`,
@@ -78,9 +80,7 @@ const SupplierPayment = () => {
       }),
   });
 
-  useEffect(() => {
-    supplierGetCount();
-  }, [supplierId]);
+
 
   const { mutate: mutatePaymentsData, isLoading } = useMutate({
     mutationFn: mutateData,
@@ -89,6 +89,287 @@ const SupplierPayment = () => {
       navigate(`/selling/viewPayment`);
     },
   });
+
+  const { data: boxesResponse, isLoading: boxesLoading, refetch: boxesRefetch } = useFetch<any>({
+    endpoint: `/sadadSupplier/api/v1/boxes/${supplierId}`,
+    queryKey: ["sadadSupplier_response"],
+  });
+  console.log("🚀 ~ boxesResponse:", boxesResponse);
+
+  useEffect(() => {
+    supplierGetCount();
+    boxesRefetch()
+  }, [supplierId]);
+
+  const { data: karatValues } = useFetch<KaratValues_TP[]>({
+    endpoint: "classification/api/v1/allkarats",
+    queryKey: ["sadad_karat_bond_select"],
+  });
+  console.log("🚀 ~ SupplierPayment ~ karatValues:", karatValues);
+
+
+  const paymentWeightItems = paymentData.filter(item => ["24", "22", "21", "18"].includes(item.card_id));
+  console.log("🚀 ~ SupplierPayment ~ paymentWeightItems:", paymentWeightItems);
+
+  const getMyKarat = (value: string) => {
+    console.log("🚀 ~ getMyKarat ~ value:", value);
+    const myKarat = karatValues!.find((item) => item.karat == value);
+    return Number(myKarat?.value);
+  };
+
+  //   const getTotalWages = () => {
+  //     let prev = 0
+  //     paymentData?.forEach((row) => {
+  //       prev = Number(prev) + Number(row.total_wages)
+  //     })
+  //     return prev
+  //   }
+
+  const karat_24_values = paymentData?.filter((item) => item.frontkey === "24");
+  const karat_22_values = paymentData?.filter((item) => item.frontkey === "22");
+  const karat_21_values = paymentData?.filter((item) => item.frontkey === "21");
+  const karat_18_values = paymentData?.filter((item) => item.frontkey === "18");
+  const sadad_supplier_cash = paymentData?.filter(
+    (item) => item.frontkey === "cash"
+  );
+
+  const card = paymentData.reduce((acc, curr) => {
+    acc[curr.frontkey] = Number(curr.amount);
+    return acc;
+  }, {});
+  console.log("🚀 ~ card ~ card:", card);
+
+  const accountBanksData = {};
+  for (const key in card) {
+    if (Object.prototype.hasOwnProperty.call(card, key)) {
+      const modifiedKey = key.replace(/_1$/, "");
+      accountBanksData[modifiedKey] = {
+        title: modifiedKey,
+        value: card[key],
+        unit: "reyal",
+      };
+    }
+  }
+  console.log("🚀 ~ SupplierPayment ~ modifiedObject:", accountBanksData);
+
+  const boxes = {
+    sadad_supplier_cash: {
+      title: "total 24 gold box",
+      value: sadad_supplier_cash?.reduce((acc, curr) => {
+        return +acc + Number(curr.amount);
+      }, 0),
+      unit: "reyal",
+    },
+    karat_24_aggregate: {
+      title: "total 24 gold box",
+      value: karat_24_values?.reduce((acc, curr) => {
+        return +acc + Number(curr.weight);
+      }, 0),
+      unit: "gram",
+    },
+    karat_22_aggregate: {
+      title: "total 22 gold box",
+      value: karat_22_values?.reduce((acc, curr) => {
+        return +acc + Number(curr.weight);
+      }, 0),
+      unit: "gram",
+    },
+    karat_21_aggregate: {
+      title: "total 21 gold box",
+      value: karat_21_values?.reduce((acc, curr) => {
+        return +acc + Number(curr.weight);
+      }, 0),
+      unit: "gram",
+    },
+    karat_18_aggregate: {
+      title: "total 18 gold box",
+      value: karat_18_values?.reduce((acc, curr) => {
+        return +acc + Number(curr.weight);
+      }, 0),
+      unit: "gram",
+    },
+    // total_24_gold_by_stock: {
+    //   title: "total 24 gold by stock",
+    //   value: boxValues?.reduce((acc, curr) => {
+    //     return +acc + Number(curr.weight) * Number(curr.stock);
+    //   }, 0),
+    //   unit: "gram",
+    // },
+    // total_tax: {
+    //   title: "total value added tax",
+    //   value: boxValues?.reduce((acc, curr) => {
+    //     if (curr.karat_value == "24") {
+    //       if (supplierTax === "no" || supplierTax === "gold") {
+    //         return 0;
+    //       } else {
+    //         return +acc + (Number(curr.weight) * Number(curr.wage) * 0.15 + 0);
+    //       }
+    //     } else {
+    //       if (supplierTax === "no") {
+    //         return 0;
+    //       } else if (supplierTax === "gold") {
+    //         return (
+    //           +acc +
+    //           (0 +
+    //             Number(curr.weight) *
+    //               Number(curr.stock) *
+    //               Number(formValues?.api_gold_price) *
+    //               0.15)
+    //         );
+    //       } else if (supplierTax === "wages") {
+    //         return +acc + (Number(curr.weight) * Number(curr.wage) * 0.15 + 0);
+    //       } else {
+    //         return (
+    //           +acc +
+    //           (Number(curr.weight) * Number(curr.wage) * 0.15 +
+    //             Number(curr.weight) *
+    //               Number(curr.stock) *
+    //               Number(formValues?.api_gold_price) *
+    //               0.15)
+    //         );
+    //       }
+    //     }
+    //   }, 0),
+    //   unit: "reyal",
+    // },
+    total_weight: {
+      title: "total weight",
+      value: paymentData?.reduce((acc, curr) => {
+        return +acc + Number(curr.weight);
+      }, 0),
+      unit: "gram",
+    },
+    ...accountBanksData,
+  };
+
+  console.log("🚀 ~ SupplierPayment ~ boxes:", boxes);
+
+  const mapBox = (item: any) => {
+    switch (item.front_key) {
+      case "sadad_supplier_cash":
+        return {
+          ...item,
+          value: boxes?.sadad_supplier_cash.value,
+        };
+      case "gold_box_fractional_18_sadad_suppliers":
+        return {
+          ...item,
+          value: boxes?.karat_18_aggregate.value,
+        };
+      case "gold_box_fractional_21_sadad_suppliers":
+        return {
+          ...item,
+          value: boxes?.karat_21_aggregate.value,
+        };
+      case "gold_box_fractional_22_sadad_suppliers":
+        return {
+          ...item,
+          value: boxes?.karat_22_aggregate.value,
+        };
+      case "gold_box_fractional_24_sadad_suppliers":
+        return {
+          ...item,
+          value: boxes?.karat_24_aggregate.value,
+        };
+      case "total_tax":
+        return {
+          ...item,
+          value: boxes?.total_tax,
+        };
+      //   case "goldpurities_sadad_supplier":
+      //     let total_24_gold_by_stock = 0;
+      //     paymentData!.forEach((row) => {
+      //       total_24_gold_by_stock =
+      //         total_24_gold_by_stock + Number(row.weight) * Number(row.stock);
+      //     });
+      //     let total_24_gold_by_karat = 0;
+      //     paymentData!.forEach((row) => {
+      //       total_24_gold_by_karat =
+      //         total_24_gold_by_karat +
+      //         Number(row.weight) * Number(getMyKarat(row.karat_value));
+      //     });
+      //     let val = total_24_gold_by_stock - total_24_gold_by_karat;
+      //     if (val < 0) {
+      //       val = val * -1;
+      //       const computational_movement =
+      //         item.nature === "debtor" ? "creditor" : "debtor";
+      //       return {
+      //         ...item,
+      //         value: val,
+      //         computational_movement,
+      //       };
+      //     } else {
+      //       return {
+      //         ...item,
+      //         value: val,
+      //       };
+      //     }
+      case "gold3yar_sadad_supplier":
+        let total_24_gold_by_karat2 = 0;
+        
+        paymentWeightItems?.forEach((row) => {
+          total_24_gold_by_karat2 =
+            Number(total_24_gold_by_karat2) +
+            Number(row.weight) * Number(getMyKarat(row?.frontkey));
+        });
+        let value =
+          Number(boxes?.total_weight.value) - Number(total_24_gold_by_karat2);
+        if (value < 0) {
+          value = value * -1;
+          const computational_movement =
+            item.nature === "debtor" ? "creditor" : "debtor";
+          return {
+            ...item,
+            value,
+            computational_movement,
+          };
+        } else {
+          return {
+            ...item,
+            value,
+          };
+        }
+      case "sdad_supplier_money":
+        let total_payment_cost = 0;
+        paymentData?.forEach((row) => {
+          total_payment_cost = Number(total_payment_cost) + Number(row.amount);
+        });
+        return {
+          ...item,
+          value: total_payment_cost,
+        };
+      case "sdad_supplier_gold":
+        let total_payment_karat = 0;
+        paymentData?.forEach((row) => {
+          console.log("🚀 ~ paymentData?.forEach ~ row:", row);
+          total_payment_karat =
+            Number(total_payment_karat) +
+            Number(row.weight) * Number(getMyKarat(row?.frontkey));
+        });
+        console.log("🚀 ~ mapBox ~ total_payment_karat:", total_payment_karat);
+
+        let karat_difference =
+          Number(boxes?.total_weight.value) - Number(total_payment_karat);
+        console.log("🚀 ~ mapBox ~ karat_difference:", karat_difference);
+
+        return {
+          ...item,
+          value: Number(boxes?.total_weight.value) - Number(karat_difference),
+        };
+      default:
+        const frontKeyExists = accountBanksData.hasOwnProperty(item.front_key);
+        if (frontKeyExists) {
+          return {
+            ...item,
+            value: boxes[item.front_key]?.value,
+          };
+        }
+        return item;
+    }
+  };
+
+  const boxesFinal = boxesResponse?.map(mapBox);
+  console.log("🚀 ~ SupplierPayment ~ boxesFinal:", boxesFinal);
 
   const handleSeccessedData = () => {
     const postPaymentData: any = [];
@@ -136,30 +417,32 @@ const SupplierPayment = () => {
       return;
     }
 
-    mutatePaymentsData({
-      endpointName: "/sdad/api/v1/store",
-      values: {
-        payment: postPaymentData,
-        items_payment: postPaymentAllData,
-        branch_id: userData?.branch_id,
-        card: card,
-        total_payment: totalPayment,
-        invoice_number: invoiceDataNumber.length + 1,
-        payment_date: new Date()?.toISOString().slice(0, 10),
-        employee_id: userData?.id,
-      },
-      method: "post",
-    });
+    // mutatePaymentsData({
+    //   endpointName: "/sadadSupplier/api/v1/create",
+    //   values: {
+    //     bond: {
+    //         branch_id: userData?.branch_id,
+    //         invoice_number: invoiceDataNumber.length + 1,
+    //         bond_date: new Date()?.toISOString().slice(0, 10),
+    //         employee_id: userData?.id,
+    //         supplier_id: supplierId,
+    //     },
+    //     items: postPaymentAllData,
+    //     boxes: boxesFinal,
+    //   },
+    //   method: "post",
+    // });
 
     console.log({
-      branch_id: userData?.branch_id,
-      items_payment: postPaymentAllData,
-      invoice_number: invoiceDataNumber.length + 1,
-      payment_date: new Date()?.toISOString().slice(0, 10),
-      employee_id: userData?.id,
-      payment: postPaymentData,
-      card: card,
-      total_payment: totalPayment,
+      bond: {
+        branch_id: userData?.branch_id,
+        invoice_number: invoiceDataNumber.length + 1,
+        bond_date: new Date()?.toISOString().slice(0, 10),
+        employee_id: userData?.id,
+        supplier_id: supplierId,
+      },
+      items: postPaymentAllData,
+      boxes: boxesFinal,
     });
   };
 
@@ -186,7 +469,12 @@ const SupplierPayment = () => {
           <h2 className="mb-8 text-base font-bold">
             {t("Payment data from the supplier to management")}
           </h2>
-          <Formik initialValues={{ supplier_id: null }} onSubmit={() => {}}>
+          <Formik
+            initialValues={{ supplier_id: null }}
+            onSubmit={(values) => {
+              setBoxValues(values);
+            }}
+          >
             <Form className="mb-8 w-1/3">
               <Select
                 id="supplier_id"
@@ -234,6 +522,8 @@ const SupplierPayment = () => {
               cardId={cardId}
               setSelectedCardName={setSelectedCardName}
               selectedCardName={selectedCardName}
+              supplierId={supplierId}
+              boxValues={boxValues}
             />
           </div>
         </div>

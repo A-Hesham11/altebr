@@ -32,6 +32,7 @@ export type Payment_TP = {
   cardId?: any;
   setSelectedCardName?: any;
   selectedCardName?: any;
+  stock_difference?: any;
 };
 
 const validationSchemaOfAmount = () =>
@@ -58,11 +59,14 @@ const SupplierPaymentProccessing = ({
   setSelectedCardName,
   isCheckedCommission,
   setIsCheckedCommission,
+  supplierId,
+  boxValues
 }: Payment_TP) => {
   console.log("🚀 ~ selectedCardId:", selectedCardId);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
+  console.log("🚀 ~ editData:", editData)
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
@@ -86,6 +90,30 @@ const SupplierPaymentProccessing = ({
     setSelectedCardId(editData?.card_id);
   }, [editData?.card_id]);
 
+  const cashId =
+  locationPath === "/supplier-payment" && cardFrontKey === "cash";
+  console.log("🚀 ~ cashId:", cashId)
+
+  const {
+    data,
+    isLoading,
+    failureReason,
+    refetch,
+    isSuccess
+  } = useFetch({
+    endpoint: `/sadadSupplier/api/v1/show/${cashId ? 10005 : cardId || 0}/${
+      userData?.branch_id
+    }/${cardFrontKey || 0}`,
+    queryKey: ["showValueOfCardsInEdara"],
+    onSuccess(data) {
+      return data.data;
+    },
+    enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
+  });
+  console.log("🚀 ~ data:", data);
+
+
+
   const initialValues = {
     id: editData?.id || "",
     card: editData?.card || "",
@@ -93,9 +121,7 @@ const SupplierPaymentProccessing = ({
     front_key: selectedCardId || "",
     amount: editData?.amount || "",
     weight: editData?.weight || "",
-    add_commission_ratio: editData?.add_commission_ratio || "",
-    commission_ratio: editData?.commission_ratio || "",
-    commission_oneItem: editData?.commission_oneItem || "",
+    stock_difference: editData?.stock_difference || 0,
   };
 
   const totalPriceInvoice = sellingItemsData?.reduce(
@@ -125,26 +151,26 @@ const SupplierPaymentProccessing = ({
       : Number(totalPriceInvoice) - Number(amountRemaining);
   console.log("🚀 ~ costRemaining:", costRemaining);
 
-  const cashId =
-    locationPath === "/selling/payoff/sales-return" && cardFrontKey === "cash";
+  //   const { data: stockDifference, refetch: stockDifferenceRefetch } = useFetch({
+  //     endpoint: `/sadadSupplier/api/v1/show/${cashId ? 10005 : cardId || 0}/${
+  //       userData?.branch_id
+  //     }/${cardFrontKey || 0}`,
+  //     queryKey: ["stock_difference_data"],
+  //     onSuccess(data) {
+  //       return data.data;
+  //     },
+  //     // enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
+  //   });
 
-  const { data, refetch } = useFetch({
-    endpoint: `/sadadSupplier/api/v1/show/${cashId ? 10005 : cardId || 0}/${
-      userData?.branch_id
-    }/${cardFrontKey || 0}`,
-    queryKey: ["showValueOfCardsInEdara"],
-    onSuccess(data) {
-      return data.data;
-    },
-    enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
-  });
-  console.log("🚀 ~ data:", data);
+//   useEffect(() => {
+//     if (cardId !== null && cardFrontKey !== null) {
+//       refetch();
+//     }
+//   }, [cardId, cardFrontKey]);
 
   useEffect(() => {
-    if (cardId !== null && cardFrontKey !== null) {
       refetch();
-    }
-  }, [cardId, cardFrontKey]);
+  }, [data, selectedCardId]);
 
   const weightOrAmount =
     selectedCardId == 18 ||
@@ -222,6 +248,7 @@ const SupplierPaymentProccessing = ({
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
+          console.log("🚀 ~ values:", values)
           useEffect(() => {
             if (
               cardId === 10001 ||
@@ -234,8 +261,13 @@ const SupplierPaymentProccessing = ({
             } else {
               setFieldValue("weight", "");
               setFieldValue("value", data?.value?.toFixed(2));
+            //   setFieldValue("stock_difference", +data?.equivalent);
             }
           }, [cardId]);
+
+          useEffect(() => {
+              setFieldValue("stock_difference", Number(data?.equivalent));
+          }, [selectedCardId, data]);
           return (
             <Form>
               <div>
@@ -295,6 +327,11 @@ const SupplierPaymentProccessing = ({
                         type="text"
                         label={`${t("stock difference")}`}
                         placeholder={`${t("stock difference")}`}
+                        disabled={!isSuccess}
+                        className={`${!isSuccess && "bg-mainDisabled"}`}
+                        onChange={(e) => {
+                            setFieldValue("stock_difference", e.target.value)
+                        }}
                       />
                     </div>
                   </>
