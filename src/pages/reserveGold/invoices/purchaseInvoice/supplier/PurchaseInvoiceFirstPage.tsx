@@ -1,55 +1,54 @@
-import { t } from "i18next";
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
-import ReserveSellingHeader from "./ReserveSellingHeader";
-import { Button } from "../../../../../components/atoms";
-import { useFetch } from "../../../../../hooks";
-import ReserveSellingBillInputs from "./ReserveSellingBillInputs";
-import ReserveSellingTable from "./ReserveSellingTable";
 import { numberContext } from "../../../../../context/settings/number-formatter";
-import { notify } from "../../../../../utils/toast";
 import { useFormikContext } from "formik";
+import { useFetch } from "../../../../../hooks";
+import ReservePurchaseHeader from "./ReservePurchaseHeader";
+import ReservePurchaseBillInputs from "./ReservePurchaseBillInputs";
+import ReservePurchaseTable from "./ReservePurchaseTable";
+import { t } from "i18next";
+import { notify } from "../../../../../utils/toast";
+import { Button } from "../../../../../components/atoms";
 
 interface purchaseInvoicesFirstPage_TP {
   setStage?: Dispatch<SetStateAction<number>>;
-  sellingInvoiceNumber: number;
-  setSellingItemsData: Dispatch<SetStateAction<any>>;
-  sellingItemsData: any;
+  buyingInvoiceNumber: number;
+  setBuyingItemsData: Dispatch<SetStateAction<any>>;
+  buyingItemsData: any;
   goldPrice: any;
 }
 
-const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
+const PurchaseInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
   props
 ) => {
   const {
     setStage,
-    sellingInvoiceNumber,
-    setSellingItemsData,
-    sellingItemsData,
+    buyingInvoiceNumber,
+    setBuyingItemsData,
+    buyingItemsData,
     goldPrice,
   } = props;
   const navigate = useNavigate();
   const { formatReyal, formatGram } = numberContext();
   const { values } = useFormikContext();
-  console.log("🚀 ~ values:", values);
 
   // FORMULA FOR RESULT
-  const totalValues = sellingItemsData.reduce(
+  const totalValues = buyingItemsData.reduce(
     (acc: number, curr: any) => Number(acc) + Number(curr?.value),
     0
   );
 
-  const valueAddedTax = sellingItemsData.reduce(
+  const valueAddedTax = buyingItemsData.reduce(
     (acc: number, curr: any) => Number(acc) + Number(curr?.value_added_tax),
     0
   );
 
-  const totalGrossWeight = sellingItemsData.reduce(
+  const totalGrossWeight = buyingItemsData.reduce(
     (acc: number, curr: any) => Number(acc) + Number(curr?.weight),
     0
   );
 
-  const totalNetWeight = sellingItemsData.reduce((acc: number, curr: any) => {
+  const totalNetWeight = buyingItemsData.reduce((acc: number, curr: any) => {
     return Number(acc) + (Number(curr?.weight) * Number(curr?.karat_name)) / 24;
   }, 0);
 
@@ -107,10 +106,10 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
         <h3 className="text-xl font-bold mb-4">{t("reserve gold data")}</h3>
         <div className="bg-flatWhite rounded-lg bill-shadow p-5 h-41 ">
           <div className="mb-8">
-            <ReserveSellingHeader sellingInvoiceNumber={sellingInvoiceNumber} />
+            <ReservePurchaseHeader buyingInvoiceNumber={buyingInvoiceNumber} />
           </div>
           <div>
-            <ReserveSellingBillInputs
+            <ReservePurchaseBillInputs
               supplierNameOptions={suppliersOption}
               isLoading={loadingSuppliers}
             />
@@ -120,9 +119,9 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
         <h2 className="text-xl font-bold my-4">{t("reserve gold bonds")}</h2>
         <div className="bg-flatWhite rounded-lg bill-shadow py-5 px-6 h-41 my-5">
           <>
-            <ReserveSellingTable
-              sellingItemsData={sellingItemsData}
-              setSellingItemsData={setSellingItemsData}
+            <ReservePurchaseTable
+              buyingItemsData={buyingItemsData}
+              setBuyingItemsData={setBuyingItemsData}
               goldPrice={goldPrice}
             />
           </>
@@ -159,7 +158,7 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
           type="submit"
           loading={false}
           action={() => {
-            if (sellingItemsData.length === 0) {
+            if (buyingItemsData.length === 0) {
               notify("info", `${t("please add data first")}`);
               return;
             }
@@ -179,4 +178,4 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
   );
 };
 
-export default SellingInvoiceFirstPage;
+export default PurchaseInvoiceFirstPage;

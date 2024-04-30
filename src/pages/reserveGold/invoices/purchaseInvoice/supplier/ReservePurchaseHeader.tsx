@@ -1,21 +1,21 @@
 import React, { useEffect } from "react";
-import { t } from "i18next";
-import { BsDatabase } from "react-icons/bs";
+import { numberContext } from "../../../../../context/settings/number-formatter";
 import { useFetch } from "../../../../../hooks";
 import { useFormikContext } from "formik";
-import { numberContext } from "../../../../../context/settings/number-formatter";
+import { BsDatabase } from "react-icons/bs";
+import { t } from "i18next";
 
-interface ReserveSellingHeader_TP {
-  sellingInvoiceNumber: number;
+interface ReservePurchaseHeader_TP {
+  buyingInvoiceNumber: number;
 }
 
 /**
  *
- * @param sellingInvoiceNumber sellingInvoiceNumber - {sellingInvoiceNumber}
+ * @param buyingInvoiceNumber buyingInvoiceNumber - {buyingInvoiceNumber}
  * @returns jsx
  */
-const ReserveSellingHeader: React.FC<ReserveSellingHeader_TP> = ({
-  sellingInvoiceNumber,
+const ReservePurchaseHeader: React.FC<ReservePurchaseHeader_TP> = ({
+  buyingInvoiceNumber,
 }) => {
   const { values } = useFormikContext();
   const { formatGram, formatReyal } = numberContext();
@@ -44,7 +44,7 @@ const ReserveSellingHeader: React.FC<ReserveSellingHeader_TP> = ({
     <div className="flex items-center gap-8 lg:gap-10">
       <div className="flex items-center gap-5">
         <h2>
-          {t("bill number")} - {`${sellingInvoiceNumber}`}
+          {t("bill number")} - {`${buyingInvoiceNumber}`}
         </h2>
       </div>
       <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
@@ -81,4 +81,4 @@ const ReserveSellingHeader: React.FC<ReserveSellingHeader_TP> = ({
   );
 };
 
-export default ReserveSellingHeader;
+export default ReservePurchaseHeader;

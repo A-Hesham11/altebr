@@ -16,19 +16,19 @@ import { getDayAfter } from "../../../../../utils/date";
 interface purchaseInvoicesSecondPage_TP {
   setStage?: Dispatch<SetStateAction<number>>;
   goldPrice: any;
-  sellingItemsData: any;
-  sellingInvoiceNumber: number;
-  setSellingItemsData: Dispatch<SetStateAction<any>>;
+  buyingItemsData: any;
+  buyingInvoiceNumber: number;
+  setBuyingItemsData: Dispatch<SetStateAction<any>>;
 }
 
-const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
+const PurchaseInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
   props
 ) => {
   const {
     setStage,
-    sellingItemsData,
-    setSellingItemsData,
-    sellingInvoiceNumber,
+    buyingItemsData,
+    setBuyingItemsData,
+    buyingInvoiceNumber,
     goldPrice,
   } = props;
   const { formatGram, formatReyal } = numberContext();
@@ -37,16 +37,16 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
   const { values } = useFormikContext();
 
   // FORMULA TO CALC THE TOTAL COST OF BUYING INVOICE
-  const totalNetWeight = sellingItemsData.reduce((acc: number, curr: any) => {
+  const totalNetWeight = buyingItemsData.reduce((acc: number, curr: any) => {
     return Number(acc) + (Number(curr?.weight) * Number(curr?.karat_name)) / 24;
   }, 0);
 
-  const totalCost = sellingItemsData.reduce((acc: number, curr: any) => {
+  const totalCost = buyingItemsData.reduce((acc: number, curr: any) => {
     acc += +curr.value;
     return acc;
   }, 0);
 
-  const totalValueAddedTax = sellingItemsData.reduce(
+  const totalValueAddedTax = buyingItemsData.reduce(
     (acc: number, curr: any) => {
       acc += +curr.value_added_tax;
       return acc;
@@ -54,7 +54,7 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
     0
   );
 
-  const totalValueAfterTax = sellingItemsData.reduce(
+  const totalValueAfterTax = buyingItemsData.reduce(
     (acc: number, curr: any) => {
       acc += +curr.total_value;
       return acc;
@@ -110,7 +110,7 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
 
   const ReserveTable = () => (
     <ReserveSecondPageTable
-      data={sellingItemsData}
+      data={buyingItemsData}
       columns={Cols}
       costDataAsProps={costDataAsProps}
     ></ReserveSecondPageTable>
@@ -121,15 +121,15 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
     mutationFn: mutateData,
     onSuccess: (data) => {
       notify("success", t("bond created successfully"));
-      navigate(`/viewSellingBonds`);
+      navigate(`/viewPurchaseBonds`);
     },
   });
 
-  const posSellingDataHandler = () => {
+  const posBuyingDataHandler = () => {
     const invoice = {
-      invoice_number: sellingInvoiceNumber,
+      invoice_number: buyingInvoiceNumber,
       supplier_id: values!.supplier_id,
-      invoice_date: values!.reserve_selling_data,
+      invoice_date: values!.reserve_buying_date,
       branch_id: userData?.branch_id,
       notes: values!.notes,
       weight: totalNetWeight,
@@ -138,7 +138,7 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
       total_after_tax: totalValueAfterTax,
     };
 
-    const items = sellingItemsData.map((item: any) => {
+    const items = buyingItemsData.map((item: any) => {
       return {
         karat_id: item.karat_id,
         weight: item.weight,
@@ -151,7 +151,7 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
     console.log({ invoice, items });
 
     mutate({
-      endpointName: "/reserveGold/api/v1/reserve_selling_Invoice",
+      endpointName: "/reserveGold/api/v1/reserve_buying_Invoice",
       values: { invoice, items },
     });
   };
@@ -170,7 +170,7 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
           <Button
             className="bg-mainOrange px-7 py-[6px]"
             loading={isLoading}
-            action={posSellingDataHandler}
+            action={posBuyingDataHandler}
           >
             {t("save")}
           </Button>
@@ -179,12 +179,12 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
       <ReserveSecondPageFinalPreview
         ItemsTableContent={<ReserveTable />}
         setStage={setStage}
-        sellingItemsData={sellingItemsData}
+        buyingItemsData={buyingItemsData}
         costDataAsProps={costDataAsProps}
-        invoiceNumber={sellingInvoiceNumber}
+        invoiceNumber={buyingInvoiceNumber}
       />
     </div>
   );
 };
 
-export default SellingInvoiceSecondPage;
+export default PurchaseInvoiceSecondPage;

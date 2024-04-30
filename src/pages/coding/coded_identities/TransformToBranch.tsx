@@ -234,7 +234,7 @@ const TransformToBranch = ({
   }
 
   useEffect(() => {
-    operationTypeSelect.map((operation) => {
+    operationTypeSelect.map((operation: any) => {
       if (!thwelIds.includes(`${operation.id}`)) {
         setThwelIds((prev) => [...prev, `${operation.id}`]);
       }
@@ -279,16 +279,16 @@ const TransformToBranch = ({
           return;
         }
 
-        const inputWeightItem = inputWeight?.every((item) => item.value !== "")
+        const inputWeightItem = inputWeight?.every((item) => item.value !== "");
 
         if (inputWeight?.length !== operationTypeSelectWeight?.length) {
-            notify("info",  `${t("You must add weight first")}`)
-            return;
+          notify("info", `${t("You must add weight first")}`);
+          return;
         }
 
         if (inputWeightItem === false) {
-            notify("info", `${t("You must add weight first")}`)
-            return;
+          notify("info", `${t("You must add weight first")}`);
+          return;
         }
 
         PostNewValue({

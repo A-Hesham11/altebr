@@ -1,40 +1,37 @@
+import { t } from "i18next";
+import { Dispatch, SetStateAction, useContext, useMemo } from "react";
+import { authCtx } from "../../../../../context/auth-and-perm/auth";
+import { useFormikContext } from "formik";
+import { numberContext } from "../../../../../context/settings/number-formatter";
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import React, { Dispatch, SetStateAction, useContext, useMemo } from "react";
-import { Selling_TP } from "../../../../selling/PaymentSellingPage";
-import { t } from "i18next";
-import { numberContext } from "../../../../../context/settings/number-formatter";
-import { useFormikContext } from "formik";
-import SelectCategory from "../../../../../components/templates/reusableComponants/categories/select/SelectCategory";
+import { useFetch } from "../../../../../hooks";
 import { BaseInputField } from "../../../../../components/molecules";
 import SelectKarat from "../../../../../components/templates/reusableComponants/karats/select/SelectKarat";
 import { Button } from "../../../../../components/atoms";
-import { DeleteIcon, EditIcon } from "../../../../../components/atoms/icons";
 import { IoMdAdd } from "react-icons/io";
-import { authCtx } from "../../../../../context/auth-and-perm/auth";
+import { DeleteIcon, EditIcon } from "../../../../../components/atoms/icons";
 import { notify } from "../../../../../utils/toast";
-import { useFetch } from "../../../../../hooks";
 
-interface ReserveSellingTable_TP {
-  setSellingItemsData: Dispatch<SetStateAction<any>>;
-  sellingItemsData: [];
+interface ReservePurchaseTable_TP {
+  setBuyingItemsData: Dispatch<SetStateAction<any>>;
+  buyingItemsData: [];
   goldPrice: number;
 }
 
-const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
-  const { setSellingItemsData, sellingItemsData, goldPrice } = props;
+const ReservePurchaseTable: React.FC<ReservePurchaseTable_TP> = (props) => {
+  const { setBuyingItemsData, buyingItemsData, goldPrice } = props;
   const { formatGram, formatReyal } = numberContext();
   const { values, setFieldValue } = useFormikContext();
   const { userData } = useContext(authCtx);
 
   // COLUMN FOR TABLES
-  const reserveSellingColumn = useMemo<ColumnDef<Selling_TP>[]>(
+  const reservePurchaseColumn = useMemo<any>(
     () => [
       {
         header: () => <span>{t("weight")} </span>,
@@ -79,25 +76,25 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
 
   // TABLE FUNCTIONALITY TO DELETE AND ADD
   const table = useReactTable({
-    data: sellingItemsData,
-    columns: reserveSellingColumn,
+    data: buyingItemsData,
+    columns: reservePurchaseColumn,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
   const handleDeleteRow = (itemId: string | number) => {
-    const newData = sellingItemsData?.filter((item: any) => {
+    const newData = buyingItemsData?.filter((item: any) => {
       return item.item_id !== itemId;
     });
 
-    setSellingItemsData(newData);
+    setBuyingItemsData(newData);
   };
 
-  const handleAddItemsToSelling = () => {
+  const handleAddItemsToPurchase = () => {
     const {
       supplier_id,
-      reserve_selling_data,
+      reserve_Purchase_data,
       supplier_value,
       supplier_name,
       notes,
@@ -109,13 +106,7 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
     });
   };
 
-  const {
-    data: taxes,
-    isLoading,
-    isFetching,
-    isRefetching,
-    refetch,
-  } = useFetch({
+  const { data: taxes } = useFetch({
     queryKey: ["tax"],
     endpoint: `/selling/api/v1/tax-include/${userData?.branch_id}`,
   });
@@ -254,7 +245,7 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
                     return;
                   }
 
-                  setSellingItemsData((prev: any) =>
+                  setBuyingItemsData((prev: any) =>
                     [
                       ...prev,
                       {
@@ -264,7 +255,7 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
                     ].reverse()
                   );
 
-                  handleAddItemsToSelling();
+                  handleAddItemsToPurchase();
                 }}
                 className="bg-transparent px-2"
               >
@@ -326,4 +317,4 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
   );
 };
 
-export default ReserveSellingTable;
+export default ReservePurchaseTable;
