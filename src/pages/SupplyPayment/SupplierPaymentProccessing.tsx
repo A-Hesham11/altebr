@@ -60,19 +60,24 @@ const SupplierPaymentProccessing = ({
   isCheckedCommission,
   setIsCheckedCommission,
   supplierId,
-  boxValues
+  boxValues,
 }: Payment_TP) => {
   console.log("🚀 ~ selectedCardId:", selectedCardId);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
-  console.log("🚀 ~ editData:", editData)
+  console.log("🚀 ~ editData:", editData);
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
   const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("");
   const { formatReyal } = numberContext();
+  const [stockDifferenceMain, setStockDifferenceMain] = useState(0);
+  console.log(
+    "🚀 ~ SupplierPayment ~ stockDifferenceMain:",
+    stockDifferenceMain
+  );
 
   const locationPath = location.pathname;
 
@@ -91,16 +96,10 @@ const SupplierPaymentProccessing = ({
   }, [editData?.card_id]);
 
   const cashId =
-  locationPath === "/supplier-payment" && cardFrontKey === "cash";
-  console.log("🚀 ~ cashId:", cashId)
+    locationPath === "/supplier-payment" && cardFrontKey === "cash";
+  console.log("🚀 ~ cashId:", cashId);
 
-  const {
-    data,
-    isLoading,
-    failureReason,
-    refetch,
-    isSuccess
-  } = useFetch({
+  const { data, isLoading, failureReason, refetch, isSuccess } = useFetch({
     endpoint: `/sadadSupplier/api/v1/show/${cashId ? 10005 : cardId || 0}/${
       userData?.branch_id
     }/${cardFrontKey || 0}`,
@@ -111,8 +110,6 @@ const SupplierPaymentProccessing = ({
     enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
   });
   console.log("🚀 ~ data:", data);
-
-
 
   const initialValues = {
     id: editData?.id || "",
@@ -162,14 +159,14 @@ const SupplierPaymentProccessing = ({
   //     // enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
   //   });
 
-//   useEffect(() => {
-//     if (cardId !== null && cardFrontKey !== null) {
-//       refetch();
-//     }
-//   }, [cardId, cardFrontKey]);
+  //   useEffect(() => {
+  //     if (cardId !== null && cardFrontKey !== null) {
+  //       refetch();
+  //     }
+  //   }, [cardId, cardFrontKey]);
 
   useEffect(() => {
-      refetch();
+    refetch();
   }, [data, selectedCardId]);
 
   const weightOrAmount =
@@ -209,6 +206,7 @@ const SupplierPaymentProccessing = ({
                 const newItem = {
                   ...values,
                   id: cardId,
+                  stock_difference_mian: stockDifferenceMain,
                   card: card,
                   card_id: selectedCardId,
                   cardImage: cardImage,
@@ -245,10 +243,11 @@ const SupplierPaymentProccessing = ({
           setEditData(undefined);
           resetForm();
           setCard("");
+          setStockDifferenceMain(0);
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
-          console.log("🚀 ~ values:", values)
+          console.log("🚀 ~ values:", values);
           useEffect(() => {
             if (
               cardId === 10001 ||
@@ -261,12 +260,13 @@ const SupplierPaymentProccessing = ({
             } else {
               setFieldValue("weight", "");
               setFieldValue("value", data?.value?.toFixed(2));
-            //   setFieldValue("stock_difference", +data?.equivalent);
+              //   setFieldValue("stock_difference", +data?.equivalent);
             }
           }, [cardId]);
 
           useEffect(() => {
-              setFieldValue("stock_difference", Number(data?.equivalent));
+            setFieldValue("stock_difference", Number(data?.equivalent));
+            setStockDifferenceMain(data?.equivalent);
           }, [selectedCardId, data]);
           return (
             <Form>
@@ -330,7 +330,8 @@ const SupplierPaymentProccessing = ({
                         disabled={!isSuccess}
                         className={`${!isSuccess && "bg-mainDisabled"}`}
                         onChange={(e) => {
-                            setFieldValue("stock_difference", e.target.value)
+                          setFieldValue("stock_difference", e.target.value);
+                          setStockDifferenceMain(data?.equivalent);
                         }}
                       />
                     </div>
