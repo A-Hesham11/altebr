@@ -155,7 +155,7 @@ const PurchaseInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
 
       <div className="flex gap-3 justify-end mt-12 pb-8">
         <Button
-          type="submit"
+          type="button"
           loading={false}
           action={() => {
             if (buyingItemsData.length === 0) {

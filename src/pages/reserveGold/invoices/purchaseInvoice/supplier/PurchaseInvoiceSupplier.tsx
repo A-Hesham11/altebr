@@ -47,7 +47,6 @@ const PurchaseInvoiceSupplier: React.FC<PurchaseInvoiceSupplier_TP> = (
       setReserveBuyingInvoiceNumber(data?.length + 1);
     },
   });
-  console.log("🚀 ~ bondsList:", bondsList);
 
   return (
     <Formik
