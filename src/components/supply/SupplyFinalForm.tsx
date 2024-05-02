@@ -348,7 +348,7 @@ export const SupplyFinalForm = ({
         } else {
           return {
             ...item,
-            value,
+            value, 
           }
         }
       case "supplier_money":

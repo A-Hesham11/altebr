@@ -9,6 +9,7 @@ import Slider from "react-slick";
 import cashImg from "../../../../assets/cash.png";
 import DiscountEarned from "../../../../assets/Discount-earned.jpeg";
 import brokenGoldImg from "../../../../assets/Frame 26085625.svg";
+import addedTax from "../../../../assets/OIP.jpeg";
 
 type Payment_TP = {
   onSelectCard?: any
@@ -163,6 +164,19 @@ const PaymentCard = ({
       },
     },
     {
+      front_key: "total_tax_sadad_supplier",
+      name_ar: "ضريبة القيمة المضافه",
+      name_en: "Value added tax",
+      discount_percentage: 0,
+      card: {
+        bank_id: 2,
+        name_ar: "ضريبة القيمة المضافه",
+        name_en: "Value added tax",
+        front_key: "total_tax_sadad_supplier",
+        images: [{ preview: `${addedTax}` }],
+      },
+    },
+    {
       front_key: "cash",
       name_ar: "نقدي",
       name_en: "cash",
@@ -260,8 +274,6 @@ const PaymentCard = ({
       const selectNewCard = cardsData?.filter(
         (item) => item?.front_key === frontKey
       );
-      console.log("🚀 ~ handleChooseCard ~ selectNewCard:", selectNewCard)
-
 
       const selectCradIDOrBankId = selectNewCard[0]?.bank_id ? selectNewCard[0]?.bank_id : selectNewCard[0]?.id;
 

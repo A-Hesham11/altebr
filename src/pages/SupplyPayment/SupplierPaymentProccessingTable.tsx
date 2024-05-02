@@ -48,6 +48,14 @@ import { Payment_TP } from "./SupplierPaymentProccessing";
               : "---",
         },
         {
+            header: () => <span>{t("stock difference")} </span>,
+            accessorKey: "stock_difference",
+            cell: (info) =>
+              info.row.original.stock_difference
+                ? `${Number(info.row.original.stock_difference)}`
+                : "---",
+          },
+        {
           header: () => <span>{t("actions")}</span>,
           accessorKey: "actions_id",
           cell: (info) => (
