@@ -19,12 +19,13 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
 
   const totalPaymentByBank = paymentData.filter((item) => item.id < 10000).reduce((total, item) => +total + +item.amount, 0);
 
-  const totalPaymentByCash = paymentData.filter((item) => item.id === 10005)[0]?.amount || 0; 
+  const totalPaymentByCash = paymentData.filter((item) => item.id > 10004).reduce((total, item) => +total + +item.amount, 0) || 0; 
+  console.log("🚀 ~ PaymentBoxes ~ totalPaymentByCash:", totalPaymentByCash)
 
-  const totalPaymentByKarat18 = paymentData.filter((item) => item.id === 10001)[0]?.weight || 0; 
-  const totalPaymentByKarat21 = paymentData.filter((item) => item.id === 10002)[0]?.weight || 0; 
-  const totalPaymentByKarat22 = paymentData.filter((item) => item.id === 10003)[0]?.weight || 0; 
-  const totalPaymentByKarat24 = paymentData.filter((item) => item.id === 10004)[0]?.weight || 0; 
+  const totalPaymentByKarat18 = paymentData.filter((item) => item.id === 10001).reduce((total, item) => +total + +item.weight, 0) || 0; 
+  const totalPaymentByKarat21 = paymentData.filter((item) => item.id === 10002).reduce((total, item) => +total + +item.weight, 0) || 0; 
+  const totalPaymentByKarat22 = paymentData.filter((item) => item.id === 10003).reduce((total, item) => +total + +item.weight, 0) || 0; 
+  const totalPaymentByKarat24 = paymentData.filter((item) => item.id === 10004).reduce((total, item) => +total + +item.weight, 0) || 0; 
 
   const totalpaymentByGram = Number(totalPaymentByKarat18) + Number(totalPaymentByKarat21) + Number(totalPaymentByKarat22) + Number(totalPaymentByKarat24)
   const paymentByGram = (Number(totalPaymentByKarat18) * 18 / 24) + (Number(totalPaymentByKarat21) * 21 / 24 ) + (Number(totalPaymentByKarat22) * 22 / 24 ) + (Number(totalPaymentByKarat24) * 24 / 24 )
@@ -101,7 +102,7 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
       },
   ]
 
-  const boxsData = locationPath === "/selling/reimbursement" ? boxsPaymnetData : boxsSellingData
+  const boxsData = locationPath === "/selling/reimbursement" || locationPath === "/supplier-payment" ? boxsPaymnetData : boxsSellingData
 
   return (
     <div>
