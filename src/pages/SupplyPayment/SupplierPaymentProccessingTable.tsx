@@ -87,13 +87,9 @@ import { Payment_TP } from "./SupplierPaymentProccessing";
       []
     );
   
-    const paymentColsExpenses = paymentCols.filter(
-      (item) => item.accessorKey !== "weight"
-    );
-  
     const table = useReactTable({
       data: paymentData,
-      columns: path === "/expenses/expensesInvoice" ? paymentColsExpenses : paymentCols,
+      columns: paymentCols,
       getCoreRowModel: getCoreRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
       getPaginationRowModel: getPaginationRowModel(),

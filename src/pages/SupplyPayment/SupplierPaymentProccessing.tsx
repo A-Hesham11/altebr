@@ -583,20 +583,19 @@ const SupplierPaymentProccessing = ({
                   salesReturnFrontKey: salesReturnFrontKey,
                 };
 
-                if (
-                  selectedCardId != "discount" ||
-                  selectedCardId != "total_tax_sadad_supplier"
-                ) {
-                  if (
-                    Number(data?.value) === 0 ||
-                    Number(values.amount > +data?.value) ||
-                    Number(values.weight > +data?.value)
-                  ) {
-                    notify(
-                      "info",
-                      `${t("value is greater than the value in box")}`
-                    );
-                    return;
+                if (selectedCardId != "total_tax_sadad_supplier") {
+                  if (selectedCardId != "discount") {
+                    if (
+                      Number(data?.value) === 0 ||
+                      Number(values.amount > +data?.value) ||
+                      Number(values.weight > +data?.value)
+                    ) {
+                      notify(
+                        "info",
+                        `${t("value is greater than the value in box")}`
+                      );
+                      return;
+                    }
                   }
                 }
                 setPaymentData((prevData) => [newItem, ...prevData]);
@@ -708,27 +707,15 @@ const SupplierPaymentProccessing = ({
                   </>
                 ) : (
                   <>
-                    {selectedCardId == "total_tax_sadad_supplier" ? (
-                      <div className="relative">
-                        <BaseInputField
-                          id="supplier_vat_sadad"
-                          name="supplier_vat_sadad"
-                          type="text"
-                          label={`${t("Value added tax")}`}
-                          placeholder={`${t("Value added tax")}`}
-                        />
-                      </div>
-                    ) : (
-                      <div className="relative">
-                        <BaseInputField
-                          id="amount"
-                          name="amount"
-                          type="text"
-                          label={`${t("amount")}`}
-                          placeholder={`${t("amount")}`}
-                        />
-                      </div>
-                    )}
+                    <div className="relative">
+                      <BaseInputField
+                        id="amount"
+                        name="amount"
+                        type="text"
+                        label={`${t("amount")}`}
+                        placeholder={`${t("amount")}`}
+                      />
+                    </div>
                   </>
                 )}
                 <Button
