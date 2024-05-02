@@ -52,7 +52,7 @@ import { Payment_TP } from "./SupplierPaymentProccessing";
             accessorKey: "stock_difference",
             cell: (info) =>
               info.row.original.stock_difference
-                ? `${formatGram(Number(info.row.original.stock_difference))}`
+                ? `${Number(info.row.original.stock_difference)}`
                 : "---",
           },
         {

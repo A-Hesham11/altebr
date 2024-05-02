@@ -15,6 +15,7 @@ import { Back } from "../../utils/utils-components/Back";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import { BiSpreadsheet } from "react-icons/bi";
 import PaymentToManagementTable from "../Payment/PaymentToManagementTable";
+import SupplierBondTable from "./SupplierBondTable";
 
 const SupplierPaymentBonds = () => {
   // STATE
@@ -214,7 +215,7 @@ const SupplierPaymentBonds = () => {
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
-        <PaymentToManagementTable item={selectedItem} />
+        <SupplierBondTable item={selectedItem} />
       </Modal>
     </div>
   );
