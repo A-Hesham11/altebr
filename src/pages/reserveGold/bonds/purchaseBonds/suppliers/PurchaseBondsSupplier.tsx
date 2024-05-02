@@ -14,10 +14,10 @@ import {
 import { Button } from "../../../../../components/atoms";
 import { Table } from "../../../../../components/templates/reusableComponants/tantable/Table";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import SellingBondsSupplierPreview from "./SellingBondsSupplierPreview";
 import { numberContext } from "../../../../../context/settings/number-formatter";
+import PurchaseBondsSupplierPreview from "./PurchaseBondsSupplierPreview";
 
-const SellingBondsSupplier = () => {
+const PurchaseBondsSupplier = () => {
   // STATE
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
@@ -35,23 +35,23 @@ const SellingBondsSupplier = () => {
 
   // FETCHING BONDS DATA FROM API
   const {
-    data: sellingBondsSupplier,
+    data: buyingBondsSupplier,
     isLoading,
     isFetching,
     isRefetching,
     refetch,
   } = useFetch({
-    queryKey: ["selling-bonds-supplier"],
+    queryKey: ["buying-bonds-supplier"],
     endpoint:
-      search === `/reserveGold/api/v1/list_reserve_selling_Invoice?` ||
+      search === `/reserveGold/api/v1/list_reserve_buying_Invoice?` ||
       search === ""
-        ? `/reserveGold/api/v1/list_reserve_selling_Invoice?page=${page}`
+        ? `/reserveGold/api/v1/list_reserve_buying_Invoice?page=${page}`
         : `${search}`,
     pagination: true,
   });
   console.log(
-    "🚀 ~ SellingBondsSupplier ~ sellingBondsSupplier:",
-    sellingBondsSupplier
+    "🚀 ~ buyingBondsSupplier ~ buyingBondsSupplier:",
+    buyingBondsSupplier
   );
 
   // COLUMNS FOR THE TABLE
@@ -60,7 +60,7 @@ const SellingBondsSupplier = () => {
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "invoice_number",
-        header: () => <span>{t("invoice number")}</span>,
+        header: () => <span>{t("bond number")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
@@ -121,10 +121,10 @@ const SellingBondsSupplier = () => {
 
   // EFFECTS
   useEffect(() => {
-    if (sellingBondsSupplier) {
-      setDataSource(sellingBondsSupplier.data);
+    if (buyingBondsSupplier) {
+      setDataSource(buyingBondsSupplier.data);
     }
-  }, [sellingBondsSupplier]);
+  }, [buyingBondsSupplier]);
 
   useEffect(() => {
     refetch();
@@ -140,7 +140,7 @@ const SellingBondsSupplier = () => {
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
-    let url = `/reserveGold/api/v1/list_reserve_selling_Invoice?`;
+    let url = `/reserveGold/api/v1/list_reserve_buying_Invoice?`;
     let first = false;
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
@@ -220,12 +220,12 @@ const SellingBondsSupplier = () => {
               <div className="flex items-center gap-2 font-bold">
                 {t("page")}
                 <span className=" text-mainGreen">
-                  {sellingBondsSupplier?.current_page}
+                  {buyingBondsSupplier?.current_page}
                 </span>
                 {t("from")}
                 {
                   <span className=" text-mainGreen">
-                    {sellingBondsSupplier?.pages}
+                    {buyingBondsSupplier?.pages}
                   </span>
                 }
               </div>
@@ -245,7 +245,7 @@ const SellingBondsSupplier = () => {
                 <Button
                   className="rounded bg-mainGreen p-[.18rem]"
                   action={() => setPage((prev) => prev + 1)}
-                  disabled={page == sellingBondsSupplier?.pages}
+                  disabled={page == buyingBondsSupplier?.pages}
                 >
                   {isRTL ? (
                     <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
@@ -261,10 +261,10 @@ const SellingBondsSupplier = () => {
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
-        <SellingBondsSupplierPreview item={selectedItem} />
+        <PurchaseBondsSupplierPreview item={selectedItem} />
       </Modal>
     </div>
   );
 };
 
-export default SellingBondsSupplier;
+export default PurchaseBondsSupplier;

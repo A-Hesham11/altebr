@@ -1,27 +1,29 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
-import SellingInvoiceFirstPage from "./SellingInvoiceFirstPage";
-import SellingInvoiceSecondPage from "./SellingInvoiceSecondPage";
-import { Form, Formik } from "formik";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useFetch } from "../../../../../hooks";
+import { Form, Formik } from "formik";
+import PurchaseInvoiceSecondPage from "./PurchaseInvoiceSecondPage";
+import PurchaseInvoiceFirstPage from "./PurchaseInvoiceFirstPage";
 
-interface SellingInvoiceSupplier_TP {
+interface PurchaseInvoiceSupplier_TP {
   stage: number;
   setStage: Dispatch<SetStateAction<number>>;
 }
 
-const SellingInvoiceSupplier: React.FC<SellingInvoiceSupplier_TP> = (props) => {
+const PurchaseInvoiceSupplier: React.FC<PurchaseInvoiceSupplier_TP> = (
+  props
+) => {
   const { stage, setStage } = props;
 
   // STATE
-  const [reserveSellingInvoiceNumber, setReserveSellingInvoiceNumber] =
+  const [reserveBuyingInvoiceNumber, setReserveBuyingInvoiceNumber] =
     useState<null>(null);
-  const [sellingItemsData, setSellingItemsData] = useState([]);
+  const [buyingItemsData, setBuyingItemsData] = useState([]);
 
   const initialValues = {
     supplier_value: "",
     supplier_id: "",
     supplier_name: "",
-    reserve_selling_data: new Date(),
+    reserve_buying_date: new Date(),
     total_value: "",
     value_added_tax: "",
     value: "",
@@ -39,12 +41,13 @@ const SellingInvoiceSupplier: React.FC<SellingInvoiceSupplier_TP> = (props) => {
   });
 
   const { data: bondsList } = useFetch({
-    endpoint: `/reserveGold/api/v1/list_reserve_selling_Invoice?per_page=10000`,
-    queryKey: ["selling-bonds-list"],
+    endpoint: `/reserveGold/api/v1/list_reserve_buying_Invoice?per_page=10000`,
+    queryKey: ["buying-bonds-list"],
     onSuccess: (data: any) => {
-      setReserveSellingInvoiceNumber(data?.length + 1);
+      setReserveBuyingInvoiceNumber(data?.length + 1);
     },
   });
+  console.log("🚀 ~ bondsList:", bondsList);
 
   return (
     <Formik
@@ -58,20 +61,20 @@ const SellingInvoiceSupplier: React.FC<SellingInvoiceSupplier_TP> = (props) => {
           <Form>
             <>
               {stage === 1 && (
-                <SellingInvoiceFirstPage
+                <PurchaseInvoiceFirstPage
                   setStage={setStage}
-                  sellingInvoiceNumber={reserveSellingInvoiceNumber}
-                  setSellingItemsData={setSellingItemsData}
-                  sellingItemsData={sellingItemsData}
+                  buyingInvoiceNumber={reserveBuyingInvoiceNumber}
+                  setBuyingItemsData={setBuyingItemsData}
+                  buyingItemsData={buyingItemsData}
                   goldPrice={goldPrice}
                 />
               )}
               {stage === 2 && (
-                <SellingInvoiceSecondPage
+                <PurchaseInvoiceSecondPage
                   setStage={setStage}
-                  sellingInvoiceNumber={reserveSellingInvoiceNumber}
-                  setSellingItemsData={setSellingItemsData}
-                  sellingItemsData={sellingItemsData}
+                  buyingInvoiceNumber={reserveBuyingInvoiceNumber}
+                  setBuyingItemsData={setBuyingItemsData}
+                  buyingItemsData={buyingItemsData}
                   goldPrice={goldPrice}
                 />
               )}
@@ -83,4 +86,4 @@ const SellingInvoiceSupplier: React.FC<SellingInvoiceSupplier_TP> = (props) => {
   );
 };
 
-export default SellingInvoiceSupplier;
+export default PurchaseInvoiceSupplier;

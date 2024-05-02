@@ -1,18 +1,18 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { authCtx } from "../../../../../context/auth-and-perm/auth";
+import { useFormikContext } from "formik";
 import { useFetch } from "../../../../../hooks";
 import { ClientData_TP } from "../../../../selling/PaymentSellingPage";
 import FinalPreviewBillData from "../../../../../components/selling/selling components/bill/FinalPreviewBillData";
 import FinalPreviewBuyingPayment from "../../../../Buying/FinalPreviewBuyingPayment";
-import { t } from "i18next";
 import { Button } from "../../../../../components/atoms";
-import { useFormikContext } from "formik";
+import { t } from "i18next";
 
 const ReserveSecondPageFinalPreview = (props: any) => {
   const {
     invoiceNumber,
     costDataAsProps,
-    sellingItemsData,
+    buyingItemsData,
     setStage,
     ItemsTableContent,
   } = props;
@@ -21,7 +21,7 @@ const ReserveSecondPageFinalPreview = (props: any) => {
   const clientData = {
     client_value: values!.supplier_name,
     client_id: values!.supplier_id,
-    bond_date: values!.reserve_selling_data,
+    bond_date: values!.reserve_buying_date,
   };
 
   // SENTENCE API
@@ -50,7 +50,7 @@ const ReserveSecondPageFinalPreview = (props: any) => {
           <div className="mx-6 bill-shadow rounded-md p-6 my-9">
             <FinalPreviewBuyingPayment
               costDataAsProps={costDataAsProps}
-              sellingItemsData={sellingItemsData}
+              sellingItemsData={buyingItemsData}
               hideCash
             />
           </div>

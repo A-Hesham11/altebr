@@ -144,13 +144,13 @@ import PurchaseInvoice from "../pages/reserveGold/invoices/purchaseInvoice/Purch
 import SellingInvoice from "../pages/reserveGold/invoices/sellingInvoice/supplier/SellingInvoiceSupplier";
 import ReversePurchaseBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
 import ReservePurchaseBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
-import PurchaseInvoiceSecondPage from "../pages/reserveGold/invoices/purchaseInvoice/PurchaseInvoiceSecondPage";
-import SellingInvoiceSecondPage from "../pages/reserveGold/invoices/sellingInvoice/supplier/SellingInvoiceSecondPage";
 import SellingBond from "../pages/reserveGold/invoices/sellingInvoice/SellingBond";
 import ReverseSellingBonds from "../pages/reserveGold/bonds/sellingBonds/ReserveSellingBonds";
 import ReserveSellingSupplierEntry from "../pages/reserveGold/invoices/sellingInvoice/supplier/ReserveSellingSupplierEntry";
-import SupplierPayment from "../pages/SupplyPayment/SupplierPayment";
-import SupplierPaymentBonds from "../pages/SupplyPayment/SupplierPaymentBonds";
+import ReservePurchaseSupplierEntry from "../pages/reserveGold/invoices/purchaseInvoice/supplier/ReservePurchaseSupplierEntry";
+import PurchaseInvoiceSecondPage from "../pages/reserveGold/invoices/purchaseInvoice/supplier/PurchaseInvoiceSecondPage";
+import SellingInvoiceSecondPage from "../pages/reserveGold/invoices/sellingInvoice/supplier/SellingInvoiceSecondPage";
+import PurchaseBond from "../pages/reserveGold/invoices/purchaseInvoice/PurchaseBond";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -247,12 +247,16 @@ export const AllRoutesProvider = () => {
 
           {/* START RESERVE GOLDS */}
           {/* PURCHASE */}
-          <Route path="/addPurchaseBond" element={<PurchaseInvoice />} />
+          <Route path="/addPurchaseBond" element={<PurchaseBond />} />
           <Route
             path="/reservePurchaseBondInvoice"
             element={<PurchaseInvoiceSecondPage />}
           />
           <Route path="/viewPurchaseBonds" element={<ReservePurchaseBonds />} />
+          <Route
+            path="/addPurchaseBond/entry"
+            element={<ReservePurchaseSupplierEntry />}
+          />
 
           {/* SELLING */}
           <Route path="/addSellingBond" element={<SellingBond />} />
@@ -456,14 +460,6 @@ export const AllRoutesProvider = () => {
           <Route
             path="/accessory-bonds/:bondID"
             element={<Bond title={t("accessory bond")} />}
-          />
-          <Route
-            path="/supplier-payment"
-            element={<SupplierPayment title={t("supplier payment")} />}
-          />
-          <Route
-            path="/bonds/supplier-payment"
-            element={<SupplierPaymentBonds title={t("supplier payment bonds")} />}
           />
 
           {/* المبعات */}

@@ -4,7 +4,7 @@ import { t } from "i18next";
 import { Table } from "../../../../../components/templates/reusableComponants/tantable/Table";
 import ReserveSellingSupplierEntry from "../../../invoices/sellingInvoice/supplier/ReserveSellingSupplierEntry";
 
-const SellingBondsSupplierPreview = ({ item }: { item?: {} }) => {
+const PurchaseBondsSupplierPreview = ({ item }: { item?: {} }) => {
   const { formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE
@@ -50,7 +50,7 @@ const SellingBondsSupplierPreview = ({ item }: { item?: {} }) => {
 
   return (
     <>
-      <h2 className="text-xl mt-16 mb-5 font-bold">{t("pieces details")}</h2>
+      <h2 className="text-xl mb-5 mt-16 font-bold">{t("pieces details")}</h2>
 
       <div className="">
         <Table data={item?.items} columns={tableColumn}></Table>
@@ -63,4 +63,4 @@ const SellingBondsSupplierPreview = ({ item }: { item?: {} }) => {
   );
 };
 
-export default SellingBondsSupplierPreview;
+export default PurchaseBondsSupplierPreview;

@@ -42,9 +42,9 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   const billNumber =
     path === "/selling/honesty/return-honest"
       ? honestBondsData?.length + 1
-      : path === "/addSellingBond"
+      : path === "/addSellingBond" || path === "/addPurchaseBond"
       ? invoiceNumber
-      : invoiceNumber?.total + 1;
+      : invoiceNumber?.length + 1;
 
   return (
     <div className="flex justify-between">
@@ -54,11 +54,7 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
         </p>
         <p className="text-xs font-bold">
           {t("bill date")} :{" "}
-          <span className="font-medium">
-            {bond_date === ""
-              ? formatDate(new Date())
-              : formatDate(getDayAfter(bond_date))}
-          </span>{" "}
+          <span className="font-medium">{formatDate(bond_date)}</span>{" "}
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">

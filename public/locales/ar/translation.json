@@ -1286,12 +1286,13 @@
   "retail": "تجزئه",
   "wholesale": "جمله",
   "reserve gold data": "بيانات حجز الذهب",
-  "24 gold credit for supplier": "حساب الذهب المحول ل 24 للمورد",
-  "supplier cash balance": "حساب النقدية للمورد",
+  "supplier account gram": "حساب المورد جرام",
+  "supplier account cash": "حساب المورد ريال",
   "reserve gold bonds": "سندات حجز الذهب",
   "choose supplier's name first": "اختر اسم العميل اولا",
   "gold reservation selling bonds": "سندات بيع حجز الذهب",
   "bond created successfully": "تم انشاء السند بنجاح",
   "weight converted to 24": "اجمالي الوزن محول ل 24",
-  "total value after tax": "اجمالي القيمة بعد الضريبه"
+  "total value after tax": "اجمالي القيمة بعد الضريبه",
+  "gold reservation purchase bonds": "سندات شراء حجز الذهب"
 }

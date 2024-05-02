@@ -62,14 +62,12 @@ type Entry_TP = {
 };
 
 const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
-console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item)
-
   const { formatGram, formatReyal } = numberContext();
   // const [endpointApi, setEndpointApi] = useState("");
   const [test, setTest] = useState(false);
-  const [constraintID, setConstraintID] = useState("")
+  const [constraintID, setConstraintID] = useState("");
 
-  const isRTL = useIsRTL()
+  const isRTL = useIsRTL();
 
   // const { data: entryAccounting, refetch: entryAccountingRefetch, isLoading, isFetching } = useFetch({
   //   endpoint: `/identity/api/v1/accept/${constraintID}`,
@@ -99,7 +97,7 @@ console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item)
     onSuccess: (data) => {
       notify("success");
       queryClient.refetchQueries(["entry-accounting"]);
-      refetch()
+      refetch();
     },
     onError: (error) => {
       console.log(error);
@@ -198,18 +196,23 @@ console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item)
     ({ account, computational_movement, unit_id, value }) => ({
       bian: account,
       debtor_gram:
-        computational_movement === "debtor" && unit_id === ("جرام" || "gram") ? value : 0,
+        computational_movement === "debtor" && unit_id === ("جرام" || "gram")
+          ? value
+          : 0,
       debtor_SRA:
-        computational_movement === "debtor" && unit_id ===  ("ريال" || "reyal") ? value : 0,
+        computational_movement === "debtor" && unit_id === ("ريال" || "reyal")
+          ? value
+          : 0,
       creditor_gram:
-        computational_movement === "creditor" && unit_id === ("جرام" || "gram") ? value : 0,
+        computational_movement === "creditor" && unit_id === ("جرام" || "gram")
+          ? value
+          : 0,
       creditor_SRA:
         computational_movement === "creditor" && unit_id === ("ريال" || "reyal")
           ? value
           : 0,
     })
   );
-  console.log("🚀 ~ TableOfReturnBondsModal ~ restrictions:", restrictions)
 
   // group by account
   const restrictionsWithoutTotals = restrictions?.reduce(
@@ -253,9 +256,12 @@ console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item)
       <div>
         <div className="flex items-center justify-between mb-4 mt-8">
           <h2 className="text-xl font-bold text-slate-700">
-          {t("view bond details")}
+            {t("view bond details")}
           </h2>
-          <p className="text-base font-semibold">{t("bond number")} <span className="text-mainOrange">{item?.id}</span></p>
+          <p className="text-base font-semibold">
+            {t("bond number")}{" "}
+            <span className="text-mainOrange">{item?.id}</span>
+          </p>
         </div>
 
         <Table data={item?.items || []} showNavigation columns={tableColumn}>
@@ -305,21 +311,20 @@ console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item)
         <Button
           action={() => {
             setTest(true);
-            setConstraintID(item?.id)
+            setConstraintID(item?.id);
             const itemsReceived = item?.items?.map((item) => {
               return {
                 hwya: item.hwya,
-                front: item.front
-              }
-            })
+                front: item.front,
+              };
+            });
             PostNewCard({
               id: item?.id,
-              items: itemsReceived
-            })
+              items: itemsReceived,
+            });
 
-            
             // entryAccountingRefetch()
-            refetch()
+            refetch();
           }}
           className="bg-mainGreen text-white w-max mx-auto mt-8"
           // loading={isFetching}

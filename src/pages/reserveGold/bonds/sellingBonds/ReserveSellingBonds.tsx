@@ -34,6 +34,7 @@ const ReverseSellingBonds = () => {
                       value="1"
                       label={`${t("direct client")}`}
                       id="direct_client"
+                      disabled
                     />
                     <RadioGroup.RadioButton
                       value="2"
@@ -44,16 +45,19 @@ const ReverseSellingBonds = () => {
                       value="3"
                       label={`${t("retail")}`}
                       id="retail"
+                      disabled
                     />
                     <RadioGroup.RadioButton
                       value="4"
                       label={`${t("wholesale")}`}
                       id="wholesale"
+                      disabled
                     />
                     <RadioGroup.RadioButton
                       value="5"
                       label={`${t("branches")}`}
                       id="branches"
+                      disabled
                     />
                   </div>
                 </RadioGroup>

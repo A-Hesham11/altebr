@@ -1,19 +1,16 @@
 import { useFormikContext } from "formik";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import { useState } from "react";
 import {
   DateInputField,
   Modal,
   Select,
   TextAreaField,
 } from "../../../../../components/molecules";
-import { t } from "i18next";
 import { IoMdAdd } from "react-icons/io";
-import { formatDate } from "../../../../../utils/date";
+import { t } from "i18next";
 import { CiCalendarDate } from "react-icons/ci";
 import SellingClientForm from "../../../../../components/selling/SellingClientForm";
-import { BsDatabase } from "react-icons/bs";
-import { useFetch } from "../../../../../hooks";
-import { numberContext } from "../../../../../context/settings/number-formatter";
+import { formatDate } from "../../../../../utils/date";
 
 interface clientsNameOptions_TP {
   value: number;
@@ -22,12 +19,12 @@ interface clientsNameOptions_TP {
   label: string;
 }
 
-interface ReserveSellingBillInputs_TP {
+interface ReservePurchaseBillInputs_TP {
   isLoading: boolean;
   supplierNameOptions: clientsNameOptions_TP[];
 }
 
-const ReserveSellingBillInputs: React.FC<ReserveSellingBillInputs_TP> = (
+const ReservePurchaseBillInputs: React.FC<ReservePurchaseBillInputs_TP> = (
   props
 ) => {
   const { isLoading, supplierNameOptions } = props;
@@ -68,7 +65,7 @@ const ReserveSellingBillInputs: React.FC<ReserveSellingBillInputs_TP> = (
         <div>
           <DateInputField
             label={`${t("date issuance bill")}`}
-            name="reserve_selling_data"
+            name="reserve_buying_date"
             minDate={new Date()}
             icon={<CiCalendarDate />}
             required
@@ -90,7 +87,7 @@ const ReserveSellingBillInputs: React.FC<ReserveSellingBillInputs_TP> = (
         </div>
       </div>
 
-      {model && (
+      {/* {model && (
         <Modal
           isOpen={open}
           onClose={() => {
@@ -100,9 +97,9 @@ const ReserveSellingBillInputs: React.FC<ReserveSellingBillInputs_TP> = (
         >
           <SellingClientForm />
         </Modal>
-      )}
+      )} */}
     </div>
   );
 };
 
-export default ReserveSellingBillInputs;
+export default ReservePurchaseBillInputs;

@@ -7,24 +7,25 @@ type FinalPreviewBuyingPayment_TP = {
   paymentData: never[];
   costDataAsProps: any;
   sellingItemsData: any;
-}
+  hideCash?: boolean;
+};
 
 const FinalPreviewBuyingPayment = ({
   paymentData,
   costDataAsProps,
   sellingItemsData,
   odwyaTypeValue,
-      setOdwyaTypeValue
+  hideCash,
+  setOdwyaTypeValue,
 }: FinalPreviewBuyingPayment_TP) => {
-  console.log("🚀 ~ file: FinalPreviewBuyingPayment.tsx:18 ~ sellingItemsData:", sellingItemsData)
-  const {formatReyal} = numberContext()
+  const { formatReyal } = numberContext();
 
   // FORMULA TO CALC THE TOTAL VALUE OF ITEMS
   const totalValueOfItems = sellingItemsData.reduce((acc, curr) => {
     if (odwyaTypeValue === "supplier") {
-      return +acc + +curr.total_value
+      return +acc + +curr.total_value;
     }
-    
+
     return +acc + +curr.value;
   }, 0);
 
@@ -41,18 +42,16 @@ const FinalPreviewBuyingPayment = ({
         />
       </div>
       <div className="flex flex-col gap-1 items-center">
-        <div className="flex flex-row items-end gap-4 mb-3">
-          <div className="flex flex-col items-center max-w-[100px] text-center">
-            <div className="w-24 h-9">
-              <img
-                src={cashImg} 
-                alt="cash"
-                className="w-full h-full"
-              />
+        {!hideCash && (
+          <div className="flex flex-row items-end gap-4 mb-3">
+            <div className="flex flex-col items-center max-w-[100px] text-center">
+              <div className="w-24 h-9">
+                <img src={cashImg} alt="cash" className="w-full h-full" />
+              </div>
+              <p className="mt-3">{formatReyal(totalValueOfItems)}</p>
             </div>
-            <p className="mt-3">{formatReyal(totalValueOfItems)}</p>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
