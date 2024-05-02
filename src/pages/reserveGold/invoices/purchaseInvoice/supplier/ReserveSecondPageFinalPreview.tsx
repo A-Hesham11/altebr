@@ -15,6 +15,7 @@ const ReserveSecondPageFinalPreview = (props: any) => {
     buyingItemsData,
     setStage,
     ItemsTableContent,
+    bondDate,
   } = props;
   const { userData } = useContext(authCtx);
   const { values } = useFormikContext();

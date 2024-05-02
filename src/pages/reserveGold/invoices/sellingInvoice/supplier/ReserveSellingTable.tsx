@@ -225,8 +225,13 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
                 id="value_added_tax"
                 name="value_added_tax"
                 type="text"
-                disabled
-                className="bg-mainDisabled text-center"
+                className="text-center"
+                onChange={(e) => {
+                  setFieldValue(
+                    "total_value",
+                    +e.target.value + +values!.value
+                  );
+                }}
                 // value={+values.value_added_tax}
                 required
               />

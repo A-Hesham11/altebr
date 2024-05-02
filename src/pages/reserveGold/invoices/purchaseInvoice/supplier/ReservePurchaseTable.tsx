@@ -94,7 +94,7 @@ const ReservePurchaseTable: React.FC<ReservePurchaseTable_TP> = (props) => {
   const handleAddItemsToPurchase = () => {
     const {
       supplier_id,
-      reserve_Purchase_data,
+      reserve_buying_date,
       supplier_value,
       supplier_name,
       notes,
@@ -216,8 +216,13 @@ const ReservePurchaseTable: React.FC<ReservePurchaseTable_TP> = (props) => {
                 id="value_added_tax"
                 name="value_added_tax"
                 type="text"
-                disabled
-                className="bg-mainDisabled text-center"
+                onChange={(e) => {
+                  setFieldValue(
+                    "total_value",
+                    +e.target.value + +values!.value
+                  );
+                }}
+                className="text-center"
                 // value={+values.value_added_tax}
                 required
               />

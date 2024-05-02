@@ -58,6 +58,7 @@ const SellingBondsSupplierPreview = ({ item }: { item?: {} }) => {
 
       <div>
         <ReserveSellingSupplierEntry item={item} />
+        {/* <TableEntry item={item} /> */}
       </div>
     </>
   );

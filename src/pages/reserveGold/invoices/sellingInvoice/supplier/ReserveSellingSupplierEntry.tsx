@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import { Table } from "../../../../../components/templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../../../../context/settings/number-formatter";
 
-const ReserveSellingSupplierEntry = ({ item }) => {
+const ReserveSellingSupplierEntry = ({ item }: { item: any }) => {
   const { formatGram, formatReyal } = numberContext();
 
   const cols2 = useMemo<ColumnDef<any>[]>(
@@ -40,8 +40,18 @@ const ReserveSellingSupplierEntry = ({ item }) => {
 
   // FOR TABLE ACCOUNTING ENTRY
   let restrictions = item?.boxes?.map(
-    ({ account, computational_movement, unit_id, value }, index) => ({
-      bian: `${account} (${unit_id})`,
+    ({
+      account,
+      computational_movement,
+      unit_id,
+      value,
+    }: {
+      account: string;
+      computational_movement: string;
+      unit_id: string;
+      value: any;
+    }) => ({
+      bian: account,
       debtor_gram:
         computational_movement === "debtor" && unit_id === ("جرام" || "gram")
           ? value
@@ -64,7 +74,7 @@ const ReserveSellingSupplierEntry = ({ item }) => {
   // group by account
   const restrictionsWithoutTotals = restrictions?.reduce(
     (prev: any, curr: any) => {
-      const index = prev.findIndex((item) => item.bian === curr.bian);
+      const index = prev.findIndex((item: any) => item.bian === curr.bian);
       if (index === -1) {
         prev.push(curr);
       } else {
@@ -73,6 +83,7 @@ const ReserveSellingSupplierEntry = ({ item }) => {
         prev[index].creditor_gram += curr.creditor_gram;
         prev[index].creditor_SRA += curr.creditor_SRA;
       }
+      // prev.push(curr);
       return prev;
     },
     [] as typeof restrictions
@@ -81,7 +92,7 @@ const ReserveSellingSupplierEntry = ({ item }) => {
   restrictions = restrictionsWithoutTotals;
 
   let restrictionsTotals;
-  if (restrictions && !!restrictions.length) {
+  if (restrictions && !!restrictions?.length) {
     restrictionsTotals = restrictions?.reduce((prev: any, curr: any) => ({
       bian: `${t("totals")}`,
       debtor_gram: prev.debtor_gram + curr.debtor_gram,
