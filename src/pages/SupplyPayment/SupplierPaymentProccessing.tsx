@@ -442,6 +442,7 @@ const SupplierPaymentProccessing = ({
   const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("");
   const { formatReyal } = numberContext();
   const [stockDifferenceMain, setStockDifferenceMain] = useState(0);
+  console.log("🚀 ~ stockDifferenceMain:", stockDifferenceMain);
 
   const locationPath = location.pathname;
 
@@ -563,10 +564,15 @@ const SupplierPaymentProccessing = ({
               );
               setPaymentData(updatedPaymentData);
             } else {
-              const isItemExistInPaymentData = !!paymentData.find(
-                (item) =>
-                  item.card_id == selectedCardId &&
-                  item.stock_difference != stockDifferenceMain
+              const isItemExistInPaymentData = !!paymentData.find((item) =>
+                values?.stock_difference
+                  ? item.card_id == selectedCardId &&
+                    item.stock_difference == values?.stock_difference
+                  : item.card_id == selectedCardId
+              );
+              console.log(
+                "🚀 ~ isItemExistInPaymentData:",
+                isItemExistInPaymentData
               );
               if (!isItemExistInPaymentData || !paymentData.length) {
                 const newItem = {
@@ -671,7 +677,7 @@ const SupplierPaymentProccessing = ({
                       placeholder={
                         selectedCardName ? selectedCardName : t("Fund totals")
                       }
-                      value={formatReyal(Number(data?.value))}
+                      value={data ? formatReyal(Number(data?.value)) : 0}
                       disabled
                       className={`bg-mainDisabled text-mainGreen ${
                         selectedCardName && "font-semibold"
