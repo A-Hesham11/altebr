@@ -554,7 +554,7 @@ import { ClientData_TP } from "../selling/PaymentSellingPage";
 
 const SupplierPayment = () => {
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
-  console.log("🚀 ~ SupplierPayment ~ paymentData:", paymentData)
+  console.log("🚀 ~ SupplierPayment ~ paymentData:", paymentData);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [stage, setStage] = useState<number>(1);
   const [selectedCardId, setSelectedCardId] = useState(null);
@@ -562,7 +562,7 @@ const SupplierPayment = () => {
   const [cardId, setCardId] = useState("");
   const navigate = useNavigate();
   const { userData } = useContext(authCtx);
-  const taxRate = (userData?.tax_rate * 0.01) + 1;
+  const taxRate = userData?.tax_rate * 0.01 + 1;
   const { formatGram, formatReyal } = numberContext();
   const [supplierId, setSupplierId] = useState(0);
   const [boxValues, setBoxValues] = useState();
@@ -655,6 +655,10 @@ const SupplierPayment = () => {
   const gold_discount_sadad = paymentData?.filter(
     (item) => item.frontkey === "discount"
   );
+  const supplier_tax_sadad = paymentData?.filter(
+    (item) => item.frontkey === "total_tax_sadad_supplier"
+  );
+  console.log("🚀 ~ SupplierPayment ~ supplier_tax_sadad:", supplier_tax_sadad);
 
   const card = paymentData.reduce((acc, curr) => {
     acc[curr.frontkey] = Number(curr.amount);
@@ -720,6 +724,13 @@ const SupplierPayment = () => {
       }, 0),
       unit: "gram",
     },
+    total_tax_sadad_supplier: {
+      title: "total tax",
+      value: paymentData?.reduce((acc, curr) => {
+        return +acc + Number(curr.supplier_vat_sadad);
+      }, 0),
+      unit: "reyal",
+    },
     total_money: {
       title: "total money",
       value: paymentData?.reduce((acc, curr) => {
@@ -743,30 +754,14 @@ const SupplierPayment = () => {
     },
     ...accountBanksData,
   };
+  console.log("🚀 ~ SupplierPayment ~ boxes:", boxes);
 
   const mapBox = (item: any) => {
     switch (item.front_key) {
       case "sdad_supplier_money":
-        let total_payment_cost = 0;
-        paymentData?.forEach((row) => {
-          total_payment_cost = Number(total_payment_cost) + Number(row.amount);
-        });
-
-        const total_weight_tax = paymentWeightItems.reduce((acc, curr) => {
-          return (
-            +acc +
-            Number(curr.weight) *
-              Number(curr.stock_difference) *
-              Number(goldPrice[curr?.card_id])
-          );
-        }, 0);
-
-        const total_money_tax =
-          Number(boxes?.total_money.value) -
-          Number(boxes?.total_money.value);
         return {
           ...item,
-          value: boxes?.total_money.value + total_money_tax + total_weight_tax,
+          value: boxes?.total_money.value,
         };
       case "sdad_supplier_gold":
         let total_payment_karat = 0;
@@ -839,25 +834,9 @@ const SupplierPayment = () => {
         }
       // بنوك
       case "total_tax_sadad_supplier":
-        const total_weight_sadad_tax = paymentWeightItems.reduce(
-          (acc, curr) => {
-            return (
-              +acc +
-              Number(curr.weight) *
-                Number(curr.stock_difference) *
-                Number(goldPrice[curr?.card_id])
-            );
-          },
-          0
-        );
-
-        const total_money_sadad_tax =
-          Number(boxes?.total_money.value) -
-          Number(boxes?.total_money.value) / Number(taxRate);
-
         return {
           ...item,
-          value: total_money_sadad_tax + total_weight_sadad_tax,
+          value: boxes?.total_tax_sadad_supplier.value,
         };
       case "gold_box_fractional_18_sadad_suppliers":
         return {
@@ -957,18 +936,18 @@ const SupplierPayment = () => {
       name: t("Supplier current account (GRAM)"),
       key: 1,
       unit: t("gram"),
-      value: data && data[0]?.account_edara_gram,
+      value: data ? data[0]?.account_edara_gram : 0,
     },
     {
       name: t("Supplier current account (SAR)"),
       key: 2,
       unit: t("ر.س"),
-      value: data && data[0]?.account_edara_reyal,
+      value: data ? data[0]?.account_edara_reyal : 0,
     },
   ];
 
   return (
-    <div className="relative p-10">
+    <div className="relative p-4">
       <h2 className="mb-8 text-base font-bold">{t("supplier payment")}</h2>
       <div className="bg-lightGreen h-[100%] rounded-lg sales-shadow px-6 py-5">
         <div className="bg-flatWhite rounded-lg bill-shadow  py-5 px-6 h-41 my-5">
@@ -1001,7 +980,7 @@ const SupplierPayment = () => {
 
           <ul className="flex justify-around py-1 w-full mb-2">
             {paymentDataToManagement.map(({ name, key, unit, value }) => (
-              <li className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12">
+              <li key={key} className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12">
                 <p className="bg-mainOrange  p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
                   {name}
                 </p>
@@ -1064,4 +1043,3 @@ const SupplierPayment = () => {
 };
 
 export default SupplierPayment;
-

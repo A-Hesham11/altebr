@@ -151,6 +151,8 @@ import ReservePurchaseSupplierEntry from "../pages/reserveGold/invoices/purchase
 import PurchaseInvoiceSecondPage from "../pages/reserveGold/invoices/purchaseInvoice/supplier/PurchaseInvoiceSecondPage";
 import SellingInvoiceSecondPage from "../pages/reserveGold/invoices/sellingInvoice/supplier/SellingInvoiceSecondPage";
 import PurchaseBond from "../pages/reserveGold/invoices/purchaseInvoice/PurchaseBond";
+import SupplierPayment from "../pages/SupplyPayment/SupplierPayment";
+import SupplierPaymentBonds from "../pages/SupplyPayment/SupplierPaymentBonds";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -457,6 +459,15 @@ export const AllRoutesProvider = () => {
             element={<Bonds title={t("accessory bonds")} />}
           />
 
+          <Route
+            path="/supplier-payment"
+            element={<SupplierPayment/>}
+          />
+
+          <Route
+            path="/bonds/supplier-payment"
+            element={<SupplierPaymentBonds />}
+          />
           <Route
             path="/accessory-bonds/:bondID"
             element={<Bond title={t("accessory bond")} />}

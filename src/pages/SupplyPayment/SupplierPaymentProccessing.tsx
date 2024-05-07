@@ -442,6 +442,7 @@ const SupplierPaymentProccessing = ({
   const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("");
   const { formatReyal } = numberContext();
   const [stockDifferenceMain, setStockDifferenceMain] = useState(0);
+  console.log("🚀 ~ stockDifferenceMain:", stockDifferenceMain);
 
   const locationPath = location.pathname;
 
@@ -563,10 +564,15 @@ const SupplierPaymentProccessing = ({
               );
               setPaymentData(updatedPaymentData);
             } else {
-              const isItemExistInPaymentData = !!paymentData.find(
-                (item) =>
-                  item.card_id == selectedCardId &&
-                  item.stock_difference != stockDifferenceMain
+              const isItemExistInPaymentData = !!paymentData.find((item) =>
+                values?.stock_difference
+                  ? item.card_id == selectedCardId &&
+                    item.stock_difference == values?.stock_difference
+                  : item.card_id == selectedCardId
+              );
+              console.log(
+                "🚀 ~ isItemExistInPaymentData:",
+                isItemExistInPaymentData
               );
               if (!isItemExistInPaymentData || !paymentData.length) {
                 const newItem = {
@@ -583,20 +589,19 @@ const SupplierPaymentProccessing = ({
                   salesReturnFrontKey: salesReturnFrontKey,
                 };
 
-                if (
-                  selectedCardId != "discount" ||
-                  selectedCardId != "total_tax_sadad_supplier"
-                ) {
-                  if (
-                    Number(data?.value) === 0 ||
-                    Number(values.amount > +data?.value) ||
-                    Number(values.weight > +data?.value)
-                  ) {
-                    notify(
-                      "info",
-                      `${t("value is greater than the value in box")}`
-                    );
-                    return;
+                if (selectedCardId != "total_tax_sadad_supplier") {
+                  if (selectedCardId != "discount") {
+                    if (
+                      Number(data?.value) === 0 ||
+                      Number(values.amount > +data?.value) ||
+                      Number(values.weight > +data?.value)
+                    ) {
+                      notify(
+                        "info",
+                        `${t("value is greater than the value in box")}`
+                      );
+                      return;
+                    }
                   }
                 }
                 setPaymentData((prevData) => [newItem, ...prevData]);
@@ -672,7 +677,7 @@ const SupplierPaymentProccessing = ({
                       placeholder={
                         selectedCardName ? selectedCardName : t("Fund totals")
                       }
-                      value={formatReyal(Number(data?.value))}
+                      value={data ? formatReyal(Number(data?.value)) : 0}
                       disabled
                       className={`bg-mainDisabled text-mainGreen ${
                         selectedCardName && "font-semibold"
@@ -708,27 +713,15 @@ const SupplierPaymentProccessing = ({
                   </>
                 ) : (
                   <>
-                    {selectedCardId == "total_tax_sadad_supplier" ? (
-                      <div className="relative">
-                        <BaseInputField
-                          id="supplier_vat_sadad"
-                          name="supplier_vat_sadad"
-                          type="text"
-                          label={`${t("Value added tax")}`}
-                          placeholder={`${t("Value added tax")}`}
-                        />
-                      </div>
-                    ) : (
-                      <div className="relative">
-                        <BaseInputField
-                          id="amount"
-                          name="amount"
-                          type="text"
-                          label={`${t("amount")}`}
-                          placeholder={`${t("amount")}`}
-                        />
-                      </div>
-                    )}
+                    <div className="relative">
+                      <BaseInputField
+                        id="amount"
+                        name="amount"
+                        type="text"
+                        label={`${t("amount")}`}
+                        placeholder={`${t("amount")}`}
+                      />
+                    </div>
                   </>
                 )}
                 <Button

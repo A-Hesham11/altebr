@@ -12,26 +12,26 @@ import brokenGoldImg from "../../../../assets/Frame 26085625.svg";
 import addedTax from "../../../../assets/OIP.jpeg";
 
 type Payment_TP = {
-  onSelectCard?: any
-  selectedCardId?: any
-  setSelectedCardId?: any
-  dataSource?: any
-  fetchShowMainCards?: boolean
-  setCardDataSelect?: any
-  editData?: any
-  name_ar?: string
-  bank?: string
-  discount_percentage?: any
-  id?: number
-  setCardFronKey?: any
-  setCardFrontKeyAccept?: any
-  setSellingFrontKey?:any
-  setCardId?: any
-  setCardDiscountPercentage?: any
-  setSelectedCardName?: any
-  setIsMaxDiscountLimit?: any
-  setSalesReturnFrontKey?: any
-  setCardFrontKeySadad?: any
+  onSelectCard?: any;
+  selectedCardId?: any;
+  setSelectedCardId?: any;
+  dataSource?: any;
+  fetchShowMainCards?: boolean;
+  setCardDataSelect?: any;
+  editData?: any;
+  name_ar?: string;
+  bank?: string;
+  discount_percentage?: any;
+  id?: number;
+  setCardFronKey?: any;
+  setCardFrontKeyAccept?: any;
+  setSellingFrontKey?: any;
+  setCardId?: any;
+  setCardDiscountPercentage?: any;
+  setSelectedCardName?: any;
+  setIsMaxDiscountLimit?: any;
+  setSalesReturnFrontKey?: any;
+  setCardFrontKeySadad?: any;
 };
 
 const PaymentCard = ({
@@ -48,7 +48,7 @@ const PaymentCard = ({
   setSalesReturnFrontKey,
   setSelectedCardName,
   setIsMaxDiscountLimit,
-  setCardFrontKeySadad
+  setCardFrontKeySadad,
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
@@ -69,7 +69,7 @@ const PaymentCard = ({
         front_key: "cash",
         images: [{ preview: `${cashImg}` }],
       },
-    }
+    },
   ];
 
   const cardReimbursement = [
@@ -155,8 +155,9 @@ const PaymentCard = ({
       name_ar: "خصم مكتسب",
       name_en: "Discount earned",
       discount_percentage: 0,
+      bank_id: 10006,
       card: {
-        bank_id: 2,
+        id: 10006,
         name_ar: "خصم مكتسب",
         name_en: "Discount earned",
         front_key: "discount",
@@ -168,8 +169,9 @@ const PaymentCard = ({
       name_ar: "ضريبة القيمة المضافه",
       name_en: "Value added tax",
       discount_percentage: 0,
+      bank_id: 10007,
       card: {
-        bank_id: 2,
+        id: 10007,
         name_ar: "ضريبة القيمة المضافه",
         name_en: "Value added tax",
         front_key: "total_tax_sadad_supplier",
@@ -254,13 +256,23 @@ const PaymentCard = ({
 
   const locationPath = location.pathname;
 
-  const cardCash = locationPath === "/selling/reimbursement" ? cardReimbursement : locationPath === "/supplier-payment" ? cardReimbursementSupplier : cardOfCash
+  const cardCash =
+    locationPath === "/selling/reimbursement"
+      ? cardReimbursement
+      : locationPath === "/supplier-payment"
+      ? cardReimbursementSupplier
+      : cardOfCash;
 
-  const bankscard = (locationPath === "/selling/reimbursement" || locationPath === "/expenses/expensesInvoice" || locationPath === "/selling/payoff/sales-return") ? "" :  dataSource 
+  const bankscard =
+    locationPath === "/selling/reimbursement" ||
+    locationPath === "/expenses/expensesInvoice" ||
+    locationPath === "/selling/payoff/sales-return"
+      ? ""
+      : dataSource;
 
   const cardsData = fetchShowMainCards
-  ? [...dataSource].reverse()
-  : [...bankscard, ...bankAccountCards, ...cardCash].reverse();
+    ? [...dataSource].reverse()
+    : [...bankscard, ...bankAccountCards, ...cardCash].reverse();
 
   const { userData } = useContext(authCtx);
 
@@ -275,26 +287,38 @@ const PaymentCard = ({
         (item) => item?.front_key === frontKey
       );
 
-      const selectCradIDOrBankId = selectNewCard[0]?.bank_id ? selectNewCard[0]?.bank_id : selectNewCard[0]?.id;
+      const selectCradIDOrBankId = selectNewCard[0]?.bank_id
+        ? selectNewCard[0]?.bank_id
+        : selectNewCard[0]?.id;
 
       setCardId?.(selectCradIDOrBankId);
-      setSelectedCardName?.(isRTL ? selectNewCard[0]?.name_ar : selectNewCard[0]?.name_en);
+      setSelectedCardName?.(
+        isRTL ? selectNewCard[0]?.name_ar : selectNewCard[0]?.name_en
+      );
       setIsMaxDiscountLimit?.(selectNewCard[0]?.is_minimum);
       setSelectedCardId(frontKey);
       setFieldValue(
         "discount_percentage",
         selectNewCard[0]?.discount_percentage * 100
       );
-      const cardNameInTable = `${selectNewCard[0]?.name_ar} ${selectNewCard[0]?.bank_name ? `(${selectNewCard[0]?.bank_name})` : ""}`;
+      const cardNameInTable = `${selectNewCard[0]?.name_ar} ${
+        selectNewCard[0]?.bank_name ? `(${selectNewCard[0]?.bank_name})` : ""
+      }`;
       const cardIMageInTable = `${selectNewCard[0]?.card.images[0]?.preview}`;
       onSelectCard(cardNameInTable, cardIMageInTable);
       setCardFronKey(selectNewCard[0]?.front_key);
       if (locationPath === "/selling/addInvoice/") {
-        setSellingFrontKey?.(selectNewCard[0]?.selling_front_key || "cash")
+        setSellingFrontKey?.(selectNewCard[0]?.selling_front_key || "cash");
       } else if (locationPath === "/selling/payoff/sales-return") {
-        setSalesReturnFrontKey?.(selectNewCard[0]?.return_selling_front_key || "cash")
+        setSalesReturnFrontKey?.(
+          selectNewCard[0]?.return_selling_front_key || "cash"
+        );
       } else if (locationPath === "/selling/reimbursement") {
-        setCardFrontKeySadad?.(selectNewCard[0]?.sadad_aladra_front_key || selectNewCard[0]?.front_key || "cash");
+        setCardFrontKeySadad?.(
+          selectNewCard[0]?.sadad_aladra_front_key ||
+            selectNewCard[0]?.front_key ||
+            "cash"
+        );
       } else {
         setCardFrontKeyAccept?.(selectNewCard[0]?.front_key_accept || "cash");
       }
@@ -376,13 +400,13 @@ const PaymentCard = ({
     enabled: fetchShowMainCards ? false : true,
   });
 
-    const updateSlidesToShow = () => {
-        if (window.innerWidth >= 1024) {
-            setSlidesToShow(3);
-        } else {
-            setSlidesToShow(2);
-        }
-    };
+  const updateSlidesToShow = () => {
+    if (window.innerWidth >= 1024) {
+      setSlidesToShow(3);
+    } else {
+      setSlidesToShow(2);
+    }
+  };
 
   useEffect(() => {
     window.addEventListener("resize", updateSlidesToShow);
@@ -402,48 +426,80 @@ const PaymentCard = ({
     nextArrow: <GrNext size={30} />,
     prevArrow: <GrPrevious size={30} />,
   };
-  if (isFetchingPaymentAccount && isFetchingPayment) return <p className='font-bold text-center mt-8'>{t('cards loading')}...</p>
+  if (isFetchingPaymentAccount && isFetchingPayment)
+    return (
+      <p className="font-bold text-center mt-8">{t("cards loading")}...</p>
+    );
   return (
     <div>
-      {(isSuccessPaymentAccount && AcountsData && bankData) || (data && isSuccess)
-        ? (
-          <ul className={` py-1 cursor-pointer w-full mb-2`}>
-            <Slider {...sliderSettings}>
-              {cardsData.map((item: any) => (
-                <li
-                  key={item.id}
-                  className={`flex flex-col h-28 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
-                  onClick={() => {
-                    handleChooseCard(item?.front_key, item.id)
-                    setCardDiscountPercentage?.({
-                      discount_percentage:item?.discount_percentage,
-                      max_discount_limit:item?.max_discount_limit,
-                      max_discount_limit_value:item?.max_discount_limit_value,
-                    })
-                  }}
+      {(isSuccessPaymentAccount && AcountsData && bankData) ||
+      (data && isSuccess) ? (
+        <ul className={` py-1 cursor-pointer w-full mb-2`}>
+          <Slider {...sliderSettings}>
+            {cardsData.map((item: any, index) => (
+              <li
+                key={index}
+                className={`flex flex-col h-28 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
+                onClick={() => {
+                  handleChooseCard(item?.front_key, item.id);
+                  setCardDiscountPercentage?.({
+                    discount_percentage: item?.discount_percentage,
+                    max_discount_limit: item?.max_discount_limit,
+                    max_discount_limit_value: item?.max_discount_limit_value,
+                  });
+                }}
+              >
+                <span
+                  className={`bg-white px-6 flex items-center justify-center h-[65%] rounded-t-xl text-white 
+                                    ${
+                                      selectedCardId === item.front_key
+                                        ? "border-2 border-mainGreen"
+                                        : "bg-white"
+                                    }`}
                 >
-                  <span className={`bg-white px-6 flex items-center justify-center h-[65%] rounded-t-xl text-white 
-                                    ${selectedCardId === item.front_key ? 'border-2 border-mainGreen' : 'bg-white'}`}
-                  >
-                    {fetchShowMainCards
-                      ? (<img src={item?.images[0]?.preview} alt="img" className='h-full' />)
-                      : (<img src={item?.card?.images[0]?.preview} alt="img" className='h-full' />)
-                    }
-                  </span>
-                  <p className={` py-2 text-black h-[35%] rounded-b-xl 
-                                    ${selectedCardId === item?.front_key ? 'bg-mainGreen text-white' : 'bg-flatWhite'}`}
-                  >
-                    {fetchShowMainCards ? item?.name_ar : `${item?.name_ar} ${item?.bank_name ? `(${item?.bank_name})` : item?.main_account_number ? `(${item?.main_account_number})` : ""}`}
-                  </p>
-                </li>
-              ))}
-            </Slider>
-          </ul>
-        )
-        : (<p className='font-bold text-center mt-8'>{t("there is no available cards yet")}</p>)
-      }
+                  {fetchShowMainCards ? (
+                    <img
+                      src={item?.images[0]?.preview}
+                      alt="img"
+                      className="h-full"
+                    />
+                  ) : (
+                    <img
+                      src={item?.card?.images[0]?.preview}
+                      alt="img"
+                      className="h-full"
+                    />
+                  )}
+                </span>
+                <p
+                  className={` py-2 text-black h-[35%] rounded-b-xl 
+                                    ${
+                                      selectedCardId === item?.front_key
+                                        ? "bg-mainGreen text-white"
+                                        : "bg-flatWhite"
+                                    }`}
+                >
+                  {fetchShowMainCards
+                    ? item?.name_ar
+                    : `${item?.name_ar} ${
+                        item?.bank_name
+                          ? `(${item?.bank_name})`
+                          : item?.main_account_number
+                          ? `(${item?.main_account_number})`
+                          : ""
+                      }`}
+                </p>
+              </li>
+            ))}
+          </Slider>
+        </ul>
+      ) : (
+        <p className="font-bold text-center mt-8">
+          {t("there is no available cards yet")}
+        </p>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default PaymentCard
+export default PaymentCard;
