@@ -15,12 +15,10 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
   const locationPath = location.pathname
 
   const amountRemaining = paymentData.reduce((total, item) => Number(total) + (Number(item.cost_after_tax) || Number(item.amount)) ,0);
-  console.log("🚀 ~ PaymentBoxes ~ amountRemaining:", amountRemaining)
 
   const totalPaymentByBank = paymentData.filter((item) => item.id < 10000).reduce((total, item) => +total + +item.amount, 0);
 
   const totalPaymentByCash = paymentData.filter((item) => item.id > 10004).reduce((total, item) => +total + +item.amount, 0) || 0; 
-  console.log("🚀 ~ PaymentBoxes ~ totalPaymentByCash:", totalPaymentByCash)
 
   const totalPaymentByKarat18 = paymentData.filter((item) => item.id === 10001).reduce((total, item) => +total + +item.weight, 0) || 0; 
   const totalPaymentByKarat21 = paymentData.filter((item) => item.id === 10002).reduce((total, item) => +total + +item.weight, 0) || 0; 

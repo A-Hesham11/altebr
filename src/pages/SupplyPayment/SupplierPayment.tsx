@@ -33,7 +33,7 @@
 //   const [boxValues, setBoxValues] = useState();
 
 //   const { data, refetch: supplierGetCount } = useFetch({
-//     endpoint: `/sadadSupplier/api/v1/get-count/${supplierId}`,
+//     endpoint: `/sadadSupplier/api/v1/get-count/${supplierId ? supplierId : 0}`,
 //     queryKey: ["dataOfPaymentToSupplier"],
 //     onSuccess(data) {
 //       return data.data;
@@ -87,7 +87,7 @@
 //     isLoading: boxesLoading,
 //     refetch: boxesRefetch,
 //   } = useFetch<any>({
-//     endpoint: `/sadadSupplier/api/v1/boxes/${supplierId}`,
+//     endpoint: `/sadadSupplier/api/v1/boxes/${supplierId ? supplierId : 0}`,
 //     queryKey: ["sadadSupplier_response"],
 //   });
 
@@ -385,10 +385,15 @@
 //       postPaymentAllData.push(keyAllValueObject);
 //     });
 
-//     if (paymentData.length === 0) {
-//       notify("info", "fill fields first");
-//       return;
-//     }
+//      if (!supplierId) {
+//           notify("info", `${t("The supplier must be chosen first")}`);
+//          return;
+//      }
+
+//      if (paymentData.length === 0) {
+//          notify("info", `${t("Payment must be completed first")}`);
+//          return;
+//      }
 
 //     mutatePaymentsData({
 //       endpointName: "/sadadSupplier/api/v1/create",
@@ -554,21 +559,19 @@ import { ClientData_TP } from "../selling/PaymentSellingPage";
 
 const SupplierPayment = () => {
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
-  console.log("🚀 ~ SupplierPayment ~ paymentData:", paymentData);
-  const [sellingItemsData, setSellingItemsData] = useState([]);
+  const [sellingItemsData,  ] = useState([]);
   const [stage, setStage] = useState<number>(1);
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [selectedCardName, setSelectedCardName] = useState(null);
   const [cardId, setCardId] = useState("");
   const navigate = useNavigate();
   const { userData } = useContext(authCtx);
-  const taxRate = userData?.tax_rate * 0.01 + 1;
   const { formatGram, formatReyal } = numberContext();
   const [supplierId, setSupplierId] = useState(0);
   const [boxValues, setBoxValues] = useState();
 
   const { data, refetch: supplierGetCount } = useFetch({
-    endpoint: `/sadadSupplier/api/v1/get-count/${supplierId}`,
+    endpoint: `/sadadSupplier/api/v1/get-count/${supplierId ? supplierId : 0}`,
     queryKey: ["dataOfPaymentToSupplier"],
     onSuccess(data) {
       return data.data;
@@ -622,8 +625,8 @@ const SupplierPayment = () => {
     isLoading: boxesLoading,
     refetch: boxesRefetch,
   } = useFetch<any>({
-    endpoint: `/sadadSupplier/api/v1/boxes/${supplierId}`,
-    queryKey: ["sadadSupplier_response"],
+    endpoint: `/sadadSupplier/api/v1/boxes/${supplierId ? supplierId : 0}`,
+    queryKey: ["sadadSupplier-response"],
   });
 
   useEffect(() => {
@@ -633,7 +636,7 @@ const SupplierPayment = () => {
 
   const { data: karatValues } = useFetch<KaratValues_TP[]>({
     endpoint: "classification/api/v1/allkarats",
-    queryKey: ["sadad_karat_bond_select"],
+    queryKey: ["sadad-karat-bond-select"],
   });
 
   const paymentWeightItems = paymentData.filter((item) =>
@@ -655,10 +658,6 @@ const SupplierPayment = () => {
   const gold_discount_sadad = paymentData?.filter(
     (item) => item.frontkey === "discount"
   );
-  const supplier_tax_sadad = paymentData?.filter(
-    (item) => item.frontkey === "total_tax_sadad_supplier"
-  );
-  console.log("🚀 ~ SupplierPayment ~ supplier_tax_sadad:", supplier_tax_sadad);
 
   const card = paymentData.reduce((acc, curr) => {
     acc[curr.frontkey] = Number(curr.amount);
@@ -754,7 +753,6 @@ const SupplierPayment = () => {
     },
     ...accountBanksData,
   };
-  console.log("🚀 ~ SupplierPayment ~ boxes:", boxes);
 
   const mapBox = (item: any) => {
     switch (item.front_key) {
@@ -832,7 +830,6 @@ const SupplierPayment = () => {
             value: val,
           };
         }
-      // بنوك
       case "total_tax_sadad_supplier":
         return {
           ...item,
@@ -897,8 +894,13 @@ const SupplierPayment = () => {
       postPaymentAllData.push(keyAllValueObject);
     });
 
+    if (!supplierId) {
+      notify("info", `${t("The supplier must be chosen first")}`);
+      return;
+    }
+
     if (paymentData.length === 0) {
-      notify("info", "fill fields first");
+      notify("info", `${t("Payment must be completed first")}`);
       return;
     }
 
@@ -918,17 +920,17 @@ const SupplierPayment = () => {
       method: "post",
     });
 
-    console.log({
-      bond: {
-        branch_id: userData?.branch_id,
-        invoice_number: invoiceDataNumber.length + 1,
-        bond_date: new Date()?.toISOString().slice(0, 10),
-        employee_id: userData?.id,
-        supplier_id: supplierId,
-      },
-      items: postPaymentAllData,
-      boxes: boxesFinal,
-    });
+    // console.log({
+    //   bond: {
+    //     branch_id: userData?.branch_id,
+    //     invoice_number: invoiceDataNumber.length + 1,
+    //     bond_date: new Date()?.toISOString().slice(0, 10),
+    //     employee_id: userData?.id,
+    //     supplier_id: supplierId,
+    //   },
+    //   items: postPaymentAllData,
+    //   boxes: boxesFinal,
+    // });
   };
 
   const paymentDataToManagement = [
@@ -980,7 +982,10 @@ const SupplierPayment = () => {
 
           <ul className="flex justify-around py-1 w-full mb-2">
             {paymentDataToManagement.map(({ name, key, unit, value }) => (
-              <li key={key} className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12">
+              <li
+                key={key}
+                className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12"
+              >
                 <p className="bg-mainOrange  p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
                   {name}
                 </p>

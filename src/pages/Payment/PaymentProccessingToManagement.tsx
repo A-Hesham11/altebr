@@ -128,13 +128,11 @@ const PaymentProccessingToManagement = ({
   //   (locationPath === "/selling/payoff/sales-return"
   //     ? Number(invoiceTotalOfSalesReturn) - Number(totalCommissionOfoneItem)
   //     : Number(totalPriceInvoice)) - Number(amountRemaining) - Number(totalCommissionTaxOfoneItem);
-  // console.log("🚀 ~ costRemaining:", costRemaining);
 
   const costRemaining =
     locationPath === "/selling/payoff/sales-return"
       ? amountIsPaid - Number(amountRemaining)
       : Number(totalPriceInvoice) - Number(amountRemaining);
-  console.log("🚀 ~ costRemaining:", costRemaining);
 
   const cashId =
     locationPath === "/selling/payoff/sales-return" && cardFrontKey === "cash";
@@ -149,7 +147,6 @@ const PaymentProccessingToManagement = ({
     },
     enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
   });
-  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
     if (cardId !== null && cardFrontKey !== null) {
