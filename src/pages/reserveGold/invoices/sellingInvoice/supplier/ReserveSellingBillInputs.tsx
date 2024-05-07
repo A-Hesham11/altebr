@@ -69,7 +69,7 @@ const ReserveSellingBillInputs: React.FC<ReserveSellingBillInputs_TP> = (
           <DateInputField
             label={`${t("date issuance bill")}`}
             name="reserve_selling_data"
-            minDate={new Date()}
+            maxDate={new Date()}
             icon={<CiCalendarDate />}
             required
             labelProps={{ className: "mb-2" }}
