@@ -301,7 +301,7 @@ const PaymentProccessingToManagement = ({
                   placeholder={
                     selectedCardName ? selectedCardName : t("Fund totals")
                   }
-                  value={formatReyal(Number(data?.value))}
+                  value={data ? formatReyal(Number(data?.value)) : 0}
                   disabled
                   className={`bg-mainDisabled text-mainGreen ${
                     selectedCardName && "font-semibold"

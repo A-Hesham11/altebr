@@ -936,13 +936,13 @@ const SupplierPayment = () => {
       name: t("Supplier current account (GRAM)"),
       key: 1,
       unit: t("gram"),
-      value: data && data[0]?.account_edara_gram,
+      value: data ? data[0]?.account_edara_gram : 0,
     },
     {
       name: t("Supplier current account (SAR)"),
       key: 2,
       unit: t("ر.س"),
-      value: data && data[0]?.account_edara_reyal,
+      value: data ? data[0]?.account_edara_reyal : 0,
     },
   ];
 
@@ -980,7 +980,7 @@ const SupplierPayment = () => {
 
           <ul className="flex justify-around py-1 w-full mb-2">
             {paymentDataToManagement.map(({ name, key, unit, value }) => (
-              <li className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12">
+              <li key={key} className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12">
                 <p className="bg-mainOrange  p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
                   {name}
                 </p>

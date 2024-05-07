@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { BoxesData } from '../../../molecules/card/BoxesData'
 import { t } from "i18next"
 import { BondTotals } from '../../../supply/BondTotals'
@@ -107,10 +107,10 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
   return (
     <div>
         <ul className="grid grid-cols-4 gap-8 py-1">
-            {boxsData?.map((data: any) => (
-              <>
+            {boxsData?.map((data: any, index) => (
+              <Fragment key={index}>
                 <SellingBoxData data={data} />
-              </>
+              </Fragment>
             ))}
         </ul>
     </div>

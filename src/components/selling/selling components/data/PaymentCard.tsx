@@ -436,9 +436,9 @@ const PaymentCard = ({
       (data && isSuccess) ? (
         <ul className={` py-1 cursor-pointer w-full mb-2`}>
           <Slider {...sliderSettings}>
-            {cardsData.map((item: any) => (
+            {cardsData.map((item: any, index) => (
               <li
-                key={item.id}
+                key={index}
                 className={`flex flex-col h-28 justify-center rounded-xl text-center text-sm font-bold shadow-md`}
                 onClick={() => {
                   handleChooseCard(item?.front_key, item.id);
