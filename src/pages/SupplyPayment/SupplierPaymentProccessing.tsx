@@ -726,7 +726,7 @@ const SupplierPaymentProccessing = ({
                 paymentData={paymentData}
                 setEditData={setEditData}
                 setPaymentData={setPaymentData}
-              />
+              /> 
             </Form>
           );
         }}

@@ -5,6 +5,8 @@ import { useContext } from "react";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { Buffer } from "buffer";
 import QRCode from "qrcode.react";
+import { useFetch } from "../../../../hooks";
+import { ClientData_TP } from "../../SellingClientForm";
 
 const FinalPreviewBillPayment = ({
   paymentData,
@@ -13,10 +15,17 @@ const FinalPreviewBillPayment = ({
   paymentData: never[];
   costDataAsProps: any;
 }) => {
-
-  const {   formatReyal } = numberContext();
+  const { formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData)
+
+  const { data: companyData } = useFetch<ClientData_TP>({
+    endpoint: `/companySettings/api/v1/companies`,
+    queryKey: ["Mineral_license_qr"],
+  });
+  console.log("🚀 ~ companyData:", companyData)
+
 
   function getTLV(tagNum, tagValue) {
     var tagNumBuf = Buffer.from([tagNum], "utf8");
@@ -27,14 +36,14 @@ const FinalPreviewBillPayment = ({
   }
 
   var sellerName = getTLV("1", `${userData?.name}`);
-  var vatReg = getTLV("2", `${userData?.tax_rate}`);
+  var vatRegTRN = getTLV("2", `${companyData && companyData[0]?.taxRegisteration}`);
   var invoiceDate = getTLV("3", new Date().toUTCString());
   var totalInvoice = getTLV("4", `${costDataAsProps?.totalFinalCost}`);
   var invoiceVatTotal = getTLV("5", `${costDataAsProps?.totalItemsTaxes}`);
 
   var qrCodeBuf = Buffer.concat([
     sellerName,
-    vatReg,
+    vatRegTRN,
     invoiceDate,
     totalInvoice,
     invoiceVatTotal,
@@ -49,10 +58,6 @@ const FinalPreviewBillPayment = ({
       </div>
 
       <div>
-        {/* <QRCodeGen
-          value={`${Math.round(costDataAsProps.totalCost * 0.15)} RS`}
-        /> */}
-
         <QRCode value={qrCodeBase64} />
       </div>
       <div className="flex flex-col gap-1 items-center">
