@@ -13,15 +13,19 @@ import { DeleteIcon, EditIcon } from "../../components/atoms/icons";
 import { numberContext } from "../../context/settings/number-formatter";
 import { Payment_TP } from "./SupplierPaymentProccessing";
 
+type SupplierPayment_TP = {
+  paymentData: any
+  setEditData: any
+  setPaymentData: any
+};
+
 const SupplierPaymentProccessingTable = ({
   paymentData,
   setEditData,
   setPaymentData,
-}) => {
+}: SupplierPayment_TP) => {
   const [editingRowId, setEditingRowId] = useState<string | undefined>(null);
   const { formatGram, formatReyal } = numberContext();
-
-  const path = location.pathname;
 
   const { setFieldValue } = useFormikContext<FormikSharedConfig>();
 

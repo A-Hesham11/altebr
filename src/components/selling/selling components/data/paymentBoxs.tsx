@@ -1,12 +1,7 @@
 import React, { Fragment, useContext, useState } from 'react'
-import { BoxesData } from '../../../molecules/card/BoxesData'
 import { t } from "i18next"
-import { BondTotals } from '../../../supply/BondTotals'
-import { useFetch } from '../../../../hooks'
 import { SellingBoxData } from './SellingBoxData'
 import { numberContext } from '../../../../context/settings/number-formatter'
-import { authCtx } from '../../../../context/auth-and-perm/auth'
-
 
 const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => {
 

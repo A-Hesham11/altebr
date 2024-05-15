@@ -1,38 +1,42 @@
 import { Formik } from "formik";
 import React, { useContext, useState } from "react";
-import SellingFirstPage from "../../../../pages/selling/SellingFirstPage";
-import SellingSecondpage from "../SellingSecondpage";
-import SellingInvoiceData from "../../../../pages/selling/SellingInvoiceData";
-import { Selling_TP } from "../data/SellingTableData";
-import { ClientData_TP } from "../../SellingClientForm";
-import { Payment_TP } from "../data/PaymentProcessing";
+import { ClientData_TP, Selling_TP } from "../selling/PaymentSellingPage";
+import { Payment_TP } from "../Payment/PaymentProccessingToManagement";
+import { authCtx } from "../../context/auth-and-perm/auth";
+import { useFetch, useMutate } from "../../hooks";
 import * as Yup from "yup";
-import { useFetch } from "../../../../hooks";
-import { authCtx } from "../../../../context/auth-and-perm/auth";
+import SupplyPayoffFirstPage from "./SupplyPayoffFirstPage";
+import { notify } from "../../utils/toast";
+import { mutateData } from "../../utils/mutateData";
+import SupplyPayoffSecondPage from "./SupplyPayoffSecondPage";
 
-const AddSellingInvoice = () => {
+const SupplyPayoff = () => {
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
   const [stage, setStage] = useState<number>(1);
   const [clientData, setClientData] = useState<ClientData_TP>();
+  console.log("🚀 ~ SupplyPayoff ~ clientData:", clientData);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [sellingItemsOfWeigth, setSellingItemsOfWeight] = useState([]);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [invoiceNumber, setInvoiceNumber] = useState([]);
+  console.log("🚀 ~ SupplyPayoff ~ invoiceNumber:", invoiceNumber);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
-
+  const [supplierId, setSupplierId] = useState(0);
+  const [mardodItemsId, setMardodItemsId] = useState([]);
   const { userData } = useContext(authCtx);
 
   const initialValues: Selling_TP = {
+    invoice_id: "",
     item_id: "",
+    id: "",
     hwya: "",
-    min_selling: "",
-    min_selling_type: "",
     classification_id: "",
+    classification_name: "",
+    category: "",
     category_id: "",
     category_selling_type: "",
-    classification_name: "",
-    category_name: "",
     weight: "",
+    check_input_weight: 0,
     has_selsal: 0,
     remaining_weight: "",
     sel_weight: "",
@@ -42,19 +46,25 @@ const AddSellingInvoice = () => {
     karatmineral_id: "",
     karatmineral_name: "",
     gold_price: [],
+    selsal: [],
+    category_items: [],
     karat_price: "",
     selling_price: "",
     tax_rate: "",
     cost: "",
+    cost_value: "",
     wage: "",
     taklfa: "",
+    taklfa_after_tax: "",
+    vat: "",
+    total: "",
     wage_total: "",
     category_type: "",
+    api_gold_price: 0,
     weightitems: [],
-
-    client_id: "",
-    client_value: "",
     bond_date: new Date(),
+    supplier_id: "",
+    supplier_name: "",
   };
 
   const validationSchema = () =>
@@ -78,8 +88,8 @@ const AddSellingInvoice = () => {
     });
 
   const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}`,
-    queryKey: [`invoices_data_${userData?.branch_id}`],
+    endpoint: `/supplyReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}`,
+    queryKey: [`supply_payoff_invoices_${userData?.branch_id}`],
     onSuccess(data) {
       setInvoiceNumber(data);
     },
@@ -94,7 +104,11 @@ const AddSellingInvoice = () => {
     >
       <>
         {stage === 1 && (
-          <SellingFirstPage
+          <SupplyPayoffFirstPage
+            supplierId={supplierId}
+            setSupplierId={setSupplierId}
+            mardodItemsId={mardodItemsId}
+            setMardodItemsId={setMardodItemsId}
             invoiceNumber={invoiceNumber}
             dataSource={dataSource}
             setDataSource={setDataSource}
@@ -110,15 +124,9 @@ const AddSellingInvoice = () => {
           />
         )}
         {stage === 2 && (
-          <SellingSecondpage
-            setStage={setStage}
-            paymentData={paymentData}
-            setPaymentData={setPaymentData}
-            sellingItemsData={sellingItemsData}
-          />
-        )}
-        {stage === 3 && (
-          <SellingInvoiceData
+          <SupplyPayoffSecondPage
+            supplierId={supplierId}
+            mardodItemsId={mardodItemsId}
             invoiceNumber={invoiceNumber}
             sellingItemsData={sellingItemsData}
             paymentData={paymentData}
@@ -128,9 +136,21 @@ const AddSellingInvoice = () => {
             sellingItemsOfWeigth={sellingItemsOfWeigth}
           />
         )}
+        {/*
+        {stage === 3 && (
+          <SalesReturnInvoiceData
+            invoiceNumber={invoiceNumber}
+            sellingItemsData={sellingItemsData}
+            paymentData={paymentData}
+            clientData={clientData}
+            setStage={setStage}
+            selectedItemDetails={selectedItemDetails}
+            sellingItemsOfWeigth={sellingItemsOfWeigth}
+          />
+        )} */}
       </>
     </Formik>
   );
 };
 
-export default AddSellingInvoice;
+export default SupplyPayoff;

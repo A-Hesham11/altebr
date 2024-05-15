@@ -402,6 +402,7 @@ export type Payment_TP = {
   setSelectedCardName?: any;
   selectedCardName?: any;
   stock_difference?: any;
+  isCheckedCommission?: any;
 };
 
 const validationSchemaOfAmount = () =>
@@ -509,23 +510,6 @@ const SupplierPaymentProccessing = ({
       ? amountIsPaid - Number(amountRemaining)
       : Number(totalPriceInvoice) - Number(amountRemaining);
 
-  //   const { data: stockDifference, refetch: stockDifferenceRefetch } = useFetch({
-  //     endpoint: `/sadadSupplier/api/v1/show/${cashId ? 10005 : cardId || 0}/${
-  //       userData?.branch_id
-  //     }/${cardFrontKey || 0}`,
-  //     queryKey: ["stock_difference_data"],
-  //     onSuccess(data) {
-  //       return data.data;
-  //     },
-  //     // enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
-  //   });
-
-  //   useEffect(() => {
-  //     if (cardId !== null && cardFrontKey !== null) {
-  //       refetch();
-  //     }
-  //   }, [cardId, cardFrontKey]);
-
   useEffect(() => {
     refetch();
   }, [data, selectedCardId]);
@@ -625,7 +609,6 @@ const SupplierPaymentProccessing = ({
             } else {
               setFieldValue("weight", "");
               setFieldValue("value", data?.value?.toFixed(2));
-              //   setFieldValue("stock_difference", +data?.equivalent);
             }
           }, [cardId]);
 

@@ -1,5 +1,4 @@
 import { t } from "i18next";
-import QRCodeGen from "../../../atoms/QRCode";
 import { numberContext } from "../../../../context/settings/number-formatter";
 import { useContext } from "react";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
@@ -7,6 +6,7 @@ import { Buffer } from "buffer";
 import QRCode from "qrcode.react";
 import { useFetch } from "../../../../hooks";
 import { ClientData_TP } from "../../SellingClientForm";
+import fs  from "fs";
 
 const FinalPreviewBillPayment = ({
   paymentData,
@@ -18,14 +18,11 @@ const FinalPreviewBillPayment = ({
   const { formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData)
 
   const { data: companyData } = useFetch<ClientData_TP>({
     endpoint: `/companySettings/api/v1/companies`,
     queryKey: ["Mineral_license_qr"],
   });
-  console.log("🚀 ~ companyData:", companyData)
-
 
   function getTLV(tagNum, tagValue) {
     var tagNumBuf = Buffer.from([tagNum], "utf8");
@@ -48,6 +45,7 @@ const FinalPreviewBillPayment = ({
     totalInvoice,
     invoiceVatTotal,
   ]);
+
   var qrCodeBase64 = qrCodeBuf.toString("base64");
 
   return (

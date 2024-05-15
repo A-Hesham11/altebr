@@ -23,7 +23,7 @@ export type Selling_TP = {
   wage: string;
   taklfa: string;
 
-  bond_date: string;
+  bond_date: any;
   client_id: string;
   client_name: string;
   client_value: string;

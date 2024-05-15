@@ -29,8 +29,6 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData);
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
@@ -64,8 +62,6 @@ const SellingInvoiceData = ({
     +totalCommissionRatio +
     +totalCommissionTaxes
   ).toFixed(2);
-
-  console.log("🚀 ~ totalFinalCost:", totalFinalCost);
 
   const totalCost = (totalCostBeforeTax + totalCommissionRatio).toFixed(2);
 
@@ -216,7 +212,6 @@ const SellingInvoiceData = ({
       karat_price: sellingItemsData[0].gold_price,
     };
     const items = sellingItemsData.map((item) => {
-      console.log("🚀 ~ items ~ item:", item);
 
       const rowTaxEquation = Number(item.tax_rate) / 100 + 1;
       const taklfaFromOneItem =
@@ -242,7 +237,6 @@ const SellingInvoiceData = ({
 
       const isSelsal =
         item.selsal && item.selsal?.length > 0 ? Number(weightOfSelsal) : 0;
-      console.log("🚀 ~ items ~ isSelsal:", isSelsal);
 
       return {
         category_id: item.category_id,
@@ -278,8 +272,6 @@ const SellingInvoiceData = ({
       };
     });
     const card = paymentData.reduce((acc, curr) => {
-      console.log("🚀 ~ card ~ curr:", curr);
-
       const maxDiscountOrNOt =
         curr.amount >= curr.max_discount_limit
           ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
@@ -287,7 +279,6 @@ const SellingInvoiceData = ({
 
       acc[curr.sellingFrontKey] =
         +maxDiscountOrNOt + Number(curr.commission_tax);
-
       return acc;
     }, {});
     mutate({
