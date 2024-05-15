@@ -29,8 +29,8 @@ const InvoiceTable = <T extends object>({ data,
         return acc
     }, 0)
 
-    const totalWeightOfSelsal = data.reduce((acc, item) => {
-        return acc + item.selsal.reduce((subAcc, curr) => subAcc + +curr.weight, 0);
+    const totalWeightOfSelsal = data?.reduce((acc, item) => {
+        return acc + item?.selsal?.reduce((subAcc, curr) => subAcc + +curr.weight, 0);
     }, 0);
 
     const totalCost = data?.reduce((acc, curr) => {

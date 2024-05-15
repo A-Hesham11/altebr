@@ -124,11 +124,6 @@ const PaymentProccessingToManagement = ({
       ? Number(invoiceTotalOfSalesReturn)
       : Number(totalPriceInvoice);
 
-  // const costRemaining =
-  //   (locationPath === "/selling/payoff/sales-return"
-  //     ? Number(invoiceTotalOfSalesReturn) - Number(totalCommissionOfoneItem)
-  //     : Number(totalPriceInvoice)) - Number(amountRemaining) - Number(totalCommissionTaxOfoneItem);
-
   const costRemaining =
     locationPath === "/selling/payoff/sales-return"
       ? amountIsPaid - Number(amountRemaining)
@@ -196,7 +191,7 @@ const PaymentProccessingToManagement = ({
                   cardImage: cardImage,
                   frontkey: cardFrontKey,
                   frontKeyAccept: frontKeyAccept,
-                  frontKeySadad:frontKeySadad,
+                  frontKeySadad: frontKeySadad,
                   sellingFrontKey: sellingFrontKey,
                   salesReturnFrontKey: salesReturnFrontKey,
                 };
@@ -322,7 +317,6 @@ const PaymentProccessingToManagement = ({
                     {locationPath === "/selling/payoff/sales-return" && (
                       <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
                         <span>{t("remaining cost")} : </span>{" "}
- 
                         {isCheckedCommission
                           ? formatReyal(Number(costRemaining))
                           : formatReyal(Number(costRemaining))}

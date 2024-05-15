@@ -5,6 +5,7 @@ import { useFetch } from "../../../../hooks";
 import { formatDate, getDayAfter } from "../../../../utils/date";
 import billLogo from "../../../../assets/bill-logo.png";
 import { useLocation } from "react-router-dom";
+import { useFormikContext } from "formik";
 
 type Client_TP = {
   clientData?: {
@@ -22,7 +23,12 @@ type Client_TP = {
 };
 
 const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
-  const { client_id, client_value, bond_date } = clientData;
+  console.log("🚀 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber)
+  console.log("🚀 ~ FinalPreviewBillData ~ clientData:", clientData);
+  const { client_id, client_value, bond_date, supplier_id } = clientData;
+  console.log("🚀 ~ FinalPreviewBillData ~ supplier_id:", supplier_id)
+  // console.log("🚀 ~ FinalPreviewBillData ~ supplier_name:", supplier_name);
+  const { values } = useFormikContext<any>();
 
   const { data } = useFetch<Client_TP>({
     endpoint: `branchManage/api/v1/clients/${client_id}`,
@@ -44,7 +50,11 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
       ? honestBondsData?.length + 1
       : path === "/addSellingBond" || path === "/addPurchaseBond"
       ? invoiceNumber
+      : path === "/supply-return"
+      ? invoiceNumber?.total + 1
       : invoiceNumber?.length + 1;
+    console.log("🚀 ~ FinalPreviewBillData ~ billNumber:", billNumber)
+ 
 
   return (
     <div className="flex justify-between">
@@ -69,9 +79,10 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
       </div>
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
-          {t("client name")} :{" "}
+          {supplier_id ? t("supplier name") : t("client name")} :{" "}
           <span className="font-medium">{client_value}</span>{" "}
         </p>
+
         <p className="text-xs font-bold">
           {t("mobile number")} :{" "}
           <span className="font-medium">{data?.phone}</span>{" "}

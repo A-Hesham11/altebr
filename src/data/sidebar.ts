@@ -110,6 +110,26 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: "payoff",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "supply payoff",
+        link: "/supply-return",
+        icon: AiOutlineGold,
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "supply payoff bonds",
+        link: "/bonds/supply-return",
+        icon: AiOutlineGold,
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: "payment",
     icon: CiExport,
     items: [
