@@ -17,18 +17,15 @@ type Client_TP = {
     employee_value: string;
     id: number;
     invoiceNumber: number;
+    supplier_id: number;
   };
   mobile: number;
   identity: number;
+  invoiceNumber: any;
 };
 
 const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
-  console.log("🚀 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber)
-  console.log("🚀 ~ FinalPreviewBillData ~ clientData:", clientData);
   const { client_id, client_value, bond_date, supplier_id } = clientData;
-  console.log("🚀 ~ FinalPreviewBillData ~ supplier_id:", supplier_id)
-  // console.log("🚀 ~ FinalPreviewBillData ~ supplier_name:", supplier_name);
-  const { values } = useFormikContext<any>();
 
   const { data } = useFetch<Client_TP>({
     endpoint: `branchManage/api/v1/clients/${client_id}`,
@@ -53,8 +50,6 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
       : path === "/supply-return"
       ? invoiceNumber?.total + 1
       : invoiceNumber?.length + 1;
-    console.log("🚀 ~ FinalPreviewBillData ~ billNumber:", billNumber)
- 
 
   return (
     <div className="flex justify-between">
