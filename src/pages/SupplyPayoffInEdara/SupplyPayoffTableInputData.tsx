@@ -147,6 +147,13 @@ export const SupplyPayoffTableInputData = ({
     setSellingItemsData(newData);
   };
 
+  const goldTaklfa =
+    dataSource &&
+    (Number(dataSource[0]?.wage) + Number(dataSource[0]?.api_gold_price)) *
+      Number(dataSource[0]?.weight);
+
+  const goldVat = goldTaklfa * (Number(userData?.tax_rate) / 100);
+
   useEffect(() => {
     const {
       client_id,
@@ -163,10 +170,15 @@ export const SupplyPayoffTableInputData = ({
         setFieldValue(
           "vat",
           dataSource[0]?.classification_id === 1
-            ? (Number(dataSource[0]?.wage) + Number(dataSource[0]?.weight)) *
-                Number(dataSource[0]?.api_gold_price) *
-                (Number(userData?.tax_rate) / 100)
+            ? goldVat
             : Number(dataSource[0]?.cost) * (Number(userData?.tax_rate) / 100)
+        );
+
+        setFieldValue(
+          "cost",
+          dataSource[0]?.classification_id === 1
+            ? goldTaklfa
+            : Number(dataSource[0]?.cost)
         );
       }
     });
@@ -314,9 +326,16 @@ export const SupplyPayoffTableInputData = ({
                   setFieldValue(
                     "vat",
                     values?.classification_id === 1 &&
-                      (Number(values?.wage) + Number(e.target.value)) *
-                        Number(values?.api_gold_price) *
+                      (Number(values?.wage) + Number(values?.api_gold_price)) *
+                        Number(e.target.value) *
                         (Number(userData?.tax_rate) / 100)
+                  );
+
+                  setFieldValue(
+                    "cost",
+                    values?.classification_id === 1 &&
+                      (Number(values?.wage) + Number(values?.api_gold_price)) *
+                        Number(e.target.value)
                   );
                 }}
                 className={`${
@@ -347,8 +366,8 @@ export const SupplyPayoffTableInputData = ({
                     "vat",
                     values?.classification_id === 1
                       ? (Number(dataSource[0]?.wage) +
-                          Number(dataSource[0]?.weight)) *
-                          Number(dataSource[0]?.api_gold_price) *
+                          Number(dataSource[0]?.api_gold_price)) *
+                          Number(dataSource[0]?.weight) *
                           (Number(userData?.tax_rate) / 100)
                       : Number(dataSource[0]?.cost) *
                           (Number(userData?.tax_rate) / 100)
