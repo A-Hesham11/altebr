@@ -53,15 +53,12 @@ export const SupplyPayoffTableInputData = ({
   console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   console.log("🚀 ~ dataSource:", dataSource);
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ search:", search);
   const [openDetails, setOpenDetails] = useState<boolean>(false);
-  const [openSelsal, setOpenSelsal] = useState<boolean>(false);
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
   const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
 
   const { values, setFieldValue } = useFormikContext<any>();
   console.log("🚀 ~ values:", values);
@@ -147,12 +144,17 @@ export const SupplyPayoffTableInputData = ({
     setSellingItemsData(newData);
   };
 
+  const taxRateOfKarat24 =
+    dataSource && dataSource[0]?.karat_name === "24"
+      ? 0
+      : Number(userData?.tax_rate) / 100;
+
   const goldTaklfa =
     dataSource &&
     (Number(dataSource[0]?.wage) + Number(dataSource[0]?.api_gold_price)) *
       Number(dataSource[0]?.weight);
 
-  const goldVat = goldTaklfa * (Number(userData?.tax_rate) / 100);
+  const goldVat = goldTaklfa * taxRateOfKarat24;
 
   useEffect(() => {
     const {
@@ -172,14 +174,14 @@ export const SupplyPayoffTableInputData = ({
           "vat",
           dataSource[0]?.classification_id === 1
             ? goldVat
-            : Number(dataSource[0]?.cost) * (Number(userData?.tax_rate) / 100)
+            : Number(dataSource[0]?.cost_item) * taxRateOfKarat24
         );
 
         setFieldValue(
           "cost",
           dataSource[0]?.classification_id === 1
             ? goldTaklfa
-            : Number(dataSource[0]?.cost)
+            : Number(dataSource[0]?.cost_item)
         );
       }
     });
@@ -210,7 +212,6 @@ export const SupplyPayoffTableInputData = ({
   };
 
   const getSearchResults = async (item: any) => {
-    console.log("🚀 ~ getSearchResults ~ item:", item);
     let uri = `/supplyReturn/api/v1/get-Item/${item.supplier_id}?hwya[eq]=${item.hwya}`;
     setSearch(uri);
   };
@@ -329,14 +330,8 @@ export const SupplyPayoffTableInputData = ({
                     values?.classification_id === 1 &&
                       (Number(values?.wage) + Number(values?.api_gold_price)) *
                         Number(e.target.value) *
-                        (Number(userData?.tax_rate) / 100)
+                        taxRateOfKarat24
                   );
-
-                  console.log("🚀 ~ e.target.value:", +e.target.value)
-                  console.log("🚀 ~ Number(values?.wage):", Number(values?.wage))
-                  console.log("🚀 ~ Number(values?.api_gold_price):", Number(values?.api_gold_price))
-                  console.log("🚀 ~ Number(userData?.tax_rate):", Number(userData?.tax_rate))
-
 
                   setFieldValue(
                     "cost",
@@ -368,18 +363,6 @@ export const SupplyPayoffTableInputData = ({
                 }
                 noMb={true}
                 placement="top"
-                onChange={(option) => {
-                  setFieldValue(
-                    "vat",
-                    values?.classification_id === 1
-                      ? (Number(dataSource[0]?.wage) +
-                          Number(dataSource[0]?.api_gold_price)) *
-                          Number(dataSource[0]?.weight) *
-                          (Number(userData?.tax_rate) / 100)
-                      : Number(dataSource[0]?.cost) *
-                          (Number(userData?.tax_rate) / 100)
-                  );
-                }}
                 value={{
                   id:
                     values.karat_id !== 0
@@ -432,7 +415,11 @@ export const SupplyPayoffTableInputData = ({
               <BaseInputField
                 placeholder={`${t("cost")}`}
                 id="cost"
-                name="cost"
+                name={
+                  dataSource && dataSource[0]?.classification_id === 1
+                    ? "cost"
+                    : "cost_item"
+                }
                 type="text"
                 disabled={!isCategoryDisabled}
                 className={`${
@@ -509,7 +496,6 @@ export const SupplyPayoffTableInputData = ({
             </td>
           </tr>
           {table.getRowModel().rows.map((row) => {
-            console.log("🚀 ~ {table.getRowModel ~ row:", row?.original);
             return (
               <tr key={row.id} className="text-center">
                 {row.getVisibleCells().map((cell, i) => (
@@ -564,13 +550,6 @@ export const SupplyPayoffTableInputData = ({
         <div className="flex flex-col gap-8 justify-center items-center">
           <Header header={t("kit details")} />
           <SupplyPayoffTableInputKit />
-        </div>
-      </Modal>
-
-      <Modal isOpen={openSelsal} onClose={() => setOpenSelsal(false)}>
-        <div className="flex flex-col gap-8 justify-center items-center">
-          <Header header={t("chain")} />
-          <SupplyPayoffTableInputOfSelsal />
         </div>
       </Modal>
     </Form>

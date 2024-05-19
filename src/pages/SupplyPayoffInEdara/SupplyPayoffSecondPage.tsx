@@ -99,8 +99,8 @@ const SupplyPayoffSecondPage = ({
       },
       {
         header: () => <span>{t("cost")} </span>,
-        accessorKey: "cost",
-        cell: (info) => formatReyal(Number(info.getValue())),
+        accessorKey:  "cost",
+        cell: (info) => info.row.original.classification_id === 1 ? formatReyal(Number(info.row.original.cost)) : formatReyal(Number(info.row.original.cost_item)),
       },
       {
         header: () => <span>{t("total")} </span>,
