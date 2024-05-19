@@ -27,10 +27,7 @@ const SalesReturnInvoiceData = ({
   clientData,
   invoiceNumber,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ invoiceNumber:", invoiceNumber);
-  console.log("🚀 ~ clientData:", clientData);
-  console.log("🚀 ~ paymentData:", paymentData);
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
+
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
@@ -38,7 +35,6 @@ const SalesReturnInvoiceData = ({
   const isCheckedCommission = paymentData.some(
     (item) => item.add_commission_ratio === true
   );
-  console.log("🚀 ~ isCheckedCommission:", isCheckedCommission);
 
   const totalCommissionRatio = sellingItemsData.reduce((acc, card) => {
     acc += +card.commission_oneItem;
@@ -56,10 +52,8 @@ const SalesReturnInvoiceData = ({
   }, 0);
 
   const ratioForOneItem = totalCommissionRatio / sellingItemsData.length;
-  console.log("🚀 ~ ratioForOneItem:", ratioForOneItem);
 
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
-  console.log("🚀 ~ ratioForOneItemTaxes:", ratioForOneItemTaxes);
 
   const totalOfCost = sellingItemsData.reduce((acc, card) => {
     acc += +card.cost;
@@ -69,7 +63,6 @@ const SalesReturnInvoiceData = ({
   const totalCost = isCheckedCommission
     ? totalOfCost
     : totalOfCost - totalCommissionRatio;
-  console.log("🚀 ~ totalCost ~ totalCost:", totalCost);
 
   const totalItemsOfTaxes = sellingItemsData.reduce((acc, card) => {
     acc += +card.vat;
@@ -81,8 +74,6 @@ const SalesReturnInvoiceData = ({
     : totalItemsOfTaxes - totalCommissionRatioTax;
 
   const totalFinalCost = Number(totalCost) + Number(totalItemsTaxes);
-
-  console.log("🚀 ~ totalFinalCost:", totalFinalCost);
 
   const costDataAsProps = {
     totalCommissionRatio,
@@ -231,8 +222,6 @@ const SalesReturnInvoiceData = ({
       const totalCostFromOneItem =
         Number(item.taklfa_after_tax) / Number(rowTaxEquation) +
         Number(ratioForOneItem);
-      console.log("🚀 ~ items ~ totalCostFromOneItem:", totalCostFromOneItem);
-      // const totalTaxFromOneRow = +taklfaFromOneItem - +totalCostFromOneItem;
 
       const weightOfSelsal = item.selsal?.reduce((acc, item) => {
         acc += +item.weight;
