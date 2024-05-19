@@ -14,12 +14,10 @@ const SupplyPayoff = () => {
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
   const [stage, setStage] = useState<number>(1);
   const [clientData, setClientData] = useState<ClientData_TP>();
-  console.log("🚀 ~ SupplyPayoff ~ clientData:", clientData);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [sellingItemsOfWeigth, setSellingItemsOfWeight] = useState([]);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [invoiceNumber, setInvoiceNumber] = useState([]);
-  console.log("🚀 ~ SupplyPayoff ~ invoiceNumber:", invoiceNumber);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const [supplierId, setSupplierId] = useState(0);
   const [mardodItemsId, setMardodItemsId] = useState([]);
@@ -65,6 +63,7 @@ const SupplyPayoff = () => {
     bond_date: new Date(),
     supplier_id: "",
     supplier_name: "",
+    cost_item:[],
   };
 
   const validationSchema = () =>
