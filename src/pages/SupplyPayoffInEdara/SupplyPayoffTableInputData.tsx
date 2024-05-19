@@ -167,6 +167,7 @@ export const SupplyPayoffTableInputData = ({
     Object.keys(restValues).map((key) => {
       if (dataSource?.length === 1) {
         setFieldValue(key, dataSource[0][key]);
+        setFieldValue("api_gold_price", dataSource[0]?.api_gold_price);
         setFieldValue(
           "vat",
           dataSource[0]?.classification_id === 1
@@ -330,6 +331,12 @@ export const SupplyPayoffTableInputData = ({
                         Number(e.target.value) *
                         (Number(userData?.tax_rate) / 100)
                   );
+
+                  console.log("🚀 ~ e.target.value:", +e.target.value)
+                  console.log("🚀 ~ Number(values?.wage):", Number(values?.wage))
+                  console.log("🚀 ~ Number(values?.api_gold_price):", Number(values?.api_gold_price))
+                  console.log("🚀 ~ Number(userData?.tax_rate):", Number(userData?.tax_rate))
+
 
                   setFieldValue(
                     "cost",
