@@ -61,9 +61,9 @@
   "Branches payment": "سداد الفروع",
   "Branch payment": "سداد فرع",
   "supplier payment": "سداد المورد",
-  "Payment must be completed first":"يجب إتمام عملية سداد أولا",
+  "Payment must be completed first": "يجب إتمام عملية سداد أولا",
   "supplier payment bonds": "سندات سداد المورد",
-  "An error occurred while fetching data":"حدث خطأ أثناء جلب البيانات",
+  "An error occurred while fetching data": "حدث خطأ أثناء جلب البيانات",
   "stock difference": "فرق الأسهم",
   "Payment data from the supplier to management": "بيانات السداد من المورد إلى الإدارة",
   "The supplier must be chosen first": "يجب إختيار المورد أولا",
@@ -1301,5 +1301,12 @@
   "bond created successfully": "تم انشاء السند بنجاح",
   "weight converted to 24": "اجمالي الوزن محول ل 24",
   "total value after tax": "اجمالي القيمة بعد الضريبه",
-  "gold reservation purchase bonds": "سندات شراء حجز الذهب"
+  "gold reservation purchase bonds": "سندات شراء حجز الذهب",
+  "restriction name": "اسم القيد",
+  "the first period debtor": "رصيد أول المدة مدين",
+  "the first period creditor": "رصيد أول المدة دائن",
+  "debtor movement": "حركة مدين",
+  "creditor movement": "حركة دائن",
+  "date from": "تاريخ من",
+  "date to": "تاريخ إلي"
 }

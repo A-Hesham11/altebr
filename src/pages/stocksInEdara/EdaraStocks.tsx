@@ -23,6 +23,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../context/settings/number-formatter";
 import { Loading } from "../../components/organisms/Loading";
+import { TableComponent } from "./TableComponent";
 
 // const EdaraStocks = () => {
 //   // STATE
@@ -217,8 +218,19 @@ const EdaraStocks = () => {
         ? `/branchAccount/api/v1/getAllAccountEdara`
         : `${search}`,
     pagination: true,
+    select: (data) => {
+      return {
+        ...data,
+        data: data.data.map((item) => ({
+          ...item,
+          boxes: item.boxes.map((box, index) => ({
+            ...box,
+            index: index,
+          })),
+        })),
+      };
+    },
   });
-  console.log("🚀 ~ EdaraStocks ~ edaraCredit:", edaraCredit);
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
@@ -270,14 +282,21 @@ const EdaraStocks = () => {
       },
       {
         cell: (info: any) => {
-          const infoTarget = dataSource?.find(
-            (item) => Number(item.index) === Number(info.row.index) - 1
-          );
-          console.log("🚀 ~ EdaraStocks ~ infoTarget:", infoTarget);
+          const infoTarget = dataSource?.find((item) => {
+            return Number(item.index) === Number(info.row.index) - 1;
+          });
 
-          return info.row.original.computational_movement === "debtor"
-            ? formatReyal(Number(infoTarget?.value).toFixed(2))
-            : "---";
+          if (info.row.index === 0) {
+            return (
+              formatReyal(
+                Number(info.row.original?.The_first_period_debtor).toFixed(2)
+              ) || "---"
+            );
+          } else {
+            return infoTarget?.computational_movement === "debtor"
+              ? formatReyal(Number(infoTarget?.value).toFixed(2))
+              : "---";
+          }
         },
         accessorKey: "#",
         header: () => <span>{t("the first period debtor")}</span>,
@@ -287,11 +306,18 @@ const EdaraStocks = () => {
           const infoTarget = dataSource?.find(
             (item) => Number(item.index) === Number(info.row.index) - 1
           );
-          console.log("🚀 ~ EdaraStocks ~ infoTarget:", infoTarget);
 
-          return info.row.original.computational_movement === "creditor"
-            ? formatReyal(Number(infoTarget?.value).toFixed(2))
-            : "---";
+          if (info.row.index === 0) {
+            return (
+              formatReyal(
+                Number(info.row.original?.The_first_period_creditor).toFixed(2)
+              ) || "---"
+            );
+          } else {
+            return infoTarget?.computational_movement === "creditor"
+              ? formatReyal(Number(infoTarget?.value).toFixed(2))
+              : "---";
+          }
         },
         accessorKey: "#",
         header: () => <span>{t("the first period creditor")}</span>,
@@ -303,7 +329,7 @@ const EdaraStocks = () => {
             : "---";
         },
         accessorKey: "value",
-        header: () => <span>{t("debtor")}</span>,
+        header: () => <span>{t("debtor movement")}</span>,
       },
       {
         cell: (info: any) => {
@@ -312,7 +338,7 @@ const EdaraStocks = () => {
             : "---";
         },
         accessorKey: "value",
-        header: () => <span>{t("creditor")}</span>,
+        header: () => <span>{t("creditor movement")}</span>,
       },
       {
         cell: (info: any) => {
@@ -338,7 +364,7 @@ const EdaraStocks = () => {
         header: () => <span>{t("unit id")}</span>,
       },
     ],
-    []
+    [dataSource]
   );
 
   // LOADING ....
@@ -410,18 +436,11 @@ const EdaraStocks = () => {
             </div>
 
             <div className="mt-14">
-              <Table data={dataSource || []} columns={tableColumn}>
-                {/* {dataSource?.length === 0 ? (
-                  <p className="text-center text-xl text-mainGreen font-bold">
-                    {t("there is no pieces available")}
-                  </p>
-                ) : (
-                  <div className="mt-3 flex items-center justify-center gap-5 p-2">
-                    <div className="flex items-center gap-2 ">
-                    </div>
-                  </div>
-                )} */}
-              </Table>
+              <TableComponent
+                data={dataSource || []}
+                columns={tableColumn}
+                footered
+              />
             </div>
           </Form>
         </Formik>

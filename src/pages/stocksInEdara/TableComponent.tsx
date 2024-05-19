@@ -1,3 +1,6 @@
+// src/TableComponent.js
+
+import React, { useEffect, useMemo } from "react";
 import {
   getCoreRowModel,
   useReactTable,
@@ -8,10 +11,11 @@ import {
 } from "@tanstack/react-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import { Button } from "../../../atoms";
 import { ReactNode } from "react";
 import { t } from "i18next";
-import { useIsRTL } from "../../../../hooks";
+import { Button } from "../../components/atoms";
+import { useIsRTL } from "../../hooks";
+
 interface ReactTableProps<T extends object> {
   data: T[];
   columns: ColumnDef<T>[];
@@ -22,7 +26,7 @@ interface ReactTableProps<T extends object> {
   children?: ReactNode;
 }
 
-export const Table = <T extends object>({
+export const TableComponent = <T extends object>({
   data,
   columns,
   showNavigation,
@@ -35,11 +39,14 @@ export const Table = <T extends object>({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: { pagination: { pageSize: data.length } },
   });
 
   const isRTL = useIsRTL();
 
-  console.log(table.getRowModel().rows);
+  useEffect(() => {
+    table.setPageSize(data.length);
+  }, [data.length, table]);
 
   return (
     <>
@@ -74,7 +81,7 @@ export const Table = <T extends object>({
                 {row.getVisibleCells().map((cell) => (
                   <td
                     className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                      footered && i == table.getRowModel().rows.length - 1
+                      footered && i === table.getRowModel().rows.length - 1
                         ? "!bg-mainGreen !text-white"
                         : "!bg-lightGreen !text-gray-900"
                     } `}
@@ -91,15 +98,15 @@ export const Table = <T extends object>({
           <div className="mt-3 flex items-center justify-end gap-5 p-2">
             <div className="flex items-center gap-2 font-bold">
               {t("page")}
-              <span className=" text-mainGreen">
+              <span className="text-mainGreen">
                 {table.getState().pagination.pageIndex + 1}
               </span>
               {t("from")}
-              <span className=" text-mainGreen">{table.getPageCount()} </span>
+              <span className="text-mainGreen">{table.getPageCount()} </span>
             </div>
             <div className="flex items-center gap-2 ">
               <Button
-                className=" rounded bg-mainGreen p-[.18rem] "
+                className="rounded bg-mainGreen p-[.18rem]"
                 action={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
               >
@@ -110,7 +117,7 @@ export const Table = <T extends object>({
                 )}
               </Button>
               <Button
-                className=" rounded bg-mainGreen p-[.18rem] "
+                className="rounded bg-mainGreen p-[.18rem]"
                 action={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
               >
