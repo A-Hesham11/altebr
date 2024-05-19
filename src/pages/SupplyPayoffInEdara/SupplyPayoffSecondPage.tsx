@@ -80,18 +80,7 @@ const SupplyPayoffSecondPage = ({
       {
         header: () => <span>{t("category")} </span>,
         accessorKey: "category",
-        cell: (info) => {
-          const finalCategoriesNames = info.row.original.itemDetails
-            ?.map((category) => category.category_name)
-            .join("-");
-          return info?.row?.original?.itemDetails?.length
-            ? info?.row?.original?.has_selsal === 0
-              ? finalCategoriesNames
-              : `${finalCategoriesNames} مع سلسال`
-            : info?.row?.original?.selsal?.length === 0
-            ? info.getValue()
-            : `${info.getValue()} مع سلسال`;
-        },
+        cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("karat value")} </span>,
@@ -112,6 +101,11 @@ const SupplyPayoffSecondPage = ({
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
         cell: (info) => formatReyal(Number(info.getValue())),
+      },
+      {
+        header: () => <span>{t("total")} </span>,
+        accessorKey: "total",
+        cell: (info) => formatReyal(Number(info.row.original.cost) + Number(info.row.original.vat)),
       },
     ],
     []

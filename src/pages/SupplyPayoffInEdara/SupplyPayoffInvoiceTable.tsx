@@ -43,6 +43,7 @@ const SupplyPayoffInvoiceTable = <T extends object>({
       weight: formatGram(Number(costDataAsProps?.totalWeight)),
       vat: formatReyal(Number(costDataAsProps?.totalItemsTaxes)),
       cost: formatReyal(Number(costDataAsProps?.totalCost)),
+      total: formatReyal(Number(costDataAsProps?.totalFinalCost)),
     },
   ];
 
