@@ -1,18 +1,18 @@
-import Cookies from "js-cookie"
-import { createContext, ReactNode, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { useFetch } from "../../hooks"
-import { useMutate } from "../../hooks/useMutate"
-import { mutateData } from "../../utils/mutateData"
-import { notify } from "../../utils/toast"
+import Cookies from "js-cookie";
+import { createContext, ReactNode, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useFetch } from "../../hooks";
+import { useMutate } from "../../hooks/useMutate";
+import { mutateData } from "../../utils/mutateData";
+import { notify } from "../../utils/toast";
 import {
   AuthCtx_TP,
   LoginCredentials_TP,
   LoginResponseData_TP,
   Permission_TP,
   User_TP,
-} from "./auth-permissions-types"
-import { useQueryClient } from "@tanstack/react-query"
+} from "./auth-permissions-types";
+import { useQueryClient } from "@tanstack/react-query";
 ///
 /////////TYPES
 ///
@@ -24,41 +24,41 @@ export const authCtx = createContext<AuthCtx_TP>({
   isLoggedIn: false,
   isLoggingIn: false,
   isLoggingOut: false,
-  logInHandler: () => { },
-  logOutHandler: () => { },
-  frontLogOutHandler: () => { },
+  logInHandler: () => {},
+  logOutHandler: () => {},
+  frontLogOutHandler: () => {},
   userToken: "",
   userData: {} as User_TP,
   permissions: [],
   isLoadingUpdatedUserData: true,
-})
+});
 
 export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
   /////////// VARIABLES
   ///
-  const initialToken = Cookies.get("token")
+  const initialToken = Cookies.get("token");
   const initialUserData: User_TP | undefined = localStorage.userData
     ? JSON.parse(localStorage.userData)
-    : undefined
+    : undefined;
   const initialPermissions: string[] | undefined = localStorage.permissions
     ? JSON.parse(localStorage.permissions)
-    : undefined
+    : undefined;
   ///
   /////////// STATES
   ///
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!initialToken && !!initialUserData && !!initialPermissions
-  )
-  const [userToken, setUserToken] = useState(initialToken)
-  const [userData, setUserData] = useState(initialUserData)
-  const [permissions, setPermissions] = useState(initialPermissions)
+  );
+  const [userToken, setUserToken] = useState(initialToken);
+  const [userData, setUserData] = useState(initialUserData);
+  const [permissions, setPermissions] = useState(initialPermissions);
 
   const [open, setOpen] = useState(false);
 
   ///
   /////////// CUSTOM HOOKS
   ///
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // LOGIN
   const { mutate: loginMutate, isLoading: isLoggingIn } =
@@ -66,62 +66,64 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
       mutationFn: mutateData,
       mutationKey: ["login_key"],
       onSuccess: (loginResponseData) => {
+        console.log(
+          "🚀 ~ AuthCtxProvider ~ loginResponseData:",
+          loginResponseData
+        );
         if (loginResponseData) {
-          const { token, user, permissions } = loginResponseData
+          const { token, user, permissions } = loginResponseData;
           const permissionsAsStrings = permissions.map(
             (permission) => permission.routes
-          )
+          );
           // update token
           /* 
           cookies & context
           */
-          updateCookies("ADD", token)
+          updateCookies("ADD", token);
 
           // update user
           /* 
           local & context
           */
-          updateLocalUserData("ADD",user)
+          updateLocalUserData("ADD", user);
           // update permissions
           /* 
           local & context
           */
-          updateLocalPermissions("ADD", permissionsAsStrings)
+          updateLocalPermissions("ADD", permissionsAsStrings);
 
           // login=true & notify & navigate
-          setIsLoggedIn(true)
-          setOpen(true)
-          notify("success", "Welcome")
-          navigate("/")
-          
-        } 
+          setIsLoggedIn(true);
+          setOpen(true);
+          notify("success", "Welcome");
+          navigate("/");
+        }
       },
       onError: (err) => {
-        console.log(`AuthCtxProvider ~ err:`, err)
-        notify("error")
+        console.log(`AuthCtxProvider ~ err:`, err);
+        notify("error");
       },
-    })
-
+    });
 
   // LOGOUT
   const { mutate: logoutMutate, isLoading: isLoggingOut } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      logoutOperations()
+      logoutOperations();
     },
-  })
+  });
 
   // Get updated userData
-  const { isFetching: isLoadingUpdatedUserData, refetch} = useFetch<User_TP>({
+  const { isFetching: isLoadingUpdatedUserData, refetch } = useFetch<User_TP>({
     endpoint: "/employee/api/employee/details",
     queryKey: ["userData"],
     onSuccess: (data) => {
-      updateLocalUserData("ADD", data)
+      updateLocalUserData("ADD", data);
     },
     staleTime: Infinity,
     cacheTime: Infinity,
     enabled: isLoggedIn,
-  })
+  });
 
   // Get updated user permissions
   const { isFetching: isLoadingUpdatedUserPermissions } = useFetch<
@@ -130,13 +132,13 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     endpoint: "/employee/api/employee/permissions",
     queryKey: ["userPermissions"],
     onSuccess: (data) => {
-      const permissionsAsStrings = data.map((permission) => permission.routes)
-      updateLocalPermissions("ADD", permissionsAsStrings)
+      const permissionsAsStrings = data.map((permission) => permission.routes);
+      updateLocalPermissions("ADD", permissionsAsStrings);
     },
     staleTime: Infinity,
     cacheTime: Infinity,
     enabled: isLoggedIn,
-  })
+  });
   ///
   /////////// SIDE EFFECTS
   ///
@@ -144,42 +146,43 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
   ///
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
-  type Method_TP = "ADD" | "REMOVE"
+  type Method_TP = "ADD" | "REMOVE";
   function updateCookies(method: Method_TP, token?: string) {
     if (method === "ADD" && !!token) {
-      Cookies.set("token", token)
-      setUserToken(token)
-      return
+      Cookies.set("token", token);
+      setUserToken(token);
+      return;
     }
-    Cookies.remove("token")
-    setUserToken("")
+    Cookies.remove("token");
+    setUserToken("");
   }
+
   function updateLocalUserData(method: Method_TP, user?: User_TP) {
     if (method === "ADD" && !!user) {
-      localStorage.userData = JSON.stringify(user)
-      setUserData(user)
-      return
+      localStorage.userData = JSON.stringify(user);
+      setUserData(user);
+      return;
     }
-    localStorage.removeItem("userData")
-    setUserData(undefined)
+    localStorage.removeItem("userData");
+    setUserData(undefined);
   }
-  
+
   function updateLocalPermissions(method: Method_TP, permissions?: string[]) {
     if (method === "ADD" && !!permissions) {
-      localStorage.permissions = JSON.stringify(permissions)
-      setPermissions(permissions)
-      return
+      localStorage.permissions = JSON.stringify(permissions);
+      setPermissions(permissions);
+      return;
     }
-    localStorage.removeItem("permissions")
-    setPermissions(undefined)
+    localStorage.removeItem("permissions");
+    setPermissions(undefined);
   }
 
   const logInHandler = (credentials: LoginCredentials_TP) => {
     loginMutate({
       endpointName: "/employee/api/auth/login",
       values: credentials,
-    })
-  }
+    });
+  };
 
   // logout
   function logoutOperations() {
@@ -187,13 +190,13 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     /* 
           cookies & context
           */
-    updateCookies("REMOVE")
+    updateCookies("REMOVE");
 
     // update user
     /* 
           local & context
           */
-    updateLocalUserData("REMOVE")
+    updateLocalUserData("REMOVE");
 
     // update Image
     // setUserImg("")
@@ -202,19 +205,19 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     /* 
           local & context
           */
-    updateLocalPermissions("REMOVE")
+    updateLocalPermissions("REMOVE");
     // login=false & notify & navigate
-    setIsLoggedIn(false)
+    setIsLoggedIn(false);
 
-    notify("success", "Good bye, Waiting for you!")
-    navigate("/login")
+    notify("success", "Good bye, Waiting for you!");
+    navigate("/login");
   }
   const logOutHandler = () => {
     logoutMutate({
       endpointName: "/employee/api/employee/logout",
       method: "get",
-    })
-  }
+    });
+  };
 
   ///
   return (
@@ -231,12 +234,12 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
         permissions,
         isLoadingUpdatedUserData: false,
         open,
-        setOpen
+        setOpen,
         // isLoadingUpdatedUserData:
         // isLoadingUpdatedUserData || isLoadingUpdatedUserPermissions,
       }}
     >
       {children}
     </authCtx.Provider>
-  )
-}
+  );
+};
