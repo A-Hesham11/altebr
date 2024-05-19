@@ -124,17 +124,10 @@ const PaymentProccessingToManagement = ({
       ? Number(invoiceTotalOfSalesReturn)
       : Number(totalPriceInvoice);
 
-  // const costRemaining =
-  //   (locationPath === "/selling/payoff/sales-return"
-  //     ? Number(invoiceTotalOfSalesReturn) - Number(totalCommissionOfoneItem)
-  //     : Number(totalPriceInvoice)) - Number(amountRemaining) - Number(totalCommissionTaxOfoneItem);
-  // console.log("🚀 ~ costRemaining:", costRemaining);
-
   const costRemaining =
     locationPath === "/selling/payoff/sales-return"
       ? amountIsPaid - Number(amountRemaining)
       : Number(totalPriceInvoice) - Number(amountRemaining);
-  console.log("🚀 ~ costRemaining:", costRemaining);
 
   const cashId =
     locationPath === "/selling/payoff/sales-return" && cardFrontKey === "cash";
@@ -149,7 +142,6 @@ const PaymentProccessingToManagement = ({
     },
     enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
   });
-  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
     if (cardId !== null && cardFrontKey !== null) {
@@ -199,7 +191,7 @@ const PaymentProccessingToManagement = ({
                   cardImage: cardImage,
                   frontkey: cardFrontKey,
                   frontKeyAccept: frontKeyAccept,
-                  frontKeySadad:frontKeySadad,
+                  frontKeySadad: frontKeySadad,
                   sellingFrontKey: sellingFrontKey,
                   salesReturnFrontKey: salesReturnFrontKey,
                 };
@@ -325,7 +317,6 @@ const PaymentProccessingToManagement = ({
                     {locationPath === "/selling/payoff/sales-return" && (
                       <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
                         <span>{t("remaining cost")} : </span>{" "}
- 
                         {isCheckedCommission
                           ? formatReyal(Number(costRemaining))
                           : formatReyal(Number(costRemaining))}

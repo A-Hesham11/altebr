@@ -22,25 +22,24 @@ import SelectCategory from "../../components/templates/reusableComponants/catego
 import SelectKarat from "../../components/templates/reusableComponants/karats/select/SelectKarat";
 import { notify } from "../../utils/toast";
 import { DeleteIcon, EditIcon } from "../../components/atoms/icons";
-import { HiViewGridAdd } from "react-icons/hi";
 import { Header } from "../../components/atoms/Header";
-import SalesReturnTableInputOfSelsal from "./SalesReturnTableInputOfSelsal";
-import SalesReturnTableInputKit from "./SalesReturnTableInputKit";
+import SupplyPayoffTableInputKit from "./SupplyPayoffTableInputKit";
+import SupplyPayoffTableInputOfSelsal from "./SupplyPayoffTableInputOfSelsal";
 
 type SellingTableInputData_TP = {
   dataSource: any;
   sellingItemsData: Selling_TP;
   setDataSource: any;
   setSellingItemsData: any;
-  setClientData: any;
   rowsData: Selling_TP;
   selectedItemDetails: any;
   setSelectedItemDetails: any;
   sellingItemsOfWeigth: any;
   setSellingItemsOfWeight: any;
+  supplierId: any;
 };
 
-export const SalesReturnTableInputData = ({
+export const SupplyPayoffTableInputData = ({
   dataSource,
   setDataSource,
   sellingItemsData,
@@ -49,32 +48,23 @@ export const SalesReturnTableInputData = ({
   setSelectedItemDetails,
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
+  supplierId,
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
+  console.log("🚀 ~ dataSource:", dataSource);
   const [search, setSearch] = useState("");
+  console.log("🚀 ~ search:", search);
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
   const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
-  const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
 
   const { userData } = useContext(authCtx);
-
-  const priceWithCommissionRate =
-    dataSource &&
-    Number(dataSource[0]?.cost) * (Number(dataSource[0]?.min_selling) * 0.01) +
-      Number(dataSource[0]?.cost);
-
-  const priceWithCommissionCash =
-    dataSource &&
-    Number(dataSource[0]?.cost) + Number(dataSource[0]?.min_selling);
-
-  const priceWithSellingPolicy =
-    dataSource && dataSource[0]?.min_selling_type === "نسبة"
-      ? priceWithCommissionRate
-      : priceWithCommissionCash;
+  console.log("🚀 ~ userData:", userData);
 
   const { values, setFieldValue } = useFormikContext<any>();
+  console.log("🚀 ~ values:", values);
 
   const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
     queryKey: ["branch-all-return-selling"],
@@ -87,20 +77,10 @@ export const SalesReturnTableInputData = ({
     },
   });
 
-  const { data: karatValues } = useFetch<KaratValues_TP[]>({
-    endpoint: "classification/api/v1/allkarats",
-    queryKey: ["karats_select"],
-  });
-
   const sellingCols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
       {
-        header: () => <span>{t("bill number")}</span>,
-        accessorKey: "invoice_id",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
-        header: () => <span>{t("piece number")}</span>,
+        header: () => <span>{t("id code")}</span>,
         accessorKey: "hwya",
         cell: (info) => info.getValue() || "---",
       },
@@ -111,11 +91,8 @@ export const SalesReturnTableInputData = ({
       },
       {
         header: () => <span>{t("classification")} </span>,
-        accessorKey: "category_name",
-        cell: (info) =>
-          info.row.original.selsal.length === 0
-            ? info.getValue()
-            : `${info.getValue()} مع سلسال`,
+        accessorKey: "category",
+        cell: (info) => info.getValue(),
       },
       {
         header: () => <span>{t("weight")} </span>,
@@ -126,14 +103,11 @@ export const SalesReturnTableInputData = ({
       {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
-        cell: (info: any) =>
-          info.row.original.classification_id === 1
-            ? formatReyal(Number(info.getValue()))
-            : formatGram(Number(info.row.original.karatmineral_name)),
+        cell: (info: any) => formatReyal(Number(info.getValue())),
       },
       {
-        header: () => <span>{t("cost")} </span>,
-        accessorKey: "cost",
+        header: () => <span>{t("fare")} </span>,
+        accessorKey: "wage",
         cell: (info) =>
           info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
@@ -144,8 +118,8 @@ export const SalesReturnTableInputData = ({
           info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
-        header: () => <span>{t("total")} </span>,
-        accessorKey: "total",
+        header: () => <span>{t("cost")} </span>,
+        accessorKey: "cost",
         cell: (info) =>
           info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
@@ -163,22 +137,50 @@ export const SalesReturnTableInputData = ({
 
   const handleDeleteRow = (itemId) => {
     sellingItemsData?.findIndex((item) => {
-      return item.item_id == itemId;
+      return item.id == itemId;
     });
 
     const newData = sellingItemsData?.filter((item) => {
-      return item.item_id !== itemId;
+      return item.id !== itemId;
     });
 
     setSellingItemsData(newData);
   };
 
+  const goldTaklfa =
+    dataSource &&
+    (Number(dataSource[0]?.wage) + Number(dataSource[0]?.api_gold_price)) *
+      Number(dataSource[0]?.weight);
+
+  const goldVat = goldTaklfa * (Number(userData?.tax_rate) / 100);
+
   useEffect(() => {
-    const { client_id, bond_date, client_value, client_name, ...restValues } =
-      values;
+    const {
+      client_id,
+      bond_date,
+      client_value,
+      client_name,
+      supplier_id,
+      supplier_name,
+      ...restValues
+    } = values;
     Object.keys(restValues).map((key) => {
       if (dataSource?.length === 1) {
         setFieldValue(key, dataSource[0][key]);
+        setFieldValue("api_gold_price", dataSource[0]?.api_gold_price);
+        setFieldValue(
+          "vat",
+          dataSource[0]?.classification_id === 1
+            ? goldVat
+            : Number(dataSource[0]?.cost) * (Number(userData?.tax_rate) / 100)
+        );
+
+        setFieldValue(
+          "cost",
+          dataSource[0]?.classification_id === 1
+            ? goldTaklfa
+            : Number(dataSource[0]?.cost)
+        );
       }
     });
   }, [dataSource, search]);
@@ -193,16 +195,23 @@ export const SalesReturnTableInputData = ({
   };
 
   const handleAddItemsToSelling = () => {
-    const { client_id, bond_date, client_value, client_name, ...restValues } =
-      values;
+    const {
+      client_id,
+      bond_date,
+      client_value,
+      client_name,
+      supplier_id,
+      supplier_name,
+      ...restValues
+    } = values;
     Object.keys(restValues).forEach((key) => {
       setFieldValue(key, "");
     });
-    setFieldValue("taklfa_after_tax", "");
   };
 
   const getSearchResults = async (item: any) => {
-    let uri = `/sellingReturn/api/v1/all-selling/${userData?.branch_id}?hwya[eq]=${item.hwya}&invoice_id[eq]=${item.invoice_id}`;
+    console.log("🚀 ~ getSearchResults ~ item:", item);
+    let uri = `/supplyReturn/api/v1/get-Item/${item.supplier_id}?hwya[eq]=${item.hwya}`;
     setSearch(uri);
   };
 
@@ -217,10 +226,6 @@ export const SalesReturnTableInputData = ({
       setPage(1);
     }
   }, [search]);
-
-  useEffect(() => {
-    setEditSellingTaklfa(+values?.taklfa);
-  }, [values?.weight, priceWithSellingPolicy]);
 
   return (
     <Form className="overflow-y-auto">
@@ -240,7 +245,7 @@ export const SalesReturnTableInputData = ({
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="py-4 px-2 text-sm font-medium text-white border w-[11%]"
+                  className="py-4 px-2 text-sm font-medium text-white border w-[12%]"
                 >
                   {header.isPlaceholder
                     ? null
@@ -257,17 +262,7 @@ export const SalesReturnTableInputData = ({
           <tr className="border-b text-center table-shadow last:shadow-0">
             <td>
               <BaseInputField
-                placeholder={`${t("bill number")}`}
-                id="invoice_id"
-                name="invoice_id"
-                type="number"
-                className={`${!isSuccess && "bg-mainDisabled"} text-center`}
-                disabled={!isSuccess}
-              />
-            </td>
-            <td>
-              <BaseInputField
-                placeholder={`${t("piece number")}`}
+                placeholder={`${t("id code")}`}
                 id="hwya"
                 name="hwya"
                 type="text"
@@ -275,14 +270,12 @@ export const SalesReturnTableInputData = ({
                   setFieldValue("hwya", e.target.value);
                   getSearchResults({
                     hwya: e.target.value,
-                    invoice_id: values.invoice_id,
+                    supplier_id: supplierId,
                   });
                   handleInputChange(e);
                 }}
-                className={`${
-                  !isSuccess || (!values.invoice_id && "bg-mainDisabled")
-                } text-center`}
-                disabled={!isSuccess || !values.invoice_id}
+                className={`${!isSuccess && "bg-mainDisabled"} text-center`}
+                disabled={!isSuccess}
               />
             </td>
             <td>
@@ -310,17 +303,14 @@ export const SalesReturnTableInputData = ({
             </td>
             <td className="border-l-2 border-l-flatWhite">
               <SelectCategory
-                name="category_name"
+                name="category"
                 noMb={true}
                 placement="top"
                 all={true}
                 value={{
                   value: values?.category_id,
-                  label: values?.category_name || t("classification"),
+                  label: values?.category || t("classification"),
                   id: values?.category_id,
-                }}
-                onChange={(option) => {
-                  setFieldValue("category_name", option!.value);
                 }}
                 showItems={true}
                 disabled={!isCategoryDisabled}
@@ -333,15 +323,37 @@ export const SalesReturnTableInputData = ({
                 name="weight"
                 type="text"
                 required
+                onChange={(e) => {
+                  setFieldValue(
+                    "vat",
+                    values?.classification_id === 1 &&
+                      (Number(values?.wage) + Number(values?.api_gold_price)) *
+                        Number(e.target.value) *
+                        (Number(userData?.tax_rate) / 100)
+                  );
+
+                  console.log("🚀 ~ e.target.value:", +e.target.value)
+                  console.log("🚀 ~ Number(values?.wage):", Number(values?.wage))
+                  console.log("🚀 ~ Number(values?.api_gold_price):", Number(values?.api_gold_price))
+                  console.log("🚀 ~ Number(userData?.tax_rate):", Number(userData?.tax_rate))
+
+
+                  setFieldValue(
+                    "cost",
+                    values?.classification_id === 1 &&
+                      (Number(values?.wage) + Number(values?.api_gold_price)) *
+                        Number(e.target.value)
+                  );
+                }}
                 className={`${
                   (!isSuccess ||
-                    values.category_selling_type !== "all" ||
+                    values.check_input_weight !== 1 ||
                     values?.weight === 0) &&
                   "bg-mainDisabled"
                 } text-center`}
                 disabled={
                   !isSuccess ||
-                  values.category_selling_type !== "all" ||
+                  values.check_input_weight !== 1 ||
                   values?.weight === 0
                 }
               />
@@ -358,14 +370,14 @@ export const SalesReturnTableInputData = ({
                 placement="top"
                 onChange={(option) => {
                   setFieldValue(
-                    "karat_name" || "karatmineral_name",
-                    option!.value
-                  );
-                  setFieldValue(
-                    "stock",
-                    karatValues!.find(
-                      (item) => item.karat === values.karat_value
-                    )?.value
+                    "vat",
+                    values?.classification_id === 1
+                      ? (Number(dataSource[0]?.wage) +
+                          Number(dataSource[0]?.api_gold_price)) *
+                          Number(dataSource[0]?.weight) *
+                          (Number(userData?.tax_rate) / 100)
+                      : Number(dataSource[0]?.cost) *
+                          (Number(userData?.tax_rate) / 100)
                   );
                 }}
                 value={{
@@ -387,21 +399,9 @@ export const SalesReturnTableInputData = ({
             </td>
             <td>
               <BaseInputField
-                placeholder={`${t("cost")}`}
-                id="cost"
-                name="cost"
-                type="text"
-                disabled={!isCategoryDisabled}
-                className={`${
-                  !isCategoryDisabled && "bg-mainDisabled"
-                } text-center`}
-              />
-            </td>
-            <td>
-              <BaseInputField
-                placeholder={`${t("VAT")}`}
-                id="vat"
-                name="vat"
+                placeholder={`${t("fare")}`}
+                id="wage"
+                name="wage"
                 type="text"
                 required
                 className={`${
@@ -414,17 +414,34 @@ export const SalesReturnTableInputData = ({
             </td>
             <td>
               <BaseInputField
-                placeholder={`${t("total")}`}
-                id="total"
-                name="total"
+                placeholder={`${t("VAT")}`}
+                id="vat"
+                name="vat"
                 type="text"
                 required
-                disabled
-                className={`bg-mainDisabled text-center`}
+                value={values?.vat}
+                className={`${
+                  !isSuccess || userData?.include_tax === "1"
+                    ? "bg-mainDisabled"
+                    : ""
+                } text-center`}
+                disabled={!isSuccess || userData?.include_tax === "1"}
+              />
+            </td>
+            <td>
+              <BaseInputField
+                placeholder={`${t("cost")}`}
+                id="cost"
+                name="cost"
+                type="text"
+                disabled={!isCategoryDisabled}
+                className={`${
+                  !isCategoryDisabled && "bg-mainDisabled"
+                } text-center`}
               />
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
-              {dataSource && dataSource[0]?.kitItem.length > 0 && (
+              {dataSource && dataSource[0]?.category_items?.length > 0 && (
                 <Button
                   loading={values.hwya && isFetching}
                   action={() => {
@@ -435,7 +452,7 @@ export const SalesReturnTableInputData = ({
                   <EditIcon className="fill-mainGreen w-6 h-6" />
                 </Button>
               )}
-              {dataSource && dataSource[0]?.selsal.length > 0 && (
+              {/* {dataSource && dataSource[0]?.selsal?.length > 0 && (
                 <Button
                   loading={values.hwya && isFetching}
                   action={() => {
@@ -446,7 +463,7 @@ export const SalesReturnTableInputData = ({
                 >
                   <HiViewGridAdd className="fill-mainGreen w-6 h-6" />
                 </Button>
-              )}
+              )} */}
               <Button
                 loading={values.hwya && isFetching}
                 action={() => {
@@ -469,21 +486,12 @@ export const SalesReturnTableInputData = ({
                     return;
                   }
 
-                  if (+values?.taklfa < +editSellingTaklfa) {
-                    notify(
-                      "info",
-                      `${t(
-                        "The selling price may not be less than the minimum"
-                      )}`
-                    );
-                    return;
-                  }
-
                   setSellingItemsData((prev) =>
                     [
                       ...prev,
                       {
                         ...values,
+                        //   stone_weight: +stoneWeitgh,
                       },
                     ].reverse()
                   );
@@ -501,6 +509,7 @@ export const SalesReturnTableInputData = ({
             </td>
           </tr>
           {table.getRowModel().rows.map((row) => {
+            console.log("🚀 ~ {table.getRowModel ~ row:", row?.original);
             return (
               <tr key={row.id} className="text-center">
                 {row.getVisibleCells().map((cell, i) => (
@@ -524,7 +533,7 @@ export const SalesReturnTableInputData = ({
                         Object.keys(restValues).map((key) => {
                           setFieldValue(key, row?.original[key]);
                         });
-                        handleDeleteRow(row?.original?.item_id);
+                        handleDeleteRow(row?.original?.id);
                       }}
                       className="bg-transparent px-2"
                     >
@@ -535,7 +544,7 @@ export const SalesReturnTableInputData = ({
                     </Button>
                     <Button
                       action={() => {
-                        handleDeleteRow(row?.original?.item_id);
+                        handleDeleteRow(row?.original?.id);
                         setSelectedItemDetails([]);
                       }}
                       className="bg-transparent px-2 "
@@ -554,14 +563,14 @@ export const SalesReturnTableInputData = ({
       <Modal isOpen={openDetails} onClose={() => setOpenDetails(false)}>
         <div className="flex flex-col gap-8 justify-center items-center">
           <Header header={t("kit details")} />
-          <SalesReturnTableInputKit />
+          <SupplyPayoffTableInputKit />
         </div>
       </Modal>
 
       <Modal isOpen={openSelsal} onClose={() => setOpenSelsal(false)}>
         <div className="flex flex-col gap-8 justify-center items-center">
           <Header header={t("chain")} />
-          <SalesReturnTableInputOfSelsal />
+          <SupplyPayoffTableInputOfSelsal />
         </div>
       </Modal>
     </Form>

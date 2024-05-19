@@ -8,7 +8,7 @@ import { numberContext } from "../../../../context/settings/number-formatter";
 const SellingBoxes = ({ sellingItemsData }: any) => {
   const { formatGram, formatReyal } = numberContext();
 
-  const locationPath = location.pathname
+  const locationPath = location.pathname;
 
   const invoiceValueOfSelling = sellingItemsData.reduce(
     (total, item) => +total + +item.taklfa,
@@ -28,14 +28,30 @@ const SellingBoxes = ({ sellingItemsData }: any) => {
     0
   );
 
+  const invoiceTotalVat = sellingItemsData.reduce(
+    (total, item) => +total + +item.vat,
+    0
+  );
+
+  const invoiceTotalTaklfa = invoiceValueOfSalesReturn + invoiceTotalVat;
+
   const weightTotal = sellingItemsData.reduce(
     (total, item) => total + +item.weight,
     0
   );
 
-  const sellingORSalesReturnOfCost = locationPath === "/selling/payoff/sales-return" ? Number(invoiceValueOfSalesReturn) : Number(invoiceValueOfSelling)
+  const sellingORSalesReturnOfCost =
+    locationPath === "/selling/payoff/sales-return" ||
+    locationPath === "/supply-return"
+      ? Number(invoiceValueOfSalesReturn)
+      : Number(invoiceValueOfSelling);
 
-  const sellingORSalesReturnOfTotal = locationPath === "/selling/payoff/sales-return" ? Number(invoiceTotalOfOfSalesReturn) : Number(invoiceTotalOfSelling)
+  const sellingORSalesReturnOfTotal =
+    locationPath === "/selling/payoff/sales-return"
+      ? Number(invoiceTotalOfOfSalesReturn)
+      : locationPath === "/supply-return"
+      ? Number(invoiceTotalTaklfa)
+      : Number(invoiceTotalOfSelling);
 
   const boxsData = [
     {
@@ -48,8 +64,9 @@ const SellingBoxes = ({ sellingItemsData }: any) => {
       id: 2,
       account: `${t("VAT")}`,
       value:
-        formatReyal(Number(sellingORSalesReturnOfTotal - sellingORSalesReturnOfCost)) ||
-        0,
+        formatReyal(
+          Number(sellingORSalesReturnOfTotal - sellingORSalesReturnOfCost)
+        ) || 0,
       unit: "ر.س",
     },
     {

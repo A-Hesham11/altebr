@@ -7,7 +7,6 @@ import { notify } from '../../utils/toast'
 import { Form, Formik, useFormikContext } from 'formik'
 import BillHeader from '../../components/selling/selling components/bill/BillHeader'
 import BillInputs from '../../components/selling/selling components/bill/BillInputs'
-import {SellingTableInputData} from '../../components/selling/selling components/data/SellingTableInputData'
 import { ClientData_TP, Selling_TP } from '../selling/PaymentSellingPage'
 import { SalesReturnTableInputData } from './SalesReturnTableInputData'
 

@@ -153,6 +153,8 @@ import SellingInvoiceSecondPage from "../pages/reserveGold/invoices/sellingInvoi
 import PurchaseBond from "../pages/reserveGold/invoices/purchaseInvoice/PurchaseBond";
 import SupplierPayment from "../pages/SupplyPayment/SupplierPayment";
 import SupplierPaymentBonds from "../pages/SupplyPayment/SupplierPaymentBonds";
+import SupplyPayoff from "../pages/SupplyPayoffInEdara/SupplyPayoff";
+import SupplyPayoffBonds from "../pages/SupplyPayoffInEdara/SupplyPayoffBonds";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -459,14 +461,18 @@ export const AllRoutesProvider = () => {
             element={<Bonds title={t("accessory bonds")} />}
           />
 
-          <Route
-            path="/supplier-payment"
-            element={<SupplierPayment/>}
-          />
+          <Route path="/supplier-payment" element={<SupplierPayment />} />
 
           <Route
             path="/bonds/supplier-payment"
             element={<SupplierPaymentBonds />}
+          />
+
+          <Route path="/supply-return" element={<SupplyPayoff />} />
+
+          <Route
+            path="/bonds/supply-return"
+            element={<SupplyPayoffBonds />}
           />
           <Route
             path="/accessory-bonds/:bondID"

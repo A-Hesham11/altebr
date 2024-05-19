@@ -402,6 +402,7 @@ export type Payment_TP = {
   setSelectedCardName?: any;
   selectedCardName?: any;
   stock_difference?: any;
+  isCheckedCommission?: any;
 };
 
 const validationSchemaOfAmount = () =>
@@ -431,7 +432,6 @@ const SupplierPaymentProccessing = ({
   supplierId,
   boxValues,
 }: Payment_TP) => {
-  console.log("🚀 ~ selectedCardId:", selectedCardId);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
@@ -442,7 +442,6 @@ const SupplierPaymentProccessing = ({
   const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("");
   const { formatReyal } = numberContext();
   const [stockDifferenceMain, setStockDifferenceMain] = useState(0);
-  console.log("🚀 ~ stockDifferenceMain:", stockDifferenceMain);
 
   const locationPath = location.pathname;
 
@@ -464,16 +463,15 @@ const SupplierPaymentProccessing = ({
     locationPath === "/supplier-payment" && cardFrontKey === "cash";
 
   const { data, isLoading, failureReason, refetch, isSuccess } = useFetch({
-    endpoint: `/sadadSupplier/api/v1/show/${cashId ? 10005 : cardId || 0}/${
+    endpoint: `/sadadSupplier/api/v1/show/${(cashId ? 10005 : cardId) || 0}/${
       userData?.branch_id
-    }/${cardFrontKey || 0}`,
+    }/${cardFrontKey ? cardFrontKey : 0}`,
     queryKey: ["showValueOfCardsInEdara"],
     onSuccess(data) {
       return data.data;
     },
     enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
   });
-  console.log("🚀 ~ data:", data);
 
   const initialValues = {
     id: editData?.id || "",
@@ -511,24 +509,6 @@ const SupplierPaymentProccessing = ({
     locationPath === "/selling/payoff/sales-return"
       ? amountIsPaid - Number(amountRemaining)
       : Number(totalPriceInvoice) - Number(amountRemaining);
-  console.log("🚀 ~ costRemaining:", costRemaining);
-
-  //   const { data: stockDifference, refetch: stockDifferenceRefetch } = useFetch({
-  //     endpoint: `/sadadSupplier/api/v1/show/${cashId ? 10005 : cardId || 0}/${
-  //       userData?.branch_id
-  //     }/${cardFrontKey || 0}`,
-  //     queryKey: ["stock_difference_data"],
-  //     onSuccess(data) {
-  //       return data.data;
-  //     },
-  //     // enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
-  //   });
-
-  //   useEffect(() => {
-  //     if (cardId !== null && cardFrontKey !== null) {
-  //       refetch();
-  //     }
-  //   }, [cardId, cardFrontKey]);
 
   useEffect(() => {
     refetch();
@@ -569,10 +549,6 @@ const SupplierPaymentProccessing = ({
                   ? item.card_id == selectedCardId &&
                     item.stock_difference == values?.stock_difference
                   : item.card_id == selectedCardId
-              );
-              console.log(
-                "🚀 ~ isItemExistInPaymentData:",
-                isItemExistInPaymentData
               );
               if (!isItemExistInPaymentData || !paymentData.length) {
                 const newItem = {
@@ -621,7 +597,6 @@ const SupplierPaymentProccessing = ({
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
-          console.log("🚀 ~ values:", values);
           useEffect(() => {
             if (
               cardId === 10001 ||
@@ -634,7 +609,6 @@ const SupplierPaymentProccessing = ({
             } else {
               setFieldValue("weight", "");
               setFieldValue("value", data?.value?.toFixed(2));
-              //   setFieldValue("stock_difference", +data?.equivalent);
             }
           }, [cardId]);
 
@@ -735,7 +709,7 @@ const SupplierPaymentProccessing = ({
                 paymentData={paymentData}
                 setEditData={setEditData}
                 setPaymentData={setPaymentData}
-              />
+              /> 
             </Form>
           );
         }}

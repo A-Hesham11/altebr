@@ -1,6 +1,12 @@
 import { t } from "i18next";
-import QRCodeGen from "../../../atoms/QRCode";
 import { numberContext } from "../../../../context/settings/number-formatter";
+import { useContext } from "react";
+import { authCtx } from "../../../../context/auth-and-perm/auth";
+import { Buffer } from "buffer";
+import QRCode from "qrcode.react";
+import { useFetch } from "../../../../hooks";
+import { ClientData_TP } from "../../SellingClientForm";
+import fs  from "fs";
 
 const FinalPreviewBillPayment = ({
   paymentData,
@@ -9,10 +15,38 @@ const FinalPreviewBillPayment = ({
   paymentData: never[];
   costDataAsProps: any;
 }) => {
-  console.log("🚀 ~ paymentData:", paymentData)
+  const { formatReyal } = numberContext();
 
-  const { formatGram, formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
 
+  const { data: companyData } = useFetch<ClientData_TP>({
+    endpoint: `/companySettings/api/v1/companies`,
+    queryKey: ["Mineral_license_qr"],
+  });
+
+  function getTLV(tagNum, tagValue) {
+    var tagNumBuf = Buffer.from([tagNum], "utf8");
+    var tagValueLengthBuf = Buffer.from([tagValue.length], "utf8");
+    var tagValueBuf = Buffer.from(tagValue, "utf8");
+    var bufsArray = [tagNumBuf, tagValueLengthBuf, tagValueBuf];
+    return Buffer.concat(bufsArray);
+  }
+
+  var sellerName = getTLV("1", `${userData?.name}`);
+  var vatRegTRN = getTLV("2", `${companyData && companyData[0]?.taxRegisteration}`);
+  var invoiceDate = getTLV("3", new Date().toUTCString());
+  var totalInvoice = getTLV("4", `${costDataAsProps?.totalFinalCost}`);
+  var invoiceVatTotal = getTLV("5", `${costDataAsProps?.totalItemsTaxes}`);
+
+  var qrCodeBuf = Buffer.concat([
+    sellerName,
+    vatRegTRN,
+    invoiceDate,
+    totalInvoice,
+    invoiceVatTotal,
+  ]);
+
+  var qrCodeBase64 = qrCodeBuf.toString("base64");
 
   return (
     <div className="flex justify-between pe-8">
@@ -22,9 +56,7 @@ const FinalPreviewBillPayment = ({
       </div>
 
       <div>
-        <QRCodeGen
-          value={`${Math.round(costDataAsProps.totalCost * 0.15)} RS`}
-        />
+        <QRCode value={qrCodeBase64} />
       </div>
       <div className="flex flex-col gap-1 items-center">
         <div className="flex flex-row items-end gap-4 mb-3">
@@ -41,7 +73,13 @@ const FinalPreviewBillPayment = ({
                 />
               </div>
               <p className="mt-3">
-                {formatReyal(Number(card.cost_after_tax + card.commission_riyals + +card.commission_tax) || Number(card.amount)) }
+                {formatReyal(
+                  Number(
+                    card.cost_after_tax +
+                      card.commission_riyals +
+                      +card.commission_tax
+                  ) || Number(card.amount)
+                )}
               </p>
             </div>
           ))}
@@ -52,9 +90,7 @@ const FinalPreviewBillPayment = ({
               <span>{t("prepaid cost")}: </span>
               <span>{formatReyal(Number(costDataAsProps.prepaidAmount))}</span>
             </>
-          )
-          : null
-        }
+          ) : null}
         </h3>
       </div>
     </div>

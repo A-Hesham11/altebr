@@ -1,12 +1,7 @@
 import React, { Fragment, useContext, useState } from 'react'
-import { BoxesData } from '../../../molecules/card/BoxesData'
 import { t } from "i18next"
-import { BondTotals } from '../../../supply/BondTotals'
-import { useFetch } from '../../../../hooks'
 import { SellingBoxData } from './SellingBoxData'
 import { numberContext } from '../../../../context/settings/number-formatter'
-import { authCtx } from '../../../../context/auth-and-perm/auth'
-
 
 const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => {
 
@@ -15,12 +10,10 @@ const PaymentBoxes = ({sellingItemsData, paymentData, selectedCardId} : any) => 
   const locationPath = location.pathname
 
   const amountRemaining = paymentData.reduce((total, item) => Number(total) + (Number(item.cost_after_tax) || Number(item.amount)) ,0);
-  console.log("🚀 ~ PaymentBoxes ~ amountRemaining:", amountRemaining)
 
   const totalPaymentByBank = paymentData.filter((item) => item.id < 10000).reduce((total, item) => +total + +item.amount, 0);
 
   const totalPaymentByCash = paymentData.filter((item) => item.id > 10004).reduce((total, item) => +total + +item.amount, 0) || 0; 
-  console.log("🚀 ~ PaymentBoxes ~ totalPaymentByCash:", totalPaymentByCash)
 
   const totalPaymentByKarat18 = paymentData.filter((item) => item.id === 10001).reduce((total, item) => +total + +item.weight, 0) || 0; 
   const totalPaymentByKarat21 = paymentData.filter((item) => item.id === 10002).reduce((total, item) => +total + +item.weight, 0) || 0; 
