@@ -24,6 +24,7 @@ import { Table } from "../../components/templates/reusableComponants/tantable/Ta
 import { numberContext } from "../../context/settings/number-formatter";
 import { Loading } from "../../components/organisms/Loading";
 import { TableComponent } from "./TableComponent";
+import ProcessBoxes from "./ProcessBoxes";
 
 // const EdaraStocks = () => {
 //   // STATE
@@ -197,6 +198,9 @@ const EdaraStocks = () => {
   const [dataSource, setDataSource] = useState([]);
   console.log("🚀 ~ EdaraStocks ~ dataSource:", dataSource);
   const { formatGram, formatReyal } = numberContext();
+  const [firstDebt, setFirstDebt] = useState(null);
+  console.log("🚀 ~ EdaraStocks ~ firstDebt:", firstDebt);
+  const [firstCredit, setFirstCredit] = useState(null);
 
   const filterInitialValues = {
     account_name: "",
@@ -251,11 +255,176 @@ const EdaraStocks = () => {
 
   useEffect(() => {
     if (edaraCredit) {
-      setDataSource(edaraCredit?.data[0]?.boxes);
+      const processedBoxes = ProcessBoxes(edaraCredit?.data[0]?.boxes);
+      setDataSource(processedBoxes);
     }
   }, [edaraCredit]);
 
   // COLUMNS FOR THE TABLE
+  // const tableColumn = useMemo<any>(
+  //   () => [
+  //     {
+  //       cell: (info: any) => {
+  //         return info.row.index + 1;
+  //       },
+  //       accessorKey: "index",
+  //       header: () => <span>{t("#")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => info.getValue(),
+  //       accessorKey: "date",
+  //       header: () => <span>{t("date")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => info.getValue(),
+  //       accessorKey: "restriction_name",
+  //       header: () => <span>{t("statement")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => info.getValue(),
+  //       accessorKey: "bond_id",
+  //       header: () => <span>{t("bond number")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => {
+  //         const infoTarget = dataSource?.find((item) => {
+  //           return Number(item.index) === Number(info.row.index) - 1;
+  //         });
+
+  //         if (info.row.index === 0) {
+  //           return (
+  //             formatReyal(
+  //               Number(info.row.original?.The_first_period_debtor).toFixed(2)
+  //             ) || "---"
+  //           );
+  //         } else if (info.row.index === 1) {
+  //           const value =
+  //             Number(infoTarget?.The_first_period_debtor) +
+  //             infoTarget?.movement_debtor -
+  //             infoTarget?.movement_creditor;
+
+  //           return value > 0 ? formatReyal(Number(value).toFixed(2)) : "---";
+  //         } else {
+  //           return formatReyal(Number(firstDebt).toFixed(2)) || "---";
+  //         }
+  //       },
+  //       accessorKey: "#",
+  //       header: () => <span>{t("the first period debtor")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => {
+  //         const infoTarget = dataSource?.find(
+  //           (item) => Number(item.index) === Number(info.row.index) - 1
+  //         );
+
+  //         if (info.row.index === 0) {
+  //           return (
+  //             formatReyal(
+  //               Number(info.row.original?.The_first_period_creditor).toFixed(2)
+  //             ) || "---"
+  //           );
+  //         } else {
+  //           const value =
+  //             Number(infoTarget?.value) +
+  //             infoTarget?.movement_debtor -
+  //             infoTarget?.movement_creditor;
+
+  //           return value < 0 ? formatReyal(Number(value).toFixed(2)) : "---";
+  //         }
+  //       },
+  //       accessorKey: "#",
+  //       header: () => <span>{t("the first period creditor")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => {
+  //         return info.row.original.computational_movement === "debtor"
+  //           ? formatReyal(Number(info.getValue()).toFixed(2))
+  //           : "---";
+  //       },
+  //       accessorKey: "value",
+  //       header: () => <span>{t("debtor movement")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => {
+  //         return info.row.original.computational_movement === "creditor"
+  //           ? formatReyal(Number(info.getValue()).toFixed(2))
+  //           : "---";
+  //       },
+  //       accessorKey: "value",
+  //       header: () => <span>{t("creditor movement")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => {
+  //         const infoTarget = dataSource?.find(
+  //           (item) => Number(item.index) === Number(info.row.index) - 1
+  //         );
+
+  //         if (info.row.index === 0) {
+  //           return info.row.original.computational_movement === "debtor"
+  //             ? formatReyal(Number(info.getValue()).toFixed(2))
+  //             : "---";
+  //         } else if (info.row.index === 1) {
+  //           const value =
+  //             Number(infoTarget?.The_first_period_debtor) +
+  //             infoTarget?.movement_debtor -
+  //             infoTarget?.movement_creditor;
+
+  //           const balanceValue =
+  //             value +
+  //             info.row.original.movement_debtor -
+  //             info.row.original.movement_creditor;
+
+  //           setFirstDebt(balanceValue);
+  //           return formatReyal(Number(balanceValue).toFixed(2)) || "---";
+  //         } else {
+  //           const value =
+  //             firstDebt +
+  //             info.row.original?.movement_debtor -
+  //             info.row.original?.movement_creditor;
+
+  //           return formatReyal(Number(value).toFixed(2)) || "---";
+  //         }
+  //       },
+  //       accessorKey: "balance_debtor",
+  //       header: () => <span>{t("debtor balance")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => {
+  //         const infoTarget = dataSource?.find(
+  //           (item) => Number(item.index) === Number(info.row.index) - 1
+  //         );
+
+  //         if (info.row.index === 0) {
+  //           return info.row.original.computational_movement === "creditor"
+  //             ? formatReyal(Number(info.getValue()).toFixed(2))
+  //             : "---";
+  //         } else if (info.row.index === 1) {
+  //           const value =
+  //             Number(infoTarget?.The_first_period_creditor) +
+  //             infoTarget?.movement_creditor -
+  //             infoTarget?.movement_debtor;
+
+  //           const balanceValue =
+  //             value +
+  //             info.row.original.movement_creditor -
+  //             info.row.original.movement_debtor;
+
+  //           setFirstCredit(balanceValue);
+  //           return formatReyal(Number(balanceValue).toFixed(2)) || "---";
+  //         }
+  //       },
+  //       accessorKey: "balance_creditor",
+  //       header: () => <span>{t("creditor balance")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => info.getValue(),
+  //       accessorKey: "unit_id",
+  //       header: () => <span>{t("unit id")}</span>,
+  //     },
+  //   ],
+  //   [dataSource, firstDebt, firstCredit]
+  // );
+
   const tableColumn = useMemo<any>(
     () => [
       {
@@ -273,7 +442,7 @@ const EdaraStocks = () => {
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "restriction_name",
-        header: () => <span>{t("restriction name")}</span>,
+        header: () => <span>{t("statement")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
@@ -281,81 +450,37 @@ const EdaraStocks = () => {
         header: () => <span>{t("bond number")}</span>,
       },
       {
-        cell: (info: any) => {
-          const infoTarget = dataSource?.find((item) => {
-            return Number(item.index) === Number(info.row.index) - 1;
-          });
-
-          if (info.row.index === 0) {
-            return (
-              formatReyal(
-                Number(info.row.original?.The_first_period_debtor).toFixed(2)
-              ) || "---"
-            );
-          } else {
-            return infoTarget?.computational_movement === "debtor"
-              ? formatReyal(Number(infoTarget?.value).toFixed(2))
-              : "---";
-          }
-        },
-        accessorKey: "#",
+        cell: (info: any) =>
+          Number(info.getValue()) > 0 ? info.getValue() : "---",
+        accessorKey: "first_period_debit",
         header: () => <span>{t("the first period debtor")}</span>,
       },
       {
-        cell: (info: any) => {
-          const infoTarget = dataSource?.find(
-            (item) => Number(item.index) === Number(info.row.index) - 1
-          );
-
-          if (info.row.index === 0) {
-            return (
-              formatReyal(
-                Number(info.row.original?.The_first_period_creditor).toFixed(2)
-              ) || "---"
-            );
-          } else {
-            return infoTarget?.computational_movement === "creditor"
-              ? formatReyal(Number(infoTarget?.value).toFixed(2))
-              : "---";
-          }
-        },
-        accessorKey: "#",
+        cell: (info: any) =>
+          Number(info.getValue()) > 0 ? info.getValue() : "---",
+        accessorKey: "first_period_credit",
         header: () => <span>{t("the first period creditor")}</span>,
       },
       {
-        cell: (info: any) => {
-          return info.row.original.computational_movement === "debtor"
-            ? formatReyal(Number(info.getValue()).toFixed(2))
-            : "---";
-        },
-        accessorKey: "value",
+        cell: (info: any) => info.getValue(),
+        accessorKey: "movement_debit",
         header: () => <span>{t("debtor movement")}</span>,
       },
       {
-        cell: (info: any) => {
-          return info.row.original.computational_movement === "creditor"
-            ? formatReyal(Number(info.getValue()).toFixed(2))
-            : "---";
-        },
-        accessorKey: "value",
+        cell: (info: any) => info.getValue(),
+        accessorKey: "movement_credit",
         header: () => <span>{t("creditor movement")}</span>,
       },
       {
-        cell: (info: any) => {
-          return info.row.original.computational_movement === "debtor"
-            ? formatReyal(Number(info.getValue()).toFixed(2))
-            : "---";
-        },
-        accessorKey: "value",
+        cell: (info: any) =>
+          Number(info.getValue()) > 0 ? info.getValue() : "---",
+        accessorKey: "balance_debtor",
         header: () => <span>{t("debtor balance")}</span>,
       },
       {
-        cell: (info: any) => {
-          return info.row.original.computational_movement === "creditor"
-            ? formatReyal(Number(info.getValue()).toFixed(2))
-            : "---";
-        },
-        accessorKey: "value",
+        cell: (info: any) =>
+          Number(info.getValue()) > 0 ? info.getValue() : "---",
+        accessorKey: "balance_credit",
         header: () => <span>{t("creditor balance")}</span>,
       },
       {
@@ -364,7 +489,7 @@ const EdaraStocks = () => {
         header: () => <span>{t("unit id")}</span>,
       },
     ],
-    [dataSource]
+    []
   );
 
   // LOADING ....
