@@ -13,14 +13,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useFetch, useIsRTL } from "../../hooks";
 import { formatDate, getDayAfter } from "../../utils/date";
 import { t } from "i18next";
-import {
-  BaseInputField,
-  DateInputField,
-  Select,
-} from "../../components/molecules";
+import { DateInputField, Select } from "../../components/molecules";
 import { Button } from "../../components/atoms";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../context/settings/number-formatter";
 import { Loading } from "../../components/organisms/Loading";
 import { TableComponent } from "./TableComponent";
@@ -235,6 +229,7 @@ const EdaraStocks = () => {
       };
     },
   });
+  console.log("🚀 ~ EdaraStocks ~ edaraCredit:", edaraCredit);
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
@@ -451,46 +446,65 @@ const EdaraStocks = () => {
       },
       {
         cell: (info: any) =>
-          Number(info.getValue()) > 0 ? info.getValue() : "---",
+          Number(info.getValue()) > 0
+            ? formatReyal(Number(info.getValue()).toFixed(2))
+            : "---",
         accessorKey: "first_period_debit",
         header: () => <span>{t("the first period debtor")}</span>,
       },
       {
         cell: (info: any) =>
-          Number(info.getValue()) > 0 ? info.getValue() : "---",
+          Number(info.getValue()) > 0
+            ? formatReyal(Number(info.getValue()).toFixed(2))
+            : "---",
         accessorKey: "first_period_credit",
         header: () => <span>{t("the first period creditor")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
+        cell: (info: any) =>
+          Number(info.getValue()) === 0
+            ? "---"
+            : formatReyal(Number(info.getValue()).toFixed(2)),
         accessorKey: "movement_debit",
         header: () => <span>{t("debtor movement")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
+        cell: (info: any) =>
+          Number(info.getValue()) === 0
+            ? "---"
+            : formatReyal(Number(info.getValue()).toFixed(2)),
         accessorKey: "movement_credit",
         header: () => <span>{t("creditor movement")}</span>,
       },
       {
         cell: (info: any) =>
-          Number(info.getValue()) > 0 ? info.getValue() : "---",
+          Number(info.getValue()) > 0
+            ? formatReyal(Number(info.getValue()).toFixed(2))
+            : "---",
         accessorKey: "balance_debtor",
         header: () => <span>{t("debtor balance")}</span>,
       },
       {
         cell: (info: any) =>
-          Number(info.getValue()) > 0 ? info.getValue() : "---",
+          Number(info.getValue()) > 0
+            ? formatReyal(Number(info.getValue()).toFixed(2))
+            : "---",
         accessorKey: "balance_credit",
         header: () => <span>{t("creditor balance")}</span>,
-      },
-      {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "unit_id",
-        header: () => <span>{t("unit id")}</span>,
       },
     ],
     []
   );
+
+  const scrollToBottom = () => {
+    console.log(window.innerHeight);
+    console.log("----", document.documentElement.scrollHeight);
+    scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  };
 
   // LOADING ....
   if (isLoading || isRefetching || isFetching)
@@ -498,7 +512,7 @@ const EdaraStocks = () => {
 
   return (
     <div>
-      <div className="mb-8 flex flex-col items-center gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-end lg:justify-between">
         {/* 1) FORM */}
         <Formik
           initialValues={filterInitialValues}
@@ -561,11 +575,28 @@ const EdaraStocks = () => {
             </div>
 
             <div className="mt-14">
-              <TableComponent
-                data={dataSource || []}
-                columns={tableColumn}
-                footered
-              />
+              <div className="mb-6">
+                {/* <div
+                  className="fixed top-40 left-12 cursor-pointer bg-mainGreen"
+                  onClick={scrollToBottom}
+                >
+                  scroll dow
+                </div> */}
+
+                <h2 className="text-center text-mainGreen">
+                  <span className="text-2xl font-bold">
+                    {edaraCredit?.data?.[0].accountable &&
+                      edaraCredit?.data?.[0].accountable}
+                  </span>
+                  <span className="mx-1 text-xl  font-bold">
+                    (
+                    {edaraCredit?.data?.[0].numeric_system &&
+                      edaraCredit?.data?.[0].numeric_system}
+                    )
+                  </span>
+                </h2>
+              </div>
+              <TableComponent data={dataSource || []} columns={tableColumn} />
             </div>
           </Form>
         </Formik>
