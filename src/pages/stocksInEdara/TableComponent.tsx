@@ -51,21 +51,21 @@ export const TableComponent = <T extends object>({
     table.setPageSize(data.length);
   }, [data.length, table]);
 
-  const totalsOfFirstDebit = data.reduce((acc: any, curr: any) => {
-    if (Number(curr.first_period_debit) > 0) {
-      return acc + Number(curr.first_period_debit);
-    }
+  // const totalsOfFirstDebit = data.reduce((acc: any, curr: any) => {
+  //   if (Number(curr.first_period_debit) > 0) {
+  //     return acc + Number(curr.first_period_debit);
+  //   }
 
-    return acc;
-  }, 0);
+  //   return acc;
+  // }, 0);
 
-  const totalsOfFirstCredit = data.reduce((acc: any, curr: any) => {
-    if (Number(curr.first_period_credit) > 0) {
-      return acc + Number(curr.first_period_credit);
-    }
+  // const totalsOfFirstCredit = data.reduce((acc: any, curr: any) => {
+  //   if (Number(curr.first_period_credit) > 0) {
+  //     return acc + Number(curr.first_period_credit);
+  //   }
 
-    return acc;
-  }, 0);
+  //   return acc;
+  // }, 0);
 
   const totalsOfMovementDebit = data.reduce((acc: any, curr: any) => {
     if (Number(curr.movement_debit) > 0) {
@@ -83,31 +83,37 @@ export const TableComponent = <T extends object>({
     return acc;
   }, 0);
 
-  const totalsOfBalanceDebit = data.reduce((acc: any, curr: any) => {
-    if (Number(curr.balance_debtor) > 0) {
-      return acc + Number(curr.balance_debtor);
-    }
+  const totalsOfBalanceDebit =
+    Number(data[data?.length - 1]?.first_period_debit) +
+    totalsOfMovementDebit -
+    totalsOfMovementCredit;
 
-    return acc;
-  }, 0);
-
-  const totalsOfBalanceCredit = data.reduce((acc: any, curr: any) => {
-    if (Number(curr.balance_credit) > 0) {
-      return acc + Number(curr.balance_credit);
-    }
-
-    return acc;
-  }, 0);
+  const totalsOfBalanceCredit =
+    Number(data[data?.length - 1]?.first_period_credit) +
+    totalsOfMovementCredit -
+    totalsOfMovementDebit;
 
   let tableTotalResult = [
     {
       name: t("totals"),
-      totalsOfFirstDebit: formatReyal(totalsOfFirstDebit),
-      totalsOfFirstCredit: formatReyal(totalsOfFirstCredit),
+      totalsOfFirstDebit:
+        Number(data[data?.length - 1]?.first_period_debit) > 0
+          ? formatReyal(data[data?.length - 1]?.first_period_debit)
+          : "---",
+      totalsOfFirstCredit:
+        Number(data[data?.length - 1]?.first_period_credit) > 0
+          ? `(${formatReyal(data[data?.length - 1]?.first_period_credit)})`
+          : "---",
       totalsOfMovementDebit: formatReyal(totalsOfMovementDebit),
-      totalsOfMovementCredit: formatReyal(totalsOfMovementCredit),
-      totalsOfBalanceDebit: formatReyal(totalsOfBalanceDebit),
-      totalsOfBalanceCredit: formatReyal(totalsOfBalanceCredit),
+      totalsOfMovementCredit: `(${formatReyal(totalsOfMovementCredit)})`,
+      totalsOfBalanceDebit:
+        Number(data[data?.length - 1]?.balance_debtor) > 0
+          ? formatReyal(totalsOfBalanceDebit)
+          : "---",
+      totalsOfBalanceCredit:
+        Number(data[data?.length - 1]?.balance_credit) > 0
+          ? `(${formatReyal(totalsOfBalanceCredit)})`
+          : "---",
     },
   ];
 
@@ -116,7 +122,7 @@ export const TableComponent = <T extends object>({
       <div
         className={`${
           footered ? "" : "GlobalTable"
-        }  w-full flex flex-col gap-4 h-[25rem] overflow-y-scroll scrollbar-none`}
+        }  w-full flex flex-col gap-4 h-[21rem] overflow-y-scroll scrollbar-none`}
       >
         <table className="min-w-full text-center">
           <thead className="border-b bg-mainGreen sticky top-0">
