@@ -15,6 +15,7 @@ import { ReactNode } from "react";
 import { t } from "i18next";
 import { Button } from "../../components/atoms";
 import { useIsRTL } from "../../hooks";
+import { numberContext } from "../../context/settings/number-formatter";
 
 interface ReactTableProps<T extends object> {
   data: T[];
@@ -33,6 +34,8 @@ export const TableComponent = <T extends object>({
   footered = false,
   children,
 }: ReactTableProps<T>) => {
+  const { formatGram, formatReyal } = numberContext();
+
   const table = useReactTable({
     data,
     columns,
@@ -48,15 +51,75 @@ export const TableComponent = <T extends object>({
     table.setPageSize(data.length);
   }, [data.length, table]);
 
+  const totalsOfFirstDebit = data.reduce((acc: any, curr: any) => {
+    if (Number(curr.first_period_debit) > 0) {
+      return acc + Number(curr.first_period_debit);
+    }
+
+    return acc;
+  }, 0);
+
+  const totalsOfFirstCredit = data.reduce((acc: any, curr: any) => {
+    if (Number(curr.first_period_credit) > 0) {
+      return acc + Number(curr.first_period_credit);
+    }
+
+    return acc;
+  }, 0);
+
+  const totalsOfMovementDebit = data.reduce((acc: any, curr: any) => {
+    if (Number(curr.movement_debit) > 0) {
+      return acc + Number(curr.movement_debit);
+    }
+
+    return acc;
+  }, 0);
+
+  const totalsOfMovementCredit = data.reduce((acc: any, curr: any) => {
+    if (Number(curr.movement_credit) > 0) {
+      return acc + Number(curr.movement_credit);
+    }
+
+    return acc;
+  }, 0);
+
+  const totalsOfBalanceDebit = data.reduce((acc: any, curr: any) => {
+    if (Number(curr.balance_debtor) > 0) {
+      return acc + Number(curr.balance_debtor);
+    }
+
+    return acc;
+  }, 0);
+
+  const totalsOfBalanceCredit = data.reduce((acc: any, curr: any) => {
+    if (Number(curr.balance_credit) > 0) {
+      return acc + Number(curr.balance_credit);
+    }
+
+    return acc;
+  }, 0);
+
+  let tableTotalResult = [
+    {
+      name: t("totals"),
+      totalsOfFirstDebit: formatReyal(totalsOfFirstDebit),
+      totalsOfFirstCredit: formatReyal(totalsOfFirstCredit),
+      totalsOfMovementDebit: formatReyal(totalsOfMovementDebit),
+      totalsOfMovementCredit: formatReyal(totalsOfMovementCredit),
+      totalsOfBalanceDebit: formatReyal(totalsOfBalanceDebit),
+      totalsOfBalanceCredit: formatReyal(totalsOfBalanceCredit),
+    },
+  ];
+
   return (
     <>
       <div
         className={`${
           footered ? "" : "GlobalTable"
-        }  w-full flex flex-col gap-4`}
+        }  w-full flex flex-col gap-4 h-[25rem] overflow-y-scroll scrollbar-none`}
       >
         <table className="min-w-full text-center">
-          <thead className="border-b bg-mainGreen">
+          <thead className="border-b bg-mainGreen sticky top-0">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -93,6 +156,20 @@ export const TableComponent = <T extends object>({
               </tr>
             ))}
           </tbody>
+          <tfoot className="sticky bottom-0">
+            <tr className="border-b">
+              {Object.keys(tableTotalResult[0]).map((key, index) => {
+                return (
+                  <td
+                    className="!bg-mainGreen !text-white"
+                    colSpan={index === 0 ? 4 : 1}
+                  >
+                    {tableTotalResult[0][key]}
+                  </td>
+                );
+              })}
+            </tr>
+          </tfoot>
         </table>
         {showNavigation ? (
           <div className="mt-3 flex items-center justify-end gap-5 p-2">

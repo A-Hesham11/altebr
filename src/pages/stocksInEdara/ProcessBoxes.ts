@@ -9,16 +9,16 @@ const ProcessBoxes = (boxes: any) => {
       date: currentBox.date,
       restriction_name: currentBox.restriction_name,
       bond_id: currentBox.bond_id,
-      first_period_debit: currentBox.The_first_period_debtor,
-      first_period_credit: currentBox.The_first_period_creditor,
+      first_period_debit: boxes[0].The_first_period_debtor,
+      first_period_credit: boxes[0].The_first_period_creditor,
       movement_debit: currentBox.movement_debtor,
       movement_credit: currentBox.movement_creditor,
       balance_debtor:
-        currentBox.The_first_period_debtor +
+        boxes[0].The_first_period_debtor +
         currentBox.movement_debtor -
         currentBox.movement_creditor,
       balance_credit:
-        currentBox.The_first_period_creditor +
+        boxes[0].The_first_period_creditor +
         currentBox.movement_creditor -
         currentBox.movement_debtor,
       unit_id: currentBox.unit_id,
