@@ -1,4 +1,4 @@
-const ProcessBoxes = (boxes) => {
+const ProcessBoxes = (boxes: any) => {
   let processedData = [];
 
   for (let i = 0; i < boxes.length; i++) {

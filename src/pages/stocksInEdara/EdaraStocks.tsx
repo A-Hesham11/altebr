@@ -198,9 +198,6 @@ const EdaraStocks = () => {
   const [dataSource, setDataSource] = useState([]);
   console.log("🚀 ~ EdaraStocks ~ dataSource:", dataSource);
   const { formatGram, formatReyal } = numberContext();
-  const [firstDebt, setFirstDebt] = useState(null);
-  console.log("🚀 ~ EdaraStocks ~ firstDebt:", firstDebt);
-  const [firstCredit, setFirstCredit] = useState(null);
 
   const filterInitialValues = {
     account_name: "",
