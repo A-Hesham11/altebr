@@ -227,8 +227,8 @@ const EdaraStocks = () => {
   } = useFetch({
     queryKey: ["accounts-name-data"],
     endpoint: "/branchAccount/api/v1/getAccountEdara?per_page=10000",
-    select: (data) =>
-      data?.map((account: string) => {
+    select: (data: any) =>
+      data?.map((account: any) => {
         return {
           id: account?.id,
           label: (
@@ -272,6 +272,8 @@ const EdaraStocks = () => {
     if (accountId) {
       refetch();
     }
+
+    setSearch("");
   }, [accountId]);
 
   useEffect(() => {
@@ -595,17 +597,18 @@ const EdaraStocks = () => {
                   {edaraCredit?.data?.boxes?.length > 0 ? (
                     <>
                       <div className="mb-6">
-                        <h2 className="text-center text-mainGreen">
-                          <span className="text-2xl font-bold">
+                        <h2 className="text-center text-mainGreen flex justify-between">
+                          <p className="text-2xl font-bold">
                             {edaraCredit?.data?.accountable &&
                               edaraCredit?.data?.accountable}
-                          </span>
-                          <span className="mx-1 text-xl font-bold">
-                            (
-                            {edaraCredit?.data?.numeric_system &&
-                              edaraCredit?.data?.numeric_system}
-                            )
-                          </span>
+                          </p>
+                          <p className="text-sm flex items-center gap-2 font-bold bg-mainGreen text-white py-2 px-4 rounded-md">
+                            <span>{t("numeric system")}</span>
+                            <span className="-my-1">
+                              {edaraCredit?.data?.numeric_system &&
+                                edaraCredit?.data?.numeric_system}
+                            </span>
+                          </p>
                         </h2>
                       </div>
                       <TableComponent
