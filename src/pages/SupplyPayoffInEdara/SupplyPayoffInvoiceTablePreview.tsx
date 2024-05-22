@@ -41,8 +41,8 @@ const SupplyPayoffInvoiceTablePreview = ({ item }: { item?: {} }) => {
         accessorKey: "karat_id" || "karatmineral",
         cell: (info: any) =>
           info.row.original.karat_id === ""
-            ? info.row.original.karatmineral
-            : info.row.original.karat_id,
+            ? info.row.original.karatmineral || "---"
+            : info.row.original.karat_id || "---",
       },
       {
         header: () => <span>{t("weight")}</span>,
