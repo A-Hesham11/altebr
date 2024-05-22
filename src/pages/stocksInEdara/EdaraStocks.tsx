@@ -602,6 +602,27 @@ const EdaraStocks = () => {
                             {edaraCredit?.data?.accountable &&
                               edaraCredit?.data?.accountable}
                           </p>
+                          <p className="text-base font-bold flex items-center gap-2">
+                            {dataSource?.length === 1 ? (
+                              <>
+                                <span>{t("date")}</span>
+                                <span>{dataSource[0]?.date}</span>
+                              </>
+                            ) : dataSource?.length > 1 ? (
+                              <>
+                                <span>{t("from")}</span>
+                                <span className="-my-1">
+                                  {dataSource[0]?.date}
+                                </span>
+                                <span> {t("to")} </span>
+                                <span className="-my-1">
+                                  {dataSource[dataSource?.length - 1]?.date}
+                                </span>
+                              </>
+                            ) : (
+                              ""
+                            )}
+                          </p>
                           <p className="text-sm flex items-center gap-2 font-bold bg-mainGreen text-white py-2 px-4 rounded-md">
                             <span>{t("numeric system")}</span>
                             <span className="-my-1">

@@ -122,7 +122,7 @@ export const TableComponent = <T extends object>({
       <div
         className={`${
           footered ? "" : "GlobalTable"
-        }  w-full flex flex-col gap-4 h-[21rem] overflow-y-scroll scrollbar-none`}
+        }  w-full flex flex-col gap-4 h-[20.1rem] overflow-y-scroll scrollbar-none`}
       >
         <table className="min-w-full text-center">
           <thead className="border-b bg-mainGreen sticky top-0">
