@@ -180,7 +180,7 @@ export const SupplyPayoffTableInputData = ({
         setFieldValue(
           "cost",
           dataSource[0]?.classification_id === 1
-            ? goldTaklfa
+            ? 0
             : Number(dataSource[0]?.cost_item)
         );
       }
@@ -293,10 +293,8 @@ export const SupplyPayoffTableInputData = ({
                       values.classification_name
                     );
                   }}
-                  disabled={!isCategoryDisabled}
-                  className={`${
-                    !isCategoryDisabled && "bg-mainDisabled"
-                  } text-center`}
+                  className="bg-mainDisabled text-center"
+                  disabled
                 />
               ) : (
                 <SelectClassification field="value" name="classification_id" />
@@ -314,7 +312,7 @@ export const SupplyPayoffTableInputData = ({
                   id: values?.category_id,
                 }}
                 showItems={true}
-                disabled={!isCategoryDisabled}
+                disabled
               />
             </td>
             <td>
@@ -333,12 +331,7 @@ export const SupplyPayoffTableInputData = ({
                         taxRateOfKarat24
                   );
 
-                  setFieldValue(
-                    "cost",
-                    values?.classification_id === 1 &&
-                      (Number(values?.wage) + Number(values?.api_gold_price)) *
-                        Number(e.target.value)
-                  );
+                  // setFieldValue("cost", values?.classification_id === 1 && 0);
                 }}
                 className={`${
                   (!isSuccess ||
@@ -377,7 +370,7 @@ export const SupplyPayoffTableInputData = ({
                     values.karatmineral_name ||
                     t("karat value"),
                 }}
-                disabled={!isCategoryDisabled}
+                disabled
               />
             </td>
             <td>
@@ -387,12 +380,8 @@ export const SupplyPayoffTableInputData = ({
                 name="wage"
                 type="text"
                 required
-                className={`${
-                  !isSuccess || userData?.include_tax === "1"
-                    ? "bg-mainDisabled"
-                    : ""
-                } text-center`}
-                disabled={!isSuccess || userData?.include_tax === "1"}
+                className="bg-mainDisabled text-center"
+                disabled
               />
             </td>
             <td>
@@ -403,12 +392,8 @@ export const SupplyPayoffTableInputData = ({
                 type="text"
                 required
                 value={values?.vat}
-                className={`${
-                  !isSuccess || userData?.include_tax === "1"
-                    ? "bg-mainDisabled"
-                    : ""
-                } text-center`}
-                disabled={!isSuccess || userData?.include_tax === "1"}
+                className="bg-mainDisabled text-center"
+                disabled
               />
             </td>
             <td>
@@ -421,10 +406,8 @@ export const SupplyPayoffTableInputData = ({
                     : "cost_item"
                 }
                 type="text"
-                disabled={!isCategoryDisabled}
-                className={`${
-                  !isCategoryDisabled && "bg-mainDisabled"
-                } text-center`}
+                className="bg-mainDisabled text-center"
+                disabled
               />
             </td>
             <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
