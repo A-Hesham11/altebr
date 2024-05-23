@@ -19,6 +19,8 @@ import { numberContext } from "../../context/settings/number-formatter";
 import { Loading } from "../../components/organisms/Loading";
 import { TableComponent } from "./TableComponent";
 import ProcessBoxes from "./ProcessBoxes";
+import { ExportToExcel } from "../../components/ExportToFile";
+// import { ExportToExcel } from "../../components/ExportToExcel";
 
 // const EdaraStocks = () => {
 //   // STATE
@@ -590,6 +592,21 @@ const EdaraStocks = () => {
                     >
                       {t("search")}
                     </Button>
+
+                    <Button
+                      action={(e) => {
+                        // COMPONENT FOR EXPORT DATA TO EXCEL FILE ACCEPT DATA AND THE NAME OF THE FILE
+                        ExportToExcel(
+                          dataSource,
+                          `${t("statement of account")} - ${formatDate(
+                            new Date()
+                          )}`
+                        );
+                      }}
+                      className="bg-mainGreen text-white mr-auto"
+                    >
+                      {t("export")}
+                    </Button>
                   </div>
                 </div>
 
@@ -598,9 +615,17 @@ const EdaraStocks = () => {
                     <>
                       <div className="mb-6">
                         <h2 className="text-center text-mainGreen flex justify-between">
-                          <p className="text-2xl font-bold">
-                            {edaraCredit?.data?.accountable &&
-                              edaraCredit?.data?.accountable}
+                          <p className="text-2xl font-bold flex items-center gap-2">
+                            <span>
+                              {edaraCredit?.data?.accountable &&
+                                edaraCredit?.data?.accountable}
+                            </span>
+                            <span>
+                              (
+                              {edaraCredit?.data?.unit &&
+                                edaraCredit?.data?.unit}
+                              )
+                            </span>
                           </p>
                           <p className="text-base font-bold flex items-center gap-2">
                             {dataSource?.length === 1 ? (
@@ -624,7 +649,7 @@ const EdaraStocks = () => {
                             )}
                           </p>
                           <p className="text-sm flex items-center gap-2 font-bold bg-mainGreen text-white py-2 px-4 rounded-md">
-                            <span>{t("numeric system")}</span>
+                            <span>{t("account number")}</span>
                             <span className="-my-1">
                               {edaraCredit?.data?.numeric_system &&
                                 edaraCredit?.data?.numeric_system}

@@ -27,31 +27,31 @@ const TarqeemTotals = () => {
     {
       account: "total number of diamonds pieces",
       id: 1,
-      value: formatGram(Number(tarqeemTotalsData?.diamond)) ,
+      value: formatGram(Number(tarqeemTotalsData?.diamond)),
       unit: "piece",
     },
     {
       account: "total number of miscellaneous pieces",
       id: 2,
-      value: formatGram(Number(tarqeemTotalsData?.motafreqat)) ,
+      value: formatGram(Number(tarqeemTotalsData?.motafreqat)),
       unit: "piece",
     },
     {
       account: "total number of stones in gold",
       id: 3,
-      value: formatGram(Number( tarqeemTotalsData?.goldAhgar)),
+      value: formatGram(Number(tarqeemTotalsData?.goldAhgar)),
       unit: "piece",
     },
     {
       account: "total number of stones in diamond",
       id: 4,
-      value: formatGram(Number(tarqeemTotalsData?.diamondAhgar)) ,
+      value: formatGram(Number(tarqeemTotalsData?.diamondAhgar)),
       unit: "piece",
     },
     {
       account: "total number of stones in miscellaneous",
       id: 5,
-      value: formatGram(Number(tarqeemTotalsData?.motafreqatAhgar)) ,
+      value: formatGram(Number(tarqeemTotalsData?.motafreqatAhgar)),
       unit: "piece",
     },
     {
@@ -63,25 +63,25 @@ const TarqeemTotals = () => {
     {
       account: "total weight of 18 karat",
       id: 7,
-      value: formatGram(Number(tarqeemTotalsData?.karat_18)) ,
+      value: formatGram(Number(tarqeemTotalsData?.karat_18)),
       unit: "gram",
     },
     {
       account: "total weight of 21 karat",
       id: 8,
-      value: formatGram(Number(tarqeemTotalsData?.$karat_21)) ,
+      value: formatGram(Number(tarqeemTotalsData?.$karat_21)),
       unit: "gram",
     },
     {
       account: "total weight of 22 karat",
       id: 9,
-      value: formatGram(Number(tarqeemTotalsData?.$karat_22)) ,
+      value: formatGram(Number(tarqeemTotalsData?.$karat_22)),
       unit: "gram",
     },
     {
       account: "total weight of 24 karat",
       id: 10,
-      value: formatGram(Number(tarqeemTotalsData?.$karat_24)) ,
+      value: formatGram(Number(tarqeemTotalsData?.$karat_24)),
       unit: "gram",
     },
     {

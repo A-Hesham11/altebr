@@ -39,8 +39,6 @@ export const Table = <T extends object>({
 
   const isRTL = useIsRTL();
 
-  console.log(table.getRowModel().rows);
-
   return (
     <>
       <div

@@ -97,22 +97,22 @@ export const TableComponent = <T extends object>({
     {
       name: t("totals"),
       totalsOfFirstDebit:
-        Number(data[data?.length - 1]?.first_period_debit) > 0
-          ? formatReyal(data[data?.length - 1]?.first_period_debit)
+        Number(data[0]?.first_period_debit) > 0
+          ? formatReyal(data[0]?.first_period_debit)
           : "---",
       totalsOfFirstCredit:
-        Number(data[data?.length - 1]?.first_period_credit) > 0
-          ? `(${formatReyal(data[data?.length - 1]?.first_period_credit)})`
+        Number(data[0]?.first_period_credit) > 0
+          ? `(${formatReyal(data[0]?.first_period_credit)})`
           : "---",
       totalsOfMovementDebit: formatReyal(totalsOfMovementDebit),
       totalsOfMovementCredit: `(${formatReyal(totalsOfMovementCredit)})`,
       totalsOfBalanceDebit:
         Number(data[data?.length - 1]?.balance_debtor) > 0
-          ? formatReyal(totalsOfBalanceDebit)
+          ? formatReyal(data[data?.length - 1]?.balance_debtor)
           : "---",
       totalsOfBalanceCredit:
         Number(data[data?.length - 1]?.balance_credit) > 0
-          ? `(${formatReyal(totalsOfBalanceCredit)})`
+          ? `(${formatReyal(data[data?.length - 1]?.balance_credit)})`
           : "---",
     },
   ];

@@ -8,6 +8,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { Modal } from "../../../components/molecules";
 import TableOfIdentitiesPreview from "./TableOfIdentitiesPreview";
 import { numberContext } from "../../../context/settings/number-formatter";
+import { Loading } from "../../../components/organisms/Loading";
 
 const TableOfIdentities = ({
   dataSource,
@@ -18,6 +19,9 @@ const TableOfIdentities = ({
   setCheckboxChecked,
   checkboxChecked,
   operationTypeSelect,
+  isLoading,
+  isFetching,
+  isRefetching,
 }) => {
   // STATE
   const isRTL = useIsRTL();
@@ -197,11 +201,19 @@ const TableOfIdentities = ({
   //   tableColumn.push(confirmColumn);
   // }
 
+  //  LOADING ....
+  if (isLoading || isRefetching || isFetching)
+    return <Loading mainTitle={`${t("loading items")}`} />;
+
   return (
     <>
       <div className="">
-        <Table data={dataSource?.data || []} columns={tableColumn}>
-          <div className="mt-3 flex items-center justify-center gap-5 p-2">
+        <Table
+          data={dataSource?.data || []}
+          columns={tableColumn}
+          showNavigation
+        >
+          {/* <div className="mt-3 flex items-center justify-center gap-5 p-2">
             <div className="flex items-center gap-2 font-bold">
               {t("page")}
               <span className=" text-mainGreen">{page}</span>
@@ -233,7 +245,7 @@ const TableOfIdentities = ({
                 )}
               </Button>
             </div>
-          </div>
+          </div> */}
         </Table>
       </div>
 
