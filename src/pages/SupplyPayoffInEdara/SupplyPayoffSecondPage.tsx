@@ -10,6 +10,7 @@ import { SellingFinalPreview } from "../../components/selling/selling components
 import { numberContext } from "../../context/settings/number-formatter";
 import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
 import SupplyPayoffInvoiceTable from "./SupplyPayoffInvoiceTable";
+import { SupplyPayoffFinalPreview } from "./SupplyPayoffFinalPreview";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -56,13 +57,19 @@ const SupplyPayoffSecondPage = ({
     return acc;
   }, 0);
 
-  const totalFinalCost = Number(totalCost) + Number(totalItemsTaxes);
+  const totalwages = sellingItemsData.reduce((acc, card) => {
+    acc += +card.wage * +card.weight;
+    return acc;
+  }, 0);
+
+  const totalFinalCost = Number(totalCost) + Number(totalItemsTaxes) + Number(totalwages);
 
   const costDataAsProps = {
     totalWeight,
     totalCost,
     totalItemsTaxes,
     totalFinalCost,
+    totalwages,
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -93,20 +100,31 @@ const SupplyPayoffSecondPage = ({
         cell: (info) => formatReyal(Number(info.getValue())),
       },
       {
+        header: () => <span>{t("fare")}</span>,
+        accessorKey: "wage",
+        cell: (info) =>
+          formatReyal(
+            Number(info.getValue()) * Number(info.row.original.weight)
+          ),
+      },
+      {
         header: () => <span>{t("VAT")} </span>,
         accessorKey: "vat",
         cell: (info) => formatReyal(Number(info.getValue())),
       },
       {
         header: () => <span>{t("cost")} </span>,
-        accessorKey:  "cost",
-        cell: (info) => info.row.original.classification_id === 1 ? formatReyal(Number(info.row.original.cost)) : formatReyal(Number(info.row.original.cost_item)),
+        accessorKey: "cost",
+        cell: (info) =>
+          info.row.original.classification_id === 1
+            ? formatReyal(Number(info.row.original.cost))
+            : formatReyal(Number(info.row.original.cost_item)),
       },
-      {
-        header: () => <span>{t("total")} </span>,
-        accessorKey: "total",
-        cell: (info) => formatReyal(Number(info.row.original.cost) + Number(info.row.original.vat)),
-      },
+      // {
+      //   header: () => <span>{t("total")} </span>,
+      //   accessorKey: "total",
+      //   cell: (info) => formatReyal(Number(info.row.original.cost) + Number(info.row.original.vat)),
+      // },
     ],
     []
   );
@@ -182,7 +200,7 @@ const SupplyPayoffSecondPage = ({
         </div>
       </div>
 
-      <SellingFinalPreview
+      <SupplyPayoffFinalPreview
         ItemsTableContent={<SellingTableComp />}
         setStage={setStage}
         paymentData={paymentData}
