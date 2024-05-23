@@ -64,7 +64,7 @@ export const SupplyPayoffFinalPreview = ({
   });
 
   return (
-    <div className="relative h-full p-10 bg-flatWhite ">
+    <div className="relative h-full py-10 px-3 bg-flatWhite">
       <div className="print-section">
         <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
           <div className="mx-6 bill-shadow rounded-md p-6">

@@ -183,6 +183,11 @@ export const SupplyPayoffTableInputData = ({
             ? 0
             : Number(dataSource[0]?.cost_item)
         );
+
+        setFieldValue(
+          "wage",
+          dataSource[0]?.wage ? Number(dataSource[0]?.wage) : 0
+        );
       }
     });
   }, [dataSource, search]);
@@ -330,8 +335,6 @@ export const SupplyPayoffTableInputData = ({
                         Number(e.target.value) *
                         taxRateOfKarat24
                   );
-
-                  // setFieldValue("cost", values?.classification_id === 1 && 0);
                 }}
                 className={`${
                   (!isSuccess ||
@@ -380,6 +383,7 @@ export const SupplyPayoffTableInputData = ({
                 name="wage"
                 type="text"
                 required
+                value={values?.wage}
                 className="bg-mainDisabled text-center"
                 disabled
               />
@@ -422,18 +426,6 @@ export const SupplyPayoffTableInputData = ({
                   <EditIcon className="fill-mainGreen w-6 h-6" />
                 </Button>
               )}
-              {/* {dataSource && dataSource[0]?.selsal?.length > 0 && (
-                <Button
-                  loading={values.hwya && isFetching}
-                  action={() => {
-                    setOpenSelsal(true);
-                  }}
-                  type="button"
-                  className="bg-transparent px-2"
-                >
-                  <HiViewGridAdd className="fill-mainGreen w-6 h-6" />
-                </Button>
-              )} */}
               <Button
                 loading={values.hwya && isFetching}
                 action={() => {
@@ -461,7 +453,6 @@ export const SupplyPayoffTableInputData = ({
                       ...prev,
                       {
                         ...values,
-                        //   stone_weight: +stoneWeitgh,
                       },
                     ].reverse()
                   );

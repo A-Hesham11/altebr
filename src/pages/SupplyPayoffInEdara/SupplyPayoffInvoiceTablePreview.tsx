@@ -13,7 +13,6 @@ type Entry_TP = {
 };
 
 const SupplyPayoffInvoiceTablePreview = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SupplyPayoffInvoiceTablePreview ~ item:", item)
   const { formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE

@@ -27,10 +27,16 @@ type Client_TP = {
 const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   const { client_id, client_value, bond_date, supplier_id } = clientData;
 
+  const location = useLocation();
+  const path = location.pathname;
+
   const { data } = useFetch<Client_TP>({
-    endpoint: `branchManage/api/v1/clients/${client_id}`,
-    queryKey: [`clients`, client_id],
+    endpoint: path === "/supply-return" ? `/supplier/api/v1/supplier/${supplier_id}` : `branchManage/api/v1/clients/${client_id}`,
+    queryKey: [`clients`, path === "/supply-return" ? supplier_id  : client_id],
   });
+
+  console.log("🚀 ~ FinalPreviewBillData ~ data:", data)
+
 
   const { userData } = useContext(authCtx);
 
@@ -39,8 +45,7 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
     endpoint: `branchSafety/api/v1/receive-bonds/${userData?.branch_id}`,
   });
 
-  const location = useLocation();
-  const path = location.pathname;
+
 
   const billNumber =
     path === "/selling/honesty/return-honest"
@@ -84,7 +89,7 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
         </p>
         <p className="text-xs font-bold">
           {t("Id number")} :{" "}
-          <span className="font-medium">{data?.identity}</span>{" "}
+          <span className="font-medium">{data?.identity || data?.national_number}</span>{" "}
         </p>
       </div>
     </div>
