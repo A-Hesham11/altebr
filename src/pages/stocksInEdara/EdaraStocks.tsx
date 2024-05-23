@@ -19,6 +19,8 @@ import { numberContext } from "../../context/settings/number-formatter";
 import { Loading } from "../../components/organisms/Loading";
 import { TableComponent } from "./TableComponent";
 import ProcessBoxes from "./ProcessBoxes";
+import { ExportToExcel } from "../../components/ExportToFile";
+// import { ExportToExcel } from "../../components/ExportToExcel";
 
 // const EdaraStocks = () => {
 //   // STATE
@@ -589,6 +591,21 @@ const EdaraStocks = () => {
                       className="flex h-[38px] mx-4 hover:bg-emerald-900 duration-300 transition-all"
                     >
                       {t("search")}
+                    </Button>
+
+                    <Button
+                      action={(e) => {
+                        // COMPONENT FOR EXPORT DATA TO EXCEL FILE ACCEPT DATA AND THE NAME OF THE FILE
+                        ExportToExcel(
+                          dataSource,
+                          `${t("statement of account")} - ${formatDate(
+                            new Date()
+                          )}`
+                        );
+                      }}
+                      className="bg-mainGreen text-white mr-auto"
+                    >
+                      {t("export")}
                     </Button>
                   </div>
                 </div>
