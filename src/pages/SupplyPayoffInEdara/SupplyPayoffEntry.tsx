@@ -76,7 +76,6 @@ const SupplyPayoffEntry = ({ item }: { item?: {} }) => {
   // group by account
 
   const restrictionsWithoutTotals = restrictions?.reduce((prev, curr) => {
-    console.log("🚀 ~ restrictionsWithoutTotals ~ prev:", prev);
     const index = prev.findIndex((item) => item.bian === curr.bian);
     if (index === -1) {
       prev.push(curr);

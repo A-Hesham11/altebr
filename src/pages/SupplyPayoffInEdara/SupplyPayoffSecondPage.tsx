@@ -6,7 +6,6 @@ import { authCtx } from "../../context/auth-and-perm/auth";
 import { useMutate } from "../../hooks";
 import { mutateData } from "../../utils/mutateData";
 import { Button } from "../../components/atoms";
-import { SellingFinalPreview } from "../../components/selling/selling components/SellingFinalPreview";
 import { numberContext } from "../../context/settings/number-formatter";
 import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
 import SupplyPayoffInvoiceTable from "./SupplyPayoffInvoiceTable";
@@ -58,9 +57,11 @@ const SupplyPayoffSecondPage = ({
   }, 0);
 
   const totalwages = sellingItemsData.reduce((acc, card) => {
+    console.log("🚀 ~ totalwages ~ card:", card)
     acc += +card.wage * +card.weight;
     return acc;
   }, 0);
+  console.log("🚀 ~ totalwages ~ totalwages:", totalwages)
 
   const totalFinalCost = Number(totalCost) + Number(totalItemsTaxes) + Number(totalwages);
 
@@ -103,9 +104,9 @@ const SupplyPayoffSecondPage = ({
         header: () => <span>{t("fare")}</span>,
         accessorKey: "wage",
         cell: (info) =>
-          formatReyal(
+          info.row.original.wage ? formatReyal(
             Number(info.getValue()) * Number(info.row.original.weight)
-          ),
+          ) : "---",
       },
       {
         header: () => <span>{t("VAT")} </span>,
@@ -120,11 +121,6 @@ const SupplyPayoffSecondPage = ({
             ? formatReyal(Number(info.row.original.cost))
             : formatReyal(Number(info.row.original.cost_item)),
       },
-      // {
-      //   header: () => <span>{t("total")} </span>,
-      //   accessorKey: "total",
-      //   cell: (info) => formatReyal(Number(info.row.original.cost) + Number(info.row.original.vat)),
-      // },
     ],
     []
   );
@@ -181,7 +177,7 @@ const SupplyPayoffSecondPage = ({
 
   return (
     <div>
-      <div className="flex items-center justify-between mx-8 mt-8">
+      <div className="flex items-center justify-between mx-3 mt-2">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
           <Button

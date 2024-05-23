@@ -9,11 +9,10 @@ import BillInputs from "../../components/selling/selling components/bill/BillInp
 import { ClientData_TP, Selling_TP } from "../selling/PaymentSellingPage";
 import { SupplyPayoffTableInputData } from "./SupplyPayoffTableInputData";
 import { useFetch, useMutate } from "../../hooks";
-import { SelectOption_TP } from "../../types";
+import { CError_TP, SelectOption_TP } from "../../types";
 import { Supplier_TP } from "../../components/templates/systemEstablishment/supplier/supplier-types";
 import { numberContext } from "../../context/settings/number-formatter";
 import { mutateData } from "../../utils/mutateData";
-import { useNavigate } from "react-router-dom";
 
 type SellingFirstPage_TP = {
   sellingItemsData: Selling_TP;
@@ -51,6 +50,7 @@ const SupplyPayoffFirstPage = ({
   mardodItemsId,
   setMardodItemsId,
 }: SellingFirstPage_TP) => {
+  console.log("🚀 ~ supplierId:", supplierId);
   const { values } = useFormikContext();
 
   const { formatGram, formatReyal } = numberContext();
@@ -81,6 +81,15 @@ const SupplyPayoffFirstPage = ({
     queryKey: ["supplier-return-data"],
     onSuccess(data) {
       return data.data;
+    },
+    onError: (err: CError_TP) => {
+      if (!!!err.response?.data.errors && !!err.response?.data.message) {
+        notify("error", err.response.data.message);
+      } else {
+        if (supplierId !== 0) {
+          notify("error");
+        }
+      }
     },
   });
 
@@ -128,7 +137,6 @@ const SupplyPayoffFirstPage = ({
 
   useEffect(() => {
     sellingItemsData?.map((operation: any) => {
-      console.log("🚀 ~ sellingItemsData?.map ~ operation:", operation);
       if (!mardodItemsId.includes(`${operation.id}`)) {
         setMardodItemsId((prev) => [...prev, `${operation.id}`]);
       }
@@ -137,7 +145,7 @@ const SupplyPayoffFirstPage = ({
 
   return (
     <Form>
-      <div className="relative h-full p-4">
+      <div className="relative h-full">
         <h2 className="mb-4 text-base font-bold">{t("supply payoff")}</h2>
         <div className="bg-lightGreen rounded-lg sales-shadow px-6 py-5">
           <div className="bg-flatWhite rounded-lg bill-shadow p-5 h-41 ">
@@ -217,7 +225,7 @@ const SupplyPayoffFirstPage = ({
                 return;
               }
 
-              setStage(2)
+              setStage(2);
             }}
           >
             {t("confirm")}

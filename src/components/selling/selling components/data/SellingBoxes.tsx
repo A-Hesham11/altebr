@@ -1,12 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { t } from "i18next";
 import { SellingBoxData } from "./SellingBoxData";
-import { authCtx } from "../../../../context/auth-and-perm/auth";
-import { Selling_TP } from "../../../../pages/selling/PaymentSellingPage";
 import { numberContext } from "../../../../context/settings/number-formatter";
 
 const SellingBoxes = ({ sellingItemsData }: any) => {
-  console.log("🚀 ~ SellingBoxes ~ sellingItemsData:", sellingItemsData);
   const { formatGram, formatReyal } = numberContext();
 
   const locationPath = location.pathname;
@@ -109,10 +106,10 @@ const SellingBoxes = ({ sellingItemsData }: any) => {
   return (
     <div>
       <ul className="grid lg:grid-cols-6 grid-cols-3 gap-5 ">
-        {boxsData?.map((data: any) => (
-          <>
+        {boxsData?.map((data: any, index: any) => (
+          <Fragment key={index}>
             <SellingBoxData data={data} />
-          </>
+          </Fragment>
         ))}
       </ul>
     </div>

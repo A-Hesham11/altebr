@@ -135,18 +135,6 @@ const SupplyPayoff = () => {
             sellingItemsOfWeigth={sellingItemsOfWeigth}
           />
         )}
-        {/*
-        {stage === 3 && (
-          <SalesReturnInvoiceData
-            invoiceNumber={invoiceNumber}
-            sellingItemsData={sellingItemsData}
-            paymentData={paymentData}
-            clientData={clientData}
-            setStage={setStage}
-            selectedItemDetails={selectedItemDetails}
-            sellingItemsOfWeigth={sellingItemsOfWeigth}
-          />
-        )} */}
       </>
     </Formik>
   );

@@ -22,6 +22,8 @@ const BillInputs = ({
   dateFieldName: string;
   suppliersData: any;
 }) => {
+  console.log("🚀 ~ suppliersData:", suppliersData)
+
   const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
@@ -34,17 +36,17 @@ const BillInputs = ({
     client: Yup.string().required("Client is required"),
   });
 
-  const { data: clientsNameOptions, isLoading } = useFetch({
-    endpoint: `/branchManage/api/v1/all-clients/${userData?.branch_id}?per_page=10000`,
-    queryKey: ["all-client"],
-    select: (clients) =>
-      clients.map((item: any) => ({
-        id: item.id,
-        value: item.name,
-        label: item.name,
-      })),
-    onError: (err) => console.log(err),
-  });
+  // const { data: clientsNameOptions, isLoading } = useFetch({
+  //   endpoint: `/branchManage/api/v1/all-clients/${userData?.branch_id}?per_page=10000`,
+  //   queryKey: ["bill-all-client"],
+  //   select: (clients) =>
+  //     clients.map((item: any) => ({
+  //       id: item.id,
+  //       value: item.name,
+  //       label: item.name,
+  //     })),
+  //   onError: (err) => console.log(err),
+  // });
 
   return (
     <div>
