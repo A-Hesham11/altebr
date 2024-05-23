@@ -598,9 +598,17 @@ const EdaraStocks = () => {
                     <>
                       <div className="mb-6">
                         <h2 className="text-center text-mainGreen flex justify-between">
-                          <p className="text-2xl font-bold">
-                            {edaraCredit?.data?.accountable &&
-                              edaraCredit?.data?.accountable}
+                          <p className="text-2xl font-bold flex items-center gap-2">
+                            <span>
+                              {edaraCredit?.data?.accountable &&
+                                edaraCredit?.data?.accountable}
+                            </span>
+                            <span>
+                              (
+                              {edaraCredit?.data?.unit &&
+                                edaraCredit?.data?.unit}
+                              )
+                            </span>
                           </p>
                           <p className="text-base font-bold flex items-center gap-2">
                             {dataSource?.length === 1 ? (
@@ -624,7 +632,7 @@ const EdaraStocks = () => {
                             )}
                           </p>
                           <p className="text-sm flex items-center gap-2 font-bold bg-mainGreen text-white py-2 px-4 rounded-md">
-                            <span>{t("numeric system")}</span>
+                            <span>{t("account number")}</span>
                             <span className="-my-1">
                               {edaraCredit?.data?.numeric_system &&
                                 edaraCredit?.data?.numeric_system}
