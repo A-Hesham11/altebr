@@ -16,9 +16,14 @@ import { t } from "i18next";
 import { Button } from "../../components/atoms";
 import { useIsRTL } from "../../hooks";
 import { numberContext } from "../../context/settings/number-formatter";
+import { Loading } from "../../components/organisms/Loading";
 
 interface ReactTableProps<T extends object> {
-  data: T[];
+  isLoading?: boolean;
+  isRefetching?: boolean;
+  isFetching?: boolean;
+  isInitialLoading?: boolean;
+  data: any;
   columns: ColumnDef<T>[];
   showNavigation?: boolean;
   showGlobalFilter?: boolean;
@@ -28,13 +33,16 @@ interface ReactTableProps<T extends object> {
 }
 
 export const TableComponent = <T extends object>({
+  isLoading,
+  isRefetching,
+  isFetching,
   data,
   columns,
   showNavigation,
   footered = false,
   children,
 }: ReactTableProps<T>) => {
-  const { formatGram, formatReyal } = numberContext();
+  const { formatReyal } = numberContext();
 
   const table = useReactTable({
     data,
@@ -50,22 +58,6 @@ export const TableComponent = <T extends object>({
   useEffect(() => {
     table.setPageSize(data.length);
   }, [data.length, table]);
-
-  // const totalsOfFirstDebit = data.reduce((acc: any, curr: any) => {
-  //   if (Number(curr.first_period_debit) > 0) {
-  //     return acc + Number(curr.first_period_debit);
-  //   }
-
-  //   return acc;
-  // }, 0);
-
-  // const totalsOfFirstCredit = data.reduce((acc: any, curr: any) => {
-  //   if (Number(curr.first_period_credit) > 0) {
-  //     return acc + Number(curr.first_period_credit);
-  //   }
-
-  //   return acc;
-  // }, 0);
 
   const totalsOfMovementDebit = data.reduce((acc: any, curr: any) => {
     if (Number(curr.movement_debit) > 0) {
@@ -83,25 +75,15 @@ export const TableComponent = <T extends object>({
     return acc;
   }, 0);
 
-  const totalsOfBalanceDebit =
-    Number(data[data?.length - 1]?.first_period_debit) +
-    totalsOfMovementDebit -
-    totalsOfMovementCredit;
-
-  const totalsOfBalanceCredit =
-    Number(data[data?.length - 1]?.first_period_credit) +
-    totalsOfMovementCredit -
-    totalsOfMovementDebit;
-
   let tableTotalResult = [
     {
       name: t("totals"),
       totalsOfFirstDebit:
-        Number(data[0]?.first_period_debit) > 0
+        Number(data[0]?.first_period_debit) >= 0
           ? formatReyal(data[0]?.first_period_debit)
           : "---",
       totalsOfFirstCredit:
-        Number(data[0]?.first_period_credit) > 0
+        Number(data[0]?.first_period_credit) >= 0
           ? `(${formatReyal(data[0]?.first_period_credit)})`
           : "---",
       totalsOfMovementDebit: formatReyal(totalsOfMovementDebit),
@@ -116,6 +98,10 @@ export const TableComponent = <T extends object>({
           : "---",
     },
   ];
+
+  // LOADING ....
+  if (isLoading || isRefetching || isFetching)
+    return <Loading mainTitle={`${t("loading statement of accounts")}`} />;
 
   return (
     <>
