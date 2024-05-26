@@ -57,6 +57,7 @@ const SupplyPayoff = () => {
     vat: "",
     total: "",
     wage_total: "",
+    conversion_factor: 0,
     category_type: "",
     api_gold_price: 0,
     weightitems: [],
