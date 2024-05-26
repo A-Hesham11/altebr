@@ -12,7 +12,7 @@ const Reports = () => {
   const data = [
     {
       icon: receiveMoney,
-      title_ar: "ارصدة",
+      title_ar: "كشف الحسابات",
       title_en: "stocks",
       route: "/selling/reports/stocks",
     },
@@ -37,7 +37,7 @@ const Reports = () => {
 
       <div className="flex flex-wrap justify-center items-center gap-5">
         {data.map((item) => (
-          <div  key={crypto.randomUUID()}>
+          <div key={crypto.randomUUID()}>
             <SellingSubCard
               icon={item.icon}
               title={isRTL ? item.title_ar : item.title_en}

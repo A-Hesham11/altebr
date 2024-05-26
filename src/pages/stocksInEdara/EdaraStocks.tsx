@@ -1,13 +1,3 @@
-// import { useEffect, useMemo, useState } from "react";
-// import { useFetch, useIsRTL } from "../../hooks";
-// import { numberContext } from "../../context/settings/number-formatter";
-// import { t } from "i18next";
-// import { Loading } from "../../components/organisms/Loading";
-// import { Back } from "../../utils/utils-components/Back";
-// import { Table } from "../../components/templates/reusableComponants/tantable/Table";
-// import { Button } from "../../components/atoms";
-// import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-
 import { Form, Formik, useFormikContext } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { useFetch, useIsRTL } from "../../hooks";
@@ -20,182 +10,13 @@ import { Loading } from "../../components/organisms/Loading";
 import { TableComponent } from "./TableComponent";
 import ProcessBoxes from "./ProcessBoxes";
 import { ExportToExcel } from "../../components/ExportToFile";
-// import { ExportToExcel } from "../../components/ExportToExcel";
-
-// const EdaraStocks = () => {
-//   // STATE
-//   const isRTL = useIsRTL();
-//   const [dataSource, setDataSource] = useState([]);
-//   const [page, setPage] = useState(1);
-//   const { formatGram, formatReyal } = numberContext();
-
-//   // FETCHING CREDITS DATA FROM API
-//   const {
-//     data: edaraCredit,
-//     isLoading,
-//     isFetching,
-//     isRefetching,
-//     refetch,
-//   } = useFetch({
-//     queryKey: ["credits-edara-data", page],
-//     endpoint: `/branchAccount/api/v1/getAllAccountEdara?page=${page}`,
-//     select: (data: object[]) => {
-//       return {
-//         ...data,
-//         data: data?.data?.map((credit: any, i: number) => ({
-//           ...credit,
-//           index: i + 1,
-//         })),
-//       };
-//     },
-//     pagination: true,
-//   });
-
-//   // COLUMNS FOR THE TABLE
-//   const tableColumn = useMemo<any>(
-//     () => [
-//       {
-//         cell: (info: any) => info.getValue(),
-//         accessorKey: "index",
-//         header: () => <span>{t("#")}</span>,
-//       },
-//       {
-//         cell: (info: any) => info.getValue(),
-//         accessorKey: "numeric_system",
-//         header: () => <span>{t("numeric system")}</span>,
-//       },
-//       {
-//         cell: (info: any) => info.getValue(),
-//         accessorKey: "accountable",
-//         header: () => <span>{t("account name")}</span>,
-//       },
-//       {
-//         cell: (info: any) => {
-//           return info.row.original.unit_id === 1
-//             ? formatReyal(Number(info.getValue()).toFixed(2))
-//             : formatGram(Number(info.getValue()).toFixed(2));
-//         },
-//         accessorKey: "debtor",
-//         header: () => <span>{t("debtor")}</span>,
-//       },
-//       {
-//         cell: (info: any) => {
-//           return info.row.original.unit_id === 1
-//             ? formatReyal(Number(info.getValue()).toFixed(2))
-//             : formatGram(Number(info.getValue()).toFixed(2));
-//         },
-//         accessorKey: "creditor",
-//         header: () => <span>{t("creditor")}</span>,
-//       },
-//       {
-//         cell: (info: any) => {
-//           const balance =
-//             Number(info?.row?.original?.debtor) -
-//             Number(info?.row?.original?.creditor);
-
-//           return balance > 0 ? formatReyal(balance.toFixed(2)) : "---";
-//         },
-//         accessorKey: "debtor_balance",
-//         header: () => <span>{t("debtor balance")}</span>,
-//       },
-//       {
-//         cell: (info: any) => {
-//           const balance =
-//             Number(info?.row?.original?.debtor) -
-//             Number(info?.row?.original?.creditor);
-
-//           return balance > 0
-//             ? "---"
-//             : formatReyal(Math.abs(balance.toFixed(2)));
-//         },
-//         accessorKey: "creditor_balance",
-//         header: () => <span>{t("creditor balance")}</span>,
-//       },
-//       {
-//         cell: (info: any) => info.getValue(),
-//         accessorKey: "unit",
-//         header: () => <span>{t("unit id")}</span>,
-//       },
-//     ],
-//     []
-//   );
-
-//   // EFFECTS
-//   useEffect(() => {
-//     if (edaraCredit) {
-//       setDataSource(edaraCredit?.data);
-//     }
-//   }, [edaraCredit]);
-
-//   // LOADING ....
-//   if (isLoading || isRefetching || isFetching)
-//     return <Loading mainTitle={`${t("loading credits")}`} />;
-
-//   return (
-//     <div className="">
-//       <div className="flex justify-between items-center mb-8">
-//         <h2 className=" text-base font-bold">{t("edara credits")}</h2>
-//       </div>
-
-//       <div className="">
-//         <Table data={dataSource || []} columns={tableColumn}>
-//           {dataSource?.length === 0 ? (
-//             <p className="text-center text-xl text-mainGreen font-bold">
-//               {t("there is no pieces available")}
-//             </p>
-//           ) : (
-//             <div className="mt-3 flex items-center justify-center gap-5 p-2">
-//               <div className="flex items-center gap-2 font-bold">
-//                 {t("page")}
-//                 <span className=" text-mainGreen">
-//                   {edaraCredit?.current_page}
-//                 </span>
-//                 {t("from")}
-//                 {<span className=" text-mainGreen">{edaraCredit?.pages}</span>}
-//               </div>
-//               <div className="flex items-center gap-2 ">
-//                 <Button
-//                   className=" rounded bg-mainGreen p-[.18rem]"
-//                   action={() => setPage((prev) => prev - 1)}
-//                   disabled={page == 1}
-//                 >
-//                   {isRTL ? (
-//                     <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-//                   ) : (
-//                     <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-//                   )}
-//                 </Button>
-
-//                 <Button
-//                   className="rounded bg-mainGreen p-[.18rem]"
-//                   action={() => setPage((prev) => prev + 1)}
-//                   disabled={page == edaraCredit?.pages}
-//                 >
-//                   {isRTL ? (
-//                     <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-//                   ) : (
-//                     <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-//                   )}
-//                 </Button>
-//               </div>
-//             </div>
-//           )}
-//         </Table>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default EdaraStocks;
 
 const EdaraStocks = () => {
   const [search, setSearch] = useState("");
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ EdaraStocks ~ dataSource:", dataSource);
   const { formatGram, formatReyal } = numberContext();
   const [accountId, setAccountId] = useState(0);
-  console.log("🚀 ~ EdaraStocks ~ accountId:", accountId);
 
   const filterInitialValues = {
     account_id: "",
@@ -209,6 +30,7 @@ const EdaraStocks = () => {
     isLoading,
     isFetching,
     isRefetching,
+    isInitialLoading,
     refetch,
   } = useFetch({
     queryKey: ["credits-edara-data"],
@@ -219,7 +41,6 @@ const EdaraStocks = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ EdaraStocks ~ edaraCredit:", edaraCredit);
 
   const {
     data: accountsNameDataSelect,
@@ -241,7 +62,7 @@ const EdaraStocks = () => {
               </span>
             </p>
           ),
-          value: account?.id,
+          value: account?.accountable,
         };
       }),
   });
@@ -282,171 +103,6 @@ const EdaraStocks = () => {
     refetch();
   }, [search]);
 
-  // COLUMNS FOR THE TABLE
-  // const tableColumn = useMemo<any>(
-  //   () => [
-  //     {
-  //       cell: (info: any) => {
-  //         return info.row.index + 1;
-  //       },
-  //       accessorKey: "index",
-  //       header: () => <span>{t("#")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue(),
-  //       accessorKey: "date",
-  //       header: () => <span>{t("date")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue(),
-  //       accessorKey: "restriction_name",
-  //       header: () => <span>{t("statement")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue(),
-  //       accessorKey: "bond_id",
-  //       header: () => <span>{t("bond number")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => {
-  //         const infoTarget = dataSource?.find((item) => {
-  //           return Number(item.index) === Number(info.row.index) - 1;
-  //         });
-
-  //         if (info.row.index === 0) {
-  //           return (
-  //             formatReyal(
-  //               Number(info.row.original?.The_first_period_debtor).toFixed(2)
-  //             ) || "---"
-  //           );
-  //         } else if (info.row.index === 1) {
-  //           const value =
-  //             Number(infoTarget?.The_first_period_debtor) +
-  //             infoTarget?.movement_debtor -
-  //             infoTarget?.movement_creditor;
-
-  //           return value > 0 ? formatReyal(Number(value).toFixed(2)) : "---";
-  //         } else {
-  //           return formatReyal(Number(firstDebt).toFixed(2)) || "---";
-  //         }
-  //       },
-  //       accessorKey: "#",
-  //       header: () => <span>{t("the first period debtor")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => {
-  //         const infoTarget = dataSource?.find(
-  //           (item) => Number(item.index) === Number(info.row.index) - 1
-  //         );
-
-  //         if (info.row.index === 0) {
-  //           return (
-  //             formatReyal(
-  //               Number(info.row.original?.The_first_period_creditor).toFixed(2)
-  //             ) || "---"
-  //           );
-  //         } else {
-  //           const value =
-  //             Number(infoTarget?.value) +
-  //             infoTarget?.movement_debtor -
-  //             infoTarget?.movement_creditor;
-
-  //           return value < 0 ? formatReyal(Number(value).toFixed(2)) : "---";
-  //         }
-  //       },
-  //       accessorKey: "#",
-  //       header: () => <span>{t("the first period creditor")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => {
-  //         return info.row.original.computational_movement === "debtor"
-  //           ? formatReyal(Number(info.getValue()).toFixed(2))
-  //           : "---";
-  //       },
-  //       accessorKey: "value",
-  //       header: () => <span>{t("debtor movement")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => {
-  //         return info.row.original.computational_movement === "creditor"
-  //           ? formatReyal(Number(info.getValue()).toFixed(2))
-  //           : "---";
-  //       },
-  //       accessorKey: "value",
-  //       header: () => <span>{t("creditor movement")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => {
-  //         const infoTarget = dataSource?.find(
-  //           (item) => Number(item.index) === Number(info.row.index) - 1
-  //         );
-
-  //         if (info.row.index === 0) {
-  //           return info.row.original.computational_movement === "debtor"
-  //             ? formatReyal(Number(info.getValue()).toFixed(2))
-  //             : "---";
-  //         } else if (info.row.index === 1) {
-  //           const value =
-  //             Number(infoTarget?.The_first_period_debtor) +
-  //             infoTarget?.movement_debtor -
-  //             infoTarget?.movement_creditor;
-
-  //           const balanceValue =
-  //             value +
-  //             info.row.original.movement_debtor -
-  //             info.row.original.movement_creditor;
-
-  //           setFirstDebt(balanceValue);
-  //           return formatReyal(Number(balanceValue).toFixed(2)) || "---";
-  //         } else {
-  //           const value =
-  //             firstDebt +
-  //             info.row.original?.movement_debtor -
-  //             info.row.original?.movement_creditor;
-
-  //           return formatReyal(Number(value).toFixed(2)) || "---";
-  //         }
-  //       },
-  //       accessorKey: "balance_debtor",
-  //       header: () => <span>{t("debtor balance")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => {
-  //         const infoTarget = dataSource?.find(
-  //           (item) => Number(item.index) === Number(info.row.index) - 1
-  //         );
-
-  //         if (info.row.index === 0) {
-  //           return info.row.original.computational_movement === "creditor"
-  //             ? formatReyal(Number(info.getValue()).toFixed(2))
-  //             : "---";
-  //         } else if (info.row.index === 1) {
-  //           const value =
-  //             Number(infoTarget?.The_first_period_creditor) +
-  //             infoTarget?.movement_creditor -
-  //             infoTarget?.movement_debtor;
-
-  //           const balanceValue =
-  //             value +
-  //             info.row.original.movement_creditor -
-  //             info.row.original.movement_debtor;
-
-  //           setFirstCredit(balanceValue);
-  //           return formatReyal(Number(balanceValue).toFixed(2)) || "---";
-  //         }
-  //       },
-  //       accessorKey: "balance_creditor",
-  //       header: () => <span>{t("creditor balance")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue(),
-  //       accessorKey: "unit_id",
-  //       header: () => <span>{t("unit id")}</span>,
-  //     },
-  //   ],
-  //   [dataSource, firstDebt, firstCredit]
-  // );
-
   const tableColumn = useMemo<any>(
     () => [
       {
@@ -473,7 +129,7 @@ const EdaraStocks = () => {
       },
       {
         cell: (info: any) =>
-          Number(info.getValue()) > 0
+          Number(info.getValue()) >= 0
             ? formatReyal(Number(info.getValue()).toFixed(2))
             : "---",
         accessorKey: "first_period_debit",
@@ -481,7 +137,7 @@ const EdaraStocks = () => {
       },
       {
         cell: (info: any) =>
-          Number(info.getValue()) > 0
+          Number(info.getValue()) >= 0
             ? `(${formatReyal(Number(info.getValue()).toFixed(2))})`
             : "---",
         accessorKey: "first_period_credit",
@@ -523,9 +179,22 @@ const EdaraStocks = () => {
     []
   );
 
-  // LOADING ....
-  if (isLoading || isRefetching || isFetching)
-    return <Loading mainTitle={`${t("loading credits")}`} />;
+  const dataSourceToExport = dataSource?.map((data: any) => {
+    return {
+      date: data?.date,
+      statement: data?.restriction_name,
+      bond_number: data?.bond_id,
+      first_period_debit:
+        data?.first_period_debit >= 0 ? data?.first_period_debit : "",
+      first_period_credit:
+        data?.first_period_credit >= 0 ? data?.first_period_credit : "",
+      movement_debit: data?.movement_debit > 0 ? data?.movement_debit : "",
+      movement_credit: data?.movement_credit > 0 ? data?.movement_credit : "",
+      balance_debtor: data?.balance_debtor > 0 ? data?.balance_debtor : "",
+      balance_credit: data?.balance_credit > 0 ? data?.balance_credit : "",
+      unit: data?.unit_id,
+    };
+  });
 
   return (
     <div>
@@ -543,12 +212,12 @@ const EdaraStocks = () => {
             });
           }}
         >
-          {({ values, setFieldValue }) => {
+          {({ values, setFieldValue, resetForm }) => {
             return (
               <Form className="w-full">
                 <div className="flex w-full justify-between items-end gap-3">
-                  <div className="flex items-end gap-3">
-                    <div className="w-64">
+                  <div className="flex items-end gap-3 w-full">
+                    <div className="w-80">
                       <Select
                         id="account name"
                         label={`${t("account name")}`}
@@ -556,10 +225,11 @@ const EdaraStocks = () => {
                         placeholder={`${t("account name")}`}
                         loadingPlaceholder={`${t("loading")}`}
                         options={accountsNameDataSelect}
-                        value={values?.account_id}
-                        onChange={(option) => {
+                        value={values?.value}
+                        onChange={(option: any) => {
                           setFieldValue("account_id", option!.id);
                           setAccountId(option?.id);
+                          resetForm();
                         }}
                         loading={accountNameDataSelectIsLoading}
                         isDisabled={
@@ -587,8 +257,7 @@ const EdaraStocks = () => {
                     </div>
                     <Button
                       type="submit"
-                      disabled={isRefetching}
-                      className="flex h-[38px] mx-4 hover:bg-emerald-900 duration-300 transition-all"
+                      className="flex h-[38px] w-24 mx-4 hover:bg-emerald-900 duration-300 transition-all"
                     >
                       {t("search")}
                     </Button>
@@ -597,13 +266,13 @@ const EdaraStocks = () => {
                       action={(e) => {
                         // COMPONENT FOR EXPORT DATA TO EXCEL FILE ACCEPT DATA AND THE NAME OF THE FILE
                         ExportToExcel(
-                          dataSource,
-                          `${t("statement of account")} - ${formatDate(
-                            new Date()
-                          )}`
+                          dataSourceToExport,
+                          `${t("statement of account")} (${
+                            edaraCredit?.data?.accountable
+                          }) - ${formatDate(new Date())}`
                         );
                       }}
-                      className="bg-mainGreen text-white mr-auto"
+                      className="bg-mainGreen text-white mr-auto hover:bg-emerald-900 duration-300 transition-all"
                     >
                       {t("export")}
                     </Button>
@@ -658,6 +327,10 @@ const EdaraStocks = () => {
                         </h2>
                       </div>
                       <TableComponent
+                        isInitialLoading={isInitialLoading}
+                        isLoading={isLoading}
+                        isRefetching={isRefetching}
+                        isFetching={isFetching}
                         data={dataSource || []}
                         columns={tableColumn}
                       />
