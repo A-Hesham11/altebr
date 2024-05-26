@@ -180,8 +180,9 @@ export const SupplyPayoffTableInputData = ({
         setFieldValue(
           "cost",
           dataSource[0]?.classification_id === 1
-            ? 0
-            : Number(dataSource[0]?.cost_item)
+            ? goldTaklfa
+            : Number(dataSource[0]?.cost_item) *
+                Number(dataSource[0]?.conversion_factor)
         );
 
         setFieldValue(
@@ -404,11 +405,7 @@ export const SupplyPayoffTableInputData = ({
               <BaseInputField
                 placeholder={`${t("cost")}`}
                 id="cost"
-                name={
-                  dataSource && dataSource[0]?.classification_id === 1
-                    ? "cost"
-                    : "cost_item"
-                }
+                name="cost"
                 type="text"
                 className="bg-mainDisabled text-center"
                 disabled
