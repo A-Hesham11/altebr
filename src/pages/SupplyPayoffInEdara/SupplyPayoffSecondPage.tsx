@@ -119,7 +119,7 @@ const SupplyPayoffSecondPage = ({
         cell: (info) =>
           info.row.original.classification_id === 1
             ? formatReyal(Number(info.row.original.cost))
-            : formatReyal(Number(info.row.original.cost_item)),
+            : formatReyal(Number(info.row.original.cost_item) * Number(info.row.original.conversion_factor)),
       },
     ],
     []

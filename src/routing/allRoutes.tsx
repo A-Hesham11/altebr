@@ -155,6 +155,7 @@ import SupplierPayment from "../pages/SupplyPayment/SupplierPayment";
 import SupplierPaymentBonds from "../pages/SupplyPayment/SupplierPaymentBonds";
 import SupplyPayoff from "../pages/SupplyPayoffInEdara/SupplyPayoff";
 import SupplyPayoffBonds from "../pages/SupplyPayoffInEdara/SupplyPayoffBonds";
+import ActivityLog from "../pages/ActivityLog/ActivityLog";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -228,7 +229,8 @@ export const AllRoutesProvider = () => {
             path="/coding/accessories/:sanadId"
             element={<AccessoriesCodingWrapper title="ترقيم سند المتفرقات" />}
           />
-          {/* ./CODING */}
+          <Route path="/activity-log" element={<ActivityLog />} />
+
           <Route path="/system" element={<System title={t("system")} />} />
 
           {/* START SUPPORT */}

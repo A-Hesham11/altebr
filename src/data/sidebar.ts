@@ -1,4 +1,4 @@
-import { AiFillGolden, AiOutlineGold } from "react-icons/ai";
+import { AiFillGolden, AiOutlineBars, AiOutlineGold } from "react-icons/ai";
 import { CiExport, CiGrid2H, CiSettings } from "react-icons/ci";
 import { GiBigDiamondRing, GiCutDiamond, GiGems } from "react-icons/gi";
 import { IoAdd, IoDiamondOutline, IoDocumentsOutline } from "react-icons/io5";
@@ -368,6 +368,13 @@ export const sideBarItems: MenuItem_TP[] = [
         ],
       },
     ],
+  },
+
+  {
+    id: crypto.randomUUID(),
+    label: "Activity log",
+    link: "/activity-log",
+    icon: AiOutlineBars,
   },
 
   {
