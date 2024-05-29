@@ -12,6 +12,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { Modal } from "../../../components/molecules";
 import TableEntry from "../../../components/templates/reusableComponants/tantable/TableEntry";
 import { Back } from "../../../utils/utils-components/Back";
+import ImportTotalsBondsEntry from "./ImportTotalsBondsEntry";
 
 const ImportTotalsBonds = () => {
   const { formatReyal, formatGram } = numberContext();
@@ -198,7 +199,7 @@ const ImportTotalsBonds = () => {
               isOpen={importTotalsBondsModal}
               onClose={() => setImportTotalsBondsModal(false)}
             >
-              <TableEntry item={selectedItem} />
+              <ImportTotalsBondsEntry item={selectedItem} />
             </Modal>
           </div>
         </Form>

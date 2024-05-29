@@ -411,6 +411,9 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
   )
     return <Loading mainTitle={`${t("loading totals")}`} />;
 
+  if (mutateLoading)
+    return <Loading mainTitle={`${t("create accounting entry")}`} />;
+
   return (
     <Formik
       initialValues={initialValues}
@@ -479,6 +482,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
                   <Button
                     type="button"
                     className="mr-auto"
+                    disabled={mutateLoading}
                     action={handleCreateAccountingEntry}
                   >
                     {t("create the accounting entry")}
