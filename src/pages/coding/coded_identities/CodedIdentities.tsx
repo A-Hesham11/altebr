@@ -59,8 +59,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const { data, isLoading, isFetching, isRefetching, refetch } = useFetch({
     queryKey: fetchKey,
     endpoint:
-      search === `${fetchEndPoint}?page=${page}&per_page=10000` || search === ""
-        ? `${fetchEndPoint}?page=${page}&per_page=10000`
+      search === `${fetchEndPoint}?page=${page}` || search === ""
+        ? `${fetchEndPoint}?page=${page}`
         : `${search}`,
     pagination: true,
   });
