@@ -2,7 +2,7 @@ import { t } from "i18next";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { Loading } from "../../../components/organisms/Loading";
 import { Back } from "../../../utils/utils-components/Back";
-import { useFetch, useIsRTL } from "../../../hooks";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
 import { DateInputField, Modal } from "../../../components/molecules";
 import TableOfIdentitiesPreview from "./TableOfIdentitiesPreview";
@@ -17,6 +17,7 @@ import { formatDate, getDayAfter } from "../../../utils/date";
 import * as XLSX from "xlsx";
 import { Delete } from "../../../components/atoms/icons/Delete";
 import { Form, Formik } from "formik";
+import { mutateData } from "../../../utils/mutateData";
 
 interface ImportTotals_TP {
   totals?: object;
@@ -42,9 +43,9 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ search:", search);
   const [page, setPage] = useState(1);
   const isRTL = useIsRTL();
+  const navigate = useNavigate();
 
   // CUSTOM PAGINATION
   const itemsPerPage = 10;
@@ -381,6 +382,24 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
     setSearch(url);
   };
 
+  const {
+    mutate,
+    error: mutateError,
+    isLoading: mutateLoading,
+  } = useMutate({
+    mutationFn: mutateData,
+    onSuccess: () => {
+      notify("success", t("the accounting entry was created successfully"));
+    },
+  });
+
+  const handleCreateAccountingEntry = () => {
+    mutate({
+      endpointName: `/tarqimGold/api/v1/create-restriction`,
+      method: "post",
+    });
+  };
+
   // LOADING ....
   if (
     isFetching ||
@@ -412,6 +431,12 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
                 <h3 className="text-xl font-bold text-slate-700">
                   {t("totals of imported pieces")}
                 </h3>
+                <Button
+                  action={() => navigate("/importTotal/bonds")}
+                  type="button"
+                >
+                  {t("view bonds")}
+                </Button>
               </div>
               {pieces?.length > 0 || imprtPieces?.data?.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -440,7 +465,7 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
 
             {!pieces && (
               <div className="my-8 flex self-start">
-                <div className="flex items-end gap-8">
+                <div className="flex items-end gap-8 w-full">
                   <DateInputField
                     label={`${t("file date")}`}
                     placeholder={`${t("file date")}`}
@@ -449,6 +474,14 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
                   />
                   <Button type="submit" className="bg-mainGreen text-white">
                     بحث
+                  </Button>
+
+                  <Button
+                    type="button"
+                    className="mr-auto"
+                    action={handleCreateAccountingEntry}
+                  >
+                    {t("create the accounting entry")}
                   </Button>
                 </div>
               </div>

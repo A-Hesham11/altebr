@@ -755,7 +755,7 @@
   "stc card": "Stc",
   "american express card": "American Express",
   "amount": "المبلغ",
-  "Activity log":"سجل الأنشطة",
+  "Activity log": "سجل الأنشطة",
   "commission riyals": "العمولة بالريال",
   "commission rate": "نسبة العمولة",
   "card type": "نوع البطاقة",
@@ -1311,5 +1311,6 @@
   "date from": "تاريخ من",
   "date to": "تاريخ إلي",
   "to": "الي",
-  "loading statement of accounts": "تحميل كشف الحسابات"
+  "loading statement of accounts": "تحميل كشف الحسابات",
+  "create the accounting entry": "انشاء القيد المحاسبي"
 }
