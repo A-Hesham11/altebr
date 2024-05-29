@@ -29,22 +29,18 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
   );
 
   // group by account
-  const restrictionsWithoutTotals = restrictions?.reduce(
-    (prev: any, curr: any) => {
-      // const index = prev.findIndex((item: any) => item.bian === curr.bian);
-      // if (index === -1) {
-      //   prev.push(curr);
-      // } else {
-      //   prev[index].debtor_gram += curr.debtor_gram;
-      //   prev[index].debtor_SRA += curr.debtor_SRA;
-      //   prev[index].creditor_gram += curr.creditor_gram;
-      //   prev[index].creditor_SRA += curr.creditor_SRA;
-      // }
+  const restrictionsWithoutTotals = restrictions?.reduce((prev, curr) => {
+    const index = prev.findIndex((item) => item.bian === curr.bian);
+    if (index === -1) {
       prev.push(curr);
-      return prev;
-    },
-    [] as typeof restrictions
-  );
+    } else {
+      prev[index].debtor_gram += curr.debtor_gram;
+      prev[index].debtor_SRA += curr.debtor_SRA;
+      prev[index].creditor_gram += curr.creditor_gram;
+      prev[index].creditor_SRA += curr.creditor_SRA;
+    }
+    return prev;
+  }, [] as typeof restrictions);
 
   restrictions = restrictionsWithoutTotals;
 
@@ -89,13 +85,13 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
             </tr>
           </thead>
           <tbody>
-            {restrictions?.map((restriction, i) => {
+            {restrictions?.map((restriction: any, i: number) => {
               return (
                 <>
                   <tr key={i} className="border-b">
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == item.boxes.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -104,7 +100,7 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == item.boxes.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -113,7 +109,7 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == item.boxes.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -122,7 +118,7 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == item.boxes.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -131,7 +127,7 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == item.boxes.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}

@@ -243,6 +243,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     setRejectedPieces([]);
   };
 
+  if (postIsLoading) {
+    return <Loading mainTitle="loading" />;
+  }
+
   return (
     <div className="flex flex-col">
       <div className="flex justify-between items-center gap-4 flex-wrap">

@@ -13,6 +13,7 @@ import { Modal } from "../../../components/molecules";
 import TableEntry from "../../../components/templates/reusableComponants/tantable/TableEntry";
 import { Back } from "../../../utils/utils-components/Back";
 import ImportTotalsBondsEntry from "./ImportTotalsBondsEntry";
+import { IoIosListBox } from "react-icons/io";
 
 const ImportTotalsBonds = () => {
   const { formatReyal, formatGram } = numberContext();
@@ -89,7 +90,7 @@ const ImportTotalsBonds = () => {
       {
         cell: (info: any) => (
           <div className="flex items-center">
-            <BsEye
+            <IoIosListBox
               onClick={() => {
                 setSelectedItem(info.row.original);
                 setImportTotalsBondsModal(true);
