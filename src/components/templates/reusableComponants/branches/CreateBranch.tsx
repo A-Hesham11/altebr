@@ -56,9 +56,9 @@ export const CreateBranch = ({
     main_address: editData ? editData.address : "",
 
     // national address data
-    country_id: editData ? editData?.nationalAddress.country.id : "",
-    city_id: editData ? editData?.nationalAddress.city.id : "",
-    district_id: editData ? editData?.nationalAddress.district.id : "",
+    country_id: editData ? editData?.nationalAddress?.country.id : "",
+    city_id: editData ? editData?.nationalAddress?.city?.id : "",
+    district_id: editData ? editData?.nationalAddress?.district?.id : "",
     building_number: editData ? editData?.nationalAddress?.building_number : "",
     street_number: editData ? editData.nationalAddress?.street_number : "",
     sub_number: editData ? editData.nationalAddress?.sub_number : "",
@@ -117,7 +117,8 @@ export const CreateBranch = ({
     mutationFn: mutateData,
     onSuccess: (data) => {
       notify("success")
-      queryClient.refetchQueries(["branch"])
+      // queryClient.refetchQueries(["branch"])
+      queryClient.refetchQueries(["AllBranches"])
       queryClient.setQueryData(["branches"], () => {
         return [data]
       })

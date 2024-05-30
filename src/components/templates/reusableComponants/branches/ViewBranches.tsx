@@ -170,6 +170,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
                   })
                   setModel(false)
                 }}
+                className="fill-mainGreen w-6 h-6 mb-[2px]"
               />
               <SvgDelete
                 action={() => {
@@ -196,6 +197,8 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
                   })
                   setModel(false)
                 }}
+                size={23}
+                className="text-mainGreen"
               />
             </div>
           )
@@ -222,8 +225,8 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
   const { data, isSuccess, isLoading, isError, error, isRefetching, refetch } =
     useFetch<Branch_Props_TP[]>({
       endpoint:
-        search === `/branch/api/v1/branches?page=${page}`
-          ? `/branch/api/v1/branches?page=${page}`
+        search === `/branch/api/v1/branches`
+          ? `/branch/api/v1/branches`
           : `/branch/api/v1/branches?page=${page}&${
               isRTL ? "nameAr" : "nameEn"
             }[lk]=${search}`,
@@ -242,6 +245,9 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
         }
       },
     })
+
+    console.log("🚀 ~ ViewBranches ~ data:", data)
+
   useEffect(() => {
     refetch()
   }, [page])
@@ -267,7 +273,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
       // )
       queryClient.refetchQueries(["AllBranches"])
       setOpen(false)
-      refetch()
+      // refetch()
       notify("success")
     },
   })
