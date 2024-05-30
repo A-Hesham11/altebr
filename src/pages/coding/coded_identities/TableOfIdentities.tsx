@@ -208,12 +208,8 @@ const TableOfIdentities = ({
   return (
     <>
       <div className="">
-        <Table
-          data={dataSource?.data || []}
-          columns={tableColumn}
-          showNavigation
-        >
-          {/* <div className="mt-3 flex items-center justify-center gap-5 p-2">
+        <Table data={dataSource?.data || []} columns={tableColumn}>
+          <div className="mt-3 flex items-center justify-center gap-5 p-2">
             <div className="flex items-center gap-2 font-bold">
               {t("page")}
               <span className=" text-mainGreen">{page}</span>
@@ -245,7 +241,7 @@ const TableOfIdentities = ({
                 )}
               </Button>
             </div>
-          </div> */}
+          </div>
         </Table>
       </div>
 

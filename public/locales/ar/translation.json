@@ -755,7 +755,7 @@
   "stc card": "Stc",
   "american express card": "American Express",
   "amount": "المبلغ",
-  "Activity log":"سجل الأنشطة",
+  "Activity log": "سجل الأنشطة",
   "commission riyals": "العمولة بالريال",
   "commission rate": "نسبة العمولة",
   "card type": "نوع البطاقة",
@@ -1311,5 +1311,11 @@
   "date from": "تاريخ من",
   "date to": "تاريخ إلي",
   "to": "الي",
-  "loading statement of accounts": "تحميل كشف الحسابات"
+  "loading statement of accounts": "تحميل كشف الحسابات",
+  "create the accounting entry": "انشاء القيد المحاسبي",
+  "totals import bonds": "اجمالي سندات الاستيراد",
+  "total converted to 24": "الوزن المحول ل 24",
+  "count": "عدد القطع",
+  "create accounting entry": "انشاء القيد المحاسبي",
+  "the accounting entry was created successfully": "تم انشاء القيد المحاسبي بنجاح"
 }
