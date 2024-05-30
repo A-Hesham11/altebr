@@ -6,7 +6,6 @@ import { Buffer } from "buffer";
 import QRCode from "qrcode.react";
 import { useFetch } from "../../../../hooks";
 import { ClientData_TP } from "../../SellingClientForm";
-import fs  from "fs";
 
 const FinalPreviewBillPayment = ({
   paymentData,
@@ -26,7 +25,7 @@ const FinalPreviewBillPayment = ({
 
   function getTLV(tagNum, tagValue) {
     var tagNumBuf = Buffer.from([tagNum], "utf8");
-    var tagValueLengthBuf = Buffer.from([tagValue.length], "utf8");
+    var tagValueLengthBuf = Buffer.from([tagValue?.length], "utf8");
     var tagValueBuf = Buffer.from(tagValue, "utf8");
     var bufsArray = [tagNumBuf, tagValueLengthBuf, tagValueBuf];
     return Buffer.concat(bufsArray);
