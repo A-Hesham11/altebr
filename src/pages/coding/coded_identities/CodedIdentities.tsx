@@ -117,7 +117,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     },
   });
 
-  const { mutate: finalMutate } = useMutate({
+  const { mutate: finalMutate, isLoading: finalPostIsLoading } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["final-files"],
     onSuccess: (data) => {
@@ -243,9 +243,9 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     setRejectedPieces([]);
   };
 
-  if (postIsLoading) {
-    return <Loading mainTitle="loading" />;
-  }
+  // if (postIsLoading) {
+  //   return <Loading mainTitle="loading" />;
+  // }
 
   return (
     <div className="flex flex-col">
@@ -431,8 +431,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           <FilesUpload files={importFiles} setFiles={setImportFiles} />
 
           <Button
+            loading={postIsLoading}
+            disabled={postIsLoading}
             action={handleImportFiles}
-            className="bg-mainGreen text-white self-end ml-9"
+            className="self-end ml-9 bg-transparent text-mainGreen border-mainGreen border"
           >
             {t("add")}
           </Button>
@@ -462,8 +464,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
                 {t("refuse")}
               </Button>
               <Button
+                loading={finalPostIsLoading}
+                disabled={finalPostIsLoading}
                 action={handleFinalImportFiles}
-                className="bg-mainGreen text-white"
+                className="bg-transparent text-mainGreen border-mainGreen border"
               >
                 {t("confirm")}
               </Button>
