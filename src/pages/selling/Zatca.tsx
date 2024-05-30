@@ -1,10 +1,10 @@
 import { t } from "i18next";
 import React, { useContext } from "react";
-import { Button } from "../../atoms";
-import FinalPreviewBillData from "./bill/FinalPreviewBillData";
-import FinalPreviewBillPayment from "./bill/FinalPreviewBillPayment";
-import { authCtx } from "../../../context/auth-and-perm/auth";
-import { useFetch } from "../../../hooks";
+import { authCtx } from "../../context/auth-and-perm/auth";
+import { useFetch } from "../../hooks";
+import FinalPreviewBillData from "../../components/selling/selling components/bill/FinalPreviewBillData";
+import { Button } from "../../components/atoms";
+import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
 
 type Client_TP = {
   amount: number;
@@ -25,14 +25,14 @@ type SellingFinalPreviewProps_TP = {
   sellingItemsData: any;
   invoiceNumber: any;
 };
-export const SellingFinalPreview = ({
+export const Zatca = ({
   ItemsTableContent,
   setStage,
   paymentData,
   clientData,
   costDataAsProps,
   sellingItemsData,
-  invoiceNumber
+  invoiceNumber,
 }: SellingFinalPreviewProps_TP) => {
   // const [printStatus, setPrintStatus] = useState("block")
   // const handlePrint = () => {
@@ -63,22 +63,40 @@ export const SellingFinalPreview = ({
 
   return (
     <div className="relative h-full p-10 bg-flatWhite ">
+      <div className="flex items-center justify-between my-8 mt-8">
+        <h2 className="text-base font-bold">{t("final preview")}</h2>
+        <div className="flex gap-3">
+          <Button
+            className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
+            action={() => window.print()}
+          >
+            {t("print")}
+          </Button>
+          <Button
+            className="bg-mainOrange px-7 py-[6px]"
+            // loading={isLoading}
+            // action={posSellingDataHandler}
+          >
+            {t("save")}
+          </Button>
+        </div>
+      </div>
       <div className="print-section">
         <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
           <div className="mx-6 bill-shadow rounded-md p-6">
-            <FinalPreviewBillData 
+            <FinalPreviewBillData
               clientData={clientData}
               invoiceNumber={invoiceNumber}
             />
           </div>
           {ItemsTableContent}
-          {/* <div className="mx-6 bill-shadow rounded-md p-6 my-9">
+          <div className="mx-6 bill-shadow rounded-md p-6 my-9">
             <FinalPreviewBillPayment
               paymentData={paymentData}
               costDataAsProps={costDataAsProps}
               sellingItemsData={sellingItemsData}
             />
-          </div> */}
+          </div>
           <div className="text-center">
             <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
               {data && data?.sentence}
@@ -90,21 +108,25 @@ export const SellingFinalPreview = ({
                 {userData?.branch?.city?.name} ,{" "}
                 {userData?.branch?.district?.name}
               </p>
-              <p>{t("phone")}: {userData?.phone}</p>
-              <p>{t("email")}: {userData?.email}</p>
-              <p>{t("tax number")}: {companyData && companyData[0]?.taxRegisteration}</p>
-              <p>{t("Mineral license")}: {companyData && companyData[0]?.mineralLicence}</p>
+              <p>
+                {t("phone")}: {userData?.phone}
+              </p>
+              <p>
+                {t("email")}: {userData?.email}
+              </p>
+              <p>
+                {t("tax number")}:{" "}
+                {companyData && companyData[0]?.taxRegisteration}
+              </p>
+              <p>
+                {t("Mineral license")}:{" "}
+                {companyData && companyData[0]?.mineralLicence}
+              </p>
             </div>
           </div>
         </div>
       </div>
       {/* {printContent && <div style={{ display: 'none' }}>{printContent}</div>}    */}
-
-      <div className="flex gap-3 justify-end mt-14">
-          <Button bordered action={() => setStage(2)}>
-            {t("back")}
-          </Button>
-      </div>
     </div>
   );
 };

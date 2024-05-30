@@ -157,6 +157,7 @@ import SupplyPayoff from "../pages/SupplyPayoffInEdara/SupplyPayoff";
 import SupplyPayoffBonds from "../pages/SupplyPayoffInEdara/SupplyPayoffBonds";
 import ActivityLog from "../pages/ActivityLog/ActivityLog";
 import ImportTotalsBonds from "../pages/coding/coded_identities/ImportTotalsBonds";
+import { Zatca } from "../pages/selling/Zatca";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -470,6 +471,11 @@ export const AllRoutesProvider = () => {
           <Route
             path="/bonds/supplier-payment"
             element={<SupplierPaymentBonds />}
+          />
+
+          <Route
+            path="/selling/zatca"
+            element={<Zatca />}
           />
 
           <Route path="/supply-return" element={<SupplyPayoff />} />

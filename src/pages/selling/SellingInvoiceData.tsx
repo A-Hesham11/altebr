@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ClientData_TP, Selling_TP } from "./PaymentSellingPage";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
@@ -10,6 +10,8 @@ import { mutateData } from "../../utils/mutateData";
 import { Button } from "../../components/atoms";
 import { SellingFinalPreview } from "../../components/selling/selling components/SellingFinalPreview";
 import { numberContext } from "../../context/settings/number-formatter";
+import { Modal } from "../../components/molecules";
+import { Zatca } from "./Zatca";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -30,6 +32,8 @@ const SellingInvoiceData = ({
   sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
   const { formatGram, formatReyal } = numberContext();
+
+  const [manyPdfsOpen, setManyPdfsOpen] = useState(false);
 
   const { userData } = useContext(authCtx);
 
@@ -194,11 +198,12 @@ const SellingInvoiceData = ({
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      navigate(`/selling/viewInvoice/`);
+      navigate(`/selling/zatca`);
     },
   });
 
   const posSellingDataHandler = () => {
+    setStage(4)
     const invoice = {
       employee_name: userData?.name,
       employee_id: userData?.id,
@@ -212,7 +217,6 @@ const SellingInvoiceData = ({
       karat_price: sellingItemsData[0].gold_price,
     };
     const items = sellingItemsData.map((item) => {
-
       const rowTaxEquation = Number(item.tax_rate) / 100 + 1;
       const taklfaFromOneItem =
         Number(item.taklfa_after_tax) +
@@ -285,6 +289,7 @@ const SellingInvoiceData = ({
       endpointName: "/selling/api/v1/add_Invoice",
       values: { invoice, items, card },
     });
+
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
       { invoice, items, card }
@@ -296,12 +301,12 @@ const SellingInvoiceData = ({
       <div className="flex items-center justify-between mx-8 mt-8">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
-          <Button
+          {/* <Button
             className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
             action={() => window.print()}
           >
             {t("print")}
-          </Button>
+          </Button> */}
           <Button
             className="bg-mainOrange px-7 py-[6px]"
             loading={isLoading}
@@ -321,6 +326,18 @@ const SellingInvoiceData = ({
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}
       />
+
+      {/* <Modal isOpen={manyPdfsOpen} onClose={setManyPdfsOpen}> */}
+        {/* <Zatca
+          ItemsTableContent={<SellingTableComp />}
+          setStage={setStage}
+          paymentData={paymentData}
+          clientData={clientData}
+          sellingItemsData={sellingItemsData}
+          costDataAsProps={costDataAsProps}
+          invoiceNumber={invoiceNumber}
+        /> */}
+      {/* </Modal> */}
     </div>
   );
 };
