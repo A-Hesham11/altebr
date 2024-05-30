@@ -113,23 +113,23 @@ export const OneBranches = ({ title = "branch" }) => {
                 <BsFillPersonFill className="w-5 h-5 text-gray-400" />
                 <TextLine
                   boldText={t("arabic name")}
-                  lightString={data.name_ar}
+                  lightString={data?.name_ar}
                 />{" "}
               </div>
               <div className="flex items-center gap-2">
                 <BsFillPersonFill className="w-5 h-5 text-gray-400" />
                 <TextLine
                   boldText={t("english name")}
-                  lightString={data.name_en}
+                  lightString={data?.name_en}
                 />{" "}
               </div>
               <div className="flex items-center gap-2">
                 <BsFillPersonCardFill className="w-5 h-5 text-gray-400" />
-                <TextLine boldText={t("address")} lightString={data.address} />
+                <TextLine boldText={t("address")} lightString={data?.address} />
               </div>
               <div className="flex items-center gap-2">
                 <AiFillPhone className="w-5 h-5 text-gray-400" />
-                <TextLine boldText={t("phone")} lightString={data.phone} />
+                <TextLine boldText={t("phone")} lightString={data?.phone} />
               </div>
             </div>
             {/*     البيانات العامة : */}
@@ -142,7 +142,7 @@ export const OneBranches = ({ title = "branch" }) => {
                 <TextLine
                   boldText={t("country")}
                   lightString={
-                    isRTL ? data.country.name_ar : data.country.name_en
+                    isRTL ? data?.country.name_ar : data?.country.name_en
                   }
                 />{" "}
               </div>
@@ -150,7 +150,7 @@ export const OneBranches = ({ title = "branch" }) => {
                 <BiBuildingHouse className="w-5 h-5 text-gray-400" />{" "}
                 <TextLine
                   boldText={t("city")}
-                  lightString={isRTL ? data.city.name_ar : data.city.name_en}
+                  lightString={isRTL ? data?.city.name_ar : data?.city.name_en}
                 />{" "}
               </div>
               <div className="flex items-center gap-2">
@@ -158,7 +158,7 @@ export const OneBranches = ({ title = "branch" }) => {
                 <TextLine
                   boldText={t("district")}
                   lightString={
-                    isRTL ? data.district.name_ar : data.district.name_en
+                    isRTL ? data?.district.name_ar : data?.district.name_en
                   }
                 />{" "}
               </div>
@@ -167,7 +167,7 @@ export const OneBranches = ({ title = "branch" }) => {
                 <TextLine
                   boldText={t("market")}
                   lightString={
-                    isRTL ? data.market.name_ar : data.market.name_en
+                    isRTL ? data?.market.name_ar : data?.market.name_en
                   }
                 />{" "}
               </div>
@@ -175,14 +175,14 @@ export const OneBranches = ({ title = "branch" }) => {
                 <AiFillPhone className="w-5 h-5 text-gray-400" />
                 <TextLine
                   boldText={t("branch number")}
-                  lightString={data.number}
+                  lightString={data?.number}
                 />
               </div>
               <div className="flex items-center gap-2">
                 <AiOutlineFieldNumber className="w-5 h-5 text-gray-400" />{" "}
                 <TextLine
                   boldText={t("market number")}
-                  lightString={data.market_number}
+                  lightString={data?.market_number}
                 />{" "}
               </div>
             </div>
@@ -362,56 +362,56 @@ export const OneBranches = ({ title = "branch" }) => {
                 <FaCity className="w-5 h-5 text-gray-400" />
                 <TextLine
                   boldText={t("address")}
-                  lightString={data.nationalAddress.address}
+                  lightString={data?.nationalAddress?.address}
                 />{" "}
               </div>
               <div className="flex items-center gap-2">
                 <FaCity className="w-5 h-5 text-gray-400" />{" "}
                 <TextLine
                   boldText={t("country")}
-                  lightString={data.nationalAddress.country.name_ar}
+                  lightString={data?.nationalAddress?.country?.name_ar}
                 />{" "}
               </div>
               <div className="flex items-center gap-2">
                 <BiBuildingHouse className="w-5 h-5 text-gray-400" />
                 <TextLine
                   boldText={t("city")}
-                  lightString={data.nationalAddress.city.name_ar}
+                  lightString={data?.nationalAddress?.city?.name_ar}
                 />{" "}
               </div>{" "}
               <div className="flex items-center gap-2">
                 <TbBuilding className="w-5 h-5 text-gray-400" />
                 <TextLine
                   boldText={t("district")}
-                  lightString={data.nationalAddress.district.name_ar}
+                  lightString={data?.nationalAddress?.district?.name_ar}
                 />{" "}
               </div>
               <div className="flex items-center gap-2">
                 <TbHomeHand className="w-5 h-5 text-gray-400" />
                 <TextLine
                   boldText={t("street number")}
-                  lightString={data.nationalAddress.street_number}
+                  lightString={data?.nationalAddress?.street_number}
                 />{" "}
               </div>
               <div className="flex items-center gap-2">
                 <BiStreetView className="w-7 h-7 text-gray-400" />{" "}
                 <TextLine
                   boldText={t("building number")}
-                  lightString={data.nationalAddress.building_number}
+                  lightString={data?.nationalAddress?.building_number}
                 />{" "}
               </div>
               <div className="flex items-center gap-2">
                 <AiOutlineFieldNumber className="w-7 h-7 text-gray-400" />{" "}
                 <TextLine
                   boldText={t("sub number")}
-                  lightString={data.nationalAddress.sub_number}
+                  lightString={data?.nationalAddress?.sub_number}
                 />{" "}
               </div>
               <div className="flex items-center gap-2">
                 <BsMailbox className="w-5 h-5 text-gray-400" />{" "}
                 <TextLine
                   boldText={t("zip code")}
-                  lightString={data.nationalAddress.zip_code}
+                  lightString={data?.nationalAddress?.zip_code}
                 />{" "}
               </div>
             </div>

@@ -186,6 +186,10 @@ input::placeholder {
   min-height: 100% !important;
   overflow: visible !important;
 }
+.card-text,
+.card-text button {
+  transition: 0.35s all ease-in-out;
+}
 .card-text:hover {
   background-color: #295e56;
 }
