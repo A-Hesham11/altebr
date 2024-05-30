@@ -52,12 +52,17 @@ const EdaraStocks = () => {
     endpoint: "/branchAccount/api/v1/getAccountEdara?per_page=10000",
     select: (data: any) =>
       data?.map((account: any) => {
+        console.log("🚀 ~ data?.map ~ account:", account);
         return {
           id: account?.id,
           label: (
             <p className="flex justify-between items-center">
               <span>{account?.accountable}</span>
-              <span className="text-[9px] text-white p-[5px] rounded-lg bg-mainGreen">
+              <span
+                className={`text-[9px] text-white p-[5px] rounded-lg ${
+                  account?.unit_id === 2 ? "bg-mainGreen" : "bg-mainOrange"
+                } `}
+              >
                 {account?.unit}
               </span>
             </p>
@@ -66,6 +71,10 @@ const EdaraStocks = () => {
         };
       }),
   });
+  console.log(
+    "🚀 ~ EdaraStocks ~ accountsNameDataSelect:",
+    accountsNameDataSelect
+  );
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
