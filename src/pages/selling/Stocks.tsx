@@ -63,7 +63,11 @@ const BranchStocks = () => {
           label: (
             <p className="flex justify-between items-center">
               <span>{account?.accountable}</span>
-              <span className="text-[9px] text-white p-[5px] rounded-lg bg-mainGreen">
+              <span
+                className={`text-[9px] text-white p-[5px] rounded-lg ${
+                  account?.unit_id === 2 ? "bg-mainGreen" : "bg-mainOrange"
+                } `}
+              >
                 {account?.unit}
               </span>
             </p>
