@@ -31,6 +31,7 @@ const BranchStocks = () => {
   // FETCHING BONDS DATA FROM API
   const {
     data: edaraCredit,
+    isInitialLoading,
     isLoading,
     isFetching,
     isRefetching,

@@ -156,6 +156,7 @@ import SupplierPaymentBonds from "../pages/SupplyPayment/SupplierPaymentBonds";
 import SupplyPayoff from "../pages/SupplyPayoffInEdara/SupplyPayoff";
 import SupplyPayoffBonds from "../pages/SupplyPayoffInEdara/SupplyPayoffBonds";
 import ActivityLog from "../pages/ActivityLog/ActivityLog";
+import ImportTotalsBonds from "../pages/coding/coded_identities/ImportTotalsBonds";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -195,6 +196,7 @@ export const AllRoutesProvider = () => {
             }
           />
           <Route path="/coding/total/import" element={<ImportTotals />} />
+          <Route path="/importTotal/bonds" element={<ImportTotalsBonds />} />
           <Route
             path="/branch-bonds-react"
             element={<BranchBondsReact title={t("branch bonds")} />}
@@ -472,10 +474,7 @@ export const AllRoutesProvider = () => {
 
           <Route path="/supply-return" element={<SupplyPayoff />} />
 
-          <Route
-            path="/bonds/supply-return"
-            element={<SupplyPayoffBonds />}
-          />
+          <Route path="/bonds/supply-return" element={<SupplyPayoffBonds />} />
           <Route
             path="/accessory-bonds/:bondID"
             element={<Bond title={t("accessory bond")} />}
