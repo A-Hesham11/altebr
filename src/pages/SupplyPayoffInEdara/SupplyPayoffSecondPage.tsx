@@ -10,6 +10,7 @@ import { numberContext } from "../../context/settings/number-formatter";
 import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
 import SupplyPayoffInvoiceTable from "./SupplyPayoffInvoiceTable";
 import { SupplyPayoffFinalPreview } from "./SupplyPayoffFinalPreview";
+import { notify } from "../../utils/toast";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -57,13 +58,14 @@ const SupplyPayoffSecondPage = ({
   }, 0);
 
   const totalwages = sellingItemsData.reduce((acc, card) => {
-    console.log("🚀 ~ totalwages ~ card:", card)
+    console.log("🚀 ~ totalwages ~ card:", card);
     acc += +card.wage * +card.weight;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalwages ~ totalwages:", totalwages)
+  console.log("🚀 ~ totalwages ~ totalwages:", totalwages);
 
-  const totalFinalCost = Number(totalCost) + Number(totalItemsTaxes) + Number(totalwages);
+  const totalFinalCost =
+    Number(totalCost) + Number(totalItemsTaxes) + Number(totalwages);
 
   const costDataAsProps = {
     totalWeight,
@@ -104,9 +106,11 @@ const SupplyPayoffSecondPage = ({
         header: () => <span>{t("fare")}</span>,
         accessorKey: "wage",
         cell: (info) =>
-          info.row.original.wage ? formatReyal(
-            Number(info.getValue()) * Number(info.row.original.weight)
-          ) : "---",
+          info.row.original.wage
+            ? formatReyal(
+                Number(info.getValue()) * Number(info.row.original.weight)
+              )
+            : "---",
       },
       {
         header: () => <span>{t("VAT")} </span>,
@@ -119,7 +123,10 @@ const SupplyPayoffSecondPage = ({
         cell: (info) =>
           info.row.original.classification_id === 1
             ? formatReyal(Number(info.row.original.cost))
-            : formatReyal(Number(info.row.original.cost_item) * Number(info.row.original.conversion_factor)),
+            : formatReyal(
+                Number(info.row.original.cost_item) *
+                  Number(info.row.original.conversion_factor)
+              ),
       },
     ],
     []
@@ -138,10 +145,11 @@ const SupplyPayoffSecondPage = ({
   const navigate = useNavigate();
   // user data
   // api
-  const { mutate, isLoading } = useMutate({
+  const { mutate, isLoading, isSuccess } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      navigate(`/bonds/supply-return`);
+      notify("success");
+      // navigate(`/bonds/supply-return`);
     },
   });
 
@@ -180,19 +188,22 @@ const SupplyPayoffSecondPage = ({
       <div className="flex items-center justify-between mx-3 mt-2">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
-          <Button
-            className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-            action={() => window.print()}
-          >
-            {t("print")}
-          </Button>
-          <Button
-            className="bg-mainOrange px-7 py-[6px]"
-            loading={isLoading}
-            action={PostNewValue}
-          >
-            {t("save")}
-          </Button>
+          {isSuccess ? (
+            <Button
+              className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
+              action={() => window.print()}
+            >
+              {t("print")}
+            </Button>
+          ) : (
+            <Button
+              className="bg-mainOrange px-7 py-[6px]"
+              loading={isLoading}
+              action={PostNewValue}
+            >
+              {t("save")}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -204,6 +215,7 @@ const SupplyPayoffSecondPage = ({
         sellingItemsData={sellingItemsData}
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}
+        isSuccess={isSuccess}
       />
     </div>
   );

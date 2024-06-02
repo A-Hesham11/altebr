@@ -51,7 +51,6 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
-
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
@@ -87,6 +86,7 @@ export const SellingTableInputData = ({
     priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy;
 
   const { values, setFieldValue } = useFormikContext<any>();
+  console.log("🚀 ~ values:", values);
 
   const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
     queryKey: ["branch-all-accepted-selling"],
@@ -615,25 +615,26 @@ export const SellingTableInputData = ({
                     return;
                   }
 
-                  const weight_percentage = +values.remaining_weight * 0.05;
+                  const weight_percentage =
+                    Number(values.remaining_weight) * 0.05;
 
-                  const stone_weight_percentage =
-                    dataSource && values.classification_id === 1
-                      ? dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.weight
-                      : dataSource[0]?.detailsItem[0]?.stonesDetails[0]
-                          ?.diamondWeight;
+                  // const stone_weight_percentage =
+                  //   dataSource && values?.classification_id === 1
+                  //     ? dataSource[0]?.detailsItem[0]?.stonesDetails[0]?.weight
+                  //     : dataSource[0]?.detailsItem[0]?.stonesDetails[0]
+                  //         ?.diamondWeight;
 
-                  const stoneWeitgh =
-                    values.classification_id === (2 || 3) ||
-                    +stone_weight_percentage > +weight_percentage
-                      ? +stone_weight_percentage
-                      : "v";
+                  // const stoneWeitgh =
+                  //   values.classification_id === (2 || 3) ||
+                  //   Number(stone_weight_percentage) > Number(weight_percentage)
+                  //     ? Number(stone_weight_percentage)
+                  //     : "v";
 
                   const isEditSelsal =
                     editSelsal.length > 0 ? editSelsal : sellingItemsOfWeigth;
 
                   const isEditKit =
-                    editkit.length > 0
+                    editkit?.length > 0
                       ? editkit
                       : selectedItemDetails.flat(Infinity);
 
@@ -644,7 +645,7 @@ export const SellingTableInputData = ({
                         ...values,
                         itemDetails: isEditKit,
                         selsal: isEditSelsal,
-                        stone_weight: +stoneWeitgh,
+                        // stone_weight: +stoneWeitgh,
                       },
                     ].reverse()
                   );

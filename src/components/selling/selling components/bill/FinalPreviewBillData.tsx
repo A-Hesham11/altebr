@@ -25,18 +25,22 @@ type Client_TP = {
 };
 
 const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
+  console.log("🚀 ~ FinalPreviewBillData ~ clientData:", clientData);
+  console.log("🚀 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber);
   const { client_id, client_value, bond_date, supplier_id } = clientData;
 
   const location = useLocation();
   const path = location.pathname;
 
   const { data } = useFetch<Client_TP>({
-    endpoint: path === "/supply-return" ? `/supplier/api/v1/supplier/${supplier_id}` : `branchManage/api/v1/clients/${client_id}`,
-    queryKey: [`clients`, path === "/supply-return" ? supplier_id  : client_id],
+    endpoint:
+      path === "/supply-return"
+        ? `/supplier/api/v1/supplier/${supplier_id}`
+        : `branchManage/api/v1/clients/${client_id}`,
+    queryKey: [`clients`, path === "/supply-return" ? supplier_id : client_id],
   });
 
-  console.log("🚀 ~ FinalPreviewBillData ~ data:", data)
-
+  console.log("🚀 ~ FinalPreviewBillData ~ data:", data);
 
   const { userData } = useContext(authCtx);
 
@@ -45,8 +49,6 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
     endpoint: `branchSafety/api/v1/receive-bonds/${userData?.branch_id}`,
   });
 
-
-
   const billNumber =
     path === "/selling/honesty/return-honest"
       ? honestBondsData?.length + 1
@@ -54,6 +56,8 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
       ? invoiceNumber
       : path === "/supply-return"
       ? invoiceNumber?.total + 1
+      : path === "/selling/zatca"
+      ? invoiceNumber
       : invoiceNumber?.length + 1;
 
   return (
@@ -89,7 +93,9 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
         </p>
         <p className="text-xs font-bold">
           {t("Id number")} :{" "}
-          <span className="font-medium">{data?.identity || data?.national_number}</span>{" "}
+          <span className="font-medium">
+            {data?.identity || data?.national_number}
+          </span>{" "}
         </p>
       </div>
     </div>

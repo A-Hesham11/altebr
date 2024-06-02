@@ -24,6 +24,8 @@ type SellingFinalPreviewProps_TP = {
   costDataAsProps: any;
   sellingItemsData: any;
   invoiceNumber: any;
+  isSuccess: any;
+  responseSellingData: any;
 };
 export const SellingFinalPreview = ({
   ItemsTableContent,
@@ -32,8 +34,11 @@ export const SellingFinalPreview = ({
   clientData,
   costDataAsProps,
   sellingItemsData,
-  invoiceNumber
+  invoiceNumber,
+  isSuccess,
+  responseSellingData,
 }: SellingFinalPreviewProps_TP) => {
+  console.log("🚀 ~ isSuccess:", isSuccess);
   // const [printStatus, setPrintStatus] = useState("block")
   // const handlePrint = () => {
   //     window.print();
@@ -66,19 +71,22 @@ export const SellingFinalPreview = ({
       <div className="print-section">
         <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
           <div className="mx-6 bill-shadow rounded-md p-6">
-            <FinalPreviewBillData 
+            <FinalPreviewBillData
               clientData={clientData}
               invoiceNumber={invoiceNumber}
             />
           </div>
           {ItemsTableContent}
-          {/* <div className="mx-6 bill-shadow rounded-md p-6 my-9">
-            <FinalPreviewBillPayment
-              paymentData={paymentData}
-              costDataAsProps={costDataAsProps}
-              sellingItemsData={sellingItemsData}
-            />
-          </div> */}
+          {isSuccess && (
+            <div className="mx-6 bill-shadow rounded-md p-6 my-9">
+              <FinalPreviewBillPayment
+                paymentData={paymentData}
+                costDataAsProps={costDataAsProps}
+                sellingItemsData={sellingItemsData}
+                responseSellingData={responseSellingData}
+              />
+            </div>
+          )}
           <div className="text-center">
             <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
               {data && data?.sentence}
@@ -90,21 +98,33 @@ export const SellingFinalPreview = ({
                 {userData?.branch?.city?.name} ,{" "}
                 {userData?.branch?.district?.name}
               </p>
-              <p>{t("phone")}: {userData?.phone}</p>
-              <p>{t("email")}: {userData?.email}</p>
-              <p>{t("tax number")}: {companyData && companyData[0]?.taxRegisteration}</p>
-              <p>{t("Mineral license")}: {companyData && companyData[0]?.mineralLicence}</p>
+              <p>
+                {t("phone")}: {userData?.phone}
+              </p>
+              <p>
+                {t("email")}: {userData?.email}
+              </p>
+              <p>
+                {t("tax number")}:{" "}
+                {companyData && companyData[0]?.taxRegisteration}
+              </p>
+              <p>
+                {t("Mineral license")}:{" "}
+                {companyData && companyData[0]?.mineralLicence}
+              </p>
             </div>
           </div>
         </div>
       </div>
       {/* {printContent && <div style={{ display: 'none' }}>{printContent}</div>}    */}
 
-      <div className="flex gap-3 justify-end mt-14">
+      {!isSuccess && (
+        <div className="flex gap-3 justify-end mt-14">
           <Button bordered action={() => setStage(2)}>
             {t("back")}
           </Button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
