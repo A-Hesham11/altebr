@@ -12,6 +12,7 @@ import { SellingFinalPreview } from "../../components/selling/selling components
 import { numberContext } from "../../context/settings/number-formatter";
 import { Modal } from "../../components/molecules";
 import { Zatca } from "./Zatca";
+import { notify } from "../../utils/toast";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -31,9 +32,12 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ clientData:", clientData);
   const { formatGram, formatReyal } = numberContext();
 
   const [manyPdfsOpen, setManyPdfsOpen] = useState(false);
+  const [responseSellingData, SetResponseSellingData] = useState(null);
+  console.log("🚀 ~ responseSellingData:", responseSellingData);
 
   const { userData } = useContext(authCtx);
 
@@ -195,15 +199,18 @@ const SellingInvoiceData = ({
   const navigate = useNavigate();
   // user data
   // api
-  const { mutate, isLoading } = useMutate({
+  const { mutate, isLoading, isSuccess } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      navigate(`/selling/zatca`);
+      console.log("🚀 ~ data:", data);
+      notify("success");
+      SetResponseSellingData(data);
+      // navigate(`/selling/viewInvoice/`);
     },
   });
 
   const posSellingDataHandler = () => {
-    setStage(4)
+    // setStage(4);
     const invoice = {
       employee_name: userData?.name,
       employee_id: userData?.id,
@@ -301,19 +308,22 @@ const SellingInvoiceData = ({
       <div className="flex items-center justify-between mx-8 mt-8">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
-          {/* <Button
-            className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-            action={() => window.print()}
-          >
-            {t("print")}
-          </Button> */}
-          <Button
-            className="bg-mainOrange px-7 py-[6px]"
-            loading={isLoading}
-            action={posSellingDataHandler}
-          >
-            {t("save")}
-          </Button>
+          {isSuccess ? (
+            <Button
+              className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
+              action={() => window.print()}
+            >
+              {t("print")}
+            </Button>
+          ) : (
+            <Button
+              className="bg-mainOrange px-7 py-[6px]"
+              loading={isLoading}
+              action={posSellingDataHandler}
+            >
+              {t("save")}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -325,10 +335,12 @@ const SellingInvoiceData = ({
         sellingItemsData={sellingItemsData}
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}
+        isSuccess={isSuccess}
+        responseSellingData={responseSellingData}
       />
 
       {/* <Modal isOpen={manyPdfsOpen} onClose={setManyPdfsOpen}> */}
-        {/* <Zatca
+      {/* <Zatca
           ItemsTableContent={<SellingTableComp />}
           setStage={setStage}
           paymentData={paymentData}

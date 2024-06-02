@@ -13,6 +13,7 @@ import { Zatca } from "../../../../pages/selling/Zatca";
 
 const AddSellingInvoice = () => {
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
+  console.log("🚀 ~ AddSellingInvoice ~ dataSource:", dataSource);
   const [stage, setStage] = useState<number>(1);
   const [clientData, setClientData] = useState<ClientData_TP>();
   const [sellingItemsData, setSellingItemsData] = useState([]);

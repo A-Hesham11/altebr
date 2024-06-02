@@ -10,6 +10,7 @@ import { Button } from "../../components/atoms";
 import { SellingFinalPreview } from "../../components/selling/selling components/SellingFinalPreview";
 import { numberContext } from "../../context/settings/number-formatter";
 import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
+import { notify } from "../../utils/toast";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -27,7 +28,6 @@ const SalesReturnInvoiceData = ({
   clientData,
   invoiceNumber,
 }: CreateHonestSanadProps_TP) => {
-
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
@@ -194,10 +194,11 @@ const SalesReturnInvoiceData = ({
   const navigate = useNavigate();
   // user data
   // api
-  const { mutate, isLoading } = useMutate({
+  const { mutate, isLoading, isSuccess } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      navigate(`/selling/return-entry`);
+      notify("success");
+      // navigate(`/selling/return-entry`);
     },
   });
 
@@ -300,19 +301,22 @@ const SalesReturnInvoiceData = ({
       <div className="flex items-center justify-between mx-8 mt-8">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
-          <Button
-            className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-            action={() => window.print()}
-          >
-            {t("print")}
-          </Button>
-          <Button
-            className="bg-mainOrange px-7 py-[6px]"
-            loading={isLoading}
-            action={posSellingDataHandler}
-          >
-            {t("save")}
-          </Button>
+          {isSuccess ? (
+            <Button
+              className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
+              action={() => window.print()}
+            >
+              {t("print")}
+            </Button>
+          ) : (
+            <Button
+              className="bg-mainOrange px-7 py-[6px]"
+              loading={isLoading}
+              action={posSellingDataHandler}
+            >
+              {t("save")}
+            </Button>
+          )}
         </div>
       </div>
 

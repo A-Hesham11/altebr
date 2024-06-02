@@ -1,4 +1,3 @@
-
 import { useContext, useEffect, useMemo, useState } from "react";
 import { t } from "i18next";
 import { Form, Formik } from "formik";
@@ -9,7 +8,11 @@ import { useFetch, useIsRTL } from "../../hooks";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { Loading } from "../../components/organisms/Loading";
 import { formatDate, getDayAfter } from "../../utils/date";
-import { BaseInputField, DateInputField, Modal } from "../../components/molecules";
+import {
+  BaseInputField,
+  DateInputField,
+  Modal,
+} from "../../components/molecules";
 import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
@@ -47,7 +50,10 @@ const SupplierPaymentBonds = () => {
     pagination: true,
   });
 
-  console.log("🚀 ~ file: VeiwPaymentToManagement.tsx:34 ~ VeiwPaymentToManagement ~ invoiceData:", supplierPaymentBonds)
+  console.log(
+    "🚀 ~ file: VeiwPaymentToManagement.tsx:34 ~ VeiwPaymentToManagement ~ invoiceData:",
+    supplierPaymentBonds
+  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -126,7 +132,7 @@ const SupplierPaymentBonds = () => {
     return <Loading mainTitle={`${t("loading items")}`} />;
 
   return (
-    <div className="p-16">
+    <div className="p-2">
       <div className="mb-8 flex flex-col items-center gap-6 lg:flex-row lg:items-end lg:justify-between">
         {/* 1) FORM */}
         <Formik
@@ -134,7 +140,9 @@ const SupplierPaymentBonds = () => {
           onSubmit={(values) => {
             getSearchResults({
               ...values,
-              invoice_date: values.invoice_date ? formatDate(getDayAfter(new Date(values.invoice_date))) : "",
+              invoice_date: values.invoice_date
+                ? formatDate(getDayAfter(new Date(values.invoice_date)))
+                : "",
             });
           }}
         >
@@ -176,40 +184,40 @@ const SupplierPaymentBonds = () => {
       {/* 2) TABLE */}
       <div className="">
         <Table data={dataSource || []} columns={tableColumn}>
-            <div className="mt-3 flex items-center justify-end gap-5 p-2">
-              <div className="flex items-center gap-2 font-bold">
-                {t("page")}
-                <span className=" text-mainGreen">
-                  {page}
-                </span>
-                {t("from")}
-                <span className=" text-mainGreen">{supplierPaymentBonds.pages}</span>
-              </div>
-              <div className="flex items-center gap-2 ">
-                <Button
-                  className=" rounded bg-mainGreen p-[.18rem] "
-                  action={() => setPage((prev) => prev - 1)}
-                  disabled={page == 1}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-                <Button
-                  className=" rounded bg-mainGreen p-[.18rem] "
-                  action={() => setPage((prev) => prev + 1)}
-                  disabled={page == supplierPaymentBonds.pages}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-              </div>
+          <div className="mt-3 flex items-center justify-end gap-5 p-2">
+            <div className="flex items-center gap-2 font-bold">
+              {t("page")}
+              <span className=" text-mainGreen">{page}</span>
+              {t("from")}
+              <span className=" text-mainGreen">
+                {supplierPaymentBonds.pages}
+              </span>
             </div>
+            <div className="flex items-center gap-2 ">
+              <Button
+                className=" rounded bg-mainGreen p-[.18rem] "
+                action={() => setPage((prev) => prev - 1)}
+                disabled={page == 1}
+              >
+                {isRTL ? (
+                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                ) : (
+                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                )}
+              </Button>
+              <Button
+                className=" rounded bg-mainGreen p-[.18rem] "
+                action={() => setPage((prev) => prev + 1)}
+                disabled={page == supplierPaymentBonds.pages}
+              >
+                {isRTL ? (
+                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                ) : (
+                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                )}
+              </Button>
+            </div>
+          </div>
         </Table>
       </div>
 

@@ -10,9 +10,11 @@ import { ClientData_TP } from "../../SellingClientForm";
 const FinalPreviewBillPayment = ({
   paymentData,
   costDataAsProps,
+  responseSellingData,
 }: {
   paymentData: never[];
   costDataAsProps: any;
+  responseSellingData: any;
 }) => {
   const { formatReyal } = numberContext();
 
@@ -32,7 +34,10 @@ const FinalPreviewBillPayment = ({
   }
 
   var sellerName = getTLV("1", `${userData?.name}`);
-  var vatRegTRN = getTLV("2", `${companyData && companyData[0]?.taxRegisteration}`);
+  var vatRegTRN = getTLV(
+    "2",
+    `${companyData && companyData[0]?.taxRegisteration}`
+  );
   var invoiceDate = getTLV("3", new Date().toUTCString());
   var totalInvoice = getTLV("4", `${costDataAsProps?.totalFinalCost}`);
   var invoiceVatTotal = getTLV("5", `${costDataAsProps?.totalItemsTaxes}`);
@@ -55,7 +60,8 @@ const FinalPreviewBillPayment = ({
       </div>
 
       <div>
-        <QRCode value={qrCodeBase64} />
+        {/* <QRCode value={qrCodeBase64} /> */}
+        <img src={responseSellingData?.qr} alt="qr" className="w-32 h-32" />
       </div>
       <div className="flex flex-col gap-1 items-center">
         <div className="flex flex-row items-end gap-4 mb-3">
