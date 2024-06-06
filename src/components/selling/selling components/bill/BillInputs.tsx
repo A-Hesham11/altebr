@@ -22,7 +22,7 @@ const BillInputs = ({
   dateFieldName: string;
   suppliersData: any;
 }) => {
-  console.log("🚀 ~ suppliersData:", suppliersData)
+  console.log("🚀 ~ suppliersData:", suppliersData);
 
   const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);

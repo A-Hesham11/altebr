@@ -68,16 +68,16 @@ const InvoiceTable = <T extends object>({ data,
 
     return (
         <>
-        <div className="mx-6">
-            <div className="mb-6 overflow-x-scroll lg:overflow-x-visible w-full">
-                <table className="mt-8 w-[872px] lg:w-full table-shadow">
+        <div className="mx-5">
+            <div className="mb-6 overflow-x-auto lg:overflow-x-visible w-full">
+                <table className="mt-8 w-full table-shadow">
                     <thead className="bg-mainGreen text-white">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <tr key={headerGroup.id} className="py-4 px-2">
                                 {headerGroup.headers.map((header) => (
                                     <th
                                         key={header.id}
-                                        className="p-4 text-sm font-medium text-mainGreen bg-[#E5ECEB] border-l last:border-none border-[#7B7B7B4D]"
+                                        className="p-4 text-sm font-medium text-mainGreen bg-[#E5ECEB] border border-[#7B7B7B4D]"
                                     >
                                         {header.isPlaceholder
                                             ? null
@@ -118,8 +118,8 @@ const InvoiceTable = <T extends object>({ data,
                                     <td key={key} className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                                         colSpan={index === 0 ? 5 : 1}
                                     >
-                                        {resultTable[0][key]}
-                                    </td>
+                                        { resultTable[0][key]}
+                                    </td> 
                                 );
                             })}
                         </tr>

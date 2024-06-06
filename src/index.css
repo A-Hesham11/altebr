@@ -226,19 +226,24 @@ input[type="file"] {
   color: transparent;
 }
 
-/* @media print {
-    body {
-      visibility: hidden;
-    }
-    .print-section {
-      width: 96%;
-      visibility: visible;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-} */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #content-to-print,
+  #content-to-print * {
+    visibility: visible;
+  }
+
+  #content-to-print {
+    width: 100%;
+    visibility: visible;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
 
 .PieceDetails div:nth-child(19) {
   grid-column: 1 / -3;
@@ -395,25 +400,25 @@ nav.css-vj11vy > ul > li:first-child a {
 }
 
 .css-1cbmtsf > .ps-menu-button:hover,
-.css-8dyhm6 >.ps-menu-button:hover,
-.css-1ytr39x >.ps-menu-button:hover,
-.css-1fsp9zp >.ps-menu-button:hover,
-.css-jxcfqw >.ps-menu-button:hover,
-.css-fxmqcg >.ps-menu-button:hover,
-.css-1huh6rg >.ps-menu-button:hover,
-.css-168ta8j >.ps-menu-button:hover  {
-  background-color: #497670 !important;
-} 
-
- li > .ps-menu-button:hover {
+.css-8dyhm6 > .ps-menu-button:hover,
+.css-1ytr39x > .ps-menu-button:hover,
+.css-1fsp9zp > .ps-menu-button:hover,
+.css-jxcfqw > .ps-menu-button:hover,
+.css-fxmqcg > .ps-menu-button:hover,
+.css-1huh6rg > .ps-menu-button:hover,
+.css-168ta8j > .ps-menu-button:hover {
   background-color: #497670 !important;
 }
 
-.css-1ytr39x:first-child >.ps-menu-button:hover {
+li > .ps-menu-button:hover {
+  background-color: #497670 !important;
+}
+
+.css-1ytr39x:first-child > .ps-menu-button:hover {
   background-color: transparent !important;
 }
 
-.css-1ytr39x:first-child >.ps-menu-button {
+.css-1ytr39x:first-child > .ps-menu-button {
   display: grid;
   place-content: center;
   height: 56px;
@@ -428,5 +433,15 @@ nav.css-vj11vy > ul > li:first-child a {
   padding-left: 15px !important;
   padding-right: 15px !important;
 } */
+
+.before::after {
+  content: "";
+  background-color: red;
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 100%;
+  height: 2px;
+}
 
 /* GLOBAL ANIMATION */

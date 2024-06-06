@@ -66,10 +66,6 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
       mutationFn: mutateData,
       mutationKey: ["login_key"],
       onSuccess: (loginResponseData) => {
-        console.log(
-          "🚀 ~ AuthCtxProvider ~ loginResponseData:",
-          loginResponseData
-        );
         if (loginResponseData) {
           const { token, user, permissions } = loginResponseData;
           const permissionsAsStrings = permissions.map(
