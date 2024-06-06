@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Button } from "../../atoms";
 import FinalPreviewBillData from "./bill/FinalPreviewBillData";
 import FinalPreviewBillPayment from "./bill/FinalPreviewBillPayment";
@@ -39,18 +39,6 @@ export const SellingFinalPreview = ({
   responseSellingData,
 }: SellingFinalPreviewProps_TP) => {
   console.log("🚀 ~ isSuccess:", isSuccess);
-  // const [printStatus, setPrintStatus] = useState("block")
-  // const handlePrint = () => {
-  //     window.print();
-  // };
-
-  // const [printContent, setPrintContent] = useState(null);
-
-  // const handlePrintClick = () => {
-  //   const contentToPrint = document.getElementsByName('content-to-print');
-  //   // setPrintContent(contentToPrint.innerHTML);
-  //   window.print();
-  // };
   // get client data
   // const { client_value, client_id, client_name } = clientData;
 
@@ -67,18 +55,19 @@ export const SellingFinalPreview = ({
   });
 
   return (
-    <div className="relative h-full p-10 bg-flatWhite ">
-      <div className="print-section">
+    <div className="relative h-full p-10 bg-flatWhite">
+      <div id="content-to-print">
         <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
-          <div className="mx-6 bill-shadow rounded-md p-6">
+          <div className="mx-5 bill-shadow rounded-md p-6">
             <FinalPreviewBillData
               clientData={clientData}
               invoiceNumber={invoiceNumber}
             />
           </div>
+
           {ItemsTableContent}
           {isSuccess && (
-            <div className="mx-6 bill-shadow rounded-md p-6 my-9">
+            <div className="mx-5 bill-shadow rounded-md p-6 my-9">
               <FinalPreviewBillPayment
                 paymentData={paymentData}
                 costDataAsProps={costDataAsProps}
@@ -87,6 +76,7 @@ export const SellingFinalPreview = ({
               />
             </div>
           )}
+          
           <div className="text-center">
             <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
               {data && data?.sentence}
