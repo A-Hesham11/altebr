@@ -208,7 +208,6 @@ const SellingInvoiceData = ({
   });
 
   const posSellingDataHandler = () => {
-    // setStage(4);
     const invoice = {
       employee_name: userData?.name,
       employee_id: userData?.id,

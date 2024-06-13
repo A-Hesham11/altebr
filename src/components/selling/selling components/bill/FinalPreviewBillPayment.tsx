@@ -25,32 +25,32 @@ const FinalPreviewBillPayment = ({
     queryKey: ["Mineral_license_qr"],
   });
 
-  function getTLV(tagNum, tagValue) {
-    var tagNumBuf = Buffer.from([tagNum], "utf8");
-    var tagValueLengthBuf = Buffer.from([tagValue?.length], "utf8");
-    var tagValueBuf = Buffer.from(tagValue, "utf8");
-    var bufsArray = [tagNumBuf, tagValueLengthBuf, tagValueBuf];
-    return Buffer.concat(bufsArray);
-  }
+  // function getTLV(tagNum, tagValue) {
+  //   var tagNumBuf = Buffer.from([tagNum], "utf8");
+  //   var tagValueLengthBuf = Buffer.from([tagValue?.length], "utf8");
+  //   var tagValueBuf = Buffer.from(tagValue, "utf8");
+  //   var bufsArray = [tagNumBuf, tagValueLengthBuf, tagValueBuf];
+  //   return Buffer.concat(bufsArray);
+  // }
 
-  var sellerName = getTLV("1", `${userData?.name}`);
-  var vatRegTRN = getTLV(
-    "2",
-    `${companyData && companyData[0]?.taxRegisteration}`
-  );
-  var invoiceDate = getTLV("3", new Date().toUTCString());
-  var totalInvoice = getTLV("4", `${costDataAsProps?.totalFinalCost}`);
-  var invoiceVatTotal = getTLV("5", `${costDataAsProps?.totalItemsTaxes}`);
+  // var sellerName = getTLV("1", `${userData?.name}`);
+  // var vatRegTRN = getTLV(
+  //   "2",
+  //   `${companyData && companyData[0]?.taxRegisteration}`
+  // );
+  // var invoiceDate = getTLV("3", new Date().toUTCString());
+  // var totalInvoice = getTLV("4", `${costDataAsProps?.totalFinalCost}`);
+  // var invoiceVatTotal = getTLV("5", `${costDataAsProps?.totalItemsTaxes}`);
 
-  var qrCodeBuf = Buffer.concat([
-    sellerName,
-    vatRegTRN,
-    invoiceDate,
-    totalInvoice,
-    invoiceVatTotal,
-  ]);
+  // var qrCodeBuf = Buffer.concat([
+  //   sellerName,
+  //   vatRegTRN,
+  //   invoiceDate,
+  //   totalInvoice,
+  //   invoiceVatTotal,
+  // ]);
 
-  var qrCodeBase64 = qrCodeBuf.toString("base64");
+  // var qrCodeBase64 = qrCodeBuf.toString("base64");
 
   return (
     <div className="flex justify-between pe-8">
@@ -60,8 +60,7 @@ const FinalPreviewBillPayment = ({
       </div>
 
       <div>
-        {/* <QRCode value={qrCodeBase64} /> */}
-        <img src={responseSellingData?.qr} alt="qr" className="w-32 h-32" />
+        <QRCode value={responseSellingData?.qr} />
       </div>
       <div className="flex flex-col gap-1 items-center">
         <div className="flex flex-row items-end gap-4 mb-3">
