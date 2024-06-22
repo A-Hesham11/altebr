@@ -66,6 +66,7 @@ export const SellingFinalPreview = ({
           </div>
 
           {ItemsTableContent}
+          
           {isSuccess && (
             <div className="mx-5 bill-shadow rounded-md p-6 my-9">
               <FinalPreviewBillPayment
