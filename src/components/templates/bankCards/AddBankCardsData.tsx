@@ -15,7 +15,6 @@ import { Loading } from "../../organisms/Loading";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { SelectBankAccount } from "./SelectBankAccount";
 import { SelectBanks } from "../accountsBank/SelectBanks";
-import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
 import { SingleValue } from "react-select";
 import { SelectOption_TP } from "../../../types";
 import { SelectBranchCard } from "./SelectBranchCard";
@@ -65,6 +64,7 @@ const AddBankCardsData = ({
 
   const [cardId, setCardId] = useState("");
   const [isMaxDiscountLimit, setIsMaxDiscountLimit] = useState(0);
+  console.log("🚀 ~ isMaxDiscountLimit:", typeof isMaxDiscountLimit)
 
   useEffect(() => {
       setCardId(editData?.card?.id)
@@ -281,7 +281,7 @@ const AddBankCardsData = ({
                         />
                       </div>
 
-                      {(isMaxDiscountLimit === 1) || (editData?.max_discount_limit) ? (
+                      {(isMaxDiscountLimit == 1) || (editData?.max_discount_limit) ? (
                         <>
                           <BaseInputField
                             id="max_discount_limit"

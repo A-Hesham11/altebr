@@ -6,12 +6,16 @@ import { ItemDetailsStoneTable } from "./itemsDetailsStoneTable"
 import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutFormik"
 
 export const ItemDetailsTable = ({ selectedItem, selectedRowDetailsId }: { selectedItem: any, selectedRowDetailsId: number }) => {
+console.log("🚀 ~ ItemDetailsTable ~ selectedRowDetailsId:", selectedRowDetailsId)
 
     const selectedItemDetails = Array.isArray(selectedItem)
         ?
-            selectedItem?.filter((item: any) => item.item_id === selectedRowDetailsId)[0]?.detailsItem
+            selectedItem?.filter((item: any) => item.item_id !== selectedRowDetailsId)[0]?.detailsItem
         :
-            selectedItem?.items?.filter((item: any) => selectedItem?.id === selectedRowDetailsId)[0]?.detailsItem
+            selectedItem?.items?.filter((item: any) => selectedItem?.id !== selectedRowDetailsId)[0]?.detailsItem
+
+        console.log("🚀 ~ ItemDetailsTable ~ selectedItemDetails:", selectedItemDetails)
+
 
     const detailsWeightOfItem = selectedItem?.items?.filter((item: any) => item?.id === selectedRowDetailsId)[0]?.weightitems
 
@@ -76,7 +80,7 @@ export const ItemDetailsTable = ({ selectedItem, selectedRowDetailsId }: { selec
         <div>
             <p className="text-center mb-2" >{t('piece details')}</p>
             <Table
-                data={selectedItemDetails}
+                data={selectedItemDetails || []}
                 columns={Cols}
             >
             </Table>

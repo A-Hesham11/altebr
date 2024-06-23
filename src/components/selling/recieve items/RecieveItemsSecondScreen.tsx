@@ -25,10 +25,12 @@ type RecieveItemsSecondScreenProps_TP = {
     openModal?: boolean
 }
 const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModal }: RecieveItemsSecondScreenProps_TP) => {
+    console.log("🚀 ~ RecieveItemsSecondScreen ~ selectedItem:", selectedItem)
     const isSanadOpened = selectedItem.bond_status !== 0
     const { userData } = useContext(authCtx)
     const [selectedRows, setSelectedRows] = useState<any>([])
     const [dataSource, setDataSource] = useState({})
+    console.log("🚀 ~ RecieveItemsSecondScreen ~ dataSource:", dataSource)
     const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectAll, setSelectAll] = useState(false)
@@ -227,7 +229,7 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
             name: t("عدد القطع"),
             key: crypto.randomUUID(),
             unit: t(""),
-            value: allItemsCount,
+            value: dataSource?.length,
         },
         {
             name: "إجمالي وزن 24",
@@ -314,39 +316,9 @@ const RecieveItemsSecondScreen = ({ setStage, selectedItem, setSanadId, openModa
                         <Table
                             data={dataSource}
                             columns={Cols}
+                            showNavigation
                         >
-                            {/* <div className="mt-3 flex items-center justify-end gap-5 p-2">
-                    <div className="flex items-center gap-2 font-bold">
-                        {t("page")}
-                        <span className=" text-mainGreen">{data.current_page}</span>
-                        {t("from")}
-                        <span className=" text-mainGreen">{data.pages}</span>
-                    </div>
-                    <div className="flex items-center gap-2 ">
-                        <Button
-                            className=" rounded bg-mainGreen p-[.18rem]"
-                            action={() => setPage((prev) => prev - 1)}
-                            disabled={page == 1}
-                        >
-                            {isRTL ? (
-                                <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                            ) : (
-                                <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                            )}
-                        </Button>
-                        <Button
-                            className=" rounded bg-mainGreen p-[.18rem] "
-                            action={() => setPage((prev) => prev + 1)}
-                            disabled={page == data.pages}
-                        >
-                            {isRTL ? (
-                                <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                            ) : (
-                                <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                            )}
-                        </Button>
-                    </div>
-                </div> */}
+
                         </Table>
                         <div className="flex justify-between mt-2 md:mt-8" >
                             {
