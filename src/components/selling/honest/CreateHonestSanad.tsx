@@ -53,6 +53,7 @@ export const CreateHonestSanad = ({
   /////////// VARIABLES
   ///
   const [data, setData] = useState(selectedItem.items);
+  console.log("🚀 ~ data:", data)
   const [editCost, setEditCost] = useState(false);
   const [open, setOpen] = useState(false);
   const [openTotal, setOpenTotal] = useState(false);
@@ -324,7 +325,7 @@ export const CreateHonestSanad = ({
 
   const handlePostSelectedRows = () => {
     if (selectedItem.amount < refundAmount) {
-      notify('info', t('must be less than prepaid cash'))
+      notify('info', `${t('must be less than prepaid cash')}`)
     } else {
       mutateItemReturnStatus({
         endpointName: `branchSafety/api/v1/return-status/${selectedItem.id}`,
@@ -335,7 +336,7 @@ export const CreateHonestSanad = ({
   const handlePostAllRows = () => {
     const allItems = selectedItem.items.map(item => ({ ...item, branch_id: userData?.branch_id }))
     if (selectedItem.amount < refundAmount) {
-      notify('info', t('must be less than prepaid cash'))
+      notify('info', `${t('must be less than prepaid cash')}`)
     } else {
       mutateItemReturnStatus({
         endpointName: `branchSafety/api/v1/return-status/${selectedItem.id}`,
@@ -345,7 +346,9 @@ export const CreateHonestSanad = ({
   }
   const handleSaveItems = () => {
     const remainingCost = totalActualItemsCost - (+totalPaidCostFromClient + +selectedItem?.amount)
+    console.log("🚀 ~ handleSaveItems ~ remainingCost:", remainingCost)
     const allItemsStatus = selectedItem.items.filter(item => item.return_status === 'not_returned').every(item => item.status === 'ready')
+    console.log("🚀 ~ handleSaveItems ~ allItemsStatus:", allItemsStatus)
     if (paymentData.length === 0 && remainingCost !== 0) {
       notify('info', `${t('add payment method first')}`);
       return;

@@ -9,14 +9,13 @@ import i18n from "../i18n";
 import { notify } from "./toast";
 
 const baseURL =
-
   // import.meta.env.VITE_BASE_URL || "https://api-hamouda.altebr.jewelry/";
-  import.meta.env.VITE_BASE_URL || "https://api-sae-dev.altebr.jewelry/";
-  // import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
-  // import.meta.env.VITE_BASE_URL || "https://alexon.api.altebr.jewelry/";
-  // import.meta.env.VITE_BASE_URL || "https://dinaa.api.altebr.jewelry";
-  // import.meta.env.VITE_BASE_URL || "https://fuga.api.altebr.jewelry/";
-
+  // import.meta.env.VITE_BASE_URL || "https://api-sae-dev.altebr.jewelry/";
+  import.meta.env.VITE_BASE_URL || "https://api-hbesh-dev.altebr.jewelry";
+// import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
+// import.meta.env.VITE_BASE_URL || "https://alexon.api.altebr.jewelry/";
+// import.meta.env.VITE_BASE_URL || "https://dinaa.api.altebr.jewelry";
+// import.meta.env.VITE_BASE_URL || "https://fuga.api.altebr.jewelry/";
 
 const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 
@@ -53,11 +52,12 @@ export const request = async <T>(
   } catch (error) {
     if (
       error?.response.data.message ===
-      "البريد الالكتروني او كلمة المرور غير صحيحة"
+        "البريد الالكتروني او كلمة المرور غير صحيحة" ||
+      error?.response.data.message === "يجب اضافة فترات عمل لهذا الموظف "
     ) {
       notify("error", error?.response.data.message);
     }
-    // 👁️ i will handle unauthorized in useFetch and useMutate because i can't use useContext here
+    // 👁️ i wil {l handle unauthorized in useFetch and useMutate because i can't use useContext here
     // const axiosError = error as CError_TP;
     // // handle error responses
     // if (axiosError.response) {

@@ -9,6 +9,7 @@ import { Button } from "../../atoms";
 import InvoiceTable from "../selling components/InvoiceTable";
 import { SellingFinalPreview } from "../selling components/SellingFinalPreview";
 import { numberContext } from "../../../context/settings/number-formatter";
+import { notify } from "../../../utils/toast";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -136,10 +137,11 @@ const DeliveryBondPreviewScreen = ({
   const navigate = useNavigate();
 
   // api
-  const { mutate, isLoading } = useMutate({
+  const { mutate, isLoading, isSuccess } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      navigate(`/selling/honesty/return-honest/${data.bond_id}`);
+      notify("success");
+      // navigate(`/selling/honesty/return-honest/${data.bond_id}`);
     },
   });
   const posHonestDataHandler = () => {
@@ -198,25 +200,29 @@ const DeliveryBondPreviewScreen = ({
       <div className="flex items-center justify-between mx-8">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
-          <Button
-            className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-            onClick={() => window.print()}
-          >
-            {t("print")}
-          </Button>
-          <Button
-            className="bg-mainOrange px-7 py-[6px]"
-            loading={isLoading}
-            action={posHonestDataHandler}
-          >
-            {t("save")}
-          </Button>
+          {isSuccess ? (
+            <Button
+              className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
+              onClick={() => window.print()}
+            >
+              {t("print")}
+            </Button>
+          ) : (
+            <Button
+              className="bg-mainOrange px-7 py-[6px]"
+              loading={isLoading}
+              action={posHonestDataHandler}
+            >
+              {t("save")}
+            </Button>
+          )}
         </div>
       </div>
       <SellingFinalPreview
         ItemsTableContent={<TableComp />}
         setStage={setStage}
         paymentData={paymentData}
+        isSuccess={isSuccess}
         clientData={selectedItem}
         costDataAsProps={costDataAsProps}
       />

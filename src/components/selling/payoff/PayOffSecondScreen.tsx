@@ -465,10 +465,10 @@ export const PayOffSecondScreen = ({
                 const retrieveFinalValue = {
                   items: selectedRows?.map((item) => item.hwya),
                 };
-                // mutateRetrieve({
-                //   endpointName: "branchManage/api/v1/change-status-after-mardod",
-                //   values: retrieveFinalValue
-                // })
+                mutateRetrieve({
+                  endpointName: "branchManage/api/v1/change-status-after-mardod",
+                  values: retrieveFinalValue
+                })
               }}
               loading={retrieveIsLoading}
             >

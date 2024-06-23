@@ -286,6 +286,7 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
                 <Table
                     data={dataSource}
                     columns={goldCols}
+                    showNavigation
                 >
                     {!(contractIsLoading || contractIsFetching) && contractIsSuccess && !!restrictions?.length && (
                         <>
@@ -293,7 +294,7 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
                                 <h2 className="text-xl mb-5 font-bold">{t('accounting entry')}</h2>
                                 <FilesPreviewOutFormik preview images={contract.images ? contract.images : []}/>
                             </div>
-                            <Table data={restrictions} footered showNavigation columns={cols2} />
+                            <Table data={restrictions} footered columns={cols2} />
                         </>
                     )}
                     <div className="flex gap-x-2 mr-auto">

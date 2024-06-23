@@ -1,5 +1,4 @@
- export const formatDate = (dateObj: Date) => dateObj.toISOString().slice(0, 10)
-
+ export const formatDate = (dateObj: Date) => dateObj?.toISOString()?.slice(0, 10)
 
 // get after day date 
 export function getDayAfter(date = new Date()) {
