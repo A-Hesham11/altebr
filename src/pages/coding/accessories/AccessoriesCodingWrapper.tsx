@@ -33,7 +33,7 @@ export const AccessoriesCodingWrapper = ({
   /////////// VARIABLES
   ///
   const { sanadId } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
 
@@ -114,6 +114,7 @@ export const AccessoriesCodingWrapper = ({
           ...piece,
           diamondWeightStone: diamondStoneWeight || 0,
           weightStone: otherStoneWeight || 0,
+          masarif_adafia: piece.masarif_adafia || 0,
         },
       });
 
@@ -226,10 +227,10 @@ export const AccessoriesCodingWrapper = ({
               setOpenModal(false);
               setAddedPiecesLocal((prev) => (prev = []));
               setAddedPieces((prev) => (prev = []));
-              navigate("/coding-react")
+              navigate("/coding-react");
             }}
           >
-              {t("go to identification management")}
+            {t("go to identification management")}
           </Button>
         </div>
       </Modal>
