@@ -49,10 +49,14 @@ const SellingHome = () => {
 
   // Function to check if the current time is between shift_from and shift_to
   function isTimeBetween(shift) {
-    const shiftFrom = new Date(`2000-01-01 ${shift.shift_from}`);
-    const shiftTo = new Date(`2000-01-01 ${shift.shift_to}`);
+    const shiftFrom = new Date(`2000-01-01 ${shift?.shift_from}`);
+    const shiftTo = new Date(`2000-01-01 ${shift?.shift_to}`);
+    console.log("🚀 ~ isTimeBetween ~ shiftFrom:", shiftFrom)
+    console.log("🚀 ~ isTimeBetween ~ shiftTo:", shiftTo)
     const currentTimeDate = new Date(`2000-01-01 ${currentTime}`);
 
+    console.log("🚀 ~ isTimeBetween ~ currentTimeDate:", currentTimeDate)
+    console.log("🚀 ~ isTimeBetween ~ currentTimeDate >= shiftFrom:", currentTimeDate >= shiftFrom)
     return currentTimeDate >= shiftFrom && currentTimeDate <= shiftTo;
   }
 
@@ -268,6 +272,11 @@ const SellingHome = () => {
                       hour12: false,
                     }).format(currentDate);
                     const currentDay = formatDate(currentDate);
+
+                    if (!currentShift) {
+                      notify("error", `${t("the period does not match the current time")}`)
+                      return
+                    }
 
                     PostNewCardAudience({
                       employee_id: userData?.id,

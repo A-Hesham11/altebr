@@ -59,7 +59,10 @@ const PaymentProccessingToManagement = ({
   setSelectedCardName,
   isCheckedCommission,
   setIsCheckedCommission,
+  expensePrice,
 }: Payment_TP) => {
+  console.log("🚀 ~ expensePrice:", expensePrice);
+
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
@@ -127,6 +130,8 @@ const PaymentProccessingToManagement = ({
   const costRemaining =
     locationPath === "/selling/payoff/sales-return"
       ? amountIsPaid - Number(amountRemaining)
+      : locationPath === "/expenses/expensesInvoice"
+      ? Number(expensePrice) - Number(amountRemaining)
       : Number(totalPriceInvoice) - Number(amountRemaining);
 
   const cashId =
@@ -165,6 +170,7 @@ const PaymentProccessingToManagement = ({
             : validationSchemaOfAmount()
         }
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
+          console.log("🚀 ~ values:", values);
           if (selectedCardId) {
             if (editData) {
               const updatedPaymentData = paymentData.map((item) =>
@@ -314,12 +320,11 @@ const PaymentProccessingToManagement = ({
                   </div>
                 ) : (
                   <div className="relative">
-                    {locationPath === "/selling/payoff/sales-return" && (
+                    {(locationPath === "/selling/payoff/sales-return" ||
+                      locationPath === "/expenses/expensesInvoice") && (
                       <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
                         <span>{t("remaining cost")} : </span>{" "}
-                        {isCheckedCommission
-                          ? formatReyal(Number(costRemaining))
-                          : formatReyal(Number(costRemaining))}
+                        {formatReyal(Number(costRemaining))}
                       </p>
                     )}
                     <BaseInputField

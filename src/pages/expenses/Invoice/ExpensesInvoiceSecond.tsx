@@ -34,7 +34,7 @@ const ExpensesInvoiceSecond = ({
   taxType,
   files,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ taxType:", taxType)
+  console.log("🚀 ~ taxType:", taxType);
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
@@ -54,6 +54,7 @@ const ExpensesInvoiceSecond = ({
     },
     0
   );
+  console.log("🚀 ~ totalValueAddedTax:", totalValueAddedTax);
 
   const totalValueAfterTax = sellingItemsData.reduce(
     (acc: number, curr: any) => {
@@ -62,6 +63,7 @@ const ExpensesInvoiceSecond = ({
     },
     0
   );
+  console.log("🚀 ~ totalValueAfterTax:", totalValueAfterTax);
 
   const costDataAsProps = {
     totalCost,
@@ -82,7 +84,10 @@ const ExpensesInvoiceSecond = ({
       {
         header: () => <span>{t("expense price")}</span>,
         accessorKey: "expense_price",
-        cell: (info) => info.getValue(),
+        cell: (info) =>
+          formatReyal(
+            Number(info.getValue()) - info.row.original.expense_price_after_tax
+          ),
       },
       {
         header: () => <span>{t("expense tax")} </span>,

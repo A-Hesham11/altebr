@@ -25,9 +25,10 @@ type Client_TP = {
 };
 
 const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
-  console.log("🚀 ~ FinalPreviewBillData ~ clientData:", clientData);
-  console.log("🚀 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber);
+console.log("🚀 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber) 
+
   const { client_id, client_value, bond_date, supplier_id } = clientData;
+  console.log("🚀 ~ FinalPreviewBillData ~ bond_date:", bond_date)
 
   const location = useLocation();
   const path = location.pathname;
@@ -52,12 +53,10 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   const billNumber =
     path === "/selling/honesty/return-honest"
       ? honestBondsData?.length + 1
-      : path === "/addSellingBond" || path === "/addPurchaseBond"
+      : path === "/addSellingBond" || path === "/addPurchaseBond" || path === "/selling/zatca"
       ? invoiceNumber
-      : path === "/supply-return"
+      : path === "/supply-return" || path === "/selling/addInvoice/" || path === "/selling/payoff/sales-return"
       ? invoiceNumber?.total + 1
-      : path === "/selling/zatca"
-      ? invoiceNumber
       : invoiceNumber?.length + 1;
 
   return (
@@ -68,7 +67,7 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
         </p>
         <p className="text-xs font-bold">
           {t("bill date")} :{" "}
-          <span className="font-medium">{formatDate(bond_date)}</span>{" "}
+          <span className="font-medium">{path === "/selling/honesty/return-honest" ? bond_date : formatDate(bond_date)}</span>{" "}
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">

@@ -325,6 +325,7 @@ const SalesReturnInvoiceData = ({
         setStage={setStage}
         paymentData={paymentData}
         clientData={clientData}
+        isSuccess={isSuccess}
         sellingItemsData={sellingItemsData}
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}

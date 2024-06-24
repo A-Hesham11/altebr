@@ -58,6 +58,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   setTaxType,
 }) => {
   const { setFieldValue, values } = useFormikContext<Payment_TP>();
+  console.log("🚀 ~ values:", values);
   const { userData } = useContext(authCtx);
 
   const [open, setOpen] = useState(false);
@@ -169,10 +170,10 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
 
               <div>
                 <BaseInputField
-                  placeholder={`${t("expense price after tax")}`}
+                  placeholder={`${t("tax")}`}
                   id="expense_price_after_tax"
                   name="expense_price_after_tax"
-                  label={`${t("expense price after tax")}`}
+                  label={`${t("tax")}`}
                   type="text"
                   disabled
                   className="bg-mainDisabled border-mainDisabled"
@@ -252,6 +253,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               selectedCardId={selectedCardId}
               setSelectedCardId={setSelectedCardId}
               setCardId={setCardId}
+              expensePrice={values?.expense_price}
               cardId={cardId}
               setSelectedCardName={setSelectedCardName}
               selectedCardName={selectedCardName}

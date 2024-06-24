@@ -46,7 +46,7 @@ export const InnerFormLayout = ({
     <>
       <div className="p-2 w-full mb-2">
         {title && (
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 relative">
             <div className=" font-bold flex items-center gap-4">
               <TabsIcon />
               <h2 className="text-2xl font-bold w-full">{title}</h2>

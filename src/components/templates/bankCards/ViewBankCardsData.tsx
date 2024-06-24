@@ -1,7 +1,7 @@
 
 
 import { ColumnDef } from '@tanstack/react-table'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { t } from 'i18next'

@@ -158,6 +158,7 @@ import SupplyPayoffBonds from "../pages/SupplyPayoffInEdara/SupplyPayoffBonds";
 import ActivityLog from "../pages/ActivityLog/ActivityLog";
 import ImportTotalsBonds from "../pages/coding/coded_identities/ImportTotalsBonds";
 import { Zatca } from "../pages/selling/Zatca";
+import Test from "../pages/Test";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -168,6 +169,7 @@ export const AllRoutesProvider = () => {
         <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
           {/* @ts-ignore */}
           <Route index element={<Home title={t("home")} />} />
+          <Route path="/test" element={<Test />} />
           <Route
             path="/settings"
             element={<Settings title={t("settings")} />}
