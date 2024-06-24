@@ -23,6 +23,7 @@ const AddSellingInvoice = () => {
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
 
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ AddSellingInvoice ~ userData:", userData)
 
   const initialValues: Selling_TP = {
     item_id: "",
