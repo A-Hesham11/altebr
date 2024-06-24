@@ -18,7 +18,6 @@ export const FilesUpload: React.FC<FilesUploadProps> = ({
   files,
   setFiles,
 }: FilesUploadProps) => {
-  console.log("🚀 ~ files:", files);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
