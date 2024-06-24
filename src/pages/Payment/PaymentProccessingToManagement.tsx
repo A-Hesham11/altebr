@@ -60,6 +60,7 @@ const PaymentProccessingToManagement = ({
   isCheckedCommission,
   setIsCheckedCommission,
 }: Payment_TP) => {
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
@@ -103,6 +104,8 @@ const PaymentProccessingToManagement = ({
     0
   );
 
+  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice);
+
   const totalCommissionOfoneItem = sellingItemsData?.reduce(
     (total, item) => Number(total) + Number(item.commission_oneItem),
     0
@@ -118,16 +121,21 @@ const PaymentProccessingToManagement = ({
     (total, item) => Number(total) + Number(item.total),
     0
   );
+  console.log("🚀 ~ invoiceTotalOfSalesReturn:", invoiceTotalOfSalesReturn);
 
   const amountIsPaid =
     isCheckedCommission === true
-      ? Number(invoiceTotalOfSalesReturn)
+      ? invoiceTotalOfSalesReturn
       : Number(totalPriceInvoice);
+
+  console.log("🚀 ~ amountIsPaid:", amountIsPaid);
 
   const costRemaining =
     locationPath === "/selling/payoff/sales-return"
       ? amountIsPaid - Number(amountRemaining)
       : Number(totalPriceInvoice) - Number(amountRemaining);
+
+  console.log("🚀 ~ costRemaining:", costRemaining);
 
   const cashId =
     locationPath === "/selling/payoff/sales-return" && cardFrontKey === "cash";
@@ -274,7 +282,7 @@ const PaymentProccessingToManagement = ({
                   />
                   <label htmlFor="checkbox">{t("add commission ratio")}</label>
                   <p className="bg-mainGreen text-white text-3 font-bold py-[3px] px-5 rounded-lg ms-4">
-                    {Number(totalCommissionOfoneItem)}
+                    {formatReyal(Number(totalCommissionOfoneItem))}
                   </p>
                 </div>
               )}
@@ -314,14 +322,10 @@ const PaymentProccessingToManagement = ({
                   </div>
                 ) : (
                   <div className="relative">
-                    {locationPath === "/selling/payoff/sales-return" && (
-                      <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
-                        <span>{t("remaining cost")} : </span>{" "}
-                        {isCheckedCommission
-                          ? formatReyal(Number(costRemaining))
-                          : formatReyal(Number(costRemaining))}
-                      </p>
-                    )}
+                    <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
+                      <span>{t("remaining cost")} : </span>{" "}
+                      {Number(costRemaining)}
+                    </p>
                     <BaseInputField
                       id="amount"
                       name="amount"

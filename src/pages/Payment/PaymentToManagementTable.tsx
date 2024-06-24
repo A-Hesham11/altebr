@@ -14,7 +14,7 @@ import { Button } from "../../components/atoms";
 import TableEntry from "../../components/templates/reusableComponants/tantable/TableEntry";
 
 const PaymentToManagementTable = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ PaymentToManagementTable ~ item:", item)
+  console.log("🚀 ~ PaymentToManagementTable ~ item:", item);
   const { formatReyal, formatGram } = numberContext();
 
   const totalValueReyal = item?.items.reduce((acc, item) => {
@@ -67,22 +67,34 @@ const PaymentToManagementTable = ({ item }: { item?: {} }) => {
       },
       {
         header: `${t("gram (debtor)")}`,
-        cell: (info) => info.renderValue() !== 0 ? formatGram(Number(info.renderValue())) : "---",
+        cell: (info) =>
+          info.renderValue() !== 0
+            ? formatGram(Number(info.renderValue()))
+            : "---",
         accessorKey: "debtor_gram",
       },
       {
         header: `${t("reyal (debtor)")}`,
-        cell: (info) => info.renderValue() !== 0 ? formatReyal(Number(info.renderValue())) : "---",
+        cell: (info) =>
+          info.renderValue() !== 0
+            ? formatReyal(Number(info.renderValue()))
+            : "---",
         accessorKey: "debtor_SRA",
       },
       {
         header: `${t("gram (creditor)")}`,
-        cell: (info) => info.renderValue() !== 0 ? formatGram(Number(info.renderValue())) : "---",
+        cell: (info) =>
+          info.renderValue() !== 0
+            ? formatGram(Number(info.renderValue()))
+            : "---",
         accessorKey: "creditor_gram",
       },
       {
         header: `${t("reyal (creditor)")}`,
-        cell: (info) => info.renderValue() !== 0 ? formatReyal(Number(info.renderValue())) : "---",
+        cell: (info) =>
+          info.renderValue() !== 0
+            ? formatReyal(Number(info.renderValue()))
+            : "---",
         accessorKey: "creditor_SRA",
       },
     ],
@@ -114,15 +126,7 @@ const PaymentToManagementTable = ({ item }: { item?: {} }) => {
 
   // group by account
   const restrictionsWithoutTotals = restrictions?.reduce((prev, curr) => {
-    const index = prev.findIndex((item) => item.bian === curr.bian);
-    if (index === -1) {
-      prev.push(curr);
-    } else {
-      prev[index].debtor_gram += curr.debtor_gram;
-      prev[index].debtor_SRA += curr.debtor_SRA;
-      prev[index].creditor_gram += curr.creditor_gram;
-      prev[index].creditor_SRA += curr.creditor_SRA;
-    }
+    prev.push(curr);
     return prev;
   }, [] as typeof restrictions);
 
