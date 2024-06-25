@@ -153,12 +153,12 @@ const ReservePurchaseTable: React.FC<ReservePurchaseTable_TP> = (props) => {
                 placement="top"
                 onChange={(option) => {
                   const value = +goldPrice[option!.value] * +values!.weight;
-                  let valueAddedTax;
-                  if (option!.id === 3) {
-                    valueAddedTax = +value * 0;
-                  } else {
-                    valueAddedTax = +value * +taxes[0]?.tax_rate * 0.01;
-                  }
+                  let valueAddedTax = +value * 0;
+                  // if (option!.id === 3) {
+                  //   valueAddedTax = +value * 0;
+                  // } else {
+                  //   valueAddedTax = +value * +taxes[0]?.tax_rate * 0.01;
+                  // }
 
                   const totalValue = +value + +valueAddedTax;
 
@@ -198,13 +198,13 @@ const ReservePurchaseTable: React.FC<ReservePurchaseTable_TP> = (props) => {
                 required
                 onChange={(e) => {
                   // setFieldValue("value", +e.target.value);
-                  let valueAddedTax;
-                  if (values!.karat_id === 3) {
-                    valueAddedTax = +e.target.value * 0;
-                  } else {
-                    valueAddedTax =
-                      +e.target.value * +taxes[0]?.tax_rate * 0.01;
-                  }
+                  let valueAddedTax = +e.target.value * 0;
+                  // if (values!.karat_id === 3) {
+                  //   valueAddedTax = +e.target.value * 0;
+                  // } else {
+                  //   valueAddedTax =
+                  //     +e.target.value * +taxes[0]?.tax_rate * 0.01;
+                  // }
                   setFieldValue("value_added_tax", valueAddedTax);
                   setFieldValue("total_value", +e.target.value + valueAddedTax);
                 }}

@@ -134,7 +134,7 @@ export const DashboardData = () => {
       title: t("coding"),
       textBondNumber: t("number bonds"),
       bondNumber: codingGoldTotal,
-      viewHandler: () => navigate("/coding"),
+      viewHandler: () => navigate("/coding-react"),
       addHandler: () => navigate("/coding/gold"),
     },
   ];
@@ -160,7 +160,7 @@ export const DashboardData = () => {
       title: t("coding"),
       textBondNumber: t("number bonds"),
       bondNumber: codingDiamondTotal,
-      viewHandler: () => navigate("/coding"),
+      viewHandler: () => navigate("/coding-react"),
       addHandler: () => navigate("/coding/diamond"),
     },
   ];
@@ -186,7 +186,7 @@ export const DashboardData = () => {
       title: t("coding"),
       textBondNumber: t("number bonds"),
       bondNumber: codingAccessoryTotal,
-      viewHandler: () => navigate("/coding"),
+      viewHandler: () => navigate("/coding-react"),
       addHandler: () => navigate("/coding/accessories"),
     },
   ];

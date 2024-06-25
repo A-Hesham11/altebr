@@ -63,6 +63,7 @@ const BuyingInvoice = () => {
     },
   });
 
+  console.log("🚀 ~ BuyingInvoice ~ buyingInvoice:", buyingInvoice);
   return (
     <Formik
       initialValues={initialValues}

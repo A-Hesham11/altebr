@@ -47,7 +47,10 @@ const WeightInvoiceBondsPreview = ({ item }: { item?: {} }) => {
         header: () => <span>{t("lose stones")}</span>,
       },
       {
-        cell: (info: any) =>formatReyal(Number(info.renderValue())) || "---",
+        cell: (info: any) =>
+          formatReyal(Number(info.renderValue())) == 0
+            ? "---"
+            : formatReyal(Number(info.renderValue())),
         accessorKey: "added_ahgar",
         header: () => <span>{t("increase weight")}</span>,
       },

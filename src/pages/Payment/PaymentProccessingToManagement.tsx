@@ -59,8 +59,8 @@ const PaymentProccessingToManagement = ({
   setSelectedCardName,
   isCheckedCommission,
   setIsCheckedCommission,
+  expensePrice,
 }: Payment_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
@@ -133,6 +133,8 @@ const PaymentProccessingToManagement = ({
   const costRemaining =
     locationPath === "/selling/payoff/sales-return"
       ? amountIsPaid - Number(amountRemaining)
+      : locationPath === "/expenses/expensesInvoice"
+      ? Number(expensePrice) - Number(amountRemaining)
       : Number(totalPriceInvoice) - Number(amountRemaining);
 
   console.log("🚀 ~ costRemaining:", costRemaining);
@@ -173,6 +175,7 @@ const PaymentProccessingToManagement = ({
             : validationSchemaOfAmount()
         }
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
+          console.log("🚀 ~ values:", values);
           if (selectedCardId) {
             if (editData) {
               const updatedPaymentData = paymentData.map((item) =>
@@ -323,10 +326,13 @@ const PaymentProccessingToManagement = ({
                   </div>
                 ) : (
                   <div className="relative">
-                    <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
-                      <span>{t("remaining cost")} : </span>{" "}
-                      {Number(costRemaining)}
-                    </p>
+                    {(locationPath === "/selling/payoff/sales-return" ||
+                      locationPath === "/expenses/expensesInvoice") && (
+                      <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
+                        <span>{t("remaining cost")} : </span>{" "}
+                        {formatReyal(Number(costRemaining))}
+                      </p>
+                    )}
                     <BaseInputField
                       id="amount"
                       name="amount"
