@@ -47,7 +47,7 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
     isSuccess,
     isLoading: employeesLoading,
   } = useFetch<Employee_TP[]>({
-    endpoint: "employee/api/v1/employees",
+    endpoint: "employee/api/v1/employees?per_page=10000",
     queryKey: ["employees"],
   });
     console.log("🚀 ~ Employees ~ employees:", employees)

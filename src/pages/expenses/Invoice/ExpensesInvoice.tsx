@@ -130,7 +130,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                   id="expense_price"
                   name="expense_price"
                   label={`${t("expense price")}`}
-                  type="text"
+                  type="number"
                   required
                   onChange={(e) => {
                     setFieldValue("expense_price", +e.target.value);

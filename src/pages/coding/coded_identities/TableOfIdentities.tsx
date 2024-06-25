@@ -47,8 +47,6 @@ const TableOfIdentities = ({
               }`}
               type="checkbox"
               onChange={(e) => {
-                // setCheckboxChecked(!checkboxChecked)
-
                 if (e.target.checked) {
                   setOperationTypeSelect((prev) => [
                     ...prev,
