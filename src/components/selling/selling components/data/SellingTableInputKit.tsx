@@ -225,6 +225,7 @@ const SellingTableInputKit = ({
               },
               0
             );
+            console.log("🚀 ~ clacSelectedWeight:", clacSelectedWeight)
 
             const clacSelectedCost = selectedItemDetails.reduce((acc, item) => {
               acc += Number(item.selling_price);

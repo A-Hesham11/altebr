@@ -234,7 +234,7 @@ const PaymentProcessing = ({
                 <div className="relative">
                   <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
                     <span>{t("remaining cost")} : </span>{" "}
-                    {formatReyal(Number(costRemaining.toFixed(2)))}
+                    {formatReyal(Number(costRemaining))}
                   </p>
                   <BaseInputField
                     id="amount"

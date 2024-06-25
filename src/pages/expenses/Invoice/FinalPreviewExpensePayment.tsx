@@ -2,11 +2,13 @@ import { t } from "i18next";
 import cashImg from "../../../assets/cash.png";
 import QRCodeGen from "../../../components/atoms/QRCode";
 import { numberContext } from "../../../context/settings/number-formatter";
+import QRCode from "react-qr-code";
 
 type FinalPreviewExpensePayment_TP = {
   paymentData: never[];
   costDataAsProps: any;
   sellingItemsData: any;
+  responseSellingData: any;
 };
 
 const FinalPreviewExpensePayment = ({
@@ -15,7 +17,9 @@ const FinalPreviewExpensePayment = ({
   sellingItemsData,
   odwyaTypeValue,
   setOdwyaTypeValue,
+  responseSellingData
 }: FinalPreviewExpensePayment_TP) => {
+  console.log("🚀 ~ responseSellingData:", responseSellingData)
   console.log("🚀 ~ paymentData:", paymentData)
   console.log(
     "🚀 ~ file: FinalPreviewExpensePayment.tsx:18 ~ sellingItemsData:",
@@ -36,8 +40,8 @@ const FinalPreviewExpensePayment = ({
       </div>
 
       <div>
-        <QRCodeGen
-          value={`${Math.round(costDataAsProps.totalCost * 0.15)} RS`}
+        <QRCode
+          value={responseSellingData?.qr || ""}
         />
       </div>
       <div className="flex flex-col gap-1 items-center">

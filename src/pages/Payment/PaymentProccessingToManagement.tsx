@@ -234,6 +234,7 @@ const PaymentProccessingToManagement = ({
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
+          console.log("🚀 ~ values:", values)
           useEffect(() => {
             if (
               cardId === 10001 ||

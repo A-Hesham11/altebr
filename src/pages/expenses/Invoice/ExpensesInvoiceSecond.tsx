@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ExpenseFinalPreview } from "./ExpenseFinalPreview";
 import { authCtx } from "../../../context/auth-and-perm/auth";
@@ -38,6 +38,9 @@ const ExpensesInvoiceSecond = ({
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
+  const [responseSellingData, SetResponseSellingData] = useState(null);
+  console.log("🚀 ~ responseSellingData:", responseSellingData)
+
 
   const { setFieldValue, values } = useFormikContext<any>();
 
@@ -125,9 +128,12 @@ const ExpensesInvoiceSecond = ({
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      notify("success", t("success add expense invoice"));
+      console.log("🚀 ~ data:", data)
+      SetResponseSellingData(data);
+      console.log("🚀 ~ data:", data)
+      notify("success", `${t("success add expense invoice")}`);
       // navigate(`/selling/honesty/return-honest/${data.bond_id}`)
-      navigate(`/expenses/expensesBonds/`);
+      // navigate(`/expenses/expensesBonds/`);
     },
     onError: (error) => {
       notify("error", error?.message);
@@ -138,7 +144,7 @@ const ExpensesInvoiceSecond = ({
     const invoice = {
       expence_date: values.expense_date || formatDate(new Date()),
       branch_id: userData?.branch_id,
-      expence_bond_number: invoiceNumber.length + 1,
+      expence_bond_number: invoiceNumber?.length + 1,
       child_id: values.sub_expense,
       description: values.add_description,
       expence_amount: +values.expense_price,
@@ -185,6 +191,7 @@ const ExpensesInvoiceSecond = ({
         invoiceNumber={invoiceNumber}
         odwyaTypeValue={odwyaTypeValue}
         setOdwyaTypeValue={setOdwyaTypeValue}
+        responseSellingData={responseSellingData}
       />
     </div>
   );
