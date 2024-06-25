@@ -34,7 +34,8 @@ const SellingSecondpage = ({
       return;
     }
 
-    if (costRemaining.toFixed(digits_count.reyal) !== 0) {
+    console.log("🚀 ~ handleSeccessedData ~ costRemaining.toFixed(digits_count.reyal):", costRemaining.toFixed(digits_count.reyal))
+    if (Number(costRemaining).toFixed(digits_count.reyal) != 0) {
       notify('info','برجاء دفع المبلغ بالكامل')
       return;
     }

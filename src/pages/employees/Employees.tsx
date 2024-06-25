@@ -50,6 +50,7 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
     endpoint: "employee/api/v1/employees",
     queryKey: ["employees"],
   });
+    console.log("🚀 ~ Employees ~ employees:", employees)
 
   const { data: employeesExcel } = useFetch<Employee_TP[]>({
     endpoint: "employee/api/v1/employees?per_page=10000",

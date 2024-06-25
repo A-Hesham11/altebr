@@ -26,6 +26,7 @@ type SellingFinalPreviewProps_TP = {
   costDataAsProps: any;
   sellingItemsData: any;
   invoiceNumber: any;
+  responseSellingData: any;
 };
 
 export const ExpenseFinalPreview = ({
@@ -38,6 +39,7 @@ export const ExpenseFinalPreview = ({
   invoiceNumber,
   odwyaTypeValue,
   setOdwyaTypeValue,
+  responseSellingData
 }: SellingFinalPreviewProps_TP) => {
   const { userData } = useContext(authCtx);
 
@@ -71,6 +73,7 @@ export const ExpenseFinalPreview = ({
               sellingItemsData={sellingItemsData}
               odwyaTypeValue={odwyaTypeValue}
               setOdwyaTypeValue={setOdwyaTypeValue}
+              responseSellingData={responseSellingData}
             />
           </div>
           <div className="text-center">

@@ -36,6 +36,7 @@ const SellingInvoiceData = ({
   const { formatGram, formatReyal } = numberContext();
 
   const [responseSellingData, SetResponseSellingData] = useState(null);
+  console.log("🚀 ~ responseSellingData:", responseSellingData)
 
   const { userData } = useContext(authCtx);
 
@@ -200,7 +201,6 @@ const SellingInvoiceData = ({
   const { mutate, isLoading, isSuccess } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      console.log("🚀 ~ data:", data);
       notify("success");
       SetResponseSellingData(data);
       // navigate(`/selling/viewInvoice/`);
