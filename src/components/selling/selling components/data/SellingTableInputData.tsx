@@ -51,6 +51,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails)
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
@@ -721,7 +722,7 @@ export const SellingTableInputData = ({
         <div className="flex flex-col gap-8 justify-center items-center">
           <Header header={t("kit details")} />
           <SellingTableInputKit
-            dataSource={dataSource}
+            dataSource={dataSource} 
             selectedItemDetails={selectedItemDetails}
             setSelectedItemDetails={setSelectedItemDetails}
             kitDetails={kitDetails}

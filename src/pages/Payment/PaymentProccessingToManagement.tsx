@@ -61,8 +61,6 @@ const PaymentProccessingToManagement = ({
   setIsCheckedCommission,
   expensePrice,
 }: Payment_TP) => {
-  console.log("🚀 ~ expensePrice:", expensePrice);
-
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
@@ -106,6 +104,8 @@ const PaymentProccessingToManagement = ({
     0
   );
 
+  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice);
+
   const totalCommissionOfoneItem = sellingItemsData?.reduce(
     (total, item) => Number(total) + Number(item.commission_oneItem),
     0
@@ -121,11 +121,14 @@ const PaymentProccessingToManagement = ({
     (total, item) => Number(total) + Number(item.total),
     0
   );
+  console.log("🚀 ~ invoiceTotalOfSalesReturn:", invoiceTotalOfSalesReturn);
 
   const amountIsPaid =
     isCheckedCommission === true
-      ? Number(invoiceTotalOfSalesReturn)
+      ? invoiceTotalOfSalesReturn
       : Number(totalPriceInvoice);
+
+  console.log("🚀 ~ amountIsPaid:", amountIsPaid);
 
   const costRemaining =
     locationPath === "/selling/payoff/sales-return"
@@ -133,6 +136,8 @@ const PaymentProccessingToManagement = ({
       : locationPath === "/expenses/expensesInvoice"
       ? Number(expensePrice) - Number(amountRemaining)
       : Number(totalPriceInvoice) - Number(amountRemaining);
+
+  console.log("🚀 ~ costRemaining:", costRemaining);
 
   const cashId =
     locationPath === "/selling/payoff/sales-return" && cardFrontKey === "cash";
@@ -229,6 +234,7 @@ const PaymentProccessingToManagement = ({
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
+          console.log("🚀 ~ values:", values)
           useEffect(() => {
             if (
               cardId === 10001 ||
@@ -280,7 +286,7 @@ const PaymentProccessingToManagement = ({
                   />
                   <label htmlFor="checkbox">{t("add commission ratio")}</label>
                   <p className="bg-mainGreen text-white text-3 font-bold py-[3px] px-5 rounded-lg ms-4">
-                    {Number(totalCommissionOfoneItem)}
+                    {formatReyal(Number(totalCommissionOfoneItem))}
                   </p>
                 </div>
               )}

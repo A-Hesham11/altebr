@@ -38,6 +38,7 @@ export const SupplyFinalForm = ({
   setFormValues,
   finalData,
 }: GoldSupplyFinalFormProps_TP) => {
+  console.log("🚀 ~ formValues:", formValues)
   /////////// VARIABLES
   ///
   const { formatGram, formatReyal } = numberContext()
@@ -252,6 +253,8 @@ export const SupplyFinalForm = ({
         : `twredAccessory/api/v1/boxes/${formValues?.supplier_id}`,
     queryKey: supply === 'gold' ? ["gold_boxes_response"] : supply === 'diamond' ? ["diamond_boxes_response"] : ["accessory_boxes_response"],
   })
+  console.log("🚀 ~ boxesResponse:", boxesResponse)
+
 
   const getMyKarat = (value: string) => {
     const myKarat = karatValues!.find(item => item.karat === value)
@@ -269,6 +272,7 @@ export const SupplyFinalForm = ({
   }
 
   const mapBox = supply == 'gold' ? (item: any) => {
+  console.log("🚀 ~ mapBox ~ item:", item)
     switch (item.front_key) {
       case "gold_18":
         return {
@@ -406,8 +410,11 @@ export const SupplyFinalForm = ({
     }
   }
 
+
   function sendForm() {
     const boxes = boxesResponse.map(mapBox)
+    console.log("🚀 ~ sendForm ~ boxesResponse:", boxesResponse)
+    console.log("🚀 ~ sendForm ~ boxes:", boxes)
     const localBond = supply === 'gold' ? {
       twred_type: formValues?.twred_type,
       bond_date: formatDate(formValues!.bond_date),

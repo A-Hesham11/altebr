@@ -46,6 +46,7 @@ export const Supply = ({ title }: GoldSupplyProps_TP) => {
   const [formValues, setFormValues] = useState<FirstFormInitValues_TP>()
   const [supplierTax, setSupplierTax] = useState<supplierTax_TP>('no')
   const [finalData, setFinalData] = useState<FinalData_TP>()
+  console.log("🚀 ~ Supply ~ finalData:", finalData)
   const [data, setData] = useState<OTableDataTypes[]>([])
   const [boxValues, setBoxValues] = useState<OTableDataTypes[]>([])
   const [editData, setEditData] = useState<OTableDataTypes>({} as OTableDataTypes)

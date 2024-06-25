@@ -3,6 +3,7 @@ import { Button } from '../../atoms'
 import PaymentBoxes from "./data/paymentBoxs"
 import PaymentProcessing, { Payment_TP } from "./data/PaymentProcessing"
 import { notify } from "../../../utils/toast"
+import { numberContext } from "../../../context/settings/number-formatter"
 
 type SellingSecondpage_TP = {
   paymentData: Payment_TP[]
@@ -21,7 +22,10 @@ const SellingSecondpage = ({
 
   const amountRemaining = paymentData?.reduce((total, item) => total + item.cost_after_tax ,0)
 
-  const costRemaining = +totalPriceInvoice?.toFixed(1) - +amountRemaining
+  const costRemaining = +totalPriceInvoice - +amountRemaining
+
+  const { formatReyal, digits_count } = numberContext();
+
 
    const handleSeccessedData = () => {
 
@@ -30,7 +34,8 @@ const SellingSecondpage = ({
       return;
     }
 
-    if (costRemaining !== 0) {
+    console.log("🚀 ~ handleSeccessedData ~ costRemaining.toFixed(digits_count.reyal):", costRemaining.toFixed(digits_count.reyal))
+    if (Number(costRemaining).toFixed(digits_count.reyal) != 0) {
       notify('info','برجاء دفع المبلغ بالكامل')
       return;
     }

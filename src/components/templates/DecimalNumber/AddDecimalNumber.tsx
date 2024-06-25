@@ -24,7 +24,8 @@ const AddDesimalNumber = ({
     const isRTL = useIsRTL()
     const { logOutHandler, isLoggingOut } = useContext(authCtx)
     const { digits_count, changeDigitsCount, digits_countLoading } =
-        useContext(numberFormatterCtx)
+    useContext(numberFormatterCtx)
+    console.log("🚀 ~ digits_count:", digits_count)
     ///
     /////////// STATES
     ///

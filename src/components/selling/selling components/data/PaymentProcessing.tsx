@@ -45,17 +45,18 @@ const PaymentProcessing = ({
   totalApproximateCost,
   costRemainingHonest,
 }: Payment_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData)
+  console.log("🚀 ~ paymentData:", paymentData);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [editData, setEditData] = useState<Payment_TP>();
+  console.log("🚀 ~ editData:", editData);
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>(
     {}
   );
-  console.log("🚀 ~ cardDiscountPercentage:", cardDiscountPercentage)
-  
+  console.log("🚀 ~ cardDiscountPercentage:", cardDiscountPercentage);
+
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
@@ -90,18 +91,28 @@ const PaymentProcessing = ({
     0
   );
 
+  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice)
+
+
   const editDataAmount = editData ? editData?.amount : 0;
+  console.log("🚀 ~ editDataAmount:", editDataAmount)
 
   const amountRemaining = paymentData?.reduce(
-    (total, item) => total + item.cost_after_tax - +editDataAmount,
+    (total, item) => total + item.cost_after_tax,
     0
   );
+  console.log("🚀 ~ amountRemaining:", amountRemaining)
+
+  const xx = Number(editDataAmount) + (+totalPriceInvoice - +amountRemaining)
+  console.log("🚀 ~ xx:", xx)
 
   const costRemaining = +totalPriceInvoice
-    ? +totalPriceInvoice - +amountRemaining
+    ? Number(editDataAmount) + (Number(totalPriceInvoice) - Number(amountRemaining))
     : costRemainingHonest
     ? +costRemainingHonest
     : +totalApproximateCost - +amountRemaining || 0;
+
+    console.log("🚀 ~ costRemaining:", costRemaining)
 
   return (
     <>
@@ -109,13 +120,15 @@ const PaymentProcessing = ({
         initialValues={initialValues}
         validationSchema={() => validationSchema()}
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
-          console.log("🚀 ~ values:", values)
+          console.log("🚀 ~ values:", values);
           // const commissionValue =
           //   values.cost_after_tax * (values.discount_percentage / 100);
           const commissionValue =
-            (cardDiscountPercentage?.max_discount_limit &&
-              +values?.amount >= +cardDiscountPercentage?.max_discount_limit)
-              ? values?.amount ? +cardDiscountPercentage?.max_discount_limit_value : 0
+            cardDiscountPercentage?.max_discount_limit &&
+            +values?.amount >= +cardDiscountPercentage?.max_discount_limit
+              ? values?.amount
+                ? +cardDiscountPercentage?.max_discount_limit_value
+                : 0
               : +values.cost_after_tax * (+values.discount_percentage / 100);
 
           const commissionRiyals = +commissionValue.toFixed(3);
@@ -150,8 +163,10 @@ const PaymentProcessing = ({
                     values.add_commission_ratio === "yes"
                       ? commissionRiyals
                       : 0,
-                  max_discount_limit_value: cardDiscountPercentage?.max_discount_limit_value,
-                  max_discount_limit: cardDiscountPercentage?.max_discount_limit,
+                  max_discount_limit_value:
+                    cardDiscountPercentage?.max_discount_limit_value,
+                  max_discount_limit:
+                    cardDiscountPercentage?.max_discount_limit,
                   cardImage: cardImage,
                   frontkey: cardFrontKey,
                   frontKeyAccept: frontKeyAccept,
@@ -179,13 +194,17 @@ const PaymentProcessing = ({
       >
         {({ values, setFieldValue, resetForm }) => {
           console.log("🚀 ~ PaymentProcessing ~ values:", values);
-          console.log("🚀 ~ values.discount_percentage:", values.discount_percentage)
-
+          console.log(
+            "🚀 ~ values.discount_percentage:",
+            values.discount_percentage
+          );
 
           const commissionValue =
-            (cardDiscountPercentage?.max_discount_limit &&
-              +values?.amount >= +cardDiscountPercentage?.max_discount_limit)
-              ? values?.amount ? +cardDiscountPercentage?.max_discount_limit_value : 0
+            cardDiscountPercentage?.max_discount_limit &&
+            +values?.amount >= +cardDiscountPercentage?.max_discount_limit
+              ? values?.amount
+                ? +cardDiscountPercentage?.max_discount_limit_value
+                : 0
               : +values.cost_after_tax * (+values.discount_percentage / 100);
 
           const commissionRiyals = +commissionValue.toFixed(3);
@@ -215,7 +234,7 @@ const PaymentProcessing = ({
                 <div className="relative">
                   <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
                     <span>{t("remaining cost")} : </span>{" "}
-                    {formatReyal(Number(costRemaining.toFixed(2)))}
+                    {formatReyal(Number(costRemaining))}
                   </p>
                   <BaseInputField
                     id="amount"

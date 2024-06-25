@@ -18,6 +18,7 @@ const PaymentProccessingTableToSalesReturn = ({
   setEditData,
   setPaymentData,
 }) => {
+  console.log("🚀 ~ paymentData:", paymentData)
   const [editingRowId, setEditingRowId] = useState<string | undefined>(null);
   const { formatGram, formatReyal } = numberContext();
 
@@ -38,11 +39,6 @@ const PaymentProccessingTableToSalesReturn = ({
         cell: (info) => formatReyal(Number(info.row.original.amount)) || "---",
       },
       {
-        header: () => <span>{t("commission")}</span>,
-        accessorKey: "commission_oneItem",
-        cell: (info) => formatReyal(Number(info.row.original.commission_oneItem)) || "---",
-      },
-      {
         header: () => <span>{t("actions")}</span>,
         accessorKey: "actions_id",
         cell: (info) => (
@@ -60,9 +56,9 @@ const PaymentProccessingTableToSalesReturn = ({
             <DeleteIcon
               size={16}
               action={() => {
-                const itemId = info.row.original.id;
+                const itemId = info.row.original.salesReturnFrontKey;
                 setPaymentData((curr) =>
-                  curr.filter((item) => item.id !== itemId)
+                  curr.filter((item) => item.salesReturnFrontKey !== itemId)
                 );
               }}
               className="!w-6 !h-6"
