@@ -45,24 +45,18 @@ const SellingHome = () => {
   }).format(targetTime);
 
   const shifts = userData?.workingshifts || [];
-  console.log("🚀 ~ SellingHome ~ shifts:", shifts);
 
   // Function to check if the current time is between shift_from and shift_to
   function isTimeBetween(shift) {
     const shiftFrom = new Date(`2000-01-01 ${shift?.shift_from}`);
     const shiftTo = new Date(`2000-01-01 ${shift?.shift_to}`);
-    console.log("🚀 ~ isTimeBetween ~ shiftFrom:", shiftFrom)
-    console.log("🚀 ~ isTimeBetween ~ shiftTo:", shiftTo)
     const currentTimeDate = new Date(`2000-01-01 ${currentTime}`);
 
-    console.log("🚀 ~ isTimeBetween ~ currentTimeDate:", currentTimeDate)
-    console.log("🚀 ~ isTimeBetween ~ currentTimeDate >= shiftFrom:", currentTimeDate >= shiftFrom)
     return currentTimeDate >= shiftFrom && currentTimeDate <= shiftTo;
   }
 
   // Find the shift that matches the condition
   const currentShift = shifts && shifts?.find(isTimeBetween);
-  console.log("🚀 ~ SellingHome ~ currentShift:", currentShift)
 
   // Print the result
   if (currentShift) {
@@ -84,7 +78,7 @@ const SellingHome = () => {
     },
   });
 
-  const { mutate: mutateDeparture, isSuccess: isSuccessDeparture  } = useMutate({
+  const { mutate: mutateDeparture, isSuccess: isSuccessDeparture } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["departure"],
     onSuccess: (data) => {
@@ -274,8 +268,11 @@ const SellingHome = () => {
                     const currentDay = formatDate(currentDate);
 
                     if (!currentShift) {
-                      notify("error", `${t("the period does not match the current time")}`)
-                      return
+                      notify(
+                        "error",
+                        `${t("the period does not match the current time")}`
+                      );
+                      return;
                     }
 
                     PostNewCardAudience({
@@ -291,7 +288,8 @@ const SellingHome = () => {
                     setAudienceButton(localStorage.getItem("audience"));
                   }}
                   disabled={
-                    (audienceButton == "true" && !!isSuccessAudience) || departureButton == "true"
+                    (audienceButton == "true" && !!isSuccessAudience) ||
+                    departureButton == "true"
                   }
                 >
                   {audienceButton == "true" && !!isSuccessAudience ? (
