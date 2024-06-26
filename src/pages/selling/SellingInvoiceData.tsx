@@ -36,7 +36,7 @@ const SellingInvoiceData = ({
   const { formatGram, formatReyal } = numberContext();
 
   const [responseSellingData, SetResponseSellingData] = useState(null);
-  console.log("🚀 ~ responseSellingData:", responseSellingData)
+  console.log("🚀 ~ responseSellingData:", responseSellingData);
 
   const { userData } = useContext(authCtx);
 
@@ -304,7 +304,7 @@ const SellingInvoiceData = ({
     <div>
       <div className="flex items-center justify-between mx-8 mt-8 relative">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
-        <div className="flex gap-3"> 
+        <div className="flex gap-3">
           {isSuccess ? (
             <Button
               className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
@@ -335,6 +335,8 @@ const SellingInvoiceData = ({
         isSuccess={isSuccess}
         responseSellingData={responseSellingData}
       />
+
+
     </div>
   );
 };
