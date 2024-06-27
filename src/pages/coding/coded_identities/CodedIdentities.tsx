@@ -304,7 +304,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           >
             {t("management identities")}
           </Button>
-          <Button
+          {/* <Button
             action={(e) => {
               handlePieceByWeight();
               handleActiveButton(e);
@@ -316,7 +316,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
             } border-2 text-sm border-mainOrange flex items-center gap-2`}
           >
             {t("pieces by weight")}
-          </Button>
+          </Button> */}
           <Button
             action={(e) => {
               handleBranch();

@@ -10,6 +10,9 @@ const TableOfTransformBranch = ({
   inputWeight,
 }) => {
   const { formatReyal } = numberContext();
+  const isContainCheckInputWeight = operationTypeSelect.some(
+    (el) => el.check_input_weight === 1
+  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -55,7 +58,7 @@ const TableOfTransformBranch = ({
         header: () => <span>{t("total wage by ryal")}</span>,
       },
       {
-        cell: (info: any) =>  formatReyal(info.getValue()) || "-",
+        cell: (info: any) => formatReyal(info.getValue()) || "-",
         accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },
@@ -135,11 +138,21 @@ const TableOfTransformBranch = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl ml-4 mb-2 font-bold text-slate-700">
-        {t("selected pieces")}
-      </h2>
-      <Table showNavigation data={operationTypeSelect || []} columns={tableColumn}>
-      </Table>
+      <div className="flex items-center gap-6">
+        <h2 className="text-xl ml-4 mb-2 font-bold text-slate-700">
+          {t("selected pieces")}
+        </h2>
+        {isContainCheckInputWeight && (
+          <p className="text-lg ml-4 mb-2 font-bold text-slate-700">
+            {t("the pieces contains weight")}
+          </p>
+        )}
+      </div>
+      <Table
+        showNavigation
+        data={operationTypeSelect || []}
+        columns={tableColumn}
+      ></Table>
     </div>
   );
 };
