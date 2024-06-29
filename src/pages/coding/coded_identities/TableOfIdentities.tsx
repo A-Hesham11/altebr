@@ -146,15 +146,20 @@ const TableOfIdentities = ({
         accessorKey: "bond_id",
         header: () => <span>{t("supply bond")}</span>,
       },
+      // {
+      //   cell: (info: any) => {
+      //     const wages =
+      //       Number(info.row.original.wage).toFixed(2) *
+      //       Number(info.row.original.weight);
+      //     return formatReyal(wages);
+      //   },
+      //   accessorKey: "wages",
+      //   header: () => <span>{t("wages")}</span>,
+      // },
       {
-        cell: (info: any) => {
-          const wages =
-            Number(info.row.original.wage).toFixed(2) *
-            Number(info.row.original.weight);
-          return formatReyal(wages);
-        },
-        accessorKey: "wages",
-        header: () => <span>{t("wages")}</span>,
+        cell: (info: any) => formatReyal(Number(info.getValue())),
+        accessorKey: "wage",
+        header: () => <span>{t("wage")}</span>,
       },
       {
         cell: (info: any) =>

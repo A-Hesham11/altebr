@@ -40,6 +40,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [rejectedPieces, setRejectedPieces] = useState([]);
   const [piecesState, setPiecesState] = useState([]);
   const [search, setSearch] = useState("");
+  console.log("🚀 ~ CodedIdentities ~ search:", search);
   const [isSuccessPost, setIsSuccessPost] = useState(false);
   const [fetchEndPoint, setFetchEndPoint] = useState(
     `identity/api/v1/pieces_in_edara`
@@ -59,9 +60,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const { data, isLoading, isFetching, isRefetching, refetch } = useFetch({
     queryKey: fetchKey,
     endpoint:
-      search === `${fetchEndPoint}?page=${page}` || search === ""
+      // search === `${fetchEndPoint}?page=${page}` || search === ""
+      search === ""
         ? `${fetchEndPoint}?page=${page}`
-        : `${search}`,
+        : `${search}&page=${page}`,
     pagination: true,
   });
 
@@ -160,6 +162,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     setFetchEndPoint(`identity/api/v1/ItemWeight`);
   };
 
+  console.log(page);
+
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
     let url = `${fetchEndPoint}?`;
@@ -202,7 +206,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
   useEffect(() => {
     setPage(1);
-  }, [fetchKey]);
+  }, [fetchKey, search]);
 
   // HANDLE ACTIVE BUTTON
   const handleActiveButton = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -360,7 +364,11 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       </div>
 
       {/* SEARCH FILTER */}
-      <SearchFilter getSearchResults={getSearchResults} refetch={refetch} />
+      <SearchFilter
+        getSearchResults={getSearchResults}
+        setSearch={setSearch}
+        refetch={refetch}
+      />
 
       {/* TABLE OF IDENTITIES */}
       <div className="flex flex-col gap-4 mt-8">

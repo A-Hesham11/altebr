@@ -10,6 +10,7 @@ import { BaseInputField } from "../../../components/molecules";
 import { Form, Formik } from "formik";
 
 const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
+  console.log("🚀 ~ TableOfIdentitiesPreview ~ item:", item);
   const { formatReyal } = numberContext();
 
   const initialValues = {};
@@ -61,6 +62,16 @@ const TableOfIdentitiesPreview = ({ item }: { item?: {} }) => {
         cell: (info: any) => info.getValue() || "---",
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          const wages =
+            Number(info.row.original.wage).toFixed(2) *
+            Number(info.row.original.weight);
+          return formatReyal(wages);
+        },
+        accessorKey: "wages",
+        header: () => <span>{t("wages")}</span>,
       },
       {
         cell: (info: any) =>
