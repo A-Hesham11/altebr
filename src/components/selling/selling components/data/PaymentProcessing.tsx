@@ -91,28 +91,28 @@ const PaymentProcessing = ({
     0
   );
 
-  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice)
-
+  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice);
 
   const editDataAmount = editData ? editData?.amount : 0;
-  console.log("🚀 ~ editDataAmount:", editDataAmount)
+  console.log("🚀 ~ editDataAmount:", editDataAmount);
 
   const amountRemaining = paymentData?.reduce(
     (total, item) => total + item.cost_after_tax,
     0
   );
-  console.log("🚀 ~ amountRemaining:", amountRemaining)
+  console.log("🚀 ~ amountRemaining:", amountRemaining);
 
-  const xx = Number(editDataAmount) + (+totalPriceInvoice - +amountRemaining)
-  console.log("🚀 ~ xx:", xx)
+  const xx = Number(editDataAmount) + (+totalPriceInvoice - +amountRemaining);
+  console.log("🚀 ~ xx:", xx);
 
   const costRemaining = +totalPriceInvoice
-    ? Number(editDataAmount) + (Number(totalPriceInvoice) - Number(amountRemaining))
+    ? Number(editDataAmount) +
+      (Number(totalPriceInvoice) - Number(amountRemaining))
     : costRemainingHonest
     ? +costRemainingHonest
     : +totalApproximateCost - +amountRemaining || 0;
 
-    console.log("🚀 ~ costRemaining:", costRemaining)
+  console.log("🚀 ~ costRemaining:", costRemaining);
 
   return (
     <>
@@ -145,6 +145,13 @@ const PaymentProcessing = ({
                       commission_riyals: commissionRiyals,
                       cardImage: cardImage,
                       commission_tax: commissionTax,
+                      max_discount_limit_value:
+                        editData?.max_discount_limit_value,
+                      max_discount_limit: editData?.max_discount_limit,
+                      frontkey: editData?.cardFrontKey,
+                      frontKeyAccept: editData?.frontKeyAccept,
+                      frontKeySadad: editData?.frontKeySadad,
+                      sellingFrontKey: editData?.sellingFrontKey,
                     }
                   : item
               );

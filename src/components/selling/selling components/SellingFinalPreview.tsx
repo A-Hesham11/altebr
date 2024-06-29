@@ -5,6 +5,7 @@ import FinalPreviewBillData from "./bill/FinalPreviewBillData";
 import FinalPreviewBillPayment from "./bill/FinalPreviewBillPayment";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { useFetch } from "../../../hooks";
+import { useNavigate } from "react-router-dom";
 
 type Client_TP = {
   amount: number;
@@ -42,6 +43,8 @@ export const SellingFinalPreview = ({
   // get client data
   // const { client_value, client_id, client_name } = clientData;
 
+  const navigate = useNavigate();
+
   const { userData } = useContext(authCtx);
 
   const { data } = useFetch<Client_TP>({
@@ -66,7 +69,7 @@ export const SellingFinalPreview = ({
           </div>
 
           {ItemsTableContent}
-          
+
           {isSuccess && (
             <div className="mx-5 bill-shadow rounded-md p-6 my-9">
               <FinalPreviewBillPayment
@@ -77,7 +80,7 @@ export const SellingFinalPreview = ({
               />
             </div>
           )}
-          
+
           <div className="text-center">
             <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
               {data && data?.sentence}
@@ -109,9 +112,15 @@ export const SellingFinalPreview = ({
       </div>
       {/* {printContent && <div style={{ display: 'none' }}>{printContent}</div>}    */}
 
-      {!isSuccess && (
+      {!isSuccess ? (
         <div className="flex gap-3 justify-end mt-14">
           <Button bordered action={() => setStage(2)}>
+            {t("back")}
+          </Button>
+        </div>
+      ) : (
+        <div className="flex justify-end items-center my-6">
+          <Button action={() => navigate(-1)} bordered>
             {t("back")}
           </Button>
         </div>

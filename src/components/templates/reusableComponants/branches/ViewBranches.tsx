@@ -134,14 +134,15 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
   const [editData, setEditData] = useState<Branch_Props_TP>()
   const [deleteData, setDeleteData] = useState<Branch_Props_TP>()
   const [dataSource, setDataSource] = useState<Branch_Props_TP[]>([])
+  console.log("🚀 ~ ViewBranches ~ dataSource:", dataSource)
   const [page, setPage] = useState<number>(1)
 
   const columns = useMemo<ColumnDef<Branch_Props_TP>[]>(
     () => [
       {
         cell: (info) => info.getValue(),
-        accessorKey: "index",
-        header: () => <span>{t("Sequence")} </span>,
+        accessorKey: "id",
+        header: () => <span>{t("branch number")} </span>,
       },
       {
         header: () => <span>{t("branch")} </span>,

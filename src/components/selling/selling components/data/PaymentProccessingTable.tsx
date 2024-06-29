@@ -25,7 +25,6 @@ const PaymentProccessingTable = ({
   const { setFieldValue } = useFormikContext<FormikSharedConfig>();
   const { formatGram, formatReyal } = numberContext();
 
-
   const paymentCols = useMemo<ColumnDef<Payment_TP>[]>(
     () => [
       {
@@ -46,47 +45,52 @@ const PaymentProccessingTable = ({
       {
         header: () => <span>{t("commission riyals")} </span>,
         accessorKey: "commission_riyals",
-        cell: (info) => formatReyal(Number(info.row.original.commission_riyals)) || "---",
+        cell: (info) =>
+          formatReyal(Number(info.row.original.commission_riyals)) || "---",
       },
       {
         header: () => <span>{t("commission tax")} </span>,
         accessorKey: "commission_tax",
-        cell: (info) => formatReyal(Number(info.row.original.commission_tax)) || "---",
+        cell: (info) =>
+          formatReyal(Number(info.row.original.commission_tax)) || "---",
       },
       {
         header: () => <span>{t("actions")}</span>,
         accessorKey: "actions_id",
-        cell: (info) => (
-          <span className="flex items-center justify-center gap-3">
-            <EditIcon
-              size={16}
-              action={() => {
-                setEditData(info.row.original);
-                setEditingRowId(info.row.original.id);
-                setFieldValue("amount", info.row.original.amount);
-                setFieldValue(
-                  "commission_riyals",
-                  info.row.original.commission_riyals
-                );
-                setFieldValue(
-                  "discount_percentage",
-                  info.row.original.discount_percentage
-                );
-              }}
-              className="fill-mainGreen w-6 h-6 mb-[2px]"
-            />
-            <DeleteIcon
-              size={16}
-              action={() => {
-                const itemId = info.row.original.id;
-                setPaymentData((curr) =>
-                  curr.filter((item) => item.id !== itemId)
-                );
-              }}
-              className="!w-6 !h-6"
-            />
-          </span>
-        ),
+        cell: (info) => {
+          console.log("🚀 ~ info:", info.row.original);
+          return (
+            <span className="flex items-center justify-center gap-3">
+              <EditIcon
+                size={16}
+                action={() => {
+                  setEditData(info.row.original);
+                  setEditingRowId(info.row.original.id);
+                  setFieldValue("amount", info.row.original.amount);
+                  setFieldValue(
+                    "commission_riyals",
+                    info.row.original.commission_riyals
+                  );
+                  setFieldValue(
+                    "discount_percentage",
+                    info.row.original.discount_percentage
+                  );
+                }}
+                className="fill-mainGreen w-6 h-6 mb-[2px]"
+              />
+              <DeleteIcon
+                size={16}
+                action={() => {
+                  const itemId = info.row.original.id;
+                  setPaymentData((curr) =>
+                    curr.filter((item) => item.id !== itemId)
+                  );
+                }}
+                className="!w-6 !h-6"
+              />
+            </span>
+          );
+        },
       },
     ],
     []
