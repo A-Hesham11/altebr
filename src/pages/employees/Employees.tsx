@@ -36,6 +36,7 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
   ///
 
   const [importModal, setImportModal] = useState<boolean>(false);
+  const [addEmployeeModal, setAddEmployeeModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
   const queryClient = useQueryClient();
 
@@ -50,7 +51,7 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
     endpoint: "employee/api/v1/employees?per_page=10000",
     queryKey: ["employees"],
   });
-    console.log("🚀 ~ Employees ~ employees:", employees)
+  console.log("🚀 ~ Employees ~ employees:", employees);
 
   const { data: employeesExcel } = useFetch<Employee_TP[]>({
     endpoint: "employee/api/v1/employees?per_page=10000",
@@ -133,6 +134,15 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
           <Button
             action={(e) => {
               // setImportData(null);
+              setAddEmployeeModal(true);
+            }}
+            className="bg-mainGreen text-white"
+          >
+            {t("add")}
+          </Button>
+          <Button
+            action={(e) => {
+              // setImportData(null);
               setImportModal(true);
             }}
             className="bg-mainGreen text-white"
@@ -203,6 +213,15 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
           >
             {t("save")}
           </Button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={addEmployeeModal}
+        onClose={() => setAddEmployeeModal(false)}
+      >
+        <div className="mt-14 mb-10 flex items-center gap-8">
+          <AddEmployee title={`${t("add employee")}`} />
         </div>
       </Modal>
 
