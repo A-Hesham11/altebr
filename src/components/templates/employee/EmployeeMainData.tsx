@@ -1,10 +1,10 @@
 /////////// IMPORTS
 ///
-import { useFormikContext } from "formik"
-import { t } from "i18next"
-import { useEffect } from "react"
-import { Button } from "../../atoms"
-import { EditIcon } from "../../atoms/icons"
+import { useFormikContext } from "formik";
+import { t } from "i18next";
+import { useEffect } from "react";
+import { Button } from "../../atoms";
+import { EditIcon } from "../../atoms/icons";
 import {
   BaseInputField,
   DateInputField,
@@ -12,29 +12,29 @@ import {
   Modal,
   OuterFormLayout,
   PhoneInput,
-} from "../../molecules"
-import RadioGroup from "../../molecules/RadioGroup"
-import { DropFile } from "../../molecules/files/DropFile"
-import { NationalAddress } from "../NationalAddress"
-import { SelectBranches } from "../reusableComponants/branches/SelectBranches"
-import { Documents } from "../reusableComponants/documents/Documents"
-import { SelectRole } from "../reusableComponants/roles/SelectRole"
-import { SelectNationality } from "../systemEstablishment/SelectNationality"
-import { InitialValues_TP } from "./validation-and-types"
+} from "../../molecules";
+import RadioGroup from "../../molecules/RadioGroup";
+import { DropFile } from "../../molecules/files/DropFile";
+import { NationalAddress } from "../NationalAddress";
+import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
+import { Documents } from "../reusableComponants/documents/Documents";
+import { SelectRole } from "../reusableComponants/roles/SelectRole";
+import { SelectNationality } from "../systemEstablishment/SelectNationality";
+import { InitialValues_TP } from "./validation-and-types";
 ///
 /////////// Types
 ///
 type EmployeeMainDataProps_TP = {
-  title: string
-  editEmployeeData: InitialValues_TP | undefined
-  isLoading?: any
-  isSuccessPost?: any
-  restData?: any
-  setDocsFormValues?: any
-  docsFormValues?: any
-  setModalOpen?: any
-  modalOpen?:any
-}
+  title: string;
+  editEmployeeData: InitialValues_TP | undefined;
+  isLoading?: any;
+  isSuccessPost?: any;
+  restData?: any;
+  setDocsFormValues?: any;
+  docsFormValues?: any;
+  setModalOpen?: any;
+  modalOpen?: any;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 ///
@@ -49,13 +49,14 @@ export const EmployeeMainData = ({
   setModalOpen,
   modalOpen,
 }: EmployeeMainDataProps_TP) => {
+  console.log("🚀 ~ editEmployeeData:", editEmployeeData);
   /////////// VARIABLES
   /////
 
   ///
   /////////// CUSTOM HOOKS
   ///
-  const { values, setFieldValue, resetForm  } = useFormikContext()
+  const { values, setFieldValue, resetForm } = useFormikContext();
   ///
   /////////// STATES
   ///
@@ -68,16 +69,16 @@ export const EmployeeMainData = ({
   ///
   useEffect(() => {
     if (isSuccessPost) {
-      if (!editEmployeeData) {    
-        restData()
-         resetForm()
-         setFieldValue("date_of_birth", new Date())
-         setFieldValue("national_expire_date", new Date())
-         setDocsFormValues([])
-         setModalOpen(false)
+      if (!editEmployeeData) {
+        restData();
+        resetForm();
+        setFieldValue("date_of_birth", new Date());
+        setFieldValue("national_expire_date", new Date());
+        setDocsFormValues([]);
+        setModalOpen(false);
       }
     }
-  }, [isSuccessPost])
+  }, [isSuccessPost]);
   ///
   return (
     <>
@@ -168,7 +169,6 @@ export const EmployeeMainData = ({
             name="date_of_birth"
             required
             maxDate={new Date()}
-            
           />
           {/* birth date end */}
 
@@ -294,7 +294,7 @@ export const EmployeeMainData = ({
             <Button
               type="button"
               action={() => {
-                if (values?.password.length >= 8) setModalOpen(false)
+                if (values?.password.length >= 8) setModalOpen(false);
               }}
               className="flex mr-auto mt-8"
             >
@@ -316,5 +316,5 @@ export const EmployeeMainData = ({
         />
       </OuterFormLayout>
     </>
-  )
-}
+  );
+};

@@ -1,38 +1,38 @@
 /////////// IMPORTS
 ///
 //import classes from './Stones.module.css'
-import { Helmet } from "react-helmet-async"
+import { Helmet } from "react-helmet-async";
 ///
-import { Form, Formik } from "formik"
-import { BaseInputField } from "../components/molecules/formik-fields/BaseInputField"
-import * as Yup from "yup"
-import { Button } from "../components/atoms/buttons/Button"
-import { TextAreaField } from "../components/molecules/formik-fields/TextAreaField"
-import { RadioField } from "../components/molecules/formik-fields/RadioField"
-import { CheckBoxField } from "../components/molecules/formik-fields/CheckBoxField"
-import { Card } from "../components/templates/Card"
-import { BoxesData } from "../components/molecules/card/BoxesData"
-import { ShowButton } from "../components/molecules/ViewButton"
+import { Form, Formik } from "formik";
+import { BaseInputField } from "../components/molecules/formik-fields/BaseInputField";
+import * as Yup from "yup";
+import { Button } from "../components/atoms/buttons/Button";
+import { TextAreaField } from "../components/molecules/formik-fields/TextAreaField";
+import { RadioField } from "../components/molecules/formik-fields/RadioField";
+import { CheckBoxField } from "../components/molecules/formik-fields/CheckBoxField";
+import { Card } from "../components/templates/Card";
+import { BoxesData } from "../components/molecules/card/BoxesData";
+import { ShowButton } from "../components/molecules/ViewButton";
 
 /////////// Types
 ///
 type Stone_TP = {
-  title: string
-}
+  title: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 const SubmitHandler = (values: {
-  Date: Date
-  number: string
-  number1: string
-  number2: string
-  number3: string
-  radio: string
-  testArea: string
-  checkBox: boolean
+  Date: Date;
+  number: string;
+  number1: string;
+  number2: string;
+  number3: string;
+  radio: string;
+  testArea: string;
+  checkBox: boolean;
 }) => {
-  console.log(values)
-}
+  console.log(values);
+};
 const initialValues = {
   Date: new Date(),
   number: "",
@@ -42,7 +42,7 @@ const initialValues = {
   radio: "buy",
   testArea: "",
   checkBox: false,
-}
+};
 const validatingSchema = Yup.object({
   Date: Yup.date()
     .max(new Date())
@@ -64,7 +64,7 @@ const validatingSchema = Yup.object({
     .min(1, " الصفر غير مسموح ")
     .required("برجاء ملئ هذا الحقل")
     .typeError("الأرقام فقط مسموحة"),
-})
+});
 ///
 export const Accessories = ({ title }: Stone_TP) => {
   /////////// VARIABLES
@@ -92,7 +92,7 @@ export const Accessories = ({ title }: Stone_TP) => {
       value: undefined,
       unit: "جرام",
     },
-  ]
+  ];
   ///
   /////////// EVENTS
   ///
@@ -113,10 +113,10 @@ export const Accessories = ({ title }: Stone_TP) => {
           addLabel="اضافه"
           viewLabel="عرض"
           addHandler={() => {
-            console.log("first")
+            console.log("first");
           }}
           viewHandler={() => {
-            console.log("ssss")
+            console.log("ssss");
           }}
         />
         <Card
@@ -124,17 +124,17 @@ export const Accessories = ({ title }: Stone_TP) => {
           addLabel="اضافه"
           viewLabel="عرض"
           addHandler={() => {
-            console.log("first")
+            console.log("first");
           }}
           viewHandler={() => {
-            console.log("ssss")
+            console.log("ssss");
           }}
         />
         <Card
           header="تاسيس شركه "
           viewLabel="عرض"
           viewHandler={() => {
-            console.log("ssss")
+            console.log("ssss");
           }}
           variant={"secondary"}
           headerColor={"secondary"}
@@ -143,7 +143,7 @@ export const Accessories = ({ title }: Stone_TP) => {
           header="تاسيس شركه "
           viewLabel="عرض"
           viewHandler={() => {
-            console.log("ssss")
+            console.log("ssss");
           }}
         />
         <Card
@@ -151,10 +151,10 @@ export const Accessories = ({ title }: Stone_TP) => {
           addLabel="اضافه"
           viewLabel="عرض"
           addHandler={() => {
-            console.log("first")
+            console.log("first");
           }}
           viewHandler={() => {
-            console.log("ssss")
+            console.log("ssss");
           }}
         />
         {/* <div className="p-4 flex flex-col gap-4">
@@ -294,5 +294,5 @@ export const Accessories = ({ title }: Stone_TP) => {
         />
       </div>
     </>
-  )
-}
+  );
+};

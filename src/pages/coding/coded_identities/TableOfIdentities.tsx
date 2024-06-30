@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { t } from "i18next";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { useIsRTL } from "../../../hooks";
@@ -23,13 +23,19 @@ const TableOfIdentities = ({
   isFetching,
   isRefetching,
 }) => {
+  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
   // STATE
   const isRTL = useIsRTL();
   const { formatReyal, formatGram } = numberContext();
   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
+  const [allIsChecked, setAllIsChecked] = useState<any>(false);
 
   const isChecked = (id) => operationTypeSelect.some((item) => item.id === id);
+
+  useEffect(() => {
+    setAllIsChecked(false);
+  }, [page]);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -41,7 +47,7 @@ const TableOfIdentities = ({
               max={3000}
               checked={isChecked(info.row.original.id)}
               disabled={info.row.original.weight === "0" ? true : false}
-              className={`${
+              className={`checked:text-mainGreen customCheckbox rounded-sm ${
                 info.row.original.weight === "0" &&
                 "border border-gray-300 opacity-60"
               }`}
@@ -58,34 +64,31 @@ const TableOfIdentities = ({
                   );
                 }
               }}
-              // onChange={(e) => {
-              //   const index = info.row.index;
-
-              //   // Check if the item is already in local storage
-              //   const isItemInLocalStorage = operationTypeSelect.some((item) => item.index === index);
-
-              //   if (e.target.checked) {
-              //     if (!isItemInLocalStorage) {
-              //       // If not, add it to local storage
-              //       setOperationTypeSelect((prev) => [
-              //         ...prev,
-              //         { ...info.row.original, index: index },
-              //       ]);
-              //     }
-              //     // Perform your action here when the checkbox is checked
-              //   } else {
-              //     // Uncheck the checkbox and remove the item from local storage
-              //     setOperationTypeSelect((prev) =>
-              //       prev.filter((item) => item.index !== index)
-              //     );
-              //     // Perform your action here when the checkbox is unchecked
-              //   }
-              // }}
             />
           );
         },
         accessorKey: "checkbox",
-        header: () => <span>{t("")}</span>,
+        header: () => {
+          return (
+            <input
+              type="checkbox"
+              className="checked:text-mainGreen rounded-sm"
+              checked={allIsChecked}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setOperationTypeSelect((prev) => [
+                    ...prev,
+                    ...dataSource?.data,
+                  ]);
+                  setAllIsChecked(true);
+                } else {
+                  setOperationTypeSelect([]);
+                  setAllIsChecked(false);
+                }
+              }}
+            />
+          );
+        },
       },
       {
         cell: (info: any) => info.getValue() || "---",
@@ -143,15 +146,20 @@ const TableOfIdentities = ({
         accessorKey: "bond_id",
         header: () => <span>{t("supply bond")}</span>,
       },
+      // {
+      //   cell: (info: any) => {
+      //     const wages =
+      //       Number(info.row.original.wage).toFixed(2) *
+      //       Number(info.row.original.weight);
+      //     return formatReyal(wages);
+      //   },
+      //   accessorKey: "wages",
+      //   header: () => <span>{t("wages")}</span>,
+      // },
       {
-        cell: (info: any) => {
-          const wages =
-            Number(info.row.original.wage).toFixed(2) *
-            Number(info.row.original.weight);
-          return formatReyal(wages);
-        },
-        accessorKey: "wages",
-        header: () => <span>{t("wages")}</span>,
+        cell: (info: any) => formatReyal(Number(info.getValue())),
+        accessorKey: "wage",
+        header: () => <span>{t("wage")}</span>,
       },
       {
         cell: (info: any) =>
@@ -179,7 +187,7 @@ const TableOfIdentities = ({
         header: () => <span>{t("details")}</span>,
       },
     ],
-    [isChecked]
+    [isChecked, page]
   );
 
   // if (fetchKey[0] === "piece_by_weight") {

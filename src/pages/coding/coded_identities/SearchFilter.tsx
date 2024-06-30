@@ -10,11 +10,22 @@ import { SelectBranches } from "../../../components/templates/reusableComponants
 import SelectCategory from "../../../components/templates/reusableComponants/categories/select/SelectCategory";
 import { useFetch } from "../../../hooks";
 
-const SearchFilter = ({ getSearchResults, refetch }) => {
+interface SearchFilter_TP {
+  getSearchResults: () => void;
+  refetch: () => void;
+  setSearch: () => void;
+}
+
+const SearchFilter = ({
+  getSearchResults,
+  refetch,
+  setSearch,
+}: SearchFilter_TP) => {
   const initailSearchValues = {
     id: "",
     hwya: "",
     karat_id: "",
+    karat_name: "",
     bond_id: "",
     category_id: "",
     country_id: "",
@@ -108,10 +119,6 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
       })),
   });
 
-  const handleResetForm = (formik) => {
-    formik.resetForm();
-  };
-
   return (
     <div className="py-10 flex-col flex">
       <h2 className="mb-6 text-xl font-bold text-slate-700">
@@ -123,7 +130,7 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
           getSearchResults(values);
         }}
       >
-        {(formik) => (
+        {({ values, setFieldValue, resetForm }) => (
           <Form>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-center gap-8 ">
               <BaseInputField
@@ -175,7 +182,7 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
                   options={countriesOption}
                 />
               </div>
-              <DateInputField
+              {/* <DateInputField
                 label={`${t("coding date")}`}
                 placeholder={`${t("coding date")}`}
                 name="created_at"
@@ -192,7 +199,7 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
                 placeholder={`${t("coding date to")}`}
                 name="coding_date_to"
                 labelProps={{ className: "mt--10" }}
-              />
+              /> */}
               {/* <div className="">
                 <Select
                   id="damg"
@@ -240,25 +247,25 @@ const SearchFilter = ({ getSearchResults, refetch }) => {
                 type="text"
                 placeholder={`${t("modal number")}`}
               />
-              <BaseInputField
+              {/* <BaseInputField
                 id="weight"
                 label={`${t("weight")}`}
                 name="weight"
                 type="text"
                 placeholder={`${t("weight")}`}
-              />
+              /> */}
               <div className="">
                 <SelectBranches name="stage" />
               </div>
-              
             </div>
 
             {/* BUTTONS */}
             <div className="flex mt-6 gap-4 justify-end">
               <Button
                 action={() => {
-                  handleResetForm(formik);
+                  resetForm();
                   refetch();
+                  setSearch("");
                 }}
                 className="bg-mainGreen text-white"
               >
