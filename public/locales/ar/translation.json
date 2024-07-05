@@ -362,6 +362,7 @@
   "gram (creditor)": "جرام (دائن)",
   "reyal (creditor)": "ريال (دائن)",
   "totals": "الإجماليات",
+  "you do not have access":"ليس لديك صلاحية الدخول",
   "page": "الصفحة",
   "from": "من",
   "checking accounts operations": "مراجعة عمليات الحسابات",
@@ -915,6 +916,7 @@
   "refund of previously paid amount": "إسترجاع المبلغ المدفوع مسبقا",
   "selling policies": "سياسات البيع",
   "add selling policy": "إضافة سياسة البيع",
+  "buying and selling policy":"سياسة البيع والشراء",
   "buying policies": "سياسات الشراء",
   "add buying policy": "إضافة سياسة الشراء",
   "view selling policies": "عرض سياسات البيع",
@@ -1325,5 +1327,6 @@
   "count": "عدد القطع",
   "create accounting entry": "انشاء القيد المحاسبي",
   "the accounting entry was created successfully": "تم انشاء القيد المحاسبي بنجاح",
+  "selling price exceeds asking price":"سعر البيع تخطي السعر المطلوب",
   "tax": "الضريبة"
 }

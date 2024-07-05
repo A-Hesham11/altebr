@@ -19,6 +19,7 @@ import { FilesUpload } from "../../components/molecules/files/FileUpload";
 import { mutateData } from "../../utils/mutateData";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { notify } from "../../utils/toast";
+import { Header } from "../../components/atoms/Header";
 // import { ExportToExcel } from "../../components/ExportToFile";
 
 ///
@@ -39,6 +40,7 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
   const [addEmployeeModal, setAddEmployeeModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
   const queryClient = useQueryClient();
+  const [permissionError, setPermissionError] = useState()
 
   ///
   /////////// CUSTOM HOOKS
@@ -47,9 +49,11 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
     data: employees,
     isSuccess,
     isLoading: employeesLoading,
+    isError,
   } = useFetch<Employee_TP[]>({
     endpoint: "employee/api/v1/employees?per_page=10000",
     queryKey: ["employees"],
+    onError: (err) => {setPermissionError(err)},
   });
   console.log("🚀 ~ Employees ~ employees:", employees);
 
@@ -90,7 +94,7 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
     mutationFn: mutateData,
     mutationKey: ["employee-files"],
     onSuccess: (data) => {
-      notify("success", t("imported has successfully"));
+      notify("success", `${t("imported has successfully")}`);
       queryClient.refetchQueries(["employees"]);
     },
     onError: (error: any) => {
@@ -167,6 +171,19 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
           </Button>
         </div>
       </div>
+
+      {isError && (
+        <div className=" m-auto my-20">
+          <Header
+            className="text-center text-2xl font-bold"
+            header={
+              permissionError.request.status == "503"
+                ? t(`you do not have access`)
+                : t(`some thing went wrong ${error.message}`)
+            }
+          />
+        </div>
+      )}
       <div className="grid grid-cols-3">
         {isSuccess &&
           employees.length > 0 &&

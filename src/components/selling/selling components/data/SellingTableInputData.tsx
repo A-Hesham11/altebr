@@ -51,8 +51,8 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ dataSource:", dataSource)
-  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails)
+  console.log("🚀 ~ dataSource:", dataSource);
+  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
@@ -67,7 +67,7 @@ export const SellingTableInputData = ({
     useState<number>();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData)
+  console.log("🚀 ~ userData:", userData);
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
 
@@ -533,8 +533,10 @@ export const SellingTableInputData = ({
                 className={`${
                   !isSuccess || userData?.include_tax === "0"
                     ? "bg-mainDisabled"
-                    : values?.taklfa_after_tax &&
-                      +values?.taklfa_after_tax < +editSellingTaklfaAfterTax
+                    : (values?.taklfa_after_tax &&
+                        Number(values?.taklfa_after_tax) <
+                          Number(editSellingTaklfaAfterTax)) ||
+                      Number(values?.max_selling_price) < Number(values?.taklfa)
                     ? "bg-red-100"
                     : ""
                 } text-center`}
@@ -614,6 +616,16 @@ export const SellingTableInputData = ({
                       `${t(
                         "The selling price may not be less than the minimum"
                       )}`
+                    );
+                    return;
+                  }
+
+                  if (
+                    Number(values?.max_selling_price) <= Number(values?.taklfa)
+                  ) {
+                    notify(
+                      "info",
+                      `${t("selling price exceeds asking price")}`
                     );
                     return;
                   }
@@ -724,7 +736,7 @@ export const SellingTableInputData = ({
         <div className="flex flex-col gap-8 justify-center items-center">
           <Header header={t("kit details")} />
           <SellingTableInputKit
-            dataSource={dataSource} 
+            dataSource={dataSource}
             selectedItemDetails={selectedItemDetails}
             setSelectedItemDetails={setSelectedItemDetails}
             kitDetails={kitDetails}

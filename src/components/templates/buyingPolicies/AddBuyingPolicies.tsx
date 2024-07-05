@@ -1,63 +1,63 @@
-import { t } from 'i18next'
-import { ChangeEvent, useContext, useEffect, useState } from 'react'
-import { useFetch, useIsRTL, useMutate } from '../../../hooks'
-import { notify } from '../../../utils/toast'
-import { authCtx } from '../../../context/auth-and-perm/auth'
-import { Form, Formik } from 'formik'
-import * as Yup from "yup"
-import { useQueryClient } from '@tanstack/react-query'
-import { mutateData } from '../../../utils/mutateData'
-import { requiredTranslation } from '../../../utils/helpers'
-import { BaseInputField, OuterFormLayout, Select } from '../../molecules'
-import { Button } from '../../atoms'
-import { SelectBranches } from '../reusableComponants/branches/SelectBranches'
+import { t } from "i18next";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
+import { notify } from "../../../utils/toast";
+import { authCtx } from "../../../context/auth-and-perm/auth";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
+import { useQueryClient } from "@tanstack/react-query";
+import { mutateData } from "../../../utils/mutateData";
+import { requiredTranslation } from "../../../utils/helpers";
+import { BaseInputField, OuterFormLayout, Select } from "../../molecules";
+import { Button } from "../../atoms";
+import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
+import { PermissionGroup_TP } from "../../../pages/administrativeStructure/types-and-schemas";
 
 type PoliciesProps_TP = {
-    title: string
-    job_id: string
-    job_type: string
-    max_buy_type_id: string
-    max_buy_type: string
-    max_buy_rate: string
-    max_buy_cash: string
-    return_days: string
-    sales_return: string
-    branch_id:string
-    branch_name: string
-}
+  title: string;
+  job_id: string;
+  job_type: string;
+  max_buy_type_id: string;
+  max_buy_type: string;
+  max_buy_rate: string;
+  max_buy_cash: string;
+  return_days: string;
+  sales_return: string;
+  branch_id: string;
+  branch_name: string;
+};
 
 type BuyingPoliciesProps_TP = {
-    title: string
-    value?: string
-    onAdd?: (value: string) => void
-    editData?: PoliciesProps_TP
-}
+  title: string;
+  value?: string;
+  onAdd?: (value: string) => void;
+  editData?: PoliciesProps_TP;
+};
 
 const AddBuyingPolicies = ({
-    title,
-    editData,
-    setShow
+  title,
+  editData,
+  setShow,
 }: BuyingPoliciesProps_TP) => {
-    const [jobType, setJobType] = useState();
-    const [maxBuyingType, setmaxBuyingType] = useState();
+  const [jobType, setJobType] = useState();
+  const [maxBuyingType, setmaxBuyingType] = useState();
 
-    const queryClient = useQueryClient()
-    const {userData} = useContext(authCtx)
-    const isRTL = useIsRTL()
+  const queryClient = useQueryClient();
+  const { userData } = useContext(authCtx);
+  const isRTL = useIsRTL();
 
+  useEffect(() => {
+    document.documentElement.dir = isRTL ? "rtl" : "ltr";
+    document.documentElement.lang = isRTL ? "ar" : "en";
+  }, [isRTL]);
 
-    useEffect(() => {
-        document.documentElement.dir = isRTL ? "rtl" : "ltr"
-        document.documentElement.lang = isRTL ? "ar" : "en"
-    }, [isRTL])
-
-    const cardsValidatingSchema = () =>
+  const cardsValidatingSchema = () =>
     Yup.object({
-        job_type: Yup.string().trim().required(requiredTranslation),
-        max_buy_type: Yup.string().trim().required(requiredTranslation),
-        max_buy_rate: Yup.string().trim(),
-        max_buy_cash: Yup.string().trim(),
-        branch_id: Yup.string().trim().required(requiredTranslation),
+      job_type: Yup.string().trim().required(requiredTranslation),
+      max_buy_type: Yup.string().trim().required(requiredTranslation),
+      max_buy_rate: Yup.string().trim(),
+      max_buy_cash: Yup.string().trim(),
+      branch_id: Yup.string().trim().required(requiredTranslation),
     });
 
   const initialValues = {
@@ -66,7 +66,7 @@ const AddBuyingPolicies = ({
     max_buy_rate: editData?.max_buy_rate || "",
     max_buy_cash: editData?.max_buy_cash || "",
     branch_id: editData?.branch_id,
-  }
+  };
 
   const {
     mutate,
@@ -79,13 +79,32 @@ const AddBuyingPolicies = ({
     mutationKey: ["maxBuying"],
     onSuccess: (data) => {
       notify("success");
-      queryClient.refetchQueries(["allMaximum_Buying"])
+      queryClient.refetchQueries(["allMaximum_Buying"]);
     },
     onError: (error) => {
       console.log(error);
       notify("error", error?.response?.data?.errors?.msg);
     },
   });
+
+  const {
+    data: jobTitle,
+    isSuccess,
+    isFetching,
+  } = useFetch<PermissionGroup_TP[]>({
+    endpoint: "administrative/api/v1/roles?per_page=10000",
+    queryKey: ["allRolesEmployee"],
+    select: (data) => {
+      return data?.map((item) => ({
+        value: item.name,
+        label: item.name,
+        id: item.id,
+        is_selling: item.is_selling,
+      }));
+    },
+  });
+
+  const filterJobTitle = jobTitle?.filter((item) => item.is_selling !== 0);
 
   function PostNewCard(values: PoliciesProps_TP) {
     mutate({
@@ -95,182 +114,172 @@ const AddBuyingPolicies = ({
     });
   }
 
-  const PostCardEdit = (values : PoliciesProps_TP) => {
+  const PostCardEdit = (values: PoliciesProps_TP) => {
     mutate({
       endpointName: `/buyingUsedGold/api/v1/maximum_buying/${editData?.id}`,
       values: {
         ...values,
-        _method: "put"
+        _method: "put",
       },
     });
   };
 
   useEffect(() => {
     const best = {
-        id: editData?.job_type || "",
-        value: editData?.job_type || "",
-        label: editData?.job_type || `${t("job title")}` ,
-    }
+      id: editData?.job_type || "",
+      value: editData?.job_type || "",
+      label: editData?.job_type || `${t("job title")}`,
+    };
     setJobType(best);
   }, []);
 
   useEffect(() => {
     const best = {
-        id: editData?.max_buy_type || "",
-        value: editData?.max_buy_type || "",
-        label: editData?.max_buy_type || `${t("maximum buy type")}` ,
-    }
+      id: editData?.max_buy_type || "",
+      value: editData?.max_buy_type || "",
+      label: editData?.max_buy_type || `${t("maximum buy type")}`,
+    };
     setmaxBuyingType(best);
   }, []);
 
-    const maxBuyingTypes=[
-        {
-            id: "percentage",
-            label: t("percentage"),
-            value: t("percentage"),
-        },
-        {
-            id: "monetary",
-            label: t("monetary"),
-            value: t("monetary"),
-        },
-    ]
+  const maxBuyingTypes = [
+    {
+      id: "percentage",
+      label: t("percentage"),
+      value: t("percentage"),
+    },
+    {
+      id: "monetary",
+      label: t("monetary"),
+      value: t("monetary"),
+    },
+  ];
 
-    const maxBuyingEmployee=[
-        {
-            id: "branch_manager",
-            label: t("branch manager"),
-            value: t("branch manager"),
-        },
-        {
-            id: "branch_seller",
-            label: t("branch seller"),
-            value: t("branch seller"),
-        }
-    ]
-
-    return (
-        <>
-            <OuterFormLayout
-                header={t("add buying policy")}
-            >
-                <Formik
-                    validationSchema={() => cardsValidatingSchema()}
-                    initialValues={initialValues}
-                    onSubmit={(values, {resetForm}) => {
-                        if (editData) {
-                            PostCardEdit({
-                                ...values,
-                                max_buy_rate: values?.max_buy_type === "نسبة" && values?.max_buy_rate ,
-                                max_buy_cash: values?.max_buy_type === "نقدي" && values?.max_buy_cash,
-                            })
-                        } else {
-                            PostNewCard({
-                                ...values,
-                                max_buy_rate: values?.max_buy_type === "نسبة" && values?.max_buy_rate,
-                                max_buy_cash: values?.max_buy_type === "نقدي" && values?.max_buy_cash,
-                            })
-                        }
-                    }}
+  return (
+    <>
+      <OuterFormLayout header={t("add buying policy")}>
+        <Formik
+          validationSchema={() => cardsValidatingSchema()}
+          initialValues={initialValues}
+          onSubmit={(values, { resetForm }) => {
+            if (editData) {
+              PostCardEdit({
+                ...values,
+                max_buy_rate:
+                  values?.max_buy_type === "نسبة" && values?.max_buy_rate,
+                max_buy_cash:
+                  values?.max_buy_type === "نقدي" && values?.max_buy_cash,
+              });
+            } else {
+              PostNewCard({
+                ...values,
+                max_buy_rate:
+                  values?.max_buy_type === "نسبة" && values?.max_buy_rate,
+                max_buy_cash:
+                  values?.max_buy_type === "نقدي" && values?.max_buy_cash,
+              });
+            }
+          }}
+        >
+          {({ values, setFieldValue, resetForm }) => (
+            <Form>
+              <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
+                <Select
+                  id="job_type"
+                  label={`${t("job title")}`}
+                  name="job_type"
+                  placeholder={`${t("job title")}`}
+                  loadingPlaceholder={`${t("loading")}`}
+                  fieldKey="id"
+                  options={filterJobTitle}
+                  value={jobType}
+                  onChange={(option: any) => {
+                    setFieldValue("job_type", option!.id);
+                    setJobType(option);
+                  }}
+                />
+                <SelectBranches
+                  required
+                  name="branch_id"
+                  editData={{
+                    branch_id: editData?.branch_id,
+                    branch_name: editData?.branch_name,
+                  }}
+                />
+                <Select
+                  id="max_buy_type"
+                  label={`${t("maximum buy type")}`}
+                  name="max_buy_type"
+                  placeholder={`${t("maximum buy type")}`}
+                  loadingPlaceholder={`${t("loading")}`}
+                  options={maxBuyingTypes}
+                  fieldKey="id"
+                  value={maxBuyingType}
+                  onChange={(option: any) => {
+                    setFieldValue("max_buy_type", option!.value);
+                    setFieldValue("max_buy_type_id", option!.id);
+                    setmaxBuyingType(option);
+                  }}
+                />
+                {values?.max_buy_type === "نقدي" ? (
+                  <div>
+                    <BaseInputField
+                      id="max_buy_cash"
+                      name="max_buy_cash"
+                      type="text"
+                      label={`${t(
+                        "Purchase price difference from the international price"
+                      )} (${t("monetary")})`}
+                      placeholder={`${t(
+                        "Purchase price difference from the international price"
+                      )}`}
+                      onChange={() => {
+                        setFieldValue("max_buy_cash", values?.max_buy_cash);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <BaseInputField
+                      id="max_buy_rate"
+                      type="text"
+                      name="max_buy_rate"
+                      label={`${t(
+                        "Purchase price difference from the international price"
+                      )} (${t("rate")})`}
+                      placeholder={`${t(
+                        "Purchase price difference from the international price"
+                      )}`}
+                      onChange={(e) => {
+                        setFieldValue("max_buy_rate", values?.max_buy_rate);
+                      }}
+                      className="relative"
+                    />
+                    <span className="absolute left-3 top-9 font-bold text-mainGreen">
+                      %
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  className="w-fit"
+                  loading={editLoading}
+                  action={() => setShow(false)}
                 >
-                    {({ values, setFieldValue, resetForm }) => (
-                        <Form>
-                            <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
-                                <Select
-                                    id="job_type"
-                                    label={`${t("job title")}`}
-                                    name="job_type"
-                                    placeholder={`${t("job title")}`}
-                                    loadingPlaceholder={`${t("loading")}`}
-                                    options={maxBuyingEmployee}
-                                    fieldKey="id"
-                                    value={jobType}
-                                    onChange={(option: any) => {
-                                        setFieldValue("job_type", option!.value)
-                                        setJobType(option)
-                                    }}
-                                />
-                                <SelectBranches
-                                    required
-                                    name="branch_id"
-                                    editData={{
-                                        branch_id: editData?.branch_id,
-                                        branch_name: editData?.branch_name,
-                                    }}
-                                />
-                                <Select
-                                    id="max_buy_type"
-                                    label={`${t("maximum buy type")}`}
-                                    name="max_buy_type"
-                                    placeholder={`${t("maximum buy type")}`}
-                                    loadingPlaceholder={`${t("loading")}`}
-                                    options={maxBuyingTypes}
-                                    fieldKey="id"
-                                    value={maxBuyingType}
-                                    onChange={(option: any) => {
-                                        setFieldValue("max_buy_type", option!.value)
-                                        setFieldValue("max_buy_type_id", option!.id)
-                                        setmaxBuyingType(option)
-                                    }}
-                                />
-                                {values?.max_buy_type === "نقدي"
-                                    ? (
-                                        <div>
-                                            <BaseInputField
-                                                id="max_buy_cash"
-                                                name="max_buy_cash"
-                                                type="text"
-                                                label={`${t('Purchase price difference from the international price')} (${t("monetary")})`}
-                                                placeholder={`${t("Purchase price difference from the international price")}`}
-                                                onChange={() => {
-                                                    setFieldValue("max_buy_cash", values?.max_buy_cash)
-                                                }}
-                                            />
-                                        </div>
-                                    )
-                                    :(
-                                        <div className="relative">
-                                            <BaseInputField
-                                                id="max_buy_rate"
-                                                type="text"
-                                                name="max_buy_rate"
-                                                label={`${t("Purchase price difference from the international price")} (${t("rate")})`}
-                                                placeholder={`${t("Purchase price difference from the international price")}`}
-                                                onChange={(e) => {
-                                                setFieldValue("max_buy_rate", values?.max_buy_rate);
-                                                }}
-                                                className="relative"
-                                            />
-                                            <span className="absolute left-3 top-9 font-bold text-mainGreen">
-                                                %
-                                            </span>
-                                        </div>
-                                    )
-                                }
+                  {t("save")}
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </OuterFormLayout>
+    </>
+  );
+};
 
-                            </div>
-                            <div className='flex justify-end'>
-                                <Button
-                                    type='submit'
-                                    className="w-fit"
-                                    loading={editLoading}
-                                    action={() => setShow(false)}
-                                >
-                                    {t('save')}
-                                </Button>
-                            </div>
-                        </Form>
-
-                    )}
-                </Formik>
-            </OuterFormLayout>
-        </>
-    )
-}
-
-export default AddBuyingPolicies
-
-
+export default AddBuyingPolicies;
 
 // import { ToWords } from 'to-words';
 // function NumberToText() {
@@ -289,4 +298,3 @@ export default AddBuyingPolicies
 // }
 
 // export default NumberToText;
-

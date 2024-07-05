@@ -190,7 +190,7 @@ export const AllSuppliers = ({ title }: SupplierProps_TP) => {
         })),
       };
     },
-    onError: (err) => console.log(err),
+    onError: (err) => {setPermissionError(err)},
   });
 
   const { data: supplierExcel } = useFetch<supplier[]>({

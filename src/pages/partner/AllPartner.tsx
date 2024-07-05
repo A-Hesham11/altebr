@@ -77,6 +77,7 @@ export const AllPartner = ({ title }: AllPartnerProps_TP) => {
   const [deleteData, setDeleteData] = useState<partner>()
   const [dataSource, setDataSource] = useState<partner[]>([])
   const [search, setSearch] = useState('')
+  const [permissionError, setPermissionError] = useState()
   const [page, setPage] = useState<number>(1)
 
   const navigate = useNavigate()
@@ -136,8 +137,8 @@ export const AllPartner = ({ title }: AllPartnerProps_TP) => {
     isLoading: partnersLoading,
   } = useFetch<partner[]>({
     endpoint: search === '' 
-    ? `partner/api/v1/partners?page=${page}`
-    : `partner/api/v1/partners?page=${page}&name[lk]=${search}`,
+    ? `partner/api/v1/partners?page=${page}?per_page=10000`
+    : `partner/api/v1/partners?page=${page}&name[lk]=${search}?per_page=10000`,
     queryKey: ["partner"],
     pagination: true,
     onSuccess(data) {
@@ -152,10 +153,8 @@ export const AllPartner = ({ title }: AllPartnerProps_TP) => {
         })),
       }
     },
-    onError: (err) => console.log(err),
+    onError: (err) => {setPermissionError(err)},
   })
-
-
 
   /////////// CUSTOM HOOKS
   ///
@@ -268,7 +267,7 @@ export const AllPartner = ({ title }: AllPartnerProps_TP) => {
         <div className=" m-auto">
           <Header
             className="text-center text-2xl font-bold"
-            header={t(`some thing went wrong ${error.message}`)}
+            header={permissionError?.request.status == "503" ? (t(`you do not have access`)) : (t(`some thing went wrong ${error.message}`))}
           />
         </div>
       )}

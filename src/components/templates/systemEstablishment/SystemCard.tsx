@@ -142,6 +142,7 @@ type SystemCardProps_TP = {
   forStyle?: boolean;
   viewCountReyal?: number;
   viewCountGram?: number;
+  permission: any;
 };
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -156,12 +157,22 @@ export const SystemCard = ({
   forStyle,
   viewCountReyal,
   viewCountGram,
+  permission,
 }: SystemCardProps_TP) => {
   /////////// VARIABLES
   ///
   ///
   /////////// CUSTOM HOOKS
   ///
+
+  // Show All Items
+  const index = permission?.filter((item) => 
+    item.routes.includes("index")
+  );
+
+  const store = permission?.filter((item) => 
+    item.routes.includes("store")
+  );
 
   const location = useLocation();
   const path = location.pathname;
@@ -193,7 +204,7 @@ export const SystemCard = ({
           <div className="flex w-full items-center justify-between">
             <h3 className="">{title}</h3>
             <div className="flex items-center gap-1">
-              {addLabel && addHandler && (
+              {addLabel && store?.length !== 0 && addHandler && (
                 <Button
                   bordered={true}
                   action={addHandler}
@@ -209,7 +220,7 @@ export const SystemCard = ({
                 </Button>
               )}
 
-              {viewLabel && (
+              {viewLabel && index?.length !== 0 && (
                 <Button
                   bordered={true}
                   className={`
