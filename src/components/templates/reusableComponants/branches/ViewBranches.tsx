@@ -122,20 +122,20 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ System ~ userData:", userData);
 
-  const permissions = userData?.roles[0]?.permissions?.filter(
-    (permission) => permission.group === "branches"
-  );
-  console.log("🚀 ~ ViewCompanyDetails ~ permissions:", permissions);
+  // const permissions = userData?.roles[0]?.permissions?.filter(
+  //   (permission) => permission.group === "branches"
+  // );
+  // console.log("🚀 ~ ViewCompanyDetails ~ permissions:", permissions);
 
 
-  const store = permissions?.filter((item) => item.routes.includes("store"));
-  console.log("🚀 ~ ViewBranches ~ store:", store)
+  // const store = permissions?.filter((item) => item.routes.includes("store"));
+  // console.log("🚀 ~ ViewBranches ~ store:", store)
 
-  // Show Details Of Items
-  const show = permissions?.filter((item) => item.routes.includes("show"));
-  console.log("🚀 ~ ViewBranches ~ show:", show);
+  // // Show Details Of Items
+  // const show = permissions?.filter((item) => item.routes.includes("show"));
+  // console.log("🚀 ~ ViewBranches ~ show:", show);
 
-  const update = permissions?.filter((item) => item.routes.includes("update"));
+  // const update = permissions?.filter((item) => item.routes.includes("update"));
   /////////// VARIABLES
   ///
   const isRTL = useIsRTL();
@@ -178,7 +178,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
         cell: (info) => {
           return (
             <div className="flex items-center justify-center gap-4">
-              {update.length !== 0 && (
+              {/* {update.length !== 0 && ( */}
                 <EditIcon
                   action={() => {
                     setOpen((prev) => !prev);
@@ -192,7 +192,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
                   }}
                   className="fill-mainGreen w-6 h-6 mb-[2px]"
                 />
-              )}
+              {/* )} */}
               <SvgDelete
                 action={() => {
                   setOpen((prev) => !prev);
@@ -206,7 +206,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
                 }}
                 stroke="#ef4444"
               />
-              {show.length !== 0 && (
+              {/* {show.length !== 0 && ( */}
                 <ViewIcon
                   action={() => {
                     navigate(`${info.row.original.id}`);
@@ -222,7 +222,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
                   size={23}
                   className="text-mainGreen"
                 />
-              )}
+              {/* )} */}
             </div>
           );
         },
@@ -343,7 +343,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
           </Form>
         </Formik>
         <div className="flex">
-          {store.length !== 0 ? (
+          {/* {store.length !== 0 ? ( */}
             <AddButton
               action={() => {
                 setEditData(undefined);
@@ -357,7 +357,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
               }}
               addLabel={`${t("add")}`}
             />
-          ) : ""}
+          {/* ) : ""} */}
           <div className="ms-2">
             <Back />
           </div>
