@@ -1,141 +1,159 @@
 /////////// IMPORTS
 ///
 //import classes from './ViewBranches.module.css'
-import { t } from "i18next"
-import { Helmet } from "react-helmet-async"
-import { useNavigate } from "react-router-dom"
-import { useFetch, useIsRTL, useMutate } from "../../../../hooks"
-import { Button } from "../../../atoms"
-import { Header } from "../../../atoms/Header"
-import { Loading } from "../../../organisms/Loading"
-import { DeleteIcon, EditIcon, ViewIcon } from "../../../atoms/icons"
-import { useEffect, useMemo, useState } from "react"
+import { t } from "i18next";
+import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
+import { useFetch, useIsRTL, useMutate } from "../../../../hooks";
+import { Button } from "../../../atoms";
+import { Header } from "../../../atoms/Header";
+import { Loading } from "../../../organisms/Loading";
+import { DeleteIcon, EditIcon, ViewIcon } from "../../../atoms/icons";
+import { useContext, useEffect, useMemo, useState } from "react";
 
-import { BaseInputField, Modal } from "../../../molecules"
-import { CreateBranch } from "./CreateBranch"
-import { CImageFile_TP } from "../../../../types"
-import { Form, Formik } from "formik"
-import { BiSearchAlt } from "react-icons/bi"
-import * as Yup from "yup"
-import { AddButton } from "../../../molecules/AddButton"
-import { Back } from "../../../../utils/utils-components/Back"
-import { ColumnDef } from "@tanstack/react-table"
-import { SvgDelete } from "../../../atoms/icons/SvgDelete"
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md"
-import { Table } from "../tantable/Table"
-import { OneBranches } from "./OneBranches"
-import { useQueryClient } from "@tanstack/react-query"
-import { notify } from "../../../../utils/toast"
-import { mutateData } from "../../../../utils/mutateData"
+import { BaseInputField, Modal } from "../../../molecules";
+import { CreateBranch } from "./CreateBranch";
+import { CImageFile_TP } from "../../../../types";
+import { Form, Formik } from "formik";
+import { BiSearchAlt } from "react-icons/bi";
+import * as Yup from "yup";
+import { AddButton } from "../../../molecules/AddButton";
+import { Back } from "../../../../utils/utils-components/Back";
+import { ColumnDef } from "@tanstack/react-table";
+import { SvgDelete } from "../../../atoms/icons/SvgDelete";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { Table } from "../tantable/Table";
+import { OneBranches } from "./OneBranches";
+import { useQueryClient } from "@tanstack/react-query";
+import { notify } from "../../../../utils/toast";
+import { mutateData } from "../../../../utils/mutateData";
+import { authCtx } from "../../../../context/auth-and-perm/auth";
 
 ///
 /////////// Types
 ///
 type ViewBranches_Props_TP = {
-  title: string
-}
+  title: string;
+};
 export type Branch_Props_TP = {
-  main_address: any
-  id: string
-  address: string
-  fax: string
-  market_number: string
-  name_ar: string
-  name_en: string
+  main_address: any;
+  id: string;
+  address: string;
+  fax: string;
+  market_number: string;
+  name_ar: string;
+  name_en: string;
 
-  number: string
-  phone: string
+  number: string;
+  phone: string;
   country: {
-    name: string
-    id: string
-    name_ar: string
-    name_en: string
-  }
+    name: string;
+    id: string;
+    name_ar: string;
+    name_en: string;
+  };
   city: {
-    name: string
-    id: string
-    name_ar: string
-    name_en: string
+    name: string;
+    id: string;
+    name_ar: string;
+    name_en: string;
     country: {
-      id: string
-      name_ar: string
-      name_en: string
-    }
-  }
+      id: string;
+      name_ar: string;
+      name_en: string;
+    };
+  };
   district: {
-    name: string
-    id: string
-    name_ar: string
-    name_en: string
-  }
+    name: string;
+    id: string;
+    name_ar: string;
+    name_en: string;
+  };
   market: {
-    name: string
-    id: string
-    name_ar: string
-    name_en: string
-  }
+    name: string;
+    id: string;
+    name_ar: string;
+    name_en: string;
+  };
   nationalAddress: {
-    id: string
-    address: string
-    building_number: string
-    city: { id: string; name_ar: string; name_en: string }
-    country: { id: string; name_ar: string; name_en: string }
-    district: { id: string; name_ar: string; name_en: string }
-    street_number: string
-    sub_number: string
-    zip_code: string
-  }
+    id: string;
+    address: string;
+    building_number: string;
+    city: { id: string; name_ar: string; name_en: string };
+    country: { id: string; name_ar: string; name_en: string };
+    district: { id: string; name_ar: string; name_en: string };
+    street_number: string;
+    sub_number: string;
+    zip_code: string;
+  };
   document: {
-    id: string
+    id: string;
     data: {
-      docName: string
-      docNumber: string
+      docName: string;
+      docNumber: string;
       docType: {
-        id: string
-        label: string
-        value: string
-      }
-      endDate: string
-      id: string
-      reminder: string
-    }
-    files: CImageFile_TP[]
-  }[]
-}
+        id: string;
+        label: string;
+        value: string;
+      };
+      endDate: string;
+      id: string;
+      reminder: string;
+    };
+    files: CImageFile_TP[];
+  }[];
+};
 type Search_TP = {
-  search: string
-}
+  search: string;
+};
 
 const initialValues: Search_TP = {
   search: "",
-}
+};
 const validationSchema = Yup.object({
   search: Yup.string().trim(),
-})
+});
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
 ///
 export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
+  const { userData } = useContext(authCtx);
+  console.log("🚀 ~ System ~ userData:", userData);
+
+  const permissions = userData?.roles[0]?.permissions?.filter(
+    (permission) => permission.group === "branches"
+  );
+  console.log("🚀 ~ ViewCompanyDetails ~ permissions:", permissions);
+
+
+  const store = permissions?.filter((item) => item.routes.includes("store"));
+  console.log("🚀 ~ ViewBranches ~ store:", store)
+
+  // Show Details Of Items
+  const show = permissions?.filter((item) => item.routes.includes("show"));
+  console.log("🚀 ~ ViewBranches ~ show:", show);
+
+  const update = permissions?.filter((item) => item.routes.includes("update"));
   /////////// VARIABLES
   ///
-  const isRTL = useIsRTL()
-  const navigate = useNavigate()
-  const [open, setOpen] = useState<boolean>(false)
-  const [model, setModel] = useState(false)
+  const isRTL = useIsRTL();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState<boolean>(false);
+  const [model, setModel] = useState(false);
   const [action, setAction] = useState({
     edit: false,
     delete: false,
     view: false,
-  })
-  const [viewSingleBranch, setViewSingleBranch] = useState<Branch_Props_TP>()
-  const [search, setSearch] = useState("")
-  const [editData, setEditData] = useState<Branch_Props_TP>()
-  const [deleteData, setDeleteData] = useState<Branch_Props_TP>()
-  const [dataSource, setDataSource] = useState<Branch_Props_TP[]>([])
-  console.log("🚀 ~ ViewBranches ~ dataSource:", dataSource)
-  const [page, setPage] = useState<number>(1)
+  });
+  const [viewSingleBranch, setViewSingleBranch] = useState<Branch_Props_TP>();
+  const [search, setSearch] = useState("");
+  const [editData, setEditData] = useState<Branch_Props_TP>();
+  const [deleteData, setDeleteData] = useState<Branch_Props_TP>();
+  const [dataSource, setDataSource] = useState<Branch_Props_TP[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [permissionError, setPermissionError] = useState();
 
   const columns = useMemo<ColumnDef<Branch_Props_TP>[]>(
     () => [
@@ -160,54 +178,58 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
         cell: (info) => {
           return (
             <div className="flex items-center justify-center gap-4">
-              <EditIcon
-                action={() => {
-                  setOpen((prev) => !prev)
-                  setEditData(info.row.original)
-                  setAction({
-                    edit: true,
-                    delete: false,
-                    view: false,
-                  })
-                  setModel(false)
-                }}
-                className="fill-mainGreen w-6 h-6 mb-[2px]"
-              />
+              {update.length !== 0 && (
+                <EditIcon
+                  action={() => {
+                    setOpen((prev) => !prev);
+                    setEditData(info.row.original);
+                    setAction({
+                      edit: true,
+                      delete: false,
+                      view: false,
+                    });
+                    setModel(false);
+                  }}
+                  className="fill-mainGreen w-6 h-6 mb-[2px]"
+                />
+              )}
               <SvgDelete
                 action={() => {
-                  setOpen((prev) => !prev)
-                  setDeleteData(info.row.original)
+                  setOpen((prev) => !prev);
+                  setDeleteData(info.row.original);
                   setAction({
                     delete: true,
                     view: false,
                     edit: false,
-                  })
-                  setModel(false)
+                  });
+                  setModel(false);
                 }}
                 stroke="#ef4444"
               />
-              <ViewIcon
-                action={() => {
-                  navigate(`${info.row.original.id}`)
-                  setViewSingleBranch(info.row.original)
-                  setOpen((prev) => !prev)
-                  setAction({
-                    view: true,
-                    delete: false,
-                    edit: false,
-                  })
-                  setModel(false)
-                }}
-                size={23}
-                className="text-mainGreen"
-              />
+              {show.length !== 0 && (
+                <ViewIcon
+                  action={() => {
+                    navigate(`${info.row.original.id}`);
+                    setViewSingleBranch(info.row.original);
+                    setOpen((prev) => !prev);
+                    setAction({
+                      view: true,
+                      delete: false,
+                      edit: false,
+                    });
+                    setModel(false);
+                  }}
+                  size={23}
+                  className="text-mainGreen"
+                />
+              )}
             </div>
-          )
+          );
         },
       },
     ],
     []
-  )
+  );
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -234,7 +256,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
       queryKey: ["AllBranches"],
       pagination: true,
       onSuccess(data) {
-        setDataSource(data.data)
+        setDataSource(data.data);
       },
       select: (data) => {
         return {
@@ -243,25 +265,28 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
             ...branches,
             index: i + 1,
           })),
-        }
+        };
       },
-    })
+      onError: (err) => {
+        setPermissionError(err);
+      },
+    });
 
-    console.log("🚀 ~ ViewBranches ~ data:", data)
+  console.log("🚀 ~ ViewBranches ~ data:", data);
 
   useEffect(() => {
-    refetch()
-  }, [page])
+    refetch();
+  }, [page]);
 
   useEffect(() => {
     if (page == 1) {
-      refetch()
+      refetch();
     } else {
-      setPage(1)
+      setPage(1);
     }
-  }, [search])
+  }, [search]);
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const {
     mutate,
     error: mutateError,
@@ -272,18 +297,18 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
       // setDataSource((prev: ViewCategories_TP[]) =>
       //   prev.filter((p) => p.id !== deleteData?.id)
       // )
-      queryClient.refetchQueries(["AllBranches"])
-      setOpen(false)
+      queryClient.refetchQueries(["AllBranches"]);
+      setOpen(false);
       // refetch()
-      notify("success")
+      notify("success");
     },
-  })
+  });
   const handleSubmit = () => {
     mutate({
       endpointName: `/branch/api/v1/branches/${deleteData?.id}`,
       method: "delete",
-    })
-  }
+    });
+  };
   ///
   return (
     <>
@@ -298,7 +323,7 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            setSearch(values.search)
+            setSearch(values.search);
           }}
           validationSchema={validationSchema}
         >
@@ -318,19 +343,21 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
           </Form>
         </Formik>
         <div className="flex">
-          <AddButton
-            action={() => {
-              setEditData(undefined)
-              setModel(true)
-              setOpen(true)
-              setAction({
-                edit: false,
-                delete: false,
-                view: false,
-              })
-            }}
-            addLabel={`${t("add")}`}
-          />
+          {store.length !== 0 ? (
+            <AddButton
+              action={() => {
+                setEditData(undefined);
+                setModel(true);
+                setOpen(true);
+                setAction({
+                  edit: false,
+                  delete: false,
+                  view: false,
+                });
+              }}
+              addLabel={`${t("add")}`}
+            />
+          ) : ""}
           <div className="ms-2">
             <Back />
           </div>
@@ -345,10 +372,14 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
         </div>
       )}
       {isError && (
-        <div className=" m-auto">
+        <div className=" m-auto my-20">
           <Header
             className="text-center text-2xl font-bold"
-            header={t(`some thing went wrong ${error.response.data.message}`)}
+            header={
+              permissionError.request.status == "503"
+                ? t(`you do not have access`)
+                : t(`some thing went wrong ${error.message}`)
+            }
           />
         </div>
       )}
@@ -438,5 +469,5 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
       </Modal>
       {action.view && <OneBranches title="كل الفروع" />}
     </>
-  )
-}
+  );
+};

@@ -1,38 +1,38 @@
 /////////// IMPORTS
 ///
-import { t } from "i18next"
-import { Helmet } from "react-helmet-async"
-import { useNavigate } from "react-router-dom"
-import { Button } from "../../components/atoms"
-import { OuterFormLayout } from "../../components/molecules/OuterFormLayout"
+import { t } from "i18next";
+import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../components/atoms";
+import { OuterFormLayout } from "../../components/molecules/OuterFormLayout";
 ///
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { useMemo, useState } from "react"
-import { Header } from "../../components/atoms/Header"
-import { EditIcon, ViewIcon } from "../../components/atoms/icons"
-import { SvgDelete } from "../../components/atoms/icons/SvgDelete"
-import { Modal } from "../../components/molecules/Modal"
-import { Loading } from "../../components/organisms/Loading"
-import { Table } from "../../components/templates/reusableComponants/tantable/Table"
-import { useFetch, useMutate } from "../../hooks"
-import { mutateData } from "../../utils/mutateData"
-import { notify } from "../../utils/toast"
-import { AddAdministrativeStructure } from "./AddAdministrativeStructure"
-import { PermissionGroup_TP } from "./types-and-schemas"
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { useMemo, useState } from "react";
+import { Header } from "../../components/atoms/Header";
+import { EditIcon, ViewIcon } from "../../components/atoms/icons";
+import { SvgDelete } from "../../components/atoms/icons/SvgDelete";
+import { Modal } from "../../components/molecules/Modal";
+import { Loading } from "../../components/organisms/Loading";
+import { Table } from "../../components/templates/reusableComponants/tantable/Table";
+import { useFetch, useMutate } from "../../hooks";
+import { mutateData } from "../../utils/mutateData";
+import { notify } from "../../utils/toast";
+import { AddAdministrativeStructure } from "./AddAdministrativeStructure";
+import { PermissionGroup_TP } from "./types-and-schemas";
 /////////// Types
 ///
 type AdministrativeStructureProps_TP = {
-  title: string
-}
+  title: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 type Admin = {
-  id: string
-  name: string
-  action: any
-}
+  id: string;
+  name: string;
+  action: any;
+};
 
-const columnHelper = createColumnHelper<Admin>()
+const columnHelper = createColumnHelper<Admin>();
 
 ///
 export const AdministrativeStructure = ({
@@ -40,46 +40,52 @@ export const AdministrativeStructure = ({
 }: AdministrativeStructureProps_TP) => {
   /////////// VARIABLES
   ///
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // states
-  const [dataSource, setDataSource] = useState<PermissionGroup_TP[]>([])
-  const [open, setOpen] = useState<boolean>(false)
-  const [model, setModel] = useState(false)
-  const [editData, setEditData] = useState<any>()
-  const [deleteData, setDeleteData] = useState<any>()
+  const [dataSource, setDataSource] = useState<PermissionGroup_TP[]>([]);
+  console.log("🚀 ~ dataSource:", dataSource);
+  const [open, setOpen] = useState<boolean>(false);
+  const [model, setModel] = useState(false);
+  const [editData, setEditData] = useState<any>();
+  console.log("🚀 ~ editData:", editData)
+  const [deleteData, setDeleteData] = useState<any>();
+  console.log("🚀 ~ deleteData:", deleteData);
 
   ///
   const AddAdministrative = (
     <Button
       bordered
       action={() => {
-        navigate(-1)
+        navigate(-1);
       }}
     >
       {t("back")}
     </Button>
-  )
+  );
   /////////// CUSTOM HOOKS
   ///
-  const { isSuccess, isFetching } = useFetch<PermissionGroup_TP[]>({
-    endpoint: "administrative/api/v1/roles",
+  const { data, isSuccess, isFetching } = useFetch<PermissionGroup_TP[]>({
+    endpoint: "administrative/api/v1/roles?per_page=10000",
     queryKey: ["allRoles"],
     onSuccess: (data) => {
-      setDataSource(data)
+      setDataSource(data.data);
     },
-  })
+    pagination: true,
+  });
+
+  console.log("🚀 ~ data:", data ); 
 
   const { mutate, isLoading: isDeleting } = useMutate({
     mutationFn: mutateData,
     onSuccess: () => {
       setDataSource((prev: PermissionGroup_TP[]) =>
         prev.filter((p) => p.id !== deleteData?.id)
-      )
-      setOpen(false)
-      notify("success")
+      );
+      setOpen(false);
+      notify("success");
     },
-  })
+  });
 
   const cols = useMemo<ColumnDef<PermissionGroup_TP>[]>(
     () => [
@@ -94,27 +100,31 @@ export const AdministrativeStructure = ({
           <div className="flex items-center justify-center gap-4">
             <EditIcon
               action={() => {
-                setOpen((prev) => !prev)
-                setEditData(info.row.original)
-                setModel(true)
+                setOpen((prev) => !prev);
+                setEditData(info.row.original);
+                setModel(true);
               }}
             />
             <SvgDelete
               action={() => {
-                setOpen((prev) => !prev)
-                setDeleteData(info.row.original)
-                setModel(false)
+                setOpen((prev) => !prev);
+                setDeleteData(info.row.original);
+                setModel(false);
               }}
               stroke="#ef4444"
             />
-              <ViewIcon action={() => navigate(`/administrative/api/v1/roles/${info.row.original.id}`)} />
+            <ViewIcon
+              action={() =>
+                navigate(`/administrative/api/v1/roles/${info.row.original.id}`)
+              }
+            />
           </div>
         ),
         accessorKey: "edit",
       },
     ],
     []
-  )
+  );
   ////
 
   ///
@@ -131,9 +141,9 @@ export const AdministrativeStructure = ({
     mutate({
       endpointName: `administrative/api/v1/roles/${deleteData?.id}`,
       method: "delete",
-    })
-  }
-  if (isFetching) return <Loading mainTitle={t("administrative structure")} />
+    });
+  };
+  if (isFetching) return <Loading mainTitle={t("administrative structure")} />;
   ///
   return (
     <>
@@ -190,5 +200,5 @@ export const AdministrativeStructure = ({
         </div>
       </OuterFormLayout>
     </>
-  )
-}
+  );
+};

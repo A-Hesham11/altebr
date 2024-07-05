@@ -1,6 +1,6 @@
 /////////// IMPORTS
 import { t } from "i18next";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import MainImage from "../../../../assets/original170521850658149.jpg";
 import { useFetch } from "../../../../hooks";
 import { Button } from "../../../atoms";
@@ -47,6 +47,7 @@ import { EditIcon } from "../../../atoms/icons";
 import { HiOutlineMail } from "react-icons/hi";
 import { HiOutlineHome } from "react-icons/hi2";
 import { object } from "yup";
+import { authCtx } from "../../../../context/auth-and-perm/auth";
 ///
 ///
 /////////// Types
@@ -102,6 +103,9 @@ export type CompanyDetails_TP = {
 export const ViewCompanyDetails = () => {
   /////////// VARIABLES
   ///
+
+
+
 
   ///
   /////////// CUSTOM HOOKS

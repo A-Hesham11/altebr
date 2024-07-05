@@ -5,10 +5,10 @@ import { FormNames_TP } from "./types-and-helpers";
 type EstablishingSystemCard_TP = {
   titleKey: string;
   index: number;
-  start: number;
-  end: number;
   systemCards: any;
   openPopup: any;
+  total: any;
+  permission: any;
 };
 
 type SystemCard_TP = {
@@ -19,13 +19,12 @@ type SystemCard_TP = {
   viewHandler: any;
   viewLabel: any;
   name: string;
+  permission: any;
 };
 
 const EstablishingSystem = ({
   titleKey,
   index,
-  start,
-  end,
   systemCards,
   openPopup,
   total,
@@ -39,28 +38,28 @@ const EstablishingSystem = ({
         </p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {systemCards
-          .slice(start, end)
-          .map(
-            ({
-              id,
-              title,
-              addComponent,
-              addLabel,
-              viewHandler,
-              viewLabel,
-              name,
-            }: SystemCard_TP) => (
-              <SystemCard
-                key={id}
-                viewHandler={viewHandler}
-                viewLabel={viewLabel}
-                title={title}
-                addLabel={addLabel}
-                addHandler={() => openPopup(name as FormNames_TP)}
-              />
-            )
-          )}
+        {systemCards.map(
+          ({
+            id,
+            title,
+            addComponent,
+            addLabel,
+            viewHandler,
+            viewLabel,
+            name,
+            permission,
+          }: SystemCard_TP) => (
+            <SystemCard
+              key={id}
+              viewHandler={viewHandler}
+              viewLabel={viewLabel}
+              title={title}
+              addLabel={addLabel}
+              addHandler={() => openPopup(name as FormNames_TP)}
+              permission={permission}
+            />
+          )
+        )}
       </div>
     </div>
   );
