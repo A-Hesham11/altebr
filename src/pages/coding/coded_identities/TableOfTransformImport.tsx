@@ -93,36 +93,66 @@ const TableOfTransformImport = ({
           setRowWage(info.row.original.wage);
 
           if (info.row.original.check_input_weight === 1) {
+            // setInputWeight((prev: any) => {
+            //   // Check if the object with the same id exists in the array
+            //   const existingItemIndex = prev.findIndex(
+            //     (item) => item.id === info.row.original.id
+            //   );
+
+            //   if (existingItemIndex !== -1) {
+            //     // If the object exists, update its value
+            //     return prev.map((item, index) =>
+            //       index === existingItemIndex
+            //         ? { ...item, value: info.row.original.weight }
+            //         : item
+            //     );
+            //   } else {
+            //     // If the object doesn't exist, add a new one
+            //     return [
+            //       ...prev,
+            //       {
+            //         value: info.row.original.weight,
+            //         id: info.row.original.id,
+            //       },
+            //     ];
+            //   }
+            // });
+
             return (
               <>
                 <input
                   type="text"
-                  className="w-20 rounded-md h-10"
+                  className="w-20 rounded-md h-10 bg-mainDisabled"
                   name="weight_input"
+                  disabled
                   id="weight_input"
-                  onBlur={(e: any) => {
-                    setInputWeight((prev: any) => {
-                      // Check if the object with the same id exists in the array
-                      const existingItemIndex = prev.findIndex(
-                        (item) => item.id === info.row.original.id
-                      );
+                  value={info.row.original.weight}
+                  // onChange={(e: any) => {
+                  //   setInputWeight((prev: any) => {
+                  //     // Check if the object with the same id exists in the array
+                  //     const existingItemIndex = prev.findIndex(
+                  //       (item) => item.id === info.row.original.id
+                  //     );
 
-                      if (existingItemIndex !== -1) {
-                        // If the object exists, update its value
-                        return prev.map((item, index) =>
-                          index === existingItemIndex
-                            ? { ...item, value: e.target.value }
-                            : item
-                        );
-                      } else {
-                        // If the object doesn't exist, add a new one
-                        return [
-                          ...prev,
-                          { value: e.target.value, id: info.row.original.id },
-                        ];
-                      }
-                    });
-                  }}
+                  //     if (existingItemIndex !== -1) {
+                  //       // If the object exists, update its value
+                  //       return prev.map((item, index) =>
+                  //         index === existingItemIndex
+                  //           ? { ...item, value: info.row.original.weight }
+                  //           : item
+                  //       );
+                  //     } else {
+                  //       // If the object doesn't exist, add a new one
+                  //       return [
+                  //         ...prev,
+                  //         {
+                  //           value: info.row.original.weight,
+                  //           id: info.row.original.id,
+                  //         },
+                  //       ];
+                  //     }
+                  //   });
+                  // }}
                 />
               </>
             );
