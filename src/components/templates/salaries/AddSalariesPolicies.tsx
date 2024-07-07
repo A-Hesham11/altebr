@@ -12,7 +12,7 @@ import * as Yup from "yup";
 import { requiredTranslation } from "../systemEstablishment/partners/validation-and-types-partner";
 import { SelectOption_TP } from "../../../types";
 
-const AddSalariesPolicies = ({ title, editData, setShow, refetch }) => {
+const AddSalariesPolicies = ({ title, editData, setShow, refetch }: any) => {
   // Various state variables and hooks
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);

@@ -18,7 +18,7 @@ const AddEmployeeBenefits = ({
   setShow,
   refetch,
   receivablesData,
-}) => {
+}: any) => {
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();

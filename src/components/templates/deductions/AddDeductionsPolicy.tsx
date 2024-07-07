@@ -11,7 +11,7 @@ import { Form, Formik } from "formik";
 import { Button } from "../../atoms";
 import { t } from "i18next";
 
-const AddDeductionsPolicy = ({ title, editData, setShow, refetch }) => {
+const AddDeductionsPolicy = ({ title, editData, setShow, refetch }: any) => {
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();

@@ -12,7 +12,7 @@ import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
 import { t } from "i18next";
 import { Button } from "../../atoms";
 
-const AddEntitlementsPolicies = ({ title, editData, setShow, refetch }) => {
+const AddEntitlementsPolicies = ({ title, editData, setShow, refetch }: any) => {
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
