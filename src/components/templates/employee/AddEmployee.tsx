@@ -157,8 +157,9 @@ export const AddEmployee = ({
       notify("success")
       queryClient.refetchQueries([ "employees" ])
     },
-    onError: (error) => {
-      console.log(error)
+    onError: (error: any) => {
+      console.log("🚀 ~ Employees ~ error:", error)
+      notify("error", error.request.status == "503" ? (`${t("you do not have access")}`) : error?.response?.data?.message);
     },
   })
   ///

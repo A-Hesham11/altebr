@@ -3,7 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { Form, Formik } from "formik"
 import { t } from "i18next"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import * as Yup from "yup"
 import { NationalAddress } from "../.."
 import { useIsRTL, useMutate } from "../../../../hooks"
@@ -40,6 +40,7 @@ export const CreateBranch = ({
   onAdd,
   editData,
 }: CreateBranchProps_TP) => {
+  
   /////////// VARIABLES
   ///
   const initialValues = {
@@ -123,9 +124,8 @@ export const CreateBranch = ({
         return [data]
       })
     },
-    onError: (error) => {
-      notify("error")
-      console.log(error)
+    onError: (error: any) => {
+      notify("error", error.request.status == "503" ? (`${t("you do not have access")}`) : error?.response?.data?.message);
     },
   })
   /////////// SIDE EFFECTS

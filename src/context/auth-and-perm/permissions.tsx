@@ -1,26 +1,26 @@
-import { createContext, ReactNode } from "react"
-import { permissionsRule_TP } from "../../types"
+import { createContext, ReactNode } from "react";
+import { permissionsRule_TP } from "../../types";
 ///
 ///////// TYPES
 type PermissionContextType = {
-  isAllowedTo: (permissions: string[], rule?: permissionsRule_TP) => boolean
-}
+  isAllowedTo: (permissions: string[], rule?: permissionsRule_TP) => boolean;
+};
 
 type PermissionCtxProviderProps_TP = {
-  children: ReactNode
-  userPermissions: string[]
-}
+  children: ReactNode;
+  userPermissions: string[];
+};
 
 ///
 ///////// HELPER VARIABLES
 ///
 const defaultBehavior: PermissionContextType = {
   isAllowedTo: () => false,
-}
+};
 ///
 //// CTX
 export const permissionCtx =
-  createContext<PermissionContextType>(defaultBehavior)
+  createContext<PermissionContextType>(defaultBehavior);
 // PROVIDER
 export const PermissionCtxProvider = ({
   userPermissions,
@@ -34,13 +34,13 @@ export const PermissionCtxProvider = ({
   ) => {
     switch (rule) {
       case "AND":
-        return permissions.every((perm) => userPermissions.includes(perm))
+        return permissions.every((perm) => userPermissions.includes(perm));
       case "OR":
-        return userPermissions.some((perm) => permissions.includes(perm))
+        return userPermissions.some((perm) => permissions.includes(perm));
       default:
-        return false
+        return false;
     }
-  }
+  };
 
   ///
   /////////// STATES`
@@ -64,5 +64,5 @@ export const PermissionCtxProvider = ({
     >
       {children}
     </permissionCtx.Provider>
-  )
-}
+  );
+};

@@ -43,6 +43,7 @@ export const AddAdministrativeStructure = ({
   ///
   let asyncInitValues: { [key: string]: string } = {
     name: editData?.name || "",
+    is_selling: editData?.is_selling || false,
   }
 
   const {
@@ -56,6 +57,7 @@ export const AddAdministrativeStructure = ({
     queryKey: ["roles"],
     endpoint: "administrative/api/v1/permissions/withgrouping",
   })
+    console.log("🚀 ~ permissions:", permissions)
 
 
   permissions?.map((permissionsGroup) =>
@@ -95,7 +97,7 @@ export const AddAdministrativeStructure = ({
 
     mutate({
       endpointName: !!editData?.id ? `/administrative/api/v1/roles/${editData.id}` : "/administrative/api/v1/roles",
-      values: { name: values.name, permissions: idsValues },
+      values: { name: values.name, is_selling: values.is_selling, permissions: idsValues },
       method: !!editData?.id ? "put" : 'post'
     })
   }
