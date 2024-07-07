@@ -1329,4 +1329,7 @@
   "the accounting entry was created successfully": "تم انشاء القيد المحاسبي بنجاح",
   "selling price exceeds asking price":"سعر البيع تخطي السعر المطلوب",
   "tax": "الضريبة"
+  "tax": "الضريبة",
+  "transfer import": "تحويل الاستيراد",
+  "the pieces contains weight": "القطع تحتوي علي اوزان"
 }
