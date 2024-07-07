@@ -7,18 +7,20 @@ import TransformToBranch from "./TransformToBranch";
 import MergeHwya from "./MergeHwya";
 import SeperateHwya from "./SeperateHwya";
 import { notify } from "../../../utils/toast";
+import TransformImport from "./TransformImport";
 
 const OperationType = ({
   operationTypeSelect,
   setOperationTypeSelect,
   refetch,
   setIsSuccessPost,
-  setPage
+  setPage,
 }) => {
   const [transformToBranchModal, setOpenTransformToBranchModal] =
     useState(false);
   const [mergeModal, setOpenMergeModal] = useState(false);
   const [seperateModal, setOpenSeperateModal] = useState(false);
+  const [transformImportModal, setTransformImportModal] = useState(false);
   const [formData, setFormData] = useState({});
 
   return (
@@ -36,7 +38,7 @@ const OperationType = ({
                 notify("info", `${t("You must choose a piece first")}`);
                 return;
               }
-              setOpenTransformToBranchModal(true)
+              setOpenTransformToBranchModal(true);
             }}
             className="border-2 border-mainGreen bg-mainGreen text-white flex items-center gap-2"
           >
@@ -48,7 +50,7 @@ const OperationType = ({
                 notify("info", `${t("You must choose at least two pieces")}`);
                 return;
               }
-              setOpenMergeModal(true)
+              setOpenMergeModal(true);
             }}
             className="border-2 border-mainGreen bg-transparent text-mainGreen flex items-center gap-2"
           >
@@ -57,7 +59,10 @@ const OperationType = ({
           <Button
             action={() => {
               if (operationTypeSelect.length > 1) {
-                notify("info", `${t("You can only select one identity to separate")}`);
+                notify(
+                  "info",
+                  `${t("You can only select one identity to separate")}`
+                );
                 return;
               }
 
@@ -71,6 +76,15 @@ const OperationType = ({
             className="border-2 border-mainGreen bg-transparent text-mainGreen  flex items-center gap-2"
           >
             <span>{t("separating identities")}</span>
+          </Button>
+
+          <Button
+            action={() => {
+              setTransformImportModal(true);
+            }}
+            className="border-2 border-mainGreen bg-white text-mainGreen flex items-center gap-2"
+          >
+            <span>{t("transfer import")}</span>
           </Button>
         </div>
 
@@ -116,6 +130,16 @@ const OperationType = ({
             setIsSuccessPost={setIsSuccessPost}
             operationTypeSelect={operationTypeSelect}
             setOpenTransformToBranchModal={setOpenTransformToBranchModal}
+          />
+        </Modal>
+
+        <Modal
+          isOpen={transformImportModal}
+          onClose={() => setTransformImportModal(false)}
+        >
+          <TransformImport
+            setIsSuccessPost={setIsSuccessPost}
+            setTransformImportModal={setTransformImportModal}
           />
         </Modal>
       </div>

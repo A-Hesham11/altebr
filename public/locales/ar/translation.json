@@ -1325,5 +1325,7 @@
   "count": "عدد القطع",
   "create accounting entry": "انشاء القيد المحاسبي",
   "the accounting entry was created successfully": "تم انشاء القيد المحاسبي بنجاح",
-  "tax": "الضريبة"
+  "tax": "الضريبة",
+  "transfer import": "تحويل الاستيراد",
+  "the pieces contains weight": "القطع تحتوي علي اوزان"
 }
