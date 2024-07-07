@@ -96,10 +96,8 @@ const TableOfTransformImport = ({
             return (
               <>
                 <input
-                  type="number"
+                  type="text"
                   className="w-20 rounded-md h-10"
-                  min="1"
-                  max={info.row.original.weight}
                   name="weight_input"
                   id="weight_input"
                   onBlur={(e: any) => {
