@@ -1322,13 +1322,13 @@
   "to": "الي",
   "loading statement of accounts": "تحميل كشف الحسابات",
   "create the accounting entry": "انشاء القيد المحاسبي",
+  "there are no new parts":"لا توجد قطع جديده",
   "totals import bonds": "اجمالي سندات الاستيراد",
   "total converted to 24": "الوزن المحول ل 24",
   "count": "عدد القطع",
   "create accounting entry": "انشاء القيد المحاسبي",
   "the accounting entry was created successfully": "تم انشاء القيد المحاسبي بنجاح",
   "selling price exceeds asking price":"سعر البيع تخطي السعر المطلوب",
-  "tax": "الضريبة"
   "tax": "الضريبة",
   "transfer import": "تحويل الاستيراد",
   "the pieces contains weight": "القطع تحتوي علي اوزان"

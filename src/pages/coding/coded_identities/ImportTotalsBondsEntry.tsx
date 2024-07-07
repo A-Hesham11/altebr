@@ -3,6 +3,7 @@ import { numberContext } from "../../../context/settings/number-formatter";
 import { t } from "i18next";
 
 const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
+  console.log("🚀 ~ ImportTotalsBondsEntry ~ item:", item)
   const { formatGram, formatReyal } = numberContext();
 
   // FOR TABLE ACCOUNTING ENTRY
@@ -91,7 +92,7 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
                   <tr key={i} className="border-b">
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 1
+                        i == restrictions.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -100,7 +101,7 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 1
+                        i == restrictions.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -109,7 +110,7 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 1
+                        i == restrictions.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -118,7 +119,7 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 1
+                        i == restrictions.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -127,7 +128,7 @@ const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 1
+                        i == restrictions.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
