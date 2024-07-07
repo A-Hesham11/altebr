@@ -74,7 +74,7 @@ const TransformImport = ({
     isFetching: operationTypeSelectisFetching,
     failureReason: operationTypeSelectErrorReason,
   } = useFetch<SelectOption_TP[]>({
-    endpoint: `identity/api/v1/getItemBarnch/${branchId}`,
+    endpoint: `identity/api/v1/getItemBarnch/${branchId}?per_page=10000`,
     queryKey: ["operation-data"],
     onError: (err) => console.log(err),
   });
@@ -282,6 +282,14 @@ const TransformImport = ({
     });
   }, []);
 
+  const isContainCheckInputWeight = operationTypeSelect?.some(
+    (el) => el.check_input_weight === 1
+  );
+
+  const filterPiecesContainWeight = operationTypeSelect?.filter((el) => {
+    return el.check_input_weight === 1;
+  });
+
   return (
     <Formik
       validationSchema=""
@@ -303,6 +311,16 @@ const TransformImport = ({
         //   notify("info", `${t("You must add weight first")}`);
         //   return;
         // }
+
+        if (isContainCheckInputWeight && inputWeight?.length === 0) {
+          notify(
+            "info",
+            `${t(
+              `There are ${filterPiecesContainWeight?.length}  pieces contain weight`
+            )}`
+          );
+          return;
+        }
 
         if (inputWeightItem === false) {
           notify("info", `${t("You must add weight first")}`);
