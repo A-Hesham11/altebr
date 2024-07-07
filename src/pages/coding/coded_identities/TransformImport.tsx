@@ -29,9 +29,11 @@ const TransformImport = ({
   const { formatReyal } = numberContext();
   const [selectedOption, setSelectedOption] = useState("normal");
   const [inputWeight, setInputWeight] = useState([]);
+  console.log("🚀 ~ inputWeight:", inputWeight);
   const [rowWage, setRowWage] = useState(null);
   const [branchId, setBranchId] = useState(null);
   const [thwelIds, setThwelIds] = useState([]);
+  console.log("🚀 ~ thwelIds:", thwelIds);
 
   const handleOptionChange = (event: any) => {
     setSelectedOption(event.target.value);
@@ -87,6 +89,7 @@ const TransformImport = ({
     (el: any) => el.check_input_weight !== 0
   );
 
+  console.log("🚀 ~ operationTypeSelectWeight:", operationTypeSelectWeight);
   // BOXES DATA
   const totalWages = operationTypeSelect?.reduce(
     (accumulator: any, currentValue: any) => {
@@ -259,6 +262,7 @@ const TransformImport = ({
       setIsSuccessPost(data);
       notify("success");
       // QueryClient.refetchQueries(["thwel-api"]);
+      setTransformImportModal(false);
     },
     onError: (error) => {
       notify("error", error.response.data.msg);
@@ -274,13 +278,11 @@ const TransformImport = ({
     });
   }
 
-  useEffect(() => {
-    operationTypeSelect?.map((operation: any) => {
-      if (!thwelIds.includes(`${operation.id}`)) {
-        setThwelIds((prev) => [...prev, `${operation.id}`]);
-      }
-    });
-  }, []);
+  operationTypeSelect?.map((operation: any) => {
+    if (!thwelIds.includes(`${operation.id}`)) {
+      setThwelIds((prev) => [...prev, `${operation.id}`]);
+    }
+  });
 
   const isContainCheckInputWeight = operationTypeSelect?.some(
     (el) => el.check_input_weight === 1
@@ -312,15 +314,15 @@ const TransformImport = ({
         //   return;
         // }
 
-        if (isContainCheckInputWeight && inputWeight?.length === 0) {
-          notify(
-            "info",
-            `${t(
-              `There are ${filterPiecesContainWeight?.length}  pieces contain weight`
-            )}`
-          );
-          return;
-        }
+        // if (isContainCheckInputWeight && inputWeight?.length === 0) {
+        //   notify(
+        //     "info",
+        //     `${t(
+        //       `There are ${filterPiecesContainWeight?.length}  pieces contain weight`
+        //     )}`
+        //   );
+        //   return;
+        // }
 
         if (inputWeightItem === false) {
           notify("info", `${t("You must add weight first")}`);
@@ -336,20 +338,19 @@ const TransformImport = ({
           editWeight: operationTypeSelectWeight?.map((el, i) => {
             return {
               id: el.id.toString(),
-              weight: Number(inputWeight[i]?.value),
+              weight: el.weight,
               hwya: el.hwya,
               type: "all",
               wage: el.wage,
               category: el.category,
               classification: el.classification_name,
-              totalWage: Number(el.wage) * Number(inputWeight[i]?.value),
+              totalWage: Number(el.wage) * el.weight,
               karat: el.karat_name,
               selling_price: el.selling_price,
             };
           }),
         });
 
-        setTransformImportModal(false);
         // setOperationTypeSelect([]);
       }}
     >

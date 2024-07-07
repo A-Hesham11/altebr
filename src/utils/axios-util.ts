@@ -12,8 +12,8 @@ const baseURL =
   // import.meta.env.VITE_BASE_URL || "https://api-hbesh-dev.altebr.jewelry";
   // import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
   // import.meta.env.VITE_BASE_URL || "https://api-alexon.altebr.com";
-// import.meta.env.VITE_BASE_URL || "https://api-test.altebr.com";
-import.meta.env.VITE_BASE_URL || "https://api-almahaisen.altebr.com";
+  // import.meta.env.VITE_BASE_URL || "https://api-test.altebr.com";
+  import.meta.env.VITE_BASE_URL || "https://api-almahaisen.altebr.com";
 
 const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 
