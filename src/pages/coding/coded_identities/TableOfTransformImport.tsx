@@ -16,9 +16,6 @@ const TableOfTransformImport = ({
   setInputWeight,
 }: TableOfTransformImport_TP) => {
   const { formatReyal } = numberContext();
-  const isContainCheckInputWeight = operationTypeSelect?.some(
-    (el) => el.check_input_weight === 1
-  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -105,8 +102,8 @@ const TableOfTransformImport = ({
                   max={info.row.original.weight}
                   name="weight_input"
                   id="weight_input"
-                  onBlur={(e) => {
-                    setInputWeight((prev) => {
+                  onBlur={(e: any) => {
+                    setInputWeight((prev: any) => {
                       // Check if the object with the same id exists in the array
                       const existingItemIndex = prev.findIndex(
                         (item) => item.id === info.row.original.id
@@ -148,11 +145,6 @@ const TableOfTransformImport = ({
         <h2 className="text-xl ml-4 mb-2 font-bold text-slate-700">
           {t("selected pieces")}
         </h2>
-        {isContainCheckInputWeight && (
-          <p className="text-lg ml-4 mb-2 font-bold text-slate-700">
-            {t("the pieces contains weight")}
-          </p>
-        )}
       </div>
       <Table
         showNavigation
