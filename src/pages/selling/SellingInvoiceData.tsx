@@ -32,6 +32,7 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ paymentData:", paymentData)
   console.log("🚀 ~ clientData:", clientData);
   const { formatGram, formatReyal } = numberContext();
 
@@ -281,7 +282,7 @@ const SellingInvoiceData = ({
     });
     const card = paymentData.reduce((acc, curr) => {
       const maxDiscountOrNOt =
-        curr.amount >= curr.max_discount_limit
+      curr.max_discount_limit && curr.amount >= curr.max_discount_limit
           ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
           : Number(curr.amount) + Number(curr.commission_riyals);
 

@@ -16,6 +16,7 @@ import { Back } from "../../utils/utils-components/Back";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import SellingInvoiceTablePreview from "../../components/selling/selling components/sellingWrapper/SellingInvoiceTablePreview";
 import { BiSpreadsheet } from "react-icons/bi";
+import SellingRestrictionsPreview from "../../components/selling/selling components/sellingWrapper/SellingRestrictionsPreview";
 
 const SellingRestrictionsInvoice = () => {
   // STATE
@@ -222,7 +223,7 @@ const SellingRestrictionsInvoice = () => {
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
-        <SellingInvoiceTablePreview item={selectedItem} />
+        <SellingRestrictionsPreview item={selectedItem} />
       </Modal>
     </div>
   );

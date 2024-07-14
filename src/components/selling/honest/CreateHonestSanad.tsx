@@ -49,26 +49,32 @@ export const CreateHonestSanad = ({
   paymentData,
   setPaymentData,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ selectedItem:", selectedItem);
 
   /////////// VARIABLES
   ///
   const [data, setData] = useState(selectedItem.items);
-  console.log("🚀 ~ data:", data)
+  console.log("🚀 ~ data:", data);
   const [editCost, setEditCost] = useState(false);
   const [open, setOpen] = useState(false);
   const [openTotal, setOpenTotal] = useState(false);
-  const { formatGram, formatReyal } = numberContext();
+  const { formatGram, formatReyal, digits_count } = numberContext();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData)
+  console.log("🚀 ~ userData:", userData);
+
+
+  const [costAfterTax, setCostAfterTax] = useState()
 
   const [costValue, setCostValue] = useState({
     id: null,
     value: "0",
   });
+  console.log("🚀 ~ costValue:", costValue);
 
-  const taxRate = userData?.tax_rate / 100
-  console.log("🚀 ~ taxRate:", taxRate)
+  const taxRate = userData?.tax_rate / 100;
+  console.log("🚀 ~ taxRate:", taxRate);
   const [refundAmount, setRefundAmount] = useState(0);
+  console.log("🚀 ~ refundAmount:", refundAmount);
 
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -151,7 +157,10 @@ export const CreateHonestSanad = ({
       return acc;
     }, 0);
 
-  const costRemainingHonest = +totalActualItemsCost - (+totalPaidCostFromClient + +selectedItem?.amount)
+  const costRemainingHonest = (
+    Number(totalActualItemsCost) -
+    (Number(totalPaidCostFromClient) + Number(selectedItem?.amount))
+  ).toFixed(digits_count.reyal);
 
   const incomingBoxesData = [
     {
@@ -176,6 +185,46 @@ export const CreateHonestSanad = ({
   ///
   /////////// CUSTOM HOOKS
   ///
+
+  // const totalActualItemsCost = selectedItem.items
+  //   .filter((item) => item.return_status !== "returned")
+  //   .reduce((acc, curr) => {
+  //     console.log("🚀 ~ .reduce ~ curr:", curr);
+  //     if (curr.id == costValue.id) {
+  //       acc += +curr.cost;
+  //     } else {
+  //       acc += +curr.cost * taxRate + +curr.cost;
+  //     }
+  //     return acc;
+  //   }, 0);
+  // console.log("🚀 ~ totalActualItemsCost:", totalActualItemsCost);
+
+  // const costRemainingHonest = (
+  //   Number(totalActualItemsCost) -
+  //   (Number(totalPaidCostFromClient) + Number(selectedItem?.amount))
+  // ).toFixed(digits_count.reyal);
+
+  // const incomingBoxesData = [
+  //   {
+  //     id: crypto.randomUUID(),
+  //     account: `${t("prepaid cost")}`,
+  //     value: selectedItem?.amount,
+  //     unit: `${t("ryal")}`,
+  //   },
+  //   {
+  //     id: crypto.randomUUID(),
+  //     account: `${t("remaining cost")}`,
+  //     value: +costRemainingHonest,
+  //     unit: `${t("ryal")}`,
+  //   },
+  //   {
+  //     id: crypto.randomUUID(),
+  //     account: `${t("cost after tax")}`,
+  //     value: totalActualItemsCost,
+  //     unit: `${t("ryal")}`,
+  //   },
+  // ];
+
   const handleCheckboxChange = (event: any, selectedRow: any) => {
     const checkboxId = event.target.id;
     if (event.target.checked) {
@@ -220,16 +269,21 @@ export const CreateHonestSanad = ({
       columnHelper.accessor("cost", {
         header: () => `${t("cost")}`,
         cell: (info) =>
-          (info.row.original.id == costValue.id && formatReyal(Number(costValue.value))) ||
+          (info.row.original.id == costValue.id &&
+            formatReyal(Number(costValue.value))) ||
           formatReyal(Number(info.getValue())),
       }),
       columnHelper.accessor("VAT", {
         header: () => `${t("VAT")}`,
-        cell: (info) => formatReyal(Number(info.row.original.cost * taxRate)) || "---",
+        cell: (info) =>
+          formatReyal(Number(info.row.original.cost * taxRate)) || "---",
       }),
       columnHelper.accessor("cost_after_vat", {
         header: () => `${t("cost after tax")}`,
-        cell: (info) => formatReyal(Number(info.row.original.cost * taxRate + info.row.original.cost)) || "---",
+        cell: (info) =>
+          formatReyal(
+            Number(info.row.original.cost * taxRate + info.row.original.cost)
+          ) || "---",
       }),
       columnHelper.accessor("category_value", {
         header: () => `${t("categories")}`,
@@ -274,15 +328,12 @@ export const CreateHonestSanad = ({
       columnHelper.accessor("attachments", {
         header: () => `${t("attachments")}`,
         cell: (info) => {
-          const media = info?.row?.original?.images
-         return !media.length ? '---' : 
-           (
-            < FilesPreviewOutFormik
-              images={media || []}
-              preview
-              pdfs={[]}
-            />
-          )
+          const media = info?.row?.original?.images;
+          return !media.length ? (
+            "---"
+          ) : (
+            <FilesPreviewOutFormik images={media || []} preview pdfs={[]} />
+          );
         },
       }),
       columnHelper.accessor("action", {
@@ -304,6 +355,129 @@ export const CreateHonestSanad = ({
     [editCost, costValue, JSON.stringify(selectedItem), isChangeStatusSuccess]
   );
 
+  // const columns = useMemo<any>(
+  //   () => [
+  //     columnHelper.accessor("checkBox", {
+  //       header: () => `${t("#")}`,
+  //       cell: (info) => (
+  //         <input
+  //           type="checkbox"
+  //           className="border-mainGreen text-mainGreen rounded"
+  //           id={info.row.original.id}
+  //           name="selectedItem"
+  //           onClick={(event) => handleCheckboxChange(event, info)}
+  //         />
+  //       ),
+  //     }),
+  //     columnHelper.accessor("category_value", {
+  //       header: () => `${t("category")}`,
+  //       cell: (info) => info.getValue() || "---",
+  //     }),
+  //     columnHelper.accessor("karat_value", {
+  //       header: () => `${t("karat")}`,
+  //       cell: (info) => info.getValue() || "---",
+  //     }),
+  //     columnHelper.accessor("weight", {
+  //       header: () => `${t("weight")}`,
+  //       cell: (info) => formatGram(Number(info.getValue())) || "---",
+  //     }),
+  //     columnHelper.accessor("cost", {
+  //       header: () => `${t("cost")}`,
+  //       cell: (info) =>
+  //         (info.row.original.id == costValue.id &&
+  //           formatReyal(Number(costValue.value) / Number(taxRate + 1))) ||
+  //         formatReyal(Number(info.getValue())),
+  //     }),
+  //     columnHelper.accessor("VAT", {
+  //       header: () => `${t("VAT")}`,
+  //       cell: (info) =>
+  //         (info.row.original.id == costValue.id &&
+  //           formatReyal(
+  //             (Number(costValue.value) / Number(taxRate + 1)) * taxRate
+  //           )) ||
+  //         formatReyal(Number(info.row.original.cost * taxRate)) ||
+  //         "---",
+  //     }),
+  //     columnHelper.accessor("cost_after_vat", {
+  //       header: () => `${t("cost after tax")}`,
+  //       cell: (info) =>
+  //         (info.row.original.id == costValue.id &&
+  //           formatReyal(Number(costValue.value))) ||
+  //         formatReyal(
+  //           Number(info.row.original.cost * taxRate + info.row.original.cost)
+  //         ) ||
+  //         "---",
+  //     }),
+  //     columnHelper.accessor("category_value", {
+  //       header: () => `${t("categories")}`,
+  //       cell: (info) => (
+  //         <select
+  //           id="itemStatusOptions"
+  //           defaultValue={info.row.original.status}
+  //           // style={{
+  //           //   color:
+  //           //     info.row.original.status === "ready"
+  //           //       ? "green"
+  //           //       : info.row.original.status === "workshop"
+  //           //         ? "orange"
+  //           //         : "violet",
+  //           // }}
+  //           className={`bg-transparent border-none`}
+  //           onChange={(option) => {
+  //             const selectedItemCopy = JSON.parse(JSON.stringify(selectedItem));
+  //             const selectedItemCopyIdIndex = selectedItemCopy.items.findIndex(
+  //               (item) => item.id == info.row.original.id
+  //             );
+  //             selectedItemCopy.items[selectedItemCopyIdIndex].status =
+  //               option.target.value;
+  //             setSelectedItem(selectedItemCopy);
+  //             mutate({
+  //               endpointName: `branchSafety/api/v1/change-status/${selectedItem.id}/${info.row.original.id}?status=${option.target.value}`,
+  //             });
+  //           }}
+  //         >
+  //           {itemStatusOptions.map((option) => (
+  //             <option
+  //               id={option.id}
+  //               // style={{ color: option.color }}
+  //               value={option.value}
+  //             >
+  //               {option.label}
+  //             </option>
+  //           ))}
+  //         </select>
+  //       ),
+  //     }),
+  //     columnHelper.accessor("attachments", {
+  //       header: () => `${t("attachments")}`,
+  //       cell: (info) => {
+  //         const media = info?.row?.original?.images;
+  //         return !media.length ? (
+  //           "---"
+  //         ) : (
+  //           <FilesPreviewOutFormik images={media || []} preview pdfs={[]} />
+  //         );
+  //       },
+  //     }),
+  //     columnHelper.accessor("action", {
+  //       header: () => `${t("edit")}`,
+  //       cell: (info) => (
+  //         <Edit
+  //           className="mx-auto"
+  //           action={() => {
+  //             setCostValue({
+  //               value: info.row.original.cost,
+  //               id: info.row.original.id,
+  //             });
+  //             setEditCost(true);
+  //           }}
+  //         />
+  //       ),
+  //     }),
+  //   ],
+  //   [editCost, costValue, JSON.stringify(selectedItem), isChangeStatusSuccess]
+  // );
+
   const table = useReactTable({
     data,
     columns,
@@ -317,45 +491,63 @@ export const CreateHonestSanad = ({
   /////////// SIDE EFFECTS
   ///
   useEffect(() => {
-    setData(selectedItem.items.filter(item => item.return_status !== 'returned'))
-  }, [selectedItem])
+    setData(
+      selectedItem.items.filter((item) => item.return_status !== "returned")
+    );
+  }, [selectedItem]);
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
-  const selectedRowsToReturn = selectedRows.map(item => ({ ...item, branch_id: userData?.branch_id }))
+  const selectedRowsToReturn = selectedRows.map((item) => ({
+    ...item,
+    branch_id: userData?.branch_id,
+  }));
 
   const handlePostSelectedRows = () => {
     if (selectedItem.amount < refundAmount) {
-      notify('info', `${t('must be less than prepaid cash')}`)
+      notify("info", `${t("must be less than prepaid cash")}`);
     } else {
       mutateItemReturnStatus({
         endpointName: `branchSafety/api/v1/return-status/${selectedItem.id}`,
-        values: { items: selectedRowsToReturn, amount: selectedItem.amount, returned_cash: refundAmount }
-      })
+        values: {
+          items: selectedRowsToReturn,
+          amount: selectedItem.amount,
+          returned_cash: refundAmount,
+        },
+      });
     }
-  }
+  };
   const handlePostAllRows = () => {
-    const allItems = selectedItem.items.map(item => ({ ...item, branch_id: userData?.branch_id }))
+    const allItems = selectedItem.items.map((item) => ({
+      ...item,
+      branch_id: userData?.branch_id,
+    }));
     if (selectedItem.amount < refundAmount) {
-      notify('info', `${t('must be less than prepaid cash')}`)
+      notify("info", `${t("must be less than prepaid cash")}`);
     } else {
       mutateItemReturnStatus({
         endpointName: `branchSafety/api/v1/return-status/${selectedItem.id}`,
-        values: { items: allItems, amount: selectedItem.amount, returned_cash: refundAmount }
-      })
+        values: {
+          items: allItems,
+          amount: selectedItem.amount,
+          returned_cash: refundAmount,
+        },
+      });
     }
-  }
+  };
   const handleSaveItems = () => {
-    const remainingCost = totalActualItemsCost - (+totalPaidCostFromClient + +selectedItem?.amount)
-    console.log("🚀 ~ handleSaveItems ~ remainingCost:", remainingCost)
-    const allItemsStatus = selectedItem.items.filter(item => item.return_status === 'not_returned').every(item => item.status === 'ready')
-    console.log("🚀 ~ handleSaveItems ~ allItemsStatus:", allItemsStatus)
+    const remainingCost = Number(
+      (
+        Number(totalActualItemsCost) -
+        (Number(totalPaidCostFromClient) + Number(selectedItem?.amount))
+      ).toFixed(digits_count.reyal)
+    );
+    console.log("🚀 ~ handleSaveItems ~ remainingCost:", remainingCost);
+    const allItemsStatus = selectedItem.items
+      .filter((item) => item.return_status === "not_returned")
+      .every((item) => item.status === "ready");
+    console.log("🚀 ~ handleSaveItems ~ allItemsStatus:", allItemsStatus);
     if (paymentData.length === 0 && remainingCost !== 0) {
-      notify('info', `${t('add payment method first')}`);
-      return;
-    }
-
-    if (remainingCost !== 0) {
-      notify('info', `${t('remaining cost must be 0')}`);
+      notify("info", `${t("add payment method first")}`);
       return;
     }
 
@@ -424,14 +616,14 @@ export const CreateHonestSanad = ({
                               <th
                                 key={header.id}
                                 className="py-4 px-2 border-l-2 border-l-lightGreen "
-                              // style={{ minWidth: '180px' }}
+                                // style={{ minWidth: '180px' }}
                               >
                                 {header.isPlaceholder
                                   ? null
                                   : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
+                                      header.column.columnDef.header,
+                                      header.getContext()
+                                    )}
                               </th>
                             );
                           } else {
@@ -443,9 +635,9 @@ export const CreateHonestSanad = ({
                                 {header.isPlaceholder
                                   ? null
                                   : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
+                                      header.column.columnDef.header,
+                                      header.getContext()
+                                    )}
                               </th>
                             );
                           }
@@ -465,9 +657,9 @@ export const CreateHonestSanad = ({
                               <td
                                 key={cell.id}
                                 className="border-l-2 px-6 py-4 whitespace-nowrap border-l-flatWhite text-center bg-lightGray"
-                              // style={{
-                              //     minWidth: "max-content",
-                              // }}
+                                // style={{
+                                //     minWidth: "max-content",
+                                // }}
                               >
                                 {flexRender(
                                   cell.column.columnDef.cell,
@@ -495,7 +687,8 @@ export const CreateHonestSanad = ({
                             {data.account}
                           </p>
                           <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                            {formatReyal(Number(data.value))} <span>{data.unit}</span>
+                            {formatReyal(Number(data.value))}{" "}
+                            <span>{data.unit}</span>
                           </p>
                         </li>
                       ))}
@@ -518,7 +711,8 @@ export const CreateHonestSanad = ({
                           {data.account}
                         </p>
                         <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                          {formatReyal(Number(data.value))} <span>{data.unit}</span>
+                          {formatReyal(Number(data.value))}{" "}
+                          <span>{data.unit}</span>
                         </p>
                       </li>
                     ))}
@@ -534,57 +728,71 @@ export const CreateHonestSanad = ({
       </div>
 
       <Modal
-        maxWidth={'max-w-[400px]'}
+        maxWidth={"max-w-[450px]"}
         isOpen={editCost}
         onClose={() => {
-          const selectedItemCost = selectedItem.items.find(
-            (item) => item.id == costValue.id
-          ).cost;
-          setCostValue({
-            id: costValue.id,
-            value: selectedItemCost,
-          });
+          // const selectedItemCost = selectedItem.items.find(
+          //   (item) => item.id == costValue.id
+          // ).cost;
+          // setCostValue({
+          //   id: costValue.id,
+          //   value: selectedItemCost,
+          // });
           setEditCost(false);
         }}
       >
         <h3 className="text-center mb-5 font-bold">{t("edit cost value")}</h3>
-        <input
-          type="number"
-          className="border-lightGreen shadow-lg rounded w-[100px] mx-5"
-          value={costValue.value}
-          onChange={(e) => {
-            setCostValue({
-              id: costValue.id,
-              value: e.target.value,
-            });
-          }}
-        />
-        <Button
-          className="bg-mainOrange"
-          action={() => {
-            const selectedItemCopy = JSON.parse(JSON.stringify(selectedItem));
-            const selectedItemCopyIdIndex = selectedItemCopy.items.findIndex(
-              (item) => item.id == costValue.id
-            );
-            selectedItemCopy.items[selectedItemCopyIdIndex].cost =
-              +costValue.value;
-            setSelectedItem(selectedItemCopy);
-            setEditCost(false);
-            mutate({
-              endpointName: `branchSafety/api/v1/change-cost/${selectedItem.id}/${costValue.id}`,
-              values: { cost: +costValue.value },
-            });
-            setCostValue({
-              id: costValue.id,
-              value: String(+costValue.value),
-            });
-          }}
-        >
-          {t("confirm")}
-        </Button>
+        <div className="flex items-end gap-7">
+          <div className="">
+            <div className="flex justify-between">
+              <p>{t("cost")}</p>
+              <p>{costValue.value}</p>
+            </div>
+            <input
+              type="number"
+              className="border-lightGreen shadow-lg rounded"
+              // value={costValue.value ? costValue.value : 0}
+              onChange={(e) => {
+                // setCostValue({
+                //   id: costValue.id,
+                //   value: e.target.value,
+                // });
+                setCostAfterTax(e.target.value)
+              }}
+            />
+          </div>
+
+          <Button
+            className="bg-mainOrange h-11"
+            action={() => {
+              const selectedItemCopy = JSON.parse(JSON.stringify(selectedItem));
+              const selectedItemCopyIdIndex = selectedItemCopy.items.findIndex(
+                (item) => item.id == costValue.id
+              );
+              selectedItemCopy.items[selectedItemCopyIdIndex].cost =
+                +costAfterTax / Number(taxRate + 1);
+              setSelectedItem(selectedItemCopy);
+              setEditCost(false);
+              mutate({
+                endpointName: `branchSafety/api/v1/change-cost/${selectedItem.id}/${costValue.id}`,
+                values: { cost: +costAfterTax / Number(taxRate + 1) },
+              });
+              setCostValue({
+                id: costValue.id,
+                value: String(+costAfterTax / Number(taxRate + 1)),
+              });
+            }}
+          >
+            {t("confirm")}
+          </Button>
+        </div>
       </Modal>
 
-      <Modal maxWidth={'max-w-[700px]'} isOpen={open} onClose={() => setOpen(false)}>
+      <Modal
+        maxWidth={"max-w-[700px]"}
+        isOpen={open}
+        onClose={() => setOpen(false)}
+      >
         <h3 className="text-center mb-5 mt-4 font-bold">
           {t("retrieve item")}
         </h3>
@@ -617,7 +825,7 @@ export const CreateHonestSanad = ({
       </Modal>
 
       <Modal
-        maxWidth={'max-w-[500px]'} 
+        maxWidth={"max-w-[500px]"}
         isOpen={openTotal}
         onClose={() => setOpenTotal(false)}
       >

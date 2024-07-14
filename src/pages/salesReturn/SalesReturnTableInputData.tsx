@@ -59,6 +59,7 @@ export const SalesReturnTableInputData = ({
   const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
+  console.log("🚀 ~ editSellingTaklfa:", editSellingTaklfa)
 
   const { userData } = useContext(authCtx);
 

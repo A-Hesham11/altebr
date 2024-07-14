@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { useFetch, useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
@@ -25,6 +25,7 @@ interface TransformImport_TP {
 const TransformImport = ({
   setTransformImportModal,
   setIsSuccessPost,
+  transformImportModal,
 }: TransformImport_TP) => {
   const { formatReyal } = numberContext();
   const [selectedOption, setSelectedOption] = useState("normal");
@@ -76,10 +77,11 @@ const TransformImport = ({
     isFetching: operationTypeSelectisFetching,
     failureReason: operationTypeSelectErrorReason,
   } = useFetch<SelectOption_TP[]>({
-    endpoint: `identity/api/v1/getItemBarnch/${branchId}?per_page=10000`,
-    queryKey: ["operation-data"],
+    endpoint: `identity/api/v1/getItemBarnch/${branchId}`,
+    queryKey: ["operation-import-data"],
     onError: (err) => console.log(err),
   });
+  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
 
   useEffect(() => {
     refetchOperationTypeSelect();
@@ -257,7 +259,7 @@ const TransformImport = ({
 
   const { mutate, isLoading: thwelLoading } = useMutate({
     mutationFn: mutateData,
-    mutationKey: ["thwel-api"],
+    mutationKey: ["thwel-import-api"],
     onSuccess: (data) => {
       setIsSuccessPost(data);
       notify("success");
@@ -270,6 +272,7 @@ const TransformImport = ({
   });
 
   function PostNewValue(value: any) {
+    console.log("🚀 ~ PostNewValue ~ value:", value);
     mutate({
       endpointName: "/identity/api/v1/api-thwel",
       values: value,
@@ -278,11 +281,21 @@ const TransformImport = ({
     });
   }
 
-  operationTypeSelect?.map((operation: any) => {
-    if (!thwelIds.includes(`${operation.id}`)) {
-      setThwelIds((prev) => [...prev, `${operation.id}`]);
-    }
-  });
+  const operationTypeSelectInclude = operationTypeSelect?.map(
+    (operation: any) => operation.id
+  );
+  console.log("🚀 ~ operationTypeSelectInclude:", operationTypeSelectInclude)
+
+  // useEffect(() => {
+    // const operationTypeSelectInclude = operationTypeSelect?.map(
+    //   (operation: any) => !thwelIds.includes(`${operation.id}`)
+    // );
+  
+    // operationTypeSelect?.map((operation: any) => {
+      // if (!thwelIds.includes(`${operation.id}`)) {
+      // }
+    // });
+  // }, []);
 
   const isContainCheckInputWeight = operationTypeSelect?.some(
     (el) => el.check_input_weight === 1
@@ -328,13 +341,34 @@ const TransformImport = ({
           notify("info", `${t("You must add weight first")}`);
           return;
         }
+        console.log("🚀 ~ return:", {
+          Branch: values.branch_id.toString(),
+          goldPrice: values.gold_price,
+          sanadType: "normal", // selectedOption,
+          ThwilType: "normal",
+          thwilItems: thwelIds,
+          editWeight: operationTypeSelectWeight?.map((el, i) => {
+            return {
+              id: el.id.toString(),
+              weight: el.weight,
+              hwya: el.hwya,
+              type: "all",
+              wage: el.wage,
+              category: el.category,
+              classification: el.classification_name,
+              totalWage: Number(el.wage) * el.weight,
+              karat: el.karat_name,
+              selling_price: el.selling_price,
+            };
+          }),
+        });
 
         PostNewValue({
           Branch: values.branch_id.toString(),
           goldPrice: values.gold_price,
           sanadType: "normal", // selectedOption,
           ThwilType: "normal",
-          thwilItems: thwelIds,
+          thwilItems: operationTypeSelectInclude,
           editWeight: operationTypeSelectWeight?.map((el, i) => {
             return {
               id: el.id.toString(),
