@@ -12,7 +12,7 @@ import { t } from "i18next";
 import { Button } from "../../atoms";
 import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
 
-const AddWorkHours = ({ title, editData, setShow, refetch }) => {
+const AddWorkHours = ({ title, editData, setShow, refetch }: any) => {
   // Various state variables and hooks
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);

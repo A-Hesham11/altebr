@@ -121,6 +121,146 @@
 //   );
 // };
 
+// ######################################################################
+
+// /////////// IMPORTS
+// import { BiShowAlt } from "react-icons/bi";
+// import { IoMdAdd } from "react-icons/io";
+// import { Button } from "../../atoms";
+// import { t } from "i18next";
+// import { useLocation } from "react-router-dom";
+// ///
+// //import classes from './SystemCard.module.css'
+// ///
+// /////////// Types
+
+// ///
+// type SystemCardProps_TP = {
+//   addHandler: () => void;
+//   viewHandler?: () => void;
+//   addLabel?: string;
+//   viewLabel?: string;
+//   title: string;
+//   forStyle?: boolean;
+//   viewCountReyal?: number;
+//   viewCountGram?: number;
+//   permission: any;
+// };
+// /////////// HELPER VARIABLES & FUNCTIONS
+// ///
+
+// ///
+// export const SystemCard = ({
+//   addHandler,
+//   viewHandler,
+//   addLabel,
+//   viewLabel,
+//   title,
+//   forStyle,
+//   viewCountReyal,
+//   viewCountGram,
+//   permission,
+// }: SystemCardProps_TP) => {
+//   /////////// VARIABLES
+//   ///
+//   ///
+//   /////////// CUSTOM HOOKS
+//   ///
+
+//   // Show All Items
+//   const index = permission?.filter((item) => 
+//     item.routes.includes("index")
+//   );
+
+//   const store = permission?.filter((item) => 
+//     item.routes.includes("store")
+//   );
+
+//   const location = useLocation();
+//   const path = location.pathname;
+//   ///
+//   /////////// STATES
+//   ///
+
+//   ///
+//   /////////// SIDE EFFECTS
+//   ///
+
+//   ///
+//   /////////// IF CASES
+//   ///
+
+//   ///
+//   /////////// FUNCTIONS & EVENTS
+//   ///
+
+//   ///
+//   return (
+//     <div className="col-span-1 w-full rounded-md ">
+//       <div className="">
+//         <div
+//           className={`flex w-full items-center justify-between gap-2 rounded-lg  py-6 px-4 text-white ${
+//             forStyle ? "flex-col bg-mainGreen" : "bg-mainOrange"
+//           }`}
+//         >
+//           <div className="flex w-full items-center justify-between">
+//             <h3 className="">{title}</h3>
+//             <div className="flex items-center gap-1">
+//               {addLabel && store?.length !== 0 && addHandler && (
+//                 <Button
+//                   bordered={true}
+//                   action={addHandler}
+//                   className="border-0 p-1 bg-transparent"
+//                 >
+//                   <div className="flex justify-center items-center">
+//                     <IoMdAdd
+//                       className="fill-white"
+//                       fill="lightBlack"
+//                       size={25}
+//                     />
+//                   </div>
+//                 </Button>
+//               )}
+
+//               {viewLabel && index?.length !== 0 && (
+//                 <Button
+//                   bordered={true}
+//                   className={`
+//                     border-0 
+//                      p-1
+//                     bg-transparent
+//                     forStyle
+//                       ? "!bg-green !bg-opacity-20	!text-mainGreen"
+//                       : "!bg-mainOrange !bg-opacity-20"
+//                   `}
+//                   action={viewHandler}
+//                 >
+//                   <div className="flex justify-center items-center">
+//                     <BiShowAlt className="fill-white" size={25} />
+//                   </div>
+//                 </Button>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+
+//         {path === "/view-bonds" && (
+//           <div className="text-center border-[0.8px] p-2 border-mainGreen text-mainGreen rounded-md font-bold">
+//             <p className="font-bold ms-1 mb-4">{t("Branch current")}</p>
+//             <div className="flex justify-between items-center px-4 ">
+//               <p>{viewCountReyal ? viewCountReyal : `0 ${t("ryal")}`}</p>
+//               <p>{viewCountGram ? viewCountGram : `0 ${t("gram")}`}</p>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// ######################################################################
+
+
 /////////// IMPORTS
 import { BiShowAlt } from "react-icons/bi";
 import { IoMdAdd } from "react-icons/io";
@@ -142,7 +282,6 @@ type SystemCardProps_TP = {
   forStyle?: boolean;
   viewCountReyal?: number;
   viewCountGram?: number;
-  permission: any;
 };
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -157,22 +296,12 @@ export const SystemCard = ({
   forStyle,
   viewCountReyal,
   viewCountGram,
-  permission,
 }: SystemCardProps_TP) => {
   /////////// VARIABLES
   ///
   ///
   /////////// CUSTOM HOOKS
   ///
-
-  // Show All Items
-  const index = permission?.filter((item) => 
-    item.routes.includes("index")
-  );
-
-  const store = permission?.filter((item) => 
-    item.routes.includes("store")
-  );
 
   const location = useLocation();
   const path = location.pathname;
@@ -204,7 +333,7 @@ export const SystemCard = ({
           <div className="flex w-full items-center justify-between">
             <h3 className="">{title}</h3>
             <div className="flex items-center gap-1">
-              {addLabel && store?.length !== 0 && addHandler && (
+              {addLabel && addHandler && (
                 <Button
                   bordered={true}
                   action={addHandler}
@@ -220,7 +349,7 @@ export const SystemCard = ({
                 </Button>
               )}
 
-              {viewLabel && index?.length !== 0 && (
+              {viewLabel && (
                 <Button
                   bordered={true}
                   className={`

@@ -275,7 +275,7 @@ const RecieveItemsFirstScreen = ({
                   type="button"
                   onClick={() => {
                     setSortItems(false);
-                    refetch();
+                    // refetch();
                     setPage(1);
                   }}
                 >
@@ -289,7 +289,7 @@ const RecieveItemsFirstScreen = ({
                   type="button"
                   onClick={() => {
                     setSortItems(true);
-                    sortRefetch();
+                    // sortRefetch();
                     setPage(1);
                   }}
                 >

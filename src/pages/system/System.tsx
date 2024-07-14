@@ -634,7 +634,6 @@ import { CreateBranch } from "../../components/templates/reusableComponants/bran
 import { AccountingTree } from "../../components/templates/systemEstablishment/AccountingTree/AccountingTree";
 import { AddPartners } from "../../components/templates/systemEstablishment/partners/AddPartners";
 import AddSupplier from "../../components/templates/systemEstablishment/supplier/AddSupplier";
-import { SystemCard } from "../../components/templates/systemEstablishment/SystemCard";
 import { AddAdministrativeStructure } from "../administrativeStructure/AddAdministrativeStructure";
 import { Card_TP, FormNames_TP } from "./types-and-helpers";
 import AddDesimalNumber from "../../components/templates/DecimalNumber/AddDecimalNumber";
@@ -656,6 +655,14 @@ import { CreateClassification } from "../../components/templates/reusableCompona
 import CreateKarat from "../../components/templates/reusableComponants/karats/create/CreateKarat";
 import CreateCategory from "../../components/templates/reusableComponants/categories/create/CreateCategory";
 import CreateColor from "../../components/templates/reusableComponants/CreateColor";
+import EstablishingSystem from "./EstablishingSystem";
+import AddWorkHours from "../../components/templates/workHours/AddWorkHours";
+import AddSalariesPolicies from "../../components/templates/salaries/AddSalariesPolicies";
+import AddEntitlementsPolicies from "../../components/templates/entitlements/AddEntitlementsPolicies";
+import AddDeductionsPolicy from "../../components/templates/deductions/AddDeductionsPolicy";
+import AddEmployeeBenefits from "../../components/templates/employeeBenefits/AddEmployeeBenefits";
+import AddEmployeeDeductions from "../../components/templates/employeeDeductions/AddEmployeeDeductions";
+import AddCommision from "../../components/templates/commision/AddCommision";
 ///
 /////////// Types
 ///
@@ -696,18 +703,26 @@ export const System = ({ title }: SystemProps_TP) => {
     classifications: false,
     categories: false,
     karats: false,
+    work_hours: false,
+    salary_policies: false,
+    entitlements_policies: false,
+    deductions_policies: false,
+    employee_benefits_policies: false,
+    employee_deductions_policies: false,
+    commission_policies: false,
   });
+
   const systemCards: Card_TP<FormNames_TP>[] = [
     // بيانات هيكل الشركة
     {
       id: crypto.randomUUID(),
-      title: t("company data"),
+      title: `${t("company data")}`,
       viewLabel: `${t("view company data")}`,
       viewHandler: () => navigate("company-profile"),
     },
     {
       id: crypto.randomUUID(),
-      title: t("partners"),
+      title: `${t("partners")}`,
       name: "partners",
       addLabel: `${t("add Partner")}`,
       viewLabel: `${t("view partners")}`,
@@ -729,7 +744,7 @@ export const System = ({ title }: SystemProps_TP) => {
     },
     {
       id: crypto.randomUUID(),
-      title: t("branch"),
+      title: `${t("branch")}`,
       name: "add_branch",
       addLabel: `${t("add branch")}`,
       viewLabel: `${t("view branches")}`,
@@ -738,7 +753,7 @@ export const System = ({ title }: SystemProps_TP) => {
     },
     {
       id: crypto.randomUUID(),
-      title: t("employees"),
+      title: `${t("employees")}`,
       name: "add_employee",
       addLabel: `${t("add employee")}`,
       viewLabel: `${t("view employees")}`,
@@ -747,7 +762,7 @@ export const System = ({ title }: SystemProps_TP) => {
     },
     {
       id: crypto.randomUUID(),
-      title: t("supplier"),
+      title: `${t("supplier")}`,
       name: "add_supplier",
       addLabel: `${t("add supplier")}`,
       viewLabel: `${t("View Suppliers")}`,
@@ -875,6 +890,9 @@ export const System = ({ title }: SystemProps_TP) => {
       viewHandler: () => navigate("/system/policiesBuying"),
     },
 
+    // **************************************************************
+    // سياسات المصاريف
+
     {
       id: crypto.randomUUID(),
       title: t("main expenses policies"),
@@ -913,8 +931,92 @@ export const System = ({ title }: SystemProps_TP) => {
       viewHandler: () => navigate("/system/taxExpensesPolicies"),
     },
 
-    // **************************************************************
-    // سياسات المصاريف
+    // WORK HOURS
+    {
+      id: crypto.randomUUID(),
+      title: t("add work shift policy"),
+      name: "work_hours",
+      addLabel: `${t("add work hours")}`,
+      addComponent: <AddWorkHours title={`${t("add work shift policy")}`} />,
+      viewLabel: `${t("view work hours policy")}`,
+      viewHandler: () => navigate("/system/workHours"),
+    },
+
+    // SALARY POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("salary policies"),
+      name: "salary_policies",
+      addLabel: `${t("add salary policy")}`,
+      addComponent: <AddSalariesPolicies title={`${t("add salary policy")}`} />,
+      viewLabel: `${t("view salary policy")}`,
+      viewHandler: () => navigate("/system/salaryPolicies"),
+    },
+
+    // ENTITITLEMENTS POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("entitlements policies"),
+      name: "entitlements_policies",
+      addLabel: `${t("add entitlements policy")}`,
+      addComponent: (
+        <AddEntitlementsPolicies title={`${t("add entitlements policy")}`} />
+      ),
+      viewLabel: `${t("view entitlements policy")}`,
+      viewHandler: () => navigate("/system/entitlementsPolicies"),
+    },
+
+    // DEDUCTIONS POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("deductions policies"),
+      name: "deductions_policies",
+      addLabel: `${t("add deductions policy")}`,
+      addComponent: (
+        <AddDeductionsPolicy title={`${t("add deductions policy")}`} />
+      ),
+      viewLabel: `${t("view deductions policy")}`,
+      viewHandler: () => navigate("/system/deductionsPolicies"),
+    },
+
+    // EMPLOYEE BENEFITS POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("employee benefits policies"),
+      name: "employee_benefits_policies",
+      addLabel: `${t("add employee benefits policy")}`,
+      addComponent: (
+        <AddEmployeeBenefits title={`${t("add employee benefits policy")}`} />
+      ),
+      viewLabel: `${t("view employee benefits policy")}`,
+      viewHandler: () => navigate("/system/employeeBenefitsPolicies"),
+    },
+
+    // EMPLOYEE DEDUCTIONS POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("employee deductions policies"),
+      name: "employee_deductions_policies",
+      addLabel: `${t("add employee deductions policy")}`,
+      addComponent: (
+        <AddEmployeeDeductions
+          title={`${t("add employee deductions policy")}`}
+        />
+      ),
+      viewLabel: `${t("view employee deductions policy")}`,
+      viewHandler: () => navigate("/system/employeeDeductionsPolicies"),
+    },
+
+    // COMMISION POLICIES
+    {
+      id: crypto.randomUUID(),
+      title: t("commission"),
+      name: "commission_policies",
+      addLabel: `${t("add commission")}`,
+      addComponent: <AddCommision title={`${t("add commission")}`} />,
+      viewLabel: `${t("view commission")}`,
+      viewHandler: () => navigate("/system/commisionPolicies"),
+    },
 
     // **************************************************************
     // إدارة الحسابات
@@ -963,247 +1065,72 @@ export const System = ({ title }: SystemProps_TP) => {
       viewHandler: () => navigate("/system/invoiceData"),
     },
   ];
-  //   // XXX
-  // ]
-  ///
-  /////////// CUSTOM HOOKS
-  ///
+  console.log("🚀 ~ System ~ systemCards:", systemCards.length);
 
-  ///
-  /////////// STATES
-  ///
-
-  ///
-  /////////// SIDE EFFECTS
-  ///
-
-  ///
-  /////////// FUNCTIONS | EVENTS | IF CASES
-  ///
   const openPopup = (formName: FormNames_TP) =>
     setPopupIsOpen((prev) => ({ ...prev, [formName]: true }));
 
   const closePopupHandler = (formName: FormNames_TP) =>
     setPopupIsOpen((prev) => ({ ...prev, [formName]: false }));
   ///
+
+  const EstablishingSystemCard = [
+    {
+      titleKey: "Company structure data",
+      range: [0, 6],
+    },
+    {
+      titleKey: "Bank data",
+      range: [6, 10],
+    },
+    {
+      titleKey: "Item characteristics",
+      range: [10, 14],
+    },
+    {
+      titleKey: "Sales and purchasing policy",
+      range: [14, 18],
+    },
+    {
+      titleKey: "Expense policies",
+      range: [18, 21],
+    },
+    {
+      titleKey: "Salary policies",
+      range: [21, 28],
+    },
+    {
+      titleKey: "Account management",
+      range: [28, 33],
+    },
+  ];
+
   return (
     <>
       <Helmet>
         <title>{title}</title>
       </Helmet>
 
-      <h2 className="font-extrabold text-lg mb-5 text-center bg-mainGreen text-white py-2 w-[250px] m-auto rounded-xl">
+      <h2 className="font-extrabold text-lg mb-8 text-center bg-mainGreen text-white py-2 w-[250px] m-auto rounded-xl">
         {t("system establishment")}
       </h2>
-      <div className="my-10">
-        <div className="flex items-center justify-between mb-6 border-2 border-mainGreen text-mainGreen px-4 py-1 rounded-md">
-          <h2 className="under bold text-lg ">
-            {t("Company structure data")}
-          </h2>
-          <p className="text-sm">
-            (1 {t("from")} 6) {t("From the founding")}{" "}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {systemCards
-            .slice(0, 6)
-            .map(
-              ({
-                id,
-                title,
-                addComponent,
-                addLabel,
-                viewHandler,
-                viewLabel,
-                name,
-              }) => (
-                <SystemCard
-                  key={id}
-                  viewHandler={viewHandler}
-                  viewLabel={viewLabel}
-                  title={title}
-                  addLabel={addLabel}
-                  addHandler={() => openPopup(name as FormNames_TP)}
-                />
-              )
-            )}
-        </div>
-      </div>
 
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6 border-2 border-mainGreen text-mainGreen px-4 py-1 rounded-md">
-          <h2 className="under bold text-lg ">
-            {t("Bank data")}
-          </h2>
-          <p className="text-sm">
-            (2 {t("from")} 6) {t("From the founding")}{" "}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {systemCards
-            .slice(6, 10)
-            .map(
-              ({
-                id,
-                title,
-                addComponent,
-                addLabel,
-                viewHandler,
-                viewLabel,
-                name,
-              }) => (
-                <SystemCard
-                  key={id}
-                  viewHandler={viewHandler}
-                  viewLabel={viewLabel}
-                  title={title}
-                  addLabel={addLabel}
-                  addHandler={() => openPopup(name as FormNames_TP)}
-                />
-              )
-            )}
-        </div>
-      </div>
+      {EstablishingSystemCard?.map((item, index) => {
+        const { range, titleKey } = item;
 
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6 border-2 border-mainGreen text-mainGreen px-4 py-1 rounded-md">
-          <h2 className="under bold text-lg ">
-            {t("Item characteristics")}
-          </h2>
-          <p className="text-sm">
-            (3 {t("from")} 6) {t("From the founding")}{" "}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {systemCards
-            .slice(10, 14)
-            .map(
-              ({
-                id,
-                title,
-                addComponent,
-                addLabel,
-                viewHandler,
-                viewLabel,
-                name,
-              }) => (
-                <SystemCard
-                  key={id}
-                  viewHandler={viewHandler}
-                  viewLabel={viewLabel}
-                  title={title}
-                  addLabel={addLabel}
-                  addHandler={() => openPopup(name as FormNames_TP)}
-                />
-              )
-            )}
-        </div>
-      </div>
-
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6 border-2 border-mainGreen text-mainGreen px-4 py-1 rounded-md">
-          <h2 className="under bold text-lg ">
-            {t("Sales and purchasing policy")}
-          </h2>
-          <p className="text-sm">
-            (4 {t("from")} 6) {t("From the founding")}{" "}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {systemCards
-            .slice(14, 18)
-            .map(
-              ({
-                id,
-                title,
-                addComponent,
-                addLabel,
-                viewHandler,
-                viewLabel,
-                name,
-              }) => (
-                <SystemCard
-                  key={id}
-                  viewHandler={viewHandler}
-                  viewLabel={viewLabel}
-                  title={title}
-                  addLabel={addLabel}
-                  addHandler={() => openPopup(name as FormNames_TP)}
-                />
-              )
-            )}
-        </div>
-      </div>
-
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6 border-2 border-mainGreen text-mainGreen px-4 py-1 rounded-md">
-          <h2 className="under bold text-lg ">
-            {t("Expense policies")}
-          </h2>
-          <p className="text-sm">
-            (5 {t("from")} 6) {t("From the founding")}{" "}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {systemCards
-            .slice(18, 21)
-            .map(
-              ({
-                id,
-                title,
-                addComponent,
-                addLabel,
-                viewHandler,
-                viewLabel,
-                name,
-              }) => (
-                <SystemCard
-                  key={id}
-                  viewHandler={viewHandler}
-                  viewLabel={viewLabel}
-                  title={title}
-                  addLabel={addLabel}
-                  addHandler={() => openPopup(name as FormNames_TP)}
-                />
-              )
-            )}
-        </div>
-      </div>
-
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6 border-2 border-mainGreen text-mainGreen px-4 py-1 rounded-md">
-          <h2 className="under bold text-lg ">
-            {t("Account management")}
-          </h2>
-          <p className="text-sm">
-            (6 {t("from")} 6) {t("From the founding")}{" "}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {systemCards
-            .slice(21, 23)
-            .map(
-              ({
-                id,
-                title,
-                addComponent,
-                addLabel,
-                viewHandler,
-                viewLabel,
-                name,
-              }) => (
-                <SystemCard
-                  key={id}
-                  viewHandler={viewHandler}
-                  viewLabel={viewLabel}
-                  title={title}
-                  addLabel={addLabel}
-                  addHandler={() => openPopup(name as FormNames_TP)}
-                />
-              )
-            )}
-        </div>
-      </div>
+        return (
+          <EstablishingSystem
+            key={index}
+            titleKey={titleKey}
+            index={index + 1}
+            start={range[0]}
+            end={range[1]}
+            systemCards={systemCards}
+            openPopup={openPopup}
+            total={EstablishingSystemCard.length}
+          />
+        );
+      })}
 
       <div className="my-8 bg-mainBlack h-[1px] rounded"></div>
       <GlobalAndStones title={t("Another")} />

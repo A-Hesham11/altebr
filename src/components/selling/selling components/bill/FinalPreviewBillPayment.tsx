@@ -16,6 +16,7 @@ const FinalPreviewBillPayment = ({
   costDataAsProps: any;
   responseSellingData: any;
 }) => {
+  console.log("🚀 ~ responseSellingData:", responseSellingData)
   const { formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
@@ -64,7 +65,7 @@ const FinalPreviewBillPayment = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <div className="flex flex-row items-end gap-4 mb-3">
-          {paymentData.map((card, index) => (
+          {paymentData?.map((card, index) => (
             <div
               key={index}
               className="flex flex-col items-center max-w-[100px] text-center"
@@ -89,7 +90,7 @@ const FinalPreviewBillPayment = ({
           ))}
         </div>
         <h3 className="mt-5 font-extrabold">
-          {costDataAsProps.prepaidAmount ? (
+          {costDataAsProps?.prepaidAmount ? (
             <>
               <span>{t("prepaid cost")}: </span>
               <span>{formatReyal(Number(costDataAsProps.prepaidAmount))}</span>

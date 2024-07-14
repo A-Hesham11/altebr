@@ -18,7 +18,7 @@ const AddEmployeeDeductions = ({
   setShow,
   refetch,
   deductionsData,
-}) => {
+}: any) => {
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();

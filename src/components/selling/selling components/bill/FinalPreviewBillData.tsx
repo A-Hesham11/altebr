@@ -25,10 +25,10 @@ type Client_TP = {
 };
 
 const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
+console.log("🚀 ~ FinalPreviewBillData ~ clientData:", clientData)
 console.log("🚀 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber) 
 
   const { client_id, client_value, bond_date, supplier_id } = clientData;
-  console.log("🚀 ~ FinalPreviewBillData ~ bond_date:", bond_date)
 
   const location = useLocation();
   const path = location.pathname;
@@ -41,7 +41,6 @@ console.log("🚀 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber)
     queryKey: [`clients`, path === "/supply-return" ? supplier_id : client_id],
   });
 
-  console.log("🚀 ~ FinalPreviewBillData ~ data:", data);
 
   const { userData } = useContext(authCtx);
 
@@ -53,7 +52,7 @@ console.log("🚀 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber)
   const billNumber =
     path === "/selling/honesty/return-honest"
       ? honestBondsData?.length + 1
-      : path === "/addSellingBond" || path === "/addPurchaseBond" || path === "/selling/zatca"
+      : path === "/addSellingBond" || path === "/addPurchaseBond" || path === "/selling/zatca" || path === "/selling/viewInvoice/" 
       ? invoiceNumber
       : path === "/supply-return" || path === "/selling/addInvoice/" || path === "/selling/payoff/sales-return"
       ? invoiceNumber?.total + 1
@@ -67,7 +66,7 @@ console.log("🚀 ~ FinalPreviewBillData ~ invoiceNumber:", invoiceNumber)
         </p>
         <p className="text-xs font-bold">
           {t("bill date")} :{" "}
-          <span className="font-medium">{path === "/selling/honesty/return-honest" ? bond_date : formatDate(bond_date)}</span>{" "}
+          <span className="font-medium">{path === "/selling/honesty/return-honest" || path === "/selling/viewInvoice/" ? bond_date : formatDate(bond_date)}</span>{" "}
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">

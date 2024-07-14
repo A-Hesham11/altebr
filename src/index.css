@@ -226,9 +226,10 @@ input[type="file"] {
   color: transparent;
 }
 
-@media print {
+/* @media print {
   body * {
     visibility: hidden;
+    display: none;
   }
 
   #content-to-print,
@@ -238,12 +239,60 @@ input[type="file"] {
 
   #content-to-print {
     width: 100%;
+    height: 100%;
     visibility: visible;
     position: absolute;
     left: 0;
     top: 0;
+    bottom: 0;
+    right: 0;
+  }
+} */
+
+/* @media print {
+  body {
+    display: none;
+  }
+
+  .print-only {
+    display: block;
+  }
+
+
+  .print-content {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+} */
+
+@media print {
+  html,
+  body {
+    height: 100%;
+    margin: 0 !important;
+    padding: 30px 15px !important;
+    overflow: hidden;
+  }
+
+  .scroll-container {
+    overflow: visible;
+    height: fit-content;
+  }
+
+  .rtl {
+    direction: rtl;
+    text-align: right;
+  }
+
+  /* English LTR Styles */
+  .ltr {
+    direction: ltr;
+    text-align: left;
   }
 }
+
 
 .PieceDetails div:nth-child(19) {
   grid-column: 1 / -3;

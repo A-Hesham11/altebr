@@ -45,6 +45,7 @@ const PaymentProcessing = ({
   totalApproximateCost,
   costRemainingHonest,
 }: Payment_TP) => {
+  console.log("🚀 ~ costRemainingHonest:", costRemainingHonest)
   console.log("🚀 ~ paymentData:", paymentData);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
@@ -60,7 +61,8 @@ const PaymentProcessing = ({
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
-  const { formatGram, formatReyal } = numberContext();
+  const { formatGram, formatReyal, digits_count } = numberContext();
+  // const { formatReyal, digits_count } = numberContext();
 
   const handleCardSelection = (
     selectedCardType: string,
@@ -109,8 +111,8 @@ const PaymentProcessing = ({
     ? Number(editDataAmount) +
       (Number(totalPriceInvoice) - Number(amountRemaining))
     : costRemainingHonest
-    ? +costRemainingHonest
-    : +totalApproximateCost - +amountRemaining || 0;
+    ? Number(costRemainingHonest)
+    : Number(totalApproximateCost) - +amountRemaining || 0;
 
   console.log("🚀 ~ costRemaining:", costRemaining);
 
@@ -235,13 +237,16 @@ const PaymentProcessing = ({
               </div>
               <div
                 className={` my-6 grid grid-cols-2 lg:grid-cols-4 gap-6  ${
-                  values.amount > +costRemaining ? "items-center" : "items-end"
+                  +values.amount >
+                  Number(Number(costRemaining).toFixed(digits_count.reyal))
+                    ? "items-center"
+                    : "items-end"
                 }`}
               >
                 <div className="relative">
                   <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
                     <span>{t("remaining cost")} : </span>{" "}
-                    {formatReyal(Number(costRemaining))}
+                    {Number(costRemaining).toFixed(digits_count.reyal)}
                   </p>
                   <BaseInputField
                     id="amount"
@@ -253,14 +258,23 @@ const PaymentProcessing = ({
                       setFieldValue("cost_after_tax", +e.target.value);
                     }}
                     className={` ${
-                      +values.amount > +costRemaining && "bg-red-100"
+                      +values.amount >
+                        Number(
+                          Number(costRemaining).toFixed(digits_count.reyal)
+                        ) && "bg-red-100"
                     }`}
                   />
                   <div>
-                    {+values.amount > +costRemaining && (
+                    {+values.amount >
+                      Number(
+                        Number(costRemaining).toFixed(digits_count.reyal)
+                      ) && (
                       <p className="text-mainRed">
-                        <span>{t("Weight must be less than or equal to")}</span>
-                        <span> {costRemaining}</span>
+                        <span>{t("price must be less than or equal to")}</span>
+                        <span>
+                          {" "}
+                          {Number(costRemaining).toFixed(digits_count.reyal)}
+                        </span>
                       </p>
                     )}
                   </div>
@@ -329,7 +343,10 @@ const PaymentProcessing = ({
                 <Button
                   type="submit"
                   className="animate_from_left animation_delay-11 hover:bg-orange-500 transition-all duration-300 bg-mainOrange h-10"
-                  disabled={+values.amount > +costRemaining}
+                  disabled={
+                    +values.amount >
+                    Number(Number(costRemaining).toFixed(digits_count.reyal))
+                  }
                 >
                   {t("confirm")}
                 </Button>

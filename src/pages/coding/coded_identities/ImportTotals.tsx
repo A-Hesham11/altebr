@@ -389,7 +389,14 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
   } = useMutate({
     mutationFn: mutateData,
     onSuccess: () => {
-      notify("success", t("the accounting entry was created successfully"));
+      notify(
+        "success",
+        `${t("the accounting entry was created successfully")}`
+      );
+    },
+    onError: (error) => {
+      console.log(error);
+      notify("error", error?.response?.data?.message === "error" && `${t("there are no new parts")}`);
     },
   });
 

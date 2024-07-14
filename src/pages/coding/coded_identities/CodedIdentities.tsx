@@ -46,6 +46,9 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     `identity/api/v1/pieces_in_edara`
   );
 
+  console.log("🚀 ~ CodedIdentities ~ fetchEndPoint:", fetchEndPoint)
+
+
   const shouldCheck = operationTypeSelect.length === 0;
 
   useEffect(() => {
@@ -112,7 +115,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     onSuccess: (data: any) => {
       setImportData(data);
       setPiecesState(data[1]);
-      notify("success", t("imported has successfully"));
+      notify("success", `${t("imported has successfully")}`);
     },
     onError: (error: any) => {
       notify("error", error?.message);
@@ -123,7 +126,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     mutationFn: mutateData,
     mutationKey: ["final-files"],
     onSuccess: (data) => {
-      notify("success", t("confirmed successfully"));
+      notify("success", `${t("confirmed successfully")}`);
       queryClient.refetchQueries(fetchKey);
       navigate("/coding/total/import");
     },

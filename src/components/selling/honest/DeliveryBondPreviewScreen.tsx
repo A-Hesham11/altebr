@@ -59,6 +59,70 @@ const DeliveryBondPreviewScreen = ({
     prepaidAmount,
   };
 
+  // const Cols = useMemo<any>(
+  //   () => [
+  //     {
+  //       cell: (info: any) => info.getValue(),
+  //       accessorKey: "category_value",
+  //       header: () => <span>{t("category")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => info.getValue() || "---",
+  //       accessorKey: "karat_value",
+  //       header: () => <span>{t("karat")}</span>,
+  //     },
+
+  //     {
+  //       cell: (info: any) => selectedItem.employee_value,
+  //       accessorKey: "employee_value",
+  //       header: () => <span>{t("employee name")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => selectedItem.bond_date,
+  //       accessorKey: "receive_date",
+  //       header: () => <span>{t("receive date")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => formatDate(new Date()),
+  //       accessorKey: "deliver_date",
+  //       header: () => <span>{t("deliver date")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => formatGram(Number(info.getValue())) || "---",
+  //       accessorKey: "weight",
+  //       header: () => <span>{t("weight")}</span>,
+  //     },
+  //     {
+  //       header: () => <span>{t("cost")}</span>,
+  //       accessorKey: "cost",
+  //       cell: (info: any) => {
+  //         const rowData = +info.row.original.cost + +ratioForOneItem;
+  //         return <div>{formatReyal(Number(rowData))}</div>;
+  //       },
+  //     },
+  //     {
+  //       header: () => <span>{t("VAT")}</span>,
+  //       accessorKey: "VAT",
+  //       cell: (info: any) => {
+  //         const rowData =
+  //           +info.row.original.cost * +taxRate + +ratioForOneItemTaxes;
+  //         return <div>{formatReyal(Number(rowData))}</div>;
+  //       },
+  //     },
+  //     {
+  //       header: () => <span>{t("total")}</span>,
+  //       accessorKey: "total",
+  //       cell: (info: any) => {
+  //         const rowData = +info.row.original.cost + ratioForOneItem;
+  //         const rowDataTaxes =
+  //           +info.row.original.cost * +taxRate + ratioForOneItemTaxes;
+  //         return <div>{formatReyal(Number(rowData + rowDataTaxes))}</div>;
+  //       },
+  //     },
+  //   ],
+  //   []
+  // );
+
   const Cols = useMemo<any>(
     () => [
       {
@@ -122,7 +186,6 @@ const DeliveryBondPreviewScreen = ({
     ],
     []
   );
-
   const TableComp = () => (
     <InvoiceTable
       data={selectedItem.items.filter(

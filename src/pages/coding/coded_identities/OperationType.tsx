@@ -139,6 +139,7 @@ const OperationType = ({
         >
           <TransformImport
             setIsSuccessPost={setIsSuccessPost}
+            transformImportModal={transformImportModal}
             setTransformImportModal={setTransformImportModal}
           />
         </Modal>

@@ -7,7 +7,7 @@ import { authCtx } from "../../../context/auth-and-perm/auth"
 interface ReactTableProps<T extends object> {
     data: T[]
     columns: ColumnDef<T>[]
-    paymentData: any
+    paymentData?: any
     costDataAsProps?:any
 }
 
@@ -52,7 +52,7 @@ const InvoiceTable = <T extends object>({ data,
 
     const locationPath = location.pathname 
 
-    const totalFinalCostIntoArabic = convertNumToArWord(Math.round(locationPath === "/selling/addInvoice/" ? costDataAsProps?.totalFinalCost : locationPath === "/selling/payoff/sales-return" ? costDataAsProps?.totalFinalCost : totalFinalCost))
+    const totalFinalCostIntoArabic = convertNumToArWord(Math.round(locationPath === "/selling/addInvoice/" || locationPath === "/selling/viewInvoice/" ? costDataAsProps?.totalFinalCost : locationPath === "/selling/payoff/sales-return" ? costDataAsProps?.totalFinalCost : totalFinalCost))
 
     const hasSelsal = (locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal) ? totalWeightOfSelsal : 0
 
@@ -73,7 +73,7 @@ const InvoiceTable = <T extends object>({ data,
                 <table className="mt-8 w-full table-shadow">
                     <thead className="bg-mainGreen text-white">
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <tr key={headerGroup.id} className="py-4 px-2">
+                            <tr key={headerGroup.id} className="py-4 px-2 text-center">
                                 {headerGroup.headers.map((header) => (
                                     <th
                                         key={header.id}

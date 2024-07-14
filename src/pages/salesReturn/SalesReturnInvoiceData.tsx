@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import { authCtx } from "../../context/auth-and-perm/auth";
@@ -29,6 +29,8 @@ const SalesReturnInvoiceData = ({
   invoiceNumber,
 }: CreateHonestSanadProps_TP) => {
   const { formatGram, formatReyal } = numberContext();
+  const [responseSellingData, SetResponseSellingData] = useState(null);
+
 
   const { userData } = useContext(authCtx);
 
@@ -198,6 +200,7 @@ const SalesReturnInvoiceData = ({
     mutationFn: mutateData,
     onSuccess: (data) => {
       notify("success");
+      SetResponseSellingData(data)
       // navigate(`/selling/return-entry`);
     },
   });
@@ -215,6 +218,7 @@ const SalesReturnInvoiceData = ({
       count: sellingItemsData.length,
     };
     const items = sellingItemsData.map((item) => {
+      console.log("🚀 ~ items ~ item:", item)
       const rowTaxEquation = Number(item.tax_rate) / 100 + 1;
       const taklfaFromOneItem =
         Number(item.taklfa_after_tax) +
@@ -280,8 +284,10 @@ const SalesReturnInvoiceData = ({
         commissionTax_oneItem: item.commissionTax_oneItem,
         total_commission_ratio_tax: totalCommissionRatioTax,
         add_commission_ratio: isCheckedCommission,
+        tax_rate: userData?.tax_rate
       };
     });
+
     const card = paymentData.reduce((acc, curr) => {
       acc[curr.salesReturnFrontKey] = Number(curr.amount);
       return acc;
@@ -329,6 +335,7 @@ const SalesReturnInvoiceData = ({
         sellingItemsData={sellingItemsData}
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}
+        responseSellingData={responseSellingData}
       />
     </div>
   );
