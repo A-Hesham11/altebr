@@ -278,6 +278,12 @@ export const SellingTableInputData = ({
     setEditSellingTaklfaAfterTax(+values?.taklfa_after_tax);
   }, [values?.weight, priceWithSellingPolicy]);
 
+  useEffect(() => {
+    if (search && dataSource?.length == 0) {
+      notify("info", `${t("the item is not available")}`)
+    }
+  }, [dataSource, isSuccess])
+
   return (
     <Form className="overflow-y-auto">
       <p className="font-semibold text-center text-lg text-mainGreen">
