@@ -16,7 +16,6 @@ const FinalPreviewBillPayment = ({
   costDataAsProps: any;
   responseSellingData: any;
 }) => {
-  console.log("🚀 ~ responseSellingData:", responseSellingData)
   const { formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);

@@ -13,6 +13,7 @@ import { notify } from "../../../utils/toast";
 import { Back } from "../../../utils/utils-components/Back";
 import { HonestFinalScreen } from "./HonestFinalScreen";
 import { NewHonestForm } from "./NewHonestForm";
+import { Button } from "../../atoms";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -29,8 +30,10 @@ export const NewHonest = () => {
   /////////// STATES
   ///
   const [sanaData, setSanadData] = useState({});
+  console.log("🚀 ~ NewHonest ~ sanaData:", sanaData);
   const [tableData, setTableData] = useState<any>([]);
   const [paymentData, setPaymentData] = useState([]);
+  console.log("🚀 ~ NewHonest ~ paymentData:", paymentData);
   const totalApproximateCost = tableData.reduce((acc, curr) => {
     acc += +curr.cost;
     return acc;
@@ -140,7 +143,11 @@ export const NewHonest = () => {
             />
           )}
           {stage === 2 && (
-            <HonestFinalScreen sanadData={sanaData} setStage={setStage} />
+            <HonestFinalScreen
+              sanadData={sanaData}
+              setStage={setStage}
+              paymentData={paymentData}
+            />
           )}
         </>
       </Formik>
