@@ -911,7 +911,7 @@
   "retrieve honest bond restrictions": "قيود سندات استعادة الامانه",
   "new honest": "امانه جديدة",
   "honest details": "تفاصيل الامانه",
-  "price must be less than or equal to":"يجب أن يكون السعر أقل من أو يساوي",
+  "price must be less than or equal to": "يجب أن يكون السعر أقل من أو يساوي",
   "all items must be ready to deliver": "يجب أن تكون كل القطع جاهزة للتسليم",
   "add payment method first": "اضف طريقة دفع اولا",
   "create receive honest bond": "انشاء سند تسليم امانه",
@@ -1337,5 +1337,11 @@
   "selling price exceeds asking price": "سعر البيع تخطي السعر المطلوب",
   "tax": "الضريبة",
   "transfer import": "تحويل الاستيراد",
-  "the pieces contains weight": "القطع تحتوي علي اوزان"
+  "the pieces contains weight": "القطع تحتوي علي اوزان",
+  "honest bond number": "سند امانة رقم",
+  "honest bond date": "تاريخ سند الامانة",
+  "not found": "لا يوجد",
+  "total of estimated cost": "اجمالي التكلفة التقديرية",
+  "total of amount paid": "اجمالي المبلغ المدفوع",
+  "deserved amount": "المبلغ المتبقي"
 }
