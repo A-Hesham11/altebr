@@ -18,6 +18,12 @@ import { BaseInputField, DateInputField, Modal } from "../../molecules";
 import { Loading } from "../../organisms/Loading";
 import { Table } from "../../templates/reusableComponants/tantable/Table";
 import { HonestBondAccountingRestriction } from "./HonestBondAccountingRestriction";
+import { BsEye } from "react-icons/bs";
+import HonestFinalScreenHeader from "./HonestFinalScreenHeader";
+import HonestFinalScreenItems from "./HonestFinalScreenItems";
+import HonestFinalScreenPayment from "./HonestFinalScreenPayment";
+import { numberContext } from "../../../context/settings/number-formatter";
+import { ClientData_TP } from "../SellingClientForm";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -28,6 +34,8 @@ export const AllHonestBonds = () => {
   /////////// CUSTOM HOOKS
   ///
   const { userData } = useContext(authCtx);
+  const { formatGram, formatReyal } = numberContext();
+  const [showPrint, setShowPrint] = useState(false);
 
   const isRTL = useIsRTL();
   ///
@@ -35,7 +43,9 @@ export const AllHonestBonds = () => {
   ///
   const [dataSource, setDataSource] = useState<any>([]);
   const [selectedItem, setSelectedItem] = useState<any>({});
+  console.log("🚀 ~ AllHonestBonds ~ selectedItem:", selectedItem);
   const [restrictModal, setOpenRestrictModal] = useState(false);
+  const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const {
@@ -59,6 +69,50 @@ export const AllHonestBonds = () => {
     bondsafety_id: "",
     bond_date: "",
   };
+
+  const paymentData = [];
+
+  const invoiceCols = useMemo<any>(
+    () => [
+      {
+        cell: (info) => info.getValue() || "---",
+        accessorKey: "category_id",
+        header: () => (
+          <span className="flex justify-center">{t("classification")}</span>
+        ),
+      },
+      {
+        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        accessorKey: "weight",
+        header: () => (
+          <span className="flex justify-center">{t("weight")}</span>
+        ),
+      },
+      {
+        cell: (info) => info.getValue() || "---",
+        accessorKey: "karat_id",
+        header: () => <span className="flex justify-center">{t("karat")}</span>,
+      },
+      {
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        accessorKey: "cost",
+        header: () => (
+          <span className="flex justify-center">{t("approximate cost")}</span>
+        ),
+      },
+      {
+        cell: (info) => info.getValue() || t("not found"),
+        accessorKey: "description",
+        header: () => (
+          <span className="truncate w-44 flex justify-center">
+            {t("notes")}
+          </span>
+        ),
+      },
+    ],
+    []
+  );
 
   const Cols = useMemo<any>(
     () => [
@@ -95,14 +149,24 @@ export const AllHonestBonds = () => {
       },
       {
         cell: (info: any) => (
-          <BiSpreadsheet
-            size={23}
-            onClick={() => {
-              setOpenRestrictModal(true);
-              setSelectedItem(info.row.original);
-            }}
-            className="text-mainGreen mx-auto cursor-pointer"
-          />
+          <div className="flex items-center gap-2 justify-center">
+            <BiSpreadsheet
+              size={23}
+              onClick={() => {
+                setOpenRestrictModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              className="text-mainGreen cursor-pointer"
+            />
+            <BsEye
+              onClick={() => {
+                setOpenInvoiceModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+          </div>
         ),
         accessorKey: "restriction",
         header: () => <span>{t("restriction")}</span>,
@@ -150,6 +214,44 @@ export const AllHonestBonds = () => {
     });
     setSearch(uri);
   };
+
+  // SENTENCE API
+  const { data } = useFetch<ClientData_TP>({
+    endpoint: `/selling/api/v1/get_sentence`,
+    queryKey: ["sentence"],
+  });
+
+  // COMPANY DATA API
+  const { data: companyData } = useFetch<ClientData_TP>({
+    endpoint: `/companySettings/api/v1/companies`,
+    queryKey: ["Selling_Mineral_license"],
+  });
+
+  const clientData = {
+    client_id: selectedItem?.client_id_2,
+    client_value: selectedItem?.client_id,
+    bond_date: selectedItem?.bond_date,
+  };
+
+  const totalCost = selectedItem?.items?.reduce((acc: number, curr: any) => {
+    acc += +curr.cost;
+    return acc;
+  }, 0);
+
+  const totalAmount = selectedItem?.boxes?.find(
+    (el) => el.account === "الأمانات"
+  );
+
+  const sanadData = {
+    amount: totalAmount?.value,
+    totalCost: totalCost,
+    remaining_amount: totalCost - totalAmount?.value,
+  };
+
+  const costDataAsProps = {
+    totalCost,
+  };
+
   ///
   if (honestBondsLoading || isRefetching || isFetching)
     return <Loading mainTitle={`${t("loading items")}`} />;
@@ -247,6 +349,65 @@ export const AllHonestBonds = () => {
         </div> */}
       <Modal isOpen={restrictModal} onClose={() => setOpenRestrictModal(false)}>
         <HonestBondAccountingRestriction sanadId={selectedItem.id} />
+      </Modal>
+
+      {/* 3) MODAL */}
+      <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
+        <div className="">
+          <div className="flex items-center justify-start gap-x-4 mb-6">
+            <div className="animate_from_left">
+              <Button bordered action={() => window.print()}>
+                {t("print")}
+              </Button>
+            </div>
+          </div>
+          <div className="print-section space-y-12 bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
+            <HonestFinalScreenHeader
+              clientData={clientData}
+              popupBondId={selectedItem?.id}
+            />
+            <HonestFinalScreenItems
+              sanadData={sanadData}
+              data={selectedItem?.items || []}
+              columns={invoiceCols}
+              costDataAsProps={costDataAsProps}
+            />
+            <div className="pe-8">
+              <HonestFinalScreenPayment
+                items={selectedItem?.items}
+                // paymentData={paymentData}
+              />
+            </div>
+            <div className="text-center">
+              <p className="my-4 py-1 border-y border-mainOrange">
+                {data && data?.sentence}
+              </p>
+              <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
+                <p>
+                  {" "}
+                  العنوان : {userData?.branch?.country?.name} ,{" "}
+                  {userData?.branch?.city?.name} ,{" "}
+                  {userData?.branch?.district?.name}
+                </p>
+                {/* <p>رقم المحل</p> */}
+                <p>
+                  {t("phone")}: {userData?.phone}
+                </p>
+                <p>
+                  {t("email")}: {userData?.email}
+                </p>
+                <p>
+                  {t("tax number")}:{" "}
+                  {companyData && companyData[0]?.taxRegisteration}
+                </p>
+                <p>
+                  {t("Mineral license")}:{" "}
+                  {companyData && companyData[0]?.mineralLicence}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </Modal>
     </div>
   );

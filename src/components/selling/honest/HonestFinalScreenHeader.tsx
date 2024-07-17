@@ -11,6 +11,7 @@ interface HonestFinalScreenHeader_TP {
 
 const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
   clientData,
+  popupBondId,
 }) => {
   const { userData } = useContext(authCtx);
   const { client_id, client_value, bond_date } = clientData;
@@ -33,7 +34,7 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
           {t("honest bond number")} :{" "}
-          <span className="font-medium">{bondNumber}</span>
+          <span className="font-medium">{popupBondId || bondNumber}</span>
         </p>
         <p className="text-xs font-bold">
           {t("honest bond date")} :{" "}

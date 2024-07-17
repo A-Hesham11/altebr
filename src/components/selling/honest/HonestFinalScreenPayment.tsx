@@ -18,7 +18,7 @@ const HonestFinalScreenPayment: React.FC<HonestFinalScreenPayment_TP> = ({
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ userData:", userData);
 
-  const totalValueOfItems = items.reduce((acc, curr) => {
+  const totalValueOfItems = items?.reduce((acc, curr) => {
     return +acc + +curr.cost;
   }, 0);
 
