@@ -354,7 +354,7 @@ export const HonestProvisons = ({ data, setData }: HonestProvisonsProps_TP) => {
                                                 type="button"
                                                 className="cursor-pointer text-lg font-bold rounded-md  w-[28px] h-[28px] active:shadow-none active:w-[28px]"
                                                 onClick={() => {
-                                                    if (!values.category_id || !values.karat_id || !values.weight || !values.cost) {
+                                                    if (!values.category_id || !values.karat_id || !values.weight) {
                                                         notify('info', `${t('complete item data')}`)
                                                     } else {
                                                         const finalValues = {

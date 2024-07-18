@@ -34,7 +34,7 @@ const SellingClientForm = () => {
         .test("isValidateNumber", "رقم غير صحيح", function (value: string) {
           return isValidPhoneNumber(value || "");
         }),
-      identity: Yup.string().trim().required(requiredTranslation),
+      identity: Yup.string().trim(),
     });
 
   const initialValues = {
