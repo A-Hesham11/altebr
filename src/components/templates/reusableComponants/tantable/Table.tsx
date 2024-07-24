@@ -20,6 +20,7 @@ interface ReactTableProps<T extends object> {
   filterFn?: FilterFn<T>;
   footered?: boolean;
   children?: ReactNode;
+  rowBackground?: string;
 }
 
 export const Table = <T extends object>({
@@ -28,6 +29,7 @@ export const Table = <T extends object>({
   showNavigation,
   footered = false,
   children,
+  rowBackground,
 }: ReactTableProps<T>) => {
   const table = useReactTable({
     data,
@@ -39,7 +41,6 @@ export const Table = <T extends object>({
 
   const isRTL = useIsRTL();
 
-  console.log("🚀 ~ table:", table.getState())
   return (
     <>
       <div
@@ -75,7 +76,9 @@ export const Table = <T extends object>({
                     className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
                       footered && i == table.getRowModel().rows.length - 1
                         ? "!bg-mainGreen !text-white"
-                        : "!bg-lightGreen !text-gray-900"
+                        : `${
+                            rowBackground ? rowBackground : "!bg-lightGreen"
+                          } !text-gray-900`
                     } `}
                     key={cell.id}
                   >

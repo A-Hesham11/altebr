@@ -159,6 +159,10 @@ import ActivityLog from "../pages/ActivityLog/ActivityLog";
 import ImportTotalsBonds from "../pages/coding/coded_identities/ImportTotalsBonds";
 import { Zatca } from "../pages/selling/Zatca";
 import Test from "../pages/Test";
+import BudgetPage from "../pages/Budget/Bank";
+import BankBudgetBonds from "../pages/Budget/budgetBonds/BankBudgetBonds";
+import Bank from "../pages/Budget/Bank";
+import BankBudget from "../pages/Budget/budgetInvoice/BankBudget";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -475,10 +479,7 @@ export const AllRoutesProvider = () => {
             element={<SupplierPaymentBonds />}
           />
 
-          <Route
-            path="/selling/zatca"
-            element={<Zatca />}
-          />
+          <Route path="/selling/zatca" element={<Zatca />} />
 
           <Route path="/supply-return" element={<SupplyPayoff />} />
 
@@ -565,7 +566,10 @@ export const AllRoutesProvider = () => {
             element={<ReturnHonestRestriction />}
           />
           {/* honest end */}
-          <Route path="/selling/bank" element={<>bank</>} />
+          {/* BANK */}
+          <Route path="/bank" element={<Bank />} />
+          <Route path="/bank/budget" element={<BankBudget />} />
+          <Route path="/bank/budgetBonds" element={<BankBudgetBonds />} />
           <Route
             path="/selling/branch-identity"
             element={<SellingBranchIdentity />}
@@ -669,7 +673,7 @@ export const AllRoutesProvider = () => {
             element={<OneRetrievalRestrictions />}
           />
           {/* honest end */}
-          <Route path="/selling/bank" element={<>bank</>} />
+          <Route path="/bank" element={<BudgetPage />} />
           <Route
             path="/selling/branch-identity"
             element={<SellingBranchIdentity />}
