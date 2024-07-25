@@ -4,9 +4,12 @@ import { useFetch } from "../../../../hooks";
 import billLogo from "../../../../assets/bill-logo.png";
 import { t } from "i18next";
 import { formatDate, formatDateAndTime } from "../../../../utils/date";
+import { numberContext } from "../../../../context/settings/number-formatter";
 
 interface ClientData_TP {
   bank_name: string;
+  account_number: number;
+  account_balance: number;
 }
 
 interface BudgetSecondScreenHeader_TP {
@@ -17,12 +20,8 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
   clientData,
 }) => {
   const { userData } = useContext(authCtx);
-  const { bank_name } = clientData;
-
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `branchSafety/api/v1/bonds/${userData?.branch_id}?per_page=10000`,
-    queryKey: [`bondsData`],
-  });
+  const { formatReyal } = numberContext();
+  const { bank_name, account_number, account_balance } = clientData;
 
   return (
     <div className="flex justify-between mx-6 bill-shadow rounded-md p-6">
@@ -55,14 +54,12 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
         </p>
 
         <p className="text-xs font-bold">
-          {t("mobile number")} :{" "}
-          <span className="font-medium">{data?.phone}</span>{" "}
+          {t("account number")} :{" "}
+          <span className="font-medium">{account_number}</span>{" "}
         </p>
         <p className="text-xs font-bold">
-          {t("Id number")} :{" "}
-          <span className="font-medium">
-            {data?.identity || data?.national_number}
-          </span>{" "}
+          {t("account balance")} :{" "}
+          <span className="font-medium">{formatReyal(account_balance)}</span>{" "}
         </p>
       </div>
     </div>

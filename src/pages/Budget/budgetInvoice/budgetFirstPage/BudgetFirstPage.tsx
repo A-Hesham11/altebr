@@ -1,6 +1,6 @@
 import { t } from "i18next";
 import BudgetFirstPageHeader from "./BudgetFirstPageHeader";
-import React, { SetStateAction, useContext, useState } from "react";
+import React, { SetStateAction, useContext, useEffect, useState } from "react";
 import { Back } from "../../../../utils/utils-components/Back";
 import BudgetStatementTable from "./BudgetStatementTable";
 import BudgetStatementOperationTable from "./BudgetStatementOperationTable";
@@ -38,6 +38,7 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
   mainCardData,
   setMainCardData,
 }) => {
+  console.log("🚀 ~ selectedAccountData:", selectedAccountData);
   const { userData } = useContext(authCtx);
 
   const {
@@ -49,12 +50,18 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
   } = useFetch({
     endpoint: `branchAccount/api/v1/getAccountCardAmount/${
       userData?.branch_id
-    }/${selectedBankData?.frontKey || null}`,
+    }/${selectedAccountData ? selectedAccountData?.frontKey : 0}/${
+      selectedAccountData ? selectedAccountData?.id : 0
+    }`,
     queryKey: ["accounts-details-data"],
     onSuccess: (data: any) => {
-      setMainCardData(data?.cards);
+      setMainCardData(data);
     },
   });
+
+  useEffect(() => {
+    accountsDetailsDataRefetch();
+  }, [selectedAccountData]);
 
   return (
     <div className="overflow-hidden">

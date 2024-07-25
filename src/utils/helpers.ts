@@ -47,3 +47,18 @@ export const prepareItemsToShowInCaseOfTa2m = (
     );
   });
 
+export const processBudgetData = (data) => {
+  const cardsGroup = {};
+
+  data?.map((card) => {
+    const cardType = card.accountable;
+
+    if (!cardsGroup[cardType]) {
+      cardsGroup[cardType] = [];
+    }
+
+    cardsGroup[cardType].push(...card.boxes);
+  });
+
+  return cardsGroup;
+};

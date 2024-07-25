@@ -18,7 +18,6 @@ const BudgetStatementTable: React.FC<BudgetStatementTable_TP> = ({
   const mainCardDataBoxes = mainCardData
     ?.map((cardData) => cardData.boxes)
     .flat();
-  console.log("🚀 ~ mainCardDataBoxes:", mainCardDataBoxes);
 
   // TODO: LINK IT WITH THE CORRECT ACCESSOR KEY
   const tableColumn = useMemo<any>(

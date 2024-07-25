@@ -14,7 +14,9 @@ import { Table } from "../../../../components/templates/reusableComponants/tanta
 
 interface BudgetSecondPageItems_TP {
   firstData: [];
+  secondData: [];
   firstColumns: ColumnDef<[] | any>;
+  secondColumns: ColumnDef<[] | any>;
   costDataAsProps: {
     amount: number;
     remaining_amount: number;
@@ -25,18 +27,26 @@ interface BudgetSecondPageItems_TP {
 const BudgetSecondPageItems: React.FC<BudgetSecondPageItems_TP> = ({
   firstData,
   firstColumns,
+  secondColumns,
+  secondData,
   costDataAsProps,
 }) => {
+  console.log("🚀 ~ firstData:", firstData);
   const { formatGram, formatReyal } = numberContext();
 
   // CUSTOM CONFIGURE FOR TABLE
-  // const table = useReactTable({
-  //   data,
-  //   columns,
-  //   getCoreRowModel: getCoreRowModel(),
-  //   getFilteredRowModel: getFilteredRowModel(),
-  //   getPaginationRowModel: getPaginationRowModel(),
-  // });
+  const table = useReactTable({
+    data: firstData,
+    columns: firstColumns,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: firstData?.length,
+      },
+    },
+  });
 
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(costDataAsProps?.totalCost)
@@ -102,29 +112,70 @@ const BudgetSecondPageItems: React.FC<BudgetSecondPageItems_TP> = ({
                   className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                   colSpan={2}
                 >
-                  <span className="font-bold">
-                    {t("total of estimated cost")}
-                  </span>
-                  : {totalFinalCostIntoArabic}
+                  <span className="font-bold">{t("total of commission")}</span>:{" "}
+                  {totalFinalCostIntoArabic}
                 </td>
                 <td
                   className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                   colSpan={2}
                 >
-                  <span className="font-bold">{t("total of amount paid")}</span>
+                  <span className="font-bold">
+                    {t("total of commission tax")}
+                  </span>
                   : {totalFinalAmountIntoArabic}
                 </td>
                 <td
                   className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                   colSpan={2}
                 >
-                  <span className="font-bold">{t("deserved amount")}</span>:{" "}
+                  <span className="font-bold">{t("total of balance")}</span>:{" "}
                   {totalFinalRemainingAmountIntoArabic}
                 </td>
               </tr>
             </tfoot>
           </table> */}
-          <Table data={} columns={firstColumns} />
+          <table className="min-w-full text-center">
+            <thead className="border-b bg-mainGreen">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="px-6 py-4 text-sm font-medium text-white"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row, i) => (
+                <tr key={row.id} className="border-b">
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      className={`whitespace-nowrap px-6 py-4 text-sm font-light bg-lightGreen`}
+                      key={cell.id}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="bg-mainGreen my-1 py-2 text-center text-xl text-white font-bold">
+            {t("totals")}
+          </p>
+          <Table data={secondData} columns={secondColumns} />
         </div>
       </div>
     </>

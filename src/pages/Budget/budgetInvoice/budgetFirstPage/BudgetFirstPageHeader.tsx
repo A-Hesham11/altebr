@@ -72,7 +72,7 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
   } = useFetch({
     endpoint: `branchAccount/api/v1/getAccountBankBranches/${
       userData?.branch_id
-    }/${selectedBankData?.id || 0}`,
+    }/${selectedBankData?.id ? selectedBankData?.id : 0}`,
     queryKey: ["accounts-option"],
     select: (data) => {
       return data?.map((bank) => {
@@ -89,10 +89,6 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
   useEffect(() => {
     accountsRefetch();
   }, [selectedBankData]);
-
-  useEffect(() => {
-    accountsDetailsDataRefetch();
-  }, [selectedAccountData]);
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-center gap-x-12 gap-y-8">
@@ -131,7 +127,8 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
       </div>
 
       <div>
-        {accountsDetailsData && (
+        {(accountsDetailsData?.base?.debtor ||
+          accountsDetailsData?.base?.creditor) && (
           <BaseInputField
             id="accountBalance"
             type="text"

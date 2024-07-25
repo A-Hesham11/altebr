@@ -27,9 +27,16 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
 }) => {
   if (isLoading || isFetching || isRefetching)
     return <Loading mainTitle={t("loading budget balance")} />;
+
   return (
     <>
       <div className="bg-lightGreen rounded-lg sales-shadow px-6 py-5 space-y-6">
+        {/* TOTALS */}
+        <BudgetStatementOperationTotals mainCardData={mainCardData} />
+
+        {/* SECOND TABLE FIR OPERATION */}
+        <BudgetStatementOperationTable mainCardData={mainCardData} />
+
         <div className="flex justify-between items-center">
           <h2 className="text-base font-bold">{t("budget statement")}</h2>
           <h2 className="text-base font-bold">
@@ -41,17 +48,12 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
           mainCardData={mainCardData}
           setOperationCardData={setOperationCardData}
         />
-
-        {/* SECOND TABLE FIR OPERATION */}
-        <BudgetStatementOperationTable mainCardData={mainCardData} />
       </div>
 
-      {/* TOTALS */}
-      <BudgetStatementOperationTotals mainCardData={mainCardData} />
-      <div className="flex justify-end mt-2">
+      <div className="flex justify-end mt-8">
         <Button
           action={() => {
-            if (mainCardData.length === 0) {
+            if (mainCardData?.cards?.length === 0) {
               notify("error", `${t("there is no data to transfer")}`);
             }
 
