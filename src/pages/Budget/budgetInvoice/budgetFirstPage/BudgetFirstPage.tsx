@@ -2,14 +2,11 @@ import { t } from "i18next";
 import BudgetFirstPageHeader from "./BudgetFirstPageHeader";
 import React, { SetStateAction, useContext, useEffect, useState } from "react";
 import { Back } from "../../../../utils/utils-components/Back";
-import BudgetStatementTable from "./BudgetStatementTable";
-import BudgetStatementOperationTable from "./BudgetStatementOperationTable";
-import BudgetStatementOperationTotals from "./BudgetStatementOperationTotals";
-import { Button } from "../../../../components/atoms";
-import { HiArrowPathRoundedSquare } from "react-icons/hi2";
 import BudgetOperationsData from "./BudgetOperationsData";
 import { useFetch } from "../../../../hooks";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
+import { useFormikContext } from "formik";
+import { formatDate } from "../../../../utils/date";
 
 interface BudgetFirstPage_TP {
   budgetFiles: File[];
@@ -38,8 +35,8 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
   mainCardData,
   setMainCardData,
 }) => {
-  console.log("🚀 ~ selectedAccountData:", selectedAccountData);
   const { userData } = useContext(authCtx);
+  const { values } = useFormikContext();
 
   const {
     data: accountsDetailsData,
@@ -52,7 +49,7 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
       userData?.branch_id
     }/${selectedAccountData ? selectedAccountData?.frontKey : 0}/${
       selectedAccountData ? selectedAccountData?.id : 0
-    }`,
+    }?from=${formatDate(values.from)}&to=${formatDate(values.to)}`,
     queryKey: ["accounts-details-data"],
     onSuccess: (data: any) => {
       setMainCardData(data);
@@ -61,7 +58,7 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
 
   useEffect(() => {
     accountsDetailsDataRefetch();
-  }, [selectedAccountData]);
+  }, [selectedAccountData, values]);
 
   return (
     <div className="overflow-hidden">

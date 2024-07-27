@@ -154,7 +154,8 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
         <DateInputField
           label={`${t("date from")}`}
           placeholder={`${t("date from")}`}
-          name="date_from"
+          name="from"
+          // value={values.from}
         />
       </div>
 
@@ -162,7 +163,8 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
         <DateInputField
           label={`${t("date to")}`}
           placeholder={`${t("date to")}`}
-          name="date_to"
+          name="to"
+          // value={values.to}
         />
       </div>
     </div>

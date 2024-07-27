@@ -7,6 +7,7 @@ import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { processBudgetData } from "../../../utils/helpers";
+import { formatDate } from "../../../utils/date";
 
 const BankBudget = () => {
   const [stage, setStage] = useState<number>(1);
@@ -24,8 +25,8 @@ const BankBudget = () => {
     bankName: "",
     accountNumber: "",
     accountBalance: "",
-    date_from: "",
-    date_to: "",
+    from: new Date(),
+    to: new Date(),
   };
 
   const { mutate, isLoading } = useMutate({
