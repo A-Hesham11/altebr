@@ -66,13 +66,14 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
 
       <div className="flex justify-end mt-8">
         <Button
+          type="button"
           action={() => {
             if (
               mainCardData?.cards?.length === 0 ||
               mainCardDataBoxes.length === 0
             ) {
               notify("error", `${t("there is no data to transfer")}`);
-              return;
+              // return;
             }
 
             setStage(2);

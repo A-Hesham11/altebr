@@ -1363,5 +1363,6 @@
   "card count": "عدد البطاقات",
   "budget balance": "رصيد الموازنة",
   "ATM transaction balance statement": "كشف موازنة عمليات الصراف",
-  "there is no data to transfer": "لا يوجد عمليات صراف"
+  "there is no data to transfer": "لا يوجد عمليات صراف",
+  "download pdf": "تحميل pdf"
 }

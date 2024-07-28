@@ -18,6 +18,9 @@ import { mutateData } from "../../../../utils/mutateData";
 import { notify } from "../../../../utils/toast";
 import { useReactToPrint } from "react-to-print";
 import { processBudgetData } from "../../../../utils/helpers";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { DownloadAsPDF } from "../../../../utils/DownloadAsPDF";
 
 interface BudgetSecondPage_TP {
   setStage: React.Dispatch<SetStateAction<number>>;
@@ -191,23 +194,23 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
     []
   );
 
-  const handlePrint = () => {
-    const printContent = contentRef.current.innerHTML;
-    const printWindow = window.open("", "", "height=2000,width=1500");
+  // const handlePrint = () => {
+  //   const printContent = contentRef.current.innerHTML;
+  //   const printWindow = window.open("", "", "height=2000,width=1500");
 
-    // Copy the styles from the current document to the print window
-    const styles = Array.from(document.querySelectorAll("link, style"))
-      .map((style) => style.outerHTML)
-      .join("\n");
+  //   // Copy the styles from the current document to the print window
+  //   const styles = Array.from(document.querySelectorAll("link, style"))
+  //     .map((style) => style.outerHTML)
+  //     .join("\n");
 
-    printWindow.document.write(
-      `<html><head><title>Budget</title>${styles}</head><body>`
-    );
-    printWindow.document.write(printContent);
-    printWindow.document.write("</body></html>");
-    printWindow.document.close();
-    printWindow.print();
-  };
+  //   printWindow.document.write(
+  //     `<html><head><title>Budget</title>${styles}</head><body>`
+  //   );
+  //   printWindow.document.write(printContent);
+  //   printWindow.document.write("</body></html>");
+  //   printWindow.document.close();
+  //   printWindow.print();
+  // };
 
   // const handlePrint = useReactToPrint({
   //   content: () => contentRef.current,
@@ -264,10 +267,13 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
           </div>
         </div>
         <div className="flex items-center justify-end gap-x-4 mr-auto mt-8">
-          {showPrint && (
+          {!showPrint && (
             <div className="animate_from_right">
-              <Button bordered action={handlePrint}>
-                {t("print")}
+              <Button
+                bordered
+                action={() => DownloadAsPDF(contentRef.current, "Budget")}
+              >
+                {t("download pdf")}
               </Button>
             </div>
           )}

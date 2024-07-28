@@ -143,11 +143,11 @@ const BankBudget = () => {
       }),
     };
 
-    mutate({
-      endpointName: "/budget/api/v1/create",
-      values: formatedValue,
-      dataType: "formData",
-    });
+    // mutate({
+    //   endpointName: "/budget/api/v1/create",
+    //   values: formatedValue,
+    //   dataType: "formData",
+    // });
   };
 
   return (
