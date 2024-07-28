@@ -32,7 +32,7 @@ const SellingInvoiceData = ({
   selectedItemDetails,
   sellingItemsOfWeigth,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData)
+  console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ clientData:", clientData);
   const { formatGram, formatReyal } = numberContext();
 
@@ -40,6 +40,7 @@ const SellingInvoiceData = ({
   console.log("🚀 ~ responseSellingData:", responseSellingData);
 
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData);
 
   const totalCommissionRatio = paymentData.reduce((acc, card) => {
     acc += +card.commission_riyals;
@@ -282,7 +283,7 @@ const SellingInvoiceData = ({
     });
     const card = paymentData.reduce((acc, curr) => {
       const maxDiscountOrNOt =
-      curr.max_discount_limit && curr.amount >= curr.max_discount_limit
+        curr.max_discount_limit && curr.amount >= curr.max_discount_limit
           ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
           : Number(curr.amount) + Number(curr.commission_riyals);
 
@@ -290,14 +291,26 @@ const SellingInvoiceData = ({
         +maxDiscountOrNOt + Number(curr.commission_tax);
       return acc;
     }, {});
+
+    const paymentCommission = paymentData.reduce((acc, curr) => {
+      const commissionReyals = Number(curr.commission_riyals);
+      const commissionVat = Number(curr.commission_riyals) * (userData?.tax_rate / 100);
+
+      acc[curr.sellingFrontKey] = {
+        commission: commissionReyals,
+        vat: commissionVat,
+      };
+      return acc;
+    }, {});
+
     mutate({
       endpointName: "/selling/api/v1/add_Invoice",
-      values: { invoice, items, card },
+      values: { invoice, items, card, paymentCommission },
     });
 
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
-      { invoice, items, card }
+      { invoice, items, card, paymentCommission }
     );
   };
 
@@ -336,8 +349,6 @@ const SellingInvoiceData = ({
         isSuccess={isSuccess}
         responseSellingData={responseSellingData}
       />
-
-
     </div>
   );
 };

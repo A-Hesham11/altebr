@@ -28,6 +28,7 @@ const SalesReturnInvoiceData = ({
   clientData,
   invoiceNumber,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ paymentData:", paymentData)
   const { formatGram, formatReyal } = numberContext();
   const [responseSellingData, SetResponseSellingData] = useState(null);
 
@@ -292,10 +293,10 @@ const SalesReturnInvoiceData = ({
       acc[curr.salesReturnFrontKey] = Number(curr.amount);
       return acc;
     }, {});
-    mutate({
-      endpointName: "/sellingReturn/api/v1/add_selling_return",
-      values: { invoice, items, card },
-    });
+    // mutate({
+    //   endpointName: "/sellingReturn/api/v1/add_selling_return",
+    //   values: { invoice, items, card },
+    // });
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
       { invoice, items, card }

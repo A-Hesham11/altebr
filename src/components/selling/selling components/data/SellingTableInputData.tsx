@@ -64,7 +64,8 @@ export const SellingTableInputData = ({
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] =
-    useState<number>();
+  useState<number>();
+  console.log("🚀 ~ editSellingTaklfaAfterTax:", editSellingTaklfaAfterTax)
 
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ userData:", userData);
@@ -542,7 +543,7 @@ export const SellingTableInputData = ({
                     : (values?.taklfa_after_tax &&
                         Number(values?.taklfa_after_tax) <
                           Number(editSellingTaklfaAfterTax)) ||
-                          values?.classification_id !== 1  && Number(values?.max_selling_price) < Number(values?.taklfa)
+                          values?.classification_id !== 1  && Number(values?.max_selling_price) <= Number(values?.taklfa)
                     ? "bg-red-100"
                     : ""
                 } text-center`}
