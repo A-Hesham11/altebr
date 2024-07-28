@@ -19,7 +19,6 @@ const BudgetStatementTable: React.FC<BudgetStatementTable_TP> = ({
     ?.map((cardData) => cardData.boxes)
     .flat();
 
-  // TODO: LINK IT WITH THE CORRECT ACCESSOR KEY
   const tableColumn = useMemo<any>(
     () => [
       {
@@ -28,30 +27,37 @@ const BudgetStatementTable: React.FC<BudgetStatementTable_TP> = ({
         header: () => <span>{t("bond number")}</span>,
       },
       {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "restriction_name",
+        header: () => <span>{t("operation type")}</span>,
+      },
+      {
         cell: (info: any) => info.getValue() || "-",
         accessorKey: "account",
         header: () => <span>{t("card name")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.row.original.debtor
-            ? formatReyal(Number(info.row.original.debtor))
-            : info.row.original.creditor
-            ? formatReyal(Number(info.row.original.creditor))
-            : "---",
+        cell: (info: any) => {
+          const value =
+            info.row.original?.value -
+            info.row.original.card_commission -
+            info.row.original.card_vat;
+
+          return value > 0 ? formatReyal(value) : "---";
+        },
         accessorKey: "balance",
         header: () => <span>{t("balance")}</span>,
       },
       {
         cell: (info: any) =>
           info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
-        accessorKey: "commission",
+        accessorKey: "card_commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
         cell: (info: any) =>
           info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
-        accessorKey: "commission_tax",
+        accessorKey: "card_vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {
@@ -60,11 +66,7 @@ const BudgetStatementTable: React.FC<BudgetStatementTable_TP> = ({
         accessorKey: "value",
         header: () => <span>{t("total balance")}</span>,
       },
-      {
-        cell: (info: any) => info.getValue() || "---",
-        accessorKey: "restriction_name",
-        header: () => <span>{t("operation type")}</span>,
-      },
+
       {
         cell: (info: any) => info.getValue() || "---",
         accessorKey: "date_time",
@@ -80,7 +82,13 @@ const BudgetStatementTable: React.FC<BudgetStatementTable_TP> = ({
       data={mainCardDataBoxes || []}
       columns={tableColumn}
       showNavigation={mainCardDataBoxes.length > 10}
-    />
+    >
+      {mainCardDataBoxes.length === 0 && (
+        <p className="text-center text-lg font-bold text-mainGreen">
+          {t("there is no data to transfer")}
+        </p>
+      )}
+    </Table>
   );
 };
 

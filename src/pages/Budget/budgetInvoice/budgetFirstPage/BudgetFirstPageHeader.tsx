@@ -91,7 +91,7 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
   }, [selectedBankData]);
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-center gap-x-12 gap-y-8">
+    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-end gap-x-12 gap-y-8">
       <div>
         <Select
           id="bankName"
@@ -127,26 +127,23 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
       </div>
 
       <div>
-        {(accountsDetailsData?.base?.debtor ||
-          accountsDetailsData?.base?.creditor) && (
-          <BaseInputField
-            id="accountBalance"
-            type="text"
-            name="accountBalance"
-            label={`${t("account balance")}`}
-            placeholder={`${t("account balance")}`}
-            value={
-              accountsDetailsData?.base?.debtor
-                ? `${accountsDetailsData?.base?.debtor} ${accountsDetailsData?.base?.unit}`
-                : `${accountsDetailsData?.base?.creditor} ${accountsDetailsData?.base?.unit}`
-            }
-            disabled
-            className="bg-mainDisabled"
-          />
-        )}
+        <BaseInputField
+          id="accountBalance"
+          type="text"
+          name="accountBalance"
+          label={`${t("account balance")}`}
+          placeholder={`${t("account balance")}`}
+          value={
+            accountsDetailsData?.base?.debtor
+              ? accountsDetailsData?.base?.debtor
+              : accountsDetailsData?.base?.creditor
+          }
+          disabled
+          className="bg-mainDisabled"
+        />
       </div>
 
-      <div className="mt-4 w-44">
+      <div className="mt-4 w-60">
         {<FilesUpload files={budgetFiles} setFiles={setBudgetFiles} />}
       </div>
 

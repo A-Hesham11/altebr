@@ -21,13 +21,15 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
 }) => {
   const { userData } = useContext(authCtx);
   const { formatReyal } = numberContext();
-  const { bank_name, account_number, account_balance } = clientData;
+  const { bank_name, bond_number, account_number, account_balance } =
+    clientData;
 
   return (
     <div className="flex justify-between mx-6 bill-shadow rounded-md p-6">
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
-          {t("budget bond number")} : <span className="font-medium">{1}</span>
+          {t("budget bond number")} :{" "}
+          <span className="font-medium">{bond_number}</span>
         </p>
         <p>
           <span>{t("branch")}: </span>

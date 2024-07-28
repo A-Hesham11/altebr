@@ -7,6 +7,7 @@ import { HiArrowPathRoundedSquare } from "react-icons/hi2";
 import { t } from "i18next";
 import { Loading } from "../../../../components/organisms/Loading";
 import { notify } from "../../../../utils/toast";
+import { processBudgetData } from "../../../../utils/helpers";
 
 interface BudgetOperationsData_TP {
   setStage: React.Dispatch<SetStateAction<number>>;
@@ -24,7 +25,13 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
   isLoading,
   isFetching,
   isRefetching,
+  invoiceData,
+  setOperationData,
 }) => {
+  console.log("🚀 ~ mainCardData:", mainCardData);
+  const mainCardDataBoxes = mainCardData?.map((card) => card?.boxes).flat();
+  console.log("🚀 ~ mainCardDataBoxes:", mainCardDataBoxes);
+
   if (isLoading || isFetching || isRefetching)
     return <Loading mainTitle={t("loading budget balance")} />;
 
@@ -32,16 +39,23 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
     <>
       <div className="bg-lightGreen rounded-lg sales-shadow px-6 py-5 space-y-6">
         {/* TOTALS */}
-        <BudgetStatementOperationTotals mainCardData={mainCardData} />
+        <BudgetStatementOperationTotals
+          setOperationData={setOperationData}
+          mainCardData={mainCardData}
+        />
 
         {/* SECOND TABLE FIR OPERATION */}
         <BudgetStatementOperationTable mainCardData={mainCardData} />
 
         <div className="flex justify-between items-center">
-          <h2 className="text-base font-bold">{t("budget statement")}</h2>
           <h2 className="text-base font-bold">
-            <span>{t("bond number")}</span> / {/* TODO: */}
-            <span className="text-mainGreen">002</span>
+            {t("ATM transaction balance statement")}
+          </h2>
+          <h2 className="text-base font-bold">
+            <span>{t("bond number")}</span> /
+            <span className="text-mainGreen">
+              {(invoiceData.length + 1).toString().padStart(3, "0")}
+            </span>
           </h2>
         </div>
         <BudgetStatementTable
@@ -53,17 +67,21 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
       <div className="flex justify-end mt-8">
         <Button
           action={() => {
-            if (mainCardData?.cards?.length === 0) {
+            if (
+              mainCardData?.cards?.length === 0 ||
+              mainCardDataBoxes.length === 0
+            ) {
               notify("error", `${t("there is no data to transfer")}`);
+              return;
             }
 
             setStage(2);
           }}
-          className="flex items-center gap-2 bg-mainGreen/5 text-mainGreen border border-mainGreen"
+          className="flex items-center gap-2"
         >
           <span>{t("transfer")}</span>
           <span>
-            <HiArrowPathRoundedSquare className="text-mainGreen text-lg" />
+            <HiArrowPathRoundedSquare className="text-lg" />
           </span>
         </Button>
       </div>

@@ -134,7 +134,7 @@ const BudgetSecondPageItems: React.FC<BudgetSecondPageItems_TP> = ({
               </tr>
             </tfoot>
           </table> */}
-          <table className="min-w-full text-center">
+          <table className="min-w-full text-center mb-4 shadow-xl">
             <thead className="border-b bg-mainGreen">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
@@ -172,9 +172,6 @@ const BudgetSecondPageItems: React.FC<BudgetSecondPageItems_TP> = ({
               ))}
             </tbody>
           </table>
-          <p className="bg-mainGreen my-1 py-2 text-center text-xl text-white font-bold">
-            {t("totals")}
-          </p>
           <Table data={secondData} columns={secondColumns} />
         </div>
       </div>

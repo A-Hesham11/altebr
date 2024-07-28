@@ -22,14 +22,18 @@ const BudgetStatementOperationTable: React.FC<
       (acc, curr) => {
         return {
           accountable: curr.account,
-          amount: acc.amount + Number(curr.amount) || 0,
-          commission: acc.commission + Number(curr.commission) || 0,
-          commission_tax: acc.commission_tax + Number(curr.commission_tax) || 0,
+          card_commission:
+            acc.card_commission + Number(curr.card_commission) || 0,
+          card_vat: acc.card_vat + Number(curr.card_vat) || 0,
           total_balance: acc.total_balance + curr.value || 0,
           operation_number: budgets[1].length,
         };
       },
-      { amount: 0, commission: 0, commission_tax: 0, total_balance: 0 }
+      {
+        card_commission: 0,
+        card_vat: 0,
+        total_balance: 0,
+      }
     );
   });
   console.log(
@@ -37,7 +41,6 @@ const BudgetStatementOperationTable: React.FC<
     operationDataTable
   );
 
-  // TODO: LINK IT WITH THE CORRECT ACCESSOR KEY
   const tableColumn = useMemo<any>(
     () => [
       {
@@ -45,21 +48,28 @@ const BudgetStatementOperationTable: React.FC<
         accessorKey: "accountable",
         header: () => <span>{t("card name")}</span>,
       },
-      // {
-      //   cell: (info: any) => info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
-      //   accessorKey: "karat_name",
-      //   header: () => <span>{t("balance")}</span>,
-      // },
+      {
+        cell: (info: any) => {
+          const balanceValue =
+            info.row.original.total_balance -
+            info.row.original.card_commission -
+            info.row.original.card_vat;
+
+          return +balanceValue > 0 ? formatReyal(Number(balanceValue)) : "---";
+        },
+        accessorKey: "balance",
+        header: () => <span>{t("balance")}</span>,
+      },
       {
         cell: (info: any) =>
           info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
-        accessorKey: "commission",
+        accessorKey: "card_commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
         cell: (info: any) =>
           info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
-        accessorKey: "commission_tax",
+        accessorKey: "card_vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {

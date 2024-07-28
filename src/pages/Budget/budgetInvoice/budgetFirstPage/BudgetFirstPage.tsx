@@ -34,6 +34,8 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
   operationCardData,
   mainCardData,
   setMainCardData,
+  invoiceData,
+  setOperationData,
 }) => {
   const { userData } = useContext(authCtx);
   const { values } = useFormikContext();
@@ -49,12 +51,13 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
       userData?.branch_id
     }/${selectedAccountData ? selectedAccountData?.frontKey : 0}/${
       selectedAccountData ? selectedAccountData?.id : 0
-    }?from=${formatDate(values.from)}&to=${formatDate(values.to)}`,
+    }?form=${formatDate(values.from)}&to=${formatDate(values.to)}`,
     queryKey: ["accounts-details-data"],
     onSuccess: (data: any) => {
       setMainCardData(data);
     },
   });
+  console.log("🚀 ~ accountsDetailsData:", accountsDetailsData);
 
   useEffect(() => {
     accountsDetailsDataRefetch();
@@ -89,12 +92,14 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
         {/* BUDGET STATEMENT */}
         {mainCardData?.length > 1 && (
           <BudgetOperationsData
+            invoiceData={invoiceData}
             setStage={setStage}
             mainCardData={mainCardData}
             isLoading={accountsDetailsDataIsLoading}
             isFetching={accountsDetailsDataIsFetching}
             isRefetching={accountsDetailsDataIsRefetching}
             setOperationCardData={setOperationCardData}
+            setOperationData={setOperationData}
           />
         )}
       </div>

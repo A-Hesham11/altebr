@@ -17,12 +17,15 @@ import BudgetSecondPageItems from "./BudgetSecondPageItems";
 import { mutateData } from "../../../../utils/mutateData";
 import { notify } from "../../../../utils/toast";
 import { useReactToPrint } from "react-to-print";
+import { processBudgetData } from "../../../../utils/helpers";
 
 interface BudgetSecondPage_TP {
   setStage: React.Dispatch<SetStateAction<number>>;
   selectedBankData: never[];
   mainCardData: never[];
   selectedAccountData: never[];
+  isLoading: boolean;
+  showPrint: boolean;
 }
 
 const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
@@ -30,20 +33,38 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
   selectedBankData,
   mainCardData,
   selectedAccountData,
+  isLoading,
+  showPrint,
+  invoiceData,
 }) => {
-  console.log("🚀 ~ selectedAccountData:", selectedAccountData);
   console.log("🚀 ~ mainCardData:", mainCardData);
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const { formatGram, formatReyal } = numberContext();
-  const [showPrint, setShowPrint] = useState(false);
   const mainDataBoxes = mainCardData?.cards?.map((card) => card.boxes).flat();
   const isRTL = useIsRTL();
 
-  // SENTENCE API
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
+  const budgetOperation = processBudgetData(mainCardData.cards);
+  const formattedBudgetOperation = Object.entries(budgetOperation);
+
+  const operationDataTable = formattedBudgetOperation.map((budgets) => {
+    return budgets[1].reduce(
+      (acc, curr) => {
+        return {
+          accountable: curr.account,
+          card_commission:
+            acc.card_commission + Number(curr.card_commission) || 0,
+          card_vat: acc.card_vat + Number(curr.card_vat) || 0,
+          total_balance: acc.total_balance + curr.value || 0,
+          operation_number: budgets[1].length,
+        };
+      },
+      {
+        card_commission: 0,
+        card_vat: 0,
+        total_balance: 0,
+      }
+    );
   });
 
   // COMPANY DATA API
@@ -53,6 +74,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
   });
 
   const clientData = {
+    bond_number: (invoiceData.length + 1).toString().padStart(3, "0"),
     bank_name: selectedBankData?.label,
     account_number: selectedAccountData?.label,
     account_balance: mainCardData?.base?.debtor
@@ -66,7 +88,6 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
     totalCost: 5000,
   };
 
-  // TODO: LINK IT WITH THE CORRECT ACCESSOR KEY
   const firstColumn = useMemo<any>(
     () => [
       {
@@ -85,25 +106,27 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
         header: () => <span>{t("card name")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.row.original.debtor
-            ? formatReyal(Number(info.row.original.debtor))
-            : info.row.original.creditor
-            ? formatReyal(Number(info.row.original.creditor))
-            : "---",
+        cell: (info: any) => {
+          const value =
+            info.row.original?.value -
+            info.row.original.card_commission -
+            info.row.original.card_vat;
+
+          return value > 0 ? formatReyal(value) : "---";
+        },
         accessorKey: "balance",
         header: () => <span>{t("balance")}</span>,
       },
       {
         cell: (info: any) =>
           info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
-        accessorKey: "commission",
+        accessorKey: "card_commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
         cell: (info: any) =>
           info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
-        accessorKey: "commission_tax",
+        accessorKey: "card_vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {
@@ -129,35 +152,38 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
         accessorKey: "accountable",
         header: () => <span>{t("card name")}</span>,
       },
-      // {
-      //   cell: (info: any) => info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
-      //   accessorKey: "karat_name",
-      //   header: () => <span>{t("balance")}</span>,
-      // },
+      {
+        cell: (info: any) => {
+          const balanceValue =
+            info.row.original.total_balance -
+            info.row.original.card_commission -
+            info.row.original.card_vat;
+
+          return balanceValue > 0 ? formatReyal(Number(balanceValue)) : "---";
+        },
+        accessorKey: "balance",
+        header: () => <span>{t("balance")}</span>,
+      },
       {
         cell: (info: any) =>
           info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
-        accessorKey: "commission",
+        accessorKey: "card_commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
         cell: (info: any) =>
           info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
-        accessorKey: "commission_tax",
+        accessorKey: "card_vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {
         cell: (info: any) =>
-          info.row.original.debtor
-            ? formatReyal(Number(info.row.original.debtor))
-            : info.row.original.creditor
-            ? formatReyal(Number(info.row.original.creditor))
-            : "---",
+          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
         accessorKey: "total_balance",
         header: () => <span>{t("total balance")}</span>,
       },
       {
-        cell: (info: any) => info.row.original.boxes.length || "---",
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "operation_number",
         header: () => <span>{t("operation number")}</span>,
       },
@@ -169,8 +195,13 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
     const printContent = contentRef.current.innerHTML;
     const printWindow = window.open("", "", "height=2000,width=1500");
 
+    // Copy the styles from the current document to the print window
+    const styles = Array.from(document.querySelectorAll("link, style"))
+      .map((style) => style.outerHTML)
+      .join("\n");
+
     printWindow.document.write(
-      "<html><head><title>Budget</title></head><body>"
+      `<html><head><title>Budget</title>${styles}</head><body>`
     );
     printWindow.document.write(printContent);
     printWindow.document.write("</body></html>");
@@ -194,7 +225,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
             <BudgetSecondScreenHeader clientData={clientData} />
             <BudgetSecondPageItems
               firstData={mainDataBoxes || []}
-              secondData={mainCardData?.cards || []}
+              secondData={operationDataTable || []}
               firstColumns={firstColumn}
               secondColumns={secondColumn}
               costDataAsProps={costDataAsProps}
@@ -233,7 +264,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
           </div>
         </div>
         <div className="flex items-center justify-end gap-x-4 mr-auto mt-8">
-          {!showPrint && (
+          {showPrint && (
             <div className="animate_from_right">
               <Button bordered action={handlePrint}>
                 {t("print")}
@@ -251,17 +282,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
                 {t("back")}
               </Button>
 
-              <Button
-                type="submit"
-                action={() => {
-                  // mutate({
-                  //   endpointName: "branchSafety/api/v1/create",
-                  //   values: finalData,
-                  //   dataType: "formData",
-                  // });
-                }}
-                // loading={isLoading}
-              >
+              <Button type="submit" loading={isLoading}>
                 {t("save")}
               </Button>
             </div>

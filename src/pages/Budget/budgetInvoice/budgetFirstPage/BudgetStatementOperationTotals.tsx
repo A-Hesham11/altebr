@@ -1,6 +1,7 @@
 import React from "react";
 import { numberContext } from "../../../../context/settings/number-formatter";
 import { t } from "i18next";
+import { processBudgetData } from "../../../../utils/helpers";
 
 interface BudgetStatementOperationTotals_TP {
   mainCardData: never[];
@@ -8,32 +9,89 @@ interface BudgetStatementOperationTotals_TP {
 
 const BudgetStatementOperationTotals: React.FC<
   BudgetStatementOperationTotals_TP
-> = ({ mainCardData }) => {
+> = ({ mainCardData, setOperationData }) => {
   const { formatReyal } = numberContext();
+  const budgetOperation = processBudgetData(mainCardData);
+  const formattedBudgetOperation = Object.entries(budgetOperation);
 
-  const totalOfTransferAmount = 0;
+  const operationDataTotals = formattedBudgetOperation.map((budgets) => {
+    return budgets[1].reduce(
+      (acc, curr) => {
+        return {
+          accountable: curr.account,
+          card_commission:
+            acc.card_commission + Number(curr.card_commission) || 0,
+          card_vat: acc.card_vat + Number(curr.card_vat) || 0,
+          total_balance: acc.total_balance + curr.value || 0,
+          operation_number: budgets[1].length,
+        };
+      },
+      {
+        card_commission: 0,
+        card_vat: 0,
+        total_balance: 0,
+      }
+    );
+  });
+  console.log(
+    "🚀 ~ operationDataTotals ~ operationDataTotals:",
+    operationDataTotals
+  );
 
-  const totalOfCardBalance = mainCardData?.reduce((acc, curr) => {
-    let total = acc;
-    if (curr.debtor) {
-      total += curr.debtor;
-    } else {
-      total += curr.creditor;
-    }
+  const totalCardCommission = operationDataTotals.reduce(
+    (acc, curr) => (acc += curr.card_commission),
+    0
+  );
 
-    return total;
-  }, 0);
+  const totalCardCommissionTax = operationDataTotals.reduce(
+    (acc, curr) => (acc += curr.card_vat),
+    0
+  );
+  console.log("🚀 ~ operationDataTotals:", operationDataTotals);
 
-  const totalOfTCardCommission = 0;
-  const totalOfCardTaxCommission = 0;
+  // const totalOfCardBalance = mainCardData?.reduce((acc, curr) => {
+  //   let total = acc;
+  //   if (curr.debtor) {
+  //     total += curr.debtor;
+  //   } else {
+  //     total += curr.creditor;
+  //   }
+
+  //   return total;
+  // }, 0);
+
+  const totalOfCardBalance = operationDataTotals.reduce(
+    (acc, curr) => (acc += curr.total_balance),
+    0
+  );
+
+  const totalCardBalance =
+    totalOfCardBalance - totalCardCommission - totalCardCommissionTax;
 
   const tarqimBoxes = [
     {
       label: "total transfer amount",
       id: 0,
       value:
-        totalOfTransferAmount > 0
-          ? formatReyal(Number(totalOfTransferAmount))
+        totalCardBalance > 0 ? formatReyal(Number(totalCardBalance)) : "---",
+      unit: "ryal",
+    },
+
+    {
+      label: "total card commission",
+      id: 2,
+      value:
+        totalCardCommission > 0
+          ? formatReyal(Number(totalCardCommission))
+          : "---",
+      unit: "ryal",
+    },
+    {
+      label: "total card commission tax",
+      id: 3,
+      value:
+        totalCardCommissionTax > 0
+          ? formatReyal(Number(totalCardCommissionTax))
           : "---",
       unit: "ryal",
     },
@@ -43,24 +101,6 @@ const BudgetStatementOperationTotals: React.FC<
       value:
         totalOfCardBalance > 0
           ? formatReyal(Number(totalOfCardBalance))
-          : "---",
-      unit: "ryal",
-    },
-    {
-      label: "total card commission",
-      id: 2,
-      value:
-        totalOfTCardCommission > 0
-          ? formatReyal(Number(totalOfTCardCommission))
-          : "---",
-      unit: "ryal",
-    },
-    {
-      label: "total card commission tax",
-      id: 3,
-      value:
-        totalOfCardTaxCommission > 0
-          ? formatReyal(Number(totalOfCardTaxCommission))
           : "---",
       unit: "ryal",
     },
