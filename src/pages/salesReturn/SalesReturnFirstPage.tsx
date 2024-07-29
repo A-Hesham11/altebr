@@ -38,8 +38,10 @@ const SalesReturnFirstPage = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight
 }: SellingFirstPage_TP) => {
+  console.log("🚀 ~ clientData:", clientData)
 
   const { values } = useFormikContext()
+  console.log("🚀 ~ values:", values)
 
   return (
     <Form>
@@ -93,6 +95,7 @@ const SalesReturnFirstPage = ({
                   notify("info", `${t("please add data first")}`)
                   return;
                 }
+                
                 if (!values?.client_id) {
                   notify("info", `${t("choose client's name first")}`)
                   return;
