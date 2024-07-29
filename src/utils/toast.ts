@@ -32,7 +32,8 @@ export const notify = (
   let message = msg || "تمت العملية بنجاح"
 
   if (type === "error" && !!!msg) {
-    message = "حدث خطأ ما ، حاول لاحقاً"
+    // message = "حدث خطأ ما ، حاول لاحقاً"
+    return
   }
   const className = STYLES[type]
 

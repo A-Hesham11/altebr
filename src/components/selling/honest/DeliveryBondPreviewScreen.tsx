@@ -21,6 +21,7 @@ const DeliveryBondPreviewScreen = ({
   selectedItem,
   paymentData,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ paymentData:", paymentData)
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
 
@@ -252,10 +253,22 @@ const DeliveryBondPreviewScreen = ({
 
       return acc;
     }, {});
+
+    const paymentCommission = paymentData.reduce((acc, curr) => {
+      const commissionReyals = Number(curr.commission_riyals);
+      const commissionVat = Number(curr.commission_riyals) * (userData?.tax_rate / 100);
+
+      acc[curr.frontKeyAccept] = {
+        commission: commissionReyals,
+        vat: commissionVat,
+      };
+      return acc;
+    }, {});
     mutate({
       endpointName: "branchSafety/api/v1/create-receive",
-      values: { bond, items, card },
+      values: { bond, items, card, paymentCommission },
     });
+
   };
   return (
     <div>

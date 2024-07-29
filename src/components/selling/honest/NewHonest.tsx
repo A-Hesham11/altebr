@@ -7,13 +7,15 @@
 
 import { Formik } from "formik";
 import { t } from "i18next";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import * as Yup from "yup";
 import { notify } from "../../../utils/toast";
 import { Back } from "../../../utils/utils-components/Back";
 import { HonestFinalScreen } from "./HonestFinalScreen";
 import { NewHonestForm } from "./NewHonestForm";
 import { Button } from "../../atoms";
+import { Context } from "react-zoom-pan-pinch";
+import { authCtx } from "../../../context/auth-and-perm/auth";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -34,6 +36,7 @@ export const NewHonest = () => {
   const [tableData, setTableData] = useState<any>([]);
   const [paymentData, setPaymentData] = useState([]);
   console.log("🚀 ~ NewHonest ~ paymentData:", paymentData);
+  const { userData } = useContext(authCtx);
   const totalApproximateCost = tableData.reduce((acc, curr) => {
     acc += +curr.cost;
     return acc;
@@ -126,8 +129,19 @@ export const NewHonest = () => {
 
               return acc;
             }, {});
+
+            const paymentCommission = paymentData.reduce((acc, curr) => {
+              const commissionReyals = Number(curr.commission_riyals);
+              const commissionVat = Number(curr.commission_riyals) * (userData?.tax_rate / 100);
+        
+              acc[curr.frontkey] = {
+                commission: commissionReyals,
+                vat: commissionVat,
+              };
+              return acc;
+            }, {});
             setStage(2);
-            setSanadData({ ...values, tableData, card, totalApproximateCost });
+            setSanadData({ ...values, tableData, card, paymentCommission, totalApproximateCost });
           }
         }}
         initialValues={InitialValues}
