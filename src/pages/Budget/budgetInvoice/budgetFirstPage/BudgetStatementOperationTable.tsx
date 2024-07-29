@@ -57,26 +57,23 @@ const BudgetStatementOperationTable: React.FC<
             info.row.original.card_commission -
             info.row.original.card_vat;
 
-          return +balanceValue > 0 ? formatReyal(Number(balanceValue)) : "---";
+          return formatReyal(Number(balanceValue)) || "---";
         },
         accessorKey: "balance",
         header: () => <span>{t("balance")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "card_commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "card_vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "total_balance",
         header: () => <span>{t("total balance")}</span>,
       },

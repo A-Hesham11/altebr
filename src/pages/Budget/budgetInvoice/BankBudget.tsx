@@ -124,6 +124,7 @@ const BankBudget = () => {
       bond_number: invoiceData.length + 1,
       bankFrontKey: mainCardData?.base?.front_key,
       total_commission: totalCardCommission,
+      account_number: values?.accountNumber,
       total_commission_vat: totalCardCommissionTax,
       card: transformedObject,
       bankValue: totalBalance,
@@ -142,6 +143,7 @@ const BankBudget = () => {
         };
       }),
     };
+    console.log("🚀 ~ handleSubmit ~ formatedValue:", formatedValue);
 
     mutate({
       endpointName: "/budget/api/v1/create",

@@ -69,11 +69,7 @@ export const FilesPreviewOutFormik = ({
   ///
   return (
     <>
-      <div
-        className={`flex flex-${preview ? "row" : "col"} gap-${
-          preview ? "6" : "1"
-        }`}
-      >
+      <div className={`flex flex-${preview ? "row" : "col"} `}>
         {/* images*/}
         <div className="flex items-center justify-center gap-2 m-3 h-4">
           {!!images.length && (

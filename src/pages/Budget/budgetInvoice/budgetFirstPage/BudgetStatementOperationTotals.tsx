@@ -72,36 +72,26 @@ const BudgetStatementOperationTotals: React.FC<
     {
       label: "total transfer amount",
       id: 0,
-      value:
-        totalCardBalance > 0 ? formatReyal(Number(totalCardBalance)) : "---",
+      value: formatReyal(Number(totalCardBalance)) || "---",
       unit: "ryal",
     },
 
     {
       label: "total card commission",
       id: 2,
-      value:
-        totalCardCommission > 0
-          ? formatReyal(Number(totalCardCommission))
-          : "---",
+      value: formatReyal(Number(totalCardCommission)) || "---",
       unit: "ryal",
     },
     {
       label: "total card commission tax",
       id: 3,
-      value:
-        totalCardCommissionTax > 0
-          ? formatReyal(Number(totalCardCommissionTax))
-          : "---",
+      value: formatReyal(Number(totalCardCommissionTax)) || "---",
       unit: "ryal",
     },
     {
       label: "total card balance",
       id: 1,
-      value:
-        totalOfCardBalance > 0
-          ? formatReyal(Number(totalOfCardBalance))
-          : "---",
+      value: formatReyal(Number(totalOfCardBalance)) || "---",
       unit: "ryal",
     },
   ];

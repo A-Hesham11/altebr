@@ -23,6 +23,8 @@ import { HonestBondAccountingRestriction } from "../../../components/selling/hon
 import BudgetTableEntry from "./BudgetTableEntry";
 import { FilesPreview } from "../../../components/molecules/files/FilesPreview";
 import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
+import { numberContext } from "../../../context/settings/number-formatter";
+import { ViewSvgIcon } from "../../../components/atoms/icons";
 
 const BankBudgetBonds = () => {
   // STATE
@@ -30,6 +32,7 @@ const BankBudgetBonds = () => {
   const [dataSource, setDataSource] = useState([]);
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
+  const { formatReyal } = numberContext();
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [entryModal, setOpenEntryModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
@@ -58,6 +61,7 @@ const BankBudgetBonds = () => {
         : `${search}`,
     pagination: true,
   });
+  console.log("🚀 ~ BankBudgetBonds ~ invoiceData:", invoiceData);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -88,7 +92,7 @@ const BankBudgetBonds = () => {
         header: () => <span>{t("account number")}</span>,
       },
       {
-        cell: (info: any) => info.getValue(),
+        cell: (info: any) => formatReyal(Number(info.getValue())),
         accessorKey: "totals",
         header: () => <span>{t("budget balance")}</span>,
       },
@@ -99,7 +103,7 @@ const BankBudgetBonds = () => {
       },
       {
         cell: (info: any) => (
-          <div className="flex items-center gap-4 justify-center">
+          <div className="flex items-center gap-4">
             <BsEye
               onClick={() => {
                 setOpenInvoiceModal(true);
@@ -116,11 +120,24 @@ const BankBudgetBonds = () => {
               size={23}
               className="text-mainGreen cursor-pointer"
             />
-            <FilesPreviewOutFormik
-              images={info.row.original.images || []}
-              preview
-              pdfs={[]}
-            />
+            {info.row.original.images.length > 0 ? (
+              <FilesPreviewOutFormik
+                images={info.row.original.images || []}
+                preview
+                pdfs={[]}
+              />
+            ) : (
+              <>
+                <div className="flex flex-col mx-3  gap-1 justify-center">
+                  <div className="bg-lightGray rounded-md p-1 relative ">
+                    <div className="cursor-pointer flex items-center justify-center p-2 ">
+                      {/* <span className=" absolute -top-1 flex justify-center items-center -right-3 bg-mainGreen px-1 py-1 w-4 h-4 rounded-full text-[8px] text-white"></span> */}
+                      <ViewSvgIcon stroke="#36363683" />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         ),
         accessorKey: "details",
