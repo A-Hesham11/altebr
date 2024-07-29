@@ -3,14 +3,25 @@ import jsPDF from "jspdf";
 
 export const DownloadAsPDF = async (currentElement: any, fileName: string) => {
   const element = currentElement;
-  const canvas = await html2canvas(element);
-  const data = canvas.toDataURL("image/png");
-
-  const pdf = new jsPDF();
-  const imgProperties = pdf.getImageProperties(data);
+  const pdf = new jsPDF("p", "mm", "a4");
   const pdfWidth = pdf.internal.pageSize.getWidth();
-  const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+  const pdfHeight = pdf.internal.pageSize.getHeight();
+  let yOffset = 0;
 
-  pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
+  const canvas = await html2canvas(element, { scale: 2 });
+  const imgData = canvas.toDataURL("image/png");
+  const imgProps = pdf.getImageProperties(imgData);
+  const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+  const totalPages = Math.ceil(imgHeight / pdfHeight);
+
+  for (let page = 0; page < totalPages; page++) {
+    if (page > 0) {
+      pdf.addPage();
+    }
+    const y = -(page * pdfHeight);
+    pdf.addImage(imgData, "PNG", 0, y, pdfWidth, imgHeight);
+  }
+
   pdf.save(`${fileName}.pdf`);
 };

@@ -98,7 +98,7 @@ const BankBudget = () => {
     const formatedCardData = mainCardData?.cards?.map((card) => {
       const frontKeyValue = operationDataTotals.find(
         (el) => el.accountable === card.accountable
-      ).total_balance;
+      )?.total_balance;
       return {
         [card.front_key]: frontKeyValue,
       };
@@ -143,11 +143,11 @@ const BankBudget = () => {
       }),
     };
 
-    // mutate({
-    //   endpointName: "/budget/api/v1/create",
-    //   values: formatedValue,
-    //   dataType: "formData",
-    // });
+    mutate({
+      endpointName: "/budget/api/v1/create",
+      values: formatedValue,
+      dataType: "formData",
+    });
   };
 
   return (

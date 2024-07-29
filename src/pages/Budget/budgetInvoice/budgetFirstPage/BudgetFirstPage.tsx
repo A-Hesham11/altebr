@@ -57,7 +57,6 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
       setMainCardData(data);
     },
   });
-  console.log("🚀 ~ accountsDetailsData:", accountsDetailsData);
 
   useEffect(() => {
     accountsDetailsDataRefetch();

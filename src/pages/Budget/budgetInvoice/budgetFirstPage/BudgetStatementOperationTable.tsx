@@ -13,6 +13,8 @@ const BudgetStatementOperationTable: React.FC<
 > = ({ mainCardData }) => {
   console.log("🚀 ~ mainCardData:", mainCardData);
   const { formatGram, formatReyal } = numberContext();
+  const isBoxesHaveData = mainCardData?.some((data) => data?.boxes.length > 0);
+  console.log("🚀 ~ isBoxesHaveData:", isBoxesHaveData);
 
   const budgetOperation = processBudgetData(mainCardData);
   const formattedBudgetOperation = Object.entries(budgetOperation);
@@ -88,12 +90,16 @@ const BudgetStatementOperationTable: React.FC<
   );
 
   return (
-    <Table
-      rowBackground="!bg-white"
-      data={operationDataTable || []}
-      columns={tableColumn}
-      showNavigation={operationDataTable?.length > 10}
-    />
+    <div>
+      {isBoxesHaveData && (
+        <Table
+          rowBackground="!bg-white"
+          data={operationDataTable || []}
+          columns={tableColumn}
+          showNavigation={operationDataTable?.length > 10}
+        />
+      )}
+    </div>
   );
 };
 

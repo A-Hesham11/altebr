@@ -172,7 +172,9 @@ const BudgetSecondPageItems: React.FC<BudgetSecondPageItems_TP> = ({
               ))}
             </tbody>
           </table>
-          <Table data={secondData} columns={secondColumns} />
+          {secondData?.length > 0 && (
+            <Table data={secondData || []} columns={secondColumns} />
+          )}
         </div>
       </div>
     </>

@@ -21,8 +21,13 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
 }) => {
   const { userData } = useContext(authCtx);
   const { formatReyal } = numberContext();
-  const { bank_name, bond_number, account_number, account_balance } =
-    clientData;
+  const {
+    bank_name,
+    bond_number,
+    bond_date = formatDateAndTime(new Date()),
+    account_number,
+    account_balance,
+  } = clientData;
 
   return (
     <div className="flex justify-between mx-6 bill-shadow rounded-md p-6">
@@ -37,7 +42,7 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
         </p>
         <p>
           <span>{t("date and time")}: </span>
-          <span>{`${formatDateAndTime(new Date())}`}</span>
+          <span>{`${bond_date}`}</span>
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">

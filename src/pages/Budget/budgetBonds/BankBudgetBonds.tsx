@@ -58,7 +58,6 @@ const BankBudgetBonds = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ BankBudgetBonds ~ invoiceData:", invoiceData);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -82,6 +81,11 @@ const BankBudgetBonds = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "account_name",
         header: () => <span>{t("account name")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "account_number",
+        header: () => <span>{t("account number")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),

@@ -75,19 +75,19 @@ export const FilesPreviewOutFormik = ({
         }`}
       >
         {/* images*/}
-        <div className="flex items-center justify-center gap-2 m-3 h-11">
+        <div className="flex items-center justify-center gap-2 m-3 h-4">
           {!!images.length && (
             <>
               <div className="flex flex-col  gap-1 justify-center">
-                <span className="text-[8px] text-gray-700 text-center">
+                {/* <span className="text-[8px] text-gray-700 text-center">
                   الصور
-                </span>
+                </span> */}
                 <div className="bg-lightGray rounded-md p-1 relative ">
                   <div
                     onClick={() => setLightboxOpen(true)}
                     className="cursor-pointer flex items-center justify-center p-2 "
                   >
-                    <span className=" absolute -top-1 -right-3 bg-mainGreen px-2 py-1 text-[7px] rounded-full text-white">
+                    <span className=" absolute -top-1 flex justify-center items-center -right-3 bg-mainGreen px-1 py-1 w-4 h-4 rounded-full text-[8px] text-white">
                       {images.length}
                     </span>
                     <ViewSvgIcon stroke="#292D32" />

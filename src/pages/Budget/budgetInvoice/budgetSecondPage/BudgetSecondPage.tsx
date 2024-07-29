@@ -267,7 +267,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
           </div>
         </div>
         <div className="flex items-center justify-end gap-x-4 mr-auto mt-8">
-          {!showPrint && (
+          {showPrint && (
             <div className="animate_from_right">
               <Button
                 bordered

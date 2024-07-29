@@ -28,9 +28,7 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
   invoiceData,
   setOperationData,
 }) => {
-  console.log("🚀 ~ mainCardData:", mainCardData);
   const mainCardDataBoxes = mainCardData?.map((card) => card?.boxes).flat();
-  console.log("🚀 ~ mainCardDataBoxes:", mainCardDataBoxes);
 
   if (isLoading || isFetching || isRefetching)
     return <Loading mainTitle={t("loading budget balance")} />;
