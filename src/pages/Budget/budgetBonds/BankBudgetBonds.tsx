@@ -24,7 +24,7 @@ import BudgetTableEntry from "./BudgetTableEntry";
 import { FilesPreview } from "../../../components/molecules/files/FilesPreview";
 import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
 import { numberContext } from "../../../context/settings/number-formatter";
-import { ViewSvgIcon } from "../../../components/atoms/icons";
+import { PDFSvgIcon, ViewSvgIcon } from "../../../components/atoms/icons";
 
 const BankBudgetBonds = () => {
   // STATE
@@ -103,7 +103,7 @@ const BankBudgetBonds = () => {
       },
       {
         cell: (info: any) => (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 justify-center">
             <BsEye
               onClick={() => {
                 setOpenInvoiceModal(true);
@@ -120,28 +120,27 @@ const BankBudgetBonds = () => {
               size={23}
               className="text-mainGreen cursor-pointer"
             />
-            {info.row.original.images.length > 0 ? (
-              <FilesPreviewOutFormik
-                images={info.row.original.images || []}
-                preview
-                pdfs={[]}
-              />
-            ) : (
-              <>
-                <div className="flex flex-col mx-3  gap-1 justify-center">
-                  <div className="bg-lightGray rounded-md p-1 relative ">
-                    <div className="cursor-pointer flex items-center justify-center p-2 ">
-                      {/* <span className=" absolute -top-1 flex justify-center items-center -right-3 bg-mainGreen px-1 py-1 w-4 h-4 rounded-full text-[8px] text-white"></span> */}
-                      <ViewSvgIcon stroke="#36363683" />
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
           </div>
         ),
         accessorKey: "details",
         header: () => <span>{t("details")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          return (
+            <>
+              <div className="flex items-center gap-4 justify-center">
+                <FilesPreviewOutFormik
+                  images={info.row.original.images || []}
+                  preview
+                  pdfs={[]}
+                />
+              </div>
+            </>
+          );
+        },
+        accessorKey: "attachment",
+        header: () => <span>{t("attachment")}</span>,
       },
     ],
     []

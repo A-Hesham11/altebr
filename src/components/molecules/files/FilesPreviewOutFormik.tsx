@@ -24,6 +24,7 @@ export const FilesPreviewOutFormik = ({
   images = [],
   pdfs = [],
   preview,
+  isBudget,
 }: FilesPreviewOutFormikProps_TP) => {
   /////////// VARIABLES
   ///
@@ -83,9 +84,12 @@ export const FilesPreviewOutFormik = ({
                     onClick={() => setLightboxOpen(true)}
                     className="cursor-pointer flex items-center justify-center p-2 "
                   >
-                    <span className=" absolute -top-1 flex justify-center items-center -right-3 bg-mainGreen px-1 py-1 w-4 h-4 rounded-full text-[8px] text-white">
-                      {images.length}
-                    </span>
+                    {!isBudget && (
+                      <span className=" absolute -top-1 flex justify-center items-center -right-3 bg-mainGreen px-1 py-1 w-4 h-4 rounded-full text-[8px] text-white">
+                        {images.length}
+                      </span>
+                    )}
+
                     <ViewSvgIcon stroke="#292D32" />
                   </div>
                 </div>
@@ -109,6 +113,7 @@ export const FilesPreviewOutFormik = ({
                     <span className=" absolute -top-1 -right-3 bg-mainGreen px-2 py-1 text-[7px] rounded-full text-white">
                       {pdfs.length}
                     </span>
+
                     <PDFSvgIcon stroke="#292D32" />
                   </div>
                 </div>

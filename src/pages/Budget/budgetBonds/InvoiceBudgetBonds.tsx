@@ -71,9 +71,9 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
   const clientData = {
     bond_number: selectedItem?.bond_number,
     bank_name: selectedItem?.account_name,
-    account_number: selectedItem?.bond_number,
+    account_number: selectedItem?.account_number,
     bond_date: selectedItem?.bond_date,
-    account_balance: 10,
+    account_balance: selectedItem?.totals,
   };
 
   const costDataAsProps = {
@@ -103,26 +103,23 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
         cell: (info: any) => {
           const value = info.getValue();
 
-          return +value > 0 ? formatReyal(value) : "---";
+          return formatReyal(value) || "---";
         },
         accessorKey: "amount",
         header: () => <span>{t("balance")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
-        cell: (info: any) =>
-          +info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {
-        cell: (info: any) =>
-          +info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "total",
         header: () => <span>{t("total balance")}</span>,
       },

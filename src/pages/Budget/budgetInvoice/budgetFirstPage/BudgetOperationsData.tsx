@@ -27,7 +27,9 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
   isRefetching,
   invoiceData,
   setOperationData,
+  budgetFiles,
 }) => {
+  console.log("🚀 ~ budgetFiles:", budgetFiles);
   const mainCardDataBoxes = mainCardData?.map((card) => card?.boxes).flat();
 
   if (isLoading || isFetching || isRefetching)
@@ -71,7 +73,12 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
               mainCardDataBoxes.length === 0
             ) {
               notify("error", `${t("there is no data to transfer")}`);
-              // return;
+              return;
+            }
+
+            if (budgetFiles.length === 0) {
+              notify("error", `${t("you should add an attachment")}`);
+              return;
             }
 
             setStage(2);

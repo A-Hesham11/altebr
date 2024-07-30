@@ -294,7 +294,8 @@ const SellingInvoiceData = ({
 
     const paymentCommission = paymentData.reduce((acc, curr) => {
       const commissionReyals = Number(curr.commission_riyals);
-      const commissionVat = Number(curr.commission_riyals) * (userData?.tax_rate / 100);
+      const commissionVat =
+        Number(curr.commission_riyals) * (userData?.tax_rate / 100);
 
       acc[curr.sellingFrontKey] = {
         commission: commissionReyals,
@@ -303,10 +304,10 @@ const SellingInvoiceData = ({
       return acc;
     }, {});
 
-    mutate({
-      endpointName: "/selling/api/v1/add_Invoice",
-      values: { invoice, items, card, paymentCommission },
-    });
+    // mutate({
+    //   endpointName: "/selling/api/v1/add_Invoice",
+    //   values: { invoice, items, card, paymentCommission },
+    // });
 
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",

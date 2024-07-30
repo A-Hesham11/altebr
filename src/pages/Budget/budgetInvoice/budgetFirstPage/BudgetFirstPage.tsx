@@ -94,6 +94,7 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
             invoiceData={invoiceData}
             setStage={setStage}
             mainCardData={mainCardData}
+            budgetFiles={budgetFiles}
             isLoading={accountsDetailsDataIsLoading}
             isFetching={accountsDetailsDataIsFetching}
             isRefetching={accountsDetailsDataIsRefetching}

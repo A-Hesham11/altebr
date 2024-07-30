@@ -65,8 +65,10 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
           <span className="font-medium">{account_number}</span>{" "}
         </p>
         <p className="text-xs font-bold">
-          {t("account balance")} :{" "}
-          <span className="font-medium">{formatReyal(account_balance)}</span>{" "}
+          {t("transfer cash")} :{" "}
+          <span className="font-medium">{`${formatReyal(account_balance)} ${t(
+            "reyal"
+          )}`}</span>{" "}
         </p>
       </div>
     </div>

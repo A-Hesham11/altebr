@@ -70,6 +70,11 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
     );
   });
 
+  const filterOperationDataTable = operationDataTable.filter(
+    (operation) => operation.total_balance !== 0
+  );
+  console.log("🚀 ~ filterOperationDataTable:", filterOperationDataTable);
+
   // COMPANY DATA API
   const { data: companyData } = useFetch<ClientData_TP>({
     endpoint: `/companySettings/api/v1/companies`,
@@ -222,7 +227,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
             <BudgetSecondScreenHeader clientData={clientData} />
             <BudgetSecondPageItems
               firstData={mainDataBoxes || []}
-              secondData={operationDataTable || []}
+              secondData={filterOperationDataTable || []}
               firstColumns={firstColumn}
               secondColumns={secondColumn}
               costDataAsProps={costDataAsProps}

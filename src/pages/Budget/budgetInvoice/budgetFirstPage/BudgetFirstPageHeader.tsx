@@ -133,11 +133,10 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
           name="accountBalance"
           label={`${t("account balance")}`}
           placeholder={`${t("account balance")}`}
-          value={
-            accountsDetailsData?.base?.debtor
-              ? accountsDetailsData?.base?.debtor
-              : accountsDetailsData?.base?.creditor
-          }
+          value={`${
+            accountsDetailsData?.base?.debtor -
+              accountsDetailsData?.base?.creditor || 0
+          }`}
           disabled
           className="bg-mainDisabled"
         />

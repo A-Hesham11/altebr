@@ -28,10 +28,9 @@ const SalesReturnInvoiceData = ({
   clientData,
   invoiceNumber,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData)
+  console.log("🚀 ~ paymentData:", paymentData);
   const { formatGram, formatReyal } = numberContext();
   const [responseSellingData, SetResponseSellingData] = useState(null);
-
 
   const { userData } = useContext(authCtx);
 
@@ -201,7 +200,7 @@ const SalesReturnInvoiceData = ({
     mutationFn: mutateData,
     onSuccess: (data) => {
       notify("success");
-      SetResponseSellingData(data)
+      SetResponseSellingData(data);
       // navigate(`/selling/return-entry`);
     },
   });
@@ -219,7 +218,7 @@ const SalesReturnInvoiceData = ({
       count: sellingItemsData.length,
     };
     const items = sellingItemsData.map((item) => {
-      console.log("🚀 ~ items ~ item:", item)
+      console.log("🚀 ~ items ~ item:", item);
       const rowTaxEquation = Number(item.tax_rate) / 100 + 1;
       const taklfaFromOneItem =
         Number(item.taklfa_after_tax) +
@@ -285,7 +284,7 @@ const SalesReturnInvoiceData = ({
         commissionTax_oneItem: item.commissionTax_oneItem,
         total_commission_ratio_tax: totalCommissionRatioTax,
         add_commission_ratio: isCheckedCommission,
-        tax_rate: userData?.tax_rate
+        tax_rate: userData?.tax_rate,
       };
     });
 
@@ -293,10 +292,10 @@ const SalesReturnInvoiceData = ({
       acc[curr.salesReturnFrontKey] = Number(curr.amount);
       return acc;
     }, {});
-    // mutate({
-    //   endpointName: "/sellingReturn/api/v1/add_selling_return",
-    //   values: { invoice, items, card },
-    // });
+    mutate({
+      endpointName: "/sellingReturn/api/v1/add_selling_return",
+      values: { invoice, items, card },
+    });
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
       { invoice, items, card }
