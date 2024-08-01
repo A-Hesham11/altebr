@@ -21,6 +21,25 @@ input[type="radio"] {
   background-size: cover;
 }
 
+@media print {
+  body {
+    height: 200rem;
+  }
+
+  .budgetPrint {
+    width: 1000px;
+    height: 3000px;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .no-print {
+    display: none;
+  }
+}
+
 @layer base {
   * {
     font-family: "Almarai" !important;
@@ -300,7 +319,6 @@ input[type="file"] {
     page-break-inside: avoid;
   }
 }
-
 
 .PieceDetails div:nth-child(19) {
   grid-column: 1 / -3;

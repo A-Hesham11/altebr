@@ -298,6 +298,7 @@ const SellingInvoiceData = ({
       const commissionVat = Number(curr.commission_riyals) * Number(userData?.tax_rate / 100);
       console.log("🚀 ~ paymentCommission ~ commissionVat:", commissionVat)
 
+
       acc[curr.sellingFrontKey] = {
         commission: commissionReyals,
         vat: commissionVat,

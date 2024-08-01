@@ -242,11 +242,18 @@ export const HonestFinalScreen = ({
     media: item.media,
   }));
 
+  // const finalData = {
+  //   bond: mainSanadData,
+  //   card: sanadData.card,
+  //   items,
+  // };
+
   const finalData = {
     bond: mainSanadData,
     card: sanadData.card,
     paymentCommission: sanadData.paymentCommission,
     items,
+    paymentCommission: sanadData.paymentCommission,
   };
 
   const clientData = {

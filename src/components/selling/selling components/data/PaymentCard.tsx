@@ -358,7 +358,7 @@ const PaymentCard = ({
     isFetching: isFetchingPayment,
     isLoading: isPaymentLoading,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/selling/api/v1/added_card_per_branch/${userData?.branch_id}`,
+    endpoint: `/selling/api/v1/added_card_per_branch/${userData?.branch_id}?per_page=10000`,
     queryKey: ["CardsBank"],
     pagination: true,
     onSuccess(data) {
