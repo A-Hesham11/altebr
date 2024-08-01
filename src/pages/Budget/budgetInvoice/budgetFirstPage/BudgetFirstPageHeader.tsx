@@ -1,4 +1,4 @@
-import React, { SetStateAction, useContext, useEffect } from "react";
+import React, { SetStateAction, useContext, useEffect, useState } from "react";
 import {
   BaseInputField,
   DateInputField,
@@ -38,10 +38,13 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
   setMainCardData,
   accountsDetailsDataRefetch,
   accountsDetailsData,
+  setDateFrom,
+  setDateTo,
 }) => {
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const { values, setFieldValue } = useFormikContext();
+  const [minDate, setMinDate] = useState("");
 
   const {
     data: allBanksOption,
@@ -90,6 +93,10 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
     accountsRefetch();
   }, [selectedBankData]);
 
+  useEffect(() => {
+    setMinDate(values.from);
+  }, [values.from, values.to]);
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-end gap-x-12 gap-y-8">
       <div>
@@ -103,6 +110,7 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
           isDisabled={
             allBankIsFetching || allBankIsLoading || allBankIsRefetching
           }
+          value={selectedBankData}
           onChange={(e) => {
             setSelectedBankData(e);
           }}
@@ -120,6 +128,7 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
           isDisabled={
             accountsIsLoading || accountsIsFetching || accountsIsRefetching
           }
+          value={selectedAccountData}
           onChange={(e) => {
             setSelectedAccountData(e);
           }}
@@ -160,6 +169,7 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
           label={`${t("date to")}`}
           placeholder={`${t("date to")}`}
           name="to"
+          minDate={minDate}
           // value={values.to}
         />
       </div>

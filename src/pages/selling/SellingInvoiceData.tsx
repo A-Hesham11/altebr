@@ -304,10 +304,10 @@ const SellingInvoiceData = ({
       return acc;
     }, {});
 
-    // mutate({
-    //   endpointName: "/selling/api/v1/add_Invoice",
-    //   values: { invoice, items, card, paymentCommission },
-    // });
+    mutate({
+      endpointName: "/selling/api/v1/add_Invoice",
+      values: { invoice, items, card, paymentCommission },
+    });
 
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
