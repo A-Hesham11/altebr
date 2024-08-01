@@ -294,7 +294,9 @@ const SellingInvoiceData = ({
 
     const paymentCommission = paymentData.reduce((acc, curr) => {
       const commissionReyals = Number(curr.commission_riyals);
-      const commissionVat = Number(curr.commission_riyals) * (userData?.tax_rate / 100);
+      console.log("🚀 ~ paymentCommission ~ commissionReyals:", commissionReyals)
+      const commissionVat = Number(curr.commission_riyals) * Number(userData?.tax_rate / 100);
+      console.log("🚀 ~ paymentCommission ~ commissionVat:", commissionVat)
 
       acc[curr.sellingFrontKey] = {
         commission: commissionReyals,
@@ -302,7 +304,7 @@ const SellingInvoiceData = ({
       };
       return acc;
     }, {});
-
+ 
     mutate({
       endpointName: "/selling/api/v1/add_Invoice",
       values: { invoice, items, card, paymentCommission },

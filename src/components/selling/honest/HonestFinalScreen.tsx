@@ -245,6 +245,7 @@ export const HonestFinalScreen = ({
   const finalData = {
     bond: mainSanadData,
     card: sanadData.card,
+    paymentCommission: sanadData.paymentCommission,
     items,
   };
 

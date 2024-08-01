@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
 import { t } from "i18next";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { notify } from "../../../../utils/toast";
 import { Button } from "../../../atoms";
@@ -9,6 +9,7 @@ import RadioGroup from "../../../molecules/RadioGroup";
 import PaymentCard from "./PaymentCard";
 import PaymentProccessingTable from "./PaymentProccessingTable";
 import { numberContext } from "../../../../context/settings/number-formatter";
+import { authCtx } from "../../../../context/auth-and-perm/auth";
 
 export type Payment_TP = {
   id: string;
@@ -45,7 +46,9 @@ const PaymentProcessing = ({
   totalApproximateCost,
   costRemainingHonest,
 }: Payment_TP) => {
-  console.log("🚀 ~ costRemainingHonest:", costRemainingHonest)
+  console.log("🚀 ~ totalApproximateCost:", totalApproximateCost);
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
+  console.log("🚀 ~ costRemainingHonest:", costRemainingHonest);
   console.log("🚀 ~ paymentData:", paymentData);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
@@ -53,10 +56,13 @@ const PaymentProcessing = ({
   const [editData, setEditData] = useState<Payment_TP>();
   console.log("🚀 ~ editData:", editData);
   const [cardFrontKey, setCardFronKey] = useState<string>("");
-  const [cardDiscountPercentage, setCardDiscountPercentage] = useState<string>(
-    {}
-  );
+  const [cardDiscountPercentage, setCardDiscountPercentage] = useState<any>({});
+  const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData)
   console.log("🚀 ~ cardDiscountPercentage:", cardDiscountPercentage);
+
+  const taxRate = userData?.tax_rate / 100;
+  console.log("🚀 ~ taxRate:", taxRate)
 
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
@@ -123,8 +129,6 @@ const PaymentProcessing = ({
         validationSchema={() => validationSchema()}
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
           console.log("🚀 ~ values:", values);
-          // const commissionValue =
-          //   values.cost_after_tax * (values.discount_percentage / 100);
           const commissionValue =
             cardDiscountPercentage?.max_discount_limit &&
             +values?.amount >= +cardDiscountPercentage?.max_discount_limit
@@ -133,8 +137,8 @@ const PaymentProcessing = ({
                 : 0
               : +values.cost_after_tax * (+values.discount_percentage / 100);
 
-          const commissionRiyals = +commissionValue.toFixed(3);
-          const commissionTax = (+commissionRiyals * 0.15).toFixed(3);
+          const commissionRiyals = +commissionValue;
+          const commissionTax = +commissionRiyals * taxRate;
           if (selectedCardId) {
             if (editData) {
               const updatedPaymentData = paymentData.map((item) =>
@@ -203,23 +207,26 @@ const PaymentProcessing = ({
       >
         {({ values, setFieldValue, resetForm }) => {
           console.log("🚀 ~ PaymentProcessing ~ values:", values);
-          console.log(
-            "🚀 ~ values.discount_percentage:",
-            values.discount_percentage
-          );
 
           const commissionValue =
-            cardDiscountPercentage?.max_discount_limit &&
-            +values?.amount >= +cardDiscountPercentage?.max_discount_limit
+            (cardDiscountPercentage?.max_discount_limit &&
+            Number(values?.amount) >=
+              Number(cardDiscountPercentage?.max_discount_limit))
               ? values?.amount
-                ? +cardDiscountPercentage?.max_discount_limit_value
+                ? Number(cardDiscountPercentage?.max_discount_limit_value)
                 : 0
-              : +values.cost_after_tax * (+values.discount_percentage / 100);
+              : Number(values.cost_after_tax) *
+                (Number(values.discount_percentage) / 100);
 
-          const commissionRiyals = +commissionValue.toFixed(3);
-          const commissionTax = (+commissionRiyals * 0.15).toFixed(3);
+          const commissionRiyals = Number(commissionValue);
+          console.log("🚀 ~ commissionRiyals:", commissionRiyals);
+          const commissionTax = Number(commissionRiyals) * Number(taxRate);
+          console.log("🚀 ~ commissionTax:", commissionTax);
           const cost_after_commission =
-            +values.cost_after_tax + +commissionRiyals + +commissionTax;
+            Number(values.cost_after_tax) +
+            Number(commissionRiyals) +
+            Number(commissionTax);
+          console.log("🚀 ~ cost_after_commission:", cost_after_commission);
 
           return (
             <Form>
