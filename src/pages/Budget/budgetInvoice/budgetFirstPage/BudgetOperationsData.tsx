@@ -27,14 +27,13 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
   isRefetching,
   invoiceData,
   setOperationData,
+  budgetFiles,
 }) => {
-  console.log("🚀 ~ mainCardData:", mainCardData);
-  const mainCardDataBoxes = mainCardData?.map((card) => card?.boxes).flat();
-  console.log("🚀 ~ mainCardDataBoxes:", mainCardDataBoxes);
-
   if (isLoading || isFetching || isRefetching)
     return <Loading mainTitle={t("loading budget balance")} />;
 
+  console.log("🚀 ~ budgetFiles:", budgetFiles);
+  const mainCardDataBoxes = mainCardData?.map((card) => card?.boxes).flat();
   return (
     <>
       <div className="bg-lightGreen rounded-lg sales-shadow px-6 py-5 space-y-6">
@@ -72,8 +71,13 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
               mainCardData?.cards?.length === 0 ||
               mainCardDataBoxes.length === 0
             ) {
-              notify("error", `${t("there is no data to transfer")}`);
-              // return;
+              notify("info", `${t("there is no data to transfer")}`);
+              return;
+            }
+
+            if (budgetFiles.length === 0) {
+              notify("info", `${t("you should add an attachment")}`);
+              return;
             }
 
             setStage(2);

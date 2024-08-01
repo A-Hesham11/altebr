@@ -13,6 +13,8 @@ const BudgetStatementOperationTable: React.FC<
 > = ({ mainCardData }) => {
   console.log("🚀 ~ mainCardData:", mainCardData);
   const { formatGram, formatReyal } = numberContext();
+  const isBoxesHaveData = mainCardData?.some((data) => data?.boxes.length > 0);
+  console.log("🚀 ~ isBoxesHaveData:", isBoxesHaveData);
 
   const budgetOperation = processBudgetData(mainCardData);
   const formattedBudgetOperation = Object.entries(budgetOperation);
@@ -41,6 +43,11 @@ const BudgetStatementOperationTable: React.FC<
     operationDataTable
   );
 
+  const filterOperationDataTable = operationDataTable.filter(
+    (operation) => operation.total_balance !== 0
+  );
+  console.log("🚀 ~ filterOperationDataTable:", filterOperationDataTable);
+
   const tableColumn = useMemo<any>(
     () => [
       {
@@ -55,26 +62,23 @@ const BudgetStatementOperationTable: React.FC<
             info.row.original.card_commission -
             info.row.original.card_vat;
 
-          return +balanceValue > 0 ? formatReyal(Number(balanceValue)) : "---";
+          return formatReyal(Number(balanceValue)) || "---";
         },
         accessorKey: "balance",
         header: () => <span>{t("balance")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "card_commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "card_vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "total_balance",
         header: () => <span>{t("total balance")}</span>,
       },
@@ -88,12 +92,16 @@ const BudgetStatementOperationTable: React.FC<
   );
 
   return (
-    <Table
-      rowBackground="!bg-white"
-      data={operationDataTable || []}
-      columns={tableColumn}
-      showNavigation={operationDataTable?.length > 10}
-    />
+    <div>
+      {isBoxesHaveData && (
+        <Table
+          rowBackground="!bg-white"
+          data={filterOperationDataTable || []}
+          columns={tableColumn}
+          showNavigation={operationDataTable?.length > 10}
+        />
+      )}
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { SetStateAction, useMemo } from "react";
+import React, { SetStateAction, useEffect, useMemo, useState } from "react";
 import { Table } from "../../../../components/templates/reusableComponants/tantable/Table";
 import { t } from "i18next";
 import { numberContext } from "../../../../context/settings/number-formatter";
@@ -14,11 +14,14 @@ const BudgetStatementTable: React.FC<BudgetStatementTable_TP> = ({
 }) => {
   console.log("🚀 ~ mainCardData:", mainCardData);
   const { formatGram, formatReyal } = numberContext();
+  const [sortedData, setSortedData] = useState([]);
+  console.log("🚀 ~ sortedData:", sortedData);
 
   const mainCardDataBoxes = mainCardData
     ?.map((cardData) => cardData.boxes)
     .flat();
 
+  console.log("🚀 ~ mainCardDataBoxes:", mainCardDataBoxes);
   const tableColumn = useMemo<any>(
     () => [
       {
@@ -43,26 +46,23 @@ const BudgetStatementTable: React.FC<BudgetStatementTable_TP> = ({
             info.row.original.card_commission -
             info.row.original.card_vat;
 
-          return value > 0 ? formatReyal(value) : "---";
+          return formatReyal(value) || "---";
         },
         accessorKey: "balance",
         header: () => <span>{t("balance")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "card_commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "card_vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "value",
         header: () => <span>{t("total balance")}</span>,
       },
@@ -76,14 +76,23 @@ const BudgetStatementTable: React.FC<BudgetStatementTable_TP> = ({
     []
   );
 
+  useEffect(() => {
+    if (mainCardDataBoxes.length > 0) {
+      const sortedBoxes = mainCardDataBoxes.sort(
+        (a, b) => new Date(b.date_time) - new Date(a.date_time)
+      );
+      setSortedData(sortedBoxes);
+    }
+  }, []);
+
   return (
     <Table
       rowBackground="!bg-gray-50"
-      data={mainCardDataBoxes || []}
+      data={sortedData || []}
       columns={tableColumn}
-      showNavigation={mainCardDataBoxes.length > 10}
+      showNavigation={sortedData.length > 10}
     >
-      {mainCardDataBoxes.length === 0 && (
+      {sortedData.length === 0 && (
         <p className="text-center text-lg font-bold text-mainGreen">
           {t("there is no data to transfer")}
         </p>

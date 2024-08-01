@@ -37,8 +37,11 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
   invoiceData,
   setOperationData,
 }) => {
+  console.log("🚀 ~ mainCardData:", mainCardData);
   const { userData } = useContext(authCtx);
   const { values } = useFormikContext();
+  const isBoxesHaveData = mainCardData?.map((data) => data?.boxes).flat();
+  console.log("🚀 ~ isBoxesHaveData:", isBoxesHaveData);
 
   const {
     data: accountsDetailsData,
@@ -57,11 +60,10 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
       setMainCardData(data);
     },
   });
-  console.log("🚀 ~ accountsDetailsData:", accountsDetailsData);
 
   useEffect(() => {
     accountsDetailsDataRefetch();
-  }, [selectedAccountData, values]);
+  }, [selectedAccountData, values, accountsDetailsData]);
 
   return (
     <div className="overflow-hidden">
@@ -95,6 +97,7 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
             invoiceData={invoiceData}
             setStage={setStage}
             mainCardData={mainCardData}
+            budgetFiles={budgetFiles}
             isLoading={accountsDetailsDataIsLoading}
             isFetching={accountsDetailsDataIsFetching}
             isRefetching={accountsDetailsDataIsRefetching}

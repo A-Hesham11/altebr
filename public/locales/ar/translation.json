@@ -883,7 +883,7 @@
   "approximate cost": "التكلفة التقديرية",
   "paid cost": "المبلغ المدفوع",
   "honest provision": "بنود الامانه",
-  "search by ID code":"ابحث بكود الهوية",
+  "search by ID code": "ابحث بكود الهوية",
   "remaining cost": "المبلغ المتبقي",
   "employee name": "اسم الموظف",
   "number of hours": "عدد الساعات",
@@ -1365,5 +1365,8 @@
   "budget balance": "رصيد الموازنة",
   "ATM transaction balance statement": "كشف موازنة عمليات الصراف",
   "there is no data to transfer": "لا يوجد عمليات صراف",
-  "download pdf": "تحميل pdf"
+  "download pdf": "تحميل pdf",
+  "transfer cash": "المبلغ المحول",
+  "you should add an attachment": "يجب اضافة مرفق",
+  "loading budget balance": "تحميل كشف الموازنة"
 }

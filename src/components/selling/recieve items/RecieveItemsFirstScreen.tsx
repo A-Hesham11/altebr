@@ -108,11 +108,11 @@ const RecieveItemsFirstScreen = ({
                 name="selectedItem"
                 onClick={() => setSelectedItem(info.row.original)}
                 className={`${
-                  info.row.original.items.every(
+                  info.row.original.items?.every(
                     (item) => item.item_status !== "Waiting"
                   ) && "!bg-slate-400"
                 }`}
-                disabled={info.row.original.items.every(
+                disabled={info.row.original.items?.every(
                   (item) => item.item_status !== "Waiting"
                 )}
               />
@@ -139,7 +139,7 @@ const RecieveItemsFirstScreen = ({
         ? [
             {
               cell: (info) =>
-                info.row.original.items.every(
+                info.row.original.items?.every(
                   (item) =>
                     item.item_status === "Accepted" ||
                     item.item_status === "Rejected"

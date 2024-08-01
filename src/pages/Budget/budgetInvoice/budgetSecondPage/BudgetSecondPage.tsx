@@ -70,6 +70,11 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
     );
   });
 
+  const filterOperationDataTable = operationDataTable.filter(
+    (operation) => operation.total_balance !== 0
+  );
+  console.log("🚀 ~ filterOperationDataTable:", filterOperationDataTable);
+
   // COMPANY DATA API
   const { data: companyData } = useFetch<ClientData_TP>({
     endpoint: `/companySettings/api/v1/companies`,
@@ -115,26 +120,23 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
             info.row.original.card_commission -
             info.row.original.card_vat;
 
-          return value > 0 ? formatReyal(value) : "---";
+          return formatReyal(value) || "---";
         },
         accessorKey: "balance",
         header: () => <span>{t("balance")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "card_commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "card_vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "value",
         header: () => <span>{t("total balance")}</span>,
       },
@@ -162,26 +164,23 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
             info.row.original.card_commission -
             info.row.original.card_vat;
 
-          return balanceValue > 0 ? formatReyal(Number(balanceValue)) : "---";
+          return formatReyal(Number(balanceValue)) || "---";
         },
         accessorKey: "balance",
         header: () => <span>{t("balance")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "card_commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "card_vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "total_balance",
         header: () => <span>{t("total balance")}</span>,
       },
@@ -228,7 +227,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
             <BudgetSecondScreenHeader clientData={clientData} />
             <BudgetSecondPageItems
               firstData={mainDataBoxes || []}
-              secondData={operationDataTable || []}
+              secondData={filterOperationDataTable || []}
               firstColumns={firstColumn}
               secondColumns={secondColumn}
               costDataAsProps={costDataAsProps}
@@ -267,7 +266,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
           </div>
         </div>
         <div className="flex items-center justify-end gap-x-4 mr-auto mt-8">
-          {!showPrint && (
+          {showPrint && (
             <div className="animate_from_right">
               <Button
                 bordered

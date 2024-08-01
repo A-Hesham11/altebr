@@ -294,7 +294,8 @@ const SellingInvoiceData = ({
 
     const paymentCommission = paymentData.reduce((acc, curr) => {
       const commissionReyals = Number(curr.commission_riyals);
-      const commissionVat = Number(curr.commission_riyals) * (userData?.tax_rate / 100);
+      const commissionVat =
+        Number(curr.commission_riyals) * (userData?.tax_rate / 100);
 
       acc[curr.sellingFrontKey] = {
         commission: commissionReyals,

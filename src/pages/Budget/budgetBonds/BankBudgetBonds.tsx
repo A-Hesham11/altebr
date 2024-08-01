@@ -23,6 +23,8 @@ import { HonestBondAccountingRestriction } from "../../../components/selling/hon
 import BudgetTableEntry from "./BudgetTableEntry";
 import { FilesPreview } from "../../../components/molecules/files/FilesPreview";
 import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
+import { numberContext } from "../../../context/settings/number-formatter";
+import { PDFSvgIcon, ViewSvgIcon } from "../../../components/atoms/icons";
 
 const BankBudgetBonds = () => {
   // STATE
@@ -30,6 +32,7 @@ const BankBudgetBonds = () => {
   const [dataSource, setDataSource] = useState([]);
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
+  const { formatReyal } = numberContext();
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [entryModal, setOpenEntryModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
@@ -85,6 +88,11 @@ const BankBudgetBonds = () => {
       },
       {
         cell: (info: any) => info.getValue(),
+        accessorKey: "account_number",
+        header: () => <span>{t("account number")}</span>,
+      },
+      {
+        cell: (info: any) => formatReyal(Number(info.getValue())),
         accessorKey: "totals",
         header: () => <span>{t("budget balance")}</span>,
       },
@@ -112,15 +120,27 @@ const BankBudgetBonds = () => {
               size={23}
               className="text-mainGreen cursor-pointer"
             />
-            <FilesPreviewOutFormik
-              images={info.row.original.images || []}
-              preview
-              pdfs={[]}
-            />
           </div>
         ),
         accessorKey: "details",
         header: () => <span>{t("details")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          return (
+            <>
+              <div className="flex items-center gap-4 justify-center">
+                <FilesPreviewOutFormik
+                  images={info.row.original.images || []}
+                  preview
+                  pdfs={[]}
+                />
+              </div>
+            </>
+          );
+        },
+        accessorKey: "attachment",
+        header: () => <span>{t("attachment")}</span>,
       },
     ],
     []
