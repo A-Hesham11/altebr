@@ -301,7 +301,27 @@ const BankBudgetBonds = () => {
       <Modal isOpen={entryModal} onClose={() => setOpenEntryModal(false)}>
         {/* <EntryBudgetBonds selectedItem={selectedItem} /> */}
         {/* <TableEntry item={selectedItem} /> */}
-        <BudgetTableEntry item={selectedItem} />
+        <div className="my-6">
+          <p className="text-xl mb-5 font-bold">
+            <span className="mx-2">1- </span>
+            <span>{t("budget operation")}</span>
+          </p>
+          <BudgetTableEntry boxes={selectedItem?.boxes} />
+        </div>
+        <div className="my-6">
+          <p className="text-xl mb-5 font-bold">
+            <span className="mx-2">2- </span>
+            <span>{t("budget deduction process")}</span>
+          </p>
+          <BudgetTableEntry boxes={selectedItem?.boxes2} />
+        </div>
+        <div className="my-6">
+          <p className="text-xl mb-5 font-bold flex items-center">
+            <span className="mx-2">3- </span>
+            <span>{t("commission tax deduction process")}</span>
+          </p>
+          <BudgetTableEntry boxes={selectedItem?.boxes3} />
+        </div>
         {/* <HonestBondAccountingRestriction /> */}
       </Modal>
     </div>
