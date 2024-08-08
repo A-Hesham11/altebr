@@ -21,21 +21,34 @@ const DeliveryBondPreviewScreen = ({
   selectedItem,
   paymentData,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData)
+  console.log("🚀 ~ paymentData:", paymentData);
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
 
   const taxRate = userData?.tax_rate / 100;
 
   const prepaidAmount = selectedItem.amount;
+  // const totalCommissionRatio = paymentData.reduce((acc, card) => {
+  //   acc += +card.commission_riyals;
+  //   return acc;
+  // }, 0);
+
   const totalCommissionRatio = paymentData.reduce((acc, card) => {
-    acc += +card.commission_riyals;
+    if (card.add_commission_ratio === "yes") {
+      acc += +card.commission_riyals;
+    }
     return acc;
   }, 0);
   const ratioForOneItem = totalCommissionRatio / selectedItem.items.length;
 
+  // const totalCommissionTaxes = paymentData.reduce((acc, card) => {
+  //   acc += +card.commission_tax;
+  //   return acc;
+  // }, 0);
   const totalCommissionTaxes = paymentData.reduce((acc, card) => {
-    acc += +card.commission_tax;
+    if (card.add_commission_ratio === "yes") {
+      acc += +card.commission_tax;
+    }
     return acc;
   }, 0);
   const ratioForOneItemTaxes = totalCommissionTaxes / selectedItem.items.length;
@@ -245,18 +258,25 @@ const DeliveryBondPreviewScreen = ({
     const card = paymentData.reduce((acc, curr) => {
       const maxDiscountOrNOt =
         curr.amount >= curr.max_discount_limit
+          ? curr.add_commission_ratio === "yes"
+            ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
+            : Number(curr.amount)
+          : curr.add_commission_ratio === "yes"
           ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
-          : Number(curr.amount) + Number(curr.commission_riyals);
+          : Number(curr.amount);
 
       acc[curr.frontKeyAccept] =
-        +maxDiscountOrNOt + Number(curr.commission_tax);
+        curr.add_commission_ratio === "yes"
+          ? +maxDiscountOrNOt + Number(curr.commission_tax)
+          : +maxDiscountOrNOt;
 
       return acc;
     }, {});
 
     const paymentCommission = paymentData.reduce((acc, curr) => {
       const commissionReyals = Number(curr.commission_riyals);
-      const commissionVat = Number(curr.commission_riyals) * (userData?.tax_rate / 100);
+      const commissionVat =
+        Number(curr.commission_riyals) * (userData?.tax_rate / 100);
 
       acc[curr.frontKeyAccept] = {
         commission: commissionReyals,
@@ -268,7 +288,10 @@ const DeliveryBondPreviewScreen = ({
       endpointName: "branchSafety/api/v1/create-receive",
       values: { bond, items, card, paymentCommission },
     });
-
+    console.log(
+      "🚀 ~ posHonestDataHandler ~ values: { bond, items, card, paymentCommission }:",
+      { bond, items, card, paymentCommission }
+    );
   };
   return (
     <div>

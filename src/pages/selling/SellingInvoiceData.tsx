@@ -42,8 +42,15 @@ const SellingInvoiceData = ({
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ userData:", userData);
 
+  // const totalCommissionRatio = paymentData.reduce((acc, card) => {
+  //   acc += +card.commission_riyals;
+  //   return acc;
+  // }, 0);
+
   const totalCommissionRatio = paymentData.reduce((acc, card) => {
-    acc += +card.commission_riyals;
+    if (card.add_commission_ratio === "yes") {
+      acc += +card.commission_riyals;
+    }
     return acc;
   }, 0);
 
@@ -57,8 +64,15 @@ const SellingInvoiceData = ({
     return acc;
   }, 0);
 
+  // const totalCommissionTaxes = paymentData.reduce((acc, card) => {
+  //   acc += +card.commission_tax;
+  //   return acc;
+  // }, 0);
+
   const totalCommissionTaxes = paymentData.reduce((acc, card) => {
-    acc += +card.commission_tax;
+    if (card.add_commission_ratio === "yes") {
+      acc += +card.commission_tax;
+    }
     return acc;
   }, 0);
 
@@ -284,20 +298,24 @@ const SellingInvoiceData = ({
     const card = paymentData.reduce((acc, curr) => {
       const maxDiscountOrNOt =
         curr.max_discount_limit && curr.amount >= curr.max_discount_limit
-          ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
-          : Number(curr.amount) + Number(curr.commission_riyals);
+          ? curr.add_commission_ratio === "yes"
+            ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
+            : Number(curr.amount)
+          : curr.add_commission_ratio === "yes"
+          ? Number(curr.amount) + Number(curr.commission_riyals)
+          : Number(curr.amount);
 
       acc[curr.sellingFrontKey] =
-        +maxDiscountOrNOt + Number(curr.commission_tax);
+        curr.add_commission_ratio === "yes"
+          ? Number(maxDiscountOrNOt) + Number(curr.commission_tax)
+          : Number(maxDiscountOrNOt);
       return acc;
     }, {});
 
     const paymentCommission = paymentData.reduce((acc, curr) => {
       const commissionReyals = Number(curr.commission_riyals);
-      console.log("🚀 ~ paymentCommission ~ commissionReyals:", commissionReyals)
-      const commissionVat = Number(curr.commission_riyals) * Number(userData?.tax_rate / 100);
-      console.log("🚀 ~ paymentCommission ~ commissionVat:", commissionVat)
-
+      const commissionVat =
+        Number(curr.commission_riyals) * Number(userData?.tax_rate / 100);
 
       acc[curr.sellingFrontKey] = {
         commission: commissionReyals,
@@ -305,7 +323,7 @@ const SellingInvoiceData = ({
       };
       return acc;
     }, {});
- 
+
     mutate({
       endpointName: "/selling/api/v1/add_Invoice",
       values: { invoice, items, card, paymentCommission },

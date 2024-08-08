@@ -38,15 +38,29 @@ const InvoiceTable = <T extends object>({ data,
         return acc
     }, 0)
 
-    const totalCommissionRatio = paymentData?.reduce((acc, card) => {
-        acc += +card.commission_riyals
-        return acc
-    }, 0)
+    // const totalCommissionRatio = paymentData?.reduce((acc, card) => {
+    //     acc += +card.commission_riyals
+    //     return acc
+    // }, 0)
 
-    const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
-        acc += +card.commission_tax
-        return acc
-    }, 0)
+    const totalCommissionRatio = paymentData.reduce((acc, card) => {
+        if (card.add_commission_ratio === "yes") {
+          acc += +card.commission_riyals;
+        }
+        return acc;
+      }, 0);
+
+    // const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
+    //     acc += +card.commission_tax
+    //     return acc
+    // }, 0)
+
+    const totalCommissionTaxes = paymentData.reduce((acc, card) => {
+        if (card.add_commission_ratio === "yes") {
+          acc += +card.commission_tax;
+        }
+        return acc;
+      }, 0);
 
     const totalFinalCost = Number(totalCost) + Number(totalCommissionRatio) + Number(totalCost) * 0.15 + Number(totalCommissionTaxes)
 

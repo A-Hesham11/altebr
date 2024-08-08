@@ -121,19 +121,27 @@ export const NewHonest = () => {
             const card = paymentData.reduce((acc, curr) => {
               const maxDiscountOrNOt =
                 curr.amount >= curr.max_discount_limit
-                  ? Number(curr.amount) + Number(curr?.max_discount_limit_value)
-                  : Number(curr.amount) + Number(curr.commission_riyals);
+                  ? curr.add_commission_ratio === "yes"
+                    ? Number(curr.amount) +
+                      Number(curr?.max_discount_limit_value)
+                    : Number(curr.amount)
+                  : curr.add_commission_ratio === "yes"
+                  ? Number(curr.amount) + Number(curr.commission_riyals)
+                  : Number(curr.amount);
 
               acc[curr.frontkey] =
-                +maxDiscountOrNOt + Number(curr.commission_tax);
+                curr.add_commission_ratio === "yes"
+                  ? +maxDiscountOrNOt + Number(curr.commission_tax)
+                  : +maxDiscountOrNOt;
 
               return acc;
             }, {});
 
             const paymentCommission = paymentData.reduce((acc, curr) => {
               const commissionReyals = Number(curr.commission_riyals);
-              const commissionVat = Number(curr.commission_riyals) * (userData?.tax_rate / 100);
-        
+              const commissionVat =
+                Number(curr.commission_riyals) * (userData?.tax_rate / 100);
+
               acc[curr.frontkey] = {
                 commission: commissionReyals,
                 vat: commissionVat,
@@ -141,7 +149,13 @@ export const NewHonest = () => {
               return acc;
             }, {});
             setStage(2);
-            setSanadData({ ...values, tableData, card, paymentCommission, totalApproximateCost });
+            setSanadData({
+              ...values,
+              tableData,
+              card,
+              paymentCommission,
+              totalApproximateCost,
+            });
           }
         }}
         initialValues={InitialValues}

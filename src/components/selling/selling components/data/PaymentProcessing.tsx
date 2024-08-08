@@ -58,11 +58,11 @@ const PaymentProcessing = ({
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<any>({});
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData)
+  console.log("🚀 ~ userData:", userData);
   console.log("🚀 ~ cardDiscountPercentage:", cardDiscountPercentage);
 
   const taxRate = userData?.tax_rate / 100;
-  console.log("🚀 ~ taxRate:", taxRate)
+  console.log("🚀 ~ taxRate:", taxRate);
 
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
@@ -99,19 +99,12 @@ const PaymentProcessing = ({
     0
   );
 
-  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice);
-
   const editDataAmount = editData ? editData?.amount : 0;
-  console.log("🚀 ~ editDataAmount:", editDataAmount);
 
   const amountRemaining = paymentData?.reduce(
     (total, item) => total + item.cost_after_tax,
     0
   );
-  console.log("🚀 ~ amountRemaining:", amountRemaining);
-
-  const xx = Number(editDataAmount) + (+totalPriceInvoice - +amountRemaining);
-  console.log("🚀 ~ xx:", xx);
 
   const costRemaining = +totalPriceInvoice
     ? Number(editDataAmount) +
@@ -172,10 +165,11 @@ const PaymentProcessing = ({
                   id: crypto.randomUUID(),
                   card: card,
                   card_id: selectedCardId,
-                  commission_riyals:
-                    values.add_commission_ratio === "yes"
-                      ? commissionRiyals
-                      : 0,
+                  // commission_riyals:
+                  //   values.add_commission_ratio === "yes"
+                  //     ? commissionRiyals
+                  //     : 0,
+                  commission_riyals: commissionRiyals,
                   max_discount_limit_value:
                     cardDiscountPercentage?.max_discount_limit_value,
                   max_discount_limit:
@@ -185,8 +179,9 @@ const PaymentProcessing = ({
                   frontKeyAccept: frontKeyAccept,
                   frontKeySadad: frontKeySadad,
                   sellingFrontKey: sellingFrontKey,
-                  commission_tax:
-                    values.add_commission_ratio === "yes" ? commissionTax : 0,
+                  // commission_tax:
+                  //   values.add_commission_ratio === "yes" ? commissionTax : 0,
+                  commission_tax: commissionTax,
                 };
                 setPaymentData((prevData) => [newItem, ...prevData]);
                 setSelectedCardId(null);
@@ -209,9 +204,9 @@ const PaymentProcessing = ({
           console.log("🚀 ~ PaymentProcessing ~ values:", values);
 
           const commissionValue =
-            (cardDiscountPercentage?.max_discount_limit &&
+            cardDiscountPercentage?.max_discount_limit &&
             Number(values?.amount) >=
-              Number(cardDiscountPercentage?.max_discount_limit))
+              Number(cardDiscountPercentage?.max_discount_limit)
               ? values?.amount
                 ? Number(cardDiscountPercentage?.max_discount_limit_value)
                 : 0
