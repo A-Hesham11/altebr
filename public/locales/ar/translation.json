@@ -1368,5 +1368,8 @@
   "download pdf": "تحميل pdf",
   "transfer cash": "المبلغ المحول",
   "you should add an attachment": "يجب اضافة مرفق",
-  "loading budget balance": "تحميل كشف الموازنة"
+  "loading budget balance": "تحميل كشف الموازنة",
+  "budget operation": "عملية الموازنة",
+  "budget deduction process": "عملية خصم الموازنة",
+  "commission tax deduction process": "عملية خصم ضريبة العمولة"
 }
