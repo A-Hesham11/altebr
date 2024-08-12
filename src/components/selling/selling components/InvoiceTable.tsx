@@ -43,7 +43,7 @@ const InvoiceTable = <T extends object>({ data,
     //     return acc
     // }, 0)
 
-    const totalCommissionRatio = paymentData.reduce((acc, card) => {
+    const totalCommissionRatio = paymentData?.reduce((acc, card) => {
         if (card.add_commission_ratio === "yes") {
           acc += +card.commission_riyals;
         }
@@ -55,7 +55,7 @@ const InvoiceTable = <T extends object>({ data,
     //     return acc
     // }, 0)
 
-    const totalCommissionTaxes = paymentData.reduce((acc, card) => {
+    const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
         if (card.add_commission_ratio === "yes") {
           acc += +card.commission_tax;
         }
