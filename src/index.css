@@ -21,7 +21,7 @@ input[type="radio"] {
   background-size: cover;
 }
 
-@media print {
+/* @media print {
   body {
     height: 200rem;
   }
@@ -38,7 +38,7 @@ input[type="radio"] {
   .no-print {
     display: none;
   }
-}
+} */
 
 @layer base {
   * {

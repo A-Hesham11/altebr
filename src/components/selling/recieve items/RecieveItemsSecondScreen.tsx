@@ -287,7 +287,7 @@ const RecieveItemsSecondScreen = ({
   useEffect(() => {
     !openModal
       ? setDataSource(
-          selectedItem.items.filter((item) => item.item_status === "Waiting")
+          selectedItem?.items?.filter((item) => item.item_status === "Waiting")
         )
       : setDataSource(selectedItem.items);
   }, [disableSelectedCheckAfterSendById, selectedRows]);
@@ -295,18 +295,18 @@ const RecieveItemsSecondScreen = ({
   // variables
   // TOTALS
   const total24 = selectedItem.items
-    .filter((piece) => piece.karat === "24")
-    .reduce((acc, { weight }) => acc + +weight, 0);
+    ?.filter((piece) => piece.karat === "24")
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
   const total22 = selectedItem.items
-    .filter((piece) => piece.karat === "22")
-    .reduce((acc, { weight }) => acc + +weight, 0);
+    ?.filter((piece) => piece.karat === "22")
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
   const total21 = selectedItem.items
-    .filter((piece) => piece.karat === "21")
-    .reduce((acc, { weight }) => acc + +weight, 0);
+    ?.filter((piece) => piece.karat === "21")
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
   const total18 = selectedItem.items
-    .filter((piece) => piece.karat === "18")
-    .reduce((acc, { weight }) => acc + +weight, 0);
-  const allItemsCount = selectedItem?.items[0]?.allboxes?.allcounts;
+    ?.filter((piece) => piece.karat === "18")
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
+  const allItemsCount = selectedItem?.items?.[0]?.allboxes?.allcounts;
 
   const totals = [
     {
@@ -371,7 +371,7 @@ const RecieveItemsSecondScreen = ({
             </BoxesDataBase>
           ))}
         </ul>
-        {!dataSource.length && !openModal ? (
+        {!dataSource?.length && !openModal ? (
           <>
             <h2 className="font-bold text-xl mx-auto my-8 text-mainGreen bg-lightGreen p-2 rounded-lg w-fit">
               {t("bond has been closed")}

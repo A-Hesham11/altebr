@@ -215,7 +215,8 @@ const PaymentToManagement = () => {
         <Button
           type="submit"
           action={() => {
-            setStage(1);
+            // setStage(1);
+            navigate(-1)
           }}
           bordered
         >

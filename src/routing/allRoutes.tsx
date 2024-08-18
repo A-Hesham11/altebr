@@ -58,7 +58,6 @@ import { GoldCoding } from "../pages/coding/gold/GoldCoding";
 import { GoldCodingWrapper } from "../pages/coding/gold/GoldCodingWrapper";
 import { Employees } from "../pages/employees/Employees";
 import { OneEmployee } from "../pages/employees/OneEmployee";
-// import { Home } from "../pages/home/Home"
 import { Operation } from "../pages/operation/Operation";
 import { AllPartner } from "../pages/partner/AllPartner";
 import { OnePartner } from "../pages/partner/OnePartner";
@@ -163,6 +162,9 @@ import BudgetPage from "../pages/Budget/Bank";
 import BankBudgetBonds from "../pages/Budget/budgetBonds/BankBudgetBonds";
 import Bank from "../pages/Budget/Bank";
 import BankBudget from "../pages/Budget/budgetInvoice/BankBudget";
+import BranchBalancesPage from "../pages/branchBalances/BranchBalancesPage";
+import RecentBondsPage from "../pages/management/recentBonds/RecentBondsPage";
+import SortPiecesPage from "../pages/management/sortPieces/SortPiecesPage";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -190,10 +192,6 @@ export const AllRoutesProvider = () => {
           <Route
             path="/accept-branchBonds"
             element={<ViewBondsFromBranchs />}
-          />
-          <Route
-            path="/branch-bonds"
-            element={<BranchBonds title={t("branch bonds")} />}
           />
           {/* REACT */}
           <Route
@@ -327,9 +325,6 @@ export const AllRoutesProvider = () => {
           <Route path="/system/excludedItems" element={<ViewExcludedItems />} />
           <Route path="/system/TaxPolicy" element={<ViewTaxPolicy />} />
 
-          <Route path="/system/excludedItems" element={<ViewExcludedItems />} />
-
-          <Route path="/system/invoiceData" element={<ViewInvoiceData />} />
           <Route path="/system/invoiceData" element={<ViewInvoiceData />} />
 
           <Route
@@ -489,13 +484,9 @@ export const AllRoutesProvider = () => {
             element={<Bond title={t("accessory bond")} />}
           />
 
-          {/* المبعات */}
-          <Route path="/selling" element={<PaymentSellingPage />} />
-
           <Route path="/selling/addInvoice" element={<AddSellingInvoice />} />
           <Route path="/selling/viewInvoice" element={<ViewSellingInvoice />} />
 
-          <Route path="/payment" element={<SellingSecondpage />} />
           <Route
             path="selling/clients/customersData/addClients"
             element={<AddClients />}
@@ -512,18 +503,6 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/customersData" element={<ClientsData />} />
           <Route path="/selling/reservePiece" element={<ReservePiece />} />
           <Route path="/selling/payoff" element={<Payoff />} />
-          {/* <Route path="/selling/reimbursement" element={<>reimbursement</>} /> */}
-          {/* neighbors start */}
-          <Route path="/selling/neighbors" element={<NeighborsPage />} />
-          <Route path="/selling/neighbors/loaning" element={<>loaning</>} />
-          <Route path="/selling/neighbors/recover" element={<>recover</>} />
-          <Route
-            path="/selling/neighbors/neighbors-data"
-            element={<>neighbors-data</>}
-          />
-          <Route path="/selling/neighbors/payment" element={<>payment</>} />
-          {/* neighbors end */}
-          <Route path="/selling/reports" element={<Reports />} />
           <Route path="/selling/continuity" element={<ContinuityPage />} />
           <Route path="/selling/reports/stocks" element={<Stocks />} />
           <Route path="/credits/edara" element={<EdaraStocks />} />
@@ -540,11 +519,9 @@ export const AllRoutesProvider = () => {
             path="/selling/item-information"
             element={<ItemInformation />}
           />
-          <Route path="/selling/continuity" element={<>continuity</>} />
-          <Route path="/selling/trading" element={<>trading</>} />
+
           {/* honest start */}
           <Route path="/selling/honesty" element={<Honest />} />
-          <Route path="/selling/honesty/new-honest" element={<NewHonest />} />
           <Route
             path="/selling/honesty/return-honest"
             element={<RetrieveHonestEntryScreen />}
@@ -575,10 +552,7 @@ export const AllRoutesProvider = () => {
             element={<SellingBranchIdentity />}
           />
           <Route path="/selling/Pieces-Sold" element={<PiecesSoldPage />} />
-          <Route
-            path="/selling/management/receive-money"
-            element={<>receive-money</>}
-          />
+
           <Route
             path="/selling/management/receive-items"
             element={<RecieveItems />}
@@ -588,6 +562,7 @@ export const AllRoutesProvider = () => {
             path="/selling/branchSetting"
             element={<BranchSettingPage />}
           />
+
           <Route path="/system/cardsData" element={<ViewBankCardsData />} />
           <Route
             path="/selling/payoff/supply-payoff"
@@ -602,24 +577,12 @@ export const AllRoutesProvider = () => {
             path="/selling/invoice-restrictions"
             element={<SellingRestrictionsInvoice />}
           />
-          <Route
-            path="selling/clients/customersData/addClients"
-            element={<AddClients />}
-          />
-          <Route
-            path="/selling/finalPreview"
-            element={<SellingFinalPreview />}
-          />
+
           <Route
             path="/selling/return-entry"
             element={<SalesReturnRestrictions />}
           />
 
-          {/* <Route path="/selling/buying/test" element={<>butingh</>} /> */}
-          <Route path="/selling/management" element={<Management />} />
-          {/* <Route path="/selling/exchange" element={<>exchange</>} /> */}
-          <Route path="/selling/clients" element={<Clients />} />
-          <Route path="/selling/payoff" element={<Payoff />} />
           <Route
             path="/selling/payment"
             element={<PaymentToManagementPage />}
@@ -632,38 +595,19 @@ export const AllRoutesProvider = () => {
             path="/selling/viewPayment"
             element={<VeiwPaymentToManagement />}
           />
+
+          {/* الادارة */}
+          <Route path="/selling/recentBonds" element={<RecentBondsPage />} />
+          <Route path="/selling/sortPieces" element={<SortPiecesPage />} />
+
           {/* neighbors start */}
           <Route path="/selling/neighbors" element={<NeighborsPage />} />
-          <Route path="/selling/neighbors/loaning" element={<>loaning</>} />
-          <Route path="/selling/neighbors/recover" element={<>recover</>} />
-          <Route
-            path="/selling/neighbors/neighbors-data"
-            element={<>neighbors-data</>}
-          />
-          <Route path="/selling/neighbors/payment" element={<>payment</>} />
           {/* neighbors end */}
           <Route path="/selling/reports" element={<Reports />} />
-          <Route
-            path="/selling/reports/accounting-tree"
-            element={<BranchAccountingTree />}
-          />
-          <Route
-            path="/selling/item-information"
-            element={<ItemInformation />}
-          />
-          <Route path="/selling/continuity" element={<>continuity</>} />
-          <Route path="/selling/trading" element={<>trading</>} />
+
           {/* honest start */}
-          <Route path="/selling/honesty" element={<Honest />} />
           <Route path="/selling/honesty/new-honest" element={<NewHonest />} />
-          <Route
-            path="/selling/honesty/all-honest"
-            element={<AllHonestBonds />}
-          />
-          <Route
-            path="/selling/honesty/all-honest/:bondId"
-            element={<HonestBondAccountingRestriction />}
-          />
+
           <Route
             path="/selling/honesty/all-retrieval-restrictions"
             element={<AllRetrievalRestrictions />}
@@ -675,34 +619,10 @@ export const AllRoutesProvider = () => {
           {/* honest end */}
           <Route path="/bank" element={<BudgetPage />} />
           <Route
-            path="/selling/branch-identity"
-            element={<SellingBranchIdentity />}
-          />
-          <Route
-            path="/selling/management/receive-money"
-            element={<>receive-money</>}
-          />
-          <Route
-            path="/selling/management/receive-items"
-            element={<RecieveItems />}
-          />
-          <Route
-            path="/selling/management/edit-items-weight"
-            element={<Print />}
-          />
-          <Route
             path="/selling/payoff/sales-return"
             element={<SalesReturnPage />}
           />
-          <Route
-            path="/selling/payoff/sales-return"
-            element={<SalesReturnPage />}
-          />
-          <Route path="/selling/payoff/payoff" element={<Payoff />} />
-          <Route
-            path="/selling/branchSetting"
-            element={<BranchSettingPage />}
-          />
+
           {/* BUYING START */}
           <Route path="/buying/purchaseInvoice" element={<BuyingInvoice />} />
           <Route
@@ -781,21 +701,25 @@ export const AllRoutesProvider = () => {
           <Route path="/system/commisionPolicies" element={<ViewCommision />} />
 
           {/* EXPENSES END */}
-          <Route path="/system/cardsData" element={<ViewBankCardsData />} />
-          <Route
-            path="/selling/payoff/supply-payoff"
-            element={<PayoffEntryScreen />}
-          />
+
           <Route
             path="/selling/payment/restrictions"
             element={<PaymentRestrictions />}
           />
         </Route>
+
         <Route
           errorElement={<ErrorPage />}
           path="/login"
           element={<Login title={t("login")} />}
         />
+
+        <Route
+          path="/selling/management/edit-items-weight"
+          element={<Print />}
+        />
+
+        <Route path="/selling/balances" element={<BranchBalancesPage />} />
       </Routes>
     </PermissionCtxProvider>
   );

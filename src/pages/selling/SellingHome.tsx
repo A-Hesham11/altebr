@@ -14,7 +14,7 @@ import Departure from "../../assets/departure.svg";
 import { notify } from "../../utils/toast";
 import { mutateData } from "../../utils/mutateData";
 import { useQueryClient } from "@tanstack/react-query";
-import { GiCheckMark } from "react-icons/gi";
+import { GiCheckMark, GiTakeMyMoney } from "react-icons/gi";
 import { formatDate } from "../../utils/date";
 import { Modal } from "../../components/molecules";
 
@@ -166,18 +166,33 @@ const SellingHome = () => {
       </div>
 
       <div className="flex justify-between items-center gap-2 cursor-pointer px-20 bl">
-        <Button
-          className="bg-transparent flex items-center gap-3 p-0"
-          action={() => {
-            navigate("/selling/branchSetting");
-          }}
-        >
-          <IoSettingsOutline
-            className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
-            size={30}
-          />
-          <span className="text-white">{t("settings")}</span>
-        </Button>
+        <div className="flex gap-8">
+          <Button
+            className="bg-transparent flex items-center gap-3 p-0"
+            action={() => {
+              navigate("/selling/branchSetting");
+            }}
+          >
+            <IoSettingsOutline
+              className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
+              size={30}
+            />
+            <span className="text-white">{t("settings")}</span>
+          </Button>
+
+          <Button
+            className="bg-transparent flex items-center gap-3 p-0"
+            action={() => {
+              navigate("/selling/balances");
+            }}
+          >
+            <GiTakeMyMoney 
+              className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
+              size={30}
+            />
+            <span className="text-white">{t("balances")}</span>
+          </Button>
+        </div>
 
         <div className="flex gap-3">
           {/* <Button
