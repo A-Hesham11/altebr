@@ -1,7 +1,6 @@
 body {
   margin: 0;
   font-family: "Roboto Mono", monospace;
-  direction: ltr;
 }
 
 .container-print {
@@ -62,4 +61,34 @@ body {
 .paragraph_title {
   font-weight: bold !important;
 }
+.print-page {
+  display: none;
+}
 
+@media print {
+  .print-btn {
+    display: none;
+  }
+  .print-table {
+    display: none;
+  }
+  .print-page {
+    display: block;
+  }
+
+  .container-print {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* Avoid breaking content inside the container */
+  .component {
+    page-break-inside: avoid;
+  }
+
+  /* Ensure the last item doesn't add an unnecessary page break */
+  .container-print:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+}

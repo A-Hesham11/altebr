@@ -2,42 +2,43 @@ import QRCode from "react-qr-code";
 import "./print.css";
 import Logo from "../../../assets/qr-logo.png";
 
-const PrintPage = () => {
+const PrintPage = ({ item }) => {
   return (
     <>
-      <div className="container-print no-print">
-        <div className="component">
-          <div className="content-wrapper">
-            <div className="grid-layout">
-              <img src={Logo} alt="logo" className="img" />
-              <QRCode
-                className="img_qr"
-                value={`${Math.round(12355)}`}
-                viewBox={`0 0 300 300`}
-              />
-              <p className="small-text">2305W1</p>
-            </div>
+        <div className="container-print" style={{ pageBreakAfter: "always"}}>
+          <div className="component">
+            <div className="content-wrapper">
+              <div className="grid-layout">
+                <img src={Logo} alt="logo" className="img" />
+                <QRCode
+                  className="img_qr"
+                  value={item.hwya}
+                  // value={`${Math.round(12355)}`}
+                  viewBox={`0 0 300 300`}
+                />
+                <p className="small-text">{item.hwya}</p>
+              </div>
 
-            <div className="rotated-text">
-              <p className="rotated-paragraph">
-                G:<span className="paragraph_title">342.71</span>
-              </p>
-              <p className="rotated-paragraph">
-                K:<span className="paragraph_title">24</span>
-              </p>
-              <p className="rotated-paragraph">
-                D:<span className="paragraph_title">125.860</span>
-              </p>
-              <p className="rotated-paragraph">
-                S:<span className="paragraph_title">125.804</span>
-              </p>
-              <p className="rotated-paragraph">
-                O:<span className="paragraph_title">other</span>
-              </p>
+              <div className="rotated-text">
+                <p className="rotated-paragraph">
+                  G:<span className="paragraph_title">{item.weight}</span>
+                </p>
+                <p className="rotated-paragraph">
+                  K:<span className="paragraph_title">{item.karat}</span>
+                </p>
+                <p className="rotated-paragraph">
+                  D:<span className="paragraph_title">125.860</span>
+                </p>
+                <p className="rotated-paragraph">
+                  S:<span className="paragraph_title">125.804</span>
+                </p>
+                <p className="rotated-paragraph">
+                  O:<span className="paragraph_title">other</span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 };
