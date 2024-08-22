@@ -165,6 +165,7 @@ import BankBudget from "../pages/Budget/budgetInvoice/BankBudget";
 import BranchBalancesPage from "../pages/branchBalances/BranchBalancesPage";
 import RecentBondsPage from "../pages/management/recentBonds/RecentBondsPage";
 import SortPiecesPage from "../pages/management/sortPieces/SortPiecesPage";
+import PrintingNumberIdentities from "../pages/coding/coded_identities/PrintingNumberIdentities";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -198,6 +199,12 @@ export const AllRoutesProvider = () => {
             path="/coding-react"
             element={
               <CodedIdentities title={t("identity and numbering management")} />
+            }
+          />
+          <Route
+            path="/printing-identities"
+            element={
+              <PrintingNumberIdentities/>
             }
           />
           <Route path="/coding/total/import" element={<ImportTotals />} />

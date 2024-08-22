@@ -7,6 +7,7 @@ import { Loading } from "../components/organisms/Loading";
 import NavBar from "../components/organisms/NavBar";
 import { SideBar } from "../components/organisms/SideBar";
 import { authCtx } from "../context/auth-and-perm/auth";
+import "../components/atoms/print/print.css"
 
 export const Root = () => {
   const { isLoggedIn, isLoadingUpdatedUserData, userData } =
@@ -23,7 +24,7 @@ export const Root = () => {
   if (isLoggedIn && !isLoadingUpdatedUserData && userData?.branch_id == "1") {
     return (
       <div className="grid h-screen grid-cols-view grid-rows-view bg-flatWhite">
-        <nav className="col-start-0 col-end-3 row-start-1 row-end-2 bg-white">
+        <nav className="col-start-0 col-end-3 row-start-1 row-end-2 bg-white  no-print">
           <NavBar />
         </nav>
 
@@ -50,7 +51,7 @@ export const Root = () => {
     return (
       <div className="grid h-screen grid-cols-view grid-rows-view bg-flatWhite">
         <nav
-          className={`col-start-0 col-end-3 row-start-1 row-end-2 bg-white ${
+          className={`col-start-0 col-end-3 row-start-1 row-end-2 bg-white no-print ${
             location.pathname === "/" && "hidden"
           }`}
         >

@@ -29,8 +29,6 @@ type GoldCodingWrapperProps_TP = {
 export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   /////////// VARIABLES
   ///
-  const [tarqimGold, setTarqimGold] = useState(JSON.parse(localStorage.getItem("tarqimGold")));
-  console.log("🚀 ~ GoldCodingWrapper ~ tarqimGold:", tarqimGold);
   const { sanadId } = useParams();
   const navigate = useNavigate();
   const [selectedSanadLocal, setSelectedSanadLocal] =
@@ -95,19 +93,6 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
       });
 
       if (result) {
-        console.log("🚀 ~ sendPieces ~ result:", result);
-        // localStorage.setItem("tarqimGold")
-        const oldData = JSON.parse(localStorage.getItem("tarqimGold")) || [];
-
-        // Combine old data with new item
-        const updatedData = [...oldData, result];
-
-        // Save updated array back to localStorage
-        localStorage.setItem("tarqimGold", JSON.stringify(updatedData));
-
-        // Update state with the new data
-        setTarqimGold(updatedData);
-
         setAddedPieces((curr) =>
           curr.filter((p) => p.front_key !== result.front_key)
         );
@@ -141,11 +126,11 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
     });
   };
 
-  // useEffect(() => {
-  //   if (!!!addedPieces.length && stage === 2) {
-  //     setOpenModal(true);
-  //   }
-  // }, [addedPieces]);
+  useEffect(() => {
+    if (!!!addedPieces.length && stage === 2) {
+      setOpenModal(true);
+    }
+  }, [addedPieces]);
 
   ///
   return (
@@ -196,14 +181,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
           </Button>
         </div>
       )}
-      {/* {stage === 2 && !!!addedPieces.length && (
-        <div className="flex justify-between mx-auto relative">
-          <h2 className="text-mainGreen text-xl">لا يوجد قطع مرقمة</h2>
-          <Button action={() => setStage(1)} bordered>
-            رجوع
-          </Button>
-        </div>
-      )} */}
+
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
         <div className="flex gap-x-2 p-16 justify-center items-center">
           <Button
@@ -227,6 +205,17 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
             }}
           >
             {t("go to identification management")}
+          </Button>
+
+          <Button
+            type="button"
+            action={() => {
+              setOpenModal(false);
+              setAddedPiecesLocal([]);
+              navigate("/printing-identities");
+            }}
+          >
+            {t("printing numbered identities")}
           </Button>
         </div>
       </Modal>

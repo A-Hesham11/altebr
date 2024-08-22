@@ -66,6 +66,9 @@ body {
 }
 
 @media print {
+  .no-print {
+    display: none;
+  }
   .print-btn {
     display: none;
   }

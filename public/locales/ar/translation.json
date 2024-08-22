@@ -1372,5 +1372,9 @@
   "loading budget balance": "تحميل كشف الموازنة",
   "budget operation": "عملية الموازنة",
   "budget deduction process": "عملية خصم الموازنة",
+  "printing numbered identities":"طباعة الهويات المرقمة",
+  "print all identities":"طباعة جميع الهويات",
+  "printing process":"عملية الطباعة",
+  "Did the numbered identity print successfully?":"هل تمت طباعة الهوية المرقمة بنجاح؟",
   "commission tax deduction process": "عملية خصم ضريبة العمولة"
 }

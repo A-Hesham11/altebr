@@ -46,8 +46,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     `identity/api/v1/pieces_in_edara`
   );
 
-  console.log("🚀 ~ CodedIdentities ~ fetchEndPoint:", fetchEndPoint)
-
+  console.log("🚀 ~ CodedIdentities ~ fetchEndPoint:", fetchEndPoint);
 
   const shouldCheck = operationTypeSelect.length === 0;
 
@@ -406,6 +405,14 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
             className="bg-mainGreen text-white"
           >
             {t("export")}
+          </Button>
+          <Button
+            action={(e) => {
+              navigate("/printing-identities")
+            }}
+            className="bg-mainGreen text-white"
+          >
+            {t("printing numbered identities")}
           </Button>
         </div>
         <TableOfIdentities
