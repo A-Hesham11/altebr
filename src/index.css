@@ -305,7 +305,6 @@ input[type="file"] {
     text-align: right;
   }
 
-  /* English LTR Styles */
   .ltr {
     direction: ltr;
     text-align: left;
@@ -317,6 +316,10 @@ input[type="file"] {
 
   .no-break {
     page-break-inside: avoid;
+  }
+
+  .print-container {
+    width: 100%;
   }
 }
 

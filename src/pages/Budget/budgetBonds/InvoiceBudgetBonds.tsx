@@ -232,7 +232,7 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
           <div className="animate_from_right">
             <Button
               bordered
-              action={() => DownloadAsPDF(contentRef.current, "Budget")}
+              action={() => DownloadAsPDF(contentRef.current, "Invoice")}
             >
               {t("download pdf")}
             </Button>

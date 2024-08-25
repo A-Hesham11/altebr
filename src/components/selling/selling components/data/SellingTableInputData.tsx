@@ -51,6 +51,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   console.log("🚀 ~ dataSource:", dataSource);
   console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
   const [search, setSearch] = useState("");
@@ -182,6 +183,11 @@ export const SellingTableInputData = ({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 100,
+      },
+    },
   });
 
   const handleDeleteRow = (itemId) => {

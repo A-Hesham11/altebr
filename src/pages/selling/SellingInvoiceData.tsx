@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ClientData_TP, Selling_TP } from "./PaymentSellingPage";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
@@ -13,6 +13,8 @@ import { numberContext } from "../../context/settings/number-formatter";
 import { Modal } from "../../components/molecules";
 import { Zatca } from "./Zatca";
 import { notify } from "../../utils/toast";
+import { useReactToPrint } from "react-to-print";
+import { DownloadAsPDF } from "../../utils/DownloadAsPDF";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -35,6 +37,7 @@ const SellingInvoiceData = ({
   console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ clientData:", clientData);
   const { formatGram, formatReyal } = numberContext();
+  const contentRef = useRef();
 
   const [responseSellingData, SetResponseSellingData] = useState(null);
   console.log("🚀 ~ responseSellingData:", responseSellingData);
@@ -201,6 +204,17 @@ const SellingInvoiceData = ({
     []
   );
 
+  const chunkArray = (array, chunkSize) => {
+    const chunks = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
+  };
+
+  const chunkedItems = chunkArray(sellingItemsData, 10);
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
+
   const SellingTableComp = () => (
     <InvoiceTable
       data={sellingItemsData}
@@ -335,6 +349,11 @@ const SellingInvoiceData = ({
     );
   };
 
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onAfterPrint: () => console.log("Print job completed."),
+  });
+
   return (
     <div>
       <div className="flex items-center justify-between mx-8 mt-8 relative">
@@ -343,7 +362,7 @@ const SellingInvoiceData = ({
           {isSuccess ? (
             <Button
               className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-              action={() => window.print()}
+              action={() => DownloadAsPDF(contentRef.current, "Invoice")}
             >
               {t("print")}
             </Button>
@@ -359,17 +378,33 @@ const SellingInvoiceData = ({
         </div>
       </div>
 
-      <SellingFinalPreview
-        ItemsTableContent={<SellingTableComp />}
-        setStage={setStage}
-        paymentData={paymentData}
-        clientData={clientData}
-        sellingItemsData={sellingItemsData}
-        costDataAsProps={costDataAsProps}
-        invoiceNumber={invoiceNumber}
-        isSuccess={isSuccess}
-        responseSellingData={responseSellingData}
-      />
+      <div ref={contentRef}>
+        <SellingFinalPreview
+          ItemsTableContent={<SellingTableComp />}
+          setStage={setStage}
+          paymentData={paymentData}
+          clientData={clientData}
+          sellingItemsData={sellingItemsData}
+          costDataAsProps={costDataAsProps}
+          invoiceNumber={invoiceNumber}
+          isSuccess={isSuccess}
+          responseSellingData={responseSellingData}
+        />
+      </div>
+
+      {!isSuccess ? (
+        <div className="flex gap-3 justify-end mx-12 mb-8">
+          <Button bordered action={() => setStage(2)}>
+            {t("back")}
+          </Button>
+        </div>
+      ) : (
+        <div className="flex justify-end items-center mx-12 mb-8">
+          <Button action={() => navigate(-1)} bordered>
+            {t("back")}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
