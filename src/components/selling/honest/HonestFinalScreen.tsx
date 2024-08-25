@@ -400,11 +400,11 @@ export const HonestFinalScreen = ({
           <div className="animate_from_bottom">
             <Button
               action={() => {
-                // mutate({
-                //   endpointName: "branchSafety/api/v1/create",
-                //   values: finalData,
-                //   dataType: "formData",
-                // });
+                mutate({
+                  endpointName: "branchSafety/api/v1/create",
+                  values: finalData,
+                  dataType: "formData",
+                }); 
               }}
               loading={isLoading}
             >
