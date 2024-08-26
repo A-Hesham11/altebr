@@ -23,6 +23,8 @@ const TransformToBranch = ({
   refetch,
   setOperationTypeSelect,
   setOpenSeperateModal,
+  setTransformPrintBondsModal,
+  setBondDataPrint,
 }: any) => {
   const { formatReyal } = numberContext();
   const [selectedOption, setSelectedOption] = useState("normal"); // Initialize the selected option.
@@ -218,6 +220,8 @@ const TransformToBranch = ({
       setIsSuccessPost(data);
       notify("success");
       // QueryClient.refetchQueries(["thwel-api"]);
+      setTransformPrintBondsModal(true);
+      setBondDataPrint(data?.bond);
     },
     onError: (error) => {
       notify("error", error.response.data.msg);
@@ -315,7 +319,7 @@ const TransformToBranch = ({
         });
 
         setOpenTransformToBranchModal(false);
-        setOperationTypeSelect([]);
+        // setOperationTypeSelect([]);
       }}
     >
       <Form>

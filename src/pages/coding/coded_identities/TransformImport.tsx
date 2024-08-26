@@ -20,6 +20,7 @@ import TransformImportBoxes from "./TransformImportBoxes";
 interface TransformImport_TP {
   setTransformImportModal: boolean;
   setIsSuccessPost: () => void;
+  transformImportModal: boolean;
 }
 
 const TransformImport = ({
@@ -30,11 +31,9 @@ const TransformImport = ({
   const { formatReyal } = numberContext();
   const [selectedOption, setSelectedOption] = useState("normal");
   const [inputWeight, setInputWeight] = useState([]);
-  console.log("🚀 ~ inputWeight:", inputWeight);
   const [rowWage, setRowWage] = useState(null);
   const [branchId, setBranchId] = useState(null);
   const [thwelIds, setThwelIds] = useState([]);
-  console.log("🚀 ~ thwelIds:", thwelIds);
 
   const handleOptionChange = (event: any) => {
     setSelectedOption(event.target.value);
@@ -81,7 +80,6 @@ const TransformImport = ({
     queryKey: ["operation-import-data"],
     onError: (err) => console.log(err),
   });
-  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
 
   useEffect(() => {
     refetchOperationTypeSelect();
@@ -91,7 +89,6 @@ const TransformImport = ({
     (el: any) => el.check_input_weight !== 0
   );
 
-  console.log("🚀 ~ operationTypeSelectWeight:", operationTypeSelectWeight);
   // BOXES DATA
   const totalWages = operationTypeSelect?.reduce(
     (accumulator: any, currentValue: any) => {
@@ -272,7 +269,6 @@ const TransformImport = ({
   });
 
   function PostNewValue(value: any) {
-    console.log("🚀 ~ PostNewValue ~ value:", value);
     mutate({
       endpointName: "/identity/api/v1/api-thwel",
       values: value,
@@ -284,17 +280,17 @@ const TransformImport = ({
   const operationTypeSelectInclude = operationTypeSelect?.map(
     (operation: any) => operation.id
   );
-  console.log("🚀 ~ operationTypeSelectInclude:", operationTypeSelectInclude)
+  console.log("🚀 ~ operationTypeSelectInclude:", operationTypeSelectInclude);
 
   // useEffect(() => {
-    // const operationTypeSelectInclude = operationTypeSelect?.map(
-    //   (operation: any) => !thwelIds.includes(`${operation.id}`)
-    // );
-  
-    // operationTypeSelect?.map((operation: any) => {
-      // if (!thwelIds.includes(`${operation.id}`)) {
-      // }
-    // });
+  // const operationTypeSelectInclude = operationTypeSelect?.map(
+  //   (operation: any) => !thwelIds.includes(`${operation.id}`)
+  // );
+
+  // operationTypeSelect?.map((operation: any) => {
+  // if (!thwelIds.includes(`${operation.id}`)) {
+  // }
+  // });
   // }, []);
 
   const isContainCheckInputWeight = operationTypeSelect?.some(
@@ -341,27 +337,6 @@ const TransformImport = ({
           notify("info", `${t("You must add weight first")}`);
           return;
         }
-        console.log("🚀 ~ return:", {
-          Branch: values.branch_id.toString(),
-          goldPrice: values.gold_price,
-          sanadType: "normal", // selectedOption,
-          ThwilType: "normal",
-          thwilItems: thwelIds,
-          editWeight: operationTypeSelectWeight?.map((el, i) => {
-            return {
-              id: el.id.toString(),
-              weight: el.weight,
-              hwya: el.hwya,
-              type: "all",
-              wage: el.wage,
-              category: el.category,
-              classification: el.classification_name,
-              totalWage: Number(el.wage) * el.weight,
-              karat: el.karat_name,
-              selling_price: el.selling_price,
-            };
-          }),
-        });
 
         PostNewValue({
           Branch: values.branch_id.toString(),
