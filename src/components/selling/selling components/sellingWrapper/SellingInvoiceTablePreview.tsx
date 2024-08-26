@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import React, { useContext, useMemo, useRef } from "react";
+import React, { useContext, useMemo, useRef, useState } from "react";
 import { Table } from "../../../templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../../../context/settings/number-formatter";
 import { ColumnDef } from "@tanstack/react-table";
@@ -146,8 +146,21 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     onBeforePrint: () => console.log("before printing..."),
     onAfterPrint: () => console.log("after printing..."),
     removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+      }
+    `,
   });
-
 
   return (
     <>
@@ -155,14 +168,14 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         <div className="flex justify-end mb-8 w-full">
           <Button
             className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-            action={() => DownloadAsPDF(invoiceRefs.current, "Invoice")}
+            action={handlePrint}
           >
             {t("print")}
           </Button>
         </div>
 
         <div
-          className={`${isRTL ? "rtl" : "ltr"} `}
+          className={`${isRTL ? "rtl" : "ltr"}`}
           ref={invoiceRefs}
         >
           <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
@@ -173,11 +186,13 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
               />
             </div>
 
-            <InvoiceTable
-              data={item?.items}
-              columns={Cols}
-              costDataAsProps={costDataAsProps}
-            ></InvoiceTable>
+            <div className="">
+              <InvoiceTable
+                data={item?.items}
+                columns={Cols}
+                costDataAsProps={costDataAsProps}
+              ></InvoiceTable>
+            </div>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
               <FinalPreviewBillPayment responseSellingData={item} />

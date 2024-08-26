@@ -113,7 +113,7 @@ const InvoiceTable = <T extends object>({ data,
                         <tbody>
                             {table.getRowModel().rows.map((row) => {
                                 return (
-                                    <tr key={row.id} className="text-center">
+                                    <tr key={row.id} className="text-center item">
                                         {row.getVisibleCells().map((cell, i) => {
                                             return (
                                                 <td
