@@ -51,6 +51,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   console.log("🚀 ~ dataSource:", dataSource);
   console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
   const [search, setSearch] = useState("");
@@ -64,8 +65,8 @@ export const SellingTableInputData = ({
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] =
-  useState<number>();
-  console.log("🚀 ~ editSellingTaklfaAfterTax:", editSellingTaklfaAfterTax)
+    useState<number>();
+  console.log("🚀 ~ editSellingTaklfaAfterTax:", editSellingTaklfaAfterTax);
 
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ userData:", userData);
@@ -182,6 +183,11 @@ export const SellingTableInputData = ({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 100,
+      },
+    },
   });
 
   const handleDeleteRow = (itemId) => {
@@ -276,14 +282,14 @@ export const SellingTableInputData = ({
   }, [values?.weight, priceWithSellingPolicy]);
 
   useEffect(() => {
-    setEditSellingTaklfaAfterTax(+values?.taklfa_after_tax);
+    setEditSellingTaklfaAfterTax(Number(values?.taklfa_after_tax));
   }, [values?.weight, priceWithSellingPolicy]);
 
   useEffect(() => {
     if (search && dataSource?.length == 0) {
-      notify("info", `${t("the item is not available")}`)
+      notify("info", `${t("the item is not available")}`);
     }
-  }, [dataSource, isSuccess])
+  }, [dataSource, isSuccess]);
 
   return (
     <Form className="overflow-y-auto">
@@ -543,7 +549,10 @@ export const SellingTableInputData = ({
                     : (values?.taklfa_after_tax &&
                         Number(values?.taklfa_after_tax) <
                           Number(editSellingTaklfaAfterTax)) ||
-                          values?.classification_id !== 1  && Number(values?.max_selling_price) <= Number(values?.taklfa)
+                      (values?.classification_id &&
+                        values?.classification_id !== 1 &&
+                        Number(values?.max_selling_price) <=
+                          Number(values?.taklfa))
                     ? "bg-red-100"
                     : ""
                 } text-center`}
@@ -628,7 +637,8 @@ export const SellingTableInputData = ({
                   }
 
                   if (
-                    values?.classification_id !== 1  && Number(values?.max_selling_price) <= Number(values?.taklfa)
+                    values?.classification_id !== 1 &&
+                    Number(values?.max_selling_price) <= Number(values?.taklfa)
                   ) {
                     notify(
                       "info",

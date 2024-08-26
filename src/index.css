@@ -21,7 +21,7 @@ input[type="radio"] {
   background-size: cover;
 }
 
-@media print {
+/* @media print {
   body {
     height: 200rem;
   }
@@ -38,7 +38,7 @@ input[type="radio"] {
   .no-print {
     display: none;
   }
-}
+} */
 
 @layer base {
   * {
@@ -305,7 +305,6 @@ input[type="file"] {
     text-align: right;
   }
 
-  /* English LTR Styles */
   .ltr {
     direction: ltr;
     text-align: left;
@@ -317,6 +316,10 @@ input[type="file"] {
 
   .no-break {
     page-break-inside: avoid;
+  }
+
+  .print-container {
+    width: 100%;
   }
 }
 

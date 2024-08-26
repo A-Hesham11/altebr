@@ -253,6 +253,7 @@
   "supplier name": "اسم المورد",
   "bond number": "رقم السند",
   "gold price": "سعر الذهب",
+  "balances":"الارصده",
   "attach supplier bond file": "ارفاق سند توريد المورد",
   "notes": "الملاحظات",
   "bond total": "إجمالي السند",
@@ -1373,4 +1374,9 @@
   "budget deduction process": "عملية خصم الموازنة",
   "commission tax deduction process": "عملية خصم ضريبة العمولة",
   "hwya": "رقم الهوية"
+  "printing numbered identities":"طباعة الهويات المرقمة",
+  "print all identities":"طباعة جميع الهويات",
+  "printing process":"عملية الطباعة",
+  "Did the numbered identity print successfully?":"هل تمت طباعة الهوية المرقمة بنجاح؟",
+  "commission tax deduction process": "عملية خصم ضريبة العمولة"
 }

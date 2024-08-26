@@ -232,6 +232,17 @@ export const AccessoriesCodingWrapper = ({
           >
             {t("go to identification management")}
           </Button>
+
+          <Button
+            type="button"
+            action={() => {
+              setOpenModal(false);
+              setAddedPiecesLocal([]);
+              navigate("/printing-identities");
+            }}
+          >
+            {t("printing numbered identities")}
+          </Button>
         </div>
       </Modal>
     </>
