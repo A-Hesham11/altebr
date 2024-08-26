@@ -1,15 +1,24 @@
-import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table"
-import { t } from "i18next"
-import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord"
-import { numberContext } from "../../../context/settings/number-formatter"
-import { useContext } from "react"
-import { authCtx } from "../../../context/auth-and-perm/auth"
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { t } from "i18next";
+import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
+import { numberContext } from "../../../context/settings/number-formatter";
+import { useContext } from "react";
+import { authCtx } from "../../../context/auth-and-perm/auth";
 interface ReactTableProps<T extends object> {
-    data: T[]
-    columns: ColumnDef<T>[]
-    paymentData?: any
-    costDataAsProps?:any
+  data: T[];
+  columns: ColumnDef<T>[];
+  paymentData?: any;
+  costDataAsProps?: any;
+  isCodedIdentitiesPrint?: boolean;
 }
+
 
 const InvoiceTable = <T extends object>({ data,
     columns, paymentData, costDataAsProps }: ReactTableProps<T>) => {
@@ -160,4 +169,4 @@ const InvoiceTable = <T extends object>({ data,
     );
 }
 
-export default InvoiceTable
+export default InvoiceTable;

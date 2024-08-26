@@ -40,13 +40,11 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [rejectedPieces, setRejectedPieces] = useState([]);
   const [piecesState, setPiecesState] = useState([]);
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ CodedIdentities ~ search:", search);
   const [isSuccessPost, setIsSuccessPost] = useState(false);
   const [fetchEndPoint, setFetchEndPoint] = useState(
     `identity/api/v1/pieces_in_edara`
   );
 
-  console.log("🚀 ~ CodedIdentities ~ fetchEndPoint:", fetchEndPoint);
 
   const shouldCheck = operationTypeSelect.length === 0;
 
