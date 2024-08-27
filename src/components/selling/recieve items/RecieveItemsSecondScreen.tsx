@@ -96,7 +96,7 @@ const RecieveItemsSecondScreen = ({
         notify("info", `${t("all bond items has been received")}`);
         setStage(1);
       }
-      const selectedRowsIds = structuredClone(selectedRows).map(
+      const selectedRowsIds = structuredClone(selectedRows)?.map(
         (item) => item.id
       );
       setDisableSelectedCheckAfterSendById((prev) => [
@@ -129,7 +129,7 @@ const RecieveItemsSecondScreen = ({
         notify("info", `${t("all bond items has been reject")}`);
         setStage(1);
       }
-      const selectedRowsIds = structuredClone(selectedRows).map(
+      const selectedRowsIds = structuredClone(selectedRows)?.map(
         (item) => item.id
       );
       setDisableSelectedCheckAfterSendById((prev) => [
@@ -288,7 +288,6 @@ const RecieveItemsSecondScreen = ({
     !openModal
       ? setDataSource(
           selectedItem?.items?.filter((item) => item.item_status === "Waiting")
-          selectedItem?.items?.filter((item) => item.item_status === "Waiting")
         )
       : setDataSource(selectedItem.items);
   }, [disableSelectedCheckAfterSendById, selectedRows]);
@@ -298,23 +297,19 @@ const RecieveItemsSecondScreen = ({
   const total24 = selectedItem.items
     ?.filter((piece) => piece.karat === "24")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
-  const total22 = selectedItem.items
-    ?.reduce((acc, { weight }) => acc + +weight, 0);
+
   const total22 = selectedItem.items
     ?.filter((piece) => piece.karat === "22")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
-  const total21 = selectedItem.items
-    ?.reduce((acc, { weight }) => acc + +weight, 0);
+
   const total21 = selectedItem.items
     ?.filter((piece) => piece.karat === "21")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
-  const total18 = selectedItem.items
-    ?.reduce((acc, { weight }) => acc + +weight, 0);
+
   const total18 = selectedItem.items
     ?.filter((piece) => piece.karat === "18")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
-  const allItemsCount = selectedItem?.items?.[0]?.allboxes?.allcounts;
-    ?.reduce((acc, { weight }) => acc + +weight, 0);
+
   const allItemsCount = selectedItem?.items?.[0]?.allboxes?.allcounts;
 
   const totals = [
@@ -448,138 +443,75 @@ const RecieveItemsSecondScreen = ({
                 </div>
               </div>
             )}
-
-            {/* ======================================================================================== */}
-        <>
-          <div className="relative h-full">
-            <div className="flex justify-end mb-8 w-full">
-              <Button
-                className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-                action={handlePrint}
-              >
-                {t("print")}
-              </Button>
-            </div>
-            <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
-              <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
-                <div className="mx-5 bill-shadow rounded-md p-6">
-                  <FinalPreviewBillDataCodedIdentities
-                    clientData={clientData}
-                    invoiceNumber={selectedItem?.id}
-                  />
-                </div>
-
-                <InvoiceTableCodedPrint
-                  data={selectedItem?.items}
-                  columns={tableColumn}
-                  costDataAsProps={costDataAsProps}
-                ></InvoiceTableCodedPrint>
-
-                {/* <div className="mx-5 bill-shadow rounded-md p-6 my-9">
-                      <FinalPreviewBillPayment
-                        responseSellingData={selectedItem}
-                      />
-                    </div> */}
-
-                <div className="text-center">
-                  <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-                    {data && data?.sentence}
-                  </p>
-                  <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-                    <p>
-                      {" "}
-                      العنوان : {companyData?.[0]?.country?.name} ,{" "}
-                      {companyData?.[0]?.city?.name} ,{" "}
-                      {companyData?.[0]?.district?.name}
-                    </p>
-                    <p>
-                      {t("phone")}: {companyData?.[0]?.phone}
-                    </p>
-                    <p>
-                      {t("email")}: {userData?.email}
-                    </p>
-                    <p>
-                      {t("tax number")}:{" "}
-                      {companyData && companyData?.[0]?.tax_number}
-                    </p>
-                    <p>
-                      {t("Mineral license")}:{" "}
-                      {companyData && companyData?.[0]?.mineralLicence}
-                    </p>
+            <Table data={dataSource} columns={Cols} showNavigation></Table>
+            <div className="flex justify-between mt-2 md:mt-8">
+              {isSanadOpened && !openModal ? (
+                <div className="flex gap-x-4">
+                  <div className="flex gap-4">
+                    <Button
+                      className="bg-mainOrange text-white"
+                      action={() => {
+                        if (selectedRows.length === 0)
+                          notify("info", `${t("select item at least")}`);
+                        else setOpenAcceptModal(true);
+                      }}
+                    >
+                      {t("offer selling")}
+                    </Button>
+                  </div>
+                  <div className="flex gap-4">
+                    <Button
+                      className="text-mainOrange border-mainOrange"
+                      action={() => {
+                        if (selectedRows?.length === 0)
+                          notify("info", `${t("select item at least")}`);
+                        else setOpenRefusedModal(true);
+                      }}
+                      bordered
+                    >
+                      {t("return")}
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </>
-        {/* ======================================================================================== */}
-        {/* <Table data={dataSource} columns={Cols} showNavigation></Table> */}
-        <div className="flex justify-between mt-2 md:mt-8">
-          {isSanadOpened && !openModal ? (
-            <div className="flex gap-x-4">
-              <div className="flex gap-4">
+              ) : (
+                !openModal && (
+                  <div className="flex gap-4">
+                    <Button
+                      className="bg-mainOrange text-white"
+                      action={() => {
+                        files.length
+                          ? setOpenAcceptModal(true)
+                          : notify("info", `${t("attachments is required")}`);
+                      }}
+                    >
+                      {t("receive all bond")}
+                    </Button>
+                    <Button
+                      className="border-mainOrange text-mainOrange"
+                      action={() => {
+                        setOpenRefusedModal(true);
+                        setSelectedRows(selectedItem.items);
+                        setIsItRefusedAllBtn(true);
+                      }}
+                      bordered
+                    >
+                      {t("refuse all")}
+                    </Button>
+                  </div>
+                )
+              )}
+              {!openModal && (
                 <Button
-                  className="bg-mainOrange text-white"
-                  action={() => {
-                    if (selectedRows.length === 0)
-                      notify("info", `${t("select item at least")}`);
-                    else setOpenAcceptModal(true);
-                  }}
-                >
-                  {t("offer selling")}
-                </Button>
-              </div>
-              <div className="flex gap-4">
-                <Button
-                  className="text-mainOrange border-mainOrange"
-                  action={() => {
-                    if (selectedRows.length === 0)
-                      notify("info", `${t("select item at least")}`);
-                    else setOpenRefusedModal(true);
-                  }}
+                  className="mr-auto"
+                  action={() => setStage((prev) => prev - 1)}
                   bordered
                 >
-                  {t("return")}
+                  {t("back")}
                 </Button>
-              </div>
+              )}
             </div>
-          ) : (
-            !openModal && (
-              <div className="flex gap-4">
-                <Button
-                  className="bg-mainOrange text-white"
-                  action={() => {
-                    files.length
-                      ? setOpenAcceptModal(true)
-                      : notify("info", `${t("attachments is required")}`);
-                  }}
-                >
-                  {t("receive all bond")}
-                </Button>
-                <Button
-                  className="border-mainOrange text-mainOrange"
-                  action={() => {
-                    setOpenRefusedModal(true);
-                    setSelectedRows(selectedItem.items);
-                    setIsItRefusedAllBtn(true);
-                  }}
-                  bordered
-                >
-                  {t("refuse all")}
-                </Button>
-              </div>
-            )
-          )}
-          {!openModal && (
-            <Button
-              className="mr-auto"
-              action={() => setStage((prev) => prev - 1)}
-              bordered
-            >
-              {t("back")}
-            </Button>
-          )}
-        </div>
+          </>
+        )}
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
           <ItemDetailsTable
             selectedItem={selectedItem.items}
@@ -714,3 +646,4 @@ const RecieveItemsSecondScreen = ({
 };
 
 export default RecieveItemsSecondScreen;
+

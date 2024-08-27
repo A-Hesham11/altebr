@@ -1377,12 +1377,9 @@
   "printing numbered identities":"طباعة الهويات المرقمة",
   "print all identities":"طباعة جميع الهويات",
   "printing process":"عملية الطباعة",
-  "Did the numbered identity print successfully?":"هل تمت طباعة الهوية المرقمة بنجاح؟",
-  "commission tax deduction process": "عملية خصم ضريبة العمولة"
-  "hwya": "رقم الهوية",
   "bond name": "اسم السند",
   "recipient's signature": "توقيع المستلم",
   "bond organizer": "منظم السند",
-  "transfer note to branch": "سند تحويل للفرع"
+  "transfer note to branch": "سند تحويل للفرع",
   "Did the numbered identity print successfully?":"هل تمت طباعة الهوية المرقمة بنجاح؟"
 }
