@@ -49,7 +49,9 @@ const RecieveItemsFirstScreen = ({
   const [page, setPage] = useState<number>(1);
   // const [sortItems, setSortItems] = useState(false)
   const [sortItems, setSortItems] = useState(localStorage.getItem("sortItems"));
+  console.log("🚀 ~ RecieveItemsFirstScreen ~ sortItems:", sortItems);
   const dataSource = Boolean(sortItems) == true ? sortsData : newData;
+  console.log("🚀 ~ RecieveItemsFirstScreen ~ dataSource:", dataSource);
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [openMardodModal, setOpenMardodModal] = useState(false);
@@ -65,6 +67,7 @@ const RecieveItemsFirstScreen = ({
       setNewData(data.data);
     },
   });
+  console.log("🚀 ~ RecieveItemsFirstScreen ~ data:", data);
 
   useEffect(() => {
     localStorage.setItem("sortItems", sortItems);
@@ -183,20 +186,20 @@ const RecieveItemsFirstScreen = ({
             },
           ]
         : []),
-      {
-        cell: (info: any) => (
-          <ViewIcon
-            size={23}
-            action={() => {
-              setOpenModal(true);
-              setSelectedItem(info.row.original);
-            }}
-            className="text-mainGreen mx-auto"
-          />
-        ),
-        accessorKey: "view",
-        header: () => <span>{t("details")}</span>,
-      },
+      // {
+      //   cell: (info: any) => (
+      //     <ViewIcon
+      //       size={23}
+      //       action={() => {
+      //         setOpenModal(true);
+      //         setSelectedItem(info.row.original);
+      //       }}
+      //       className="text-mainGreen mx-auto"
+      //     />
+      //   ),
+      //   accessorKey: "view",
+      //   header: () => <span>{t("details")}</span>,
+      // },
     ],
     [data, sortData, sortItems, dataSource]
   );

@@ -1,57 +1,21 @@
-import React from "react";
-
-import { t } from "i18next";
-import { useContext } from "react";
-import billLogo from "../../../assets/bill-logo.png";
+import React, { useContext } from "react";
 import { useLocation } from "react-router-dom";
-import { useFormikContext } from "formik";
-import { useFetch } from "../../../hooks";
-import { authCtx } from "../../../context/auth-and-perm/auth";
-import { formatDate } from "../../../utils/date";
-import { ClientData_TP } from "../../selling/PaymentSellingPage";
+import { useFetch } from "../../hooks";
+import { authCtx } from "../../context/auth-and-perm/auth";
+import { formatDate } from "../../utils/date";
+import { t } from "i18next";
+import billLogo from "../../assets/bill-logo.png";
 
-type Client_TP = {
-  clientData?: {
-    amount: number;
-    bond_date: string;
-    client_id: number;
-    client_value: string;
-    employee_id: number;
-    employee_value: string;
-    id: number;
-    invoiceNumber: number;
-    supplier_id: number;
-  };
-  mobile: number;
-  identity: number;
-  invoiceNumber: any;
-};
-
-const FinalPreviewBillDataCodedIdentities = ({
-  clientData,
-  invoiceNumber,
-}: Client_TP) => {
+const PaymentFinalPreviewBillData = ({ clientData, invoiceNumber }: any) => {
   const { client_id, client_value, bond_date, supplier_id } = clientData;
 
   const location = useLocation();
   const path = location.pathname;
 
-  const { data } = useFetch<Client_TP>({
-    endpoint:
-      path === "/supply-return"
-        ? `/supplier/api/v1/supplier/${supplier_id}`
-        : `branchManage/api/v1/clients/${client_id}`,
-    queryKey: [`clients`, path === "/supply-return" ? supplier_id : client_id],
-  });
-
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ PaymentFinalPreviewBillData ~ userData:", userData);
 
   const billNumber = invoiceNumber;
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
 
   return (
     <div className="flex justify-between">
@@ -60,7 +24,15 @@ const FinalPreviewBillDataCodedIdentities = ({
           {t("bond number")} : <span className="font-medium">{billNumber}</span>{" "}
         </p>
         <p className="text-xs font-bold">
-          {t("bond date")} : <span className="font-medium">{bond_date}</span>{" "}
+          {t("bond date")} :{" "}
+          <span className="font-medium">
+            {path === "/selling/honesty/return-honest" ||
+            path === "/selling/viewInvoice/" ||
+            path === "/selling/return-entry" ||
+            path === "/selling/viewPayment"
+              ? bond_date
+              : formatDate(bond_date)}
+          </span>{" "}
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">
@@ -76,12 +48,12 @@ const FinalPreviewBillDataCodedIdentities = ({
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
           <span className="font-bold text-[16px] text-mainGreen">
-            {t("transfer note to branch")}
+            {t("bond payment")}
           </span>{" "}
         </p>
         <p className="text-xs font-medium">
           <span className="font-bold">{t("branch number")}:</span>
-          {userData?.branch_id}
+          {userData?.branch?.id}
         </p>
         {/* <p className="text-xs font-bold">
           {supplier_id ? t("supplier name") : t("client name")} :{" "}
@@ -103,4 +75,4 @@ const FinalPreviewBillDataCodedIdentities = ({
   );
 };
 
-export default FinalPreviewBillDataCodedIdentities;
+export default PaymentFinalPreviewBillData;

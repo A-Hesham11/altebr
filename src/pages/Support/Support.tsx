@@ -134,7 +134,7 @@ const Support = ({ title }: { title: string }) => {
                   >
                     <div className="flex flex-col justify-center items-center gap-2 h-full">
                       <img
-                        src={searchBox.images[0].preview}
+                        src={searchBox?.images?.[0]?.preview}
                         alt={searchBox.name_ar}
                         className="w-10 h-10"
                       />

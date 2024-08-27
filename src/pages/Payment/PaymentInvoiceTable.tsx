@@ -1,29 +1,22 @@
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import React from "react";
+import { numberContext } from "../../context/settings/number-formatter";
+import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 import { t } from "i18next";
-import { numberContext } from "../../../context/settings/number-formatter";
-import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
-interface ReactTableProps<T extends object> {
-  data: T[];
-  columns: ColumnDef<T>[];
-  paymentData?: any;
-  costDataAsProps?: any;
-  isCodedIdentitiesPrint?: boolean;
-}
 
-const InvoiceTableCodedPrint = <T extends object>({
+const PaymentInvoiceTable = ({
   data,
   columns,
   paymentData,
   costDataAsProps,
   isCodedIdentitiesPrint,
-}: ReactTableProps<T>) => {
+}) => {
   const table = useReactTable({
     data,
     columns,
@@ -34,22 +27,22 @@ const InvoiceTableCodedPrint = <T extends object>({
 
   const { formatGram, formatReyal } = numberContext();
 
-  const locationPath = location.pathname;
-
-  const totalFinalWeightIntoArabic = convertNumToArWord(
-    Math.round(costDataAsProps?.totalFinalWage)
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(costDataAsProps?.totalFinalCost)
   );
 
-  const totalFinalCostIntoArabicReayl = convertNumToArWord(
-    Math.round(costDataAsProps?.totalFinalCost + costDataAsProps?.totalCost)
+  const totalFinalCostIntoArabicGram = convertNumToArWord(
+    Math.round(costDataAsProps?.totalGoldAmountGram)
   );
 
   const resultTable = [
     {
       number: t("totals"),
-      weight: formatGram(costDataAsProps?.totalFinalWage),
-      cost: costDataAsProps?.totalFinalCost,
-      total: costDataAsProps?.totalCost,
+      cost:
+        costDataAsProps && formatReyal(Number(costDataAsProps?.totalFinalCost)),
+      costGram:
+        costDataAsProps &&
+        formatReyal(Number(costDataAsProps?.totalGoldAmountGram)),
     },
   ];
 
@@ -105,7 +98,7 @@ const InvoiceTableCodedPrint = <T extends object>({
                     <td
                       key={key}
                       className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                      colSpan={index === 0 ? 4 : 1}
+                      colSpan={index === 0 ? 1 : 1}
                     >
                       {resultTable[0][key]}
                     </td>
@@ -113,30 +106,32 @@ const InvoiceTableCodedPrint = <T extends object>({
                 })}
               </tr>
             </tbody>
-            <tfoot className="text-center">
-              <tr className="text-center border-[1px] border-[#7B7B7B4D]">
-                <td
-                  className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                  colSpan={4}
-                >
-                  <span className="font-bold">{t("total")}</span>:{" "}
-                </td>
-                <td
-                  className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                  colSpan={1}
-                >
-                  {totalFinalWeightIntoArabic}{" "}
-                  <span className="mx-2 font-bold">{t("gram")}</span>
-                </td>
-                <td
-                  className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                  colSpan={2}
-                >
-                  {totalFinalCostIntoArabicReayl}
-                  <span className="mx-2 font-bold">{t("reyal")}</span>
-                </td>
-              </tr>
-            </tfoot>
+            {!isCodedIdentitiesPrint && (
+              <tfoot className="text-center">
+                <tr className="text-center border-[1px] border-[#7B7B7B4D]">
+                  <td
+                    className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
+                    colSpan={1}
+                  >
+                    <span className="font-bold">{t("total")}</span>:{" "}
+                  </td>
+                  <td
+                    className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
+                    colSpan={1}
+                  >
+                    {totalFinalCostIntoArabic}{" "}
+                    <span className="mx-2 font-bold">{t("reyal")}</span>
+                  </td>
+                  <td
+                    className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
+                    colSpan={1}
+                  >
+                    {totalFinalCostIntoArabicGram}
+                    <span className="mx-2 font-bold">{t("gram")}</span>
+                  </td>
+                </tr>
+              </tfoot>
+            )}
           </table>
         </div>
       </div>
@@ -144,4 +139,4 @@ const InvoiceTableCodedPrint = <T extends object>({
   );
 };
 
-export default InvoiceTableCodedPrint;
+export default PaymentInvoiceTable;

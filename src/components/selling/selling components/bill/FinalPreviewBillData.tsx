@@ -89,6 +89,9 @@ const FinalPreviewBillData = ({
           <span className="font-medium">
             {path === "/selling/honesty/return-honest" ||
             path === "/selling/viewInvoice/" ||
+            path === "/selling/return-entry" ||
+            path === "/selling/viewPayment"
+            path === "/selling/viewInvoice/" ||
             path === "/bonds/supply-return" ||
             path === "/bonds/supplier-payment" ||
             path === "/viewSellingBonds" ||

@@ -10,7 +10,7 @@ import {
 } from "react";
 import { RiArrowGoBackFill, RiErrorWarningFill } from "react-icons/ri";
 import { authCtx } from "../../../context/auth-and-perm/auth";
-import { useFetch, useIsRTL, useMutate } from "../../../hooks";
+import { useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { RecivedItemTP } from "../../../utils/selling";
 import { notify } from "../../../utils/toast";
@@ -29,15 +29,6 @@ import { AcceptedItemsAccountingEntry } from "./AcceptedItemsAccountingEntry";
 import { Link, useNavigate } from "react-router-dom";
 import { FilesUpload } from "../../molecules/files/FileUpload";
 import { numberContext } from "../../../context/settings/number-formatter";
-import FinalPreviewBillData from "../selling components/bill/FinalPreviewBillData";
-import InvoiceTable from "../selling components/InvoiceTable";
-import FinalPreviewBillPayment from "../selling components/bill/FinalPreviewBillPayment";
-import { useReactToPrint } from "react-to-print";
-import { ColumnDef } from "@tanstack/react-table";
-import { Selling_TP } from "../../../pages/selling/PaymentSellingPage";
-import { ClientData_TP } from "../SellingClientForm";
-import FinalPreviewBillDataCodedIdentities from "../../../pages/coding/coded_identities/FinalPreviewBillDataCodedIdentities";
-import InvoiceTableCodedPrint from "../../../pages/coding/coded_identities/InvoiceTableCodedPrint";
 
 type RecieveItemsSecondScreenProps_TP = {
   setStage: Dispatch<SetStateAction<number>>;
@@ -51,11 +42,12 @@ const RecieveItemsSecondScreen = ({
   setSanadId,
   openModal,
 }: RecieveItemsSecondScreenProps_TP) => {
-  console.log("🚀 ~ selectedItem:", selectedItem);
+  console.log("🚀 ~ RecieveItemsSecondScreen ~ selectedItem:", selectedItem);
   const isSanadOpened = selectedItem.bond_status !== 0;
   const { userData } = useContext(authCtx);
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [dataSource, setDataSource] = useState({});
+  console.log("🚀 ~ RecieveItemsSecondScreen ~ dataSource:", dataSource);
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
@@ -162,130 +154,140 @@ const RecieveItemsSecondScreen = ({
     }
   };
 
-  const tableColumn = useMemo<any>(
+  const Cols = useMemo<any>(
     () => [
+      ...(!openModal && isSanadOpened
+        ? [
+            {
+              header: () => {
+                const filteredArray = selectedItem.items.filter(
+                  (item) =>
+                    !disableSelectedCheckAfterSendById.includes(item.id) &&
+                    item.item_status === "Waiting"
+                );
+                return (
+                  <input
+                    type="checkbox"
+                    className="border-mainGreen text-mainGreen rounded"
+                    id={crypto.randomUUID()}
+                    name="selectedItem"
+                    onClick={() => {
+                      const allCheckBoxes = document.querySelectorAll(
+                        'input[type="Checkbox"]'
+                      );
+                      allCheckBoxes.forEach((checkbox) => {
+                        checkbox.checked = !selectAll;
+                      });
+                      setSelectAll(!selectAll);
+                      setSelectedRows(filteredArray);
+                    }}
+                  />
+                );
+              },
+              accessorKey: "action",
+              cell: (info: any) => {
+                return (
+                  <div className="flex items-center justify-center gap-4">
+                    <input
+                      type="checkbox"
+                      className={`border-mainGreen text-mainGreen rounded ${
+                        disableSelectedCheckAfterSendById.includes(
+                          info.row.original.id
+                        ) && "bg-mainGreen"
+                      }`}
+                      id={info.row.original.id}
+                      name="selectedItem"
+                      onClick={(event) => handleCheckboxChange(event, info)}
+                      disabled={disableSelectedCheckAfterSendById.includes(
+                        info.row.original.id
+                      )}
+                    />
+                  </div>
+                );
+              },
+            },
+          ]
+        : []),
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue(),
         accessorKey: "hwya",
-        header: () => <span>{t("hwya")}</span>,
+        header: () => <span>{t("identification")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
-        accessorKey: "category",
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "classification",
         header: () => <span>{t("classification")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
-        accessorKey: "classification",
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "category",
         header: () => <span>{t("category")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "-",
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "mineral",
+        header: () => <span>{t("mineral type")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "karat",
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(info.getValue()) || "-",
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
-      // {
-      //   cell: (info: any) => formatReyal(info.getValue()) || "-",
-      //   accessorKey: "wage",
-      //   header: () => <span>{t("wage geram/ryal")}</span>,
-      // },
       {
-        cell: (info: any) => {
-          const wages =
-            Number(info.row.original.wage).toFixed(2) *
-            Number(info.row.original.weight);
-          return formatReyal(wages) || "-";
-        },
-        accessorKey: "total_wages",
-        header: () => <span>{t("total wage by ryal")}</span>,
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        accessorKey: "wage",
+        header: () => <span>{t("wage")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(info.getValue()) || "-",
-        accessorKey: "selling_price",
-        header: () => <span>{t("value")}</span>,
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        accessorKey: "wage_total",
+        header: () => <span>{t("total wages")}</span>,
       },
       {
-        cell: (info: any) => {
-          // return info.getValue()[0]?.diamondWeight || "-";
-          // const stonesDetails = info.getValue().reduce((acc, curr) => {
-          //   return acc + curr.diamondWeight;
-          // }, 0);
-
-          return info.getValue();
-        },
-        accessorKey: "diamond_weight",
-        header: () => <span>{t("weight of diamond stone")}</span>,
-      },
-      {
-        cell: (info: any) => {
-          // const stonesDetails = info.getValue().reduce((acc, curr) => {
-          //   return acc + curr.weight;
-          // }, 0);
-
-          return info.getValue();
-        },
+        cell: (info: any) =>
+          info.getValue() == 0 ? "---" : formatGram(Number(info.getValue())),
         accessorKey: "stones_weight",
-        header: () => <span>{t("stone weight")}</span>,
+        header: () => <span>{t("other stones weight")}</span>,
       },
-      // {
-      //   cell: (info: any) => {
-      //     setRowWage(info.row.original.wage);
-
-      //     if (info.row.original.check_input_weight === 1) {
-      //       return (
-      //         <>
-      //           <input
-      //             type="number"
-      //             className="w-20 rounded-md h-10"
-      //             min="1"
-      //             max={info.row.original.weight}
-      //             name="weight_input"
-      //             id="weight_input"
-      //             onBlur={(e) => {
-      //               setInputWeight((prev) => {
-      //                 // Check if the object with the same id exists in the array
-      //                 const existingItemIndex = prev.findIndex(
-      //                   (item) => item.id === info.row.original.id
-      //                 );
-
-      //                 if (existingItemIndex !== -1) {
-      //                   // If the object exists, update its value
-      //                   return prev.map((item, index) =>
-      //                     index === existingItemIndex
-      //                       ? { ...item, value: e.target.value }
-      //                       : item
-      //                   );
-      //                 } else {
-      //                   // If the object doesn't exist, add a new one
-      //                   return [
-      //                     ...prev,
-      //                     { value: e.target.value, id: info.row.original.id },
-      //                   ];
-      //                 }
-      //               });
-      //             }}
-      //           />
-      //         </>
-      //       );
-      //     } else {
-      //       return info.getValue();
-      //     }
-      //   },
-      //   accessorKey: "employee_name",
-      //   header: () => <span>{t("weight conversion")}</span>,
-      // },
+      {
+        cell: (info: any) =>
+          info.getValue() == 0 ? "---" : formatReyal(Number(info.getValue())),
+        accessorKey: "selling_price",
+        header: () => <span>{t("selling price")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          info.getValue() == 0 ? "---" : formatGram(Number(info.getValue())),
+        accessorKey: "diamond_weight",
+        header: () => <span>{t("diamond weight")}</span>,
+      },
+      {
+        cell: (info: any) => (
+          <ViewIcon
+            size={23}
+            action={() => {
+              setModalOpen(true);
+              setSelectedRowDetailsId(info.row.original.id);
+            }}
+            className="text-mainGreen mx-auto"
+          />
+        ),
+        accessorKey: "view",
+        header: () => <span>{t("details")}</span>,
+      },
     ],
-    []
+    [receivedSuccess, disableSelectedCheckAfterSendById]
   );
 
   useEffect(() => {
     !openModal
       ? setDataSource(
+          selectedItem?.items?.filter((item) => item.item_status === "Waiting")
           selectedItem?.items?.filter((item) => item.item_status === "Waiting")
         )
       : setDataSource(selectedItem.items);
@@ -293,18 +295,25 @@ const RecieveItemsSecondScreen = ({
 
   // variables
   // TOTALS
-
   const total24 = selectedItem.items
     ?.filter((piece) => piece.karat === "24")
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
+  const total22 = selectedItem.items
     ?.reduce((acc, { weight }) => acc + +weight, 0);
   const total22 = selectedItem.items
     ?.filter((piece) => piece.karat === "22")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
   const total21 = selectedItem.items
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
+  const total21 = selectedItem.items
     ?.filter((piece) => piece.karat === "21")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
   const total18 = selectedItem.items
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
+  const total18 = selectedItem.items
     ?.filter((piece) => piece.karat === "18")
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
+  const allItemsCount = selectedItem?.items?.[0]?.allboxes?.allcounts;
     ?.reduce((acc, { weight }) => acc + +weight, 0);
   const allItemsCount = selectedItem?.items?.[0]?.allboxes?.allcounts;
 
@@ -348,108 +357,6 @@ const RecieveItemsSecondScreen = ({
     setDataSource(matchedHwyaRow);
   };
 
-  // ==================================================================
-  const contentRef = useRef();
-  const isRTL = useIsRTL();
-
-  const clientData = {
-    client_id: selectedItem?.client_id,
-    client_value: selectedItem?.client_name,
-    bond_date: selectedItem?.date,
-    supplier_id: selectedItem?.supplier_id,
-  };
-
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
-
-  // const Cols = useMemo<ColumnDef<Selling_TP>[]>(
-  //   () => [
-  //     {
-  //       header: () => <span>{t("piece number")}</span>,
-  //       accessorKey: "hwya",
-  //       cell: (info) => info.getValue() || "---",
-  //     },
-  //     {
-  //       header: () => <span>{t("classification")}</span>,
-  //       accessorKey: "classification_name",
-  //       cell: (info) => info.getValue() || "---",
-  //     },
-  //     {
-  //       header: () => <span>{t("category")} </span>,
-  //       accessorKey: "category_name",
-  //       cell: (info) => info.getValue() || "---",
-  //     },
-  //     {
-  //       header: () => <span>{t("stone weight")} </span>,
-  //       accessorKey: "stone_weight",
-  //       cell: (info) => info.getValue() || "---",
-  //     },
-  //     {
-  //       header: () => <span>{t("karat value")} </span>,
-  //       accessorKey: "karat_name",
-  //       cell: (info: any) =>
-  //         info.row.original.classification_id === 1
-  //           ? formatReyal(Number(info.getValue()))
-  //           : formatGram(Number(info.row.original.karatmineral_name)),
-  //     },
-  //     {
-  //       header: () => <span>{t("weight")}</span>,
-  //       accessorKey: "weight",
-  //       cell: (info) => info.getValue() || `${t("no items")}`,
-  //     },
-  //     {
-  //       header: () => <span>{t("cost")} </span>,
-  //       accessorKey: "cost",
-  //       cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
-  //     },
-  //     {
-  //       header: () => <span>{t("VAT")} </span>,
-  //       accessorKey: "vat",
-  //       cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
-  //     },
-  //     {
-  //       header: () => <span>{t("total")} </span>,
-  //       accessorKey: "total",
-  //       cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
-  //     },
-  //   ],
-  //   []
-  // );
-
-  const totalWage = selectedItem?.items?.reduce((acc, curr) => {
-    acc += +curr.selling_price;
-    return acc;
-  }, 0);
-
-  const totalFinalWage = selectedItem?.items?.reduce((acc, curr) => {
-    acc += +curr.weight;
-    return acc;
-  }, 0);
-
-  const totalOtherStoneWeight = selectedItem?.items?.reduce((acc, curr) => {
-    acc += +curr.wage_total;
-    return acc;
-  }, 0);
-
-  const costDataAsProps = {
-    totalFinalWage: totalFinalWage,
-    totalFinalCost: formatReyal(totalOtherStoneWeight) || 0,
-    totalCost: totalWage,
-  };
-
-  const handlePrint = useReactToPrint({
-    content: () => contentRef.current,
-    onAfterPrint: () => console.log("Print job completed."),
-  });
-  // ==================================================================
-
   return (
     <>
       <div className="my-8 md:my-16 mx-4 md:mx-16">
@@ -461,7 +368,7 @@ const RecieveItemsSecondScreen = ({
             </p>
           </>
         )}
-        {/* <ul className="grid grid-cols-4 gap-6 mb-5">
+        <ul className="grid grid-cols-4 gap-6 mb-5">
           {totals.map(({ name, key, unit, value }) => (
             <BoxesDataBase variant="secondary" key={key}>
               <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl">
@@ -472,7 +379,7 @@ const RecieveItemsSecondScreen = ({
               </p>
             </BoxesDataBase>
           ))}
-
+        </ul>
         {!dataSource?.length && !openModal ? (
           <>
             <h2 className="font-bold text-xl mx-auto my-8 text-mainGreen bg-lightGreen p-2 rounded-lg w-fit">
