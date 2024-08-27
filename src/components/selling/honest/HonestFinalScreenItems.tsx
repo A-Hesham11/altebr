@@ -49,8 +49,8 @@ const HonestFinalScreenItems: React.FC<HonestFinalScreenItems_TP> = ({
   return (
     <>
       <div className="mx-6">
-        <div className="mb-6 overflow-x-scroll lg:overflow-x-visible w-full">
-          <table className="mt-8 w-[872px] lg:w-full table-shadow">
+        <div className="mb-6 overflow-x-auto lg:overflow-x-visible w-full">
+          <table className="mt-8 w-full table-shadow">
             <thead className="bg-mainGreen text-white">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id} className="py-4">

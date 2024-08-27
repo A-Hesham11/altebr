@@ -6,7 +6,7 @@ import SearchFilter from "./SearchFilter";
 import TableOfIdentities from "./TableOfIdentities";
 import OperationType from "./OperationType";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loading } from "../../../components/organisms/Loading";
 import { useFetch, useMutate } from "../../../hooks";
 import { Back } from "../../../utils/utils-components/Back";
@@ -19,6 +19,8 @@ import { mutateData } from "../../../utils/mutateData";
 import { useQueryClient } from "@tanstack/react-query";
 import ImportTotals from "./ImportTotals";
 import * as fileSaver from "file-saver";
+import { useReactToPrint } from "react-to-print";
+import PrintPage from "../../../components/atoms/print/PrintPage";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -31,6 +33,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [page, setPage] = useState(1);
   const [importPageResponse, setImportPageResponse] = useState(1);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
+  console.log(
+    "🚀 ~ CodedIdentities ~ operationTypeSelect:",
+    operationTypeSelect
+  );
   const [importModal, setImportModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
   const [importData, setImportData] = useState(null);
@@ -44,7 +50,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [fetchEndPoint, setFetchEndPoint] = useState(
     `identity/api/v1/pieces_in_edara`
   );
-
 
   const shouldCheck = operationTypeSelect.length === 0;
 
@@ -251,6 +256,32 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   //   return <Loading mainTitle="loading" />;
   // }
 
+  // start Print
+  const [open, setOpen] = useState(false);
+  const contentRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => setOpen(true),
+    removeAfterPrint: true,
+    pageStyle: `
+        @page {
+          size: auto;
+        }
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact;
+          }
+          .break-page {
+            page-break-before: always;
+          }
+        }
+      `,
+  });
+
+  // End Print
+
   return (
     <div className="flex flex-col">
       <div className="flex justify-between items-center gap-4 flex-wrap">
@@ -404,12 +435,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           >
             {t("export")}
           </Button>
-          <Button
-            action={(e) => {
-              navigate("/printing-identities")
-            }}
-            className="bg-mainGreen text-white"
-          >
+          <Button action={() => handlePrint()} className="bg-mainGreen text-white">
             {t("printing numbered identities")}
           </Button>
         </div>
@@ -491,6 +517,69 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           </>
         )}
       </Modal>
+
+      {/* START PRINT */}
+
+      {open && (
+        <div
+          className="relative z-10"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="fixed inset-0 bg-[#00000070] bg-opacity-75 transition-opacity"
+            aria-hidden="true"
+          ></div>
+
+          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:items-center justify-center">
+                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                      <h3
+                        className="text-lg font-semibold leading-6 text-gray-900 text-center"
+                        id="modal-title"
+                      >
+                        {t("printing process")}
+                      </h3>
+                      <div className="mt-6 mb-2">
+                        <p className="text-lg text-gray-500">
+                          {t("Did the numbered identity print successfully?")}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="px-4 pt-3 pb-5 sm:flex sm:flex-row-reverse sm:px-6 justify-center gap-5">
+                  <Button type="button" action={() => setOpen(false)} bordered>
+                    {t("No")}
+                  </Button>
+                  <Button
+                    type="button"
+                    action={() => {
+                      setOperationTypeSelect([])
+                      setOpen(false)
+                    }}
+                  >
+                    {t("Yes")}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="print-page" ref={contentRef} style={{ direction: "ltr" }}>
+        {operationTypeSelect?.map((item) => (
+          <div className="break-page">
+            <PrintPage item={item} />
+          </div>
+        ))}
+      </div>
+      {/* END PRINT */}
     </div>
   );
 };

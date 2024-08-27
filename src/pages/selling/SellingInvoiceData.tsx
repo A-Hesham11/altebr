@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { ClientData_TP, Selling_TP } from "./PaymentSellingPage";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import { authCtx } from "../../context/auth-and-perm/auth";
-import { useMutate } from "../../hooks";
+import { useMutate, useIsRTL } from "../../hooks";
 import { mutateData } from "../../utils/mutateData";
 import { Button } from "../../components/atoms";
 import { SellingFinalPreview } from "../../components/selling/selling components/SellingFinalPreview";
@@ -44,6 +44,7 @@ const SellingInvoiceData = ({
 
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ userData:", userData);
+  const isRTL = useIsRTL();
 
   // const totalCommissionRatio = paymentData.reduce((acc, card) => {
   //   acc += +card.commission_riyals;
@@ -351,7 +352,31 @@ const SellingInvoiceData = ({
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
-    onAfterPrint: () => console.log("Print job completed."),
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+        .rtl {
+          direction: rtl;
+          text-align: right;
+        }
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+      }
+    `,
   });
 
   return (
@@ -362,7 +387,7 @@ const SellingInvoiceData = ({
           {isSuccess ? (
             <Button
               className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-              action={() => DownloadAsPDF(contentRef.current, "Invoice")}
+              action={handlePrint}
             >
               {t("print")}
             </Button>
@@ -378,7 +403,7 @@ const SellingInvoiceData = ({
         </div>
       </div>
 
-      <div ref={contentRef}>
+      <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
         <SellingFinalPreview
           ItemsTableContent={<SellingTableComp />}
           setStage={setStage}

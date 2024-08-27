@@ -1,19 +1,11 @@
 import QRCode from "react-qr-code";
 import "./print.css";
 import Logo from "../../../assets/qr-logo.png";
-import { useEffect, useRef } from "react";
 
 const PrintPage = ({ item }) => {
-  // console.log("🚀 ~ PrintPage ~ item:", item);
-  // const contentRef = useRef();
-  // useEffect(() => {
-  //   window.print()
-  // }, [!!item && item?.hwya])
-
   return (
     <>
-      {/* {data?.map((item) => ( */}
-      <div className="container-print" style={{ pageBreakAfter: "always" }}>
+      <div className="container-print">
         <div className="component">
           <div className="content-wrapper">
             <div className="grid-layout">
@@ -54,7 +46,6 @@ const PrintPage = ({ item }) => {
           </div>
         </div>
       </div>
-      {/* ))} */}
     </>
   );
 };

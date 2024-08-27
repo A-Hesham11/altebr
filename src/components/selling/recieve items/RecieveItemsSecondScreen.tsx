@@ -96,7 +96,7 @@ const RecieveItemsSecondScreen = ({
         notify("info", `${t("all bond items has been received")}`);
         setStage(1);
       }
-      const selectedRowsIds = structuredClone(selectedRows).map(
+      const selectedRowsIds = structuredClone(selectedRows)?.map(
         (item) => item.id
       );
       setDisableSelectedCheckAfterSendById((prev) => [
@@ -129,7 +129,7 @@ const RecieveItemsSecondScreen = ({
         notify("info", `${t("all bond items has been reject")}`);
         setStage(1);
       }
-      const selectedRowsIds = structuredClone(selectedRows).map(
+      const selectedRowsIds = structuredClone(selectedRows)?.map(
         (item) => item.id
       );
       setDisableSelectedCheckAfterSendById((prev) => [
@@ -288,7 +288,6 @@ const RecieveItemsSecondScreen = ({
     !openModal
       ? setDataSource(
           selectedItem?.items?.filter((item) => item.item_status === "Waiting")
-          selectedItem?.items?.filter((item) => item.item_status === "Waiting")
         )
       : setDataSource(selectedItem.items);
   }, [disableSelectedCheckAfterSendById, selectedRows]);
@@ -298,23 +297,19 @@ const RecieveItemsSecondScreen = ({
   const total24 = selectedItem.items
     ?.filter((piece) => piece.karat === "24")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
-  const total22 = selectedItem.items
-    ?.reduce((acc, { weight }) => acc + +weight, 0);
+
   const total22 = selectedItem.items
     ?.filter((piece) => piece.karat === "22")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
-  const total21 = selectedItem.items
-    ?.reduce((acc, { weight }) => acc + +weight, 0);
+
   const total21 = selectedItem.items
     ?.filter((piece) => piece.karat === "21")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
-  const total18 = selectedItem.items
-    ?.reduce((acc, { weight }) => acc + +weight, 0);
+
   const total18 = selectedItem.items
     ?.filter((piece) => piece.karat === "18")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
-  const allItemsCount = selectedItem?.items?.[0]?.allboxes?.allcounts;
-    ?.reduce((acc, { weight }) => acc + +weight, 0);
+
   const allItemsCount = selectedItem?.items?.[0]?.allboxes?.allcounts;
 
   const totals = [
@@ -468,7 +463,7 @@ const RecieveItemsSecondScreen = ({
                     <Button
                       className="text-mainOrange border-mainOrange"
                       action={() => {
-                        if (selectedRows.length === 0)
+                        if (selectedRows?.length === 0)
                           notify("info", `${t("select item at least")}`);
                         else setOpenRefusedModal(true);
                       }}
@@ -651,3 +646,4 @@ const RecieveItemsSecondScreen = ({
 };
 
 export default RecieveItemsSecondScreen;
+

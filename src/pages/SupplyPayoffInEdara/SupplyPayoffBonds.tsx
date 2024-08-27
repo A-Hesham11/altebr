@@ -1,5 +1,3 @@
-
-
 import { useContext, useEffect, useMemo, useState } from "react";
 import { t } from "i18next";
 import { Form, Formik } from "formik";
@@ -9,11 +7,17 @@ import { useFetch, useIsRTL } from "../../hooks";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { Loading } from "../../components/organisms/Loading";
 import { formatDate, getDayAfter } from "../../utils/date";
-import { BaseInputField, DateInputField, Modal } from "../../components/molecules";
+import {
+  BaseInputField,
+  DateInputField,
+  Modal,
+} from "../../components/molecules";
 import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import SupplyPayoffInvoiceTablePreview from "./SupplyPayoffInvoiceTablePreview";
+import { BiSpreadsheet } from "react-icons/bi";
+import SupplyReturnInvoice from "./SupplyReturnInvoice";
 
 const SupplyPayoffBonds = () => {
   // STATE
@@ -22,6 +26,7 @@ const SupplyPayoffBonds = () => {
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
+  const [returnInvoiceModal, setOpenReturnInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
 
@@ -40,7 +45,8 @@ const SupplyPayoffBonds = () => {
   } = useFetch({
     queryKey: ["salesPayoff-invoice"],
     endpoint:
-      search === `/supplyReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}` ||
+      search ===
+        `/supplyReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}` ||
       search === ""
         ? `/supplyReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}?page=${page}`
         : `${search}`,
@@ -72,14 +78,24 @@ const SupplyPayoffBonds = () => {
       },
       {
         cell: (info: any) => (
-          <BsEye
-            onClick={() => {
-              setOpenInvoiceModal(true);
-              setSelectedItem(info.row.original);
-            }}
-            size={23}
-            className="text-mainGreen mx-auto cursor-pointer"
-          />
+          <div className="flex items-center justify-center gap-3">
+            <BsEye
+              onClick={() => {
+                setOpenInvoiceModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+            <BiSpreadsheet
+              onClick={() => {
+                setOpenReturnInvoiceModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+          </div>
         ),
         accessorKey: "details",
         header: () => <span>{t("details")}</span>,
@@ -221,7 +237,14 @@ const SupplyPayoffBonds = () => {
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
-        <SupplyPayoffInvoiceTablePreview item={selectedItem}/>
+        <SupplyReturnInvoice item={selectedItem} />
+      </Modal>
+
+      <Modal
+        isOpen={returnInvoiceModal}
+        onClose={() => setOpenReturnInvoiceModal(false)}
+      >
+        <SupplyPayoffInvoiceTablePreview item={selectedItem} />
       </Modal>
     </div>
   );

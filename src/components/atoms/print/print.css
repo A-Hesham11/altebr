@@ -5,8 +5,8 @@ body {
 
 .container-print {
   direction: ltr;
-  width: 30px;
-  margin: 70px 0px 0px 3px;
+  width: 30px !important;
+  margin: 70px 0px 0px 3px !important;
 }
 
 .content-wrapper {
@@ -84,12 +84,10 @@ body {
     break-after: page;
   }
 
-  /* Avoid breaking content inside the container */
   .component {
     page-break-inside: avoid;
   }
 
-  /* Ensure the last item doesn't add an unnecessary page break */
   .container-print:last-child {
     page-break-after: auto;
     break-after: auto;

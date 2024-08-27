@@ -186,10 +186,10 @@
 /////////// Types
 
 import { t } from "i18next";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authCtx } from "../../../context/auth-and-perm/auth";
-import { useFetch, useMutate } from "../../../hooks";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { Button } from "../../atoms";
@@ -200,6 +200,7 @@ import HonestFinalScreenHeader from "./HonestFinalScreenHeader";
 import HonestFinalScreenItems from "./HonestFinalScreenItems";
 import HonestFinalScreenPayment from "./HonestFinalScreenPayment";
 import { ClientData_TP } from "../SellingClientForm";
+import { useReactToPrint } from "react-to-print";
 
 ///
 type HonestFinalScreenProps_TP = {
@@ -220,6 +221,8 @@ export const HonestFinalScreen = ({
   const { userData } = useContext(authCtx);
   const { formatGram, formatReyal } = numberContext();
   const [showPrint, setShowPrint] = useState(false);
+  const contentRef = useRef();
+  const isRTL = useIsRTL();
 
   const mainSanadData = {
     client_id: sanadData.client_id,
@@ -255,7 +258,7 @@ export const HonestFinalScreen = ({
     items,
     paymentCommission: sanadData.paymentCommission,
   };
-  console.log("🚀 ~ finalData:", finalData)
+  console.log("🚀 ~ finalData:", finalData);
 
   const clientData = {
     client_id: sanadData?.client_id,
@@ -341,10 +344,42 @@ export const HonestFinalScreen = ({
     queryKey: ["Selling_Mineral_license"],
   });
 
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+        .rtl {
+          direction: rtl;
+          text-align: right;
+        }
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+      }
+    `,
+  });
+
   ///
   return (
-    <div className="py-16">
-      <div className="print-section space-y-12 bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
+    <div className="py-8">
+      <div
+        ref={contentRef}
+        className={`space-y-12 my-8 mx-3 bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ${isRTL ? "rtl" : "ltr"}`}
+      >
         <HonestFinalScreenHeader clientData={clientData} />
         <HonestFinalScreenItems
           sanadData={sanadData}
@@ -388,15 +423,13 @@ export const HonestFinalScreen = ({
         </div>
       </div>
       <div className="flex items-center justify-end gap-x-4 mr-auto mt-8">
-        {showPrint && (
+        {showPrint ? (
           <div className="animate_from_right">
-            <Button bordered action={() => window.print()}>
+            <Button bordered action={handlePrint}>
               {t("print")}
             </Button>
           </div>
-        )}
-
-        {!showPrint && (
+        ) : (
           <div className="animate_from_bottom">
             <Button
               action={() => {
@@ -404,7 +437,7 @@ export const HonestFinalScreen = ({
                   endpointName: "branchSafety/api/v1/create",
                   values: finalData,
                   dataType: "formData",
-                }); 
+                });
               }}
               loading={isLoading}
             >
