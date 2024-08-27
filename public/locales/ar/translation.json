@@ -1372,5 +1372,9 @@
   "budget operation": "عملية الموازنة",
   "budget deduction process": "عملية خصم الموازنة",
   "commission tax deduction process": "عملية خصم ضريبة العمولة",
-  "hwya": "رقم الهوية"
+  "hwya": "رقم الهوية",
+  "bond name": "اسم السند",
+  "recipient's signature": "توقيع المستلم",
+  "bond organizer": "منظم السند",
+  "transfer note to branch": "سند تحويل للفرع"
 }

@@ -1,31 +1,22 @@
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import React from "react";
+import { numberContext } from "../../context/settings/number-formatter";
+import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 import { t } from "i18next";
-import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
-import { numberContext } from "../../../context/settings/number-formatter";
-import { useContext } from "react";
-import { authCtx } from "../../../context/auth-and-perm/auth";
-interface ReactTableProps<T extends object> {
-  data: T[];
-  columns: ColumnDef<T>[];
-  paymentData?: any;
-  costDataAsProps?: any;
-  isCodedIdentitiesPrint?: boolean;
-}
 
-const InvoiceTable = <T extends object>({
+const PaymentInvoiceTable = ({
   data,
   columns,
   paymentData,
   costDataAsProps,
   isCodedIdentitiesPrint,
-}: ReactTableProps<T>) => {
+}) => {
   const table = useReactTable({
     data,
     columns,
@@ -36,71 +27,22 @@ const InvoiceTable = <T extends object>({
 
   const { formatGram, formatReyal } = numberContext();
 
-  const totalWeight = data?.reduce((acc, curr) => {
-    acc += +curr.weight;
-    return acc;
-  }, 0);
-
-  const totalWeightOfSelsal = data?.reduce((acc, item) => {
-    return (
-      acc + item?.selsal?.reduce((subAcc, curr) => subAcc + +curr.weight, 0)
-    );
-  }, 0);
-
-  const totalCost = data?.reduce((acc, curr) => {
-    acc += +curr.cost;
-    return acc;
-  }, 0);
-
-  const totalCommissionRatio = paymentData?.reduce((acc, card) => {
-    acc += +card.commission_riyals;
-    return acc;
-  }, 0);
-
-  const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
-    acc += +card.commission_tax;
-    return acc;
-  }, 0);
-
-  const totalFinalCost =
-    Number(totalCost) +
-    Number(totalCommissionRatio) +
-    Number(totalCost) * 0.15 +
-    Number(totalCommissionTaxes);
-
-  const locationPath = location.pathname;
-
   const totalFinalCostIntoArabic = convertNumToArWord(
-    Math.round(
-      locationPath === "/selling/addInvoice/" ||
-        locationPath === "/selling/viewInvoice/"
-        ? costDataAsProps?.totalFinalCost
-        : locationPath === "/selling/payoff/sales-return"
-        ? costDataAsProps?.totalFinalCost
-        : locationPath === "/selling/return-entry"
-        ? costDataAsProps?.totalFinalCost
-        : totalFinalCost
-    )
+    Math.round(costDataAsProps?.totalFinalCost)
   );
 
-  const hasSelsal =
-    locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal
-      ? totalWeightOfSelsal
-      : 0;
+  const totalFinalCostIntoArabicGram = convertNumToArWord(
+    Math.round(costDataAsProps?.totalGoldAmountGram)
+  );
 
   const resultTable = [
     {
       number: t("totals"),
-      weight: formatGram(Number(totalWeight) + Number(hasSelsal)),
-      cost: costDataAsProps
-        ? formatReyal(Number(costDataAsProps?.totalCost))
-        : formatReyal(Number(totalCost + totalCommissionRatio)),
-      vat: costDataAsProps
-        ? formatReyal(Number(costDataAsProps?.totalItemsTaxes))
-        : formatReyal(Number(totalCost * 0.15 + totalCommissionTaxes)),
-      total: costDataAsProps
-        ? formatReyal(Number(costDataAsProps?.totalFinalCost))
-        : formatReyal(Number(totalFinalCost)),
+      cost:
+        costDataAsProps && formatReyal(Number(costDataAsProps?.totalFinalCost)),
+      costGram:
+        costDataAsProps &&
+        formatReyal(Number(costDataAsProps?.totalGoldAmountGram)),
     },
   ];
 
@@ -156,7 +98,7 @@ const InvoiceTable = <T extends object>({
                     <td
                       key={key}
                       className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                      colSpan={index === 0 ? 5 : 1}
+                      colSpan={index === 0 ? 1 : 1}
                     >
                       {resultTable[0][key]}
                     </td>
@@ -169,10 +111,23 @@ const InvoiceTable = <T extends object>({
                 <tr className="text-center border-[1px] border-[#7B7B7B4D]">
                   <td
                     className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                    colSpan={9}
+                    colSpan={1}
                   >
                     <span className="font-bold">{t("total")}</span>:{" "}
-                    {totalFinalCostIntoArabic}
+                  </td>
+                  <td
+                    className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
+                    colSpan={1}
+                  >
+                    {totalFinalCostIntoArabic}{" "}
+                    <span className="mx-2 font-bold">{t("reyal")}</span>
+                  </td>
+                  <td
+                    className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
+                    colSpan={1}
+                  >
+                    {totalFinalCostIntoArabicGram}
+                    <span className="mx-2 font-bold">{t("gram")}</span>
                   </td>
                 </tr>
               </tfoot>
@@ -184,4 +139,4 @@ const InvoiceTable = <T extends object>({
   );
 };
 
-export default InvoiceTable;
+export default PaymentInvoiceTable;

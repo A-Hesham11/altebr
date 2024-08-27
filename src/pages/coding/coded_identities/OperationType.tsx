@@ -18,6 +18,7 @@ import { authCtx } from "../../../context/auth-and-perm/auth";
 import FinalPreviewBillDataCodedIdentities from "./FinalPreviewBillDataCodedIdentities";
 import InvoiceTableCodedPrint from "./InvoiceTableCodedPrint";
 import { formatDate, formatDateAndTime } from "../../../utils/date";
+import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
 
 const options = {
   year: "numeric",
@@ -48,6 +49,7 @@ const OperationType = ({
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData);
   const date = new Date(bondDataPrint?.created_at);
 
   const clientData = {
@@ -114,29 +116,29 @@ const OperationType = ({
         accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },
-      {
-        cell: (info: any) => {
-          // return info.getValue()[0]?.diamondWeight || "-";
-          const stonesDetails = info.getValue().reduce((acc, curr) => {
-            return acc + curr.diamondWeight;
-          }, 0);
+      // {
+      //   cell: (info: any) => {
+      //     // return info.getValue()[0]?.diamondWeight || "-";
+      //     const stonesDetails = info.getValue().reduce((acc, curr) => {
+      //       return acc + curr.diamondWeight;
+      //     }, 0);
 
-          return stonesDetails;
-        },
-        accessorKey: "stonesDetails",
-        header: () => <span>{t("weight of diamond stone")}</span>,
-      },
-      {
-        cell: (info: any) => {
-          // const stonesDetails = info.getValue().reduce((acc, curr) => {
-          //   return acc + curr.weight;
-          // }, 0);
+      //     return stonesDetails;
+      //   },
+      //   accessorKey: "stonesDetails",
+      //   header: () => <span>{t("weight of diamond stone")}</span>,
+      // },
+      // {
+      //   cell: (info: any) => {
+      //     // const stonesDetails = info.getValue().reduce((acc, curr) => {
+      //     //   return acc + curr.weight;
+      //     // }, 0);
 
-          return info.getValue();
-        },
-        accessorKey: "ahgar_weight",
-        header: () => <span>{t("stone weight")}</span>,
-      },
+      //     return info.getValue();
+      //   },
+      //   accessorKey: "ahgar_weight",
+      //   header: () => <span>{t("stone weight")}</span>,
+      // },
       // {
       //   cell: (info: any) => {
       //     setRowWage(info.row.original.wage);
@@ -375,11 +377,22 @@ const OperationType = ({
                     isCodedIdentitiesPrint
                   ></InvoiceTableCodedPrint>
 
-                  {/* <div className="mx-5 bill-shadow rounded-md p-6 my-9">
-                      <FinalPreviewBillPayment
-                        responseSellingData={selectedItem}
-                      />
-                    </div> */}
+                  <div className="mx-5 bill-shadow rounded-md p-6 my-9">
+                    <div className="flex justify-between items-start pb-12 pe-8">
+                      <div className="text-center flex flex-col gap-4">
+                        <span className="font-medium text-xs">
+                          {t("recipient's signature")}
+                        </span>
+                        <p>------------------------------</p>
+                      </div>
+                      <div className="text-center flex flex-col gap-4">
+                        <span className="font-medium text-xs">
+                          {t("bond organizer")}
+                        </span>
+                        <p>{userData?.name}</p>
+                      </div>
+                    </div>
+                  </div>
 
                   <div className="text-center">
                     <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
