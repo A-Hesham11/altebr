@@ -11,7 +11,9 @@ import { useReactToPrint } from "react-to-print";
 
 const PrintingNumberIdentities = () => {
   const [printItems, setPrintItems] = useState();
+  console.log("🚀 ~ PrintingNumberIdentities ~ printItems:", printItems);
   const [singlePrint, setSinglePrint] = useState(null);
+  console.log("🚀 ~ PrintingNumberIdentities ~ singlePrint:", singlePrint);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPrinting, setIsPrinting] = useState(false);
   const [confirmedPrint, setConfirmedPrint] = useState("");
@@ -40,47 +42,68 @@ const PrintingNumberIdentities = () => {
     enabled: !!confirmedPrint,
   });
 
-  const handlePrintAllItems = () => {
-    setCurrentIndex(0);
-    setIsPrinting(true);
-  };
+  // const handlePrintAllItems = () => {
+  //   setCurrentIndex(0);
+  //   setIsPrinting(true);
+  // };
 
-  useEffect(() => {
-    let intervalId;
+  // useEffect(() => {
+  //   let intervalId;
 
-    if (isPrinting) {
-      setSinglePrint(printItems?.[currentIndex]);
+  //   if (isPrinting) {
+  //     setSinglePrint(printItems?.[currentIndex]);
 
-      setTimeout(() => {
-        handleReactPrint();
-      }, 0);
+  //     setTimeout(() => {
+  //       handleReactPrint();
+  //     }, 0);
 
-      intervalId = setInterval(() => {
-        setCurrentIndex((prevIndex) => {
-          const newIndex = prevIndex + 1;
-          if (newIndex < printItems?.length) {
-            setSinglePrint(printItems?.[newIndex]);
-            setTimeout(() => {
-              handleReactPrint();
-            }, 0);
-            return newIndex;
-          } else {
-            clearInterval(intervalId);
-            setIsPrinting(false);
-            return prevIndex;
-          }
-        });
-      }, 30000);
-    }
+  //     intervalId = setInterval(() => {
+  //       setCurrentIndex((prevIndex) => {
+  //         const newIndex = prevIndex + 1;
+  //         if (newIndex < printItems?.length) {
+  //           setSinglePrint(printItems?.[newIndex]);
+  //           setTimeout(() => {
+  //             handleReactPrint();
+  //           }, 0);
+  //           return newIndex;
+  //         } else {
+  //           clearInterval(intervalId);
+  //           setIsPrinting(false);
+  //           return prevIndex;
+  //         }
+  //       });
+  //     }, 30000);
+  //   }
 
-    return () => clearInterval(intervalId);
-  }, [isPrinting, printItems, currentIndex]);
+  //   return () => clearInterval(intervalId);
+  // }, [isPrinting, printItems, currentIndex]);
 
-  const handleReactPrint = useReactToPrint({
+  // const handleReactPrint = useReactToPrint({
+  //   content: () => contentRef.current,
+  //   onAfterPrint: () => {
+  //     setOpen(true);
+  //   },
+  // });
+
+  const handlePrint = useReactToPrint({
     content: () => contentRef.current,
-    onAfterPrint: () => {
-      setOpen(true);
-    },
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+      }
+    `,
   });
 
   const tarqimGoldColumns = useMemo<any>(
@@ -143,13 +166,17 @@ const PrintingNumberIdentities = () => {
         <h2 className="font-semibold text-xl">
           {t("printing numbered identities")}
         </h2>
-        <Button action={handlePrintAllItems} className="print-btn">
+        <Button action={handlePrint} className="print-btn">
           {t("print all identities")}
         </Button>
       </div>
 
       <div className="print-table">
-        <Table data={printItems || []} columns={tarqimGoldColumns} showNavigation/>
+        <Table
+          data={printItems || []}
+          columns={tarqimGoldColumns}
+          showNavigation
+        />
       </div>
 
       {open && (
@@ -206,16 +233,17 @@ const PrintingNumberIdentities = () => {
         </div>
       )}
 
-      {!!singlePrint && (
         <div
           className="print-page"
           ref={contentRef}
           style={{ direction: "ltr" }}
         >
-          <PrintPage item={singlePrint} />
+          {printItems?.map((item) => (
+            <div className="break-page">
+              <PrintPage item={item} />
+            </div>
+          ))}
         </div>
-      )}
-
     </div>
   );
 };

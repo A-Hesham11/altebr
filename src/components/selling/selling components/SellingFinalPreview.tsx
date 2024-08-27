@@ -110,21 +110,6 @@ export const SellingFinalPreview = ({
           </div>
         </div>
       </div>
-      {/* {printContent && <div style={{ display: 'none' }}>{printContent}</div>}    */}
-
-      {/* {!isSuccess ? (
-        <div className="flex gap-3 justify-end mt-14">
-          <Button bordered action={() => setStage(2)}>
-            {t("back")}
-          </Button>
-        </div>
-      ) : (
-        <div className="flex justify-end items-center my-6">
-          <Button action={() => navigate(-1)} bordered>
-            {t("back")}
-          </Button>
-        </div>
-      )} */}
     </div>
   );
 };

@@ -1373,10 +1373,9 @@
   "budget operation": "عملية الموازنة",
   "budget deduction process": "عملية خصم الموازنة",
   "commission tax deduction process": "عملية خصم ضريبة العمولة",
-  "hwya": "رقم الهوية"
+  "hwya": "رقم الهوية",
   "printing numbered identities":"طباعة الهويات المرقمة",
   "print all identities":"طباعة جميع الهويات",
   "printing process":"عملية الطباعة",
-  "Did the numbered identity print successfully?":"هل تمت طباعة الهوية المرقمة بنجاح؟",
-  "commission tax deduction process": "عملية خصم ضريبة العمولة"
+  "Did the numbered identity print successfully?":"هل تمت طباعة الهوية المرقمة بنجاح؟"
 }

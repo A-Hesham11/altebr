@@ -11,10 +11,12 @@ const FinalPreviewBillPayment = ({
   paymentData,
   costDataAsProps,
   responseSellingData,
+  notQRCode,
 }: {
   paymentData: never[];
   costDataAsProps: any;
   responseSellingData: any;
+  notQRCode?: boolean;
 }) => {
   const { formatReyal } = numberContext();
 
@@ -59,9 +61,12 @@ const FinalPreviewBillPayment = ({
         <p>محمد المحيسن</p>
       </div>
 
-      <div>
-        <QRCode value={responseSellingData?.qr} />
-      </div>
+      {!notQRCode && (
+        <div>
+          <QRCode value={responseSellingData?.qr} />
+        </div>
+      )}
+
       <div className="flex flex-col gap-1 items-center">
         <div className="flex flex-row items-end gap-4 mb-3">
           {paymentData?.map((card, index) => (

@@ -1,8 +1,8 @@
 import { t } from "i18next";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { authCtx } from "../../../context/auth-and-perm/auth";
-import { useMutate } from "../../../hooks";
+import { useIsRTL, useMutate } from "../../../hooks";
 import { formatDate } from "../../../utils/date";
 import { mutateData } from "../../../utils/mutateData";
 import { Button } from "../../atoms";
@@ -10,6 +10,7 @@ import InvoiceTable from "../selling components/InvoiceTable";
 import { SellingFinalPreview } from "../selling components/SellingFinalPreview";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { notify } from "../../../utils/toast";
+import { useReactToPrint } from "react-to-print";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -24,6 +25,8 @@ const DeliveryBondPreviewScreen = ({
   console.log("🚀 ~ paymentData:", paymentData);
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
+  const contentRef = useRef();
+  const isRTL = useIsRTL();
 
   const taxRate = userData?.tax_rate / 100;
 
@@ -293,16 +296,46 @@ const DeliveryBondPreviewScreen = ({
       { bond, items, card, paymentCommission }
     );
   };
+
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+        .rtl {
+          direction: rtl;
+          text-align: right;
+        }
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+      }
+    `,
+  });
+
   return (
     <div>
-      <h2 className="mb-4 text-base font-bold mx-8">{t("honest")}</h2>
+      <h2 className="mb-4 mt-8 text-base font-bold mx-8">{t("honest")}</h2>
       <div className="flex items-center justify-between mx-8">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
           {isSuccess ? (
             <Button
               className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-              onClick={() => window.print()}
+              onClick={handlePrint}
             >
               {t("print")}
             </Button>
@@ -317,14 +350,16 @@ const DeliveryBondPreviewScreen = ({
           )}
         </div>
       </div>
-      <SellingFinalPreview
-        ItemsTableContent={<TableComp />}
-        setStage={setStage}
-        paymentData={paymentData}
-        isSuccess={isSuccess}
-        clientData={selectedItem}
-        costDataAsProps={costDataAsProps}
-      />
+      <div ref={contentRef}  className={`${isRTL ? "rtl" : "ltr"}`}>
+        <SellingFinalPreview
+          ItemsTableContent={<TableComp />}
+          setStage={setStage}
+          paymentData={paymentData}
+          isSuccess={isSuccess}
+          clientData={selectedItem}
+          costDataAsProps={costDataAsProps}
+        />
+      </div>
     </div>
   );
 };
