@@ -288,6 +288,7 @@ const RecieveItemsSecondScreen = ({
     !openModal
       ? setDataSource(
           selectedItem?.items?.filter((item) => item.item_status === "Waiting")
+          selectedItem?.items?.filter((item) => item.item_status === "Waiting")
         )
       : setDataSource(selectedItem.items);
   }, [disableSelectedCheckAfterSendById, selectedRows]);
@@ -298,13 +299,21 @@ const RecieveItemsSecondScreen = ({
     ?.filter((piece) => piece.karat === "24")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
   const total22 = selectedItem.items
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
+  const total22 = selectedItem.items
     ?.filter((piece) => piece.karat === "22")
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
+  const total21 = selectedItem.items
     ?.reduce((acc, { weight }) => acc + +weight, 0);
   const total21 = selectedItem.items
     ?.filter((piece) => piece.karat === "21")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
   const total18 = selectedItem.items
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
+  const total18 = selectedItem.items
     ?.filter((piece) => piece.karat === "18")
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
+  const allItemsCount = selectedItem?.items?.[0]?.allboxes?.allcounts;
     ?.reduce((acc, { weight }) => acc + +weight, 0);
   const allItemsCount = selectedItem?.items?.[0]?.allboxes?.allcounts;
 

@@ -112,7 +112,7 @@ export const SellingFinalPreview = ({
       </div>
       {/* {printContent && <div style={{ display: 'none' }}>{printContent}</div>}    */}
 
-      {!isSuccess ? (
+      {/* {!isSuccess ? (
         <div className="flex gap-3 justify-end mt-14">
           <Button bordered action={() => setStage(2)}>
             {t("back")}
@@ -124,7 +124,7 @@ export const SellingFinalPreview = ({
             {t("back")}
           </Button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

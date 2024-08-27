@@ -251,9 +251,11 @@ export const HonestFinalScreen = ({
   const finalData = {
     bond: mainSanadData,
     card: sanadData.card,
+    paymentCommission: sanadData.paymentCommission,
     items,
     paymentCommission: sanadData.paymentCommission,
   };
+  console.log("🚀 ~ finalData:", finalData)
 
   const clientData = {
     client_id: sanadData?.client_id,
@@ -402,7 +404,7 @@ export const HonestFinalScreen = ({
                   endpointName: "branchSafety/api/v1/create",
                   values: finalData,
                   dataType: "formData",
-                });
+                }); 
               }}
               loading={isLoading}
             >

@@ -77,13 +77,17 @@ const FinalPreviewBillPayment = ({
                 />
               </div>
               <p className="mt-3">
-                {formatReyal(
-                  Number(
-                    card.cost_after_tax +
-                      card.commission_riyals +
-                      +card.commission_tax
-                  ) || Number(card.amount)
-                )}
+                {card.add_commission_ratio === "yes"
+                  ? formatReyal(
+                      Number(
+                        card.cost_after_tax +
+                          card.commission_riyals +
+                          +card.commission_tax
+                      ) || Number(card.amount)
+                    )
+                  : formatReyal(
+                      Number(card.cost_after_tax) || Number(card.amount)
+                    )}
               </p>
             </div>
           ))}

@@ -30,7 +30,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   /////////// VARIABLES
   ///
   const { sanadId } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
 
@@ -44,7 +44,6 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   const [addedPieces, setAddedPieces] = useState<
     GoldCodingSanad_initialValues_TP[]
   >(addedPiecesLocal || []);
-
 
   const { mutate, error, mutateAsync, isLoading, isSuccess } =
     useMutate<GoldCodingSanad_initialValues_TP>({
@@ -84,7 +83,8 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
     }
 
     const [piece, ...remainingPieces] = pieces;
-    
+    console.log("🚀 ~ sendPieces ~ piece:", piece);
+
     try {
       const result = await mutateAsync({
         endpointName: "tarqimGold/api/v1/tarqim_gold",
@@ -93,13 +93,6 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
       });
 
       if (result) {
-        // const filteredPieces = remainingPieces.filter(
-        //   (p) => p.front_key !== result.front_key
-        // );
-
-        // const filteredPieces = addedPieces.filter(
-        //   (p) => p.front_key !== result.front_key
-        // )
         setAddedPieces((curr) =>
           curr.filter((p) => p.front_key !== result.front_key)
         );
@@ -126,19 +119,6 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
             : p
         )
       );
-      // if(error.response.status === 404){
-      //   notify("error",`${t('try to send to non existing url')}`)
-      // }
-      // if(error.response.status === 401){
-      //   notify("error", `${t('you must login first')}`)
-      // }
-      // if(error.response.status === 503){
-      //   notify("error", `${t('you are unauthorized to do the process')}`)
-      // }
-      // if(error.response.status === 422){
-      //   const errors = Object.entries(error.response.data.errors).map(([key,value])=>`${value}`).join(' & ')
-      //   notify("error", `${t(errors)}`)
-      // }
     }
 
     await sendPieces(remainingPieces).then(() => {
@@ -182,10 +162,12 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
             <Button action={() => setStage(1)} bordered>
               رجوع
             </Button>
-            <Button loading={isLoading} action={() => {
-              sendPieces(addedPieces)
-
-              }}>
+            <Button
+              loading={isLoading}
+              action={() => {
+                sendPieces(addedPieces);
+              }}
+            >
               ارسال
             </Button>
           </div>
@@ -199,6 +181,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
           </Button>
         </div>
       )}
+
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
         <div className="flex gap-x-2 p-16 justify-center items-center">
           <Button
@@ -218,10 +201,21 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
             action={() => {
               setOpenModal(false);
               setAddedPiecesLocal([]);
-              navigate("/coding-react")
+              navigate("/coding-react");
             }}
           >
-              {t("go to identification management")}
+            {t("go to identification management")}
+          </Button>
+
+          <Button
+            type="button"
+            action={() => {
+              setOpenModal(false);
+              setAddedPiecesLocal([]);
+              navigate("/printing-identities");
+            }}
+          >
+            {t("printing numbered identities")}
           </Button>
         </div>
       </Modal>

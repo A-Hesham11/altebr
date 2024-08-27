@@ -13,6 +13,9 @@ import InvoiceTable from "../InvoiceTable";
 import { Selling_TP } from "../../../../pages/selling/PaymentSellingPage";
 import { Button } from "../../../atoms";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
+import { DownloadAsPDF } from "../../../../utils/DownloadAsPDF";
+import { InvoiceDownloadAsPDF } from "../../../../utils/InvoiceDownloadAsPDF";
+import Html2Pdf from "js-html2pdf";
 
 type Entry_TP = {
   bian: string;
@@ -24,10 +27,25 @@ type Entry_TP = {
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   const { formatGram, formatReyal } = numberContext();
-  const contentRef = useRef();
+  // const contentRef = useRef();
+  const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
 
   const { userData } = useContext(authCtx);
+
+  const chunkArray = (array, chunkSize) => {
+    const chunks = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
+  };
+
+  // const chunkedItems = chunkArray(item?.items, 10);
+  // console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
+
+  const chunkedItems = chunkArray(item?.items, 10);
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
 
   const clientData = {
     client_id: item?.client_id,
@@ -122,9 +140,12 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   };
 
   const handlePrint = useReactToPrint({
-    content: () => contentRef.current,
-    onAfterPrint: () => console.log("Print job completed."),
+    content: () => invoiceRefs.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
   });
+
 
   return (
     <>
@@ -132,13 +153,17 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         <div className="flex justify-end mb-8 w-full">
           <Button
             className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-            action={handlePrint}
+            action={() => DownloadAsPDF(invoiceRefs.current, "Invoice")}
           >
             {t("print")}
           </Button>
         </div>
-        <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
-          <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
+
+        <div
+          className={`${isRTL ? "rtl" : "ltr"} `}
+          ref={invoiceRefs}
+        >
+          <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
             <div className="mx-5 bill-shadow rounded-md p-6">
               <FinalPreviewBillData
                 clientData={clientData}
@@ -152,7 +177,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
               costDataAsProps={costDataAsProps}
             ></InvoiceTable>
 
-            <div className="mx-5 bill-shadow rounded-md p-6 my-9">
+            <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
               <FinalPreviewBillPayment responseSellingData={item} />
             </div>
 

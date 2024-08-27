@@ -52,6 +52,7 @@ const ViewInvoiceData = () => {
     view: false,
   })
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
+  console.log("🚀 ~ ViewInvoiceData ~ dataSource:", dataSource)
   const [editData, setEditData] = useState<Cards_Props_TP>()
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
   const [page, setPage] = useState<number>(1)

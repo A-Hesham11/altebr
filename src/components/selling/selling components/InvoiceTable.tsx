@@ -24,14 +24,20 @@ const InvoiceTable = <T extends object>({
   columns,
   paymentData,
   costDataAsProps,
-  isCodedIdentitiesPrint,
 }: ReactTableProps<T>) => {
+  console.log("🚀 ~ data:", data);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: data?.length, // Set pageSize to the length of your data to display all rows
+      },
+    },
   });
 
   const { formatGram, formatReyal } = numberContext();
@@ -52,13 +58,27 @@ const InvoiceTable = <T extends object>({
     return acc;
   }, 0);
 
+  // const totalCommissionRatio = paymentData?.reduce((acc, card) => {
+  //     acc += +card.commission_riyals
+  //     return acc
+  // }, 0)
+
   const totalCommissionRatio = paymentData?.reduce((acc, card) => {
-    acc += +card.commission_riyals;
+    if (card.add_commission_ratio === "yes") {
+      acc += +card.commission_riyals;
+    }
     return acc;
   }, 0);
 
+  // const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
+  //     acc += +card.commission_tax
+  //     return acc
+  // }, 0)
+
   const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
-    acc += +card.commission_tax;
+    if (card.add_commission_ratio === "yes") {
+      acc += +card.commission_tax;
+    }
     return acc;
   }, 0);
 
@@ -164,19 +184,17 @@ const InvoiceTable = <T extends object>({
                 })}
               </tr>
             </tbody>
-            {!isCodedIdentitiesPrint && (
-              <tfoot className="text-center">
-                <tr className="text-center border-[1px] border-[#7B7B7B4D]">
-                  <td
-                    className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                    colSpan={9}
-                  >
-                    <span className="font-bold">{t("total")}</span>:{" "}
-                    {totalFinalCostIntoArabic}
-                  </td>
-                </tr>
-              </tfoot>
-            )}
+            <tfoot className="text-center">
+              <tr className="text-center border-[1px] border-[#7B7B7B4D]">
+                <td
+                  className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
+                  colSpan={9}
+                >
+                  <span className="font-bold">{t("total")}</span>:{" "}
+                  {totalFinalCostIntoArabic}
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
