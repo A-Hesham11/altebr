@@ -69,7 +69,9 @@ const FinalPreviewBillData = ({ clientData, invoiceNumber }: Client_TP) => {
           {t("bill date")} :{" "}
           <span className="font-medium">
             {path === "/selling/honesty/return-honest" ||
-            path === "/selling/viewInvoice/"
+            path === "/selling/viewInvoice/" ||
+            path === "/selling/return-entry" ||
+            path === "/selling/viewPayment"
               ? bond_date
               : formatDate(bond_date)}
           </span>{" "}

@@ -26,12 +26,10 @@ type Entry_TP = {
 };
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   // const contentRef = useRef();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ isRTL:", isRTL);
 
   const { userData } = useContext(authCtx);
 
