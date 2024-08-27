@@ -31,7 +31,8 @@ const FinalPreviewBillData = ({
   employee_name,
 }: Client_TP) => {
   const { client_id, client_value, bond_date, supplier_id, supplier_name } =
-    clientData;
+  clientData;
+  console.log("🚀 ~ client_value:", client_value)
   console.log("🚀 ~ FinalPreviewBillData ~ supplier_id:", supplier_id);
 
   const location = useLocation();
