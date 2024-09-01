@@ -11,6 +11,7 @@ import FinalPreviewBillData from "../../components/selling/selling components/bi
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import { Loading } from "../../components/organisms/Loading";
+import SupplyPayoffInvoiceTable from "./SupplyPayoffInvoiceTable";
 
 type Entry_TP = {
   bian: string;
@@ -27,17 +28,6 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
   const isRTL = useIsRTL();
 
   const { userData } = useContext(authCtx);
-
-  //   const chunkArray = (array, chunkSize) => {
-  //     const chunks = [];
-  //     for (let i = 0; i < array.length; i += chunkSize) {
-  //       chunks.push(array.slice(i, i + chunkSize));
-  //     }
-  //     return chunks;
-  //   };
-
-  //   const chunkedItems = chunkArray(item?.items, 10);
-  //   console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
 
   const clientData = {
     client_id: item?.client_id,
@@ -74,11 +64,6 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("stone weight")} </span>,
-        accessorKey: "stone_weight",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_id",
         cell: (info: any) => info.getValue() || "---",
@@ -86,19 +71,68 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
       {
         header: () => <span>{t("weight")}</span>,
         accessorKey: "weight",
-        cell: (info) => info.getValue() || `${t("no items")}`,
+        cell: (info) => formatGram(Number(info.getValue())),
+      },
+      {
+        header: () => <span>{t("fare")}</span>,
+        accessorKey: "wage",
+        cell: (info) => formatReyal(Number(info.getValue())),
+      },
+      {
+        header: () => <span>{t("VAT")} </span>,
+        accessorKey: "vat",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
       },
       {
         header: () => <span>{t("cost")} </span>,
-        accessorKey: "value",
+        accessorKey: "cost",
         cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
       },
     ],
     []
   );
 
+  // const totalwages = item?.items?.reduce((acc, card) => {
+  //   console.log("🚀 ~ totalwages ~ card:", card);
+  //   acc += +card.wage * +card.weight;
+  //   return acc;
+  // }, 0);
+
+  // setFieldValue(
+  //   "vat",
+  //   dataSource[0]?.classification_id === 1
+  //     ? goldVat
+  //     : Number(dataSource[0]?.cost_item) * taxRateOfKarat24
+  // );
+
+  // setFieldValue(
+  //   "cost",
+  //   dataSource[0]?.classification_id === 1
+  //     ? goldTaklfa
+  //     : Number(dataSource[0]?.cost_item) *
+  //         Number(dataSource[0]?.conversion_factor)
+  // );
+
+  // const goldTaklfa =
+  //   dataSource &&
+  //   (Number(dataSource[0]?.wage) + Number(dataSource[0]?.api_gold_price)) *
+  //     Number(dataSource[0]?.weight);
+
+  // const goldVat = goldTaklfa * taxRateOfKarat24;
+  // console.log("🚀 ~ goldVat:", goldVat);
+
+  const totalwages = item?.items?.reduce((acc, card) => {
+    acc += +card.wage;
+    return acc;
+  }, 0);
+
+  const totalWeight = item?.items?.reduce((acc, curr) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
+
   const totalCost = item?.items?.reduce((acc, curr) => {
-    acc += +curr.value;
+    acc += +curr.cost;
     return acc;
   }, 0);
 
@@ -107,15 +141,12 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
     return acc;
   }, 0);
 
-  const totalFinalCost = item?.items?.reduce((acc, curr) => {
-    acc += +curr.total;
-    return acc;
-  }, 0);
-
   const costDataAsProps = {
     totalItemsTaxes,
-    totalFinalCost: totalFinalCost,
+    totalFinalCost: totalCost,
     totalCost,
+    totalWeight,
+    totalwages,
   };
 
   const handlePrint = useReactToPrint({
@@ -170,15 +201,21 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
             </div>
 
             <div className="">
-              <InvoiceTable
+              {/* <InvoiceTable
                 data={item?.items}
                 columns={Cols}
                 costDataAsProps={costDataAsProps}
-              ></InvoiceTable>
+              ></InvoiceTable> */}
+
+              <SupplyPayoffInvoiceTable
+                data={item?.items}
+                columns={Cols}
+                costDataAsProps={costDataAsProps}
+              ></SupplyPayoffInvoiceTable>
             </div>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment responseSellingData={item}  />
+              <FinalPreviewBillPayment responseSellingData={item} />
             </div>
 
             <div className="text-center">

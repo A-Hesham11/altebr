@@ -16,6 +16,7 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { DownloadAsPDF } from "../../../../utils/DownloadAsPDF";
 import { InvoiceDownloadAsPDF } from "../../../../utils/InvoiceDownloadAsPDF";
 import Html2Pdf from "js-html2pdf";
+import { convertNumToArWord } from "../../../../utils/number to arabic words/convertNumToArWord";
 
 type Entry_TP = {
   bian: string;
@@ -30,22 +31,8 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   // const contentRef = useRef();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
-
   const { userData } = useContext(authCtx);
-
-  const chunkArray = (array, chunkSize) => {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
-
-  // const chunkedItems = chunkArray(item?.items, 10);
-  // console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
-
-  const chunkedItems = chunkArray(item?.items, 10);
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
+  const taxRate = userData?.tax_rate / 100;
 
   const clientData = {
     client_id: item?.client_id,
@@ -118,6 +105,11 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     []
   );
 
+  const totalWeight = item?.items?.reduce((acc, curr) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
+
   const totalCost = item?.items?.reduce((acc, curr) => {
     acc += +curr.cost;
     return acc;
@@ -133,11 +125,26 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     return acc;
   }, 0);
 
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(totalFinalCost)
+  );
+
   const costDataAsProps = {
     totalItemsTaxes,
     totalFinalCost: totalFinalCost,
     totalCost,
+    totalFinalCostIntoArabic,
   };
+
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight)),
+      cost: formatReyal(Number(costDataAsProps?.totalCost)),
+      vat: formatReyal(Number(costDataAsProps?.totalItemsTaxes)),
+      total: formatReyal(Number(costDataAsProps?.totalFinalCost)),
+    },
+  ];
 
   const handlePrint = useReactToPrint({
     content: () => invoiceRefs.current,
@@ -195,6 +202,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
                 data={item?.items}
                 columns={Cols}
                 costDataAsProps={costDataAsProps}
+                resultTable={resultTable}
               ></InvoiceTable>
             </div>
 
