@@ -49,13 +49,7 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <img src={billLogo} alt="bill" />
-        <p className="text-xs font-medium">
-          {userData?.branch?.country?.name} , {userData?.branch?.city?.name}
-        </p>
-        <p className="text-xs font-medium">
-          <span className="font-bold">{t("district")}:</span>
-          {userData?.branch?.district?.name}
-        </p>
+        <p className="text-base font-medium">{t("simplified tax invoice")}</p>
       </div>
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
@@ -67,12 +61,12 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
           {t("mobile number")} :{" "}
           <span className="font-medium">{data?.phone}</span>{" "}
         </p>
-        <p className="text-xs font-bold">
+        {/* <p className="text-xs font-bold">
           {t("Id number")} :{" "}
           <span className="font-medium">
             {data?.identity || data?.national_number}
           </span>{" "}
-        </p>
+        </p> */}
       </div>
     </div>
   );

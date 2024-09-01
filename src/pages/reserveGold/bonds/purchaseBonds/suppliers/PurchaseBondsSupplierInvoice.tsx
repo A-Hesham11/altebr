@@ -1,5 +1,3 @@
-
-
 import { t } from "i18next";
 import React, { useContext, useMemo, useRef, useState } from "react";
 import { authCtx } from "../../../../../context/auth-and-perm/auth";
@@ -258,8 +256,14 @@ const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
                         className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                         colSpan={9}
                       >
-                        <span className="font-bold">{t("total")}</span>:{" "}
-                        {totalFinalCostIntoArabic}
+                        <span className="font-semibold">{t("total")}</span>:{" "}
+                        <span className="font-medium">
+                          {totalFinalCostIntoArabic}
+                        </span>
+                        <span className="font-semibold"> {t("reyal")}</span>{" "}
+                        <span className="font-semibold">
+                          {t("Only nothing else")}
+                        </span>
                       </td>
                     </tr>
                   </tfoot>
@@ -268,7 +272,10 @@ const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
             </div>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment responseSellingData={item} notQRCode={true} />
+              <FinalPreviewBillPayment
+                responseSellingData={item}
+                notQRCode={true}
+              />
             </div>
 
             <div className="text-center">
