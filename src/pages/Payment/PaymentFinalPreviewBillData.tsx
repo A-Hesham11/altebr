@@ -13,7 +13,6 @@ const PaymentFinalPreviewBillData = ({ clientData, invoiceNumber }: any) => {
   const path = location.pathname;
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ PaymentFinalPreviewBillData ~ userData:", userData);
 
   const billNumber = invoiceNumber;
 
@@ -29,7 +28,8 @@ const PaymentFinalPreviewBillData = ({ clientData, invoiceNumber }: any) => {
             {path === "/selling/honesty/return-honest" ||
             path === "/selling/viewInvoice/" ||
             path === "/selling/return-entry" ||
-            path === "/selling/viewPayment"
+            path === "/selling/viewPayment" ||
+            path === "/selling/payoff/supply-payoff"
               ? bond_date
               : formatDate(bond_date)}
           </span>{" "}
@@ -55,21 +55,6 @@ const PaymentFinalPreviewBillData = ({ clientData, invoiceNumber }: any) => {
           <span className="font-bold">{t("branch number")}:</span>
           {userData?.branch?.id}
         </p>
-        {/* <p className="text-xs font-bold">
-          {supplier_id ? t("supplier name") : t("client name")} :{" "}
-          <span className="font-medium">{client_value}</span>{" "}
-        </p>
-
-        <p className="text-xs font-bold">
-          {t("mobile number")} :{" "}
-          <span className="font-medium">{data?.phone}</span>{" "}
-        </p>
-        <p className="text-xs font-bold">
-          {t("Id number")} :{" "}
-          <span className="font-medium">
-            {data?.identity || data?.national_number}
-          </span>{" "}
-        </p> */}
       </div>
     </div>
   );

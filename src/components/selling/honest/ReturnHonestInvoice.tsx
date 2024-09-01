@@ -1,5 +1,3 @@
-
-
 import { t } from "i18next";
 import React, { useContext, useMemo, useRef, useState } from "react";
 import { numberContext } from "../../../context/settings/number-formatter";
@@ -14,7 +12,7 @@ import FinalPreviewBillData from "../selling components/bill/FinalPreviewBillDat
 import InvoiceTable from "../selling components/InvoiceTable";
 import FinalPreviewBillPayment from "../selling components/bill/FinalPreviewBillPayment";
 import { formatDate } from "../../../utils/date";
-
+import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
 
 type Entry_TP = {
   bian: string;
@@ -35,7 +33,7 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
   const clientData = {
     client_id: item?.client_id_2,
     client_value: item?.client_id,
-    bond_date: item?.invoice_date,
+    bond_date: item?.bond_date,
     supplier_id: item?.supplier_id,
   };
 
@@ -69,7 +67,7 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
       },
       {
         cell: (info: any) => info.getValue() || "---",
-        accessorKey: "receive_date",
+        accessorKey: "date",
         header: () => <span>{t("receive date")}</span>,
       },
       {
@@ -89,7 +87,7 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
       },
       {
         header: () => <span>{t("VAT")}</span>,
-        accessorKey: "VAT",
+        accessorKey: "vat",
         cell: (info: any) => info.getValue() || "---",
       },
       {
@@ -100,6 +98,11 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
     ],
     []
   );
+
+  const totalWeight = item?.items?.reduce((acc, curr) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
 
   const totalCost = item?.items?.reduce((acc, curr) => {
     acc += +curr.cost;
@@ -116,11 +119,26 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
     return acc;
   }, 0);
 
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(totalFinalCost)
+  );
+
   const costDataAsProps = {
     totalItemsTaxes,
     totalFinalCost: totalFinalCost,
     totalCost,
+    totalFinalCostIntoArabic,
   };
+
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight)),
+      cost: formatReyal(Number(totalCost)),
+      vat: formatReyal(Number(totalItemsTaxes)),
+      total: formatReyal(Number(totalFinalCost)),
+    },
+  ];
 
   const handlePrint = useReactToPrint({
     content: () => invoiceRefs.current,
@@ -169,7 +187,7 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
             <div className="mx-5 bill-shadow rounded-md p-6">
               <FinalPreviewBillData
                 clientData={clientData}
-                invoiceNumber={item?.invoice_number}
+                invoiceNumber={item?.bond_id}
               />
             </div>
 
@@ -178,11 +196,15 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
                 data={item?.items}
                 columns={Cols}
                 costDataAsProps={costDataAsProps}
+                resultTable={resultTable}
               ></InvoiceTable>
             </div>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment responseSellingData={item} notQRCode={true} />
+              <FinalPreviewBillPayment
+                responseSellingData={item}
+                notQRCode={true}
+              />
             </div>
 
             <div className="text-center">

@@ -31,9 +31,7 @@ const FinalPreviewBillData = ({
   employee_name,
 }: Client_TP) => {
   const { client_id, client_value, bond_date, supplier_id, supplier_name } =
-  clientData;
-  console.log("🚀 ~ client_value:", client_value)
-  console.log("🚀 ~ FinalPreviewBillData ~ supplier_id:", supplier_id);
+    clientData;
 
   const location = useLocation();
   const path = location.pathname;
@@ -52,8 +50,6 @@ const FinalPreviewBillData = ({
     enabled: !!client_id || !!supplier_id,
   });
 
-  console.log("🚀 ~ FinalPreviewBillData ~ data:", data);
-
   const { userData } = useContext(authCtx);
 
   const { data: honestBondsData } = useFetch({
@@ -71,7 +67,8 @@ const FinalPreviewBillData = ({
         path === "/bonds/supply-return" ||
         path === "/bonds/supplier-payment" ||
         path === "/viewSellingBonds" ||
-        path === "/viewPurchaseBonds"
+        path === "/viewPurchaseBonds" ||
+        path === "/selling/honesty/all-return-honest"
       ? invoiceNumber
       : path === "/supply-return" ||
         path === "/selling/addInvoice/" ||
@@ -95,7 +92,8 @@ const FinalPreviewBillData = ({
             path === "/bonds/supply-return" ||
             path === "/bonds/supplier-payment" ||
             path === "/viewSellingBonds" ||
-            path === "/viewPurchaseBonds"
+            path === "/viewPurchaseBonds" ||
+            path === "/selling/honesty/all-return-honest"
               ? bond_date
               : formatDate(bond_date)}
           </span>{" "}

@@ -16,6 +16,8 @@ interface ReactTableProps<T extends object> {
   columns: ColumnDef<T>[];
   paymentData?: any;
   costDataAsProps?: any;
+  resultTable?: any;
+  totalFinalCostIntoArabic?: string;
   isCodedIdentitiesPrint?: boolean;
 }
 
@@ -24,7 +26,9 @@ const InvoiceTable = <T extends object>({
   columns,
   paymentData,
   costDataAsProps,
+  resultTable,
 }: ReactTableProps<T>) => {
+
   const table = useReactTable({
     data,
     columns,
@@ -38,91 +42,95 @@ const InvoiceTable = <T extends object>({
     },
   });
 
-  const { formatGram, formatReyal } = numberContext();
+  // const { formatGram, formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
 
-  const totalWeight = data?.reduce((acc, curr) => {
-    acc += +curr.weight;
-    return acc;
-  }, 0);
+  // const taxRate = userData?.tax_rate / 100;
 
-  const totalWeightOfSelsal = data?.reduce((acc, item) => {
-    return (
-      acc + item?.selsal?.reduce((subAcc, curr) => subAcc + +curr.weight, 0)
-    );
-  }, 0);
+  // const totalWeight = data?.reduce((acc, curr) => {
+  //   acc += +curr.weight;
+  //   return acc;
+  // }, 0);
 
-  const totalCost = data?.reduce((acc, curr) => {
-    acc += +curr.cost;
-    return acc;
-  }, 0);
+  // const totalWeightOfSelsal = data?.reduce((acc, item) => {
+  //   return (
+  //     acc + item?.selsal?.reduce((subAcc, curr) => subAcc + +curr.weight, 0)
+  //   );
+  // }, 0);
 
-  const totalCommissionRatio = paymentData?.reduce((acc, card) => {
-    if (card.add_commission_ratio === "yes") {
-      acc += +card.commission_riyals;
-    }
-    return acc;
-  }, 0);
+  // const totalCost = data?.reduce((acc, curr) => {
+  //   acc += +curr.cost;
+  //   return acc;
+  // }, 0);
 
-  const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
-    if (card.add_commission_ratio === "yes") {
-      acc += +card.commission_tax;
-    }
-    return acc;
-  }, 0);
+  // const totalCommissionRatio = paymentData?.reduce((acc, card) => {
+  //   if (card.add_commission_ratio === "yes") {
+  //     acc += +card.commission_riyals;
+  //   }
+  //   return acc;
+  // }, 0);
 
-  const totalFinalCost =
-    Number(totalCost) +
-    Number(totalCommissionRatio) +
-    Number(totalCost) * 0.15 +
-    Number(totalCommissionTaxes);
+  // const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
+  //   if (card.add_commission_ratio === "yes") {
+  //     acc += +card.commission_tax;
+  //   }
+  //   return acc;
+  // }, 0);
 
-  const locationPath = location.pathname;
+  // const totalFinalCost =
+  //   Number(totalCost) +
+  //   Number(totalCommissionRatio) +
+  //   Number(totalCost) * taxRate +
+  //   Number(totalCommissionTaxes);
 
-  const totalFinalCostIntoArabic = convertNumToArWord(
-    Math.round(
-      locationPath === "/selling/addInvoice/" ||
-        locationPath === "/selling/viewInvoice/" ||
-        locationPath === "/selling/payoff/sales-return"
-        ? costDataAsProps?.totalFinalCost
-        : locationPath === "/bonds/supply-return"
-        ? costDataAsProps?.totalCost
-        : totalFinalCost
-    )
-  );
+  // const locationPath = location.pathname;
 
-  const hasSelsal =
-    locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal
-      ? totalWeightOfSelsal
-      : 0;
+  // const totalFinalCostIntoArabic = convertNumToArWord(
+  //   Math.round(
+  //     locationPath === "/selling/addInvoice/" ||
+  //       locationPath === "/selling/viewInvoice/" ||
+  //       locationPath === "/selling/payoff/sales-return" ||
+  //       locationPath === "/selling/honesty/all-return-honest"
+  //       ? costDataAsProps?.totalFinalCost
+  //       : locationPath === "/bonds/supply-return"
+  //       ? costDataAsProps?.totalCost
+  //       : totalFinalCost
+  //   )
+  // );
 
-  const resultTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeight) + Number(hasSelsal)),
-      cost: costDataAsProps
-        ? formatReyal(Number(costDataAsProps?.totalCost))
-        : formatReyal(Number(totalCost + totalCommissionRatio)),
-      vat: costDataAsProps
-        ? formatReyal(Number(costDataAsProps?.totalItemsTaxes))
-        : formatReyal(Number(totalCost * 0.15 + totalCommissionTaxes)),
-      total: costDataAsProps
-        ? formatReyal(Number(costDataAsProps?.totalFinalCost))
-        : formatReyal(Number(totalFinalCost)),
-    },
-  ];
+  // const hasSelsal =
+  //   locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal
+  //     ? totalWeightOfSelsal
+  //     : 0;
 
-  const resultReturnTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeight) + Number(hasSelsal)),
-      cost: costDataAsProps
-        ? formatReyal(Number(costDataAsProps?.totalCost))
-        : formatReyal(Number(totalCost + totalCommissionRatio)),
-    },
-  ];
+  // const resultTable = [
+  //   {
+  //     number: t("totals"),
+  //     weight: formatGram(Number(totalWeight) + Number(hasSelsal)),
+  //     cost: costDataAsProps
+  //       ? formatReyal(Number(costDataAsProps?.totalCost))
+  //       : formatReyal(Number(totalCost + totalCommissionRatio)),
+  //     vat: costDataAsProps
+  //       ? formatReyal(Number(costDataAsProps?.totalItemsTaxes))
+  //       : formatReyal(Number(totalCost * taxRate + totalCommissionTaxes)),
+  //     total: costDataAsProps
+  //       ? formatReyal(Number(costDataAsProps?.totalFinalCost))
+  //       : formatReyal(Number(totalFinalCost)),
+  //   },
+  // ];
 
-  const resultTotalTable =
-    locationPath === "/bonds/supply-return" ? resultReturnTable : resultTable;
+  // const resultReturnTable = [
+  //   {
+  //     number: t("totals"),
+  //     weight: formatGram(Number(totalWeight) + Number(hasSelsal)),
+  //     cost: costDataAsProps
+  //       ? formatReyal(Number(costDataAsProps?.totalCost))
+  //       : formatReyal(Number(totalCost + totalCommissionRatio)),
+  //   },
+  // ];
+
+  // const resultTotalTable =
+  //   locationPath === "/bonds/supply-return" ? resultReturnTable : resultTable;
 
   return (
     <>
@@ -170,14 +178,14 @@ const InvoiceTable = <T extends object>({
                 );
               })}
               <tr className="text-center">
-                {Object.keys(resultTotalTable[0]).map((key, index) => {
+                {Object.keys(resultTable[0]).map((key, index) => {
                   return (
                     <td
                       key={key}
                       className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                       colSpan={index === 0 ? 5 : 1}
                     >
-                      {resultTotalTable[0][key]}
+                      {resultTable[0][key]}
                     </td>
                   );
                 })}
@@ -187,10 +195,12 @@ const InvoiceTable = <T extends object>({
               <tr className="text-center border-[1px] border-[#7B7B7B4D]">
                 <td
                   className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                  colSpan={9}
+                  colSpan={columns?.length}
                 >
                   <span className="font-bold">{t("total")}</span>:{" "}
-                  {totalFinalCostIntoArabic}
+                  {costDataAsProps
+                    ? costDataAsProps?.totalFinalCostIntoArabic
+                    : totalFinalCostIntoArabic}
                 </td>
               </tr>
             </tfoot>

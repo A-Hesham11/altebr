@@ -167,6 +167,12 @@ const SupplyPayoffSecondPage = ({
         vat: userData?.tax_rate,
         employee_id: userData?.id,
         invoice_date: sellingItemsData[0]?.bond_date,
+        items: sellingItemsData?.map((item) => ({
+          id: item?.id,
+          hwya: item.hwya,
+          vat: item?.vat,
+          cost: item?.cost,
+        })),
         editWeight: operationTypeSelectWeight.map((el, i) => {
           return {
             id: el.id.toString(),

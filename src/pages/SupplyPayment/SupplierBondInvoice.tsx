@@ -17,6 +17,7 @@ import { useFetch, useIsRTL } from "../../hooks";
 import { ClientData_TP, Selling_TP } from "../selling/PaymentSellingPage";
 import { useReactToPrint } from "react-to-print";
 import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
+import PaymentInvoiceTable from "../Payment/PaymentInvoiceTable";
 
 const SupplierBondInvoice = ({ item }: { item?: {} }) => {
   console.log("🚀 ~ SupplierBondInvoice ~ item:", item);
@@ -42,23 +43,29 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
     supplier_id: item?.supplier,
   };
 
-  const totalCost = item?.items?.reduce((acc, curr) => {
+  // const resultTable = [
+  //   {
+  //     number: t("totals"),
+  //     weight: totalWeight,
+  //     cost: totalCost,
+  //   },
+  // ];
+
+  const totalFinalCost = item?.items?.reduce((acc, curr) => {
     acc += +curr.value_reyal;
     return acc;
   }, 0);
+  console.log("🚀 ~ totalFinalCost ~ totalFinalCost:", totalFinalCost);
 
-  const totalWeight = item?.items?.reduce((acc, curr) => {
+  const totalGoldAmountGram = item?.items?.reduce((acc, curr) => {
     acc += +curr.value_gram;
     return acc;
   }, 0);
 
-  const resultTable = [
-    {
-      number: t("totals"),
-      weight: totalWeight,
-      cost: totalCost,
-    },
-  ];
+  const costDataAsProps = {
+    totalFinalCost,
+    totalGoldAmountGram,
+  };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -68,15 +75,15 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
         cell: (info: any) => info.getValue(),
       },
       {
-        header: () => <span>{t("Gold value (in grams)")}</span>,
-        accessorKey: "value_gram",
-        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
-      },
-      {
         header: () => <span>{t("amount")}</span>,
         accessorKey: "value_reyal",
         cell: (info: any) =>
           info.getValue() ? formatGram(Number(info.getValue())) : "---",
+      },
+      {
+        header: () => <span>{t("Gold value (in grams)")}</span>,
+        accessorKey: "value_gram",
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
       },
     ],
     []
@@ -125,8 +132,6 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
     `,
   });
 
-  const totalFinalCostIntoArabic = convertNumToArWord(Math.round(totalCost));
-
   return (
     <div className="relative h-full py-16 px-8">
       <div className="flex justify-end mb-8 w-full">
@@ -149,80 +154,18 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
           </div>
 
           <div className="mx-5">
-            <div className="mb-6 overflow-x-auto lg:overflow-x-visible w-full">
-              <table className="mt-8 w-full table-shadow">
-                <thead className="bg-mainGreen text-white">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id} className="py-4 px-2 text-center">
-                      {headerGroup.headers.map((header) => (
-                        <th
-                          key={header.id}
-                          className="p-4 text-sm font-medium text-mainGreen bg-[#E5ECEB] border border-[#7B7B7B4D]"
-                        >
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody>
-                  {table.getRowModel().rows.map((row) => {
-                    return (
-                      <tr key={row.id} className="text-center item">
-                        {row.getVisibleCells().map((cell, i) => {
-                          return (
-                            <td
-                              className="px-2 py-2 text-mainGreen bg-white gap-x-2 items-center border border-[#7B7B7B4D]"
-                              key={cell.id}
-                              colSpan={1}
-                            >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })}
-
-                  <tr className="text-center">
-                    {Object.keys(resultTable[0]).map((key, index) => {
-                      return (
-                        <td
-                          key={key}
-                          className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                          colSpan={index === 0 ? 1 : 1}
-                        >
-                          {resultTable[0][key]}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                </tbody>
-                <tfoot className="text-center">
-                  <tr className="text-center border-[1px] border-[#7B7B7B4D]">
-                    <td
-                      className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                      colSpan={9}
-                    >
-                      <span className="font-bold">{t("total")}</span>:{" "}
-                      {totalFinalCostIntoArabic}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
+            <PaymentInvoiceTable
+              data={item?.items}
+              columns={Cols || []}
+              costDataAsProps={costDataAsProps}
+            ></PaymentInvoiceTable>
           </div>
 
           <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-            <FinalPreviewBillPayment responseSellingData={item} notQRCode={true} />
+            <FinalPreviewBillPayment
+              responseSellingData={item}
+              notQRCode={true}
+            />
           </div>
 
           <div className="text-center">

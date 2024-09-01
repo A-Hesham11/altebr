@@ -58,7 +58,7 @@ const SupplyPayoffInvoiceTable = <T extends object>({
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="p-4 text-sm font-medium text-mainGreen bg-[#E5ECEB] border-l last:border-none border-[#7B7B7B4D]"
+                      className="p-4 text-sm font-medium text-mainGreen bg-[#E5ECEB] border-l last:border-none border-[#7B7B7B4D] text-center"
                     >
                       {header.isPlaceholder
                         ? null
