@@ -28,7 +28,6 @@ const InvoiceTable = <T extends object>({
   costDataAsProps,
   resultTable,
 }: ReactTableProps<T>) => {
-
   const table = useReactTable({
     data,
     columns,
@@ -197,10 +196,16 @@ const InvoiceTable = <T extends object>({
                   className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                   colSpan={columns?.length}
                 >
-                  <span className="font-bold">{t("total")}</span>:{" "}
-                  {costDataAsProps
-                    ? costDataAsProps?.totalFinalCostIntoArabic
-                    : totalFinalCostIntoArabic}
+                  <span className="font-semibold">{t("total")}</span>:{" "}
+                  <span className="font-medium">
+                    {costDataAsProps
+                      ? costDataAsProps?.totalFinalCostIntoArabic
+                      : totalFinalCostIntoArabic}
+                  </span>
+                  <span className="font-semibold"> {t("reyal")}</span>{" "}
+                  <span className="font-semibold">
+                    {t("Only nothing else")}
+                  </span>
                 </td>
               </tr>
             </tfoot>
