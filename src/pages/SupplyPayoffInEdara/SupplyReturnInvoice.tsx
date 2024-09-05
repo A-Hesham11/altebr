@@ -1,21 +1,16 @@
 import { t } from "i18next";
 import React, { useContext, useMemo, useRef, useState } from "react";
-import { Table } from "../../../templates/reusableComponants/tantable/Table";
-import { numberContext } from "../../../../context/settings/number-formatter";
 import { ColumnDef } from "@tanstack/react-table";
-import TableEntry from "../../../templates/reusableComponants/tantable/TableEntry";
-import FinalPreviewBillData from "../bill/FinalPreviewBillData";
-import FinalPreviewBillPayment from "../bill/FinalPreviewBillPayment";
-import { authCtx } from "../../../../context/auth-and-perm/auth";
-import { useFetch, useIsRTL } from "../../../../hooks";
-import { ClientData_TP } from "../../SellingClientForm";
-import InvoiceTable from "../InvoiceTable";
-import { Selling_TP } from "../../../../pages/selling/PaymentSellingPage";
-import { Button } from "../../../atoms";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
-import { DownloadAsPDF } from "../../../../utils/DownloadAsPDF";
-import { InvoiceDownloadAsPDF } from "../../../../utils/InvoiceDownloadAsPDF";
-import Html2Pdf from "js-html2pdf";
+import { numberContext } from "../../context/settings/number-formatter";
+import { useFetch, useIsRTL } from "../../hooks";
+import { authCtx } from "../../context/auth-and-perm/auth";
+import { ClientData_TP, Selling_TP } from "../selling/PaymentSellingPage";
+import { Button } from "../../components/atoms";
+import FinalPreviewBillData from "../../components/selling/selling components/bill/FinalPreviewBillData";
+import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
+import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
+import { Loading } from "../../components/organisms/Loading";
 
 type Entry_TP = {
   bian: string;
@@ -25,33 +20,30 @@ type Entry_TP = {
   creditor_SRA: number;
 };
 
-const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
+const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
-  // const contentRef = useRef();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
 
   const { userData } = useContext(authCtx);
 
-  const chunkArray = (array, chunkSize) => {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
+  //   const chunkArray = (array, chunkSize) => {
+  //     const chunks = [];
+  //     for (let i = 0; i < array.length; i += chunkSize) {
+  //       chunks.push(array.slice(i, i + chunkSize));
+  //     }
+  //     return chunks;
+  //   };
 
-  // const chunkedItems = chunkArray(item?.items, 10);
-  // console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
-
-  const chunkedItems = chunkArray(item?.items, 10);
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
+  //   const chunkedItems = chunkArray(item?.items, 10);
+  //   console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
 
   const clientData = {
     client_id: item?.client_id,
-    client_value: item?.client_name,
-    bond_date: item?.invoice_date,
-    supplier_id: item?.supplier_id,
+    client_value: item?.supplier_id,
+    bond_date: item?.date,
+    supplier_id: item?.supplier,
   };
 
   const { data } = useFetch<ClientData_TP>({
@@ -73,12 +65,12 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
       },
       {
         header: () => <span>{t("classification")}</span>,
-        accessorKey: "classification_name",
+        accessorKey: "classification_id",
         cell: (info) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("category")} </span>,
-        accessorKey: "category_name",
+        accessorKey: "category",
         cell: (info) => info.getValue() || "---",
       },
       {
@@ -88,11 +80,8 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
       },
       {
         header: () => <span>{t("karat value")} </span>,
-        accessorKey: "karat_name",
-        cell: (info: any) =>
-          info.row.original.classification_id === 1
-            ? formatReyal(Number(info.getValue()))
-            : formatGram(Number(info.row.original.karatmineral_name)),
+        accessorKey: "karat_id",
+        cell: (info: any) => info.getValue() || "---",
       },
       {
         header: () => <span>{t("weight")}</span>,
@@ -101,17 +90,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
       },
       {
         header: () => <span>{t("cost")} </span>,
-        accessorKey: "cost",
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
-      },
-      {
-        header: () => <span>{t("VAT")} </span>,
-        accessorKey: "vat",
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
-      },
-      {
-        header: () => <span>{t("total")} </span>,
-        accessorKey: "total",
+        accessorKey: "value",
         cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
       },
     ],
@@ -119,7 +98,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   );
 
   const totalCost = item?.items?.reduce((acc, curr) => {
-    acc += +curr.cost;
+    acc += +curr.value;
     return acc;
   }, 0);
 
@@ -181,12 +160,12 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
           </Button>
         </div>
 
-        <div className={`${isRTL ? "rtl" : "ltr"}`} ref={invoiceRefs}>
+        <div className={`${isRTL ? "rtl" : "ltr"} m-4`} ref={invoiceRefs}>
           <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
             <div className="mx-5 bill-shadow rounded-md p-6">
               <FinalPreviewBillData
                 clientData={clientData}
-                invoiceNumber={item?.invoice_number}
+                invoiceNumber={item?.id}
               />
             </div>
 
@@ -199,7 +178,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
             </div>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment responseSellingData={item} />
+              <FinalPreviewBillPayment responseSellingData={item}  />
             </div>
 
             <div className="text-center">
@@ -236,4 +215,4 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   );
 };
 
-export default SellingInvoiceTablePreview;
+export default SupplyReturnInvoice;

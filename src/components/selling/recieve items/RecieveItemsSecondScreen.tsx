@@ -96,7 +96,7 @@ const RecieveItemsSecondScreen = ({
         notify("info", `${t("all bond items has been received")}`);
         setStage(1);
       }
-      const selectedRowsIds = structuredClone(selectedRows).map(
+      const selectedRowsIds = structuredClone(selectedRows)?.map(
         (item) => item.id
       );
       setDisableSelectedCheckAfterSendById((prev) => [
@@ -129,7 +129,7 @@ const RecieveItemsSecondScreen = ({
         notify("info", `${t("all bond items has been reject")}`);
         setStage(1);
       }
-      const selectedRowsIds = structuredClone(selectedRows).map(
+      const selectedRowsIds = structuredClone(selectedRows)?.map(
         (item) => item.id
       );
       setDisableSelectedCheckAfterSendById((prev) => [
@@ -463,7 +463,7 @@ const RecieveItemsSecondScreen = ({
                     <Button
                       className="text-mainOrange border-mainOrange"
                       action={() => {
-                        if (selectedRows.length === 0)
+                        if (selectedRows?.length === 0)
                           notify("info", `${t("select item at least")}`);
                         else setOpenRefusedModal(true);
                       }}
@@ -646,3 +646,4 @@ const RecieveItemsSecondScreen = ({
 };
 
 export default RecieveItemsSecondScreen;
+

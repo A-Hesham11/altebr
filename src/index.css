@@ -286,7 +286,7 @@ input[type="file"] {
 
 } */
 
-@media print {
+/* @media print {
   html,
   body {
     height: 100%;
@@ -310,18 +310,21 @@ input[type="file"] {
     text-align: left;
   }
 
+  .print-content {
+    display: block;
+  }
+
+  .item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 20px;
+  }
+
   .page-break {
     page-break-before: always;
+    break-before: always;
   }
-
-  .no-break {
-    page-break-inside: avoid;
-  }
-
-  .print-container {
-    width: 100%;
-  }
-}
+} */
 
 .PieceDetails div:nth-child(19) {
   grid-column: 1 / -3;

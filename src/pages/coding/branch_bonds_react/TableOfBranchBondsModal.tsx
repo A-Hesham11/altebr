@@ -58,11 +58,14 @@ type Entry_TP = {
 };
 
 const TableOfBranchBondsModal = ({ item }: { item?: {} }) => {
-console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsModal ~ item:", item)
+  console.log(
+    "🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsModal ~ item:",
+    item
+  );
 
   const { formatGram, formatReyal } = numberContext();
 
-  const isRTL = useIsRTL()
+  const isRTL = useIsRTL();
 
   // COLUMNS FOR THE TABLE OF DETAILS BOND DETAILS
   const tableColumn = useMemo<any>(
@@ -79,8 +82,8 @@ console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsMod
       },
       {
         cell: (info: any) => {
-          return info.getValue() || info.row.original.karatmineral ;
-        } ,
+          return info.getValue() || info.row.original.karatmineral;
+        },
         accessorKey: "karat_id",
         header: () => <span>{t("karat")}</span>,
       },
@@ -100,7 +103,8 @@ console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsMod
         header: () => <span>{t("wage")}</span>,
       },
       {
-        cell: (info: any) => formatReyal(Number(info.getValue(info.getValue()))) || "-",
+        cell: (info: any) =>
+          formatReyal(Number(info.getValue(info.getValue()))) || "-",
         accessorKey: "value",
         header: () => <span>{t("value")}</span>,
       },
@@ -156,11 +160,17 @@ console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsMod
     ({ account, computational_movement, unit_id, value }) => ({
       bian: account,
       debtor_gram:
-        computational_movement === "debtor" && unit_id === ("جرام" || "gram") ? value : 0,
+        computational_movement === "debtor" && unit_id === ("جرام" || "gram")
+          ? value
+          : 0,
       debtor_SRA:
-        computational_movement === "debtor" && unit_id === ("ريال" || "reyal") ? value : 0,
+        computational_movement === "debtor" && unit_id === ("ريال" || "reyal")
+          ? value
+          : 0,
       creditor_gram:
-        computational_movement === "creditor" && unit_id === ("جرام" || "gram") ? value : 0,
+        computational_movement === "creditor" && unit_id === ("جرام" || "gram")
+          ? value
+          : 0,
       creditor_SRA:
         computational_movement === "creditor" && unit_id === ("ريال" || "reyal")
           ? value
@@ -207,9 +217,12 @@ console.log("🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsMod
       <div>
         <div className="flex items-center justify-between mb-6 mt-8">
           <h2 className="text-xl font-bold text-slate-700">
-            {t("bond details")} 
+            {t("bond details")}
           </h2>
-          <p className="text-base font-semibold">{t("bond number")} <span className="text-mainOrange">{item?.id}</span></p>
+          <p className="text-base font-semibold">
+            {t("bond number")}{" "}
+            <span className="text-mainOrange">{item?.id}</span>
+          </p>
         </div>
 
         <Table data={item?.items || []} showNavigation columns={tableColumn}>

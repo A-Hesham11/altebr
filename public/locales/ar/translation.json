@@ -436,7 +436,7 @@
   "manual weight": "الوزن اليدوي",
   "from balance": "من الميزان",
   "polishing bond": "سند التلميع",
-  "supply bond": "سند التورد",
+  "supply bond": "سند التوريد",
   "gold coding": "ترقيم الذهب",
   "supply weight": "وزن التوريد",
   "attachment number": "رقم المرفق",
@@ -1377,9 +1377,14 @@
   "printing numbered identities": "طباعة الهويات المرقمة",
   "print all identities": "طباعة جميع الهويات",
   "printing process": "عملية الطباعة",
-  "Did the numbered identity print successfully?": "هل تمت طباعة الهوية المرقمة بنجاح؟",
   "bond name": "اسم السند",
   "recipient's signature": "توقيع المستلم",
   "bond organizer": "منظم السند",
-  "transfer note to branch": "سند تحويل للفرع"
+  "transfer note to branch": "سند تحويل للفرع",
+  "Did the numbered identity print successfully?": "هل تمت طباعة الهوية المرقمة بنجاح؟",
+  "only nothing else": "فقط لا غير",
+  "gold 18": "ذهب 18",
+  "gold 21": "ذهب 21",
+  "gold 22": "ذهب 22",
+  "gold 24": "ذهب 24"
 }
