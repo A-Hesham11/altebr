@@ -16,6 +16,7 @@ import TableOfTransformBranch from "./TableOfTransformBranch";
 import { Button } from "../../../components/atoms";
 import TableOfTransformImport from "./TableOfTransformImport";
 import TransformImportBoxes from "./TransformImportBoxes";
+import { Employee_TP } from "../../employees/employees-types";
 
 interface TransformImport_TP {
   setTransformImportModal: boolean;
@@ -32,6 +33,7 @@ const TransformImport = ({
   const [selectedOption, setSelectedOption] = useState("normal");
   const [inputWeight, setInputWeight] = useState([]);
   const [rowWage, setRowWage] = useState(null);
+  const [goldPriceToday, setGoldPriceToday] = useState("");
   const [branchId, setBranchId] = useState(null);
   const [thwelIds, setThwelIds] = useState([]);
 
@@ -41,10 +43,18 @@ const TransformImport = ({
 
   const initialValues = {
     branch_id: "",
-    gold_price: "",
+    gold_price: goldPriceToday || "",
     sanad_type: "",
     weight_input: "",
   };
+
+  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
+    endpoint: "/buyingUsedGold/api/v1/get-gold-price",
+    queryKey: ["GoldPriceApi"],
+    onSuccess: (data) => {
+      setGoldPriceToday(data["24"]);
+    },
+  });
 
   const {
     data: branchesOptions,
@@ -80,6 +90,7 @@ const TransformImport = ({
     queryKey: ["operation-import-data"],
     onError: (err) => console.log(err),
   });
+  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
 
   useEffect(() => {
     refetchOperationTypeSelect();
@@ -305,6 +316,7 @@ const TransformImport = ({
     <Formik
       validationSchema=""
       initialValues={initialValues}
+      enableReinitialize={true}
       onSubmit={(values) => {
         if (!values.branch_id) {
           notify("info", "قم باختيار الفرع");
@@ -363,120 +375,129 @@ const TransformImport = ({
         // setOperationTypeSelect([]);
       }}
     >
-      <Form>
-        <div className="flex flex-col gap-10 mt-6">
-          <h2>
-            <span className="text-xl ml-4 font-bold text-slate-700">
-              {t("identity and numbering management")}
-            </span>
-            <span>{t("transfer to branch")}</span>
-          </h2>
+      {({ values, setFieldValue }) => {
+        return (
+          <Form>
+            <div className="flex flex-col gap-10 mt-6">
+              <h2>
+                <span className="text-xl ml-4 font-bold text-slate-700">
+                  {t("identity and numbering management")}
+                </span>
+                <span>{t("transfer to branch")}</span>
+              </h2>
 
-          {/* INNER LAYOUT */}
-          <InnerFormLayout
-            title={t("basic bond data")}
-            customStyle="bg-slate-200 p-6 rounded-lg"
-          >
-            <div className="flex flex-col items-end gap-1">
-              <p className="text-xl font-bold">#000762</p>
-              <p className=" text-gray-800">2023-11-06</p>
-            </div>
+              {/* INNER LAYOUT */}
+              <InnerFormLayout
+                title={t("basic bond data")}
+                customStyle="bg-slate-200 p-6 rounded-lg"
+              >
+                <div className="flex flex-col items-end gap-1">
+                  <p className="text-xl font-bold">#000762</p>
+                  <p className=" text-gray-800">2023-11-06</p>
+                </div>
 
-            <div className="bg-white p-6 rounded-lg mt-8 flex flex-col gap-6">
-              <div className="flex items-center gap-4">
-                <h2 className="text-xl font-bold text-slate-700">
-                  {t("bond type")}
-                </h2>
-                <label className="flex items-center gap-2">
-                  {t("normal supply")}
-                  <input
-                    type="radio"
-                    name="sanad_type"
-                    value="normal"
-                    checked={selectedOption === "normal"}
-                    onChange={handleOptionChange}
-                  />
-                </label>
-                <label className="flex items-center gap-2">
-                  {t("beginning")}
-                  <input
-                    type="radio"
-                    value="beginning"
-                    name="sanad_type"
-                    checked={selectedOption === "beginning"}
-                    onChange={handleOptionChange}
-                  />
-                </label>
-                <label className="flex items-center gap-2">
-                  {t("increase balance")}
-                  <input
-                    type="radio"
-                    value="increase balance"
-                    name="sanad_type"
-                    checked={selectedOption === "increase balance"}
-                    onChange={handleOptionChange}
-                  />
-                </label>
-              </div>
+                <div className="bg-white p-6 rounded-lg mt-8 flex flex-col gap-6">
+                  <div className="flex items-center gap-4">
+                    <h2 className="text-xl font-bold text-slate-700">
+                      {t("bond type")}
+                    </h2>
+                    <label className="flex items-center gap-2">
+                      {t("normal supply")}
+                      <input
+                        type="radio"
+                        name="sanad_type"
+                        value="normal"
+                        checked={selectedOption === "normal"}
+                        onChange={handleOptionChange}
+                      />
+                    </label>
+                    <label className="flex items-center gap-2">
+                      {t("beginning")}
+                      <input
+                        type="radio"
+                        value="beginning"
+                        name="sanad_type"
+                        checked={selectedOption === "beginning"}
+                        onChange={handleOptionChange}
+                      />
+                    </label>
+                    <label className="flex items-center gap-2">
+                      {t("increase balance")}
+                      <input
+                        type="radio"
+                        value="increase balance"
+                        name="sanad_type"
+                        checked={selectedOption === "increase balance"}
+                        onChange={handleOptionChange}
+                      />
+                    </label>
+                  </div>
 
-              <div>
-                <h2 className="text-xl ml-4 mb-2 font-bold text-slate-700">
-                  {t("branch name")}
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 items-end gap-6">
-                  <div className="col-span-1">
-                    {/* <SelectBranches required name="branch_id" /> */}
-                    <div className="">
-                      <Select
-                        id="branch_id"
-                        label={`${t("branches")}`}
-                        name="branch_id"
-                        placeholder={`${t("branches")}`}
-                        loadingPlaceholder={`${t("loading")}`}
-                        options={filterBranchesOptions}
+                  <div>
+                    <h2 className="text-xl ml-4 mb-2 font-bold text-slate-700">
+                      {t("branch name")}
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 items-end gap-6">
+                      <div className="col-span-1">
+                        {/* <SelectBranches required name="branch_id" /> */}
+                        <div className="">
+                          <Select
+                            id="branch_id"
+                            label={`${t("branches")}`}
+                            name="branch_id"
+                            placeholder={`${t("branches")}`}
+                            loadingPlaceholder={`${t("loading")}`}
+                            options={filterBranchesOptions}
+                            onChange={(e) => {
+                              setBranchId(e?.value);
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <BaseInputField
+                        className="col-span-1"
+                        id="gold_price"
+                        name="gold_price"
+                        type="text"
+                        placeholder={`${t("current gold price")}`}
                         onChange={(e) => {
-                          setBranchId(e?.value);
+                          setGoldPriceToday(e.target.value);
+                          setFieldValue("api_gold_price", e.target.value);
                         }}
                       />
                     </div>
                   </div>
-
-                  <BaseInputField
-                    className="col-span-1"
-                    id="gold_price"
-                    name="gold_price"
-                    type="text"
-                    placeholder={`${t("current gold price")}`}
-                  />
                 </div>
-              </div>
+              </InnerFormLayout>
+
+              {/* BOXES OF TOTALS */}
+              <TransformImportBoxes
+                operationTypeSelect={operationTypeSelect}
+                operationTypeLoading={operationTypeSelectLoading}
+                itemTransferBoxes={itemTransferBoxes}
+                operationTypeSelectisFetching={operationTypeSelectisFetching}
+              />
+
+              {/* TABLE OF TRANSFORM TO BRANCH */}
+              <TableOfTransformImport
+                operationTypeSelect={operationTypeSelect}
+                setInputWeight={setInputWeight}
+                setRowWage={setRowWage}
+              />
+
+              <Button
+                type="submit"
+                loading={thwelLoading}
+                className="self-end"
+                disabled={!operationTypeSelect?.length}
+              >
+                {t("confirm")}
+              </Button>
             </div>
-          </InnerFormLayout>
-
-          {/* BOXES OF TOTALS */}
-          <TransformImportBoxes
-            operationTypeSelect={operationTypeSelect}
-            operationTypeLoading={operationTypeSelectLoading}
-            itemTransferBoxes={itemTransferBoxes}
-            operationTypeSelectisFetching={operationTypeSelectisFetching}
-          />
-
-          {/* TABLE OF TRANSFORM TO BRANCH */}
-          <TableOfTransformImport
-            operationTypeSelect={operationTypeSelect}
-            setInputWeight={setInputWeight}
-            setRowWage={setRowWage}
-          />
-
-          <Button
-            type="submit"
-            loading={thwelLoading}
-            className="bg-mainGreen text-white self-end"
-          >
-            {t("confirm")}
-          </Button>
-        </div>
-      </Form>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };

@@ -39,6 +39,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   );
   const [importModal, setImportModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
+  console.log("🚀 ~ CodedIdentities ~ importFiles:", importFiles)
   const [importData, setImportData] = useState(null);
   const queryClient = useQueryClient();
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
@@ -474,9 +475,9 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
 
           <Button
             loading={postIsLoading}
-            disabled={postIsLoading}
             action={handleImportFiles}
-            className="self-end ml-9 bg-transparent text-mainGreen border-mainGreen border"
+            className="self-end ml-9"
+            disabled={!importFiles.length || postIsLoading}
           >
             {t("add")}
           </Button>

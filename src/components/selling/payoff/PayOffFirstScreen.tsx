@@ -39,6 +39,7 @@ export const PayOffFirstScreen = ({
   const navigate = useNavigate();
   const { userData } = useContext(authCtx);
   const [dataSource, setDataSource] = useState([]);
+  console.log("🚀 ~ dataSource:", dataSource)
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
@@ -56,6 +57,7 @@ export const PayOffFirstScreen = ({
       setDataSource(data.data);
     },
   });
+
   const goldCols = useMemo<any>(
     () => [
       {
@@ -96,7 +98,7 @@ export const PayOffFirstScreen = ({
         cell: (info: any) => {
           const itemsCount = dataSource
             .find((item) => item.id === info.row.original.id)
-            .items.filter((item) => item.item_status === "Rejected").length;
+            .items?.filter((item) => item.item_status === "Rejected").length;
           return itemsCount;
         },
         accessorKey: "count_items",
