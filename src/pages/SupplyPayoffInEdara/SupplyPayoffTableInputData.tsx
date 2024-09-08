@@ -59,6 +59,7 @@ export const SupplyPayoffTableInputData = ({
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData)
 
   const { values, setFieldValue } = useFormikContext<any>();
   console.log("🚀 ~ values:", values);
@@ -155,6 +156,9 @@ export const SupplyPayoffTableInputData = ({
       Number(dataSource[0]?.weight);
 
   const goldVat = goldTaklfa * taxRateOfKarat24;
+  console.log("🚀 ~ goldVat:", goldVat)
+
+
 
   useEffect(() => {
     const {
@@ -526,3 +530,5 @@ export const SupplyPayoffTableInputData = ({
     </Form>
   );
 };
+
+

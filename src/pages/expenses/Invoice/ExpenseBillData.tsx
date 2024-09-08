@@ -56,7 +56,8 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
     <div className="flex justify-between">
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
-          {t("expense number")} : <span className="font-medium">{billNumber}</span>{" "}
+          {t("expense number")} :{" "}
+          <span className="font-medium">{billNumber}</span>{" "}
         </p>
         <p className="text-xs font-bold">
           {t("expense date")} :{" "}
@@ -67,24 +68,18 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
       </div>
       <div className="flex flex-col gap-1 items-center">
         <img src={billLogo} alt="bill" />
-        <p className="text-xs font-medium">
-          {userData?.branch?.country?.name} , {userData?.branch?.city?.name}
-        </p>
-        <p className="text-xs font-medium">
-          <span className="font-bold">{t("district")}:</span>
-          {userData?.branch?.district?.name}
-        </p>
+        <p className="text-base font-medium">{t("simplified tax invoice")}</p>
       </div>
       <div className="flex flex-col gap-1 mt-6">
-        {/* <p className='text-xs font-bold'>{t("client name")} : <span className='font-medium'>{client_value}</span> </p> */}
-        {/* <p className="text-xs font-bold">
-          {t("mobile number")} :{" "}
-          <span className="font-medium">{data?.phone}</span>{" "}
-        </p>
         <p className="text-xs font-bold">
-          {t("Id number")} :{" "}
-          <span className="font-medium">{data?.identity}</span>{" "}
-        </p> */}
+          <span className="font-bold text-[16px] text-mainGreen">
+            {t("mere document")}
+          </span>{" "}
+        </p>
+        <p className="text-xs font-medium">
+          <span className="font-bold">{t("branch number")}:</span>
+          {userData?.branch?.id}
+        </p>
       </div>
     </div>
   );

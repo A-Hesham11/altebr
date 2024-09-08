@@ -29,6 +29,7 @@ import PaymentFinalPreviewBillData from "./PaymentFinalPreviewBillData";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import PaymentInvoiceTable from "./PaymentInvoiceTable";
 import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
+import { number } from "yup";
 
 const VeiwPaymentToManagement = () => {
   // STATE
@@ -40,10 +41,7 @@ const VeiwPaymentToManagement = () => {
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [invoiceViewModal, setOpenInvoiceViewModal] = useState(false);
   const [selectedViewItem, setSelectedViewItem] = useState<any>({});
-  console.log(
-    "🚀 ~ VeiwPaymentToManagement ~ selectedViewItem:",
-    selectedViewItem
-  );
+
   const [search, setSearch] = useState("");
 
   const searchValues = {
@@ -196,10 +194,9 @@ const VeiwPaymentToManagement = () => {
     acc += +curr.value_reyal;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalFinalCost ~ totalFinalCost:", totalFinalCost);
 
   const totalGoldAmountGram = selectedViewItem?.items?.reduce((acc, curr) => {
-    acc += +curr.value_gram;
+    acc += Number(curr.value_gram);
     return acc;
   }, 0);
 

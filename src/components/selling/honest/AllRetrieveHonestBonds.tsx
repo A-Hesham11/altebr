@@ -19,6 +19,8 @@ import { Table } from "../../templates/reusableComponants/tantable/Table";
 import { ReturnHonestRestriction } from "./ReturnHonestRestriction";
 import { formatDate, getDayAfter } from "../../../utils/date";
 import { Back } from "../../../utils/utils-components/Back";
+import { BsEye } from "react-icons/bs";
+import ReturnHonestInvoice from "./ReturnHonestInvoice";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -36,7 +38,9 @@ export const AllRetrieveHonestBonds = () => {
   ///
   const [dataSource, setDataSource] = useState<any>([]);
   const [selectedItem, setSelectedItem] = useState<any>({});
+  console.log("🚀 ~ AllRetrieveHonestBonds ~ selectedItem:", selectedItem)
   const [restrictModal, setOpenRestrictModal] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const {
@@ -44,8 +48,9 @@ export const AllRetrieveHonestBonds = () => {
     isLoading: honestBondsLoading,
     refetch,
     isRefetching,
+    isSuccess,
   } = useFetch({
-    queryKey: [`all-retrieve-honest-bonds-${userData?.branch_id}`],
+    queryKey: [`all-retrieve-honest-bonds`],
     endpoint:
       search === `branchSafety/api/v1/receive-bonds/${userData?.branch_id}?` ||
       search === ""
@@ -53,6 +58,10 @@ export const AllRetrieveHonestBonds = () => {
         : `${search}`,
     pagination: true,
   });
+  console.log(
+    "🚀 ~ AllRetrieveHonestBonds ~ honestBondsData:",
+    honestBondsData
+  );
   /////////// VARIABLES
   ///
 
@@ -95,14 +104,24 @@ export const AllRetrieveHonestBonds = () => {
       },
       {
         cell: (info: any) => (
-          <BiSpreadsheet
-            size={23}
-            onClick={() => {
-              setOpenRestrictModal(true);
-              setSelectedItem(info.row.original);
-            }}
-            className="text-mainGreen mx-auto cursor-pointer"
-          />
+          <div className="flex items-center justify-center gap-2">
+            <BsEye
+              onClick={() => {
+                setOpenModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+            <BiSpreadsheet
+              onClick={() => {
+                setOpenRestrictModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+          </div>
         ),
         accessorKey: "restriction",
         header: () => <span>{t("restriction")}</span>,
@@ -151,7 +170,7 @@ export const AllRetrieveHonestBonds = () => {
   };
 
   ///
-  if (honestBondsLoading || isRefetching)
+  if ((honestBondsLoading || isRefetching) && !isSuccess)
     return <Loading mainTitle={`${t("loading items")}`} />;
   return (
     <div className="p-16">
@@ -231,19 +250,13 @@ export const AllRetrieveHonestBonds = () => {
           </div>
         </div>
       </Table>
-      {/* <div className="flex justify-end mt-5">
-            <Button
-                action={() => {
-                    if (!Object.keys(selectedItem).length) {
-                        notify('info', `${t('choose item first')}`)
-                    } else {
-                        navigate(`/selling/honesty/return-honest/${selectedItem.id!}`)
-                    }
-                }}
-            >{t('next')}</Button>
-        </div> */}
+
       <Modal isOpen={restrictModal} onClose={() => setOpenRestrictModal(false)}>
         <ReturnHonestRestriction sanadId={selectedItem.id} />
+      </Modal>
+
+      <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+        <ReturnHonestInvoice item={selectedItem} />
       </Modal>
     </div>
   );

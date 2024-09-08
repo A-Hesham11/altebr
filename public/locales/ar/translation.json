@@ -978,6 +978,7 @@
   "congratulation start date": "تاريخ بداية التهنئة",
   "congratulation end date": "تاريخ نهاية التهنئة",
   "invoice logo": "شعار الفاتورة",
+  "invoice": " الفاتورة",
   "selling price after tax": "سعر البيع شامل الضريبة",
   "please select a client name": "قم باختيار اسم العميل",
   "please select a category": "قم باختيار الصنف ",
@@ -1379,6 +1380,7 @@
   "printing process": "عملية الطباعة",
   "bond name": "اسم السند",
   "recipient's signature": "توقيع المستلم",
+  "director's signature":"توقيع المدير",
   "bond organizer": "منظم السند",
   "transfer note to branch": "سند تحويل للفرع",
   "Did the numbered identity print successfully?": "هل تمت طباعة الهوية المرقمة بنجاح؟",
@@ -1386,5 +1388,13 @@
   "gold 18": "ذهب 18",
   "gold 21": "ذهب 21",
   "gold 22": "ذهب 22",
-  "gold 24": "ذهب 24"
+  "gold 24": "ذهب 24",
+  "directed to":"موجه الي",
+  "We paid to":"دفعنا الي",
+  "Amount and capacity":"مبلغ وقدرة",
+  "Only nothing else":"فقط لا غير",
+  "In return for":"وذلك مقابل",
+  "mere document":"سند صرف",
+  "simplified tax invoice":"فاتورة ضريبية مبسطة",
+  "Did the numbered identity print successfully?":"هل تمت طباعة الهوية المرقمة بنجاح؟"
 }

@@ -11,6 +11,7 @@ import { SellingFinalPreview } from "../selling components/SellingFinalPreview";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { notify } from "../../../utils/toast";
 import { useReactToPrint } from "react-to-print";
+import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -31,10 +32,6 @@ const DeliveryBondPreviewScreen = ({
   const taxRate = userData?.tax_rate / 100;
 
   const prepaidAmount = selectedItem.amount;
-  // const totalCommissionRatio = paymentData.reduce((acc, card) => {
-  //   acc += +card.commission_riyals;
-  //   return acc;
-  // }, 0);
 
   const totalCommissionRatio = paymentData.reduce((acc, card) => {
     if (card.add_commission_ratio === "yes") {
@@ -44,17 +41,19 @@ const DeliveryBondPreviewScreen = ({
   }, 0);
   const ratioForOneItem = totalCommissionRatio / selectedItem.items.length;
 
-  // const totalCommissionTaxes = paymentData.reduce((acc, card) => {
-  //   acc += +card.commission_tax;
-  //   return acc;
-  // }, 0);
   const totalCommissionTaxes = paymentData.reduce((acc, card) => {
     if (card.add_commission_ratio === "yes") {
       acc += +card.commission_tax;
     }
     return acc;
   }, 0);
+
   const ratioForOneItemTaxes = totalCommissionTaxes / selectedItem.items.length;
+
+  const totalWeight = selectedItem?.items?.reduce((acc, curr) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
 
   const totalCost = selectedItem.items.reduce((acc, curr) => {
     acc += +curr.cost;
@@ -66,6 +65,11 @@ const DeliveryBondPreviewScreen = ({
     totalCost * +taxRate +
     totalCommissionTaxes;
 
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(totalFinalCost)
+  );
+  console.log("🚀 ~ totalFinalCostIntoArabic:", totalFinalCostIntoArabic);
+
   // gather cost data to pass it to SellingFinalPreview as props
   const costDataAsProps = {
     totalCommissionRatio,
@@ -76,69 +80,15 @@ const DeliveryBondPreviewScreen = ({
     prepaidAmount,
   };
 
-  // const Cols = useMemo<any>(
-  //   () => [
-  //     {
-  //       cell: (info: any) => info.getValue(),
-  //       accessorKey: "category_value",
-  //       header: () => <span>{t("category")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue() || "---",
-  //       accessorKey: "karat_value",
-  //       header: () => <span>{t("karat")}</span>,
-  //     },
-
-  //     {
-  //       cell: (info: any) => selectedItem.employee_value,
-  //       accessorKey: "employee_value",
-  //       header: () => <span>{t("employee name")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => selectedItem.bond_date,
-  //       accessorKey: "receive_date",
-  //       header: () => <span>{t("receive date")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => formatDate(new Date()),
-  //       accessorKey: "deliver_date",
-  //       header: () => <span>{t("deliver date")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => formatGram(Number(info.getValue())) || "---",
-  //       accessorKey: "weight",
-  //       header: () => <span>{t("weight")}</span>,
-  //     },
-  //     {
-  //       header: () => <span>{t("cost")}</span>,
-  //       accessorKey: "cost",
-  //       cell: (info: any) => {
-  //         const rowData = +info.row.original.cost + +ratioForOneItem;
-  //         return <div>{formatReyal(Number(rowData))}</div>;
-  //       },
-  //     },
-  //     {
-  //       header: () => <span>{t("VAT")}</span>,
-  //       accessorKey: "VAT",
-  //       cell: (info: any) => {
-  //         const rowData =
-  //           +info.row.original.cost * +taxRate + +ratioForOneItemTaxes;
-  //         return <div>{formatReyal(Number(rowData))}</div>;
-  //       },
-  //     },
-  //     {
-  //       header: () => <span>{t("total")}</span>,
-  //       accessorKey: "total",
-  //       cell: (info: any) => {
-  //         const rowData = +info.row.original.cost + ratioForOneItem;
-  //         const rowDataTaxes =
-  //           +info.row.original.cost * +taxRate + ratioForOneItemTaxes;
-  //         return <div>{formatReyal(Number(rowData + rowDataTaxes))}</div>;
-  //       },
-  //     },
-  //   ],
-  //   []
-  // );
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight)),
+      cost: formatReyal(Number(totalCost + totalCommissionRatio)),
+      vat: formatReyal(Number(totalCost * taxRate + totalCommissionTaxes)),
+      total: formatReyal(Number(totalFinalCost)),
+    },
+  ];
 
   const Cols = useMemo<any>(
     () => [
@@ -210,6 +160,8 @@ const DeliveryBondPreviewScreen = ({
       )}
       columns={Cols}
       paymentData={paymentData}
+      resultTable={resultTable}
+      totalFinalCostIntoArabic={totalFinalCostIntoArabic}
     ></InvoiceTable>
   );
 
@@ -252,12 +204,6 @@ const DeliveryBondPreviewScreen = ({
           total: rowData + rowDataTaxes,
         };
       });
-    // const card = paymentData.reduce((acc, curr) => {
-    //     const addDiscountPercentage = curr.add_commission_ratio === 'yes' ? Number(curr.discount_percentage / 100) : 0
-    //     const addTaxToResult = curr.add_commission_ratio === 'yes' ? Number(curr.commission_riyals) * .15 : 0
-    //     acc[curr.frontKeyAccept] = Number(curr.amount) * addDiscountPercentage + +curr.amount + addTaxToResult;
-    //     return acc
-    // }, {})
     const card = paymentData.reduce((acc, curr) => {
       const maxDiscountOrNOt =
         curr.amount >= curr.max_discount_limit
@@ -350,7 +296,7 @@ const DeliveryBondPreviewScreen = ({
           )}
         </div>
       </div>
-      <div ref={contentRef}  className={`${isRTL ? "rtl" : "ltr"}`}>
+      <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
         <SellingFinalPreview
           ItemsTableContent={<TableComp />}
           setStage={setStage}

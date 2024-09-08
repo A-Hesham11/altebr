@@ -1,17 +1,18 @@
 import { t } from "i18next";
 import React, { useContext, useMemo, useRef, useState } from "react";
+import { numberContext } from "../../../context/settings/number-formatter";
+import { useFetch, useIsRTL } from "../../../hooks";
+import { authCtx } from "../../../context/auth-and-perm/auth";
+import { ClientData_TP } from "../SellingClientForm";
 import { ColumnDef } from "@tanstack/react-table";
-import ReactToPrint, { useReactToPrint } from "react-to-print";
-import { numberContext } from "../../context/settings/number-formatter";
-import { useFetch, useIsRTL } from "../../hooks";
-import { authCtx } from "../../context/auth-and-perm/auth";
-import { ClientData_TP, Selling_TP } from "../selling/PaymentSellingPage";
-import { Button } from "../../components/atoms";
-import FinalPreviewBillData from "../../components/selling/selling components/bill/FinalPreviewBillData";
-import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
-import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
-import { Loading } from "../../components/organisms/Loading";
-import SupplyPayoffInvoiceTable from "./SupplyPayoffInvoiceTable";
+import { Selling_TP } from "../../../pages/selling/PaymentSellingPage";
+import { useReactToPrint } from "react-to-print";
+import { Button } from "../../atoms";
+import FinalPreviewBillData from "../selling components/bill/FinalPreviewBillData";
+import InvoiceTable from "../selling components/InvoiceTable";
+import FinalPreviewBillPayment from "../selling components/bill/FinalPreviewBillPayment";
+import { formatDate } from "../../../utils/date";
+import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
 
 type Entry_TP = {
   bian: string;
@@ -21,19 +22,19 @@ type Entry_TP = {
   creditor_SRA: number;
 };
 
-const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
+const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
   const { formatGram, formatReyal } = numberContext();
+  // const contentRef = useRef();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
 
   const { userData } = useContext(authCtx);
 
   const clientData = {
-    client_id: item?.client_id,
-    client_value: item?.supplier_id,
-    bond_date: item?.date,
-    supplier_id: item?.supplier,
+    client_id: item?.client_id_2,
+    client_value: item?.client_id,
+    bond_date: item?.bond_date,
+    supplier_id: item?.supplier_id,
   };
 
   const { data } = useFetch<ClientData_TP>({
@@ -46,85 +47,57 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
     queryKey: ["Mineral_license"],
   });
 
-  const Cols = useMemo<ColumnDef<Selling_TP>[]>(
+  const Cols = useMemo<any>(
     () => [
       {
-        header: () => <span>{t("piece number")}</span>,
-        accessorKey: "hwya",
-        cell: (info) => info.getValue() || "---",
+        cell: (info: any) => info.getValue(),
+        accessorKey: "category_id",
+        header: () => <span>{t("category")}</span>,
       },
       {
-        header: () => <span>{t("classification")}</span>,
-        accessorKey: "classification_id",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
-        header: () => <span>{t("category")} </span>,
-        accessorKey: "category",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
-        header: () => <span>{t("karat value")} </span>,
+        cell: (info: any) => info.getValue() || "---",
         accessorKey: "karat_id",
+        header: () => <span>{t("karat")}</span>,
+      },
+
+      {
+        cell: (info: any) => item?.employee_id || "---",
+        accessorKey: "employee_value",
+        header: () => <span>{t("employee name")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "date",
+        header: () => <span>{t("receive date")}</span>,
+      },
+      {
+        cell: (info: any) => formatDate(new Date()),
+        accessorKey: "deliver_date",
+        header: () => <span>{t("deliver date")}</span>,
+      },
+      {
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
+        accessorKey: "weight",
+        header: () => <span>{t("weight")}</span>,
+      },
+      {
+        header: () => <span>{t("cost")}</span>,
+        accessorKey: "cost",
         cell: (info: any) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("weight")}</span>,
-        accessorKey: "weight",
-        cell: (info) => formatGram(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("fare")}</span>,
-        accessorKey: "wage",
-        cell: (info) => formatReyal(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("VAT")} </span>,
+        header: () => <span>{t("VAT")}</span>,
         accessorKey: "vat",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info: any) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("cost")} </span>,
-        accessorKey: "cost",
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+        header: () => <span>{t("total")}</span>,
+        accessorKey: "total",
+        cell: (info: any) => info.getValue() || "---",
       },
     ],
     []
   );
-
-  // const totalwages = item?.items?.reduce((acc, card) => {
-  //   console.log("🚀 ~ totalwages ~ card:", card);
-  //   acc += +card.wage * +card.weight;
-  //   return acc;
-  // }, 0);
-
-  // setFieldValue(
-  //   "vat",
-  //   dataSource[0]?.classification_id === 1
-  //     ? goldVat
-  //     : Number(dataSource[0]?.cost_item) * taxRateOfKarat24
-  // );
-
-  // setFieldValue(
-  //   "cost",
-  //   dataSource[0]?.classification_id === 1
-  //     ? goldTaklfa
-  //     : Number(dataSource[0]?.cost_item) *
-  //         Number(dataSource[0]?.conversion_factor)
-  // );
-
-  // const goldTaklfa =
-  //   dataSource &&
-  //   (Number(dataSource[0]?.wage) + Number(dataSource[0]?.api_gold_price)) *
-  //     Number(dataSource[0]?.weight);
-
-  // const goldVat = goldTaklfa * taxRateOfKarat24;
-  // console.log("🚀 ~ goldVat:", goldVat);
-
-  const totalwages = item?.items?.reduce((acc, card) => {
-    acc += +card.wage;
-    return acc;
-  }, 0);
 
   const totalWeight = item?.items?.reduce((acc, curr) => {
     acc += +curr.weight;
@@ -141,13 +114,31 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
     return acc;
   }, 0);
 
+  const totalFinalCost = item?.items?.reduce((acc, curr) => {
+    acc += +curr.total;
+    return acc;
+  }, 0);
+
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(totalFinalCost)
+  );
+
   const costDataAsProps = {
     totalItemsTaxes,
-    totalFinalCost: totalCost,
+    totalFinalCost: totalFinalCost,
     totalCost,
-    totalWeight,
-    totalwages,
+    totalFinalCostIntoArabic,
   };
+
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight)),
+      cost: formatReyal(Number(totalCost)),
+      vat: formatReyal(Number(totalItemsTaxes)),
+      total: formatReyal(Number(totalFinalCost)),
+    },
+  ];
 
   const handlePrint = useReactToPrint({
     content: () => invoiceRefs.current,
@@ -196,26 +187,24 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
             <div className="mx-5 bill-shadow rounded-md p-6">
               <FinalPreviewBillData
                 clientData={clientData}
-                invoiceNumber={item?.id}
+                invoiceNumber={item?.bond_id}
               />
             </div>
 
             <div className="">
-              {/* <InvoiceTable
+              <InvoiceTable
                 data={item?.items}
                 columns={Cols}
                 costDataAsProps={costDataAsProps}
-              ></InvoiceTable> */}
-
-              <SupplyPayoffInvoiceTable
-                data={item?.items}
-                columns={Cols}
-                costDataAsProps={costDataAsProps}
-              ></SupplyPayoffInvoiceTable>
+                resultTable={resultTable}
+              ></InvoiceTable>
             </div>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment responseSellingData={item} />
+              <FinalPreviewBillPayment
+                responseSellingData={item}
+                notQRCode={true}
+              />
             </div>
 
             <div className="text-center">
@@ -252,4 +241,4 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
   );
 };
 
-export default SupplyReturnInvoice;
+export default ReturnHonestInvoice;

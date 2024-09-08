@@ -181,7 +181,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 items-end lg:grid-cols-3 gap-12">
+            <div className="grid md:grid-cols-2 items-end lg:grid-cols-4 gap-8">
               <div className="flex items-end gap-1">
                 <Select
                   id="sub_expense"
@@ -207,6 +207,20 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                 >
                   <IoMdAdd className="fill-mainGreen w-6 h-6" />
                 </button>
+              </div>
+
+              <div>
+                <BaseInputField
+                  placeholder={`${t("directed to")}`}
+                  id="directed_to"
+                  name="directed_to"
+                  label={`${t("directed to")}`}
+                  type="text"
+                  required
+                  onChange={(e) => {
+                    setFieldValue("directed_to", +e.target.value);
+                  }}
+                />
               </div>
 
               <DateInputField

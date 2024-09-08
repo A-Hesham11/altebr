@@ -15,6 +15,7 @@ import { Zatca } from "./Zatca";
 import { notify } from "../../utils/toast";
 import { useReactToPrint } from "react-to-print";
 import { DownloadAsPDF } from "../../utils/DownloadAsPDF";
+import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -46,15 +47,15 @@ const SellingInvoiceData = ({
   console.log("🚀 ~ userData:", userData);
   const isRTL = useIsRTL();
 
-  // const totalCommissionRatio = paymentData.reduce((acc, card) => {
-  //   acc += +card.commission_riyals;
-  //   return acc;
-  // }, 0);
-
   const totalCommissionRatio = paymentData.reduce((acc, card) => {
     if (card.add_commission_ratio === "yes") {
       acc += +card.commission_riyals;
     }
+    return acc;
+  }, 0);
+
+  const totalWeight = sellingItemsData?.reduce((acc, curr) => {
+    acc += +curr.weight;
     return acc;
   }, 0);
 
@@ -67,11 +68,6 @@ const SellingInvoiceData = ({
     acc += +curr.taklfa_after_tax / (curr.tax_rate / 100 + 1);
     return acc;
   }, 0);
-
-  // const totalCommissionTaxes = paymentData.reduce((acc, card) => {
-  //   acc += +card.commission_tax;
-  //   return acc;
-  // }, 0);
 
   const totalCommissionTaxes = paymentData.reduce((acc, card) => {
     if (card.add_commission_ratio === "yes") {
@@ -96,6 +92,20 @@ const SellingInvoiceData = ({
 
   const totalItemsTax = (+totalItemsTaxes + +totalCommissionTaxes).toFixed(2);
 
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight)),
+      cost: formatReyal(Number(totalCost)),
+      vat: formatReyal(Number(totalItemsTaxes)),
+      total: formatReyal(Number(totalFinalCost)),
+    },
+  ];
+
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(Number(totalFinalCost))
+  );
+
   const costDataAsProps = {
     totalCommissionRatio,
     ratioForOneItem,
@@ -103,6 +113,7 @@ const SellingInvoiceData = ({
     totalItemsTaxes,
     totalFinalCost,
     totalCost,
+    totalFinalCostIntoArabic,
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -222,6 +233,7 @@ const SellingInvoiceData = ({
       columns={Cols}
       paymentData={paymentData}
       costDataAsProps={costDataAsProps}
+      resultTable={resultTable}
     ></InvoiceTable>
   );
 

@@ -32,7 +32,6 @@ const FinalPreviewBillData = ({
 }: Client_TP) => {
   const { client_id, client_value, bond_date, supplier_id, supplier_name } =
     clientData;
-  console.log("🚀 ~ FinalPreviewBillData ~ supplier_id:", supplier_id);
 
   const location = useLocation();
   const path = location.pathname;
@@ -51,8 +50,6 @@ const FinalPreviewBillData = ({
     enabled: !!client_id || !!supplier_id,
   });
 
-  console.log("🚀 ~ FinalPreviewBillData ~ data:", data);
-
   const { userData } = useContext(authCtx);
 
   const { data: honestBondsData } = useFetch({
@@ -70,7 +67,8 @@ const FinalPreviewBillData = ({
         path === "/bonds/supply-return" ||
         path === "/bonds/supplier-payment" ||
         path === "/viewSellingBonds" ||
-        path === "/viewPurchaseBonds"
+        path === "/viewPurchaseBonds" ||
+        path === "/selling/honesty/all-return-honest"
       ? invoiceNumber
       : path === "/supply-return" ||
         path === "/selling/addInvoice/" ||
@@ -94,7 +92,8 @@ const FinalPreviewBillData = ({
             path === "/bonds/supply-return" ||
             path === "/bonds/supplier-payment" ||
             path === "/viewSellingBonds" ||
-            path === "/viewPurchaseBonds"
+            path === "/viewPurchaseBonds" ||
+            path === "/selling/honesty/all-return-honest"
               ? bond_date
               : formatDate(bond_date)}
           </span>{" "}
@@ -102,13 +101,14 @@ const FinalPreviewBillData = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <img src={billLogo} alt="bill" />
-        <p className="text-xs font-medium">
-          {userData?.branch?.country?.name} , {userData?.branch?.city?.name}
+        <p className="text-base font-medium">
+          {/* {userData?.branch?.country?.name} , {userData?.branch?.city?.name} */}
+          {t("simplified tax invoice")}
         </p>
-        <p className="text-xs font-medium">
+        {/* <p className="text-xs font-medium">
           <span className="font-bold">{t("district")}:</span>
           {userData?.branch?.district?.name}
-        </p>
+        </p> */}
       </div>
       <div className="flex flex-col gap-1 mt-6">
         {employee_name ? (
@@ -128,12 +128,12 @@ const FinalPreviewBillData = ({
               {t("mobile number")} :{" "}
               <span className="font-medium">{data?.phone}</span>{" "}
             </p>
-            <p className="text-xs font-bold">
+            {/* <p className="text-xs font-bold">
               {t("Id number")} :{" "}
               <span className="font-medium">
                 {data?.identity || data?.national_number}
               </span>{" "}
-            </p>
+            </p> */}
           </>
         )}
       </div>

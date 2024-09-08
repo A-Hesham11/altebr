@@ -11,6 +11,7 @@ import { SellingFinalPreview } from "../../components/selling/selling components
 import { numberContext } from "../../context/settings/number-formatter";
 import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
 import { notify } from "../../utils/toast";
+import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -57,6 +58,17 @@ const SalesReturnInvoiceData = ({
 
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
 
+  const totalWeight = sellingItemsData?.reduce((acc, curr) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
+
+  const totalWeightOfSelsal = sellingItemsData?.reduce((acc, item) => {
+    return (
+      acc + item?.selsal?.reduce((subAcc, curr) => subAcc + +curr.weight, 0)
+    );
+  }, 0);
+
   const totalOfCost = sellingItemsData.reduce((acc, card) => {
     acc += +card.cost;
     return acc;
@@ -77,6 +89,10 @@ const SalesReturnInvoiceData = ({
 
   const totalFinalCost = Number(totalCost) + Number(totalItemsTaxes);
 
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(totalFinalCost)
+  );
+
   const costDataAsProps = {
     totalCommissionRatio,
     ratioForOneItem,
@@ -84,7 +100,18 @@ const SalesReturnInvoiceData = ({
     totalCost,
     totalItemsTaxes,
     totalFinalCost,
+    totalFinalCostIntoArabic
   };
+
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight) + Number(totalWeightOfSelsal)),
+      cost: formatReyal(Number(totalCost)),
+      vat: formatReyal(Number(totalItemsTaxes)),
+      total: formatReyal(Number(totalFinalCost)),
+    },
+  ];
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -189,6 +216,7 @@ const SalesReturnInvoiceData = ({
       columns={Cols}
       paymentData={paymentData}
       costDataAsProps={costDataAsProps}
+      resultTable={resultTable}
     ></InvoiceTable>
   );
 

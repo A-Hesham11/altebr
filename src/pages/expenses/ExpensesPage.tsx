@@ -43,6 +43,7 @@ const ExpensesPage = () => {
     expense_price_after_tax: "",
     expense_price_tax: "",
     sub_expense: "",
+    directed_to: "",
     media: [...files],
   };
 

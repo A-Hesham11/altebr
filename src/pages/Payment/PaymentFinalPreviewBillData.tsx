@@ -25,7 +25,6 @@ const PaymentFinalPreviewBillData = ({
   const path = location.pathname;
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ PaymentFinalPreviewBillData ~ userData:", userData);
 
   const billNumber = invoiceNumber;
 
@@ -42,7 +41,8 @@ const PaymentFinalPreviewBillData = ({
             path === "/selling/viewInvoice/" ||
             path === "/selling/return-entry" ||
             path === "/selling/viewPayment" ||
-            path === "/branch-bonds-react"
+            path === "/branch-bonds-react" ||
+            path === "/selling/payoff/supply-payoff"
               ? bond_date
               : formatDate(bond_date)}
           </span>{" "}
@@ -55,13 +55,7 @@ const PaymentFinalPreviewBillData = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <img src={billLogo} alt="bill" />
-        <p className="text-xs font-medium">
-          {userData?.branch?.country?.name} , {userData?.branch?.city?.name}
-        </p>
-        <p className="text-xs font-medium">
-          <span className="font-bold">{t("district")}:</span>
-          {userData?.branch?.district?.name}
-        </p>
+        <p className="text-base font-medium">{t("simplified tax invoice")}</p>
       </div>
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
