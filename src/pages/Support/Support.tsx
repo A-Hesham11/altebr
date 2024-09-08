@@ -17,6 +17,7 @@ const Support = ({ title }: { title: string }) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [categoryActiveId, setCategoryActiveId] = useState(1);
   const [support, setSupport] = useState([]);
+  console.log("🚀 ~ Support ~ support:", support);
   const [searchOption, setSearchOption] = useState([]);
   const navigate = useNavigate();
   const [supportModal, setSupportModal] = useState(false);

@@ -203,9 +203,7 @@ export const AllRoutesProvider = () => {
           />
           <Route
             path="/printing-identities"
-            element={
-              <PrintingNumberIdentities/>
-            }
+            element={<PrintingNumberIdentities />}
           />
           <Route path="/coding/total/import" element={<ImportTotals />} />
           <Route path="/importTotal/bonds" element={<ImportTotalsBonds />} />
