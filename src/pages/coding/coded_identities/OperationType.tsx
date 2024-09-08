@@ -347,7 +347,8 @@ const OperationType = ({
         </Modal>
 
         <Modal
-          isOpen={transformPrintBondsModal}
+          // isOpen={transformPrintBondsModal}
+          isOpen={false}
           onClose={() => setTransformPrintBondsModal(false)}
         >
           {/* ======================================================================================== */}

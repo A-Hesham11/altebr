@@ -40,7 +40,7 @@ const SubCategorySection: React.FC<Props> = ({
         }`}
       >
         <img
-          src={images[0].preview}
+          src={images?.[0]?.preview}
           alt="Sub Category Image"
           className="fill-mainGreen"
         />
