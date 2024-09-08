@@ -40,6 +40,14 @@ const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
 
   const { userData } = useContext(authCtx);
 
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   const chunkArray = (array, chunkSize) => {
     const chunks = [];
     for (let i = 0; i < array.length; i += chunkSize) {
@@ -316,12 +324,10 @@ const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
                   {t("email")}: {userData?.email}
                 </p>
                 <p>
-                  {t("tax number")}:{" "}
-                  {companyData && companyData[0]?.taxRegisteration}
+                  {t("tax number")}: {taxRegisteration && taxRegisteration}
                 </p>
                 <p>
-                  {t("Mineral license")}:{" "}
-                  {companyData && companyData[0]?.mineralLicence}
+                  {t("Mineral license")}: {mineralLicence && mineralLicence}
                 </p>
               </div>
             </div>

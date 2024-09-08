@@ -52,9 +52,8 @@ const SortPiecesSecondScreen = ({
   const [selectedRows, setSelectedRows] = useState<any>([]);
   console.log("🚀 ~ selectedRows:", selectedRows);
   const [dataSource, setDataSource] = useState({});
-  console.log("🚀 ~ RecieveItemsSecondScreen ~ dataSource:", dataSource);
   const [sortItems, setSortItems] = useState([]);
-  console.log("🚀 ~ sortItems:", sortItems)
+  console.log("🚀 ~ sortItems:", sortItems);
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
@@ -88,7 +87,6 @@ const SortPiecesSecondScreen = ({
       setSortItems(data.data.items);
     },
   });
-  console.log("🚀 ~ data:", data);
 
   const {
     isLoading: receivedLoading,
@@ -308,7 +306,9 @@ const SortPiecesSecondScreen = ({
 
   // variables
   // TOTALS
-  const total24 = sortItems?.filter((piece) => piece.karat === "24")?.reduce((acc, { weight }) => acc + +weight, 0);
+  const total24 = sortItems
+    ?.filter((piece) => piece.karat === "24")
+    ?.reduce((acc, { weight }) => acc + +weight, 0);
 
   const total22 = sortItems
     ?.filter((piece) => piece.karat === "22")
@@ -576,8 +576,13 @@ const SortPiecesSecondScreen = ({
                     type: selectedItem?.type,
                   };
 
+                  const isPartItems = sortItems?.some(
+                    (sort) => sort.item_status !== "Waiting"
+                  );
+
                   const receivedAllFinalValue = {
                     isPart: 1,
+                    isPartItems: isPartItems,
                     id: selectedItem?.id,
                     branch_id: userData?.branch_id,
                     entity_gold_price: selectedItem?.entity_gold_price,
@@ -640,7 +645,7 @@ const SortPiecesSecondScreen = ({
                     api_gold_price: selectedItem?.api_gold_price,
                     type: selectedItem?.type,
                     allRejected:
-                    sortItems?.length === selectedRows.length &&
+                      sortItems?.length === selectedRows.length &&
                       isItRefusedAllBtn
                         ? true
                         : false,

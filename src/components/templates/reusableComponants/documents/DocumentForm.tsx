@@ -72,6 +72,7 @@ export const DocumentForm = ({
     { id: 4, value: "4", label: "شهادة البلدية" },
     { id: 5, value: "5", label: "هوية" },
     { id: 6, value: "6", label: "تراخيص" },
+    { id: 8, value: "8", label: "رخصة المعادن" },
     { id: 7, value: "7", label: "اخرى" },
   ] as SelectOption_TP[]
 

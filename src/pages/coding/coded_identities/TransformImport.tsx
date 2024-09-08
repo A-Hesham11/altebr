@@ -70,14 +70,17 @@ const TransformImport = ({
           id: branch.id,
           value: branch.id || "",
           label: branch.name || "",
+          number: branch.number || "",
         };
       }),
     onError: (err) => console.log(err),
   });
+  console.log("🚀 ~ branchesOptions:", branchesOptions);
 
   const filterBranchesOptions = branchesOptions?.filter(
     (branch: any) => branch.id !== 1
   );
+  console.log("🚀 ~ filterBranchesOptions:", filterBranchesOptions);
 
   const {
     data: operationTypeSelect,
@@ -448,6 +451,14 @@ const TransformImport = ({
                             placeholder={`${t("branches")}`}
                             loadingPlaceholder={`${t("loading")}`}
                             options={filterBranchesOptions}
+                            formatOptionLabel={(option) => (
+                              <div className="flex justify-between">
+                                <span>{option.label}</span>
+                                <p>
+                                  {t("Branch")} - <span>{option.number}</span>
+                                </p>
+                              </div>
+                            )}
                             onChange={(e) => {
                               setBranchId(e?.value);
                             }}
