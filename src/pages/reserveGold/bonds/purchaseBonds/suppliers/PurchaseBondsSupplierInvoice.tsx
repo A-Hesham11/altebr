@@ -40,6 +40,14 @@ const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
 
   const { userData } = useContext(authCtx);
 
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   const clientData = {
     client_id: item?.client_id,
     client_value: item?.client_name,
@@ -296,12 +304,10 @@ const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
                   {t("email")}: {userData?.email}
                 </p>
                 <p>
-                  {t("tax number")}:{" "}
-                  {companyData && companyData[0]?.taxRegisteration}
+                  {t("tax number")}: {taxRegisteration && taxRegisteration}
                 </p>
                 <p>
-                  {t("Mineral license")}:{" "}
-                  {companyData && companyData[0]?.mineralLicence}
+                  {t("Mineral license")}: {mineralLicence && mineralLicence}
                 </p>
               </div>
             </div>

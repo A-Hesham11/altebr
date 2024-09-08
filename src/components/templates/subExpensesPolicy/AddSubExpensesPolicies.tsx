@@ -171,6 +171,7 @@ const AddSubExpensesPolicies = ({
           id: branch.id,
           value: branch.id || "",
           label: branch.name || "",
+          number: branch.number || "",
         };
       }),
     onError: (err) => console.log(err),
@@ -211,6 +212,16 @@ const AddSubExpensesPolicies = ({
                     placeholder={`${t("branches")}`}
                     loadingPlaceholder={`${t("loading")}`}
                     options={branchesOptions}
+                    formatOptionLabel={(option) => (
+                      <div className="flex justify-between">
+                        <span>{option.label}</span>
+                        {option.number && (
+                          <p>
+                            {t("Branch")} - <span>{option.number}</span>
+                          </p>
+                        )}
+                      </div>
+                    )}
                     isLoading={branchesLoading}
                     onChange={(e) => {
                       setBranchId(e.id);

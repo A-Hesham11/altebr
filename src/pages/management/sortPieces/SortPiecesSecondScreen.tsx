@@ -14,8 +14,15 @@ import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { RecivedItemTP } from "../../../utils/selling";
 import { notify } from "../../../utils/toast";
-import { numberContext } from "../../../context/settings/number-formatter";
+import {
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight,
+  MdLocalOffer,
+  MdOutlineCancel,
+  MdOutlineLocalOffer,
+} from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
+import { numberContext } from "../../../context/settings/number-formatter";
 import { ViewIcon } from "../../../components/atoms/icons";
 import { BoxesDataBase } from "../../../components/atoms/card/BoxesDataBase";
 import { AcceptedItemsAccountingEntry } from "../../../components/selling/recieve items/AcceptedItemsAccountingEntry";
@@ -25,7 +32,6 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { Modal } from "../../../components/molecules";
 import { ItemDetailsTable } from "../../../components/selling/recieve items/ItemDetailsTable";
 import { Loading } from "../../../components/organisms/Loading";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
 type RecieveItemsSecondScreenProps_TP = {
   setStage: Dispatch<SetStateAction<number>>;
@@ -33,27 +39,29 @@ type RecieveItemsSecondScreenProps_TP = {
   setSanadId?: Dispatch<SetStateAction<number>>;
   openModal?: boolean;
 };
-const RecentItemsSecondScreen = ({
+const SortPiecesSecondScreen = ({
   setStage,
   selectedItem,
   setSanadId,
   openModal,
 }: RecieveItemsSecondScreenProps_TP) => {
+  console.log("🚀 ~ RecieveItemsSecondScreen ~ selectedItem:", selectedItem);
   const isSanadOpened = selectedItem.bond_status !== 0;
-  console.log("🚀 ~ isSanadOpened:", isSanadOpened);
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const [selectedRows, setSelectedRows] = useState<any>([]);
+  console.log("🚀 ~ selectedRows:", selectedRows);
   const [dataSource, setDataSource] = useState({});
+  const [sortItems, setSortItems] = useState([]);
+  console.log("🚀 ~ sortItems:", sortItems);
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
   const [openAcceptModal, setOpenAcceptModal] = useState<boolean>(false);
   const [openRefusedModal, setOpenRefusedModal] = useState<boolean>(false);
   const [isItRefusedAllBtn, setIsItRefusedAllBtn] = useState<boolean>(false);
-  const [newSelectData, setNewSelectData] = useState([]);
-  const [page, setPage] = useState<number>(1);
-
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState<number>(1);
   const [
     disableSelectedCheckAfterSendById,
     setDisableSelectedCheckAfterSendById,
@@ -76,12 +84,9 @@ const RecentItemsSecondScreen = ({
     queryKey: ["get-item-bonds"],
     pagination: true,
     onSuccess(data) {
-      console.log("🚀 ~ onSuccess ~ data:", data);
-      setNewSelectData(data.data.items);
+      setSortItems(data.data.items);
     },
   });
-
-  console.log("🚀 ~ data:", data);
 
   const {
     isLoading: receivedLoading,
@@ -95,7 +100,7 @@ const RecentItemsSecondScreen = ({
       ).map((id) => {
         return selectedRows.find((obj) => obj.id === id);
       });
-      const filteredArray = newSelectData?.filter(
+      const filteredArray = sortItems?.filter(
         (item) =>
           !disableSelectedCheckAfterSendById.includes(item.id) &&
           item.item_status === "Waiting"
@@ -103,7 +108,7 @@ const RecentItemsSecondScreen = ({
       setOpenAcceptModal(false);
       notify("success");
       setOpenRefusedModal(false);
-      setStage(3);
+      if (!isSanadOpened) setStage(3);
       if (
         isSanadOpened &&
         filteredArray.length === uniqueSelectedItems.length
@@ -121,7 +126,6 @@ const RecentItemsSecondScreen = ({
       setSelectedRows([]);
     },
   });
-
   const { mutate: mutateReject, isLoading: rejectLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: () => {
@@ -130,7 +134,7 @@ const RecentItemsSecondScreen = ({
       ).map((id) => {
         return selectedRows.find((obj) => obj.id === id);
       });
-      const filteredArray = newSelectData?.filter(
+      const filteredArray = sortItems?.filter(
         (item) =>
           !disableSelectedCheckAfterSendById.includes(item.id) &&
           item.item_status === "Waiting"
@@ -156,8 +160,70 @@ const RecentItemsSecondScreen = ({
     },
   });
 
+  const handleCheckboxChange = (event: any, selectedRow: any) => {
+    const checkboxId = event.target.id;
+    if (event.target.checked) {
+      setSelectedRows((prevSelectedItems: any) => [
+        ...prevSelectedItems,
+        selectedRow.row.original,
+      ]);
+    } else {
+      setSelectedRows((prevSelectedItems: any) =>
+        prevSelectedItems.filter((item: any) => item.id !== +checkboxId)
+      );
+    }
+  };
+
   const Cols = useMemo<any>(
     () => [
+      {
+        header: () => {
+          const filteredArray = sortItems?.filter(
+            (item) =>
+              !disableSelectedCheckAfterSendById.includes(item.id) &&
+              item.item_status === "Waiting"
+          );
+          return (
+            <input
+              type="checkbox"
+              className="border-mainGreen text-mainGreen rounded"
+              id={crypto.randomUUID()}
+              name="selectedItem"
+              onClick={() => {
+                const allCheckBoxes = document.querySelectorAll(
+                  'input[type="Checkbox"]'
+                );
+                allCheckBoxes.forEach((checkbox) => {
+                  checkbox.checked = !selectAll;
+                });
+                setSelectAll(!selectAll);
+                setSelectedRows(filteredArray);
+              }}
+            />
+          );
+        },
+        accessorKey: "action",
+        cell: (info: any) => {
+          return (
+            <div className="flex items-center justify-center gap-4">
+              <input
+                type="checkbox"
+                className={`border-mainGreen text-mainGreen rounded ${
+                  disableSelectedCheckAfterSendById.includes(
+                    info.row.original.id
+                  ) && "bg-mainGreen"
+                }`}
+                id={info.row.original.id}
+                name="selectedItem"
+                onClick={(event) => handleCheckboxChange(event, info)}
+                disabled={disableSelectedCheckAfterSendById.includes(
+                  info.row.original.id
+                )}
+              />
+            </div>
+          );
+        },
+      },
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "hwya",
@@ -231,24 +297,28 @@ const RecentItemsSecondScreen = ({
         header: () => <span>{t("details")}</span>,
       },
     ],
-    [newSelectData, receivedSuccess, disableSelectedCheckAfterSendById]
+    [sortItems, receivedSuccess, disableSelectedCheckAfterSendById]
   );
+
+  useEffect(() => {
+    setDataSource(sortItems?.filter((item) => item.item_status === "Waiting"));
+  }, [disableSelectedCheckAfterSendById, selectedRows, sortItems]);
 
   // variables
   // TOTALS
-  const total24 = newSelectData
+  const total24 = sortItems
     ?.filter((piece) => piece.karat === "24")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
 
-  const total22 = newSelectData
+  const total22 = sortItems
     ?.filter((piece) => piece.karat === "22")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
 
-  const total21 = newSelectData
+  const total21 = sortItems
     ?.filter((piece) => piece.karat === "21")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
 
-  const total18 = newSelectData
+  const total18 = sortItems
     ?.filter((piece) => piece.karat === "18")
     ?.reduce((acc, { weight }) => acc + +weight, 0);
 
@@ -259,7 +329,7 @@ const RecentItemsSecondScreen = ({
       name: t("عدد القطع"),
       key: crypto.randomUUID(),
       unit: t(""),
-      value: newSelectData?.length,
+      value: sortItems?.length,
     },
     {
       name: "إجمالي وزن 24",
@@ -287,12 +357,8 @@ const RecentItemsSecondScreen = ({
     },
   ];
 
-  useEffect(() => {
-    setDataSource(newSelectData);
-  }, [disableSelectedCheckAfterSendById, selectedRows, newSelectData]);
-
   const handleTableSearch = () => {
-    const matchedHwyaRow = dataSource?.filter(
+    const matchedHwyaRow = dataSource.filter(
       (item) => item.hwya === searchInputValue
     );
     setDataSource(matchedHwyaRow);
@@ -315,16 +381,12 @@ const RecentItemsSecondScreen = ({
   return (
     <>
       <div className="my-8 md:my-16 mx-4 md:mx-16">
-        {!openModal && (
-          <>
-            <h3 className="font-bold">{t("receive items in branch")}</h3>
-            <p className="text-sm font-bold mt-2 mb:4 md:mb-8">
-              {t("bonds aggregations")}
-            </p>
-          </>
-        )}
+        <h3 className="font-bold">{t("receive items in branch")}</h3>
+        <p className="text-sm font-bold mt-2 mb:4 md:mb-8">
+          {t("bonds aggregations")}
+        </p>
         <ul className="grid grid-cols-4 gap-6 mb-5">
-          {totals?.map(({ name, key, unit, value }) => (
+          {totals.map(({ name, key, unit, value }) => (
             <BoxesDataBase variant="secondary" key={key}>
               <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl">
                 {name}
@@ -335,122 +397,143 @@ const RecentItemsSecondScreen = ({
             </BoxesDataBase>
           ))}
         </ul>
-
-        <div className="flex justify-end my-5">
-          <FilesUpload setFiles={setFiles} files={files} />
-        </div>
-
-        <div className="flex justify-between m-4">
-          <div>
-            <input
-              className="mb-5 shadow-lg rounded p-2"
-              value={searchInputValue}
-              onChange={(e) => setSearchInputValue(e.target.value)}
+        {!dataSource?.length && !openModal ? (
+          <>
+            <h2 className="font-bold text-xl mx-auto my-8 text-mainGreen bg-lightGreen p-2 rounded-lg w-fit">
+              {t("bond has been closed")}
+            </h2>
+            <AcceptedItemsAccountingEntry
+              sanadId={selectedItem.id}
+              isInPopup
+              setStage={setStage}
+              isInReceivedComp
             />
-            <Button
-              className="mx-4"
-              disabled={searchInputValue === ""}
-              bordered
-              action={handleTableSearch}
-            >
-              {t("search")}
-            </Button>
-            <Button
-              className="mx-4"
-              bordered
-              action={() => {
-                setDataSource(
-                  newSelectData?.filter(
-                    (item) => item.item_status === "Waiting"
-                  )
-                );
-              }}
-            >
-              {t("empty search")}
-            </Button>
-          </div>
-          <div className="flex flex-col mr-auto items-end justify-end">
-            <Link to="/selling/payoff/supply-payoff">
-              <Button bordered>{t("go to payoff")}</Button>
-            </Link>
-            <p className="text-end">
-              {t("selected items count")}:{selectedRows.length}
-            </p>
-          </div>
-        </div>
-
-        <Table data={dataSource || []} columns={Cols}>
-          <div className="mt-3 flex items-center justify-center gap-5 p-2">
-            <div className="flex items-center gap-2 font-bold">
-              {t("page")}
-              <span className=" text-mainGreen">{data?.current_page}</span>
-              {t("from")}
-              {<span className=" text-mainGreen">{data?.pages}</span>}
-            </div>
-            <div className="flex items-center gap-2 ">
+            {!openModal && (
               <Button
-                className=" rounded bg-mainGreen p-[.18rem]"
-                action={() => setPage((prev) => prev - 1)}
-                disabled={page == 1}
+                className="mr-auto flex"
+                action={() => setStage((prev) => prev - 1)}
+                bordered
               >
-                {isRTL ? (
-                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                ) : (
-                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                )}
+                {t("back")}
               </Button>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="flex justify-between m-4">
+              <div>
+                <input
+                  className="mb-5 shadow-lg rounded p-2"
+                  value={searchInputValue}
+                  onChange={(e) => setSearchInputValue(e.target.value)}
+                />
+                <Button
+                  className="mx-4"
+                  disabled={searchInputValue === ""}
+                  bordered
+                  action={handleTableSearch}
+                >
+                  {t("search")}
+                </Button>
+                <Button
+                  className="mx-4"
+                  bordered
+                  action={() => {
+                    setDataSource(
+                      sortItems?.filter(
+                        (item) => item.item_status === "Waiting"
+                      )
+                    );
+                  }}
+                >
+                  {t("empty search")}
+                </Button>
+              </div>
+              <div className="flex flex-col mr-auto items-end justify-end">
+                <Link to="/selling/payoff/supply-payoff">
+                  <Button bordered>{t("go to payoff")}</Button>
+                </Link>
+                <p className="text-end">
+                  {t("selected items count")}:{selectedRows.length}
+                </p>
+              </div>
+            </div>
+            <Table data={dataSource || []} columns={Cols} showNavigation>
+              <div className="mt-3 flex items-center justify-center gap-5 p-2">
+                <div className="flex items-center gap-2 font-bold">
+                  {t("page")}
+                  <span className=" text-mainGreen">{data?.current_page}</span>
+                  {t("from")}
+                  {<span className=" text-mainGreen">{data?.pages}</span>}
+                </div>
+                <div className="flex items-center gap-2 ">
+                  <Button
+                    className=" rounded bg-mainGreen p-[.18rem]"
+                    action={() => setPage((prev) => prev - 1)}
+                    disabled={page == 1}
+                  >
+                    {isRTL ? (
+                      <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                    ) : (
+                      <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                    )}
+                  </Button>
+                  <Button
+                    className="rounded bg-mainGreen p-[.18rem]"
+                    action={() => setPage((prev) => prev + 1)}
+                    disabled={page == data?.pages}
+                  >
+                    {isRTL ? (
+                      <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                    ) : (
+                      <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </Table>
+            <div className="flex justify-between mt-2 md:mt-8">
+              <div className="flex gap-x-4">
+                <div className="flex gap-4">
+                  <Button
+                    className="bg-mainOrange text-white"
+                    action={() => {
+                      if (selectedRows.length === 0)
+                        notify("info", `${t("select item at least")}`);
+                      else setOpenAcceptModal(true);
+                    }}
+                  >
+                    {t("offer selling")}
+                  </Button>
+                </div>
+                <div className="flex gap-4">
+                  <Button
+                    className="text-mainOrange border-mainOrange"
+                    action={() => {
+                      if (selectedRows?.length === 0)
+                        notify("info", `${t("select item at least")}`);
+                      else setOpenRefusedModal(true);
+                    }}
+                    bordered
+                  >
+                    {t("return")}
+                  </Button>
+                </div>
+              </div>
+
               <Button
-                className="rounded bg-mainGreen p-[.18rem]"
-                action={() => setPage((prev) => prev + 1)}
-                disabled={page == data?.pages}
+                className="mr-auto"
+                action={() => setStage((prev) => prev - 1)}
+                bordered
               >
-                {isRTL ? (
-                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                ) : (
-                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                )}
+                {t("back")}
               </Button>
             </div>
-          </div>
-        </Table>
-
-        <div className="flex justify-between mt-2 md:mt-8">
-          <div className="flex gap-4">
-            <Button
-              className="bg-mainOrange text-white"
-              action={() => {
-                files.length
-                  ? setOpenAcceptModal(true)
-                  : notify("info", `${t("attachments is required")}`);
-              }}
-            >
-              {t("receive all bond")}
-            </Button>
-            <Button
-              className="border-mainOrange text-mainOrange"
-              action={() => {
-                setOpenRefusedModal(true);
-                setSelectedRows(newSelectData);
-                setIsItRefusedAllBtn(true);
-              }}
-              bordered
-            >
-              {t("refuse all")}
-            </Button>
-          </div>
-
-          <Button
-            className="mr-auto"
-            action={() => setStage((prev) => prev - 1)}
-            bordered
-          >
-            {t("back")}
-          </Button>
-        </div>
-
+          </>
+        )}
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
           <ItemDetailsTable
-            selectedItem={newSelectData}
+            selectedItem={sortItems}
             selectedRowDetailsId={selectedRowDetailsId}
           />
         </Modal>
@@ -477,30 +560,45 @@ const RecentItemsSecondScreen = ({
                     id: +selectedItem?.id,
                   }));
 
-                  // const receivedFinalValue = {
-                  //   id: selectedItem?.id,
-                  //   branch_id: userData?.branch_id,
-                  //   allItems: selectedItem.items.map((item) => {
-                  //     return {
-                  //       hwya: item.hwya,
-                  //       front: item.front,
-                  //     };
-                  //   }),
-                  //   items: selectedItems,
-                  //   entity_gold_price: selectedItem?.entity_gold_price,
-                  //   api_gold_price: selectedItem?.api_gold_price,
-                  //   type: selectedItem?.type,
-                  // };
+                  const receivedFinalValue = {
+                    isPart: 0,
+                    id: selectedItem?.id,
+                    branch_id: userData?.branch_id,
+                    // allItems: selectedItem.items.map((item) => {
+                    //   return {
+                    //     hwya: item.hwya,
+                    //     front: item.front,
+                    //   };
+                    // }),
+                    items: selectedItems,
+                    entity_gold_price: selectedItem?.entity_gold_price,
+                    api_gold_price: selectedItem?.api_gold_price,
+                    type: selectedItem?.type,
+                  };
+
+                  const isPartItems = sortItems?.some(
+                    (sort) => sort.item_status !== "Waiting"
+                  );
+
+                  const receivedAllFinalValue = {
+                    isPart: 1,
+                    isPartItems: isPartItems,
+                    id: selectedItem?.id,
+                    branch_id: userData?.branch_id,
+                    entity_gold_price: selectedItem?.entity_gold_price,
+                    api_gold_price: selectedItem?.api_gold_price,
+                    type: selectedItem?.type,
+                  };
+
+                  const isSelectedAllItems =
+                    selectedRows?.length === dataSource?.length
+                      ? receivedAllFinalValue
+                      : receivedFinalValue;
+                  console.log("🚀 ~ isSelectedAllItems:", isSelectedAllItems);
 
                   mutateReceived({
-                    endpointName: "branchManage/api/v1/restriction-items",
-                    // values: { ...receivedFinalValue, media: files },
-                    values: {
-                      id: selectedItem?.id,
-                      branch_id: userData?.branch_id,
-                      media: files,
-                    },
-                    dataType: "formData",
+                    endpointName: "branchManage/api/v1/accept-items",
+                    values: isSelectedAllItems,
                   });
                 }}
               >
@@ -547,22 +645,52 @@ const RecentItemsSecondScreen = ({
                     api_gold_price: selectedItem?.api_gold_price,
                     type: selectedItem?.type,
                     allRejected:
-                      newSelectData?.length === selectedRows.length &&
+                      sortItems?.length === selectedRows.length &&
                       isItRefusedAllBtn
                         ? true
                         : false,
                     ...(isItRefusedAllBtn ? { media: files } : {}),
                   };
-                  setSelectedRows([]);
+                  // console.log("🚀 ~ rejectFinalValue:", rejectFinalValue)
+
+                  // const isAllRejected =
+                  //   selectedItem.items.length === selectedRows.length && isItRefusedAllBtn
+                  //     ? true
+                  //     : false;
+
+                  // const receivedFinalValue = {
+                  //   id: selectedItem?.id,
+                  //   branch_id: userData?.branch_id,
+                  //   allRejected: isAllRejected,
+                  //   items: selectedItems,
+                  //   entity_gold_price: selectedItem?.entity_gold_price,
+                  //   api_gold_price: selectedItem?.api_gold_price,
+                  //   type: selectedItem?.type,
+                  // };
+
+                  // const receivedAllFinalValue = {
+                  //   id: selectedItem?.id,
+                  //   allRejected: isAllRejected,
+                  //   branch_id: userData?.branch_id,
+                  //   items: selectedItems,
+                  //   entity_gold_price: selectedItem?.entity_gold_price,
+                  //   api_gold_price: selectedItem?.api_gold_price,
+                  //   type: selectedItem?.type,
+                  // };
+
+                  // const isSelectedAllItems =
+                  //   selectedRows?.length === dataSource?.length
+                  //     ? receivedAllFinalValue
+                  //     : receivedFinalValue;
+                  // console.log("🚀 ~ isSelectedAllItems:", isSelectedAllItems);
+
                   mutateReject({
                     endpointName: "branchManage/api/v1/reject-items",
-                    // values: rejectFinalValue,
-                    values: {
-                      id: selectedItem?.id,
-                      branch_id: userData?.branch_id,
-                    },
+                    values: rejectFinalValue,
                     dataType: "formData",
                   });
+
+                  setSelectedRows([]);
                 }}
               >
                 {t("reject")}
@@ -583,4 +711,4 @@ const RecentItemsSecondScreen = ({
   );
 };
 
-export default RecentItemsSecondScreen;
+export default SortPiecesSecondScreen;

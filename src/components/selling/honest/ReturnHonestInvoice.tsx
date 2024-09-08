@@ -30,6 +30,14 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
 
   const { userData } = useContext(authCtx);
 
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   const clientData = {
     client_id: item?.client_id_2,
     client_value: item?.client_id,
@@ -226,11 +234,11 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
                 </p>
                 <p>
                   {t("tax number")}:{" "}
-                  {companyData && companyData[0]?.taxRegisteration}
+                  {taxRegisteration && taxRegisteration}
                 </p>
                 <p>
                   {t("Mineral license")}:{" "}
-                  {companyData && companyData[0]?.mineralLicence}
+                  {mineralLicence && mineralLicence}
                 </p>
               </div>
             </div>

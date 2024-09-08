@@ -133,7 +133,7 @@
 
 import { Form, Formik } from "formik";
 import { t } from "i18next";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineLock } from "react-icons/ai";
 import { BiHide, BiShowAlt } from "react-icons/bi";
 import { CiMail } from "react-icons/ci";
@@ -151,7 +151,6 @@ import sms from "../../assets/sms.svg";
 import lock from "../../assets/lock.svg";
 import eyeShow from "../../assets/eye-show.svg";
 import eyeHide from "../../assets/eye-hide.svg";
-
 ///
 /////////// Types
 ///
@@ -164,27 +163,14 @@ const loginSchema = Yup.object().shape({
   password: Yup.string().trim().required(),
 });
 ///
+
 export const LoginForm = () => {
   const [PassToggle, setPassToggle] = useState(false);
-  /////////// VARIABLES
-  ///
+
   const isRTL = useIsRTL();
 
-  ///
-  /////////// CUSTOM HOOKS
-  ///
   const { logInHandler, isLoggedIn, isLoggingIn } = useContext(authCtx);
-  ///
-  /////////// STATES
-  ///
-  ///
-  /////////// SIDE EFFECTS
-  ///
 
-  /////////// FUNCTIONS | EVENTS | IF CASES
-  ///
-
-  ///
   return (
     <div className="flex relative flex-col items-center justify-center h-screen gap-3">
       <div className="myVideo-container">
@@ -215,8 +201,8 @@ export const LoginForm = () => {
         </div>
         <Formik
           initialValues={{
-            email: "emp@emp.com",
-            password: "alexon123456@$!acdfdsas",
+            email: "",
+            password: "",
           }}
           validationSchema={loginSchema}
           onSubmit={(values) => {

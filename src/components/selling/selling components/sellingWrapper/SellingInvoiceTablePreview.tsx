@@ -32,7 +32,16 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ userData:", userData);
   const taxRate = userData?.tax_rate / 100;
+
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
 
   const clientData = {
     client_id: item?.client_id,
@@ -78,8 +87,12 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         accessorKey: "karat_name",
         cell: (info: any) =>
           info.row.original.classification_id === 1
-            ? formatReyal(Number(info.getValue()))
-            : formatGram(Number(info.row.original.karatmineral_name)),
+            ? info.getValue()
+              ? formatReyal(Number(info.getValue()))
+              : "---"
+            : info.row.original.karatmineral_name
+            ? formatGram(Number(info.row.original.karatmineral_name))
+            : "---",
       },
       {
         header: () => <span>{t("weight")}</span>,
@@ -172,6 +185,11 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         direction: ltr;
         text-align: left;
       }
+      .container_print {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+      }
     }
     `,
   });
@@ -188,7 +206,10 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
           </Button>
         </div>
 
-        <div className={`${isRTL ? "rtl" : "ltr"}`} ref={invoiceRefs}>
+        <div
+          className={`${isRTL ? "rtl" : "ltr"} container_print`}
+          ref={invoiceRefs}
+        >
           <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
             <div className="mx-5 bill-shadow rounded-md p-6">
               <FinalPreviewBillData
@@ -229,11 +250,11 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
                 </p>
                 <p>
                   {t("tax number")}:{" "}
-                  {companyData && companyData[0]?.taxRegisteration}
+                  {taxRegisteration && taxRegisteration}
                 </p>
                 <p>
                   {t("Mineral license")}:{" "}
-                  {companyData && companyData[0]?.mineralLicence}
+                  {mineralLicence && mineralLicence}
                 </p>
               </div>
             </div>
