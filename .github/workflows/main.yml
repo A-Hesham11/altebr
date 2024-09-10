@@ -19,13 +19,24 @@ jobs:
           node-version: '20'  # Explicitly set Node.js version to 20
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci  # Use npm ci for a clean install of dependencies
 
       - name: Build Angular project
         run: npm run build --prod  # Adjust as needed for your Angular build command
 
       - name: Install lftp
         run: sudo apt-get install lftp  # Install lftp for FTP operations
+
+      - name: Clear previous deployment
+        run: |
+          echo "Clearing previous deployment..."
+          lftp -f "
+          set ssl:verify-certificate no
+          open ${{ secrets.FTP_HOST }}
+          user ${{ secrets.FTP_USER }} ${{ secrets.FTP_PASS }}
+          mirror --reverse --delete --verbose --exclude-glob .git/ /
+          bye
+          "
 
       - name: Deploy to FTP
         env:
