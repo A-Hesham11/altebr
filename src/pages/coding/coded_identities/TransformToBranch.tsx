@@ -232,6 +232,8 @@ const TransformToBranch = ({
       // QueryClient.refetchQueries(["thwel-api"]);
       setTransformPrintBondsModal(true);
       setBondDataPrint(data?.bond);
+      setOperationTypeSelect([])
+      refetch()
     },
     onError: (error) => {
       notify("error", error.response.data.msg);

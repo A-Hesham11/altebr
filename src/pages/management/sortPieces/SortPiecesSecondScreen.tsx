@@ -124,6 +124,7 @@ const SortPiecesSecondScreen = ({
         ...selectedRowsIds,
       ]);
       setSelectedRows([]);
+      refetch()
     },
   });
   const { mutate: mutateReject, isLoading: rejectLoading } = useMutate({
@@ -157,6 +158,7 @@ const SortPiecesSecondScreen = ({
         ...selectedRowsIds,
       ]);
       setSelectedRows([]);
+      refetch()
     },
   });
 
@@ -397,7 +399,7 @@ const SortPiecesSecondScreen = ({
             </BoxesDataBase>
           ))}
         </ul>
-        {!dataSource?.length && !openModal ? (
+        {/* {!dataSource?.length && !openModal ? (
           <>
             <h2 className="font-bold text-xl mx-auto my-8 text-mainGreen bg-lightGreen p-2 rounded-lg w-fit">
               {t("bond has been closed")}
@@ -418,7 +420,7 @@ const SortPiecesSecondScreen = ({
               </Button>
             )}
           </>
-        ) : (
+        ) : ( */}
           <>
             <div className="flex justify-between m-4">
               <div>
@@ -458,7 +460,7 @@ const SortPiecesSecondScreen = ({
                 </p>
               </div>
             </div>
-            <Table data={dataSource || []} columns={Cols} showNavigation>
+            <Table data={dataSource || []} columns={Cols}>
               <div className="mt-3 flex items-center justify-center gap-5 p-2">
                 <div className="flex items-center gap-2 font-bold">
                   {t("page")}
@@ -530,7 +532,6 @@ const SortPiecesSecondScreen = ({
               </Button>
             </div>
           </>
-        )}
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
           <ItemDetailsTable
             selectedItem={sortItems}
@@ -560,16 +561,12 @@ const SortPiecesSecondScreen = ({
                     id: +selectedItem?.id,
                   }));
 
+
+
                   const receivedFinalValue = {
                     isPart: 0,
                     id: selectedItem?.id,
                     branch_id: userData?.branch_id,
-                    // allItems: selectedItem.items.map((item) => {
-                    //   return {
-                    //     hwya: item.hwya,
-                    //     front: item.front,
-                    //   };
-                    // }),
                     items: selectedItems,
                     entity_gold_price: selectedItem?.entity_gold_price,
                     api_gold_price: selectedItem?.api_gold_price,
@@ -580,15 +577,21 @@ const SortPiecesSecondScreen = ({
                     (sort) => sort.item_status !== "Waiting"
                   );
 
+                  const isPart = sortItems?.every(
+                    (sort) => sort.item_status === "Waiting"
+                  );
+                  console.log("🚀 ~ item_status:", isPart)
+
                   const receivedAllFinalValue = {
-                    isPart: 1,
-                    isPartItems: isPartItems,
+                    isPart: isPart ? 1 : 0,
+                    isPartItems: isPartItems ? 1 : 0,
                     id: selectedItem?.id,
                     branch_id: userData?.branch_id,
                     entity_gold_price: selectedItem?.entity_gold_price,
                     api_gold_price: selectedItem?.api_gold_price,
                     type: selectedItem?.type,
-                  };
+                  }; 
+                  console.log("🚀 ~ receivedAllFinalValue:", receivedAllFinalValue)
 
                   const isSelectedAllItems =
                     selectedRows?.length === dataSource?.length
