@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Build Angular project
-        run: npm run build  # Adjust as needed for your Angular build command
+        run: npm run build --prod  # Adjust as needed for your Angular build command
 
       - name: Install lftp
         run: sudo apt-get install lftp  # Install lftp for FTP operations
@@ -38,8 +38,7 @@ jobs:
           set ssl:verify-certificate no
           open $FTP_HOST
           user $FTP_USER $FTP_PASS
-          mirror --reverse --delete --verbose ./dist${{ secrets.REMOTE_DIR   }}/ /
+          mirror --reverse --delete --verbose ./dist /${{ secrets.REMOTE_DIR }}
           bye
           "
           echo "Deployment finished."
-          echo "Deployment finished.${{ secrets.REMOTE_DIR   }}"
