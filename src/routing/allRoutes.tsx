@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import { AddClients } from "../components/selling/clients/AddClients";
 import ClientsData from "../components/selling/clients/ClientsData";
-import ReservePiece from "../components/selling/clients/reservePiece";
+// import ReservePiece from "../components/selling/clients/reservePiece";
 import { AllHonestBonds } from "../components/selling/honest/AllHonestBonds";
 import { AllRetrieveHonestBonds } from "../components/selling/honest/AllRetrieveHonestBonds";
 import { HonestBondAccountingRestriction } from "../components/selling/honest/HonestBondAccountingRestriction";
@@ -501,7 +501,7 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/salaries" element={<SellingSalaries />} />
           <Route path="/selling/clients" element={<Clients />} />
           <Route path="/selling/customersData" element={<ClientsData />} />
-          <Route path="/selling/reservePiece" element={<ReservePiece />} />
+          {/* <Route path="/selling/reservePiece" element={<ReservePiece />} /> */}
           <Route path="/selling/payoff" element={<Payoff />} />
           <Route path="/selling/continuity" element={<ContinuityPage />} />
           <Route path="/selling/reports/stocks" element={<Stocks />} />
