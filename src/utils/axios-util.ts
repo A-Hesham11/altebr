@@ -8,14 +8,23 @@ import Cookies from "js-cookie";
 import i18n from "../i18n";
 import { notify } from "./toast";
 
-const baseURL =
+const getTenantFromUrl = (() => {
+  const url = window.location.hostname;
+  console.log("🚀 ~ getTenantFromUrl ~ url:", url);
+  const parts = url.split(".");
+  console.log("🚀 ~ getTenantFromUrl ~ parts:", parts);
+  return parts.length > 1 ? parts[0] : null;
+})();
+console.log("🚀 ~ getTenantFromUrl ~ getTenantFromUrl:", getTenantFromUrl);
 
+const baseURL =
   // import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
-  import.meta.env.VITE_BASE_URL || "https://api-alexon.altebr.com";
-  // import.meta.env.VITE_BASE_URL || "https://api-almahaisen-test.altebr.com";
-  // import.meta.env.VITE_BASE_URL || "https://api-almahaisen2.altebr.com/";
+  import.meta.env.VITE_BASE_URL || `https://api-${getTenantFromUrl}.altebr.com`;
+// import.meta.env.VITE_BASE_URL || "https://api-almahaisen-test.altebr.com";
+// import.meta.env.VITE_BASE_URL || "https://api-almahaisen2.altebr.com/";
 // import.meta.env.VITE_BASE_URL || "https://api-test.altebr.com";
 // import.meta.env.VITE_BASE_URL || "https://api-almahaisen.altebr.com";
+console.log("🚀 ~ baseURL:", baseURL);
 
 const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 

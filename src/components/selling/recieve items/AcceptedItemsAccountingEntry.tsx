@@ -18,6 +18,7 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
     /////////// VARIABLES
     ///
     const { formatGram, formatReyal } = numberContext()
+    const navigate = useNavigate()
 
     const isRTL = useIsRTL()
 
@@ -301,7 +302,7 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
                         {
                             !isInPopup &&
                             <>
-                                <Button className="mb-8" action={() => setStage(1)} bordered>{t('sort pieces')}</Button>
+                                <Button className="mb-8" action={() => navigate("/selling/sortPieces")} bordered>{t('sort pieces')}</Button>
                             </>
                         }
                     </div>
