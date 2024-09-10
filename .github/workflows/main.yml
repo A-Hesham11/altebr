@@ -22,7 +22,7 @@ jobs:
         run: npm ci  # Use npm ci for a clean install of dependencies
 
       - name: Build Angular project
-        run: npm run build --prod  # Adjust as needed for your Angular build command
+        run: yarn vite build  # Adjust as needed for your Angular build command
 
       - name: Install lftp
         run: sudo apt-get install lftp  # Install lftp for FTP operations
