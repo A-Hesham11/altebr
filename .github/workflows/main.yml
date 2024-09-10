@@ -11,26 +11,21 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Ensure compatibility with Node.js 20
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '20'  # Explicitly set Node.js version to 20
 
       - name: Install dependencies
-        run: |
-          rm -rf node_modules
-          yarn install
-
-      - name: Clean build directory
-        run: rm -rf dist
+        run: npm ci  # Use npm ci for a clean install of dependencies
 
       - name: Build Angular project
-        run: yarn build  # Adjust as needed for your Angular build command
+        run: yarn vite build  # Adjust as needed for your Angular build command
 
       - name: Install lftp
-        run: sudo apt-get install lftp
+        run: sudo apt-get install lftp  # Install lftp for FTP operations
 
       - name: Clear previous deployment
         run: |
