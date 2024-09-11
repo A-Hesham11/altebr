@@ -40,7 +40,6 @@ jobs:
           set ssl:verify-certificate no
           open $FTP_HOST
           user $FTP_USER $FTP_PASS
-          mirror --reverse --delete --verbose ./dist /${{ secrets.REMOTE_DIR }}
           bye
           "
           echo "Deployment finished."
