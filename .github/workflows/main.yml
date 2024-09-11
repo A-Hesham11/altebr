@@ -28,16 +28,6 @@ jobs:
       - name: Install lftp
         run: sudo apt-get install lftp  # Install lftp for FTP operations
 
-      - name: Clear previous deployment
-        run: |
-          echo "Clearing previous deployment..."
-          lftp -f "
-          set ssl:verify-certificate no
-          open ${{ secrets.FTP_HOST }}
-          user ${{ secrets.FTP_USER }} ${{ secrets.FTP_PASS }}
-          mirror --reverse --delete --verbose --exclude-glob .git/ /
-          bye
-          "
 
       - name: Deploy to FTP
         env:
