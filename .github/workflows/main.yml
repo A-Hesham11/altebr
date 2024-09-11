@@ -4,7 +4,7 @@ name: Build and Deploy Angular Project to FTP
 on:
   push:
     branches:
-      - master  # Trigger deployment on push to the main branch
+      - ramy  # Trigger deployment on push to the main branch
 
 jobs:
   build-and-deploy:
