@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci  # Use npm ci for a clean install of dependencies
-      - name: Build Angular project
+      - name: Build react project
         run: |
           yarn vite build --force || true  # Continue even if the build fails
 
