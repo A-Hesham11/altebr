@@ -22,7 +22,7 @@ jobs:
         run: npm ci  # Use npm ci for a clean install of dependencies
       - name: Build react project
         run: |
-          yarn vite build --force || true  # Continue even if the build fails
+          yarn vite build --force   # Continue even if the build fails
 
 
       - name: Install lftp
