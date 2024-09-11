@@ -499,6 +499,9 @@ const RecentItemsSecondScreen = ({
                       id: selectedItem?.id,
                       branch_id: userData?.branch_id,
                       media: files,
+                      entity_gold_price: selectedItem?.entity_gold_price,
+                      api_gold_price: selectedItem?.api_gold_price,
+                      type: selectedItem?.type,
                     },
                     dataType: "formData",
                   });
@@ -546,7 +549,7 @@ const RecentItemsSecondScreen = ({
                     entity_gold_price: selectedItem?.entity_gold_price,
                     api_gold_price: selectedItem?.api_gold_price,
                     type: selectedItem?.type,
-                    allRejected:true,
+                    allRejected: true,
                     ...(isItRefusedAllBtn ? { media: files } : {}),
                   };
                   setSelectedRows([]);
