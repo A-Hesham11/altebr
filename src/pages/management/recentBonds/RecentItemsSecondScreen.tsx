@@ -499,6 +499,9 @@ const RecentItemsSecondScreen = ({
                       id: selectedItem?.id,
                       branch_id: userData?.branch_id,
                       media: files,
+                      entity_gold_price: selectedItem?.entity_gold_price,
+                      api_gold_price: selectedItem?.api_gold_price,
+                      type: selectedItem?.type,
                     },
                     dataType: "formData",
                   });
@@ -542,25 +545,18 @@ const RecentItemsSecondScreen = ({
                   const rejectFinalValue = {
                     id: selectedItem?.id,
                     branch_id: userData?.branch_id,
-                    items: selectedItems,
+                    // items: selectedItems,
                     entity_gold_price: selectedItem?.entity_gold_price,
                     api_gold_price: selectedItem?.api_gold_price,
                     type: selectedItem?.type,
-                    allRejected:
-                      newSelectData?.length === selectedRows.length &&
-                      isItRefusedAllBtn
-                        ? true
-                        : false,
+                    allRejected: true,
                     ...(isItRefusedAllBtn ? { media: files } : {}),
                   };
                   setSelectedRows([]);
                   mutateReject({
                     endpointName: "branchManage/api/v1/reject-items",
                     // values: rejectFinalValue,
-                    values: {
-                      id: selectedItem?.id,
-                      branch_id: userData?.branch_id,
-                    },
+                    values: rejectFinalValue,
                     dataType: "formData",
                   });
                 }}

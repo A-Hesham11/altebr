@@ -467,6 +467,8 @@ export const PayOffSecondScreen = ({
             <Button
               onClick={() => {
                 const retrieveFinalValue = {
+                  bond_id: selectedItem?.id,
+                  branch_id: userData?.branch_id,
                   items: selectedRows?.map((item) => item.hwya),
                 };
                 mutateRetrieve({

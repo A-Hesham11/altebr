@@ -3,14 +3,15 @@ import { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import { AddClients } from "../components/selling/clients/AddClients";
 import ClientsData from "../components/selling/clients/ClientsData";
-import ReservePiece from "../components/selling/clients/reservePiece";
+// import ReservePiece from "../components/selling/clients/reservePiece";
 import { AllHonestBonds } from "../components/selling/honest/AllHonestBonds";
 import { AllRetrieveHonestBonds } from "../components/selling/honest/AllRetrieveHonestBonds";
 import { HonestBondAccountingRestriction } from "../components/selling/honest/HonestBondAccountingRestriction";
 import { NewHonest } from "../components/selling/honest/NewHonest";
 import { RetrieveHonestEntryScreen } from "../components/selling/honest/RetrieveHonestEntryScreen";
 import { ReturnHonestRestriction } from "../components/selling/honest/ReturnHonestRestriction";
-import PayoffEntryScreen from "../components/selling/payoff/PayoffentryScreen";
+// import PayoffEntryScreen from "../components/selling/payoff/PayoffentryScreen";
+import  PayoffEntryScreen from "../components/selling/payoff/PayoffEntryScreen";
 import RecieveItems from "../components/selling/recieve items/RecieveItems";
 import BranchAccountingTree from "../components/selling/reports/BranchAccountingTree";
 import { SellingFinalPreview } from "../components/selling/selling components/SellingFinalPreview";
@@ -82,11 +83,12 @@ import ViewAccountsBank from "../components/templates/accountsBank/ViewAccountsB
 import ViewBanks from "../components/templates/banks/ViewBanks";
 import { AllRetrievalRestrictions } from "../components/selling/honest/AllRetrievalRestrictions";
 import { OneRetrievalRestrictions } from "../components/selling/honest/OneRetrievalRestrictions";
-import ViewInvoiceData from "../components/templates/invoiceData/viewInvoiceData";
+// import ViewInvoiceData from "../components/templates/invoiceData/viewInvoiceData";
+import ViewInvoiceData from "../components/templates/invoiceData/ViewInvoiceData";
 import AddSellingInvoice from "../components/selling/selling components/sellingWrapper/AddSellingInvoice";
 import ViewSellingInvoice from "../components/selling/selling components/sellingWrapper/ViewSellingInvoice";
-import SellingRestrictionsInvoice from "../pages/selling/sellingRestrictionsInvoice";
-import AddTaxPolicy from "../components/templates/sellingPolicies/AddTaxPolicy";
+// import SellingRestrictionsInvoice from "../pages/selling/sellingRestrictionsInvoice";
+import SellingRestrictionsInvoice from "../pages/selling/SellingRestrictionsInvoice";
 import ViewTaxPolicy from "../components/templates/sellingPolicies/ViewTaxPolicy";
 import PaymentToManagement from "../pages/Payment/PaymentToManagement";
 import { Home } from "../pages/home/Home";
@@ -106,9 +108,9 @@ import PurchaseBonds from "../pages/Buying/Bonds/PurchaseBonds";
 import WeightAdjustmentBonds from "../pages/Buying/Bonds/WeightAdjustmentBonds";
 import PaymentBonds from "../pages/coding/branch bonds/PaymentBonds";
 import ViewBondsFromBranchs from "../pages/coding/branch bonds/ViewBondsFromBranchs";
-import { ViewBonds } from "../pages/coding/branch bonds/ViewBonds";
+// import { ViewBonds } from "../pages/coding/branch bonds/ViewBonds";
+import { ViewBonds } from "../pages/coding/branch bonds/viewBonds";
 import Expenses from "../pages/expenses/Expenses";
-import ExpensesInvoice from "../pages/expenses/Invoice/ExpensesInvoice";
 import ExpensesBonds from "../pages/expenses/Bonds/ExpensesBonds";
 import ViewExpensesPolicies from "../components/templates/expensesPolicy/ViewExpensesPolicies";
 import ViewSubExpensesPolicies from "../components/templates/subExpensesPolicy/ViewSubExpensesPolicies";
@@ -136,12 +138,11 @@ import ViewSupportArticle from "../pages/Support/viewSupport/ViewSupportArticle"
 import SalesReturnPage from "../pages/salesReturn/SalesReturnPage";
 import ImportTotals from "../pages/coding/coded_identities/ImportTotals";
 import Stocks from "../pages/selling/Stocks";
-import EdaraStocks from "../pages/stocksInEdara/edaraStocks";
-import BranchStocks from "../pages/stocksInEdara/branchStocks";
+// import EdaraStocks from "../pages/stocksInEdara/edaraStocks";
+import EdaraStocks from "../pages/stocksInEdara/EdaraStocks";
+// import BranchStocks from "../pages/stocksInEdara/branchStocks";
+import BranchStocks from "../pages/stocksInEdara/BranchStocks";
 import SalesReturnRestrictions from "../pages/salesReturn/SalesReturnRestrictions";
-import PurchaseInvoice from "../pages/reserveGold/invoices/purchaseInvoice/PurchaseInvoice";
-import SellingInvoice from "../pages/reserveGold/invoices/sellingInvoice/supplier/SellingInvoiceSupplier";
-import ReversePurchaseBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
 import ReservePurchaseBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
 import SellingBond from "../pages/reserveGold/invoices/sellingInvoice/SellingBond";
 import ReverseSellingBonds from "../pages/reserveGold/bonds/sellingBonds/ReserveSellingBonds";
@@ -506,7 +507,7 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/salaries" element={<SellingSalaries />} />
           <Route path="/selling/clients" element={<Clients />} />
           <Route path="/selling/customersData" element={<ClientsData />} />
-          <Route path="/selling/reservePiece" element={<ReservePiece />} />
+          {/* <Route path="/selling/reservePiece" element={<ReservePiece />} /> */}
           <Route path="/selling/payoff" element={<Payoff />} />
           <Route path="/selling/continuity" element={<ContinuityPage />} />
           <Route path="/selling/reports/stocks" element={<Stocks />} />

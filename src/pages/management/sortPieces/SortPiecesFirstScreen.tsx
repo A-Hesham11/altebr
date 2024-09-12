@@ -89,7 +89,6 @@ const SortPiecesFirstScreen = ({
         header: () => <span>{t("#")}</span>,
         accessorKey: "action",
         cell: (info) => {
-          console.log("🚀 ~ info:", info.row.original);
           return (
             <div className="flex items-center justify-center gap-4">
               <input
@@ -107,10 +106,15 @@ const SortPiecesFirstScreen = ({
                 // )}
 
                 className={`${
-                  info.row.original.acceptedItems ===
-                    info.row.original.count_items && "!bg-slate-400"
+                  info.row.original.count_items ===
+                    info.row.original.acceptedItems +
+                      info.row.original.rejectItems && "!bg-slate-400"
                 }`}
-                disabled={info.row.original.acceptedItems === info.row.original.count_items}
+                disabled={
+                  info.row.original.count_items ===
+                  info.row.original.acceptedItems +
+                    info.row.original.rejectItems
+                }
               />
             </div>
           );
@@ -133,9 +137,25 @@ const SortPiecesFirstScreen = ({
       },
       {
         cell: (info) =>
-          info.row.original.acceptedItems === info.row.original.count_items ? t("closed") : t("opened"),
+          info.row.original.acceptedItems === info.row.original.count_items
+            ? t("closed")
+            : t("opened"),
         accessorKey: "band_status",
         header: () => <span>{t("item status")}</span>,
+      },
+      {
+        cell: (info: any) => (
+          <BiSpreadsheet
+            size={23}
+            onClick={() => {
+              setOpenRestrictModal(true);
+              setSelectedItem(info.row.original);
+            }}
+            className="text-mainGreen mx-auto cursor-pointer"
+          />
+        ),
+        accessorKey: "restriction",
+        header: () => <span>{t("restriction")}</span>,
       },
     ],
     [sortData, dataSource]
@@ -183,7 +203,7 @@ const SortPiecesFirstScreen = ({
 
   return (
     <div className="px-2 md:px-16 py-2 md:py-8">
-      <h3 className="font-bold">{t("receive items")}</h3>
+      <h3 className="font-bold">{t("sort pieces")}</h3>
       <Formik
         initialValues={searchValues}
         onSubmit={(values) => {
