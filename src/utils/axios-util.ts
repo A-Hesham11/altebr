@@ -14,8 +14,12 @@ const getTenantFromUrl = (() => {
   return parts.length > 1 ? parts[0] : null;
 })();
 
-// const baseURL = import.meta.env.VITE_BASE_URL || "https://api-alexon.altebr.com/";
-import.meta.env.VITE_BASE_URL || `https://api-${getTenantFromUrl}.altebr.com`;
+const isGetTenantFromUrl =
+  getTenantFromUrl === null ? "alexon" : getTenantFromUrl;
+
+const baseURL =
+  import.meta.env.VITE_BASE_URL ||
+  `https://api-${isGetTenantFromUrl}.altebr.com`;
 
 const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 
