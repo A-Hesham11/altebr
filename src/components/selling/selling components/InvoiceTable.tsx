@@ -41,66 +41,66 @@ const InvoiceTable = <T extends object>({
     },
   });
 
-  // const { formatGram, formatReyal } = numberContext();
+  const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
 
-  // const taxRate = userData?.tax_rate / 100;
+  const taxRate = userData?.tax_rate / 100;
 
-  // const totalWeight = data?.reduce((acc, curr) => {
-  //   acc += +curr.weight;
-  //   return acc;
-  // }, 0);
+  const totalWeight = data?.reduce((acc, curr) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
 
-  // const totalWeightOfSelsal = data?.reduce((acc, item) => {
-  //   return (
-  //     acc + item?.selsal?.reduce((subAcc, curr) => subAcc + +curr.weight, 0)
-  //   );
-  // }, 0);
+  const totalWeightOfSelsal = data?.reduce((acc, item) => {
+    return (
+      acc + item?.selsal?.reduce((subAcc, curr) => subAcc + +curr.weight, 0)
+    );
+  }, 0);
 
-  // const totalCost = data?.reduce((acc, curr) => {
-  //   acc += +curr.cost;
-  //   return acc;
-  // }, 0);
+  const totalCost = data?.reduce((acc, curr) => {
+    acc += +curr.cost;
+    return acc;
+  }, 0);
 
-  // const totalCommissionRatio = paymentData?.reduce((acc, card) => {
-  //   if (card.add_commission_ratio === "yes") {
-  //     acc += +card.commission_riyals;
-  //   }
-  //   return acc;
-  // }, 0);
+  const totalCommissionRatio = paymentData?.reduce((acc, card) => {
+    if (card.add_commission_ratio === "yes") {
+      acc += +card.commission_riyals;
+    }
+    return acc;
+  }, 0);
 
-  // const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
-  //   if (card.add_commission_ratio === "yes") {
-  //     acc += +card.commission_tax;
-  //   }
-  //   return acc;
-  // }, 0);
+  const totalCommissionTaxes = paymentData?.reduce((acc, card) => {
+    if (card.add_commission_ratio === "yes") {
+      acc += +card.commission_tax;
+    }
+    return acc;
+  }, 0);
 
-  // const totalFinalCost =
-  //   Number(totalCost) +
-  //   Number(totalCommissionRatio) +
-  //   Number(totalCost) * taxRate +
-  //   Number(totalCommissionTaxes);
+  const totalFinalCost =
+    Number(totalCost) +
+    Number(totalCommissionRatio) +
+    Number(totalCost) * taxRate +
+    Number(totalCommissionTaxes);
 
-  // const locationPath = location.pathname;
+  const locationPath = location.pathname;
 
-  // const totalFinalCostIntoArabic = convertNumToArWord(
-  //   Math.round(
-  //     locationPath === "/selling/addInvoice/" ||
-  //       locationPath === "/selling/viewInvoice/" ||
-  //       locationPath === "/selling/payoff/sales-return" ||
-  //       locationPath === "/selling/honesty/all-return-honest"
-  //       ? costDataAsProps?.totalFinalCost
-  //       : locationPath === "/bonds/supply-return"
-  //       ? costDataAsProps?.totalCost
-  //       : totalFinalCost
-  //   )
-  // );
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(
+      locationPath === "/selling/addInvoice/" ||
+        locationPath === "/selling/viewInvoice/" ||
+        locationPath === "/selling/payoff/sales-return" ||
+        locationPath === "/selling/honesty/all-return-honest"
+        ? costDataAsProps?.totalFinalCost
+        : locationPath === "/bonds/supply-return"
+        ? costDataAsProps?.totalCost
+        : totalFinalCost
+    )
+  );
 
-  // const hasSelsal =
-  //   locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal
-  //     ? totalWeightOfSelsal
-  //     : 0;
+  const hasSelsal =
+    locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal
+      ? totalWeightOfSelsal
+      : 0;
 
   // const resultTable = [
   //   {
@@ -118,18 +118,18 @@ const InvoiceTable = <T extends object>({
   //   },
   // ];
 
-  // const resultReturnTable = [
-  //   {
-  //     number: t("totals"),
-  //     weight: formatGram(Number(totalWeight) + Number(hasSelsal)),
-  //     cost: costDataAsProps
-  //       ? formatReyal(Number(costDataAsProps?.totalCost))
-  //       : formatReyal(Number(totalCost + totalCommissionRatio)),
-  //   },
-  // ];
+  const resultReturnTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight) + Number(hasSelsal)),
+      cost: costDataAsProps
+        ? formatReyal(Number(costDataAsProps?.totalCost))
+        : formatReyal(Number(totalCost + totalCommissionRatio)),
+    },
+  ];
 
-  // const resultTotalTable =
-  //   locationPath === "/bonds/supply-return" ? resultReturnTable : resultTable;
+  const resultTotalTable =
+    locationPath === "/bonds/supply-return" ? resultReturnTable : resultTable;
 
   return (
     <>

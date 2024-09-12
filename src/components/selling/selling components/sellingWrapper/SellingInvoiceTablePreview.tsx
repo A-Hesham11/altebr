@@ -59,6 +59,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     endpoint: `/companySettings/api/v1/companies`,
     queryKey: ["Mineral_license"],
   });
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ companyData:", companyData);
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -246,15 +247,13 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
                   {t("phone")}: {userData?.phone}
                 </p>
                 <p>
-                  {t("email")}: {userData?.email}
+                  {t("email")}: {companyData?.[0]?.email}
                 </p>
                 <p>
-                  {t("tax number")}:{" "}
-                  {taxRegisteration && taxRegisteration}
+                  {t("tax number")}: {taxRegisteration && taxRegisteration}
                 </p>
                 <p>
-                  {t("Mineral license")}:{" "}
-                  {mineralLicence && mineralLicence}
+                  {t("Mineral license")}: {mineralLicence && mineralLicence}
                 </p>
               </div>
             </div>

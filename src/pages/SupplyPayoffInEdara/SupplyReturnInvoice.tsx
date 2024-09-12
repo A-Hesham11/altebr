@@ -241,7 +241,7 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
                   {t("phone")}: {userData?.phone}
                 </p>
                 <p>
-                  {t("email")}: {userData?.email}
+                {t("email")}: {companyData?.[0]?.email}
                 </p>
                 <p>
                   {t("tax number")}: {taxRegisteration && taxRegisteration}
