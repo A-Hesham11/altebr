@@ -30,8 +30,12 @@ const FinalPreviewBillData = ({
   invoiceNumber,
   employee_name,
 }: Client_TP) => {
+  console.log("🚀 ~ employee_name:", employee_name);
   const { client_id, client_value, bond_date, supplier_id, supplier_name } =
     clientData;
+  console.log("🚀 ~ client_id:", client_id);
+  console.log("🚀 ~ client_value:", client_value);
+  console.log("🚀 ~ supplier_name:", supplier_name);
 
   const location = useLocation();
   const path = location.pathname;
@@ -116,7 +120,7 @@ const FinalPreviewBillData = ({
             {t("employee name")}
             <span className="font-medium">{employee_name}</span>{" "}
           </p>
-        ) : (
+        ) : client_id !== 1 ? (
           <>
             <p className="text-xs font-bold">
               {supplier_id ? t("supplier name") : t("client name")} :{" "}
@@ -129,13 +133,13 @@ const FinalPreviewBillData = ({
               <span className="font-medium">{data?.phone}</span>{" "}
             </p>
             {/* <p className="text-xs font-bold">
-              {t("Id number")} :{" "}
-              <span className="font-medium">
-                {data?.identity || data?.national_number}
-              </span>{" "}
-            </p> */}
+      {t("Id number")} :{" "}
+      <span className="font-medium">
+        {data?.identity || data?.national_number}
+      </span>{" "}
+    </p> */}
           </>
-        )}
+        ) : null}
       </div>
     </div>
   );
