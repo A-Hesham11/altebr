@@ -286,6 +286,7 @@ const PaymentCard = ({
       const selectNewCard = cardsData?.filter(
         (item) => item?.front_key === frontKey
       );
+      console.log("🚀 ~ handleChooseCard ~ selectNewCard:", selectNewCard);
 
       const selectCradIDOrBankId = selectNewCard[0]?.bank_id
         ? selectNewCard[0]?.bank_id
@@ -295,7 +296,7 @@ const PaymentCard = ({
       setSelectedCardName?.(
         isRTL ? selectNewCard[0]?.name_ar : selectNewCard[0]?.name_en
       );
-      setIsMaxDiscountLimit?.(selectNewCard[0]?.is_minimum);
+      setIsMaxDiscountLimit(Number(selectNewCard[0]?.is_minimum));
       setSelectedCardId(frontKey);
       setFieldValue(
         "discount_percentage",
@@ -326,10 +327,12 @@ const PaymentCard = ({
   };
 
   const cardID = cardsData?.filter((item) => item.id === editData?.card_id);
+  console.log("🚀 ~ cardID:", cardID);
 
   useEffect(() => {
     if (editData) {
       setSelectedCardId(cardID[0]?.front_key);
+      setIsMaxDiscountLimit(Number(cardID[0]?.is_minimum));
     }
   }, [cardID]);
 

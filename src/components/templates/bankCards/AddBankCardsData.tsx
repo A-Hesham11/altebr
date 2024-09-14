@@ -64,11 +64,12 @@ const AddBankCardsData = ({
 
   const [cardId, setCardId] = useState("");
   const [isMaxDiscountLimit, setIsMaxDiscountLimit] = useState(0);
-  console.log("🚀 ~ isMaxDiscountLimit:", typeof isMaxDiscountLimit)
+  console.log("🚀 ~ isMaxDiscountLimit:", isMaxDiscountLimit);
+  console.log("🚀 ~ isMaxDiscountLimit:", typeof isMaxDiscountLimit);
 
   useEffect(() => {
-      setCardId(editData?.card?.id)
-  }, [editData])
+    setCardId(editData?.card?.id);
+  }, [editData]);
 
   const [newValue, setNewValue] =
     useState<SingleValue<SelectOption_TP> | null>();
@@ -184,7 +185,7 @@ const AddBankCardsData = ({
     mutationKey: ["BranchCards"],
     onSuccess: (data) => {
       notify("success");
-      refetchBankCards()
+      refetchBankCards();
       queryClient.refetchQueries(["all-BranchCards"]);
     },
     onError: (error) => {
@@ -217,7 +218,6 @@ const AddBankCardsData = ({
                   card_id: cardId,
                   discount_percentage: values.discount_percentage / 100,
                 });
-
               }
             }}
           >
@@ -281,7 +281,8 @@ const AddBankCardsData = ({
                         />
                       </div>
 
-                      {(isMaxDiscountLimit == 1) || (editData?.max_discount_limit) ? (
+                      {isMaxDiscountLimit == 1 ||
+                      editData?.max_discount_limit ? (
                         <>
                           <BaseInputField
                             id="max_discount_limit"

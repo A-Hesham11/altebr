@@ -57,6 +57,7 @@ export const SellingFinalPreview = ({
     queryKey: ["Mineral_license"],
   });
 
+  console.log("🚀 ~ companyData:", companyData);
   return (
     <div className="relative h-full p-10 bg-flatWhite">
       <div id="content-to-print">
@@ -96,7 +97,7 @@ export const SellingFinalPreview = ({
                 {t("phone")}: {userData?.phone}
               </p>
               <p>
-                {t("email")}: {userData?.email}
+                {t("email")}: {companyData?.[0]?.email}
               </p>
               <p>
                 {t("tax number")}:{" "}
