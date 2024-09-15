@@ -1,31 +1,31 @@
 /////////// IMPORTS
 ///
-import { useFormikContext } from "formik"
-import { t } from "i18next"
-import { useEffect } from "react"
+import { useFormikContext } from "formik";
+import { t } from "i18next";
+import { useEffect } from "react";
 import {
-    BaseInputField,
-    InnerFormLayout,
-    OuterFormLayout
-} from "../../../molecules"
-import { NationalAddress } from "../../NationalAddress"
-import { Documents } from "../../reusableComponants/documents/Documents"
-import { Country_city_distract_markets } from "../Country_city_distract_markets"
-import { Button } from "../../../atoms"
+  BaseInputField,
+  InnerFormLayout,
+  OuterFormLayout,
+} from "../../../molecules";
+import { NationalAddress } from "../../NationalAddress";
+import { Documents } from "../../reusableComponants/documents/Documents";
+import { Country_city_distract_markets } from "../Country_city_distract_markets";
+import { Button } from "../../../atoms";
 ///
 /////////// Types
 ///
 type BranchMainDataProps_TP = {
-  title: string
-  editData:any
-  isLoading?: any
-  isSuccessPost?: any
-  restData?: any
-  setDocsFormValues?: any
-  docsFormValues?: any
-  setModalOpen?: any
-  modalOpen?: any
-}
+  title: string;
+  editData: any;
+  isLoading?: any;
+  isSuccessPost?: any;
+  restData?: any;
+  setDocsFormValues?: any;
+  docsFormValues?: any;
+  setModalOpen?: any;
+  modalOpen?: any;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 ///
@@ -38,16 +38,16 @@ export const BranchMainData = ({
   setDocsFormValues,
   docsFormValues,
   setModalOpen,
+  setShow,
   modalOpen,
 }: BranchMainDataProps_TP) => {
-
   /////////// VARIABLES
   /////
 
   ///
   /////////// CUSTOM HOOKS
   ///
-  const { values, setFieldValue, resetForm } = useFormikContext()
+  const { values, setFieldValue, resetForm } = useFormikContext();
   ///
   /////////// STATES
   ///
@@ -61,14 +61,14 @@ export const BranchMainData = ({
   useEffect(() => {
     if (isSuccessPost) {
       if (!editData) {
-        restData()
-        resetForm()
-        setFieldValue("date_of_birth", new Date())
-        setFieldValue("national_expire_date", new Date())
-        setDocsFormValues([])
+        restData();
+        resetForm();
+        setFieldValue("date_of_birth", new Date());
+        setFieldValue("national_expire_date", new Date());
+        setDocsFormValues([]);
       }
     }
-  }, [isSuccessPost])
+  }, [isSuccessPost]);
   ///
   return (
     <>
@@ -128,28 +128,29 @@ export const BranchMainData = ({
             marketLabel={`${t("markets")}`}
             isSuccessPost={isSuccessPost}
             resetSelect={restData}
-            editData={editData 
-              ? ({
-                  nationalAddress: {
-                    country: {
-                      id: editData?.country?.id,
-                      name: editData?.country?.name,
+            editData={
+              editData
+                ? {
+                    nationalAddress: {
+                      country: {
+                        id: editData?.country?.id,
+                        name: editData?.country?.name,
+                      },
+                      city: {
+                        id: editData?.city.id,
+                        name: editData?.city.name,
+                      },
+                      district: {
+                        id: editData?.district.id,
+                        name: editData?.district.name,
+                      },
+                      market: {
+                        id: editData?.market.id,
+                        name: editData?.market.name,
+                      },
                     },
-                    city: {
-                      id: editData?.city.id,
-                      name: editData?.city.name,
-                    },
-                    district: {
-                      id: editData?.district.id,
-                      name: editData?.district.name,
-                    },
-                    market: {
-                      id: editData?.market.id,
-                      name: editData?.market.name,
-                    },
-                  },
-                })
-              : undefined
+                  }
+                : undefined
             }
             // editData={{
             //   nationalAddress: {
@@ -227,6 +228,7 @@ export const BranchMainData = ({
           {/* fax end */}
         </InnerFormLayout>
         <Documents
+          setShow={setShow}
           docsFormValues={docsFormValues}
           setDocsFormValues={setDocsFormValues}
           editable={!!editData}
@@ -234,5 +236,5 @@ export const BranchMainData = ({
         <NationalAddress editData={editData} />
       </OuterFormLayout>
     </>
-  )
-}
+  );
+};
