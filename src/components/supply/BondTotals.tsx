@@ -1,17 +1,17 @@
 /////////// IMPORTS
 ///
-import { t } from "i18next"
-import { numberContext } from "../../context/settings/number-formatter"
-import { Box_TP } from "../../pages/supply/Bond"
-import { Back } from "../../utils/utils-components/Back"
+import { t } from "i18next";
+import { numberContext } from "../../context/settings/number-formatter";
+import { Box_TP } from "../../pages/supply/Bond";
+import { Back } from "../../utils/utils-components/Back";
 ///
 /////////// Types
 ///
 type BondTotalsProps_TP = {
-  boxesData: Box_TP[]
-  balance?: boolean
-  title?:string
-}
+  boxesData: Box_TP[];
+  balance?: boolean;
+  title?: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 ///
@@ -20,7 +20,7 @@ export const BondTotals = ({
   balance,
   title,
 }: BondTotalsProps_TP) => {
-  const { formatGram, formatReyal } = numberContext()
+  const { formatGram, formatReyal } = numberContext();
 
   return (
     <div className="flex flex-col gap-5 py-4">
@@ -44,8 +44,10 @@ export const BondTotals = ({
                 key={box.id}
                 className="flex flex-col h-28 justify-center rounded-xl text-center text-sm font-bold shadow-md "
               >
-                <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">{t(box.account)}</p>
-                {box.unit_id == 'gram' ? (
+                <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
+                  {t(box.account)}
+                </p>
+                {box.unit_id == "gram" ? (
                   <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
                     {formatGram(box.value)} {t(box.unit_id)}
                   </p>
@@ -59,5 +61,5 @@ export const BondTotals = ({
         )}
       </ul>
     </div>
-  )
-}
+  );
+};
