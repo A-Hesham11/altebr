@@ -168,6 +168,7 @@ const AddBankCardsData = ({
         commission_rate: values?.commission_rate,
         max_discount_limit: values?.max_discount_limit,
         max_discount_limit_value: values?.max_discount_limit_value,
+        id: editData?.id,
         _method: "put",
       },
     });

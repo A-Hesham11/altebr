@@ -1,35 +1,35 @@
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik } from "formik"
-import { t } from "i18next"
-import { useContext, useState } from "react"
-import * as Yup from "yup"
-import { NationalAddress } from "../.."
-import { useIsRTL, useMutate } from "../../../../hooks"
-import { mutateData } from "../../../../utils/mutateData"
-import { notify } from "../../../../utils/toast"
-import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors"
-import { Button } from "../../../atoms"
-import { InnerFormLayout, OuterFormLayout } from "../../../molecules"
-import { BaseInputField } from "../../../molecules/formik-fields/BaseInputField"
-import { Country_city_distract_markets } from "../Country_city_distract_markets"
-import { allDocs_TP, Documents } from "../documents/Documents"
-import { Branch_Props_TP } from "./ViewBranches"
-import { BranchMainData } from "./BranchMainData"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
+import { t } from "i18next";
+import { useContext, useState } from "react";
+import * as Yup from "yup";
+import { NationalAddress } from "../..";
+import { useIsRTL, useMutate } from "../../../../hooks";
+import { mutateData } from "../../../../utils/mutateData";
+import { notify } from "../../../../utils/toast";
+import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors";
+import { Button } from "../../../atoms";
+import { InnerFormLayout, OuterFormLayout } from "../../../molecules";
+import { BaseInputField } from "../../../molecules/formik-fields/BaseInputField";
+import { Country_city_distract_markets } from "../Country_city_distract_markets";
+import { allDocs_TP, Documents } from "../documents/Documents";
+import { Branch_Props_TP } from "./ViewBranches";
+import { BranchMainData } from "./BranchMainData";
 ///
 /////////// Types
 ///
 type CreateBranchProps_TP = {
-  value?: string
-  title: string
-  onAdd?: (value: string) => void
-  editData?: Branch_Props_TP
-}
+  value?: string;
+  title: string;
+  onAdd?: (value: string) => void;
+  editData?: Branch_Props_TP;
+};
 
 type InitialValues_TP = {
-  [x: string]: string
-}
+  [x: string]: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -38,9 +38,9 @@ export const CreateBranch = ({
   value,
   title,
   onAdd,
+  setShow,
   editData,
 }: CreateBranchProps_TP) => {
-  
   /////////// VARIABLES
   ///
   const initialValues = {
@@ -72,11 +72,11 @@ export const CreateBranch = ({
     endDate: new Date(),
     reminder: "",
     files: [],
-  }
+  };
   const validationSchema = Yup.object({
     name_ar: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     name_en: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
-    number:Yup.string().trim(),
+    number: Yup.string().trim(),
     market_id: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     country_id_out: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     country_id: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
@@ -94,7 +94,7 @@ export const CreateBranch = ({
     address: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     main_address: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     zip_code: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
-  })
+  });
 
   /////////// STATES
   ///
@@ -106,28 +106,33 @@ export const CreateBranch = ({
         files: item?.files || [],
         id: item.id,
       }))
-    : []
+    : [];
 
   const [docsFormValues, setDocsFormValues] =
-    useState<allDocs_TP[]>(incomingData)
+    useState<allDocs_TP[]>(incomingData);
   ///
   /////////// CUSTOM HOOKS
   ///
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate, error, isLoading, isSuccess, reset } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      notify("success")
+      notify("success");
       // queryClient.refetchQueries(["branch"])
-      queryClient.refetchQueries(["AllBranches"])
+      queryClient.refetchQueries(["AllBranches"]);
       queryClient.setQueryData(["branches"], () => {
-        return [data]
-      })
+        return [data];
+      });
     },
     onError: (error: any) => {
-      notify("error", error.request.status == "503" ? (`${t("you do not have access")}`) : error?.response?.data?.message);
+      notify(
+        "error",
+        error.request.status == "503"
+          ? `${t("you do not have access")}`
+          : error?.response?.data?.message
+      );
     },
-  })
+  });
   /////////// SIDE EFFECTS
   ///
 
@@ -157,32 +162,32 @@ export const CreateBranch = ({
               sub_number: values.sub_number,
               zip_code: values.zip_code,
             },
-          }
+          };
           if (!!editData) {
-            let { document, ...editedValuesWithoutDocument } = editedValues
+            let { document, ...editedValuesWithoutDocument } = editedValues;
             if (docsFormValues.length > editData.document.length)
               editedValues = {
                 ...editedValues,
                 document: editedValues.document.slice(editData.document.length),
-              }
+              };
             if (docsFormValues.length === editData.document.length)
-              editedValues = editedValuesWithoutDocument
+              editedValues = editedValuesWithoutDocument;
             mutate({
               endpointName: `branch/api/v1/branches/${editData.id}`,
               values: editedValues,
               dataType: "formData",
               editWithFormData: true,
-            })
+            });
           } else {
             if (editedValues?.document.length === 0) {
               notify("info", t("You must add a document"));
-              return
+              return;
             }
             mutate({
               endpointName: "branch/api/v1/branches",
               values: editedValues,
               dataType: "formData",
-            })
+            });
           }
         }}
         validationSchema={validationSchema}
@@ -191,6 +196,7 @@ export const CreateBranch = ({
           <Form className="w-full">
             <BranchMainData
               isLoading={isLoading}
+              setShow={setShow}
               title={title}
               editData={editData}
               isSuccessPost={isSuccess}
@@ -202,5 +208,5 @@ export const CreateBranch = ({
         </HandleBackErrors>
       </Formik>
     </div>
-  )
-}
+  );
+};
