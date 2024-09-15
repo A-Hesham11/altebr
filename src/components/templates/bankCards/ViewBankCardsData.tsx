@@ -81,16 +81,27 @@ const ViewBankCardsData = () => {
         cell: (info) => `${info.row.original.discount_percentage * 100} %`,
       },
       {
-        header: () => <span>{t("Maximum discount limit")} </span>,
+        header: () => <span>{t("Maximum discount limit")}</span>,
         accessorKey: "max_discount_limit",
-        cell: (info: any) =>
-          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => {
+          const value = info.getValue();
+          console.log("🚀 ~ ViewBankCardsData ~ info:", info);
+
+          return value && info.row?.original?.card?.is_minimum === "1"
+            ? formatReyal(Number(value))
+            : "---";
+        },
       },
       {
         header: () => <span>{t("Maximum discount limit")} </span>,
         accessorKey: "max_discount_limit_value",
-        cell: (info: any) =>
-          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => {
+          const value = info.getValue();
+
+          return value && info.row?.original?.card?.is_minimum === "1"
+            ? formatReyal(Number(value))
+            : "---";
+        },
       },
       {
         header: () => <span>{t("branch")} </span>,
