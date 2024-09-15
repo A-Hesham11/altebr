@@ -1,7 +1,7 @@
 /////////// IMPORTS
 ///
 import { t } from "i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../../components/atoms";
@@ -16,6 +16,8 @@ import {
   GoldSanad_TP,
 } from "../coding-types-and-helpers";
 import { CodingSanad } from "./CodingSanad";
+import { useReactToPrint } from "react-to-print";
+import PrintPage from "../../../components/atoms/print/PrintPage";
 ///
 /////////// Types
 ///
@@ -32,7 +34,7 @@ export const DiamondCodingWrapper = ({
   /////////// VARIABLES
   ///
   const { sanadId } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
 
@@ -72,6 +74,7 @@ export const DiamondCodingWrapper = ({
   );
   const [stage, setStage] = useState(1);
   const [tableKey, setTableKey] = useState(1);
+  const [openFinishedModal, setOpenFinishedModal] = useState(false);
   ///
   /////////// SIDE EFFECTS
   ///
@@ -123,6 +126,12 @@ export const DiamondCodingWrapper = ({
         setAddedPiecesLocal((curr) =>
           curr.filter((p) => p.front_key !== result.front_key)
         );
+
+        const savedPieces = JSON.parse(
+          localStorage.getItem("printItems") || "[]"
+        );
+        savedPieces.push(result); // Add the new piece
+        localStorage.setItem("printItems", JSON.stringify(savedPieces));
       }
     } catch (err) {
       const error = err as CError_TP;
@@ -162,6 +171,34 @@ export const DiamondCodingWrapper = ({
       refetch();
     }
   }, [addedPieces, stage]);
+
+  // start Print
+  const [open, setOpen] = useState(false);
+  console.log("🚀 ~ GoldCodingWrapper ~ open:", open);
+  const contentRef = useRef();
+  const printItems = JSON.parse(localStorage.getItem("printItems") || "[]");
+
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => setOpen(true),
+    removeAfterPrint: true,
+    pageStyle: `
+        @page {
+          size: auto;
+        }
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact;
+          }
+          .break-page {
+            page-break-before: always;
+          }
+        }
+      `,
+  });
+
+  // End Print
 
   return (
     <>
@@ -206,13 +243,71 @@ export const DiamondCodingWrapper = ({
           </Button>
         </div>
       )}
+
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+        {open ? (
+          <>
+            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+              <h3
+                className="text-lg font-semibold leading-6 text-gray-900 text-center"
+                id="modal-title"
+              >
+                {t("printing process")}
+              </h3>
+
+              <p className="text-lg text-gray-500 mt-6 mb-2 text-center">
+                {t("Did the numbered identity print successfully?")}
+              </p>
+            </div>
+            <div className="bg-gray-50 px-4 pt-3 pb-5 sm:flex sm:flex-row-reverse sm:px-6 justify-center gap-5 z-50">
+              <Button
+                type="button"
+                action={() => setOpen(false)}
+                bordered
+                className="cursor-pointer z-50"
+              >
+                {t("No")}
+              </Button>
+              <Button
+                type="button"
+                action={() => {
+                  setOpenFinishedModal(true);
+                  localStorage.removeItem("printItems");
+                }}
+              >
+                {t("Yes")}
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div>
+            <h3
+              className="text-lg font-semibold leading-6 text-gray-900 text-center"
+              id="modal-title"
+            >
+              {t("printing process")}
+            </h3>
+            <div className="flex justify-center items-center mt-8 mb-2">
+              <Button type="button" action={handlePrint}>
+                {t("printing numbered identities")}
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={openFinishedModal}
+        onClose={() => setOpenFinishedModal(false)}
+      >
         <div className="flex gap-x-2 p-16 justify-center items-center">
           <Button
             type="button"
             action={() => {
               setOpenModal(false);
+              setOpenFinishedModal(false)
               setStage(1);
+              setAddedPiecesLocal([]);
             }}
             bordered
           >
@@ -223,24 +318,29 @@ export const DiamondCodingWrapper = ({
             type="button"
             action={() => {
               setOpenModal(false);
-              navigate("/coding-react")
-            }}
-          >
-              {t("go to identification management")}
-          </Button>
-
-          <Button
-            type="button"
-            action={() => {
-              setOpenModal(false);
               setAddedPiecesLocal([]);
-              navigate("/printing-identities");
+              navigate("/coding-react");
             }}
           >
-            {t("printing numbered identities")}
+            {t("go to identification management")}
           </Button>
         </div>
       </Modal>
+
+      <div>
+        <div
+          className="print-page"
+          ref={contentRef}
+          style={{ direction: "ltr" }}
+        >
+          {printItems?.length &&
+            printItems?.map((item) => (
+              <div className="break-page">
+                <PrintPage item={item} />
+              </div>
+            ))}
+        </div>
+      </div>
     </>
   );
 };

@@ -45,6 +45,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
     GoldCodingSanad_initialValues_TP[]
   >(`addedPiecesLocal_${sanadId}`);
   const [openModal, setOpenModal] = useState(false);
+  console.log("🚀 ~ GoldCodingWrapper ~ openModal:", openModal)
   const [openFinishedModal, setOpenFinishedModal] = useState(false);
   ///
   /////////// CUSTOM HOOKS
@@ -146,8 +147,10 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
     }
   }, [addedPieces]);
 
+
   // start Print
   const [open, setOpen] = useState(false);
+  console.log("🚀 ~ GoldCodingWrapper ~ open:", open)
   const contentRef = useRef();
   const printItems = JSON.parse(localStorage.getItem("printItems") || "[]");
 
@@ -251,7 +254,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
                 type="button"
                 action={() => {
                   setOpenFinishedModal(true);
-                  localStorage.removeItem("printItems")
+                  localStorage.removeItem("printItems");
                 }}
               >
                 {t("Yes")}
@@ -267,12 +270,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
               {t("printing process")}
             </h3>
             <div className="flex justify-center items-center mt-8 mb-2">
-              <Button
-                type="button"
-                action={() => {
-                  handlePrint();
-                }}
-              >
+              <Button type="button" action={handlePrint}>
                 {t("printing numbered identities")}
               </Button>
             </div>
@@ -280,12 +278,17 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
         )}
       </Modal>
 
-      <Modal isOpen={openFinishedModal} onClose={() => setOpenFinishedModal(false)}>
+      <Modal
+        isOpen={openFinishedModal}
+        onClose={() => setOpenFinishedModal(false)}
+      >
         <div className="flex gap-x-2 p-16 justify-center items-center">
           <Button
             type="button"
             action={() => {
               setOpenModal(false);
+              setOpenFinishedModal(false)
+              setOpen(false)
               setStage(1);
               setAddedPiecesLocal([]);
             }}
