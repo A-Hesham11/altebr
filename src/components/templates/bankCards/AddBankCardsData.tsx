@@ -56,6 +56,7 @@ const AddBankCardsData = ({
   refetchBankCards,
   setShow,
 }: AddBankCardProps_TP) => {
+  console.log("🚀 ~ editData:", editData);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   const [accountNumberId, setAccountNumberId] = useState();
@@ -281,7 +282,7 @@ const AddBankCardsData = ({
                         />
                       </div>
 
-                      {isMaxDiscountLimit == 1 ||
+                      {isMaxDiscountLimit == 1 &&
                       editData?.max_discount_limit ? (
                         <>
                           <BaseInputField
