@@ -1,77 +1,78 @@
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik, FormikValues, useFormikContext } from "formik"
-import { t } from "i18next"
-import { useEffect, useState } from "react"
-import { SingleValue } from "react-select"
-import * as Yup from "yup"
-import { useFetch, useMutate } from "../../../hooks"
-import { SelectOption_TP } from "../../../types"
-import { requiredTranslation } from "../../../utils/helpers"
-import { mutateData } from "../../../utils/mutateData"
-import { notify } from "../../../utils/toast"
-import { HandleBackErrors } from "../../../utils/utils-components/HandleBackErrors"
-import { Button } from "../../atoms"
-import { BaseInputField, Select } from "../../molecules"
-import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik, FormikValues, useFormikContext } from "formik";
+import { t } from "i18next";
+import { useEffect, useState } from "react";
+import { SingleValue } from "react-select";
+import * as Yup from "yup";
+import { useFetch, useMutate } from "../../../hooks";
+import { SelectOption_TP } from "../../../types";
+import { requiredTranslation } from "../../../utils/helpers";
+import { mutateData } from "../../../utils/mutateData";
+import { notify } from "../../../utils/toast";
+import { HandleBackErrors } from "../../../utils/utils-components/HandleBackErrors";
+import { Button } from "../../atoms";
+import { BaseInputField, Select } from "../../molecules";
+import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler";
 /////////// Types
 ///
 type Markets_TP = {
-  district: SingleValue<SelectOption_TP>
-  marketName?: string
-  label?: string
-  fieldKey?: "id" | "value" | undefined
+  district: SingleValue<SelectOption_TP>;
+  marketName?: string;
+  label?: string;
+  fieldKey?: "id" | "value" | undefined;
   editData?: {
-    [key: string]: any
-  }
-}
+    [key: string]: any;
+  };
+};
 type Market_TP = {
   markets: {
-    id: string
-    name: string
-    city_id: string
-    district_id: string
-  }[]
-}
+    id: string;
+    name: string;
+    city_id: string;
+    district_id: string;
+  }[];
+};
 type MarketsMutate_TP = {
-  name: string
-  id: string
-  district_id: string
-  district_name: string
-  country_name: string
-  city_name: string
-}
+  name: string;
+  id: string;
+  district_id: string;
+  district_name: string;
+  country_name: string;
+  city_name: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 const validationSchema = Yup.object({
   name_ar: Yup.string().trim().required(requiredTranslation),
   name_en: Yup.string().trim().required(requiredTranslation),
-})
+});
 const NewMarketOptionComponent = ({
   value,
   onAdd,
   districtId,
   district_name,
 }: {
-  value: string
-  onAdd: (value: string) => void
-  districtId: string
-  district_name: string
+  value: string;
+  onAdd: (value: string) => void;
+  districtId: string;
+  district_name: string;
 }) => {
+  console.log("🚀 ~ districtId:", districtId);
   const initialValues = {
     name_ar: value,
     name_en: "",
     district_id: districtId,
-  }
-  const queryClient = useQueryClient()
+  };
+  const queryClient = useQueryClient();
   const { mutate, error, isLoading } = useMutate<MarketsMutate_TP>({
     mutationFn: mutateData,
     onSuccess: (data) => {
       queryClient.setQueryData([`market/${districtId}`], (old: any) => {
-        console.log("data", data)
+        console.log("data", data);
         if (old && !old.markets) {
-          old.markets = []
+          old.markets = [];
         }
         return {
           ...(old || {
@@ -88,14 +89,14 @@ const NewMarketOptionComponent = ({
               district_name: data?.district_name,
             },
           ],
-        }
-      })
+        };
+      });
 
       //change type
-      notify("success")
-      onAdd(value)
+      notify("success");
+      onAdd(value);
     },
-  })
+  });
   const handleSubmit = (values: FormikValues) => {
     mutate({
       endpointName: "/governorate/api/v1/markets",
@@ -104,14 +105,14 @@ const NewMarketOptionComponent = ({
         name_en: values.name_en,
         district_id: districtId,
       },
-    })
-  }
+    });
+  };
   return (
     <div className="flex items-center justify-between gap-2">
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          handleSubmit(values)
+          handleSubmit(values);
         }}
         validationSchema={validationSchema}
       >
@@ -148,8 +149,8 @@ const NewMarketOptionComponent = ({
         </HandleBackErrors>
       </Formik>
     </div>
-  )
-}
+  );
+};
 ///
 export const Markets = ({
   district,
@@ -158,6 +159,7 @@ export const Markets = ({
   label = "market",
   editData,
 }: Markets_TP) => {
+  console.log("🚀 ~ district:", district);
   /////////// VARIABLES
   ///
 
@@ -169,8 +171,8 @@ export const Markets = ({
   /////////// STATES
   ///
   const [newValue, setNewValue] =
-    useState<SingleValue<SelectOption_TP> | null>()
-  const { setFieldValue } = useFormikContext()
+    useState<SingleValue<SelectOption_TP> | null>();
+  const { setFieldValue } = useFormikContext();
 
   ///
   /////////// SIDE EFFECTS
@@ -193,14 +195,14 @@ export const Markets = ({
         label: market.name,
       })),
     enabled: !!district?.id,
-  })
+  });
 
   //change value
   useEffect(() => {
     if (markets) {
-      setNewValue(null)
+      setNewValue(null);
     }
-  }, [JSON.stringify(markets)])
+  }, [JSON.stringify(markets)]);
   useEffect(() => {
     setNewValue({
       id: editData?.nationalAddress?.market.id || editData?.markets_id || "",
@@ -210,8 +212,8 @@ export const Markets = ({
         editData?.nationalAddress?.market.name ||
         editData?.markets_name ||
         "اختر الحي اولا ",
-    })
-  }, [])
+    });
+  }, []);
   ///
   return (
     <div className="flex flex-col gap-1 justify-center">
@@ -239,13 +241,13 @@ export const Markets = ({
             district_name: district?.name as string,
             value,
             onAdd,
-          })
+          });
         }}
         value={newValue}
         modalTitle={`${t("add market")}`}
         onChange={(option: any) => {
-          console.log(option)
-          setNewValue(option)
+          console.log(option);
+          setNewValue(option);
         }}
         fieldKey={fieldKey}
         // defaultValue={{
@@ -263,5 +265,5 @@ export const Markets = ({
         refetch={refetch}
       />
     </div>
-  )
-}
+  );
+};

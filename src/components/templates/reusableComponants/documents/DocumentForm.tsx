@@ -1,26 +1,26 @@
 /////////// IMPORTS
 ///
-import { Form, Formik, FormikValues } from "formik"
-import { t } from "i18next"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import * as Yup from "yup"
-import { SelectOption_TP } from "../../../../types"
-import { requiredTranslation } from "../../../../utils/helpers"
-import { Button } from "../../../atoms"
-import { BaseInputField, DateInputField, Select } from "../../../molecules"
-import { DropFile } from "../../../molecules/files/DropFile"
-import { allDocs_TP } from "./Documents"
+import { Form, Formik, FormikValues } from "formik";
+import { t } from "i18next";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import * as Yup from "yup";
+import { SelectOption_TP } from "../../../../types";
+import { requiredTranslation } from "../../../../utils/helpers";
+import { Button } from "../../../atoms";
+import { BaseInputField, DateInputField, Select } from "../../../molecules";
+import { DropFile } from "../../../molecules/files/DropFile";
+import { allDocs_TP } from "./Documents";
 
 ///
 /////////// Types
 ///
 type DocumentFormProps_TP = {
-  setDocsFormValues: Dispatch<SetStateAction<allDocs_TP[]>>
-  setAddDocPopup: Dispatch<SetStateAction<boolean>>
-  editableData: allDocs_TP | undefined
-  setEditableData: Dispatch<SetStateAction<allDocs_TP | undefined>>
-  addDocPopup: boolean
-}
+  setDocsFormValues: Dispatch<SetStateAction<allDocs_TP[]>>;
+  setAddDocPopup: Dispatch<SetStateAction<boolean>>;
+  editableData: allDocs_TP | undefined;
+  setEditableData: Dispatch<SetStateAction<allDocs_TP | undefined>>;
+  addDocPopup: boolean;
+};
 
 ///
 /////////// HELPER VARIABLES & FUNCTIONS
@@ -48,18 +48,18 @@ export const DocumentForm = ({
     endDate: editableData?.endDate || new Date(),
     reminder: editableData?.reminder || "60",
     id: editableData?.id || crypto.randomUUID(),
-  }
+  };
   const validationSchema = Yup.object({
     docName: Yup.string().trim().required(requiredTranslation),
     docNumber: Yup.string().trim().required(requiredTranslation),
     reminder: Yup.number()
       .min(1, requiredTranslation)
       .required(requiredTranslation),
-    endDate: Yup.string().required(requiredTranslation),
+    // endDate: Yup.string().required(requiredTranslation),
     files: Yup.array()
       .required(requiredTranslation)
       .min(1, requiredTranslation),
-  })
+  });
 
   ///
   /////////// CUSTOM HOOKS
@@ -74,42 +74,42 @@ export const DocumentForm = ({
     { id: 6, value: "6", label: "تراخيص" },
     { id: 8, value: "8", label: "رخصة المعادن" },
     { id: 7, value: "7", label: "اخرى" },
-  ] as SelectOption_TP[]
+  ] as SelectOption_TP[];
 
   ///
   /////////// STATES
   ///
-  const [docType, setDocType] = useState()
+  const [docType, setDocType] = useState();
   ///
   /////////// SIDE EFFECTS
   ///
   useEffect(() => {
     if (addDocPopup === false) {
-      setEditableData({} as allDocs_TP)
+      setEditableData({} as allDocs_TP);
     }
-  }, [addDocPopup])
+  }, [addDocPopup]);
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   function handleAddDocData(values: FormikValues) {
-    let newDocType: any
+    let newDocType: any;
     if ((!editableData && !docType) || (editableData && !docType))
-      newDocType = values.docType
-    else newDocType = docType
+      newDocType = values.docType;
+    else newDocType = docType;
 
     setDocsFormValues((prev: any) => {
-      const newDocs = prev.filter((doc: allDocs_TP) => doc.id !== values.id)
-      return [...newDocs, { ...values, docType: newDocType }]
-    })
+      const newDocs = prev.filter((doc: allDocs_TP) => doc.id !== values.id);
+      return [...newDocs, { ...values, docType: newDocType }];
+    });
   }
 
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={(values) => {
-        handleAddDocData(values)
-        setEditableData({} as allDocs_TP)
-        setAddDocPopup(false)
+        handleAddDocData(values);
+        setEditableData({} as allDocs_TP);
+        setAddDocPopup(false);
       }}
       validationSchema={validationSchema}
     >
@@ -151,7 +151,7 @@ export const DocumentForm = ({
               name="endDate"
               minDate={new Date()}
               labelProps={{ className: "mb-2" }}
-              required
+              // required
             />
             <BaseInputField
               id="reminder"
@@ -169,5 +169,5 @@ export const DocumentForm = ({
         </Form>
       )}
     </Formik>
-  )
-}
+  );
+};
