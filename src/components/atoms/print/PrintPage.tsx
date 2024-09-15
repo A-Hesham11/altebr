@@ -3,6 +3,7 @@ import "./print.css";
 import Logo from "../../../assets/qr-logo.png";
 
 const PrintPage = ({ item }) => {
+  console.log("🚀 ~ PrintPage ~ item:", item);
   return (
     <>
       <div className="container-print">
@@ -12,7 +13,7 @@ const PrintPage = ({ item }) => {
               <img src={Logo} alt="logo" className="img" />
               <QRCode
                 className="img_qr"
-                value={item?.hwya}
+                value={item?.hwya || 0}
                 // value={`${Math.round(12355)}`}
                 viewBox={`0 0 300 300`}
               />
@@ -23,11 +24,16 @@ const PrintPage = ({ item }) => {
               <p className="rotated-paragraph">
                 G:
                 <span className="paragraph_title">
-                  {item?.classification_id === 1 ? item?.weight : 0}
+                  {item?.classification_id == 1 ? item?.weight : 0}
                 </span>
               </p>
               <p className="rotated-paragraph">
-                K:<span className="paragraph_title">{item?.karat}</span>
+                K:
+                <span className="paragraph_title">
+                  {item?.classification_id == 1
+                    ? item?.karat_value
+                    : item?.karatmineral_name}
+                </span>
               </p>
 
               <p className="rotated-paragraph">

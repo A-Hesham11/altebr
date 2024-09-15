@@ -217,7 +217,10 @@ const PrintingNumberIdentities = () => {
                   </Button>
                   <Button
                     type="button"
-                    action={() => setConfirmedPrint(singlePrint?.id)}
+                    action={() => {
+                      setConfirmedPrint(singlePrint?.id)
+                      localStorage.removeItem("printItems")
+                    }}
                     loading={
                       !!isLoadingConfirm ||
                       !!isFetchingConfirm ||
