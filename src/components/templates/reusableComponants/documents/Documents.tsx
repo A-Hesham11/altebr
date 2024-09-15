@@ -1,77 +1,107 @@
 /////////// IMPORTS
 ///
-import { t } from "i18next"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { CiFolderOn } from "react-icons/ci"
-import { Button } from "../../../atoms"
-import { Delete } from "../../../atoms/icons/Delete"
-import { Edit } from "../../../atoms/icons/Edit"
-import { InnerFormLayout, Modal } from "../../../molecules"
-import { DocsData } from "./DocsData"
-import { DocumentForm } from "./DocumentForm"
-import { FormikSharedConfig, useFormikContext } from "formik"
+import { t } from "i18next";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { CiFolderOn } from "react-icons/ci";
+import { Button } from "../../../atoms";
+import { Delete } from "../../../atoms/icons/Delete";
+import { Edit } from "../../../atoms/icons/Edit";
+import { InnerFormLayout, Modal } from "../../../molecules";
+import { DocsData } from "./DocsData";
+import { DocumentForm } from "./DocumentForm";
+import { FormikSharedConfig, useFormikContext } from "formik";
+import { useMutate } from "../../../../hooks";
+import { mutateData } from "../../../../utils/mutateData";
+import { notify } from "../../../../utils/toast";
+import { useQueryClient } from "@tanstack/react-query";
 ///
 /////////// Types
 ///
 type DocumentsProps_TP = {
-  docsFormValues: any
-  setDocsFormValues: Dispatch<SetStateAction<any[]>>
-  editable?: boolean
-  isSuccessPost?: any
-  restData?:any
-}
+  docsFormValues: any;
+  setDocsFormValues: Dispatch<SetStateAction<any[]>>;
+  editable?: boolean;
+  isSuccessPost?: any;
+  restData?: any;
+};
 export type DocType_TP = {
-  id: string
-  value: string
-  label: string
-}
+  id: string;
+  value: string;
+  label: string;
+};
 export type allDocs_TP = {
-  docName: string
-  docNumber: string
-  files: any
-  docType: DocType_TP
-  endDate: Date
-  reminder: string
-  id: string
-}
+  docName: string;
+  docNumber: string;
+  files: any;
+  docType: DocType_TP;
+  endDate: Date;
+  reminder: string;
+  id: string;
+};
 
-export const  Documents = ({
+export const Documents = ({
   setDocsFormValues,
   docsFormValues,
   editable = false,
   isSuccessPost,
   restData,
+  setShow: setShowPopup,
 }: DocumentsProps_TP) => {
   ///
   /////////// STATES
   ///
-  const [addDocPopup, setAddDocPopup] = useState(false)
-  const [show, setShow] = useState(false)
-  const [docsData, setDocsData] = useState<allDocs_TP>()
-  const [editableData, setEditableData] = useState<allDocs_TP>()
+  const [addDocPopup, setAddDocPopup] = useState(false);
+  console.log("🚀 ~ addDocPopup:", addDocPopup);
+  const [show, setShow] = useState(false);
+  console.log("🚀 ~ show:", show);
+  const [docsData, setDocsData] = useState<allDocs_TP>();
+  const [editableData, setEditableData] = useState<allDocs_TP>();
+  console.log("🚀 ~ editableData:", editableData);
+  const queryClient = useQueryClient();
 
   ///
   /////////// SIDE EFFECTS
   ///
-  const { resetForm } = useFormikContext<FormikSharedConfig>()
+  const { resetForm } = useFormikContext<FormikSharedConfig>();
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
 
   useEffect(() => {
     if (isSuccessPost) {
-      resetForm()
-      restData && restData()
+      resetForm();
+      restData && restData();
     }
-  }, [isSuccessPost])
+  }, [isSuccessPost]);
   function handleOpenAddDoc() {
-    setAddDocPopup(true)
+    setAddDocPopup(true);
   }
 
+  const {
+    mutate,
+    error: mutateError,
+    isLoading: mutateLoading,
+  } = useMutate<any>({
+    mutationFn: mutateData,
+    onSuccess: () => {
+      // setDataSource((prev: ViewCategories_TP[]) =>
+      //   prev.filter((p) => p.id !== deleteData?.id)
+      // )
+      queryClient.refetchQueries(["AllBranches"]);
+      // refetch()
+      setShowPopup(false);
+      notify("success");
+    },
+  });
+
   function deleteDocHandler(id: string) {
-    setDocsFormValues((prev: any) =>
-      prev.filter((doc: allDocs_TP) => doc.id !== id)
-    )
+    // setDocsFormValues((prev: any) =>
+    //   prev.filter((doc: allDocs_TP) => doc.id !== id)
+    // );
+    mutate({
+      endpointName: `/branch/api/v1/deleted-item/${id}`,
+      method: "post",
+    });
   }
 
   return (
@@ -79,7 +109,7 @@ export const  Documents = ({
       <InnerFormLayout
         title={t("documents")}
         leftComponent={
-          <Button action={handleOpenAddDoc} >
+          <Button action={handleOpenAddDoc}>
             {docsFormValues?.length > 0 ? (
               <span>{t("Add another document")}</span>
             ) : (
@@ -102,8 +132,8 @@ export const  Documents = ({
                     {!editable && (
                       <Edit
                         action={() => {
-                          setAddDocPopup(true)
-                          setEditableData(item)
+                          setAddDocPopup(true);
+                          setEditableData(item);
                         }}
                       />
                     )}
@@ -112,8 +142,8 @@ export const  Documents = ({
                   <CiFolderOn
                     className="text-[4rem] text-mainGreen cursor-pointer mx-5"
                     onClick={() => {
-                      setDocsData(item)
-                      setShow(true)
+                      setDocsData(item);
+                      setShow(true);
                     }}
                   />
                   <span>
@@ -141,5 +171,5 @@ export const  Documents = ({
         <DocsData docsData={docsData} />
       </Modal>
     </>
-  )
-}
+  );
+};
