@@ -129,14 +129,14 @@ export const Documents = ({
                   key={item.id}
                 >
                   <div className="flex gap-x-4 items-center">
-                    {!editable && (
+                    {/* {!editable && ( */}
                       <Edit
                         action={() => {
                           setAddDocPopup(true);
                           setEditableData(item);
                         }}
                       />
-                    )}
+                    {/* )} */}
                     <Delete action={() => deleteDocHandler(item.id)} />
                   </div>
                   <CiFolderOn

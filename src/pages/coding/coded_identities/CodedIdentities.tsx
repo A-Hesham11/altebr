@@ -277,7 +277,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           .break-page {
             page-break-before: always;
           }
-        }
+        } 
       `,
   });
 
