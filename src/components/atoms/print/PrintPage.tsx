@@ -21,12 +21,14 @@ const PrintPage = ({ item }) => {
             </div>
 
             <div className="rotated-text">
-              <p className="rotated-paragraph">
-                G:
-                <span className="paragraph_title">
-                  {item?.classification_id == 1 ? item?.weight : 0}
-                </span>
-              </p>
+              {item?.classification_id == 1 && (
+                <p className="rotated-paragraph">
+                  G:
+                  <span className="paragraph_title">
+                    {item?.classification_id == 1 ? item?.weight : 0}
+                  </span>
+                </p>
+              )}
               <p className="rotated-paragraph">
                 K:
                 <span className="paragraph_title">
@@ -35,19 +37,20 @@ const PrintPage = ({ item }) => {
                     : item?.karatmineral_name}
                 </span>
               </p>
-
-              <p className="rotated-paragraph">
-                D:
-                <span className="paragraph_title">
-                  {item?.classification_id !== 1 ? item?.weight : 0}
-                </span>
-              </p>
+              {item?.classification_id !== 1 && (
+                <p className="rotated-paragraph">
+                  D:
+                  <span className="paragraph_title">
+                    {item?.classification_id !== 1 ? item?.weight : 0}
+                  </span>
+                </p>
+              )}
               <p className="rotated-paragraph">
                 S:<span className="paragraph_title">{item?.ahgar_weight}</span>
               </p>
-              <p className="rotated-paragraph">
+              {/* <p className="rotated-paragraph">
                 O:<span className="paragraph_title">other</span>
-              </p>
+              </p> */}
             </div>
           </div>
         </div>

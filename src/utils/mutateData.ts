@@ -15,6 +15,7 @@ export const mutateData = async <T>(
     comingData: MutateDataParameters_TP
 ) => {
     const { endpointName, dataType = "json", values, method = 'post', axiosOptions, editWithFormData = false } = comingData
+    console.log("🚀 ~ comingData:", { ...values, _method: "put" })
     if (dataType === 'json') {
         return await request<T>({
             url: endpointName,

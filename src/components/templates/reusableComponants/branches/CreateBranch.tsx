@@ -100,9 +100,9 @@ export const CreateBranch = ({
   ///
   //@ts-ignore
   const incomingData = !!editData
-    ? editData!.document.map((item) => ({
-        ...item.data,
-        endDate: new Date(item.data.endDate),
+    ? editData!.document?.map((item) => ({
+        ...item?.data,
+        endDate: new Date(item?.data.endDate),
         files: item?.files || [],
         id: item.id,
       }))
@@ -110,6 +110,7 @@ export const CreateBranch = ({
 
   const [docsFormValues, setDocsFormValues] =
     useState<allDocs_TP[]>(incomingData);
+  console.log("🚀 ~ docsFormValues:", docsFormValues);
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -117,20 +118,26 @@ export const CreateBranch = ({
   const { mutate, error, isLoading, isSuccess, reset } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
+      console.log("in success");
       notify("success");
       // queryClient.refetchQueries(["branch"])
       queryClient.refetchQueries(["AllBranches"]);
-      queryClient.setQueryData(["branches"], () => {
-        return [data];
-      });
+      // queryClient.setQueryData(["branches"], () => {
+      //   return [data];
+      // });
+      queryClient.setQueryData(["branches"], (oldData) => [
+        ...(oldData || []),
+        data,
+      ]);
     },
     onError: (error: any) => {
-      notify(
-        "error",
-        error.request.status == "503"
+      const statusCode = error?.response?.status || error?.request?.status;
+      const errorMessage =
+        statusCode == "503"
           ? `${t("you do not have access")}`
-          : error?.response?.data?.message
-      );
+          : error?.response?.data?.message || "An unknown error occurred";
+
+      notify("error", errorMessage);
     },
   });
   /////////// SIDE EFFECTS
@@ -144,7 +151,7 @@ export const CreateBranch = ({
     <div className="flex items-center justify-between gap-2">
       <Formik
         initialValues={initialValues}
-        onSubmit={(values) => {
+        onSubmit={async (values) => {
           let editedValues = {
             ...values,
             country_id: values.country_id_out,
@@ -163,6 +170,8 @@ export const CreateBranch = ({
               zip_code: values.zip_code,
             },
           };
+          console.log("🚀 ~ editedValues:", editedValues);
+
           if (!!editData) {
             let { document, ...editedValuesWithoutDocument } = editedValues;
             if (docsFormValues.length > editData.document.length)
@@ -172,15 +181,15 @@ export const CreateBranch = ({
               };
             if (docsFormValues.length === editData.document.length)
               editedValues = editedValuesWithoutDocument;
-            mutate({
+            await mutate({
               endpointName: `branch/api/v1/branches/${editData.id}`,
               values: editedValues,
               dataType: "formData",
               editWithFormData: true,
             });
           } else {
-            if (editedValues?.document.length === 0) {
-              notify("info", t("You must add a document"));
+            if (editedValues?.document?.length === 0) {
+              notify("info", `${t("You must add a document")}`);
               return;
             }
             mutate({
