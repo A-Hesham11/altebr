@@ -31,6 +31,7 @@ export const request = async <T>(
   options: AxiosRequestConfig,
   pagination?: boolean
 ): Promise<T> => {
+  console.log("🚀 ~ options:", options);
   const token = Cookies.get("token");
 
   const onSuccess = (response: AxiosResponse) => {

@@ -23,7 +23,7 @@ const AddSellingInvoice = () => {
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ AddSellingInvoice ~ userData:", userData)
+  console.log("🚀 ~ AddSellingInvoice ~ userData:", userData);
 
   const initialValues: Selling_TP = {
     item_id: "",
@@ -54,7 +54,7 @@ const AddSellingInvoice = () => {
     wage_total: "",
     category_type: "",
     weightitems: [],
-    max_selling_price:"",
+    max_selling_price: "",
 
     client_id: "",
     client_value: "",
@@ -85,7 +85,7 @@ const AddSellingInvoice = () => {
     endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}`,
     queryKey: [`invoices_data_${userData?.branch_id}`],
     onSuccess(data) {
-      setInvoiceNumber(data);
+      setInvoiceNumber(data?.data?.length);
     },
     pagination: true,
   });

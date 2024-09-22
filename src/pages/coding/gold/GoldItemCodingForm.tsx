@@ -74,9 +74,9 @@ export const GoldItemCodingForm = ({
 
   const [openPopup, setOpenPopup] = useState(false);
   const [dataSource, setDataSource] = useState([]);
-  const [search, setSearch] = useState("");
+
   const [modalNumberChange, setModalNumberChange] = useState("");
-  console.log("🚀 ~ modalNumberChange:", modalNumberChange);
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
   const { refetch, isSuccess, isLoading, isFetching, isRefetching } = useFetch({
@@ -87,6 +87,10 @@ export const GoldItemCodingForm = ({
     },
   });
 
+  // const modalNumber = dataSource.find(
+  //   (item) =>
+  //     item.model_number === modalNumberChange && item.twred_status === "inedara"
+  // );
   // const { data, isLoading, isFetching, isRefetching, refetch } = useFetch({
   //   queryKey: ["All_numbered_pieces", modalNumberChange],
   //   endpoint:
@@ -100,10 +104,13 @@ export const GoldItemCodingForm = ({
   //   enabled: !!modalNumberChange
   // });
 
-  const modalNumber = dataSource && dataSource?.find(
-    (item) =>
-      item.model_number === modalNumberChange && item.twred_status === "inedara"
-  );
+  const modalNumber =
+    dataSource &&
+    dataSource?.find(
+      (item) =>
+        item.model_number === modalNumberChange &&
+        item.twred_status === "inedara"
+    );
 
   // const awzanItems = activeBand.category.items
   const awzanItemsFormInitValues = awzanItems?.reduce(
@@ -267,16 +274,22 @@ export const GoldItemCodingForm = ({
 
       {/* رقم الموديل */}
       <BaseInputField
-        placeholder={isFetching ? t("loading") : t("model number")}
+        // placeholder={isFetching ? t("loading") : t("model number")}
+        placeholder={t("model number")}
         label={t("model number")}
         id="model_number"
         type="text"
         name="model_number"
-        disabled={isFetching}
-        className={isFetching && "bg-mainDisabled"}
+        // disabled={isFetching}
+        // className={isFetching && "bg-mainDisabled"}
         onChange={(e) => {
           setModalNumberChange(e.target.value);
 
+          const modalNumber = dataSource?.find(
+            (item) =>
+              item.model_number == e.target.value &&
+              item.twred_status === "inedara"
+          );
           // const modalNumber = dataSource && dataSource?.find(
           //   (item) =>
           //     item.model_number == e.target.value &&

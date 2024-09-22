@@ -124,7 +124,7 @@ const SortPiecesSecondScreen = ({
         ...selectedRowsIds,
       ]);
       setSelectedRows([]);
-      refetch()
+      refetch();
     },
   });
   const { mutate: mutateReject, isLoading: rejectLoading } = useMutate({
@@ -158,7 +158,7 @@ const SortPiecesSecondScreen = ({
         ...selectedRowsIds,
       ]);
       setSelectedRows([]);
-      refetch()
+      refetch();
     },
   });
 
@@ -421,117 +421,115 @@ const SortPiecesSecondScreen = ({
             )}
           </>
         ) : ( */}
-          <>
-            <div className="flex justify-between m-4">
-              <div>
-                <input
-                  className="mb-5 shadow-lg rounded p-2"
-                  value={searchInputValue}
-                  onChange={(e) => setSearchInputValue(e.target.value)}
-                />
-                <Button
-                  className="mx-4"
-                  disabled={searchInputValue === ""}
-                  bordered
-                  action={handleTableSearch}
-                >
-                  {t("search")}
-                </Button>
-                <Button
-                  className="mx-4"
-                  bordered
-                  action={() => {
-                    setDataSource(
-                      sortItems?.filter(
-                        (item) => item.item_status === "Waiting"
-                      )
-                    );
-                  }}
-                >
-                  {t("empty search")}
-                </Button>
-              </div>
-              <div className="flex flex-col mr-auto items-end justify-end">
-                <Link to="/selling/payoff/supply-payoff">
-                  <Button bordered>{t("go to payoff")}</Button>
-                </Link>
-                <p className="text-end">
-                  {t("selected items count")}:{selectedRows.length}
-                </p>
-              </div>
-            </div>
-            <Table data={dataSource || []} columns={Cols}>
-              <div className="mt-3 flex items-center justify-center gap-5 p-2">
-                <div className="flex items-center gap-2 font-bold">
-                  {t("page")}
-                  <span className=" text-mainGreen">{data?.current_page}</span>
-                  {t("from")}
-                  {<span className=" text-mainGreen">{data?.pages}</span>}
-                </div>
-                <div className="flex items-center gap-2 ">
-                  <Button
-                    className=" rounded bg-mainGreen p-[.18rem]"
-                    action={() => setPage((prev) => prev - 1)}
-                    disabled={page == 1}
-                  >
-                    {isRTL ? (
-                      <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                    ) : (
-                      <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                    )}
-                  </Button>
-                  <Button
-                    className="rounded bg-mainGreen p-[.18rem]"
-                    action={() => setPage((prev) => prev + 1)}
-                    disabled={page == data?.pages}
-                  >
-                    {isRTL ? (
-                      <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                    ) : (
-                      <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </Table>
-            <div className="flex justify-between mt-2 md:mt-8">
-              <div className="flex gap-x-4">
-                <div className="flex gap-4">
-                  <Button
-                    className="bg-mainOrange text-white"
-                    action={() => {
-                      if (selectedRows.length === 0)
-                        notify("info", `${t("select item at least")}`);
-                      else setOpenAcceptModal(true);
-                    }}
-                  >
-                    {t("offer selling")}
-                  </Button>
-                </div>
-                <div className="flex gap-4">
-                  <Button
-                    className="text-mainOrange border-mainOrange"
-                    action={() => {
-                      if (selectedRows?.length === 0)
-                        notify("info", `${t("select item at least")}`);
-                      else setOpenRefusedModal(true);
-                    }}
-                    bordered
-                  >
-                    {t("return")}
-                  </Button>
-                </div>
-              </div>
-
+        <>
+          <div className="flex justify-between m-4">
+            <div>
+              <input
+                className="mb-5 shadow-lg rounded p-2"
+                value={searchInputValue}
+                onChange={(e) => setSearchInputValue(e.target.value)}
+              />
               <Button
-                className="mr-auto"
-                action={() => setStage((prev) => prev - 1)}
+                className="mx-4"
+                disabled={searchInputValue === ""}
                 bordered
+                action={handleTableSearch}
               >
-                {t("back")}
+                {t("search")}
+              </Button>
+              <Button
+                className="mx-4"
+                bordered
+                action={() => {
+                  setDataSource(
+                    sortItems?.filter((item) => item.item_status === "Waiting")
+                  );
+                }}
+              >
+                {t("empty search")}
               </Button>
             </div>
-          </>
+            <div className="flex flex-col mr-auto items-end justify-end">
+              <Link to="/selling/payoff/supply-payoff">
+                <Button bordered>{t("go to payoff")}</Button>
+              </Link>
+              <p className="text-end">
+                {t("selected items count")}:{selectedRows.length}
+              </p>
+            </div>
+          </div>
+          <Table data={dataSource || []} columns={Cols}>
+            <div className="mt-3 flex items-center justify-center gap-5 p-2">
+              <div className="flex items-center gap-2 font-bold">
+                {t("page")}
+                <span className=" text-mainGreen">{data?.current_page}</span>
+                {t("from")}
+                {<span className=" text-mainGreen">{data?.pages}</span>}
+              </div>
+              <div className="flex items-center gap-2 ">
+                <Button
+                  className=" rounded bg-mainGreen p-[.18rem]"
+                  action={() => setPage((prev) => prev - 1)}
+                  disabled={page == 1}
+                >
+                  {isRTL ? (
+                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                  ) : (
+                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                  )}
+                </Button>
+                <Button
+                  className="rounded bg-mainGreen p-[.18rem]"
+                  action={() => setPage((prev) => prev + 1)}
+                  disabled={page == data?.pages}
+                >
+                  {isRTL ? (
+                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                  ) : (
+                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          </Table>
+          <div className="flex justify-between mt-2 md:mt-8">
+            <div className="flex gap-x-4">
+              <div className="flex gap-4">
+                <Button
+                  className="bg-mainOrange text-white"
+                  action={() => {
+                    if (selectedRows.length === 0)
+                      notify("info", `${t("select item at least")}`);
+                    else setOpenAcceptModal(true);
+                  }}
+                >
+                  {t("offer selling")}
+                </Button>
+              </div>
+              <div className="flex gap-4">
+                <Button
+                  className="text-mainOrange border-mainOrange"
+                  action={() => {
+                    if (selectedRows?.length === 0)
+                      notify("info", `${t("select item at least")}`);
+                    else setOpenRefusedModal(true);
+                  }}
+                  bordered
+                >
+                  {t("return")}
+                </Button>
+              </div>
+            </div>
+
+            <Button
+              className="mr-auto"
+              action={() => setStage((prev) => prev - 1)}
+              bordered
+            >
+              {t("back")}
+            </Button>
+          </div>
+        </>
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
           <ItemDetailsTable
             selectedItem={sortItems}
@@ -561,8 +559,6 @@ const SortPiecesSecondScreen = ({
                     id: +selectedItem?.id,
                   }));
 
-
-
                   const receivedFinalValue = {
                     isPart: 0,
                     id: selectedItem?.id,
@@ -580,7 +576,7 @@ const SortPiecesSecondScreen = ({
                   const isPart = sortItems?.every(
                     (sort) => sort.item_status === "Waiting"
                   );
-                  console.log("🚀 ~ item_status:", isPart)
+                  console.log("🚀 ~ item_status:", isPart);
 
                   const receivedAllFinalValue = {
                     isPart: isPart ? 1 : 0,
@@ -590,8 +586,11 @@ const SortPiecesSecondScreen = ({
                     entity_gold_price: selectedItem?.entity_gold_price,
                     api_gold_price: selectedItem?.api_gold_price,
                     type: selectedItem?.type,
-                  }; 
-                  console.log("🚀 ~ receivedAllFinalValue:", receivedAllFinalValue)
+                  };
+                  console.log(
+                    "🚀 ~ receivedAllFinalValue:",
+                    receivedAllFinalValue
+                  );
 
                   const isSelectedAllItems =
                     selectedRows?.length === dataSource?.length

@@ -39,7 +39,7 @@ export const PayOffFirstScreen = ({
   const navigate = useNavigate();
   const { userData } = useContext(authCtx);
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ dataSource:", dataSource)
+  console.log("🚀 ~ dataSource:", dataSource);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
@@ -85,9 +85,14 @@ export const PayOffFirstScreen = ({
         },
       },
       {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "id",
+        cell: (info) => info.getValue(),
+        accessorKey: "bond_number",
         header: () => <span>{t("bond number")}</span>,
+      },
+      {
+        cell: (info) => info.getValue(),
+        accessorKey: "id",
+        header: () => <span>{t("supply bond number")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),

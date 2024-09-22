@@ -258,7 +258,7 @@ const SellingInvoiceData = ({
       client_id: clientData.client_id,
       client_value: clientData.client_value,
       invoice_date: clientData.bond_date,
-      invoice_number: invoiceNumber.total + 1,
+      invoice_number: invoiceNumber + 1,
       count: sellingItemsData.length,
       total_vat: totalItemsTax,
       karat_price: sellingItemsData[0].gold_price,

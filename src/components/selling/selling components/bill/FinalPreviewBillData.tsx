@@ -77,7 +77,7 @@ const FinalPreviewBillData = ({
       : path === "/supply-return" ||
         path === "/selling/addInvoice/" ||
         path === "/selling/payoff/sales-return"
-      ? invoiceNumber?.total + 1
+      ? invoiceNumber + 1
       : invoiceNumber?.length + 1;
 
   return (
@@ -120,7 +120,7 @@ const FinalPreviewBillData = ({
             {t("employee name")}
             <span className="font-medium">{employee_name}</span>{" "}
           </p>
-        ) : client_id !== 1 ? (
+        ) : client_value != "غير معرف" ? (
           <>
             <p className="text-xs font-bold">
               {supplier_id ? t("supplier name") : t("client name")} :{" "}
