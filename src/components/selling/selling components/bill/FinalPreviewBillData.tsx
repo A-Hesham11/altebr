@@ -72,6 +72,7 @@ const FinalPreviewBillData = ({
         path === "/bonds/supplier-payment" ||
         path === "/viewSellingBonds" ||
         path === "/viewPurchaseBonds" ||
+        path === "/selling/return-entry" ||
         path === "/selling/honesty/all-return-honest"
       ? invoiceNumber
       : path === "/supply-return" ||

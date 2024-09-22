@@ -27,6 +27,7 @@ type Entry_TP = {
 };
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   // const contentRef = useRef();
   const invoiceRefs = useRef([]);
@@ -39,7 +40,10 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     (item) => item.data.docType.label === "رخصة المعادن"
   )?.[0]?.data?.docNumber;
 
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ mineralLicence:", mineralLicence)
+  console.log(
+    "🚀 ~ SellingInvoiceTablePreview ~ mineralLicence:",
+    mineralLicence
+  );
   const taxRegisteration = userData?.branch?.document?.filter(
     (item) => item.data.docType.label === "شهادة ضريبية"
   )?.[0]?.data?.docNumber;
