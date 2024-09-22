@@ -46,6 +46,7 @@ export const SellingFinalPreview = ({
   const navigate = useNavigate();
 
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData);
 
   const { data } = useFetch<Client_TP>({
     endpoint: `/selling/api/v1/get_sentence`,
@@ -94,7 +95,7 @@ export const SellingFinalPreview = ({
                 {userData?.branch?.district?.name}
               </p>
               <p>
-                {t("phone")}: {userData?.phone}
+                {t("phone")}: {companyData?.[0]?.phone}
               </p>
               <p>
                 {t("email")}: {companyData?.[0]?.email}

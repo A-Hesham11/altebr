@@ -116,6 +116,7 @@ const BillInputs = ({
               name={dateFieldName}
               minDate={new Date()}
               icon={<CiCalendarDate />}
+              disabled
               required
               labelProps={{ className: "mb-2" }}
               placeholder={`${formatDate(new Date())}`}

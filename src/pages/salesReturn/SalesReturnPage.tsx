@@ -88,7 +88,7 @@ const SalesReturnPage = () => {
     endpoint: `/sellingReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}`,
     queryKey: [`return_invoices_data_${userData?.branch_id}`],
     onSuccess(data) {
-      setInvoiceNumber(data);
+      setInvoiceNumber(data?.data?.length);
     },
     pagination: true,
   });

@@ -100,7 +100,7 @@ const SalesReturnInvoiceData = ({
     totalCost,
     totalItemsTaxes,
     totalFinalCost,
-    totalFinalCostIntoArabic
+    totalFinalCostIntoArabic,
   };
 
   const resultTable = [
@@ -241,7 +241,7 @@ const SalesReturnInvoiceData = ({
       client_id: clientData.client_id,
       client_value: clientData.client_value,
       invoice_date: clientData.bond_date,
-      invoice_number: invoiceNumber.total + 1,
+      invoice_number: invoiceNumber + 1,
       base_invoice: sellingItemsData[0]?.invoice_id,
       count: sellingItemsData.length,
     };
@@ -320,6 +320,7 @@ const SalesReturnInvoiceData = ({
       acc[curr.salesReturnFrontKey] = Number(curr.amount);
       return acc;
     }, {});
+
     mutate({
       endpointName: "/sellingReturn/api/v1/add_selling_return",
       values: { invoice, items, card },

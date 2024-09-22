@@ -92,7 +92,7 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
         </div>
 
         {/* BUDGET STATEMENT */}
-        {mainCardData?.length > 1 && (
+        {mainCardData?.length >= 1 && (
           <BudgetOperationsData
             invoiceData={invoiceData}
             setStage={setStage}

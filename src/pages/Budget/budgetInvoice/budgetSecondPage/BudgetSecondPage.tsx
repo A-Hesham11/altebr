@@ -47,11 +47,11 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
   const mainDataBoxes = mainCardData?.cards?.map((card) => card.boxes).flat();
   const isRTL = useIsRTL();
 
-  const mineralLicence = userData?.branch.document?.filter(
+  const mineralLicence = userData?.branch?.document?.filter(
     (item) => item.data.docType.label === "رخصة المعادن"
   )?.[0]?.data.docNumber;
 
-  const taxRegisteration = userData?.branch.document?.filter(
+  const taxRegisteration = userData?.branch?.document?.filter(
     (item) => item.data.docType.label === "شهادة ضريبية"
   )?.[0]?.data.docNumber;
 
@@ -256,10 +256,10 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
                 </p>
                 {/* <p>رقم المحل</p> */}
                 <p>
-                  {t("phone")}: {userData?.phone}
+                  {t("phone")}: {companyData?.[0]?.phone}
                 </p>
                 <p>
-                {t("email")}: {companyData?.[0]?.email}
+                  {t("email")}: {companyData?.[0]?.email}
                 </p>
                 <p>
                   {t("tax number")}: {taxRegisteration && taxRegisteration}

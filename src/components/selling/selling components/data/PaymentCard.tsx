@@ -296,7 +296,7 @@ const PaymentCard = ({
       setSelectedCardName?.(
         isRTL ? selectNewCard[0]?.name_ar : selectNewCard[0]?.name_en
       );
-      setIsMaxDiscountLimit(Number(selectNewCard[0]?.is_minimum));
+      setIsMaxDiscountLimit?.(Number(selectNewCard[0]?.is_minimum));
       setSelectedCardId(frontKey);
       setFieldValue(
         "discount_percentage",

@@ -68,7 +68,7 @@ const ReserveSecondPageFinalPreview = (props: any) => {
               </p>
               {/* <p>رقم المحل</p> */}
               <p>
-                {t("phone")}: {userData?.phone}
+                {t("phone")}: {companyData?.[0]?.phone}
               </p>
               <p>
               {t("email")}: {companyData?.[0]?.email}

@@ -76,6 +76,8 @@ export const GoldItemCodingForm = ({
   const [dataSource, setDataSource] = useState([]);
 
   const [modalNumberChange, setModalNumberChange] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const { refetch, isSuccess, isLoading, isFetching, isRefetching } = useFetch({
     endpoint: `/tarqimGold/api/v1/tarqim_gold?per_page=10000`,
@@ -85,10 +87,30 @@ export const GoldItemCodingForm = ({
     },
   });
 
-  const modalNumber = dataSource.find(
-    (item) =>
-      item.model_number === modalNumberChange && item.twred_status === "inedara"
-  );
+  // const modalNumber = dataSource.find(
+  //   (item) =>
+  //     item.model_number === modalNumberChange && item.twred_status === "inedara"
+  // );
+  // const { data, isLoading, isFetching, isRefetching, refetch } = useFetch({
+  //   queryKey: ["All_numbered_pieces", modalNumberChange],
+  //   endpoint:
+  //     search === ""
+  //       ? `identity/api/v1/pieces_in_edara?model_number[eq]=${modalNumberChange}?page=${page}`
+  //       : `${search}&page=${page}`,
+  //   onSuccess: (data) => {
+  //     setDataSource(data);
+  //   },
+  //   pagination: true,
+  //   enabled: !!modalNumberChange
+  // });
+
+  const modalNumber =
+    dataSource &&
+    dataSource?.find(
+      (item) =>
+        item.model_number === modalNumberChange &&
+        item.twred_status === "inedara"
+    );
 
   // const awzanItems = activeBand.category.items
   const awzanItemsFormInitValues = awzanItems?.reduce(
@@ -268,6 +290,11 @@ export const GoldItemCodingForm = ({
               item.model_number == e.target.value &&
               item.twred_status === "inedara"
           );
+          // const modalNumber = dataSource && dataSource?.find(
+          //   (item) =>
+          //     item.model_number == e.target.value &&
+          //     item.twred_status === "inedara"
+          // );
 
           if (
             modalNumber &&

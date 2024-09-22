@@ -10,7 +10,7 @@ const BillHeader = ({ invoiceNumber, locationPath }: any) => {
     <div className="flex items-center gap-8 lg:gap-16">
       <div className="flex items-center gap-5">
         <h2>
-          {t("bill number")} - {`${invoiceNumber.total + 1}`}
+          {t("bill number")} - {`${invoiceNumber + 1}`}
         </h2>
         {!locationPath && (
           <p className="bg-mainGreen text-white text-[9px] font-bold py-1 px-2 rounded-lg">

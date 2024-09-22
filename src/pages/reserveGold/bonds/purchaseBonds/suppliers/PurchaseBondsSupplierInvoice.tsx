@@ -298,7 +298,7 @@ const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
                   {userData?.branch?.district?.name}
                 </p>
                 <p>
-                  {t("phone")}: {userData?.phone}
+                  {t("phone")}: {companyData?.[0]?.phone}
                 </p>
                 <p>
                 {t("email")}: {companyData?.[0]?.email}

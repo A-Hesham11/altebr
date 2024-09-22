@@ -42,9 +42,10 @@ export const NewHonestForm = ({
     endpoint: `branchSafety/api/v1/bonds/${userData?.branch_id}`,
     pagination: true,
   });
-  const sanadId = honestBondsData
-    ? honestBondsData?.data?.find((item) => item.id)?.bondsafety_id
-    : 0;
+  // const sanadId = honestBondsData
+  //   ? honestBondsData?.data?.find((item) => item.id)?.bondsafety_id
+  //   : 0;
+  const sanadId = honestBondsData && honestBondsData?.data?.length;
   ///
   /////////// STATES
   ///
@@ -157,7 +158,10 @@ export const NewHonestForm = ({
                 {data.account}
               </p>
               <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                {(t(data?.unit_id) == "جرام" || "gram" ) ? formatGram(Number(data.value)) :  formatReyal(Number(data.value))} <span>{data.unit}</span>
+                {t(data?.unit_id) == "جرام" || "gram"
+                  ? formatGram(Number(data.value))
+                  : formatReyal(Number(data.value))}{" "}
+                <span>{data.unit}</span>
               </p>
             </li>
           ))}

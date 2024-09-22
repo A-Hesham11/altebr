@@ -35,13 +35,14 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   console.log("🚀 ~ SellingInvoiceTablePreview ~ userData:", userData);
   const taxRate = userData?.tax_rate / 100;
 
-  const mineralLicence = userData?.branch.document?.filter(
+  const mineralLicence = userData?.branch?.document?.filter(
     (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
+  )?.[0]?.data?.docNumber;
 
-  const taxRegisteration = userData?.branch.document?.filter(
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ mineralLicence:", mineralLicence)
+  const taxRegisteration = userData?.branch?.document?.filter(
     (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
+  )?.[0]?.data?.docNumber;
 
   const clientData = {
     client_id: item?.client_id,
@@ -244,7 +245,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
                   {userData?.branch?.district?.name}
                 </p>
                 <p>
-                  {t("phone")}: {userData?.phone}
+                  {t("phone")}: {companyData?.[0]?.phone}
                 </p>
                 <p>
                   {t("email")}: {companyData?.[0]?.email}

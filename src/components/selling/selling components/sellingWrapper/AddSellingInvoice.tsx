@@ -85,11 +85,10 @@ const AddSellingInvoice = () => {
     endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}`,
     queryKey: [`invoices_data_${userData?.branch_id}`],
     onSuccess(data) {
-      setInvoiceNumber(data);
+      setInvoiceNumber(data?.data?.length);
     },
     pagination: true,
   });
-  console.log("🚀 ~ AddSellingInvoice ~ data:", data);
 
   return (
     <Formik

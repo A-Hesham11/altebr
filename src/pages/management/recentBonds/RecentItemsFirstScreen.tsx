@@ -1,5 +1,3 @@
-
-
 import { Form, Formik } from "formik";
 import { t } from "i18next";
 import {
@@ -42,12 +40,12 @@ const RecentItemsFirstScreen = ({
   setStage,
   setSanadId,
 }: RecieveItemsFirstScreenProps_TP) => {
-  console.log("🚀 ~ selectedItem:", selectedItem)
+  console.log("🚀 ~ selectedItem:", selectedItem);
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const { userData } = useContext(authCtx);
   const [newData, setNewData] = useState([]);
-  console.log("🚀 ~ newData:", newData)
+  console.log("🚀 ~ newData:", newData);
   const [sortsData, setSortsData] = useState([]);
   const [page, setPage] = useState<number>(1);
   const [sortItems, setSortItems] = useState(localStorage.getItem("sortItems"));
@@ -97,8 +95,13 @@ const RecentItemsFirstScreen = ({
       },
       {
         cell: (info) => info.getValue(),
-        accessorKey: "id",
+        accessorKey: "bond_number",
         header: () => <span>{t("bond number")}</span>,
+      },
+      {
+        cell: (info) => info.getValue(),
+        accessorKey: "id",
+        header: () => <span>{t("supply bond number")}</span>,
       },
       {
         cell: (info) => info.getValue(),
@@ -199,7 +202,7 @@ const RecentItemsFirstScreen = ({
           </div>
         </Form>
       </Formik>
-      {!dataSource?.length && !isRefetching && !isLoading  && (
+      {!dataSource?.length && !isRefetching && !isLoading && (
         <h2 className="font-bold text-xl mx-auto my-8 text-mainGreen bg-lightGreen p-2 rounded-lg w-fit">
           {t("no results")}
         </h2>
@@ -222,7 +225,7 @@ const RecentItemsFirstScreen = ({
                   {t("page")}
                   <span className=" text-mainGreen">{data?.current_page}</span>
                   {t("from")}
-                  {<span className=" text-mainGreen">{data?.total}</span>}
+                  {<span className=" text-mainGreen">{data?.pages}</span>}
                 </div>
                 <div className="flex items-center gap-2 ">
                   <Button
@@ -253,11 +256,9 @@ const RecentItemsFirstScreen = ({
               <div className="mt-3 flex items-center justify-center gap-5 p-2">
                 <div className="flex items-center gap-2 font-bold">
                   {t("page")}
-                  <span className=" text-mainGreen">
-                    {data?.current_page}
-                  </span>
+                  <span className=" text-mainGreen">{data?.current_page}</span>
                   {t("from")}
-                  {<span className=" text-mainGreen">{data?.total}</span>}
+                  {<span className=" text-mainGreen">{data?.pages}</span>}
                 </div>
                 <div className="flex items-center gap-2 ">
                   <Button

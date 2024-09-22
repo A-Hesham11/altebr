@@ -122,8 +122,13 @@ const SortPiecesFirstScreen = ({
       },
       {
         cell: (info) => info.getValue(),
-        accessorKey: "id",
+        accessorKey: "bond_number",
         header: () => <span>{t("bond number")}</span>,
+      },
+      {
+        cell: (info) => info.getValue(),
+        accessorKey: "id",
+        header: () => <span>{t("supply bond number")}</span>,
       },
       {
         cell: (info) => info.getValue(),
