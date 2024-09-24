@@ -1399,5 +1399,9 @@
   "mere document": "سند صرف",
   "simplified tax invoice": "فاتورة ضريبية مبسطة",
   "supply bond number": "رقم سند التوريد",
-  "selling invoice number": "رقم فاتورة البيع"
+  "selling invoice number": "رقم فاتورة البيع",
+  "broken gold purchase invoice": "فاتورة شراء ذهب كسر",
+  "dynamic transfer to branch": "تحويل بالباركود للفرع",
+  "you should select branch": "يجب اختيار الفرع",
+  "piece doesn't exist": "القطعة غير موجودة"
 }

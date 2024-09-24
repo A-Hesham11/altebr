@@ -81,6 +81,13 @@ const FinalPreviewBillData = ({
       ? invoiceNumber + 1
       : invoiceNumber?.length + 1;
 
+  const textInvoice =
+    path === "/buying/purchaseInvoice/"
+      ? t("broken gold purchase invoice")
+      : path === "selling/payoff/sales-return"
+      ? t("simplified tax invoice")
+      : t("simplified tax invoice");
+
   return (
     <div className="flex justify-between">
       <div className="flex flex-col gap-1 mt-6">
@@ -108,7 +115,7 @@ const FinalPreviewBillData = ({
         <img src={billLogo} alt="bill" />
         <p className="text-base font-medium">
           {/* {userData?.branch?.country?.name} , {userData?.branch?.city?.name} */}
-          {t("simplified tax invoice")}
+          {textInvoice}
         </p>
         {/* <p className="text-xs font-medium">
           <span className="font-bold">{t("district")}:</span>
