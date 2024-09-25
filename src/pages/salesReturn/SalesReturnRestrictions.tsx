@@ -64,6 +64,11 @@ const SalesReturnRestrictions = () => {
       },
       {
         cell: (info: any) => info.getValue(),
+        accessorKey: "base_invoice",
+        header: () => <span>{t("selling invoice number")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
         accessorKey: "invoice_date",
         header: () => <span>{t("date")}</span>,
       },
@@ -76,6 +81,11 @@ const SalesReturnRestrictions = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "employee_name",
         header: () => <span>{t("employee name")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "base_invoice",
+        header: () => <span>{t("selling invoice number")}</span>,
       },
       {
         cell: (info: any) => (

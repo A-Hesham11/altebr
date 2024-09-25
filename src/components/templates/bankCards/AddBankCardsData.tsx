@@ -134,6 +134,7 @@ const AddBankCardsData = ({
   });
 
   function PostNewCard(values: bankCardsProps_TP) {
+    console.log("🚀 ~ PostNewCard ~ values:", values);
     mutate({
       endpointName: "/selling/api/v1/add_card",
       values: {
@@ -195,6 +196,24 @@ const AddBankCardsData = ({
     },
   });
 
+  const handlePost = (values) => {
+    if (cardId === "") notify("info", "please select a card");
+
+    if (editData) {
+      PostCardEdit({
+        ...values,
+        card_id: cardId,
+        discount_percentage: values.discount_percentage / 100,
+      });
+    } else {
+      PostNewCard({
+        ...values,
+        card_id: cardId,
+        discount_percentage: values.discount_percentage / 100,
+      });
+    }
+  };
+
   if (dataSource?.length === 0 && isFetching)
     return <Loading mainTitle={t("جاري التحميل")} />;
 
@@ -205,23 +224,7 @@ const AddBankCardsData = ({
           <Formik
             validationSchema={() => cardsValidatingSchema()}
             initialValues={initialValues}
-            onSubmit={(values, { resetForm }) => {
-              if (cardId === "") notify("info", "please select a card");
-
-              if (editData) {
-                PostCardEdit({
-                  ...values,
-                  card_id: cardId,
-                  discount_percentage: values.discount_percentage / 100,
-                });
-              } else {
-                PostNewCard({
-                  ...values,
-                  card_id: cardId,
-                  discount_percentage: values.discount_percentage / 100,
-                });
-              }
-            }}
+            onSubmit={(values, { resetForm }) => {}}
           >
             {({ values, setFieldValue, resetForm }) => (
               <Form>
@@ -336,6 +339,7 @@ const AddBankCardsData = ({
                         type="submit"
                         className="w-fit"
                         loading={editLoading}
+                        action={() => handlePost(values)}
                       >
                         {t("save")}
                       </Button>
