@@ -19,6 +19,7 @@ import FinalPreviewBillDataCodedIdentities from "./FinalPreviewBillDataCodedIden
 import InvoiceTableCodedPrint from "./InvoiceTableCodedPrint";
 import { formatDate, formatDateAndTime } from "../../../utils/date";
 import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
+import DynamicTransformToBranch from "./DynamicTransformToBranch";
 
 const options = {
   year: "numeric",
@@ -33,7 +34,8 @@ const OperationType = ({
   setIsSuccessPost,
   setPage,
 }) => {
-  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
+  const [transformToBranchDynamicModal, setOpenTransformToBranchDynamicModal] =
+    useState(false);
   const [transformToBranchModal, setOpenTransformToBranchModal] =
     useState(false);
   const [mergeModal, setOpenMergeModal] = useState(false);
@@ -234,6 +236,14 @@ const OperationType = ({
         <div className="flex justify-center items-center gap-4">
           <Button
             action={() => {
+              setOpenTransformToBranchDynamicModal(true);
+            }}
+            className="border-2 border-mainGreen bg-mainGreen text-white flex items-center gap-2"
+          >
+            <span>{t("dynamic transfer to branch")}</span>
+          </Button>
+          <Button
+            action={() => {
               if (!operationTypeSelect.length) {
                 notify("info", `${t("You must choose a piece first")}`);
                 return;
@@ -302,6 +312,25 @@ const OperationType = ({
             setIsSuccessPost={setIsSuccessPost}
             operationTypeSelect={operationTypeSelect}
             setOpenTransformToBranchModal={setOpenTransformToBranchModal}
+            setTransformPrintBondsModal={setTransformPrintBondsModal}
+          />
+        </Modal>
+        <Modal
+          isOpen={transformToBranchDynamicModal}
+          onClose={() => setOpenTransformToBranchDynamicModal(false)}
+        >
+          <DynamicTransformToBranch
+            refetch={refetch}
+            setPage={setPage}
+            setBondDataPrint={setBondDataPrint}
+            setOperationTypeSelect={setOperationTypeSelect}
+            setOpenSeperateModal={setOpenSeperateModal}
+            setIsSuccessPost={setIsSuccessPost}
+            operationTypeSelect={operationTypeSelect}
+            transformToBranchDynamicModal={transformToBranchDynamicModal}
+            setOpenTransformToBranchDynamicModal={
+              setOpenTransformToBranchDynamicModal
+            }
             setTransformPrintBondsModal={setTransformPrintBondsModal}
           />
         </Modal>
@@ -410,7 +439,7 @@ const OperationType = ({
                         {t("phone")}: {companyData?.[0]?.phone}
                       </p>
                       <p>
-                      {t("email")}: {companyData?.[0]?.email}
+                        {t("email")}: {companyData?.[0]?.email}
                       </p>
                       <p>
                         {t("tax number")}:{" "}

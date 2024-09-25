@@ -114,6 +114,7 @@ const BuyingFirstPage = ({
       notify("info", error?.response?.data?.msg);
     },
   });
+  console.log("🚀 ~ naqdya:", naqdya);
 
   // CLIENT OPTIONS
   const { data: clientsAndSuppliers, isLoading: loadingClients } = useFetch({
