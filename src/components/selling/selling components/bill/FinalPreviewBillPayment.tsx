@@ -21,6 +21,7 @@ const FinalPreviewBillPayment = ({
   const { formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData)
 
   const { data: companyData } = useFetch<ClientData_TP>({
     endpoint: `/companySettings/api/v1/companies`,
@@ -58,7 +59,7 @@ const FinalPreviewBillPayment = ({
     <div className="flex justify-between pe-8">
       <div className="text-center">
         <span className="font-medium text-xs">{t("vendor name")}</span>
-        <p>محمد المحيسن</p>
+        <p>{userData?.name}</p>
       </div>
 
       {!notQRCode && (

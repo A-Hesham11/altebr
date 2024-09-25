@@ -2,16 +2,20 @@
 ///
 import { useFormikContext } from "formik";
 import { t } from "i18next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   BaseInputField,
   InnerFormLayout,
   OuterFormLayout,
 } from "../../../molecules";
 import { NationalAddress } from "../../NationalAddress";
-import { Documents } from "../../reusableComponants/documents/Documents";
+import { allDocs_TP, Documents } from "../../reusableComponants/documents/Documents";
 import { Country_city_distract_markets } from "../Country_city_distract_markets";
 import { Button } from "../../../atoms";
+import { useQueryClient } from "@tanstack/react-query";
+import { useMutate } from "../../../../hooks";
+import { mutateData } from "../../../../utils/mutateData";
+import { notify } from "../../../../utils/toast";
 ///
 /////////// Types
 ///
@@ -48,6 +52,8 @@ export const BranchMainData = ({
   /////////// CUSTOM HOOKS
   ///
   const { values, setFieldValue, resetForm } = useFormikContext();
+  console.log("🚀 ~ values:", values)
+  const [editableData, setEditableData] = useState<allDocs_TP>();
   ///
   /////////// STATES
   ///
@@ -55,6 +61,7 @@ export const BranchMainData = ({
   ///
   /////////// SIDE EFFECTS
   ///
+
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
@@ -70,12 +77,18 @@ export const BranchMainData = ({
     }
   }, [isSuccessPost]);
   ///
+
+
   return (
     <>
       <OuterFormLayout
         header={title}
         submitComponent={
-          <Button type="submit" className="mr-auto mt-8" loading={isLoading}>
+          <Button
+            type="submit"
+            className="mr-auto mt-8"
+            loading={isLoading}
+          >
             {t("submit")}
           </Button>
         }
@@ -228,6 +241,8 @@ export const BranchMainData = ({
           {/* fax end */}
         </InnerFormLayout>
         <Documents
+          editableData={editableData}
+          setEditableData={setEditableData}
           setShow={setShow}
           docsFormValues={docsFormValues}
           setDocsFormValues={setDocsFormValues}

@@ -3,6 +3,8 @@ import cashImg from "../../../assets/cash.png";
 import QRCodeGen from "../../../components/atoms/QRCode";
 import { numberContext } from "../../../context/settings/number-formatter";
 import QRCode from "react-qr-code";
+import { authCtx } from "../../../context/auth-and-perm/auth";
+import { useContext } from "react";
 
 type FinalPreviewExpensePayment_TP = {
   paymentData: never[];
@@ -19,13 +21,9 @@ const FinalPreviewExpensePayment = ({
   setOdwyaTypeValue,
   responseSellingData
 }: FinalPreviewExpensePayment_TP) => {
-  console.log("🚀 ~ responseSellingData:", responseSellingData)
-  console.log("🚀 ~ paymentData:", paymentData)
-  console.log(
-    "🚀 ~ file: FinalPreviewExpensePayment.tsx:18 ~ sellingItemsData:",
-    sellingItemsData
-  );
+
   const { formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
 
   // FORMULA TO CALC THE TOTAL VALUE OF ITEMS
   const totalValueOfItems = sellingItemsData.reduce((acc, curr) => {
@@ -36,7 +34,7 @@ const FinalPreviewExpensePayment = ({
     <div className="flex justify-between pe-8">
       <div className="text-center">
         <span className="font-medium text-xs">{t("vendor name")}</span>
-        <p>محمد المحيسن</p>
+        <p>{userData?.name}</p>
       </div>
 
       <div>
