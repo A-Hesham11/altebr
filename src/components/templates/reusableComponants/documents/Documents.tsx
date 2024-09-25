@@ -46,6 +46,8 @@ export const Documents = ({
   isSuccessPost,
   restData,
   setShow: setShowPopup,
+  editableData,
+  setEditableData
 }: DocumentsProps_TP) => {
   ///
   /////////// STATES
@@ -55,7 +57,7 @@ export const Documents = ({
   const [show, setShow] = useState(false);
   console.log("🚀 ~ show:", show);
   const [docsData, setDocsData] = useState<allDocs_TP>();
-  const [editableData, setEditableData] = useState<allDocs_TP>();
+  // const [editableData, setEditableData] = useState<allDocs_TP>();
   console.log("🚀 ~ editableData:", editableData);
   const queryClient = useQueryClient();
 
@@ -104,6 +106,8 @@ export const Documents = ({
     });
   }
 
+
+
   return (
     <>
       <InnerFormLayout
@@ -129,14 +133,12 @@ export const Documents = ({
                   key={item.id}
                 >
                   <div className="flex gap-x-4 items-center">
-                    {/* {!editable && ( */}
-                      <Edit
-                        action={() => {
-                          setAddDocPopup(true);
-                          setEditableData(item);
-                        }}
-                      />
-                    {/* )} */}
+                    <Edit
+                      action={() => {
+                        setAddDocPopup(true);
+                        setEditableData(item);
+                      }}
+                    />
                     <Delete action={() => deleteDocHandler(item.id)} />
                   </div>
                   <CiFolderOn

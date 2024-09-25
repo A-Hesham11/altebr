@@ -10,6 +10,9 @@ import { Button } from "../../../atoms";
 import { BaseInputField, DateInputField, Select } from "../../../molecules";
 import { DropFile } from "../../../molecules/files/DropFile";
 import { allDocs_TP } from "./Documents";
+import { useMutate } from "../../../../hooks";
+import { notify } from "../../../../utils/toast";
+import { mutateData } from "../../../../utils/mutateData";
 
 ///
 /////////// Types
@@ -103,10 +106,48 @@ export const DocumentForm = ({
     });
   }
 
+  const {
+    mutate: mutateUpdate,
+    error,
+    isLoading: documentLoading,
+    isSuccess,
+    reset,
+  } = useMutate({
+    mutationFn: mutateData,
+    onSuccess: (data) => {
+      console.log("in success");
+      notify("success");
+      queryClient.refetchQueries(["AllBranches"]);
+    },
+    onError: (error: any) => {
+      const statusCode = error?.response?.status || error?.request?.status;
+      const errorMessage = error?.response?.data?.message;
+
+      notify("error", errorMessage);
+    },
+  });
+
+  // const updateDocumentData = docsFormValues?.filter((item) => item.id === editableData?.id)
+  // console.log("🚀 ~ updateDocumentData:", updateDocumentData);
+
+  // const handleDocument = () => {
+
+  // };
+
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={(values) => {
+        console.log("🚀 ~ values:", values);
+        if (!!editableData?.id) {
+          mutateUpdate({
+            endpointName: `branch/api/v1/update-item/${editableData?.id}`,
+            values: values,
+            dataType: "formData",
+            editWithFormData: false,
+            method: "post",
+          });
+        }
         handleAddDocData(values);
         setEditableData({} as allDocs_TP);
         setAddDocPopup(false);

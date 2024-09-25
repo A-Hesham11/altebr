@@ -120,11 +120,7 @@ export const CreateBranch = ({
     onSuccess: (data) => {
       console.log("in success");
       notify("success");
-      // queryClient.refetchQueries(["branch"])
       queryClient.refetchQueries(["AllBranches"]);
-      // queryClient.setQueryData(["branches"], () => {
-      //   return [data];
-      // });
       queryClient.setQueryData(["branches"], (oldData) => [
         ...(oldData || []),
         data,
