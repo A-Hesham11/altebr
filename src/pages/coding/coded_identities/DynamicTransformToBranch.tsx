@@ -36,7 +36,7 @@ const DynamicTransformToBranch = ({
   const [rowWage, setRowWage] = useState(null);
   const [thwelIds, setThwelIds] = useState([]);
   const [goldPriceToday, setGoldPriceToday] = useState("");
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("-");
   console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
   const [successData, setSuccessData] = useState([]);
@@ -72,10 +72,14 @@ const DynamicTransformToBranch = ({
     refetch: edaraRefetch,
   } = useFetch({
     queryKey: ["dynamic-edara"],
-    endpoint: `identity/api/v1/pieces_in_edara?hwya[eq]=${search || "0000"}`,
+    endpoint: `identity/api/v1/pieces_in_edara?hwya[eq]=${search}`,
     onSuccess: (data) => {
-      if (data?.data?.length === 0) {
+      if (search !== "-" && data?.data?.length === 0) {
         notify("info", t("piece doesn't exist"));
+      }
+
+      if (data?.data?.length !== 0) {
+        notify("success", t("piece was added"));
       }
       setSearch("");
     },
@@ -97,8 +101,10 @@ const DynamicTransformToBranch = ({
   }, [data]);
 
   useEffect(() => {
-    setSearch("");
-  }, [isLoading, isFetching, isRefetching]);
+    if (isRefetching) {
+      setSearch("");
+    }
+  }, []);
 
   // EFFECTS
   useEffect(() => {
