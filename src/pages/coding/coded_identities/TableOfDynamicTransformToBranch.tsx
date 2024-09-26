@@ -3,9 +3,11 @@ import { useMemo } from "react";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { Loading } from "../../../components/organisms/Loading";
+import { SvgDeleteIcon } from "../../../components/atoms/icons";
 
 const TableOfDynamicTransformToBranch = ({
   operationTypeSelect,
+  setOperationTypeSelect,
   setRowWage,
   setInputWeight,
   inputWeight,
@@ -13,6 +15,7 @@ const TableOfDynamicTransformToBranch = ({
   isFetching,
   isRefetching,
 }) => {
+  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
   const { formatReyal, formatGram } = numberContext();
   const isContainCheckInputWeight = operationTypeSelect.some(
     (el) => el.check_input_weight === 1
@@ -147,9 +150,29 @@ const TableOfDynamicTransformToBranch = ({
         accessorKey: "employee_name",
         header: () => <span>{t("weight conversion")}</span>,
       },
+      {
+        cell: (info: any) => {
+          return (
+            <SvgDeleteIcon
+              action={() => deletePieceHandler(info.row.original.hwya)}
+              stroke="#ef4444"
+            />
+          );
+        },
+        accessorKey: "delete",
+        header: () => <span>{t("delete")}</span>,
+      },
     ],
-    []
+    [operationTypeSelect]
   );
+
+  const deletePieceHandler = (hwya: number) => {
+    const filteredPieces = operationTypeSelect.filter((piece: any) => {
+      return hwya !== piece?.hwya;
+    });
+
+    setOperationTypeSelect(filteredPieces);
+  };
 
   if (isLoading || isFetching || isRefetching)
     return <Loading mainTitle={t("loading")} />;
