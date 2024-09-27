@@ -123,7 +123,7 @@ const DynamicTransformToBranch = ({
     if (successData?.length > 0 && findPiece === -1) {
       setDataSource((prev) => [...prev, successData?.[0]]);
     }
-  }, [successData, search, dataSource]);
+  }, [successData, search]);
 
   // console.log(data?.data?.length);
 
@@ -325,6 +325,7 @@ const DynamicTransformToBranch = ({
 
   useEffect(() => {
     setDataSource([]);
+    setSearch("-");
     document.getElementById("search")?.focus();
   }, [transformToBranchDynamicModal]);
 
@@ -498,6 +499,7 @@ const DynamicTransformToBranch = ({
                 <>
                   <TableOfDynamicTransformToBranch
                     operationTypeSelect={dataSource}
+                    setOperationTypeSelect={setDataSource}
                     isLoading={isLoading}
                     isFetching={isFetching}
                     isRefetching={isRefetching}

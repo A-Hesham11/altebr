@@ -245,7 +245,9 @@ const OperationType = ({
           <Button
             action={() => {
               if (!operationTypeSelect.length) {
-                notify("info", `${t("You must choose a piece first")}`);
+                //me-qr.com/TFqUUy5b
+
+                https: notify("info", `${t("You must choose a piece first")}`);
                 return;
               }
               setOpenTransformToBranchModal(true);
