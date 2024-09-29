@@ -52,7 +52,7 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <img src={billLogo} alt="bill" />
-        <p className="text-base font-medium">{t("simplified tax invoice")}</p>
+        <p className="text-base font-medium">{t("honest bond")}</p>
       </div>
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
