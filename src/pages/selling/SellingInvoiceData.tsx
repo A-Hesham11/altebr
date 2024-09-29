@@ -124,12 +124,12 @@ const SellingInvoiceData = ({
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("classification")}</span>,
+        header: () => <span>{t("category")}</span>,
         accessorKey: "classification_name",
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("category")} </span>,
+        header: () => <span>{t("classification")} </span>,
         accessorKey: "category_name",
         cell: (info) => {
           const finalCategoriesNames = info.row.original.itemDetails
@@ -168,12 +168,12 @@ const SellingInvoiceData = ({
             : formatGram(Number(info.row.original.karatmineral_name)),
       },
       {
-        header: () => <span>{t("weight")}</span>,
+        header: () => <span>{`${t("weight")} (${t("In grams")})`}</span>,
         accessorKey: "weight",
         cell: (info) => info.getValue() || `${t("no items")}`,
       },
       {
-        header: () => <span>{t("cost")} </span>,
+        header: () => <span>{t("price before tax")} </span>,
         accessorKey: "cost",
         cell: (info: any) => {
           const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
