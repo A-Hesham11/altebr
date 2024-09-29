@@ -1405,6 +1405,8 @@
   "you should select branch": "يجب اختيار الفرع",
   "piece doesn't exist": "القطعة غير موجودة",
   "piece was added": "تم اضافة القطعة بنجاح",
+  "price before tax": "السعر قبل الضريبة",
+  "In grams": "بالجرام",
   "sales return invoice": "فاتورة مردود البيع",
   "honest bond": "سند امانه"
 }
