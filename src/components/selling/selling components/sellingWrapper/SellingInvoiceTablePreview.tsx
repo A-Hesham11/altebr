@@ -33,17 +33,12 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ userData:", userData);
   const taxRate = userData?.tax_rate / 100;
 
   const mineralLicence = userData?.branch?.document?.filter(
     (item) => item.data.docType.label === "رخصة المعادن"
   )?.[0]?.data?.docNumber;
 
-  console.log(
-    "🚀 ~ SellingInvoiceTablePreview ~ mineralLicence:",
-    mineralLicence
-  );
   const taxRegisteration = userData?.branch?.document?.filter(
     (item) => item.data.docType.label === "شهادة ضريبية"
   )?.[0]?.data?.docNumber;
