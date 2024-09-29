@@ -1404,5 +1404,7 @@
   "dynamic transfer to branch": "تحويل بالباركود للفرع",
   "you should select branch": "يجب اختيار الفرع",
   "piece doesn't exist": "القطعة غير موجودة",
-  "piece was added": "تم اضافة القطعة بنجاح"
+  "piece was added": "تم اضافة القطعة بنجاح",
+  "sales return invoice": "فاتورة مردود البيع",
+  "honest bond": "سند امانه"
 }

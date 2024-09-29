@@ -1,5 +1,3 @@
-
-
 import { t } from "i18next";
 import { useMemo } from "react";
 import { numberContext } from "../../context/settings/number-formatter";
@@ -82,7 +80,7 @@ const SalesReturnInvoiceTablePreview = ({ item }: { item?: {} }) => {
       <div className="mt-16">
         <div>
           <p className="mb-4 font-semibold text-lg">{t("pieces details")}</p>
-          <Table data={item?.items} columns={tableColumn}></Table>
+          <Table data={item?.items || []} columns={tableColumn}></Table>
         </div>
         <div>
           <TableEntry item={item} />

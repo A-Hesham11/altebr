@@ -86,6 +86,10 @@ const FinalPreviewBillData = ({
       ? t("broken gold purchase invoice")
       : path === "selling/payoff/sales-return"
       ? t("simplified tax invoice")
+      : path === "/selling/return-entry"
+      ? t("sales return invoice")
+      : path === "/selling/honesty/all-honest"
+      ? t("honest bond")
       : t("simplified tax invoice");
 
   return (
