@@ -35,6 +35,15 @@ const Payoff = () => {
       title_ar: "مردود التوريد",
       title_en: "supplying payoff",
       route: "/selling/payoff/supply-payoff",
+      underCardInfo: (
+        <Link
+          to="/selling/supplyReturn"
+          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+        >
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("Supply yield restrictions")}</p>
+        </Link>
+      ),
     },
   ];
   return (

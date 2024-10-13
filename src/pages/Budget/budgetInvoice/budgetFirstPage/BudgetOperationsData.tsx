@@ -43,9 +43,6 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
           mainCardData={mainCardData}
         />
 
-        {/* SECOND TABLE FIR OPERATION */}
-        <BudgetStatementOperationTable mainCardData={mainCardData} />
-
         <div className="flex justify-between items-center">
           <h2 className="text-base font-bold">
             {t("ATM transaction balance statement")}
@@ -61,6 +58,9 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
           mainCardData={mainCardData}
           setOperationCardData={setOperationCardData}
         />
+
+        {/* SECOND TABLE FIR OPERATION */}
+        <BudgetStatementOperationTable mainCardData={mainCardData} />
       </div>
 
       <div className="flex justify-end mt-8">

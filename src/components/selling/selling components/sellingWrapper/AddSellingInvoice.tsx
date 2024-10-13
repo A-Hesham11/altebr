@@ -85,7 +85,7 @@ const AddSellingInvoice = () => {
     endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}`,
     queryKey: [`invoices_data_${userData?.branch_id}`],
     onSuccess(data) {
-      setInvoiceNumber(data?.data?.length);
+      setInvoiceNumber(data?.total);
     },
     pagination: true,
   });

@@ -42,6 +42,7 @@ const PaymentFinalPreviewBillData = ({
             path === "/selling/return-entry" ||
             path === "/selling/viewPayment" ||
             path === "/branch-bonds-react" ||
+            path === "/selling/supplyReturn" ||
             path === "/selling/payoff/supply-payoff"
               ? bond_date
               : formatDate(bond_date)}

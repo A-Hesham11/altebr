@@ -674,6 +674,7 @@
   "loading items": "تحميل القطع",
   "reject": "رفض",
   "Sales return restrictions": "قيود مردود المبيعات",
+  "Supply yield restrictions":"قيود مردود التوريد",
   "The sum of weights is more than the remaining weight": "تجميعة الأوزان اكثر من الوزن المتبقي",
   "The sum of weights is less than the remaining weight": "تجميعة الأوزان أقل من الوزن المتبقي",
   "The weight must be distributed among the pieces": "يجب توزيع الوزن علي القطع",
@@ -782,6 +783,7 @@
   "you must choose card first": "يجب إختيار البطاقة أولا",
   "choose item at least": "اختر قطعه على الاقل",
   "confirm return items to management": "رد القطع الى الادارة",
+  "return items":"رد القطع",
   "return all items to management": "رد الكل الى الادارة",
   "confirm retrieve items": "تأكيد استرجاع القطع",
   "retrieving the piece": "استرجاع القطعه",
@@ -1361,6 +1363,7 @@
   "total card commission tax": "اجمالي الضريبة علي البطاقات",
   "transfer": "تحويل",
   "balance": "الرصيد",
+  "Budget bond":"سند الموازنة",
   "budget bonds": "سندات الموازنة",
   "budget bond number": "سند موازنة رقم",
   "Attach the statement from the ATM along with all the related receipts to this report": "يرفق مع هذا الكشف الموازنه الصادره من جهاز الصراف و معه كل الفيش التابعه له",
@@ -1408,5 +1411,6 @@
   "price before tax": "السعر قبل الضريبة",
   "In grams": "بالجرام",
   "sales return invoice": "فاتورة مردود البيع",
-  "honest bond": "سند امانه"
+  "honest bond": "سند امانه",
+  "The parts have been returned to the administration successfully.":"تم رد القطع الي الادارة بنجاح"
 }

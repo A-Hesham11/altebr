@@ -18,10 +18,14 @@ import { ItemDetailsTable } from "../../components/selling/recieve items/ItemDet
 import { SelectMineralKarat } from "../../components/templates/reusableComponants/minerals/SelectMineralKarat";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import { authCtx } from "../../context/auth-and-perm/auth";
-import { useFetch, useIsRTL } from "../../hooks";
+import { useFetch, useIsRTL, useMutate } from "../../hooks";
 import SelectClassification from "../../components/templates/reusableComponants/classifications/select/SelectClassification";
 import { useNavigate } from "react-router-dom";
 import { numberContext } from "../../context/settings/number-formatter";
+import { useQueryClient } from "@tanstack/react-query";
+import { mutateData } from "../../utils/mutateData";
+import { notify } from "../../utils/toast";
+import ReturnItemsToEdaraModal from "../../components/selling/payoff/ReturnItemsToEdaraModal";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -39,6 +43,9 @@ export const SellingBranchIdentity = () => {
   const [search, setSearch] = useState("");
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
+  // const [selectedItems, setSelectedItems] = useState([]);
+  // console.log("🚀 ~ SellingBranchIdentity ~ selectedItem:", selectedItems);
+  const [returnItemsModel, setReturnItemsModel] = useState(false)
 
   const navigate = useNavigate();
 
@@ -49,12 +56,52 @@ export const SellingBranchIdentity = () => {
     weight: "",
     wage: "",
   };
+
+  // const handleCheckboxChange = (item) => {
+  //   setSelectedItems((prevSelected) => {
+  //     const isItemSelected = prevSelected.some(
+  //       (selectedItem) => selectedItem.hwya === item.hwya
+  //     );
+  
+  //     if (isItemSelected) {
+  //       return prevSelected.filter((selectedItem) => selectedItem.hwya !== item.hwya);
+  //     } else {
+  //       return [...prevSelected, item];
+  //     }
+  //   });
+  // };
+
   const Cols = useMemo<any>(
     () => [
+      // {
+      //   header: () => <span>{t("#")}</span>,
+      //   accessorKey: "action",
+      //   cell: (info) => {
+      //     return (
+      //       <input
+      //         type="checkbox"
+      //         className="border-mainGreen text-mainGreen rounded"
+      //         id={crypto.randomUUID()}
+      //         name="selectedItem"
+      //         onChange={() =>
+      //           handleCheckboxChange({
+      //             hwya: info.row.original.hwya,
+      //             thwelbond_id: info.row.original.thwelbond_id,
+      //           })
+      //         }
+      //       />
+      //     );
+      //   },
+      // },
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "id",
-        header: () => <span>{t("#")}</span>,
+        header: () => <span>{t("ID")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "thwelbond_id",
+        header: () => <span>{t("bond number")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
@@ -162,7 +209,39 @@ export const SellingBranchIdentity = () => {
     },
   });
 
-  //
+  const queryClient = useQueryClient();
+  const {
+    mutate,
+    isLoading: returnLoading,
+    isSuccess: isSuccessData,
+    reset,
+  } = useMutate({
+    mutationFn: mutateData,
+    mutationKey: ["returnToSort"],
+    onSuccess: (data) => {
+      notify("success");
+      queryClient.refetchQueries(["returnToSort"]);
+      refetch();
+    },
+    onError: (error) => {
+      console.log(error);
+      notify("error", error?.response?.data?.message);
+    },
+  });
+
+  // function PostNewValue() {
+  //   mutate({
+  //     endpointName: "/branchManage/api/v1/change-status-item",
+  //     values: {
+  //       branch_id: userData.branch_id,
+  //       items: selectedItems,
+  //     },
+  //   });
+  // }
+
+  
+
+ 
   const total24 = (data && data?.data[0]?.allboxes.karat24) || 0;
   const total22 = (data && data?.data[0]?.allboxes.karat22) || 0;
   const total21 = (data && data?.data[0]?.allboxes.karat21) || 0;
@@ -373,6 +452,11 @@ export const SellingBranchIdentity = () => {
           </BoxesDataBase>
         ))}
       </ul>
+      <div className="flex justify-end mb-4">
+        <Button loading={returnLoading} action={() => setReturnItemsModel(true)}>
+          {t("return items")}
+        </Button>
+      </div>
       {isSuccess &&
         !!dataSource &&
         !isLoading &&
@@ -419,6 +503,25 @@ export const SellingBranchIdentity = () => {
           selectedRowDetailsId={selectedRowDetailsId}
         />
       </Modal>
+
+      <Modal
+          isOpen={returnItemsModel}
+          onClose={() => setReturnItemsModel(false)}
+        >
+          <ReturnItemsToEdaraModal
+            refetch={refetch}
+            setPage={setPage}
+            setReturnItemsModel={setReturnItemsModel}
+            // setOpenSeperateModal={setOpenSeperateModal}
+            // setIsSuccessPost={setIsSuccessPost}
+            // operationTypeSelect={operationTypeSelect}
+            // transformToBranchDynamicModal={transformToBranchDynamicModal}
+            // setOpenTransformToBranchDynamicModal={
+            //   setOpenTransformToBranchDynamicModal
+            // }
+            // setTransformPrintBondsModal={setTransformPrintBondsModal}
+          />
+        </Modal>
     </div>
   );
 };
