@@ -11,7 +11,7 @@ import { NewHonest } from "../components/selling/honest/NewHonest";
 import { RetrieveHonestEntryScreen } from "../components/selling/honest/RetrieveHonestEntryScreen";
 import { ReturnHonestRestriction } from "../components/selling/honest/ReturnHonestRestriction";
 // import PayoffEntryScreen from "../components/selling/payoff/PayoffentryScreen";
-import  PayoffEntryScreen from "../components/selling/payoff/PayoffEntryScreen";
+import PayoffEntryScreen from "../components/selling/payoff/PayoffEntryScreen";
 import RecieveItems from "../components/selling/recieve items/RecieveItems";
 import BranchAccountingTree from "../components/selling/reports/BranchAccountingTree";
 import { SellingFinalPreview } from "../components/selling/selling components/SellingFinalPreview";
@@ -167,6 +167,7 @@ import BranchBalancesPage from "../pages/branchBalances/BranchBalancesPage";
 import RecentBondsPage from "../pages/management/recentBonds/RecentBondsPage";
 import SortPiecesPage from "../pages/management/sortPieces/SortPiecesPage";
 import PrintingNumberIdentities from "../pages/coding/coded_identities/PrintingNumberIdentities";
+import { SupplyYieldRestrictions } from "../components/selling/payoff/SupplyYieldRestrictions";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -556,6 +557,10 @@ export const AllRoutesProvider = () => {
           <Route
             path="/selling/branch-identity"
             element={<SellingBranchIdentity />}
+          />
+          <Route
+            path="/selling/supplyReturn"
+            element={<SupplyYieldRestrictions />}
           />
           <Route path="/selling/Pieces-Sold" element={<PiecesSoldPage />} />
 

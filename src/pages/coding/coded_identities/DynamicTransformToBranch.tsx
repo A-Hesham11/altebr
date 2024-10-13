@@ -36,6 +36,7 @@ const DynamicTransformToBranch = ({
   const [rowWage, setRowWage] = useState(null);
   const [thwelIds, setThwelIds] = useState([]);
   const [goldPriceToday, setGoldPriceToday] = useState("");
+  console.log("🚀 ~ goldPriceToday:", goldPriceToday)
   const [search, setSearch] = useState("-");
   console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
