@@ -1,11 +1,12 @@
-
-
 import { t } from "i18next";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { Loading } from "../../../components/organisms/Loading";
 import { SvgDeleteIcon } from "../../../components/atoms/icons";
+import { Form, Formik } from "formik";
+import { BaseInput } from "../../atoms";
+import { notify } from "../../../utils/toast";
 
 const ReturnItemsToEdaraTable = ({
   operationTypeSelect,
@@ -13,7 +14,12 @@ const ReturnItemsToEdaraTable = ({
   isLoading,
   isFetching,
   isRefetching,
+  dataSource,
+  mainData,
+  setMainData,
 }: any) => {
+  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
+  console.log("🚀 ~ dataSource:", dataSource);
   const { formatReyal, formatGram } = numberContext();
   const isContainCheckInputWeight = operationTypeSelect.some(
     (el) => el.check_input_weight === 1
@@ -47,7 +53,61 @@ const ReturnItemsToEdaraTable = ({
         header: () => <span>{t("category")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "---",
+        cell: (info: any) => {
+          console.log("🚀 ~ info:", info.row.index);
+          const filterItem = mainData?.filter(
+            (item) => item.id === info.row.original.id
+          );
+          console.log("🚀 ~ filterItem:", filterItem);
+          console.log("🚀 ~ filterItem:", filterItem?.[info.row.index]);
+          return (
+            <div>
+              {info.row.original.category_selling_type === "all" ? (
+                <Formik
+                  initialValues={{ weight: info.row.original.weight }}
+                  enableReinitialize={true}
+                  onSubmit={(values) => {}}
+                >
+                  {({ values, setFieldValue }) => {
+                    console.log("🚀 ~ values:", values);
+                    return (
+                      <Form>
+                        <BaseInput
+                          id="weight"
+                          name="weight"
+                          type="text"
+                          value={values.weight}
+                          onChange={(e) => {
+                            const newValue = e.target.value;
+                            setFieldValue("weight", newValue);
+                            updateData(info.row.original.id, {
+                              weight: newValue,
+                            });
+                            if (newValue < 0) {
+                              notify("info", `${t("Minimum weight 1")}`);
+                              return;
+                            }
+                            if (newValue > info.row.original.remaining_weight) {
+                              notify(
+                                "info",
+                                `${t("الحد الاعلي للوزن")} ${
+                                  info.row.original.remaining_weight
+                                }`
+                              );
+                              return;
+                            }
+                          }}
+                        />
+                      </Form>
+                    );
+                  }}
+                </Formik>
+              ) : (
+                <span>{info.row.original.weight || "---"}</span>
+              )}
+            </div>
+          );
+        },
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
@@ -118,15 +178,23 @@ const ReturnItemsToEdaraTable = ({
         header: () => <span>{t("delete")}</span>,
       },
     ],
-    [operationTypeSelect]
+    []
   );
 
-  const deletePieceHandler = (hwya: number) => {
-    const filteredPieces = operationTypeSelect.filter((piece: any) => {
-      return hwya !== piece?.hwya;
-    });
+  const updateData = (id, updatedValues) => {
+    setOperationTypeSelect((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, ...updatedValues } : item
+      )
+    );
+  };
 
-    setOperationTypeSelect(filteredPieces);
+  const deletePieceHandler = (hwya) => {
+    setOperationTypeSelect((prevData) =>
+      prevData.filter((item) => item.hwya !== hwya)
+    );
+
+    setMainData((prevData) => prevData.filter((item) => item.hwya !== hwya));
   };
 
   if (isLoading || isFetching || isRefetching)

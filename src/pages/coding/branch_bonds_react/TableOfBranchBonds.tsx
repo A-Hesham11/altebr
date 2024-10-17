@@ -342,6 +342,14 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
   };
   console.log("🚀 ~ TableOfBranchBonds ~ costDataAsProps:", costDataAsProps);
 
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   const totalWeightConvertedTo24 =
     (+printGold18?.total_weight * 18) / 24 +
     (+printGold21?.total_weight * 21) / 24 +
@@ -559,11 +567,11 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
                   </p>
                   <p>
                     {t("tax number")}:{" "}
-                    {companyData && companyData?.[0]?.taxRegisteration}
+                    {taxRegisteration || ""}
                   </p>
                   <p>
                     {t("Mineral license")}:{" "}
-                    {companyData && companyData?.[0]?.mineralLicence}
+                    {mineralLicence || ""}
                   </p>
                 </div>
               </div>

@@ -10,6 +10,7 @@ const PaymentFinalPreviewBillData = ({
   isSupply,
   clientData,
   invoiceNumber,
+  invoiceData,
 }: any) => {
   const {
     client_id,
@@ -55,13 +56,21 @@ const PaymentFinalPreviewBillData = ({
         )}
       </div>
       <div className="flex flex-col gap-1 items-center">
-        <img src={billLogo} alt="bill" />
-        <p className="text-base font-medium">{t("simplified tax invoice")}</p>
+        <img src={billLogo} alt="bill" className="w-28 h-28"/>
+        <p className="text-base font-medium">
+          {invoiceData.invoiceName
+            ? invoiceData?.invoiceName
+            : t("simplified tax invoice")}
+        </p>
       </div>
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
           <span className="font-bold text-[16px] text-mainGreen">
-            {isSupply ? t("supply bond") : t("bond payment")}
+            {isSupply
+              ? t("supply bond")
+              : invoiceData?.invoiceName
+              ? invoiceData?.invoiceName
+              : t("bond payment")}
           </span>{" "}
         </p>
         {isSupply ? (

@@ -116,7 +116,7 @@ const FinalPreviewBillData = ({
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">
-        <img src={billLogo} alt="bill" />
+        <img src={billLogo} alt="bill" className="w-28 h-28"/>
         <p className="text-base font-medium">
           {/* {userData?.branch?.country?.name} , {userData?.branch?.city?.name} */}
           {textInvoice}

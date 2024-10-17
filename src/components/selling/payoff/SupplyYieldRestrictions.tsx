@@ -31,10 +31,8 @@ export const SupplyYieldRestrictions = ({}) => {
   console.log("🚀 ~ dataSource:", dataSource);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
-  const [openModal, setOpenModal] = useState(false);
   const [openInvoiceModal, setOpenInvoiceModal] = useState(false);
   const [restrictModal, setOpenRestrictModal] = useState(false);
-  const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [selectedItem, setSelectedItem] = useState(0);
   const [stage, setStage] = useState(1)
   const { data, isSuccess, refetch, isRefetching, isLoading } = useFetch({
@@ -63,9 +61,7 @@ export const SupplyYieldRestrictions = ({}) => {
       },
       {
         cell: (info: any) => {
-          const itemsCount = dataSource
-            .find((item) => item.id === info.row.original.id)
-            .items?.filter((item) => item.item_status === "Rejected").length;
+          const itemsCount = info.row.original.items.length
           return itemsCount;
         },
         accessorKey: "count_items",

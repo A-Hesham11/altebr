@@ -213,6 +213,14 @@ const OperationType = ({
     totalCost: totalWage,
   };
 
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
     onAfterPrint: () => console.log("Print job completed."),
@@ -445,11 +453,11 @@ const OperationType = ({
                       </p>
                       <p>
                         {t("tax number")}:{" "}
-                        {companyData && companyData?.[0]?.tax_number}
+                        {taxRegisteration || ""}
                       </p>
                       <p>
                         {t("Mineral license")}:{" "}
-                        {companyData && companyData?.[0]?.mineralLicence}
+                        {mineralLicence || ""}
                       </p>
                     </div>
                   </div>
