@@ -12,6 +12,7 @@ import FinalPreviewBillPayment from "../selling components/bill/FinalPreviewBill
 const RejectedItemsInvoice = ({ item }: any) => {
   console.log("🚀 ~ RejectedItemsInvoice ~ item:", item);
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ RejectedItemsInvoice ~ userData:", userData)
   const contentRef = useRef();
   const isRTL = useIsRTL();
 
@@ -40,8 +41,13 @@ const RejectedItemsInvoice = ({ item }: any) => {
         cell: (info: any) => info.getValue(),
       },
       {
-        header: () => <span>{t("classification")}</span>,
+        header: () => <span>{t("category")}</span>,
         accessorKey: "classification",
+        cell: (info: any) => info.getValue(),
+      },
+      {
+        header: () => <span>{t("classification")}</span>,
+        accessorKey: "category",
         cell: (info: any) => info.getValue(),
       },
       {
@@ -92,6 +98,14 @@ const RejectedItemsInvoice = ({ item }: any) => {
     ],
     []
   );
+
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
 
   const totalWeight = item?.items?.reduce((acc, curr) => {
     acc += +curr.weight;
@@ -169,6 +183,11 @@ const RejectedItemsInvoice = ({ item }: any) => {
     `,
   });
 
+  const returnInvoiceToEdara = {
+    bondNumber: 10,
+    invoiceName: isRTL ? "سند مردود" :  "rerurn bond",
+  }
+
   return (
     <div className="relative h-full py-16 px-8">
       <div className="flex justify-end mb-8 w-full">
@@ -184,7 +203,9 @@ const RejectedItemsInvoice = ({ item }: any) => {
           <div className="mx-5 bill-shadow rounded-md p-6">
             <PaymentFinalPreviewBillData
               clientData={clientData}
-              invoiceNumber={item?.invoice_number}
+              invoiceNumber={item?.invoice_number || item?.id}
+              invoiceData={returnInvoiceToEdara}
+              
             />
           </div>
 
@@ -221,11 +242,11 @@ const RejectedItemsInvoice = ({ item }: any) => {
               </p>
               <p>
                 {t("tax number")}:{" "}
-                {companyData && companyData?.[0]?.taxRegisteration}
+                {taxRegisteration || ""}
               </p>
               <p>
                 {t("Mineral license")}:{" "}
-                {companyData && companyData?.[0]?.mineralLicence}
+                {mineralLicence || ""}
               </p>
             </div>
           </div>

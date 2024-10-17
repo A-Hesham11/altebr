@@ -20,6 +20,7 @@ export const SupplyYieldRestrictionsEntry = ({
   isInPopup,
   setStage,
 }: RejectedItemsAccountingEntryProps_TP) => {
+  console.log("🚀 ~ selectedItem:", selectedItem)
   /////////// VARIABLES
   ///
   const { formatGram, formatReyal } = numberContext();
@@ -256,7 +257,7 @@ export const SupplyYieldRestrictionsEntry = ({
         ))}
       </ul>
 
-      <Table data={selectedItem?.items} columns={goldCols}>
+      <Table data={selectedItem?.items} columns={goldCols} showNavigation>
         {/* {!(contractIsLoading || contractIsFetching) &&
           contractIsSuccess &&
           !!restrictions?.length && ( */}

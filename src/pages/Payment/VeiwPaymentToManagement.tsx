@@ -190,6 +190,14 @@ const VeiwPaymentToManagement = () => {
     []
   );
 
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   const totalFinalCost = selectedViewItem?.items?.reduce((acc, curr) => {
     acc += +curr.value_reyal;
     return acc;
@@ -396,11 +404,11 @@ const VeiwPaymentToManagement = () => {
                   </p>
                   <p>
                     {t("tax number")}:{" "}
-                    {companyData && companyData?.[0]?.taxRegisteration}
+                    {taxRegisteration || ""}
                   </p>
                   <p>
                     {t("Mineral license")}:{" "}
-                    {companyData && companyData?.[0]?.mineralLicence}
+                    {mineralLicence || ""}
                   </p>
                 </div>
               </div>

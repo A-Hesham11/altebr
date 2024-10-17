@@ -39,6 +39,8 @@ const ReturnItemsToEdaraModal = ({
   console.log("🚀 ~ successData:", successData);
   const { userData } = useContext(authCtx);
   const queryClient = useQueryClient();
+  const [mainData, setMainData] = useState([]);
+  console.log("🚀 ~ SellingBranchIdentity ~ mainData:", mainData);
 
   const operationTypeSelectWeight = dataSource.filter(
     (el: any) => el.check_input_weight !== 0
@@ -64,7 +66,7 @@ const ReturnItemsToEdaraModal = ({
     queryKey: ["return-edara"],
     endpoint: `/branchManage/api/v1/all-accepted/${userData?.branch_id}?hwya[eq]=${search}`,
     onSuccess: (data) => {
-      if (search !== "-" && data?.data?.length === 0) {
+      if (search !== "كود الهوية" && data?.data?.length === 0) {
         notify("info", t("piece doesn't exist"));
       }
 
@@ -87,6 +89,7 @@ const ReturnItemsToEdaraModal = ({
   useEffect(() => {
     if (data) {
       setSuccessData(data?.data);
+      // setMainData(data?.data)
     }
   }, [data]);
 
@@ -112,6 +115,7 @@ const ReturnItemsToEdaraModal = ({
 
     if (successData?.length > 0 && findPiece === -1) {
       setDataSource((prev) => [...prev, successData?.[0]]);
+      setMainData((prev) => [...prev, successData?.[0]]);
     }
   }, [successData, search]);
 
@@ -119,14 +123,14 @@ const ReturnItemsToEdaraModal = ({
     mutationFn: mutateData,
     mutationKey: ["thwel-api"],
     onSuccess: (data) => {
-        queryClient.refetchQueries(["thwel-api"]);
+      queryClient.refetchQueries(["thwel-api"]);
       notify(
         "success",
         `${t(
           "The parts have been returned to the administration successfully."
         )}`
       );
-      setReturnItemsModel(false)
+      setReturnItemsModel(false);
       setOperationTypeSelect([]);
       refetch();
     },
@@ -146,7 +150,8 @@ const ReturnItemsToEdaraModal = ({
 
   useEffect(() => {
     setDataSource([]);
-    setSearch("-");
+    setMainData([]);
+    setSearch("كود الهوية");
     document.getElementById("search")?.focus();
   }, [transformToBranchDynamicModal]);
 
@@ -159,24 +164,63 @@ const ReturnItemsToEdaraModal = ({
   }, []);
 
   const handleSubmit = (values: any) => {
-    // if (values?.branch_id === "") {
-    //   notify("info", `${t("you should select branch")}`);
-    //   return;
-    // }
+    console.log("🚀 ~ handleSubmit ~ values:", values);
+    console.log(
+      "🚀 ~ handleSubmit ~ operationTypeSelectWeight:",
+      operationTypeSelectWeight
+    );
 
-    PostNewValue({
-      branch_id: userData?.branch_id,
-      api_gold_price: values.gold_price,
-      entity_gold_price: values.gold_price,
-      type: "normal",
-      items: operationTypeSelectWeight.map((el, i) => {
-        return {
-          id: el.thwelbond_id,
-          hwya: el.hwya,
-          front: el.front,
-        };
-      }),
+    const weightComparison = mainData.map((mainItem, index) => {
+      const operationItem = operationTypeSelectWeight[index];
+
+      if (!operationItem) return null; // Handle case where operationTypeSelectWeight has fewer items
+
+      return {
+        mainDataId: mainItem.id,
+        operationTypeSelectWeightId: operationItem.id,
+        isOperationWeightLess: operationItem.weight > mainItem.weight,
+      };
     });
+    console.log(
+      "🚀 ~ weightComparison ~ weightComparison:",
+      weightComparison?.some((item) => item.isOperationWeightLess === true)
+    );
+
+    if (weightComparison?.some((item) => item.isOperationWeightLess === true)) {
+      notify("info", `${t("Weight is greater than the maximum limit")}`);
+      return;
+    }
+
+    // PostNewValue({
+    //   branch_id: userData?.branch_id,
+    //   api_gold_price: values.gold_price,
+    //   entity_gold_price: values.gold_price,
+    //   type: "normal",
+    //   items: operationTypeSelectWeight.map((el, i) => {
+    //     return {
+    //       id: el.thwelbond_id,
+    //       hwya: el.hwya,
+    //       front: el.front,
+    //       weight: el.weight,
+    //       isItemWeight: el.category_selling_type === "all" ? 1 : 0,
+    //     };
+    //   }),
+    // });
+    // console.log("🚀 ~ handleSubmit ~:", {
+    //   branch_id: userData?.branch_id,
+    //   api_gold_price: values.gold_price,
+    //   entity_gold_price: values.gold_price,
+    //   type: "normal",
+    //   items: operationTypeSelectWeight.map((el, i) => {
+    //     return {
+    //       id: el.thwelbond_id,
+    //       hwya: el.hwya,
+    //       front: el.front,
+    //       weight: el.weight,
+    //       isItemWeight: el.category_selling_type === "all" ? 1 : 0
+    //     };
+    //   }),
+    // })
 
     // setOperationTypeSelect([]);
   };
@@ -192,14 +236,15 @@ const ReturnItemsToEdaraModal = ({
       onSubmit={(values) => {}}
     >
       {({ values, setValue }) => {
+        console.log("🚀 ~ values:", values);
         return (
           <Form>
             <div className="flex flex-col gap-10 mt-6">
               <h2>
-                <span>{t("dynamic transfer to branch")}</span>
+                <span>{t("Return the parts to the administration")}</span>
               </h2>
 
-              <div className="flex gap-2 items-center justify-center rounded-md  p-1">
+              <div className="flex gap-2 rounded-md  p-1">
                 <BaseInputField
                   id="search"
                   name="search"
@@ -209,18 +254,21 @@ const ReturnItemsToEdaraModal = ({
                   type="search"
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={`${t("id code")}`}
-                  className="placeholder-slate-400  p-[.18rem] w-80 !shadow-transparent focus:border-transparent"
+                  className=""
                 />
               </div>
 
               {dataSource?.length > 0 && (
                 <>
                   <ReturnItemsToEdaraTable
+                    mainData={mainData}
                     operationTypeSelect={dataSource}
                     setOperationTypeSelect={setDataSource}
+                    successData={successData}
                     isLoading={isLoading}
                     isFetching={isFetching}
                     isRefetching={isRefetching}
+                    setMainData={setMainData}
                   />
                   <Button
                     type="button"

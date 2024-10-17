@@ -1066,6 +1066,7 @@
   "metal type": "نوع المعدن",
   "total weight of adapter 24": "اجمالي وزن الذهب محول 24",
   "return bonds": "سندات المردود",
+  "return bond": "سند مردود",
   "type of supply voucher": "نوع سند التوريد",
   "return from supply bond": "مردود من سند التوريد",
   "recieve pieces": "استلام القطع",
@@ -1412,5 +1413,9 @@
   "In grams": "بالجرام",
   "sales return invoice": "فاتورة مردود البيع",
   "honest bond": "سند امانه",
-  "The parts have been returned to the administration successfully.":"تم رد القطع الي الادارة بنجاح"
+  "Return the parts to the administration":"رد القطع الي الادارة",
+  "The parts have been returned to the administration successfully.":"تم رد القطع الي الادارة بنجاح",
+  "Minimum weight 1":"الحد الادني للوزن 1",
+  "Maximum weight":"الحد الاعلي للوزن",
+  "Weight is greater than the maximum limit":"الوزن اكبر من الحد الاعلي"
 }

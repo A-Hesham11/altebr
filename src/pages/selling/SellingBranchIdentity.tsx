@@ -208,6 +208,8 @@ export const SellingBranchIdentity = () => {
       setDataSource(data.data);
     },
   });
+  console.log("🚀 ~ SellingBranchIdentity ~ data:", data)
+
 
   const queryClient = useQueryClient();
   const {
@@ -511,15 +513,7 @@ export const SellingBranchIdentity = () => {
           <ReturnItemsToEdaraModal
             refetch={refetch}
             setPage={setPage}
-            setReturnItemsModel={setReturnItemsModel}
-            // setOpenSeperateModal={setOpenSeperateModal}
-            // setIsSuccessPost={setIsSuccessPost}
-            // operationTypeSelect={operationTypeSelect}
-            // transformToBranchDynamicModal={transformToBranchDynamicModal}
-            // setOpenTransformToBranchDynamicModal={
-            //   setOpenTransformToBranchDynamicModal
-            // }
-            // setTransformPrintBondsModal={setTransformPrintBondsModal}
+            setReturnItemsModel={setReturnItemsModel}            
           />
         </Modal>
     </div>
