@@ -66,10 +66,12 @@ const BankBudget = () => {
     0
   );
 
-  const totalBalance =
-    totalCardBalanceWithCommission -
-    totalCardCommission -
-    totalCardCommissionTax;
+  // const totalBalance =
+  //   totalCardBalanceWithCommission -
+  //   totalCardCommission -
+  //   totalCardCommissionTax;
+
+  const totalBalance = totalCardBalanceWithCommission;
 
   const initialValues = {
     bankName: "",

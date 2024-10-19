@@ -11,6 +11,7 @@ import { SellingFinalPreview } from "../../components/selling/selling components
 import { numberContext } from "../../context/settings/number-formatter";
 import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
 import { notify } from "../../utils/toast";
+import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -28,10 +29,9 @@ const SalesReturnInvoiceData = ({
   clientData,
   invoiceNumber,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData)
+  console.log("🚀 ~ paymentData:", paymentData);
   const { formatGram, formatReyal } = numberContext();
   const [responseSellingData, SetResponseSellingData] = useState(null);
-
 
   const { userData } = useContext(authCtx);
 
@@ -58,6 +58,17 @@ const SalesReturnInvoiceData = ({
 
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
 
+  const totalWeight = sellingItemsData?.reduce((acc, curr) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
+
+  const totalWeightOfSelsal = sellingItemsData?.reduce((acc, item) => {
+    return (
+      acc + item?.selsal?.reduce((subAcc, curr) => subAcc + +curr.weight, 0)
+    );
+  }, 0);
+
   const totalOfCost = sellingItemsData.reduce((acc, card) => {
     acc += +card.cost;
     return acc;
@@ -78,6 +89,10 @@ const SalesReturnInvoiceData = ({
 
   const totalFinalCost = Number(totalCost) + Number(totalItemsTaxes);
 
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(totalFinalCost)
+  );
+
   const costDataAsProps = {
     totalCommissionRatio,
     ratioForOneItem,
@@ -85,7 +100,18 @@ const SalesReturnInvoiceData = ({
     totalCost,
     totalItemsTaxes,
     totalFinalCost,
+    totalFinalCostIntoArabic,
   };
+
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight) + Number(totalWeightOfSelsal)),
+      cost: formatReyal(Number(totalCost)),
+      vat: formatReyal(Number(totalItemsTaxes)),
+      total: formatReyal(Number(totalFinalCost)),
+    },
+  ];
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -190,6 +216,7 @@ const SalesReturnInvoiceData = ({
       columns={Cols}
       paymentData={paymentData}
       costDataAsProps={costDataAsProps}
+      resultTable={resultTable}
     ></InvoiceTable>
   );
 
@@ -201,7 +228,7 @@ const SalesReturnInvoiceData = ({
     mutationFn: mutateData,
     onSuccess: (data) => {
       notify("success");
-      SetResponseSellingData(data)
+      SetResponseSellingData(data);
       // navigate(`/selling/return-entry`);
     },
   });
@@ -214,12 +241,12 @@ const SalesReturnInvoiceData = ({
       client_id: clientData.client_id,
       client_value: clientData.client_value,
       invoice_date: clientData.bond_date,
-      invoice_number: invoiceNumber.total + 1,
+      invoice_number: invoiceNumber + 1,
       base_invoice: sellingItemsData[0]?.invoice_id,
       count: sellingItemsData.length,
     };
     const items = sellingItemsData.map((item) => {
-      console.log("🚀 ~ items ~ item:", item)
+      console.log("🚀 ~ items ~ item:", item);
       const rowTaxEquation = Number(item.tax_rate) / 100 + 1;
       const taklfaFromOneItem =
         Number(item.taklfa_after_tax) +
@@ -285,7 +312,7 @@ const SalesReturnInvoiceData = ({
         commissionTax_oneItem: item.commissionTax_oneItem,
         total_commission_ratio_tax: totalCommissionRatioTax,
         add_commission_ratio: isCheckedCommission,
-        tax_rate: userData?.tax_rate
+        tax_rate: userData?.tax_rate,
       };
     });
 
@@ -293,10 +320,11 @@ const SalesReturnInvoiceData = ({
       acc[curr.salesReturnFrontKey] = Number(curr.amount);
       return acc;
     }, {});
-    // mutate({
-    //   endpointName: "/sellingReturn/api/v1/add_selling_return",
-    //   values: { invoice, items, card },
-    // });
+
+    mutate({
+      endpointName: "/sellingReturn/api/v1/add_selling_return",
+      values: { invoice, items, card },
+    });
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
       { invoice, items, card }

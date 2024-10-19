@@ -13,7 +13,8 @@ type Client_TP = {
   bond_date: string;
   client_id: number;
   client_value: string;
-  employee_id: number;F
+  employee_id: number;
+  F;
   employee_value: string;
   id: number;
 };
@@ -39,7 +40,7 @@ export const ExpenseFinalPreview = ({
   invoiceNumber,
   odwyaTypeValue,
   setOdwyaTypeValue,
-  responseSellingData
+  responseSellingData,
 }: SellingFinalPreviewProps_TP) => {
   const { userData } = useContext(authCtx);
 
@@ -66,16 +67,24 @@ export const ExpenseFinalPreview = ({
             />
           </div>
           {ItemsTableContent}
-          <div className="mx-6 bill-shadow rounded-md p-6 my-9">
-            <FinalPreviewExpensePayment
-              paymentData={paymentData}
-              costDataAsProps={costDataAsProps}
-              sellingItemsData={sellingItemsData}
-              odwyaTypeValue={odwyaTypeValue}
-              setOdwyaTypeValue={setOdwyaTypeValue}
-              responseSellingData={responseSellingData}
-            />
+
+          <div className="mx-5 bill-shadow rounded-md p-6 my-9">
+            <div className="flex justify-between items-start pb-12 pe-8">
+              <div className="text-center flex flex-col gap-4">
+                <span className="font-medium text-xs">
+                  {t("recipient's signature")}
+                </span>
+                <p>------------------------------</p>
+              </div>
+              <div className="text-center flex flex-col gap-4">
+                <span className="font-medium text-xs">
+                  {t("bond organizer")}
+                </span>
+                <p>{userData?.name}</p>
+              </div>
+            </div>
           </div>
+
           <div className="text-center">
             <p className="my-4 py-1 border-y border-mainOrange">
               {data && data?.sentence}
@@ -89,10 +98,10 @@ export const ExpenseFinalPreview = ({
               </p>
               {/* <p>رقم المحل</p> */}
               <p>
-                {t("phone")}: {userData?.phone}
+                {t("phone")}: {companyData?.[0]?.phone}
               </p>
               <p>
-                {t("email")}: {userData?.email}
+                {t("email")}: {companyData?.[0]?.email}
               </p>
               <p>
                 {t("tax number")}:{" "}

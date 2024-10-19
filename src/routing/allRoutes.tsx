@@ -3,14 +3,15 @@ import { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import { AddClients } from "../components/selling/clients/AddClients";
 import ClientsData from "../components/selling/clients/ClientsData";
-import ReservePiece from "../components/selling/clients/reservePiece";
+// import ReservePiece from "../components/selling/clients/reservePiece";
 import { AllHonestBonds } from "../components/selling/honest/AllHonestBonds";
 import { AllRetrieveHonestBonds } from "../components/selling/honest/AllRetrieveHonestBonds";
 import { HonestBondAccountingRestriction } from "../components/selling/honest/HonestBondAccountingRestriction";
 import { NewHonest } from "../components/selling/honest/NewHonest";
 import { RetrieveHonestEntryScreen } from "../components/selling/honest/RetrieveHonestEntryScreen";
 import { ReturnHonestRestriction } from "../components/selling/honest/ReturnHonestRestriction";
-import PayoffEntryScreen from "../components/selling/payoff/PayoffentryScreen";
+// import PayoffEntryScreen from "../components/selling/payoff/PayoffentryScreen";
+import PayoffEntryScreen from "../components/selling/payoff/PayoffEntryScreen";
 import RecieveItems from "../components/selling/recieve items/RecieveItems";
 import BranchAccountingTree from "../components/selling/reports/BranchAccountingTree";
 import { SellingFinalPreview } from "../components/selling/selling components/SellingFinalPreview";
@@ -58,7 +59,6 @@ import { GoldCoding } from "../pages/coding/gold/GoldCoding";
 import { GoldCodingWrapper } from "../pages/coding/gold/GoldCodingWrapper";
 import { Employees } from "../pages/employees/Employees";
 import { OneEmployee } from "../pages/employees/OneEmployee";
-// import { Home } from "../pages/home/Home"
 import { Operation } from "../pages/operation/Operation";
 import { AllPartner } from "../pages/partner/AllPartner";
 import { OnePartner } from "../pages/partner/OnePartner";
@@ -83,11 +83,12 @@ import ViewAccountsBank from "../components/templates/accountsBank/ViewAccountsB
 import ViewBanks from "../components/templates/banks/ViewBanks";
 import { AllRetrievalRestrictions } from "../components/selling/honest/AllRetrievalRestrictions";
 import { OneRetrievalRestrictions } from "../components/selling/honest/OneRetrievalRestrictions";
-import ViewInvoiceData from "../components/templates/invoiceData/viewInvoiceData";
+// import ViewInvoiceData from "../components/templates/invoiceData/viewInvoiceData";
+import ViewInvoiceData from "../components/templates/invoiceData/ViewInvoiceData";
 import AddSellingInvoice from "../components/selling/selling components/sellingWrapper/AddSellingInvoice";
 import ViewSellingInvoice from "../components/selling/selling components/sellingWrapper/ViewSellingInvoice";
-import SellingRestrictionsInvoice from "../pages/selling/sellingRestrictionsInvoice";
-import AddTaxPolicy from "../components/templates/sellingPolicies/AddTaxPolicy";
+// import SellingRestrictionsInvoice from "../pages/selling/sellingRestrictionsInvoice";
+import SellingRestrictionsInvoice from "../pages/selling/SellingRestrictionsInvoice";
 import ViewTaxPolicy from "../components/templates/sellingPolicies/ViewTaxPolicy";
 import PaymentToManagement from "../pages/Payment/PaymentToManagement";
 import { Home } from "../pages/home/Home";
@@ -107,9 +108,9 @@ import PurchaseBonds from "../pages/Buying/Bonds/PurchaseBonds";
 import WeightAdjustmentBonds from "../pages/Buying/Bonds/WeightAdjustmentBonds";
 import PaymentBonds from "../pages/coding/branch bonds/PaymentBonds";
 import ViewBondsFromBranchs from "../pages/coding/branch bonds/ViewBondsFromBranchs";
-import { ViewBonds } from "../pages/coding/branch bonds/ViewBonds";
+// import { ViewBonds } from "../pages/coding/branch bonds/ViewBonds";
+import { ViewBonds } from "../pages/coding/branch bonds/viewBonds";
 import Expenses from "../pages/expenses/Expenses";
-import ExpensesInvoice from "../pages/expenses/Invoice/ExpensesInvoice";
 import ExpensesBonds from "../pages/expenses/Bonds/ExpensesBonds";
 import ViewExpensesPolicies from "../components/templates/expensesPolicy/ViewExpensesPolicies";
 import ViewSubExpensesPolicies from "../components/templates/subExpensesPolicy/ViewSubExpensesPolicies";
@@ -137,12 +138,11 @@ import ViewSupportArticle from "../pages/Support/viewSupport/ViewSupportArticle"
 import SalesReturnPage from "../pages/salesReturn/SalesReturnPage";
 import ImportTotals from "../pages/coding/coded_identities/ImportTotals";
 import Stocks from "../pages/selling/Stocks";
-import EdaraStocks from "../pages/stocksInEdara/edaraStocks";
-import BranchStocks from "../pages/stocksInEdara/branchStocks";
+// import EdaraStocks from "../pages/stocksInEdara/edaraStocks";
+import EdaraStocks from "../pages/stocksInEdara/EdaraStocks";
+// import BranchStocks from "../pages/stocksInEdara/branchStocks";
+import BranchStocks from "../pages/stocksInEdara/BranchStocks";
 import SalesReturnRestrictions from "../pages/salesReturn/SalesReturnRestrictions";
-import PurchaseInvoice from "../pages/reserveGold/invoices/purchaseInvoice/PurchaseInvoice";
-import SellingInvoice from "../pages/reserveGold/invoices/sellingInvoice/supplier/SellingInvoiceSupplier";
-import ReversePurchaseBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
 import ReservePurchaseBonds from "../pages/reserveGold/bonds/purchaseBonds/ReservePurchaseBonds";
 import SellingBond from "../pages/reserveGold/invoices/sellingInvoice/SellingBond";
 import ReverseSellingBonds from "../pages/reserveGold/bonds/sellingBonds/ReserveSellingBonds";
@@ -163,6 +163,11 @@ import BudgetPage from "../pages/Budget/Bank";
 import BankBudgetBonds from "../pages/Budget/budgetBonds/BankBudgetBonds";
 import Bank from "../pages/Budget/Bank";
 import BankBudget from "../pages/Budget/budgetInvoice/BankBudget";
+import BranchBalancesPage from "../pages/branchBalances/BranchBalancesPage";
+import RecentBondsPage from "../pages/management/recentBonds/RecentBondsPage";
+import SortPiecesPage from "../pages/management/sortPieces/SortPiecesPage";
+import PrintingNumberIdentities from "../pages/coding/coded_identities/PrintingNumberIdentities";
+import { SupplyYieldRestrictions } from "../components/selling/payoff/SupplyYieldRestrictions";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -191,16 +196,16 @@ export const AllRoutesProvider = () => {
             path="/accept-branchBonds"
             element={<ViewBondsFromBranchs />}
           />
-          <Route
-            path="/branch-bonds"
-            element={<BranchBonds title={t("branch bonds")} />}
-          />
           {/* REACT */}
           <Route
             path="/coding-react"
             element={
               <CodedIdentities title={t("identity and numbering management")} />
             }
+          />
+          <Route
+            path="/printing-identities"
+            element={<PrintingNumberIdentities />}
           />
           <Route path="/coding/total/import" element={<ImportTotals />} />
           <Route path="/importTotal/bonds" element={<ImportTotalsBonds />} />
@@ -327,9 +332,6 @@ export const AllRoutesProvider = () => {
           <Route path="/system/excludedItems" element={<ViewExcludedItems />} />
           <Route path="/system/TaxPolicy" element={<ViewTaxPolicy />} />
 
-          <Route path="/system/excludedItems" element={<ViewExcludedItems />} />
-
-          <Route path="/system/invoiceData" element={<ViewInvoiceData />} />
           <Route path="/system/invoiceData" element={<ViewInvoiceData />} />
 
           <Route
@@ -489,13 +491,9 @@ export const AllRoutesProvider = () => {
             element={<Bond title={t("accessory bond")} />}
           />
 
-          {/* المبعات */}
-          <Route path="/selling" element={<PaymentSellingPage />} />
-
           <Route path="/selling/addInvoice" element={<AddSellingInvoice />} />
           <Route path="/selling/viewInvoice" element={<ViewSellingInvoice />} />
 
-          <Route path="/payment" element={<SellingSecondpage />} />
           <Route
             path="selling/clients/customersData/addClients"
             element={<AddClients />}
@@ -510,20 +508,8 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/salaries" element={<SellingSalaries />} />
           <Route path="/selling/clients" element={<Clients />} />
           <Route path="/selling/customersData" element={<ClientsData />} />
-          <Route path="/selling/reservePiece" element={<ReservePiece />} />
+          {/* <Route path="/selling/reservePiece" element={<ReservePiece />} /> */}
           <Route path="/selling/payoff" element={<Payoff />} />
-          {/* <Route path="/selling/reimbursement" element={<>reimbursement</>} /> */}
-          {/* neighbors start */}
-          <Route path="/selling/neighbors" element={<NeighborsPage />} />
-          <Route path="/selling/neighbors/loaning" element={<>loaning</>} />
-          <Route path="/selling/neighbors/recover" element={<>recover</>} />
-          <Route
-            path="/selling/neighbors/neighbors-data"
-            element={<>neighbors-data</>}
-          />
-          <Route path="/selling/neighbors/payment" element={<>payment</>} />
-          {/* neighbors end */}
-          <Route path="/selling/reports" element={<Reports />} />
           <Route path="/selling/continuity" element={<ContinuityPage />} />
           <Route path="/selling/reports/stocks" element={<Stocks />} />
           <Route path="/credits/edara" element={<EdaraStocks />} />
@@ -540,11 +526,9 @@ export const AllRoutesProvider = () => {
             path="/selling/item-information"
             element={<ItemInformation />}
           />
-          <Route path="/selling/continuity" element={<>continuity</>} />
-          <Route path="/selling/trading" element={<>trading</>} />
+
           {/* honest start */}
           <Route path="/selling/honesty" element={<Honest />} />
-          <Route path="/selling/honesty/new-honest" element={<NewHonest />} />
           <Route
             path="/selling/honesty/return-honest"
             element={<RetrieveHonestEntryScreen />}
@@ -574,11 +558,12 @@ export const AllRoutesProvider = () => {
             path="/selling/branch-identity"
             element={<SellingBranchIdentity />}
           />
-          <Route path="/selling/Pieces-Sold" element={<PiecesSoldPage />} />
           <Route
-            path="/selling/management/receive-money"
-            element={<>receive-money</>}
+            path="/selling/supplyReturn"
+            element={<SupplyYieldRestrictions />}
           />
+          <Route path="/selling/Pieces-Sold" element={<PiecesSoldPage />} />
+
           <Route
             path="/selling/management/receive-items"
             element={<RecieveItems />}
@@ -588,6 +573,7 @@ export const AllRoutesProvider = () => {
             path="/selling/branchSetting"
             element={<BranchSettingPage />}
           />
+
           <Route path="/system/cardsData" element={<ViewBankCardsData />} />
           <Route
             path="/selling/payoff/supply-payoff"
@@ -602,24 +588,12 @@ export const AllRoutesProvider = () => {
             path="/selling/invoice-restrictions"
             element={<SellingRestrictionsInvoice />}
           />
-          <Route
-            path="selling/clients/customersData/addClients"
-            element={<AddClients />}
-          />
-          <Route
-            path="/selling/finalPreview"
-            element={<SellingFinalPreview />}
-          />
+
           <Route
             path="/selling/return-entry"
             element={<SalesReturnRestrictions />}
           />
 
-          {/* <Route path="/selling/buying/test" element={<>butingh</>} /> */}
-          <Route path="/selling/management" element={<Management />} />
-          {/* <Route path="/selling/exchange" element={<>exchange</>} /> */}
-          <Route path="/selling/clients" element={<Clients />} />
-          <Route path="/selling/payoff" element={<Payoff />} />
           <Route
             path="/selling/payment"
             element={<PaymentToManagementPage />}
@@ -632,38 +606,19 @@ export const AllRoutesProvider = () => {
             path="/selling/viewPayment"
             element={<VeiwPaymentToManagement />}
           />
+
+          {/* الادارة */}
+          <Route path="/selling/recentBonds" element={<RecentBondsPage />} />
+          <Route path="/selling/sortPieces" element={<SortPiecesPage />} />
+
           {/* neighbors start */}
           <Route path="/selling/neighbors" element={<NeighborsPage />} />
-          <Route path="/selling/neighbors/loaning" element={<>loaning</>} />
-          <Route path="/selling/neighbors/recover" element={<>recover</>} />
-          <Route
-            path="/selling/neighbors/neighbors-data"
-            element={<>neighbors-data</>}
-          />
-          <Route path="/selling/neighbors/payment" element={<>payment</>} />
           {/* neighbors end */}
           <Route path="/selling/reports" element={<Reports />} />
-          <Route
-            path="/selling/reports/accounting-tree"
-            element={<BranchAccountingTree />}
-          />
-          <Route
-            path="/selling/item-information"
-            element={<ItemInformation />}
-          />
-          <Route path="/selling/continuity" element={<>continuity</>} />
-          <Route path="/selling/trading" element={<>trading</>} />
+
           {/* honest start */}
-          <Route path="/selling/honesty" element={<Honest />} />
           <Route path="/selling/honesty/new-honest" element={<NewHonest />} />
-          <Route
-            path="/selling/honesty/all-honest"
-            element={<AllHonestBonds />}
-          />
-          <Route
-            path="/selling/honesty/all-honest/:bondId"
-            element={<HonestBondAccountingRestriction />}
-          />
+
           <Route
             path="/selling/honesty/all-retrieval-restrictions"
             element={<AllRetrievalRestrictions />}
@@ -675,34 +630,10 @@ export const AllRoutesProvider = () => {
           {/* honest end */}
           <Route path="/bank" element={<BudgetPage />} />
           <Route
-            path="/selling/branch-identity"
-            element={<SellingBranchIdentity />}
-          />
-          <Route
-            path="/selling/management/receive-money"
-            element={<>receive-money</>}
-          />
-          <Route
-            path="/selling/management/receive-items"
-            element={<RecieveItems />}
-          />
-          <Route
-            path="/selling/management/edit-items-weight"
-            element={<Print />}
-          />
-          <Route
             path="/selling/payoff/sales-return"
             element={<SalesReturnPage />}
           />
-          <Route
-            path="/selling/payoff/sales-return"
-            element={<SalesReturnPage />}
-          />
-          <Route path="/selling/payoff/payoff" element={<Payoff />} />
-          <Route
-            path="/selling/branchSetting"
-            element={<BranchSettingPage />}
-          />
+
           {/* BUYING START */}
           <Route path="/buying/purchaseInvoice" element={<BuyingInvoice />} />
           <Route
@@ -781,21 +712,25 @@ export const AllRoutesProvider = () => {
           <Route path="/system/commisionPolicies" element={<ViewCommision />} />
 
           {/* EXPENSES END */}
-          <Route path="/system/cardsData" element={<ViewBankCardsData />} />
-          <Route
-            path="/selling/payoff/supply-payoff"
-            element={<PayoffEntryScreen />}
-          />
+
           <Route
             path="/selling/payment/restrictions"
             element={<PaymentRestrictions />}
           />
         </Route>
+
         <Route
           errorElement={<ErrorPage />}
           path="/login"
           element={<Login title={t("login")} />}
         />
+
+        <Route
+          path="/selling/management/edit-items-weight"
+          element={<Print />}
+        />
+
+        <Route path="/selling/balances" element={<BranchBalancesPage />} />
       </Routes>
     </PermissionCtxProvider>
   );

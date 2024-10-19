@@ -55,14 +55,11 @@ export const SelectBranchCard = ({
     queryKey: ["branches"],
     select: (branches) =>
       branches.map((branch) => {
-        console.log(
-          "🚀 ~ file: SelectBranchCard.tsx:67 ~ branches.map ~ branch:",
-          branch
-        );
         return {
           id: branch.branch_id,
           value: branch.branch_name || "",
           label: branch.branch_name || "",
+          number: branch.number || "",
         };
       }),
     onError: (err) => console.log(err),
@@ -119,6 +116,16 @@ export const SelectBranchCard = ({
         }
         loadingPlaceholder={`${t("loading")}`}
         options={branchesOptions}
+        formatOptionLabel={(option) => (
+          <div className="flex justify-between">
+            <span>{option.label}</span>
+            {option.number && (
+              <p>
+                {t("Branch")} - <span>{option.number}</span>
+              </p>
+            )}
+          </div>
+        )}
         loading={branchesLoading}
         creatable
         CreateComponent={CreateBranch}

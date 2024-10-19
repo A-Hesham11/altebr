@@ -17,6 +17,14 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
   const mainDataBoxes = selectedItem?.items;
   const isRTL = useIsRTL();
 
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   // const budgetOperation = processBudgetData(selectedItem?.items);
   // const formattedBudgetOperation = Object.entries(selectedItem?.items);
   // console.log(
@@ -71,9 +79,9 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
   const clientData = {
     bond_number: selectedItem?.bond_number,
     bank_name: selectedItem?.account_name,
-    account_number: selectedItem?.bond_number,
+    account_number: selectedItem?.account_number,
     bond_date: selectedItem?.bond_date,
-    account_balance: 10,
+    account_balance: selectedItem?.totals,
   };
 
   const costDataAsProps = {
@@ -103,26 +111,23 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
         cell: (info: any) => {
           const value = info.getValue();
 
-          return +value > 0 ? formatReyal(value) : "---";
+          return formatReyal(value) || "---";
         },
         accessorKey: "amount",
         header: () => <span>{t("balance")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "commission",
         header: () => <span>{t("commission")}</span>,
       },
       {
-        cell: (info: any) =>
-          +info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "vat",
         header: () => <span>{t("commission tax")}</span>,
       },
       {
-        cell: (info: any) =>
-          +info.getValue() > 0 ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
         accessorKey: "total",
         header: () => <span>{t("total balance")}</span>,
       },
@@ -214,18 +219,16 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
                 </p>
                 {/* <p>رقم المحل</p> */}
                 <p>
-                  {t("phone")}: {userData?.phone}
+                  {t("phone")}: {companyData?.[0]?.phone}
                 </p>
                 <p>
-                  {t("email")}: {userData?.email}
+                  {t("email")}: {companyData?.[0]?.email}
                 </p>
                 <p>
-                  {t("tax number")}:{" "}
-                  {companyData && companyData[0]?.taxRegisteration}
+                  {t("tax number")}: {taxRegisteration && taxRegisteration}
                 </p>
                 <p>
-                  {t("Mineral license")}:{" "}
-                  {companyData && companyData[0]?.mineralLicence}
+                  {t("Mineral license")}: {mineralLicence && mineralLicence}
                 </p>
               </div>
             </div>
@@ -235,7 +238,7 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
           <div className="animate_from_right">
             <Button
               bordered
-              action={() => DownloadAsPDF(contentRef.current, "Budget")}
+              action={() => DownloadAsPDF(contentRef.current, "Invoice")}
             >
               {t("download pdf")}
             </Button>

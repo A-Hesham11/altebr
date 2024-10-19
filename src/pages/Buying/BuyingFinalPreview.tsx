@@ -84,16 +84,18 @@ export const BuyingFinalPreview = ({
               </p>
               {/* <p>رقم المحل</p> */}
               <p>
-                {t("phone")}: {userData?.phone}
+                {t("phone")}: {companyData?.[0]?.phone}
               </p>
               <p>
-                {t("email")}: {userData?.email}
+                {t("email")}: {companyData?.[0]?.email}
               </p>
               <p>
-                {t("tax number")}: {companyData && companyData[0]?.taxRegisteration}
+                {t("tax number")}:{" "}
+                {companyData && companyData[0]?.taxRegisteration}
               </p>
               <p>
-                {t("Mineral license")}: {companyData && companyData[0]?.mineralLicence}
+                {t("Mineral license")}:{" "}
+                {companyData && companyData[0]?.mineralLicence}
               </p>
             </div>
           </div>

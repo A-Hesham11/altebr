@@ -8,12 +8,18 @@ import Cookies from "js-cookie";
 import i18n from "../i18n";
 import { notify } from "./toast";
 
+const getTenantFromUrl = (() => {
+  const url = window.location.hostname;
+  const parts = url.split(".");
+  return parts.length > 1 ? parts[0] : null;
+})();
+
+const isGetTenantFromUrl =
+  getTenantFromUrl === null ? "alexon" : getTenantFromUrl;
+
 const baseURL =
-  // import.meta.env.VITE_BASE_URL || "https://api-hbesh-dev.altebr.jewelry";
-  // import.meta.env.VITE_BASE_URL || "https://alexon.altebr.jewelry/";
-  import.meta.env.VITE_BASE_URL || "https://api-alexon.altebr.com";
-// import.meta.env.VITE_BASE_URL || "https://api-test.altebr.com";
-// import.meta.env.VITE_BASE_URL || "https://api-almahaisen.altebr.com";
+  import.meta.env.VITE_BASE_URL ||
+  `https://api-${isGetTenantFromUrl}.altebr.com`;
 
 const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 
@@ -25,6 +31,7 @@ export const request = async <T>(
   options: AxiosRequestConfig,
   pagination?: boolean
 ): Promise<T> => {
+  console.log("🚀 ~ options:", options);
   const token = Cookies.get("token");
 
   const onSuccess = (response: AxiosResponse) => {

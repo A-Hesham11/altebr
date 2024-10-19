@@ -39,6 +39,7 @@ export const PayOffSecondScreen = ({
   selectedItem,
   setSanadId,
 }: PayOffSecondScreen_TP) => {
+  console.log("🚀 ~ selectedItem:", selectedItem)
   /////////// VARIABLES
   ///
   const [openModal, setOpenModal] = useState(false);
@@ -55,10 +56,13 @@ export const PayOffSecondScreen = ({
   const [dataSource, setDataSource] = useState([]);
   console.log("🚀 ~ PayOffSecondScreen ~ dataSource:", dataSource);
   const [selectedRows, setSelectedRows] = useState<any>([]);
+  console.log("🚀 ~ selectedRows:", selectedRows)
   const [
     disableSelectedCheckAfterSendById,
     setDisableSelectedCheckAfterSendById,
   ] = useState([]);
+  console.log("🚀 ~ disableSelectedCheckAfterSendById:", disableSelectedCheckAfterSendById)
+
   const [selectAll, setSelectAll] = useState(false);
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
 
@@ -122,7 +126,7 @@ export const PayOffSecondScreen = ({
     () => [
       {
         header: () => {
-          const filteredArray = selectedItem.items.filter(
+          const filteredArray = selectedItem?.items?.filter(
             (item) =>
               !disableSelectedCheckAfterSendById.includes(item.id) &&
               item.item_status === "Rejected"
@@ -463,6 +467,8 @@ export const PayOffSecondScreen = ({
             <Button
               onClick={() => {
                 const retrieveFinalValue = {
+                  bond_id: selectedItem?.id,
+                  branch_id: userData?.branch_id,
                   items: selectedRows?.map((item) => item.hwya),
                 };
                 mutateRetrieve({
@@ -483,3 +489,4 @@ export const PayOffSecondScreen = ({
     </>
   );
 };
+

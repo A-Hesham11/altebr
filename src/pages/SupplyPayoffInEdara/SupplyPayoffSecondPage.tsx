@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { authCtx } from "../../context/auth-and-perm/auth";
-import { useMutate } from "../../hooks";
+import { useIsRTL, useMutate } from "../../hooks";
 import { mutateData } from "../../utils/mutateData";
 import { Button } from "../../components/atoms";
 import { numberContext } from "../../context/settings/number-formatter";
@@ -11,6 +11,7 @@ import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
 import SupplyPayoffInvoiceTable from "./SupplyPayoffInvoiceTable";
 import { SupplyPayoffFinalPreview } from "./SupplyPayoffFinalPreview";
 import { notify } from "../../utils/toast";
+import { useReactToPrint } from "react-to-print";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -37,6 +38,9 @@ const SupplyPayoffSecondPage = ({
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
+
+  const contentRef = useRef();
+  const isRTL = useIsRTL();
 
   const operationTypeSelectWeight = sellingItemsData?.filter(
     (el: any) => el.check_input_weight !== 0
@@ -163,6 +167,12 @@ const SupplyPayoffSecondPage = ({
         vat: userData?.tax_rate,
         employee_id: userData?.id,
         invoice_date: sellingItemsData[0]?.bond_date,
+        items: sellingItemsData?.map((item) => ({
+          id: item?.id,
+          hwya: item.hwya,
+          vat: item?.vat,
+          cost: item?.cost,
+        })),
         editWeight: operationTypeSelectWeight.map((el, i) => {
           return {
             id: el.id.toString(),
@@ -183,6 +193,35 @@ const SupplyPayoffSecondPage = ({
     });
   }
 
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+        .rtl {
+          direction: rtl;
+          text-align: right;
+        }
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+      }
+    `,
+  });
+
   return (
     <div>
       <div className="flex items-center justify-between mx-3 mt-2">
@@ -191,7 +230,7 @@ const SupplyPayoffSecondPage = ({
           {isSuccess ? (
             <Button
               className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-              action={() => window.print()}
+              action={handlePrint}
             >
               {t("print")}
             </Button>
@@ -207,16 +246,18 @@ const SupplyPayoffSecondPage = ({
         </div>
       </div>
 
-      <SupplyPayoffFinalPreview
-        ItemsTableContent={<SellingTableComp />}
-        setStage={setStage}
-        paymentData={paymentData}
-        clientData={clientData}
-        sellingItemsData={sellingItemsData}
-        costDataAsProps={costDataAsProps}
-        invoiceNumber={invoiceNumber}
-        isSuccess={isSuccess}
-      />
+      <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
+        <SupplyPayoffFinalPreview
+          ItemsTableContent={<SellingTableComp />}
+          setStage={setStage}
+          paymentData={paymentData}
+          clientData={clientData}
+          sellingItemsData={sellingItemsData}
+          costDataAsProps={costDataAsProps}
+          invoiceNumber={invoiceNumber}
+          isSuccess={isSuccess}
+        />
+      </div>
     </div>
   );
 };

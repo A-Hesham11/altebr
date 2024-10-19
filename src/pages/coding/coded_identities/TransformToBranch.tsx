@@ -15,6 +15,7 @@ import { useFetch, useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
 import { SelectOption_TP } from "../../../types";
+import { Employee_TP } from "../../employees/employees-types";
 
 const TransformToBranch = ({
   operationTypeSelect,
@@ -23,6 +24,8 @@ const TransformToBranch = ({
   refetch,
   setOperationTypeSelect,
   setOpenSeperateModal,
+  setTransformPrintBondsModal,
+  setBondDataPrint,
 }: any) => {
   const { formatReyal } = numberContext();
   const [selectedOption, setSelectedOption] = useState("normal"); // Initialize the selected option.
@@ -30,6 +33,7 @@ const TransformToBranch = ({
   const [rowWage, setRowWage] = useState(null);
   const [files, setFiles] = useState([]);
   const [thwelIds, setThwelIds] = useState([]);
+  const [goldPriceToday, setGoldPriceToday] = useState("");
 
   const operationTypeSelectWeight = operationTypeSelect.filter(
     (el: any) => el.check_input_weight !== 0
@@ -39,9 +43,17 @@ const TransformToBranch = ({
     setSelectedOption(event.target.value);
   };
 
+  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
+    endpoint: "/buyingUsedGold/api/v1/get-gold-price",
+    queryKey: ["GoldPriceApi"],
+    onSuccess: (data) => {
+      setGoldPriceToday(data["24"]);
+    },
+  });
+
   const initialValues = {
     branch_id: "",
-    gold_price: "",
+    gold_price: goldPriceToday || "",
     sanad_type: "",
     weight_input: "",
   };
@@ -218,6 +230,10 @@ const TransformToBranch = ({
       setIsSuccessPost(data);
       notify("success");
       // QueryClient.refetchQueries(["thwel-api"]);
+      setTransformPrintBondsModal(true);
+      setBondDataPrint(data?.bond);
+      setOperationTypeSelect([])
+      refetch()
     },
     onError: (error) => {
       notify("error", error.response.data.msg);
@@ -255,6 +271,7 @@ const TransformToBranch = ({
           id: branch.id,
           value: branch.id || "",
           label: branch.name || "",
+          number: branch.number || "",
         };
       }),
     onError: (err) => console.log(err),
@@ -268,6 +285,7 @@ const TransformToBranch = ({
     <Formik
       validationSchema=""
       initialValues={initialValues}
+      enableReinitialize={true}
       onSubmit={(values) => {
         if (!values.branch_id) {
           notify("info", "قم باختيار الفرع");
@@ -315,7 +333,7 @@ const TransformToBranch = ({
         });
 
         setOpenTransformToBranchModal(false);
-        setOperationTypeSelect([]);
+        // setOperationTypeSelect([]);
       }}
     >
       <Form>
@@ -394,6 +412,14 @@ const TransformToBranch = ({
                         placeholder={`${t("branches")}`}
                         loadingPlaceholder={`${t("loading")}`}
                         options={filterBranchesOptions}
+                        formatOptionLabel={(option) => (
+                          <div className="flex justify-between">
+                            <span>{option.label}</span>
+                            <p>
+                              {t("Branch")} - <span>{option.number}</span>
+                            </p>
+                          </div>
+                        )}
                       />
                     </div>
                   </div>

@@ -5,7 +5,7 @@
 ///
 import { Form, Formik } from "formik";
 import { t } from "i18next";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { BiSpreadsheet } from "react-icons/bi";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,7 @@ import HonestFinalScreenItems from "./HonestFinalScreenItems";
 import HonestFinalScreenPayment from "./HonestFinalScreenPayment";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { ClientData_TP } from "../SellingClientForm";
+import { useReactToPrint } from "react-to-print";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -71,6 +72,14 @@ export const AllHonestBonds = () => {
   };
 
   const paymentData = [];
+
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
 
   const invoiceCols = useMemo<any>(
     () => [
@@ -252,6 +261,37 @@ export const AllHonestBonds = () => {
     totalCost,
   };
 
+  const contentRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+        .rtl {
+          direction: rtl;
+          text-align: right;
+        }
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+      }
+    `,
+  });
+
   ///
   if (honestBondsLoading || isRefetching || isFetching)
     return <Loading mainTitle={`${t("loading items")}`} />;
@@ -354,14 +394,17 @@ export const AllHonestBonds = () => {
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
         <div className="">
-          <div className="flex items-center justify-start gap-x-4 mb-6">
-            <div className="animate_from_left">
-              <Button bordered action={() => window.print()}>
+          <div className="flex items-center justify-end gap-x-4 mb-6 mt-16">
+            <div className="">
+              <Button bordered action={handlePrint}>
                 {t("print")}
               </Button>
             </div>
           </div>
-          <div className="print-section space-y-12 bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
+          <div
+            ref={contentRef}
+            className="print-section space-y-12 bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow "
+          >
             <HonestFinalScreenHeader
               clientData={clientData}
               popupBondId={selectedItem?.id}
@@ -391,18 +434,16 @@ export const AllHonestBonds = () => {
                 </p>
                 {/* <p>رقم المحل</p> */}
                 <p>
-                  {t("phone")}: {userData?.phone}
+                  {t("phone")}: {companyData?.[0]?.phone}
                 </p>
                 <p>
-                  {t("email")}: {userData?.email}
+                {t("email")}: {companyData?.[0]?.email}
                 </p>
                 <p>
-                  {t("tax number")}:{" "}
-                  {companyData && companyData[0]?.taxRegisteration}
+                  {t("tax number")}: {taxRegisteration && taxRegisteration}
                 </p>
                 <p>
-                  {t("Mineral license")}:{" "}
-                  {companyData && companyData[0]?.mineralLicence}
+                  {t("Mineral license")}: {mineralLicence && mineralLicence}
                 </p>
               </div>
             </div>

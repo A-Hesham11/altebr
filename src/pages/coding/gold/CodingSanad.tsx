@@ -42,9 +42,8 @@ export const CodingSanad = ({
   setStage,
   selectedSanad,
   setSelectedSanad,
-  isSuccess
+  isSuccess,
 }: CodingSanadProps_TP) => {
-
   /////////// VARIABLES
   ///
   const { sanadId } = useParams();
@@ -123,32 +122,31 @@ export const CodingSanad = ({
               ...values,
               front_key: crypto.randomUUID(),
               mezan_weight: values.weight - tableWeight * 0.2,
-              front_key_twred:activeBand.front_key_twred
+              front_key_twred: activeBand.front_key_twred,
             },
           ]);
-          
+
           return {
             ...activeBand,
             leftWeight:
               activeBand.leftWeight - (values.weight - tableWeight * 0.2),
-              front_key_twred:activeBand.front_key_twred
+            front_key_twred: activeBand.front_key_twred,
           };
         } else {
-
           setAddedPieces((curr) => [
             ...curr,
             {
               ...values,
               front_key: crypto.randomUUID(),
               mezan_weight: values.weight,
-              front_key_twred:activeBand.front_key_twred
+              front_key_twred: activeBand.front_key_twred,
             },
           ]);
 
           return {
             ...activeBand,
             leftWeight: +activeBand.leftWeight - +values.weight,
-            front_key_twred:activeBand.front_key_twred
+            front_key_twred: activeBand.front_key_twred,
           };
         }
       };
@@ -193,10 +191,12 @@ export const CodingSanad = ({
             validationSchema={codingSanad_schema}
             initialValues={codingSanad_initialValues}
             onSubmit={(values) => {
-              const  weightitemsDetails = activeBand?.category?.items?.map(category=>({
-                category_id : category.id,
-                weight:0
-              }))
+              const weightitemsDetails = activeBand?.category?.items?.map(
+                (category) => ({
+                  category_id: category.id,
+                  weight: 0,
+                })
+              );
               notify("success", `${t("piece has been added")}`);
               // VARS
               const selectedCateg = categories?.find(
@@ -240,9 +240,11 @@ export const CodingSanad = ({
                 const vals = {
                   ...baseValues,
                   ...(thereAreSizes && { sizes }),
-                  ...(thereAreWeightItems ? {
-                    weightitems: values.weightitems,
-                  } :{ weightitems: weightitemsDetails}),
+                  ...(thereAreWeightItems
+                    ? {
+                        weightitems: values.weightitems,
+                      }
+                    : { weightitems: weightitemsDetails }),
                 };
 
                 finalSubmit(vals);

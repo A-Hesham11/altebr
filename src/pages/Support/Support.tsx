@@ -17,6 +17,7 @@ const Support = ({ title }: { title: string }) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [categoryActiveId, setCategoryActiveId] = useState(1);
   const [support, setSupport] = useState([]);
+  console.log("🚀 ~ Support ~ support:", support);
   const [searchOption, setSearchOption] = useState([]);
   const navigate = useNavigate();
   const [supportModal, setSupportModal] = useState(false);
@@ -134,7 +135,7 @@ const Support = ({ title }: { title: string }) => {
                   >
                     <div className="flex flex-col justify-center items-center gap-2 h-full">
                       <img
-                        src={searchBox.images[0].preview}
+                        src={searchBox?.images?.[0]?.preview}
                         alt={searchBox.name_ar}
                         className="w-10 h-10"
                       />

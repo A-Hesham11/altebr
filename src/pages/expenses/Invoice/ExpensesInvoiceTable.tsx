@@ -20,16 +20,8 @@ interface ReactTableProps<T extends object> {
 const ExpenseInvoiceTable = <T extends object>({
   data,
   columns,
-  paymentData,
   costDataAsProps,
-  setOdwyaTypeValue,
-  odwyaTypeValue,
 }: ReactTableProps<T>) => {
-  console.log(
-    "🚀 ~ file: ExpenseInvoiceTable.tsx:28 ~ costDataAsProps:",
-    costDataAsProps
-  );
-
   const { formatGram, formatReyal } = numberContext();
 
   // CUSTOM CONFIGURE FOR TABLE
@@ -41,62 +33,25 @@ const ExpenseInvoiceTable = <T extends object>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  // FORMULA TO CALC TOTAL COST, VALUE ADDED TAX, TOTAL VALUE
-  // const totalWeight = data.reduce((acc: number, curr: any) => {
-  //   acc += +curr.weight;
-  //   return acc;
-  // }, 0);
-
   const totalCost = data.reduce((acc: number, curr: any) => {
     acc = +curr.expense_price + +curr.expense_price_tax;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalCost ~ totalCost:", totalCost);
-
-  // const valueAddedTax = data.reduce((acc: number, curr: any) => {
-  //   acc += +curr.value_added_tax;
-  //   return acc;
-  // }, 0);
-  // const totalValue = data.reduce((acc: number, curr: any) => {
-  //   acc += +curr.total_value;
-  //   return acc;
-  // }, 0);
 
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(costDataAsProps?.totalCost)
   );
 
-  // const totalItemsTax =
-  //   +costDataAsProps?.totalItemsTaxes?.toFixed(2) +
-  //   costDataAsProps?.totalCommissionTaxes;
-
-  // const totalItemsCost =
-  //   costDataAsProps?.totalCommissionRatio + costDataAsProps?.totalCost;
-
   const resultTable = [
     {
       number: t("totals"),
-      cost: formatReyal(totalCost),
+      cost: formatReyal(
+        Number(totalCost) - Number(costDataAsProps.totalValueAfterTax)
+      ),
+      vat: formatReyal(Number(costDataAsProps.totalValueAfterTax)),
+      total: formatReyal(totalCost),
     },
   ];
-
-  // if (odwyaTypeValue === "supplier") {
-  //   resultTable = [
-  //     {
-  //       number: t("totals"),
-  //       cost: formatReyal(totalCost),
-  //       value_added_tax: formatReyal(valueAddedTax),
-  //       total_value: formatReyal(totalValue.toFixed(2)),
-  //     },
-  //   ];
-  // } else {
-  //   resultTable = [
-  //     {
-  //       number: t("totals"),
-  //       cost: formatReyal(totalCost),
-  //     },
-  //   ];
-  // }
 
   return (
     <>
@@ -149,7 +104,7 @@ const ExpenseInvoiceTable = <T extends object>({
                   return (
                     <td
                       className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                      colSpan={index === 0 ? 4 : 1}
+                      colSpan={index === 0 ? 3 : 1}
                     >
                       {resultTable[0][key]}
                     </td>
@@ -163,8 +118,14 @@ const ExpenseInvoiceTable = <T extends object>({
                   className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                   colSpan={9}
                 >
-                  <span className="font-bold">{t("total")}</span>:{" "}
-                  {totalFinalCostIntoArabic}
+                  <span className="font-semibold">{t("total")}</span>:{" "}
+                  <span className="font-medium">
+                    {totalFinalCostIntoArabic}
+                  </span>
+                  <span className="font-semibold"> {t("reyal")}</span>{" "}
+                  <span className="font-semibold">
+                    {t("Only nothing else")}
+                  </span>
                 </td>
               </tr>
             </tfoot>
@@ -176,3 +137,90 @@ const ExpenseInvoiceTable = <T extends object>({
 };
 
 export default ExpenseInvoiceTable;
+
+// import {
+//   ColumnDef,
+//   flexRender,
+//   getCoreRowModel,
+//   getFilteredRowModel,
+//   getPaginationRowModel,
+//   useReactTable,
+// } from "@tanstack/react-table";
+// import { t } from "i18next";
+// import { numberContext } from "../../../context/settings/number-formatter";
+// import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
+// import { authCtx } from "../../../context/auth-and-perm/auth";
+// import { useContext } from "react";
+
+// interface ReactTableProps<T extends object> {
+//   data: T[];
+//   columns: ColumnDef<T>[];
+//   paymentData: any;
+//   costDataAsProps?: any;
+// }
+
+// const ExpenseInvoiceTable = <T extends object>({
+//   data,
+//   costDataAsProps,
+// }: ReactTableProps<T>) => {
+//   const ExpenseData = data && data[0];
+//   console.log("🚀 ~ ExpenseData:", ExpenseData);
+//   const { formatGram, formatReyal } = numberContext();
+
+//   const { userData } = useContext(authCtx);
+//   console.log("🚀 ~ userData:", userData);
+
+//   const totalCost = data.reduce((acc: number, curr: any) => {
+//     acc = +curr.expense_price + +curr.expense_price_tax;
+//     return acc;
+//   }, 0);
+
+//   const totalFinalCostIntoArabic = convertNumToArWord(
+//     Math.round(costDataAsProps?.totalCost)
+//   );
+
+//   const resultTable = [
+//     {
+//       number: t("totals"),
+//       cost: formatReyal(totalCost),
+//     },
+//   ];
+
+//   return (
+//     <>
+//       <div className="mx-6">
+//         <div className="my-6 rounded-md p-6 overflow-x-scroll lg:overflow-x-visible w-full bg-[#e5eceb]">
+//           <div className="flex items-center mt-4 text-lg">
+//             <p className="font-semibold text-lg me-5 w-44">
+//               {t("expense price")} :
+//             </p>{" "}
+//             <p>{ExpenseData?.expense_price}</p>
+//           </div>
+//           <div className="flex items-center my-4 text-lg">
+//             <p className="font-semibold text-lg me-5 w-44">
+//               {t("We paid to")} :
+//             </p>{" "}
+//             <p>{ExpenseData?.directed_to}</p>
+//           </div>
+//           <div className="flex items-center text-lg">
+//             <p className="font-semibold text-lg me-5 w-44">
+//               {t("Amount and capacity")} :
+//             </p>{" "}
+//             <p>{totalFinalCostIntoArabic} </p>
+//             <span className="font-semibold text-lg ms-5">
+//               {t("Only nothing else")}
+//             </span>
+//           </div>
+//           <div className="flex items-center my-4 text-lg">
+//             <p className="font-semibold text-lg me-5 w-44 ">
+//               {t("In return for")} :
+//             </p>{" "}
+//             {ExpenseData?.add_description}
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
+
+// export default ExpenseInvoiceTable;

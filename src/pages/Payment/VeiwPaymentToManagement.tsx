@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { t } from "i18next";
 import { Form, Formik } from "formik";
 
@@ -8,12 +8,28 @@ import { useFetch, useIsRTL } from "../../hooks";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { Loading } from "../../components/organisms/Loading";
 import { formatDate, getDayAfter } from "../../utils/date";
-import { BaseInputField, DateInputField, Modal } from "../../components/molecules";
+import {
+  BaseInputField,
+  DateInputField,
+  Modal,
+} from "../../components/molecules";
 import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import PaymentToManagementTable from "./PaymentToManagementTable";
 import { BiSpreadsheet } from "react-icons/bi";
+import SalesReturnInvoiceTablePreview from "../salesReturn/SalesReturnInvoiceTablePreview";
+import SellingInvoiceTablePreview from "../../components/selling/selling components/sellingWrapper/SellingInvoiceTablePreview";
+import { ClientData_TP, Selling_TP } from "./PaymentToManagementPage";
+import { ColumnDef } from "@tanstack/react-table";
+import { numberContext } from "../../context/settings/number-formatter";
+import { useReactToPrint } from "react-to-print";
+import FinalPreviewBillData from "../../components/selling/selling components/bill/FinalPreviewBillData";
+import PaymentFinalPreviewBillData from "./PaymentFinalPreviewBillData";
+import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
+import PaymentInvoiceTable from "./PaymentInvoiceTable";
+import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
+import { number } from "yup";
 
 const VeiwPaymentToManagement = () => {
   // STATE
@@ -23,6 +39,9 @@ const VeiwPaymentToManagement = () => {
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
+  const [invoiceViewModal, setOpenInvoiceViewModal] = useState(false);
+  const [selectedViewItem, setSelectedViewItem] = useState<any>({});
+
   const [search, setSearch] = useState("");
 
   const searchValues = {
@@ -45,8 +64,6 @@ const VeiwPaymentToManagement = () => {
     pagination: true,
   });
 
-  console.log("🚀 ~ file: VeiwPaymentToManagement.tsx:34 ~ VeiwPaymentToManagement ~ invoiceData:", invoiceData)
-
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [
@@ -67,14 +84,24 @@ const VeiwPaymentToManagement = () => {
       },
       {
         cell: (info: any) => (
-          <BiSpreadsheet
-            onClick={() => {
-              setOpenInvoiceModal(true);
-              setSelectedItem(info.row.original);
-            }}
-            size={23}
-            className="text-mainGreen mx-auto cursor-pointer"
-          />
+          <div className="flex justify-center gap-2">
+            <BsEye
+              onClick={() => {
+                setOpenInvoiceViewModal(true);
+                setSelectedViewItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+            <BiSpreadsheet
+              onClick={() => {
+                setOpenInvoiceModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+          </div>
         ),
         accessorKey: "details",
         header: () => <span>{t("details")}</span>,
@@ -119,6 +146,104 @@ const VeiwPaymentToManagement = () => {
     setSearch(url);
   };
 
+  // ========================================================
+  const { formatGram, formatReyal } = numberContext();
+  const contentRef = useRef();
+
+  const clientData = {
+    client_id: selectedViewItem?.client_id,
+    client_value: selectedViewItem?.client_name,
+    bond_date: selectedViewItem?.payment_date,
+    supplier_id: selectedViewItem?.supplier_id,
+  };
+
+  const { data } = useFetch<ClientData_TP>({
+    endpoint: `/selling/api/v1/get_sentence`,
+    queryKey: ["sentence"],
+  });
+
+  const { data: companyData } = useFetch<ClientData_TP>({
+    endpoint: `/companySettings/api/v1/companies`,
+    queryKey: ["Mineral_license"],
+  });
+
+  // COLUMNS FOR THE TABLE
+  const cols = useMemo<any>(
+    () => [
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "card_name",
+        header: () => <span>{t("payment method")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          info.getValue() ? formatGram(Number(info.getValue())) : "---",
+        accessorKey: "value_reyal",
+        header: () => <span>{t("amount")}</span>,
+      },
+      {
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
+        accessorKey: "value_gram",
+        header: () => <span>{t("Gold value (in grams)")}</span>,
+      },
+    ],
+    []
+  );
+
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
+  const totalFinalCost = selectedViewItem?.items?.reduce((acc, curr) => {
+    acc += +curr.value_reyal;
+    return acc;
+  }, 0);
+
+  const totalGoldAmountGram = selectedViewItem?.items?.reduce((acc, curr) => {
+    acc += Number(curr.value_gram);
+    return acc;
+  }, 0);
+
+  const costDataAsProps = {
+    totalFinalCost,
+    totalGoldAmountGram,
+  };
+
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+        .rtl {
+          direction: rtl;
+          text-align: right;
+        }
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+      }
+    `,
+  });
+
+  // ========================================================
+
   // LOADING ....
   if (isLoading || isRefetching || isFetching)
     return <Loading mainTitle={`${t("loading items")}`} />;
@@ -132,7 +257,9 @@ const VeiwPaymentToManagement = () => {
           onSubmit={(values) => {
             getSearchResults({
               ...values,
-              invoice_date: values.invoice_date ? formatDate(getDayAfter(new Date(values.invoice_date))) : "",
+              invoice_date: values.invoice_date
+                ? formatDate(getDayAfter(new Date(values.invoice_date)))
+                : "",
             });
           }}
         >
@@ -174,46 +301,120 @@ const VeiwPaymentToManagement = () => {
       {/* 2) TABLE */}
       <div className="">
         <Table data={dataSource || []} columns={tableColumn}>
-            <div className="mt-3 flex items-center justify-end gap-5 p-2">
-              <div className="flex items-center gap-2 font-bold">
-                {t("page")}
-                <span className=" text-mainGreen">
-                  {page}
-                </span>
-                {t("from")}
-                <span className=" text-mainGreen">{invoiceData.pages}</span>
-              </div>
-              <div className="flex items-center gap-2 ">
-                <Button
-                  className=" rounded bg-mainGreen p-[.18rem] "
-                  action={() => setPage((prev) => prev - 1)}
-                  disabled={page == 1}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-                <Button
-                  className=" rounded bg-mainGreen p-[.18rem] "
-                  action={() => setPage((prev) => prev + 1)}
-                  disabled={page == invoiceData.pages}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-              </div>
+          <div className="mt-3 flex items-center justify-end gap-5 p-2">
+            <div className="flex items-center gap-2 font-bold">
+              {t("page")}
+              <span className=" text-mainGreen">{page}</span>
+              {t("from")}
+              <span className=" text-mainGreen">{invoiceData.pages}</span>
             </div>
+            <div className="flex items-center gap-2 ">
+              <Button
+                className=" rounded bg-mainGreen p-[.18rem] "
+                action={() => setPage((prev) => prev - 1)}
+                disabled={page == 1}
+              >
+                {isRTL ? (
+                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                ) : (
+                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                )}
+              </Button>
+              <Button
+                className=" rounded bg-mainGreen p-[.18rem] "
+                action={() => setPage((prev) => prev + 1)}
+                disabled={page == invoiceData.pages}
+              >
+                {isRTL ? (
+                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                ) : (
+                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                )}
+              </Button>
+            </div>
+          </div>
         </Table>
       </div>
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
         <PaymentToManagementTable item={selectedItem} />
+      </Modal>
+      <Modal
+        isOpen={invoiceViewModal}
+        onClose={() => setOpenInvoiceViewModal(false)}
+      >
+        <div className="relative h-full py-16 px-8">
+          <div className="flex justify-end mb-8 w-full">
+            <Button
+              className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
+              action={handlePrint}
+            >
+              {t("print")}
+            </Button>
+          </div>
+          <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
+            <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
+              <div className="mx-5 bill-shadow rounded-md p-6">
+                <PaymentFinalPreviewBillData
+                  clientData={clientData}
+                  invoiceNumber={selectedViewItem?.invoice_number}
+                />
+              </div>
+
+              <PaymentInvoiceTable
+                data={selectedViewItem?.items}
+                columns={cols || []}
+                costDataAsProps={costDataAsProps}
+              ></PaymentInvoiceTable>
+
+              <div className="mx-5 bill-shadow rounded-md p-6 my-9">
+                <div className="flex justify-between items-start pb-12 pe-8">
+                  <div className="text-center flex flex-col gap-4">
+                    <span className="font-medium text-xs">
+                      {t("recipient's signature")}
+                    </span>
+                    <p>------------------------------</p>
+                  </div>
+                  <div className="text-center flex flex-col gap-4">
+                    <span className="font-medium text-xs">
+                      {t("bond organizer")}
+                    </span>
+                    <p>{userData?.name}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
+                  {data && data?.sentence}
+                </p>
+                <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
+                  <p>
+                    {" "}
+                    العنوان : {userData?.branch?.country?.name} ,{" "}
+                    {userData?.branch?.city?.name} ,{" "}
+                    {userData?.branch?.district?.name}
+                  </p>
+                  <p>
+                    {t("phone")}: {companyData?.[0]?.phone}
+                  </p>
+                  <p>
+                  {t("email")}: {companyData?.[0]?.email}
+                  </p>
+                  <p>
+                    {t("tax number")}:{" "}
+                    {taxRegisteration || ""}
+                  </p>
+                  <p>
+                    {t("Mineral license")}:{" "}
+                    {mineralLicence || ""}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Modal>
     </div>
   );

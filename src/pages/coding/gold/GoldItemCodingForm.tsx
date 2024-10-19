@@ -1,49 +1,49 @@
 /////////// IMPORTS
 ///
 
-import { Formik, useFormikContext } from "formik"
-import { t } from "i18next"
-import { ChangeEvent, useEffect, useState } from "react"
-import { Button } from "../../../components/atoms"
-import { DeleteIcon, WeightIcon } from "../../../components/atoms/icons"
+import { Formik, useFormikContext } from "formik";
+import { t } from "i18next";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Button } from "../../../components/atoms";
+import { DeleteIcon, WeightIcon } from "../../../components/atoms/icons";
 import {
   BaseInputField,
   CheckBoxField,
   Modal,
-  TextAreaField
-} from "../../../components/molecules"
-import { DropFile } from "../../../components/molecules/files/DropFile"
-import { SelectCategorySize } from "../../../components/templates/categories-sizes/SelectCategorySize"
-import { Country_city_distract_markets } from "../../../components/templates/reusableComponants/Country_city_distract_markets"
-import SelectColor from "../../../components/templates/reusableComponants/SelectColor"
-import { CategoryMainData_TP, SetState_TP } from "../../../types"
-import { prepareItemsToShowInCaseOfTa2m } from "../../../utils/helpers"
-import { notify } from "../../../utils/toast"
+  TextAreaField,
+} from "../../../components/molecules";
+import { DropFile } from "../../../components/molecules/files/DropFile";
+import { SelectCategorySize } from "../../../components/templates/categories-sizes/SelectCategorySize";
+import { Country_city_distract_markets } from "../../../components/templates/reusableComponants/Country_city_distract_markets";
+import SelectColor from "../../../components/templates/reusableComponants/SelectColor";
+import { CategoryMainData_TP, SetState_TP } from "../../../types";
+import { prepareItemsToShowInCaseOfTa2m } from "../../../utils/helpers";
+import { notify } from "../../../utils/toast";
 import {
   GoldCodingSanad_initialValues_TP,
   GoldSanadBand_TP,
   GoldSanad_TP,
   SizePopup_TP,
-  addTa2mSizesSchema
-} from "../coding-types-and-helpers"
-import { SizesTable } from "./SizesTable"
-import { useFetch, useIsRTL } from "../../../hooks"
-import { Header } from "../../../components/atoms/Header"
+  addTa2mSizesSchema,
+} from "../coding-types-and-helpers";
+import { SizesTable } from "./SizesTable";
+import { useFetch, useIsRTL } from "../../../hooks";
+import { Header } from "../../../components/atoms/Header";
 ///
 /////////// Types
 ///
 type ItemCodingFormProps_TP = {
-  setItemsToShowInCaseOfTa2m: SetState_TP<CategoryMainData_TP[]>
-  itemsToShowInCaseOfTa2m: CategoryMainData_TP[] | undefined
-  detailedWeight_total: number | undefined
-  setDetailedWeight_total: SetState_TP<number | undefined>
-  sizes: SizePopup_TP[]
-  setSizes: SetState_TP<SizePopup_TP[]>
-  activeBand: GoldSanadBand_TP
-  setActiveBand: SetState_TP<GoldSanadBand_TP | undefined>
-  selectedSanad?:GoldSanad_TP
-  setEditWage?:any
-}
+  setItemsToShowInCaseOfTa2m: SetState_TP<CategoryMainData_TP[]>;
+  itemsToShowInCaseOfTa2m: CategoryMainData_TP[] | undefined;
+  detailedWeight_total: number | undefined;
+  setDetailedWeight_total: SetState_TP<number | undefined>;
+  sizes: SizePopup_TP[];
+  setSizes: SetState_TP<SizePopup_TP[]>;
+  activeBand: GoldSanadBand_TP;
+  setActiveBand: SetState_TP<GoldSanadBand_TP | undefined>;
+  selectedSanad?: GoldSanad_TP;
+  setEditWage?: any;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -58,36 +58,59 @@ export const GoldItemCodingForm = ({
   activeBand,
   selectedSanad,
   setActiveBand,
-  setEditWage
+  setEditWage,
 }: ItemCodingFormProps_TP) => {
-  console.log("🚀 ~ file: GoldItemCodingForm.tsx:63 ~ activeBand:", activeBand)
+  console.log("🚀 ~ file: GoldItemCodingForm.tsx:63 ~ activeBand:", activeBand);
   /////////// VARIABLES
   ///
   // const selectedBandLeftWeight =  selectedSanad.items.find((item)=>item?.number === activeBand?.number)?.leftWeight
-  const hasSizes = !!sizes.length
+  const hasSizes = !!sizes.length;
   const isMultiCategory =
-    activeBand.category.id > 1 && activeBand.category.type === "multi"
+    activeBand.category.id > 1 && activeBand.category.type === "multi";
   const hasItemsWithSizes = activeBand.category.items?.some(
     (item) => item?.has_size
-  )
-  const [awzanItems, setAwzanItems] = useState(activeBand.category.items)
+  );
+  const [awzanItems, setAwzanItems] = useState(activeBand.category.items);
 
-  const [openPopup, setOpenPopup] = useState(false)
-  const [dataSource, setDataSource] = useState([])
+  const [openPopup, setOpenPopup] = useState(false);
+  const [dataSource, setDataSource] = useState([]);
 
-  const [modalNumberChange, setModalNumberChange] = useState("")
-  
+  const [modalNumberChange, setModalNumberChange] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const { refetch, isSuccess, isLoading, isFetching, isRefetching } = useFetch({
     endpoint: `/tarqimGold/api/v1/tarqim_gold?per_page=10000`,
     queryKey: ["All_numbered_pieces"],
     onSuccess: (data) => {
       setDataSource(data);
-    }, 
+    },
   });
 
-  const modalNumber = dataSource.find((item) => (item.model_number ===  modalNumberChange && item.twred_status === "inedara"))
-  
+  // const modalNumber = dataSource.find(
+  //   (item) =>
+  //     item.model_number === modalNumberChange && item.twred_status === "inedara"
+  // );
+  // const { data, isLoading, isFetching, isRefetching, refetch } = useFetch({
+  //   queryKey: ["All_numbered_pieces", modalNumberChange],
+  //   endpoint:
+  //     search === ""
+  //       ? `identity/api/v1/pieces_in_edara?model_number[eq]=${modalNumberChange}?page=${page}`
+  //       : `${search}&page=${page}`,
+  //   onSuccess: (data) => {
+  //     setDataSource(data);
+  //   },
+  //   pagination: true,
+  //   enabled: !!modalNumberChange
+  // });
+
+  const modalNumber =
+    dataSource &&
+    dataSource?.find(
+      (item) =>
+        item.model_number === modalNumberChange &&
+        item.twred_status === "inedara"
+    );
 
   // const awzanItems = activeBand.category.items
   const awzanItemsFormInitValues = awzanItems?.reduce(
@@ -96,7 +119,7 @@ export const GoldItemCodingForm = ({
       [id]: "",
     }),
     {}
-  )
+  );
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -116,71 +139,71 @@ export const GoldItemCodingForm = ({
   //     })),
   // })
 
-  const { values, setFieldValue , isSubmitting } =
-  useFormikContext<GoldCodingSanad_initialValues_TP>()
+  const { values, setFieldValue, isSubmitting } =
+    useFormikContext<GoldCodingSanad_initialValues_TP>();
   ///
   /////////// STATES
   ///
 
-  const [addSizesModal, setAddSizesModal] = useState(false)
-  const [weightItemsModal, setWeightItemsModal] = useState(false)
-  const IsRTL = useIsRTL()
+  const [addSizesModal, setAddSizesModal] = useState(false);
+  const [weightItemsModal, setWeightItemsModal] = useState(false);
+  const IsRTL = useIsRTL();
 
   ///
   /////////// SIDE EFFECTS
   ///
   useEffect(() => {
     if (!!!itemsToShowInCaseOfTa2m?.length) {
-      setAddSizesModal(false)
+      setAddSizesModal(false);
     }
-  }, [!!itemsToShowInCaseOfTa2m?.length])
+  }, [!!itemsToShowInCaseOfTa2m?.length]);
 
   useEffect(() => {
     if (activeBand && detailedWeight_total) {
-      setDetailedWeight_total(undefined)
+      setDetailedWeight_total(undefined);
     }
-  }, [activeBand])
+  }, [activeBand]);
 
   useEffect(() => {
-    setAwzanItems(activeBand.category.items)
-  }, [activeBand])
-  
+    setAwzanItems(activeBand.category.items);
+  }, [activeBand]);
+
   useEffect(() => {
-  // go to bond that have left weight if previous left weight is 0
-    const index = selectedSanad?.items.findIndex((item) => item.leftWeight)
-    if (!activeBand.leftWeight) setActiveBand(selectedSanad?.items[index])
-  }, [activeBand.leftWeight])
-  
+    // go to bond that have left weight if previous left weight is 0
+    const index = selectedSanad?.items.findIndex((item) => item.leftWeight);
+    if (!activeBand.leftWeight) setActiveBand(selectedSanad?.items[index]);
+  }, [activeBand.leftWeight]);
+
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   const handleFixAllPieceData = (e: ChangeEvent<HTMLInputElement>) => {
-    const isChecked = e.target.checked
-  }
+    const isChecked = e.target.checked;
+  };
 
   const shouldRenderButton = () => {
     const hasItemsWithSizes = activeBand.category.items?.some(
       (item) => item?.has_size
-    )
-    const isSingleCategory = activeBand.category.type === "single"
+    );
+    const isSingleCategory = activeBand.category.type === "single";
 
     return (
       !!itemsToShowInCaseOfTa2m?.length &&
       (hasItemsWithSizes || isSingleCategory)
-    )
-  }
+    );
+  };
 
   const shouldRenderSizesTable =
-    hasSizes && (!isMultiCategory || hasItemsWithSizes)
+    hasSizes && (!isMultiCategory || hasItemsWithSizes);
   ///
-    
+
   useEffect(() => {
     // const finishedBondTitles = selectedSanad?.items.filter(item=> item.leftWeight === 0).map(item=>item?.category?.name).join(' & ')
-   if (!activeBand.leftWeight)
-     notify("info", `تم تغيير سطر الترقيم لان السطر السابق انتهي`)
-  }, [activeBand])
- 
+    if (!activeBand.leftWeight)
+      notify("info", `تم تغيير سطر الترقيم لان السطر السابق انتهي`);
+  }, [activeBand]);
+
   // if(!selectedBandLeftWeight) return <h2 className="text-mainRed text-xl text-center" >{t('left weight for this bond is equal to 0')}</h2>
- 
+
   return (
     <div className="grid grid-cols-4 gap-x-4 gap-y-8 p-4 relative items-center">
       {/* <div className="col-span-4">
@@ -251,20 +274,35 @@ export const GoldItemCodingForm = ({
 
       {/* رقم الموديل */}
       <BaseInputField
-        placeholder={isFetching ? t("loading") : t("model number")}
+        // placeholder={isFetching ? t("loading") : t("model number")}
+        placeholder={t("model number")}
         label={t("model number")}
         id="model_number"
         type="text"
         name="model_number"
-        disabled={isFetching}
-        className={isFetching && "bg-mainDisabled"}
+        // disabled={isFetching}
+        // className={isFetching && "bg-mainDisabled"}
         onChange={(e) => {
-          setModalNumberChange(e.target.value)
+          setModalNumberChange(e.target.value);
 
-          const modalNumber = dataSource?.find((item) => (item.model_number ==  e.target.value && item.twred_status === "inedara"))
+          const modalNumber = dataSource?.find(
+            (item) =>
+              item.model_number == e.target.value &&
+              item.twred_status === "inedara"
+          );
+          // const modalNumber = dataSource && dataSource?.find(
+          //   (item) =>
+          //     item.model_number == e.target.value &&
+          //     item.twred_status === "inedara"
+          // );
 
-          if (modalNumber && modalNumber?.category_id === values.category_id  && modalNumber?.karat_value == values.karat_value && modalNumber?.category.selling_type === "all" ) {
-            setOpenPopup(true)
+          if (
+            modalNumber &&
+            modalNumber?.category_id === values.category_id &&
+            modalNumber?.karat_value == values.karat_value &&
+            modalNumber?.category.selling_type === "all"
+          ) {
+            setOpenPopup(true);
           }
         }}
       />
@@ -280,8 +318,9 @@ export const GoldItemCodingForm = ({
         <div className="flex justify-between items-center relative">
           <label htmlFor="wight">{t("weight")}</label>
 
-          <span className="text-sm font-bold text-mainOrange "> {t('remaining weight')} {activeBand.leftWeight}
-
+          <span className="text-sm font-bold text-mainOrange ">
+            {" "}
+            {t("remaining weight")} {activeBand.leftWeight}
           </span>
 
           {awzanItems && !!awzanItems?.length && (
@@ -299,8 +338,8 @@ export const GoldItemCodingForm = ({
                   // size={10}
                   // className=" -top-2 -start-2"
                   action={() => {
-                    setDetailedWeight_total(undefined)
-                    values.weightitems = []
+                    setDetailedWeight_total(undefined);
+                    values.weightitems = [];
                   }}
                 />
               )}
@@ -314,22 +353,21 @@ export const GoldItemCodingForm = ({
             name: "weight",
             // label:`${t('weight')}`,
             placeholder: "الوزن",
-            onChange:()=>{
-              setFieldValue('weightitems',[])
+            onChange: () => {
+              setFieldValue("weightitems", []);
             },
             ...(detailedWeight_total !== 0 &&
               detailedWeight_total && {
                 value: detailedWeight_total,
-                onChange: (e) =>{
-                  setDetailedWeight_total(+e.target.value)
-                } ,
+                onChange: (e) => {
+                  setDetailedWeight_total(+e.target.value);
+                },
                 disabled: true,
               }),
           }}
-
           // value={detailedWeight_total !== 0 && detailedWeight_total ? detailedWeight_total : undefined}
           // onChange={(e) => setFieldValue('mezan_weight', e.target.value)}
-          
+
           // placeholder="الوزن"
           // label="الوزن"
           // id="weight"
@@ -366,7 +404,7 @@ export const GoldItemCodingForm = ({
           type="text"
           name="wage"
           onChange={(e) => {
-            setEditWage(e.target.value)
+            setEditWage(e.target.value);
           }}
         />
       </div>
@@ -379,7 +417,9 @@ export const GoldItemCodingForm = ({
       )}
       {/* صورة القطعة */}
       <div className=" col-span-4 flex flex-col gap-1">
-        <label htmlFor="media" className="text-base">{t('widget image')}</label>
+        <label htmlFor="media" className="text-base">
+          {t("widget image")}
+        </label>
         <DropFile name="media" />
         {/* وصف القطعة */}
       </div>
@@ -392,7 +432,11 @@ export const GoldItemCodingForm = ({
         />
       </div>
       {/* يحتوي علي حجر ام لا */}
-      <div className={`${IsRTL ? "-right-7" : "-left-7"} col-span-1 flex items-center justify-center absolute -bottom-16`}>
+      <div
+        className={`${
+          IsRTL ? "-right-7" : "-left-7"
+        } col-span-1 flex items-center justify-center absolute -bottom-16`}
+      >
         <CheckBoxField
           name="has_stones"
           label={`${!!!values.has_stones ? "لا" : ""} ${t("contains stones")}`}
@@ -431,20 +475,20 @@ export const GoldItemCodingForm = ({
               if (
                 sizes?.some((size) => size.category_id === values.category_id)
               ) {
-                notify("error", "هذا المقاس تمت إضافته بالفعل")
-                return
+                notify("error", "هذا المقاس تمت إضافته بالفعل");
+                return;
               }
-              const { sizeIsRequired, ...filteredValues } = values
+              const { sizeIsRequired, ...filteredValues } = values;
               setSizes((curr) => [
                 ...curr,
                 { id: crypto.randomUUID(), ...filteredValues },
-              ])
+              ]);
 
               if (activeBand.category.type === "single") {
-                const items = prepareItemsToShowInCaseOfTa2m(categ, sizes)
-                items && setItemsToShowInCaseOfTa2m(items)
+                const items = prepareItemsToShowInCaseOfTa2m(categ, sizes);
+                items && setItemsToShowInCaseOfTa2m(items);
               }
-              notify("success")
+              notify("success");
             }}
           >
             {({ submitForm }) => (
@@ -488,31 +532,31 @@ export const GoldItemCodingForm = ({
             initialValues={awzanItemsFormInitValues || {}}
             onSubmit={(vals) => {
               // لو تجميعة الاوزان اكتر من ال leftWeight اريتيرن
-              let allWeight = 0
+              let allWeight = 0;
               const weightitems = Object.entries(vals).map(([key, val]) => {
                 // @ts-ignore
-                allWeight += +val
-                return { category_id: key, weight: val }
-              })
+                allWeight += +val;
+                return { category_id: key, weight: val };
+              });
               if (allWeight > activeBand.leftWeight) {
-                notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي")
-                return
+                notify("error", "تجميعة الأوزان اكثر من الوزن المتبقي");
+                return;
               }
               if (allWeight <= 0) {
-                notify("error", "أدخل اوزان")
-                return
+                notify("error", "أدخل اوزان");
+                return;
               }
-              
+
               // ALL ✅
               /* 
               - اعمل ابديت للوزن الاجمالي
               - setFieldValue
               - اقفل المودل
               */
-              setFieldValue("weightitems", weightitems)
-              setFieldValue("weight", allWeight)
-              setDetailedWeight_total(allWeight)
-              setWeightItemsModal(false)
+              setFieldValue("weightitems", weightitems);
+              setFieldValue("weight", allWeight);
+              setDetailedWeight_total(allWeight);
+              setWeightItemsModal(false);
             }}
           >
             {({ submitForm, values }) => (
@@ -542,24 +586,38 @@ export const GoldItemCodingForm = ({
       </Modal>
 
       <Modal isOpen={openPopup} onClose={() => setOpenPopup(false)}>
-          <div className="flex flex-col gap-8 justify-center items-center">
-            <Header
-              header={t("")}
-            />
-              <div className="w-full mb-4">
-                <p className="font-semibold text-lg text-center mb-5">{t("This item already exists")}</p>
-                <div className="w-full flex justify-center">
-                  {modalNumber?.images[0]?.preview 
-                    ? (<img src={modalNumber?.images[0]?.preview} className="w-[80%] h-[250px]"/>)
-                    : ""
-                  }
-                </div>
-                <div className="flex items-center justify-between mt-10 mx-auto w-1/2">
-                  <p className="font-semibold">{t("Id number")} : <span className="text-mainGreen font-semibold">{modalNumber?.hwya}</span></p>
-                  <p className="font-semibold">{t("weight")} : <span className="text-mainGreen font-semibold">{modalNumber?.weight}</span></p>
-                </div>
-              </div>
-              {/* <div className="flex gap-4 justify-end items-center w-full">
+        <div className="flex flex-col gap-8 justify-center items-center">
+          <Header header={t("")} />
+          <div className="w-full mb-4">
+            <p className="font-semibold text-lg text-center mb-5">
+              {t("This item already exists")}
+            </p>
+            <div className="w-full flex justify-center">
+              {modalNumber?.images[0]?.preview ? (
+                <img
+                  src={modalNumber?.images[0]?.preview}
+                  className="w-[80%] h-[250px]"
+                />
+              ) : (
+                ""
+              )}
+            </div>
+            <div className="flex items-center justify-between mt-10 mx-auto w-1/2">
+              <p className="font-semibold">
+                {t("Id number")} :{" "}
+                <span className="text-mainGreen font-semibold">
+                  {modalNumber?.hwya}
+                </span>
+              </p>
+              <p className="font-semibold">
+                {t("weight")} :{" "}
+                <span className="text-mainGreen font-semibold">
+                  {modalNumber?.weight}
+                </span>
+              </p>
+            </div>
+          </div>
+          {/* <div className="flex gap-4 justify-end items-center w-full">
                   <Button
                     type="submit"
                     action={() => {
@@ -568,8 +626,8 @@ export const GoldItemCodingForm = ({
                     {`${t("confirm")}`}
                   </Button>
               </div> */}
-          </div>
+        </div>
       </Modal>
     </div>
-  )
-}
+  );
+};

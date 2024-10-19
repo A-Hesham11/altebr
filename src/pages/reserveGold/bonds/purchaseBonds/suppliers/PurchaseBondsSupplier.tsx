@@ -16,6 +16,8 @@ import { Table } from "../../../../../components/templates/reusableComponants/ta
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { numberContext } from "../../../../../context/settings/number-formatter";
 import PurchaseBondsSupplierPreview from "./PurchaseBondsSupplierPreview";
+import { BiSpreadsheet } from "react-icons/bi";
+import PurchaseBondsSupplierInvoice from "./PurchaseBondsSupplierInvoice";
 
 const PurchaseBondsSupplier = () => {
   // STATE
@@ -27,6 +29,7 @@ const PurchaseBondsSupplier = () => {
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
   const { formatReyal, formatGram } = numberContext();
+  const [openModal, setOpenModal] = useState(false);
 
   const searchValues = {
     invoice_number: "",
@@ -103,14 +106,24 @@ const PurchaseBondsSupplier = () => {
       },
       {
         cell: (info: any) => (
-          <BsEye
-            onClick={() => {
-              setOpenInvoiceModal(true);
-              setSelectedItem(info.row.original);
-            }}
-            size={23}
-            className="text-mainGreen mx-auto cursor-pointer"
-          />
+          <div className="flex items-center justify-center gap-3">
+            <BsEye
+              onClick={() => {
+                setOpenModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+            <BiSpreadsheet
+              onClick={() => {
+                setOpenInvoiceModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+          </div>
         ),
         accessorKey: "details",
         header: () => <span>{t("details")}</span>,
@@ -260,6 +273,10 @@ const PurchaseBondsSupplier = () => {
       </div>
 
       {/* 3) MODAL */}
+      <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+        <PurchaseBondsSupplierInvoice item={selectedItem} />
+      </Modal>
+
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
         <PurchaseBondsSupplierPreview item={selectedItem} />
       </Modal>

@@ -11,14 +11,17 @@ const FinalPreviewBillPayment = ({
   paymentData,
   costDataAsProps,
   responseSellingData,
+  notQRCode,
 }: {
   paymentData: never[];
   costDataAsProps: any;
   responseSellingData: any;
+  notQRCode?: boolean;
 }) => {
   const { formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData)
 
   const { data: companyData } = useFetch<ClientData_TP>({
     endpoint: `/companySettings/api/v1/companies`,
@@ -56,12 +59,15 @@ const FinalPreviewBillPayment = ({
     <div className="flex justify-between pe-8">
       <div className="text-center">
         <span className="font-medium text-xs">{t("vendor name")}</span>
-        <p>محمد المحيسن</p>
+        <p>{userData?.name}</p>
       </div>
 
-      <div>
-        <QRCode value={responseSellingData?.qr} />
-      </div>
+      {!notQRCode && (
+        <div>
+          <QRCode value={responseSellingData?.qr} />
+        </div>
+      )}
+
       <div className="flex flex-col gap-1 items-center">
         <div className="flex flex-row items-end gap-4 mb-3">
           {paymentData?.map((card, index) => (
@@ -77,13 +83,17 @@ const FinalPreviewBillPayment = ({
                 />
               </div>
               <p className="mt-3">
-                {formatReyal(
-                  Number(
-                    card.cost_after_tax +
-                      card.commission_riyals +
-                      +card.commission_tax
-                  ) || Number(card.amount)
-                )}
+                {card.add_commission_ratio === "yes"
+                  ? formatReyal(
+                      Number(
+                        card.cost_after_tax +
+                          card.commission_riyals +
+                          +card.commission_tax
+                      ) || Number(card.amount)
+                    )
+                  : formatReyal(
+                      Number(card.cost_after_tax) || Number(card.amount)
+                    )}
               </p>
             </div>
           ))}

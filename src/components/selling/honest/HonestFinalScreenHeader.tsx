@@ -27,14 +27,15 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
   });
   console.log("🚀 ~ bondsData:", bondsData);
 
-  const bondNumber = bondsData?.[0]?.id === null ? 1 : bondsData?.[0]?.id + 1;
+  // const bondNumber = bondsData?.[0]?.id === null ? 1 : bondsData?.[0]?.id + 1;
+  const bondNumber = bondsData?.length + 1;
 
   return (
     <div className="flex justify-between mx-6 bill-shadow rounded-md p-6">
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
           {t("honest bond number")} :{" "}
-          <span className="font-medium">{popupBondId || bondNumber}</span>
+          <span className="font-medium">{bondNumber}</span>
         </p>
         <p className="text-xs font-bold">
           {t("honest bond date")} :{" "}
@@ -44,18 +45,14 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
         </p>
         <p>
           <span>{t("branch")}: </span>
-          <span>{userData?.branch?.id}</span>
+          <span>
+            {userData?.branch?.name} - {userData?.branch?.number}
+          </span>
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">
-        <img src={billLogo} alt="bill" />
-        <p className="text-xs font-medium">
-          {userData?.branch?.country?.name} , {userData?.branch?.city?.name}
-        </p>
-        <p className="text-xs font-medium">
-          <span className="font-bold">{t("district")}:</span>
-          {userData?.branch?.district?.name}
-        </p>
+        <img src={billLogo} alt="bill" className="" />
+        <p className="text-base font-medium">{t("honest bond")}</p>
       </div>
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
@@ -67,12 +64,12 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
           {t("mobile number")} :{" "}
           <span className="font-medium">{data?.phone}</span>{" "}
         </p>
-        <p className="text-xs font-bold">
+        {/* <p className="text-xs font-bold">
           {t("Id number")} :{" "}
           <span className="font-medium">
             {data?.identity || data?.national_number}
           </span>{" "}
-        </p>
+        </p> */}
       </div>
     </div>
   );

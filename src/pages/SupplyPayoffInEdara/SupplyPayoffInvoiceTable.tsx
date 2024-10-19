@@ -34,14 +34,16 @@ const SupplyPayoffInvoiceTable = <T extends object>({
   const { formatGram, formatReyal } = numberContext();
 
   const totalFinalCostIntoArabic = convertNumToArWord(
-    Math.round( costDataAsProps?.totalFinalCost)
+    Math.round(costDataAsProps?.totalFinalCost)
   );
 
   const resultTable = [
     {
       number: t("totals"),
       weight: formatGram(Number(costDataAsProps?.totalWeight)),
-      wage: costDataAsProps?.totalwages ? formatGram(Number(costDataAsProps?.totalwages)) : "---",
+      wage: costDataAsProps?.totalwages
+        ? formatGram(Number(costDataAsProps?.totalwages))
+        : "---",
       vat: formatReyal(Number(costDataAsProps?.totalItemsTaxes)),
       cost: formatReyal(Number(costDataAsProps?.totalCost)),
     },
@@ -50,15 +52,15 @@ const SupplyPayoffInvoiceTable = <T extends object>({
   return (
     <>
       <div className="mx-6">
-        <div className="mb-6 overflow-x-scroll lg:overflow-x-visible w-full">
-          <table className="mt-8 w-[872px] lg:w-full table-shadow">
+        <div className="mb-6 overflow-x-auto lg:overflow-x-visible w-full">
+          <table className="mt-8 w-full table-shadow">
             <thead className="bg-mainGreen text-white">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id} className="py-4 px-2">
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="p-4 text-sm font-medium text-mainGreen bg-[#E5ECEB] border-l last:border-none border-[#7B7B7B4D]"
+                      className="p-4 text-sm font-medium text-mainGreen bg-[#E5ECEB] border-l last:border-none border-[#7B7B7B4D] text-center"
                     >
                       {header.isPlaceholder
                         ? null
@@ -113,8 +115,14 @@ const SupplyPayoffInvoiceTable = <T extends object>({
                   className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                   colSpan={9}
                 >
-                  <span className="font-bold">{t("total")}</span>:{" "}
-                  {totalFinalCostIntoArabic}
+                  <span className="font-semibold">{t("total")}</span>:{" "}
+                  <span className="font-medium">
+                    {totalFinalCostIntoArabic}
+                  </span>
+                  <span className="font-semibold"> {t("reyal")}</span>{" "}
+                  <span className="font-semibold">
+                    {t("Only nothing else")}
+                  </span>
                 </td>
               </tr>
             </tfoot>

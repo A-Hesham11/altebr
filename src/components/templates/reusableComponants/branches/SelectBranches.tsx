@@ -1,23 +1,23 @@
 /////////// IMPORTS
 ///
-import { useFormikContext } from "formik"
-import { t } from "i18next"
-import { useEffect, useState } from "react"
-import { SingleValue } from "react-select"
-import { useFetch } from "../../../../hooks"
-import { SelectOption_TP } from "../../../../types"
-import { Select } from "../../../molecules"
-import { RefetchErrorHandler } from "../../../molecules/RefetchErrorHandler"
-import { CreateBranch } from "./CreateBranch"
+import { useFormikContext } from "formik";
+import { t } from "i18next";
+import { useEffect, useState } from "react";
+import { SingleValue } from "react-select";
+import { useFetch } from "../../../../hooks";
+import { SelectOption_TP } from "../../../../types";
+import { Select } from "../../../molecules";
+import { RefetchErrorHandler } from "../../../molecules/RefetchErrorHandler";
+import { CreateBranch } from "./CreateBranch";
 ///
 /////////// Types
 type SelectBranchesProps_TP = {
-  name: string
-  editData?: any
-  isSuccessPost?: any
-  resetSelect?: any
-  required?:any
-}
+  name: string;
+  editData?: any;
+  isSuccessPost?: any;
+  resetSelect?: any;
+  required?: any;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -49,27 +49,28 @@ export const SelectBranches = ({
           id: branch.id,
           value: branch.name || "",
           label: branch.name || "",
-        }
+          number: branch?.number || "",
+        };
       }),
     onError: (err) => console.log(err),
-  })
+  });
   ///
   /////////// STATES
   ///
   const [newValue, setNewValue] =
-    useState<SingleValue<SelectOption_TP> | null>()
-  const { setFieldValue, values } = useFormikContext()
+    useState<SingleValue<SelectOption_TP> | null>();
+  const { setFieldValue, values } = useFormikContext();
 
   ///
   /////////// SIDE EFFECTS
   ///
   useEffect(() => {
     setNewValue({
-      id: editData?.branch_id ,
+      id: editData?.branch_id,
       value: editData?.branch_name,
-      label:  editData?.branch_name || "اختر فرع",
-    })
-  }, [])
+      label: editData?.branch_name || "اختر فرع",
+    });
+  }, []);
   ///
   /////////// IF CASES
   ///
@@ -83,10 +84,10 @@ export const SelectBranches = ({
         id: "",
         value: "",
         label: "اختر فرع",
-      })
-      if (resetSelect) resetSelect()
+      });
+      if (resetSelect) resetSelect();
     }
-  }, [isSuccessPost])
+  }, [isSuccessPost]);
   ///
   return (
     <div className="flex flex-col">
@@ -101,6 +102,16 @@ export const SelectBranches = ({
         loadingPlaceholder={`${t("loading")}`}
         options={branchesOptions?.reverse()}
         loading={branchesLoading}
+        formatOptionLabel={(option) => (
+          <div className="flex justify-between">
+            <span>{option.label}</span>
+            {option.number && (
+              <p>
+                {t("Branch")} - <span>{option.number}</span>
+              </p>
+            )}
+          </div>
+        )}
         // defaultValue={}
         creatable
         CreateComponent={CreateBranch}
@@ -108,7 +119,7 @@ export const SelectBranches = ({
         value={newValue}
         isDisabled={!branchesLoading && !!branchesErrorReason}
         onChange={(option) => {
-          setNewValue(option)
+          setNewValue(option);
         }}
       />
       <RefetchErrorHandler
@@ -117,5 +128,5 @@ export const SelectBranches = ({
         refetch={refetchBranches}
       />
     </div>
-  )
-}
+  );
+};

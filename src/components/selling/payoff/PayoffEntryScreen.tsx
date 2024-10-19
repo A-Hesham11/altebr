@@ -8,6 +8,7 @@ const PayoffEntryScreen = () => {
     const [stage, setStage] = useState<number>(1)
     const [sanadId, setSanadId] = useState<number>(0)
     const [selectedItem, setSelectedItem] = useState<any>({})
+    console.log("🚀 ~ PayoffEntryScreen ~ selectedItem:", selectedItem)
 
     // conditional rendering
     const payoffSecondScreen: { [key: string]: any } = {

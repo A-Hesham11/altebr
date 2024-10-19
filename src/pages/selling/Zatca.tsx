@@ -435,7 +435,7 @@ export const Zatca = ({
                 </p>
               </div>
               <div className="flex flex-col gap-1 items-center">
-                <img src={billLogo} alt="bill" />
+                <img src={billLogo} alt="bill" className="" />
                 <p className="text-xs font-medium">
                   {userData?.branch?.country?.name} ,{" "}
                   {userData?.branch?.city?.name}
@@ -487,10 +487,10 @@ export const Zatca = ({
                 {userData?.branch?.district?.name}
               </p>
               <p>
-                {t("phone")}: {userData?.phone}
+                {t("phone")}: {companyData?.[0]?.phone}
               </p>
               <p>
-                {t("email")}: {userData?.email}
+                {t("email")}: {companyData?.[0]?.email}
               </p>
               <p>
                 {t("tax number")}:{" "}

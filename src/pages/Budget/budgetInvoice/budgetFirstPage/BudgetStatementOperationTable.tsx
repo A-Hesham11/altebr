@@ -43,6 +43,11 @@ const BudgetStatementOperationTable: React.FC<
     operationDataTable
   );
 
+  const filterOperationDataTable = operationDataTable.filter(
+    (operation) => operation.total_balance !== 0
+  );
+  console.log("🚀 ~ filterOperationDataTable:", filterOperationDataTable);
+
   const tableColumn = useMemo<any>(
     () => [
       {
@@ -91,7 +96,7 @@ const BudgetStatementOperationTable: React.FC<
       {isBoxesHaveData && (
         <Table
           rowBackground="!bg-white"
-          data={operationDataTable || []}
+          data={filterOperationDataTable || []}
           columns={tableColumn}
           showNavigation={operationDataTable?.length > 10}
         />

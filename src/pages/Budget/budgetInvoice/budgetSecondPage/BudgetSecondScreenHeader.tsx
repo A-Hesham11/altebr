@@ -46,14 +46,8 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">
-        <img src={billLogo} alt="bill" />
-        <p className="text-xs font-medium">
-          {userData?.branch?.country?.name} , {userData?.branch?.city?.name}
-        </p>
-        <p className="text-xs font-medium">
-          <span className="font-bold">{t("district")}:</span>
-          {userData?.branch?.district?.name}
-        </p>
+        <img src={billLogo} alt="bill" className="" />
+        <p className="text-base font-medium">{t("Budget bond")}</p>
       </div>
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
@@ -65,8 +59,10 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
           <span className="font-medium">{account_number}</span>{" "}
         </p>
         <p className="text-xs font-bold">
-          {t("account balance")} :{" "}
-          <span className="font-medium">{formatReyal(account_balance)}</span>{" "}
+          {t("transfer cash")} :{" "}
+          <span className="font-medium">{`${formatReyal(account_balance)} ${t(
+            "reyal"
+          )}`}</span>{" "}
         </p>
       </div>
     </div>

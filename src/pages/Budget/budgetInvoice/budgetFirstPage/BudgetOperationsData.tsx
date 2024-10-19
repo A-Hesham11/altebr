@@ -27,12 +27,13 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
   isRefetching,
   invoiceData,
   setOperationData,
+  budgetFiles,
 }) => {
-  const mainCardDataBoxes = mainCardData?.map((card) => card?.boxes).flat();
-
   if (isLoading || isFetching || isRefetching)
     return <Loading mainTitle={t("loading budget balance")} />;
 
+  console.log("🚀 ~ budgetFiles:", budgetFiles);
+  const mainCardDataBoxes = mainCardData?.map((card) => card?.boxes).flat();
   return (
     <>
       <div className="bg-lightGreen rounded-lg sales-shadow px-6 py-5 space-y-6">
@@ -41,9 +42,6 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
           setOperationData={setOperationData}
           mainCardData={mainCardData}
         />
-
-        {/* SECOND TABLE FIR OPERATION */}
-        <BudgetStatementOperationTable mainCardData={mainCardData} />
 
         <div className="flex justify-between items-center">
           <h2 className="text-base font-bold">
@@ -60,6 +58,9 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
           mainCardData={mainCardData}
           setOperationCardData={setOperationCardData}
         />
+
+        {/* SECOND TABLE FIR OPERATION */}
+        <BudgetStatementOperationTable mainCardData={mainCardData} />
       </div>
 
       <div className="flex justify-end mt-8">
@@ -70,8 +71,13 @@ const BudgetOperationsData: React.FC<BudgetOperationsData_TP> = ({
               mainCardData?.cards?.length === 0 ||
               mainCardDataBoxes.length === 0
             ) {
-              notify("error", `${t("there is no data to transfer")}`);
-              // return;
+              notify("info", `${t("there is no data to transfer")}`);
+              return;
+            }
+
+            if (budgetFiles.length === 0) {
+              notify("info", `${t("you should add an attachment")}`);
+              return;
             }
 
             setStage(2);

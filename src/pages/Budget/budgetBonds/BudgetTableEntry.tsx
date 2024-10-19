@@ -2,11 +2,11 @@ import React from "react";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { t } from "i18next";
 
-const BudgetTableEntry = ({ item }) => {
+const BudgetTableEntry = ({ boxes }) => {
   const { formatGram, formatReyal } = numberContext();
 
   // FOR TABLE ACCOUNTING ENTRY
-  let restrictions = item.boxes?.map(
+  let restrictions = boxes?.map(
     ({ account, computational_movement, unit_id, value }) => ({
       bian: account,
       debtor_gram:
@@ -62,8 +62,8 @@ const BudgetTableEntry = ({ item }) => {
   if (restrictionsTotals) restrictions?.push(restrictionsTotals!);
 
   return (
-    <div className="mt-8">
-      <h2 className="text-xl mb-5 font-bold">{t("accounting entry")}</h2>
+    <div className="mt-6">
+      {/* <h2 className="text-xl mb-5 font-bold">{t("accounting entry")}</h2> */}
       <div
         className={`
      w-full flex flex-col gap-4`}
@@ -95,7 +95,7 @@ const BudgetTableEntry = ({ item }) => {
                   <tr key={i} className="border-b">
                     <td
                       className={`whitespace-nowrap w-2/5 px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == boxes.length - 0
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -113,7 +113,7 @@ const BudgetTableEntry = ({ item }) => {
                     </td> */}
                     <td
                       className={`whitespace-nowrap px-6 py-4 w-1/5 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == boxes.length - 0
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -131,7 +131,7 @@ const BudgetTableEntry = ({ item }) => {
                     </td> */}
                     <td
                       className={`whitespace-nowrap px-6 py-4 w-1/5 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == boxes.length - 0
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}

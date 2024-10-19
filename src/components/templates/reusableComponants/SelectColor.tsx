@@ -1,31 +1,39 @@
 /////////// IMPORTS
 ///
-import { t } from "i18next"
-import { useFetch } from "../../../hooks"
-import { SelectOption_TP } from "../../../types"
-import { Select } from "../../molecules"
-import CreateColor from "./CreateColor"
+import { t } from "i18next";
+import { useFetch } from "../../../hooks";
+import { SelectOption_TP } from "../../../types";
+import { Select } from "../../molecules";
+import CreateColor from "./CreateColor";
 ///
 /////////// Types
 type SelectColorProps = {
-  name: string
-  modalTitle: string
-  label: string
-  multi?: boolean
-  field: "id" | "value"
-  onChange?: (option:any) => void
-  value?:any
-}
+  name: string;
+  modalTitle: string;
+  label: string;
+  multi?: boolean;
+  field: "id" | "value";
+  onChange?: (option: any) => void;
+  value?: any;
+};
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
 ///
-const SelectColor = ({ name, modalTitle, label, field, multi  ,onChange , value }: SelectColorProps) => {
+const SelectColor = ({
+  name,
+  modalTitle,
+  label,
+  field,
+  multi,
+  onChange,
+  value,
+}: SelectColorProps) => {
   /////////// VARIABLES
   ///
 
-  const requiredTranslation = () => `${t("required")}`
+  const requiredTranslation = () => `${t("required")}`;
 
   ///
   /////////// CUSTOM HOOKS
@@ -33,7 +41,7 @@ const SelectColor = ({ name, modalTitle, label, field, multi  ,onChange , value 
   const { data: colorOptions, isLoading: colorLoading } = useFetch<
     SelectOption_TP[]
   >({
-    endpoint: "/stones/api/v1/colors",
+    endpoint: "/stones/api/v1/colors?per_page=10000",
     queryKey: ["colors"],
     select: (colors) =>
       colors.map((color) => {
@@ -42,9 +50,9 @@ const SelectColor = ({ name, modalTitle, label, field, multi  ,onChange , value 
           value: color.name,
           label: color.name,
           name: color.name,
-        }
+        };
       }),
-  })
+  });
 
   ///
   /////////// STATES
@@ -82,9 +90,9 @@ const SelectColor = ({ name, modalTitle, label, field, multi  ,onChange , value 
       CreateComponent={CreateColor}
       fieldKey={field}
       onChange={onChange}
-      {...{...(value && {value})}}
+      {...{ ...(value && { value }) }}
     />
-  )
-}
+  );
+};
 
-export default SelectColor
+export default SelectColor;

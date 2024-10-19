@@ -14,12 +14,36 @@ const Management = () => {
       title_ar: "استلام نقدية",
       title_en: "receive money",
       route: "/selling/management/receive-money",
+      underCardInfo: (
+        <Link
+          to="/selling/recentBonds"
+          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+        >
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("recent bonds")}</p>
+        </Link>
+      ),
     },
     {
       icon: receiveitem,
       title_ar: "استلام القطع",
       title_en: "receive items",
       route: "/selling/management/receive-items",
+      underCardInfo: (
+        <Link
+          to="/selling/sortPieces"
+          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+        >
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("sort pieces")}</p>
+        </Link>
+      ),
+    },
+    {
+      icon: receiveitem,
+      title_ar: "تعديل وزن القطع",
+      title_en: "edit items weight",
+      route: "/selling/management/edit-items-weight",
       underCardInfo: (
         <Link
           to="/selling/branch-identity"
@@ -29,12 +53,6 @@ const Management = () => {
           <p className="text-mainGreen">{t("branch identity management")}</p>
         </Link>
       ),
-    },
-    {
-      icon: receiveitem,
-      title_ar: "تعديل وزن القطع",
-      title_en: "edit items weight",
-      route: "/selling/management/edit-items-weight",
     },
   ];
   return (

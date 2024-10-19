@@ -46,6 +46,7 @@ export const SellingFinalPreview = ({
   const navigate = useNavigate();
 
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ userData:", userData);
 
   const { data } = useFetch<Client_TP>({
     endpoint: `/selling/api/v1/get_sentence`,
@@ -57,6 +58,7 @@ export const SellingFinalPreview = ({
     queryKey: ["Mineral_license"],
   });
 
+  console.log("🚀 ~ companyData:", companyData);
   return (
     <div className="relative h-full p-10 bg-flatWhite">
       <div id="content-to-print">
@@ -93,10 +95,10 @@ export const SellingFinalPreview = ({
                 {userData?.branch?.district?.name}
               </p>
               <p>
-                {t("phone")}: {userData?.phone}
+                {t("phone")}: {companyData?.[0]?.phone}
               </p>
               <p>
-                {t("email")}: {userData?.email}
+                {t("email")}: {companyData?.[0]?.email}
               </p>
               <p>
                 {t("tax number")}:{" "}
@@ -110,21 +112,6 @@ export const SellingFinalPreview = ({
           </div>
         </div>
       </div>
-      {/* {printContent && <div style={{ display: 'none' }}>{printContent}</div>}    */}
-
-      {!isSuccess ? (
-        <div className="flex gap-3 justify-end mt-14">
-          <Button bordered action={() => setStage(2)}>
-            {t("back")}
-          </Button>
-        </div>
-      ) : (
-        <div className="flex justify-end items-center my-6">
-          <Button action={() => navigate(-1)} bordered>
-            {t("back")}
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

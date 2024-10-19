@@ -32,6 +32,7 @@ export const DateInputField = ({
   labelProps,
   value,
   placeholder,
+  disabled,
 }: {
   label: string;
   icon?: ReactNode;
@@ -41,6 +42,7 @@ export const DateInputField = ({
   value?: Date;
   required?: any;
   placeholder?: string;
+  disabled?: boolean;
   labelProps?: {
     [key: string]: any;
   };
@@ -63,6 +65,7 @@ export const DateInputField = ({
           {label}
         </Label>
         <DatePicker
+          disabled={disabled}
           selected={values[name]}
           icon={icon}
           placeholderText={placeholder}

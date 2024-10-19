@@ -47,6 +47,14 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
   const mainDataBoxes = mainCardData?.cards?.map((card) => card.boxes).flat();
   const isRTL = useIsRTL();
 
+  const mineralLicence = userData?.branch?.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch?.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   const budgetOperation = processBudgetData(mainCardData.cards);
   const formattedBudgetOperation = Object.entries(budgetOperation);
 
@@ -69,6 +77,11 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
       }
     );
   });
+
+  const filterOperationDataTable = operationDataTable.filter(
+    (operation) => operation.total_balance !== 0
+  );
+  console.log("🚀 ~ filterOperationDataTable:", filterOperationDataTable);
 
   // COMPANY DATA API
   const { data: companyData } = useFetch<ClientData_TP>({
@@ -222,7 +235,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
             <BudgetSecondScreenHeader clientData={clientData} />
             <BudgetSecondPageItems
               firstData={mainDataBoxes || []}
-              secondData={operationDataTable || []}
+              secondData={filterOperationDataTable || []}
               firstColumns={firstColumn}
               secondColumns={secondColumn}
               costDataAsProps={costDataAsProps}
@@ -243,18 +256,16 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
                 </p>
                 {/* <p>رقم المحل</p> */}
                 <p>
-                  {t("phone")}: {userData?.phone}
+                  {t("phone")}: {companyData?.[0]?.phone}
                 </p>
                 <p>
-                  {t("email")}: {userData?.email}
+                  {t("email")}: {companyData?.[0]?.email}
                 </p>
                 <p>
-                  {t("tax number")}:{" "}
-                  {companyData && companyData[0]?.taxRegisteration}
+                  {t("tax number")}: {taxRegisteration && taxRegisteration}
                 </p>
                 <p>
-                  {t("Mineral license")}:{" "}
-                  {companyData && companyData[0]?.mineralLicence}
+                  {t("Mineral license")}: {mineralLicence && mineralLicence}
                 </p>
               </div>
             </div>

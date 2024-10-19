@@ -34,6 +34,7 @@ const ExpensesInvoiceSecond = ({
   taxType,
   files,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData)
   console.log("🚀 ~ taxType:", taxType);
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
@@ -45,12 +46,12 @@ const ExpensesInvoiceSecond = ({
   const { setFieldValue, values } = useFormikContext<any>();
 
   // FORMULA TO CALC THE TOTAL COST OF BUYING INVOICE
-  const totalCost = sellingItemsData.reduce((acc: number, curr: any) => {
+  const totalCost = sellingItemsData?.reduce((acc: number, curr: any) => {
     acc = +curr.expense_price + +curr.expense_price_tax;
     return acc;
   }, 0);
 
-  const totalValueAddedTax = sellingItemsData.reduce(
+  const totalValueAddedTax = sellingItemsData?.reduce(
     (acc: number, curr: any) => {
       acc += +curr.value_added_tax;
       return acc;
@@ -59,9 +60,9 @@ const ExpensesInvoiceSecond = ({
   );
   console.log("🚀 ~ totalValueAddedTax:", totalValueAddedTax);
 
-  const totalValueAfterTax = sellingItemsData.reduce(
+  const totalValueAfterTax = sellingItemsData?.reduce(
     (acc: number, curr: any) => {
-      acc += +curr.total_value;
+      acc += +curr.expense_price_after_tax;
       return acc;
     },
     0
@@ -70,6 +71,7 @@ const ExpensesInvoiceSecond = ({
 
   const costDataAsProps = {
     totalCost,
+    totalValueAfterTax
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -77,6 +79,11 @@ const ExpensesInvoiceSecond = ({
       {
         header: () => <span>{t("expense type")}</span>,
         accessorKey: "expense_type_name",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("We paid to")}</span>,
+        accessorKey: "directed_to",
         cell: (info) => info.getValue() || "---",
       },
       {

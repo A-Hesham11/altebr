@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import React, { useContext, useMemo, useRef } from "react";
+import React, { useContext, useMemo, useRef, useState } from "react";
 import { Table } from "../../../templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../../../context/settings/number-formatter";
 import { ColumnDef } from "@tanstack/react-table";
@@ -13,6 +13,10 @@ import InvoiceTable from "../InvoiceTable";
 import { Selling_TP } from "../../../../pages/selling/PaymentSellingPage";
 import { Button } from "../../../atoms";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
+import { DownloadAsPDF } from "../../../../utils/DownloadAsPDF";
+import { InvoiceDownloadAsPDF } from "../../../../utils/InvoiceDownloadAsPDF";
+import Html2Pdf from "js-html2pdf";
+import { convertNumToArWord } from "../../../../utils/number to arabic words/convertNumToArWord";
 
 type Entry_TP = {
   bian: string;
@@ -25,11 +29,19 @@ type Entry_TP = {
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
-  const contentRef = useRef();
+  // const contentRef = useRef();
+  const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ isRTL:", isRTL);
-
   const { userData } = useContext(authCtx);
+  const taxRate = userData?.tax_rate / 100;
+
+  const mineralLicence = userData?.branch?.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data?.docNumber;
+
+  const taxRegisteration = userData?.branch?.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data?.docNumber;
 
   const clientData = {
     client_id: item?.client_id,
@@ -47,6 +59,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     endpoint: `/companySettings/api/v1/companies`,
     queryKey: ["Mineral_license"],
   });
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ companyData:", companyData);
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -56,12 +69,12 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("classification")}</span>,
+        header: () => <span>{t("category")}</span>,
         accessorKey: "classification_name",
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("category")} </span>,
+        header: () => <span>{t("classification")} </span>,
         accessorKey: "category_name",
         cell: (info) => info.getValue() || "---",
       },
@@ -75,16 +88,20 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         accessorKey: "karat_name",
         cell: (info: any) =>
           info.row.original.classification_id === 1
-            ? formatReyal(Number(info.getValue()))
-            : formatGram(Number(info.row.original.karatmineral_name)),
+            ? info.getValue()
+              ? formatReyal(Number(info.getValue()))
+              : "---"
+            : info.row.original.karatmineral_name
+            ? formatGram(Number(info.row.original.karatmineral_name))
+            : "---",
       },
       {
-        header: () => <span>{t("weight")}</span>,
+        header: () => <span>{`${t("weight")} (${t("In grams")})`}</span>,
         accessorKey: "weight",
         cell: (info) => info.getValue() || `${t("no items")}`,
       },
       {
-        header: () => <span>{t("cost")} </span>,
+        header: () => <span>{t("price before tax")} </span>,
         accessorKey: "cost",
         cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
       },
@@ -102,6 +119,11 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     []
   );
 
+  const totalWeight = item?.items?.reduce((acc, curr) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
+
   const totalCost = item?.items?.reduce((acc, curr) => {
     acc += +curr.cost;
     return acc;
@@ -117,15 +139,60 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     return acc;
   }, 0);
 
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(totalFinalCost)
+  );
+
   const costDataAsProps = {
     totalItemsTaxes,
     totalFinalCost: totalFinalCost,
     totalCost,
+    totalFinalCostIntoArabic,
   };
 
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight)),
+      cost: formatReyal(Number(costDataAsProps?.totalCost)),
+      vat: formatReyal(Number(costDataAsProps?.totalItemsTaxes)),
+      total: formatReyal(Number(costDataAsProps?.totalFinalCost)),
+    },
+  ];
+
   const handlePrint = useReactToPrint({
-    content: () => contentRef.current,
-    onAfterPrint: () => console.log("Print job completed."),
+    content: () => invoiceRefs.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+      .rtl {
+        direction: rtl;
+        text-align: right;
+      }
+
+      .ltr {
+        direction: ltr;
+        text-align: left;
+      }
+      .container_print {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+    }
+    `,
   });
 
   return (
@@ -139,8 +206,12 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
             {t("print")}
           </Button>
         </div>
-        <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
-          <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
+
+        <div
+          className={`${isRTL ? "rtl" : "ltr"} container_print`}
+          ref={invoiceRefs}
+        >
+          <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
             <div className="mx-5 bill-shadow rounded-md p-6">
               <FinalPreviewBillData
                 clientData={clientData}
@@ -148,13 +219,16 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
               />
             </div>
 
-            <InvoiceTable
-              data={item?.items}
-              columns={Cols}
-              costDataAsProps={costDataAsProps}
-            ></InvoiceTable>
+            <div className="">
+              <InvoiceTable
+                data={item?.items}
+                columns={Cols}
+                costDataAsProps={costDataAsProps}
+                resultTable={resultTable}
+              ></InvoiceTable>
+            </div>
 
-            <div className="mx-5 bill-shadow rounded-md p-6 my-9">
+            <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
               <FinalPreviewBillPayment responseSellingData={item} />
             </div>
 
@@ -170,18 +244,16 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
                   {userData?.branch?.district?.name}
                 </p>
                 <p>
-                  {t("phone")}: {userData?.phone}
+                  {t("phone")}: {companyData?.[0]?.phone}
                 </p>
                 <p>
-                  {t("email")}: {userData?.email}
+                  {t("email")}: {companyData?.[0]?.email}
                 </p>
                 <p>
-                  {t("tax number")}:{" "}
-                  {companyData && companyData[0]?.taxRegisteration}
+                  {t("tax number")}: {taxRegisteration && taxRegisteration}
                 </p>
                 <p>
-                  {t("Mineral license")}:{" "}
-                  {companyData && companyData[0]?.mineralLicence}
+                  {t("Mineral license")}: {mineralLicence && mineralLicence}
                 </p>
               </div>
             </div>

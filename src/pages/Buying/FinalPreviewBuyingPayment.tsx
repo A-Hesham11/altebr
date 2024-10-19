@@ -2,6 +2,8 @@ import { t } from "i18next";
 import QRCodeGen from "../../components/atoms/QRCode";
 import { numberContext } from "../../context/settings/number-formatter";
 import cashImg from "../../assets/cash.png";
+import { useContext } from "react";
+import { authCtx } from "../../context/auth-and-perm/auth";
 
 type FinalPreviewBuyingPayment_TP = {
   paymentData: never[];
@@ -19,6 +21,7 @@ const FinalPreviewBuyingPayment = ({
   setOdwyaTypeValue,
 }: FinalPreviewBuyingPayment_TP) => {
   const { formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
 
   // FORMULA TO CALC THE TOTAL VALUE OF ITEMS
   const totalValueOfItems = sellingItemsData.reduce((acc, curr) => {
@@ -33,7 +36,7 @@ const FinalPreviewBuyingPayment = ({
     <div className="flex justify-between pe-8">
       <div className="text-center">
         <span className="font-medium text-xs">{t("vendor name")}</span>
-        <p>محمد المحيسن</p>
+        <p>{userData?.name}</p>
       </div>
 
       <div>

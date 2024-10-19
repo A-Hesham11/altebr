@@ -65,51 +65,49 @@ export const SupplyPayoffFinalPreview = ({
 
   return (
     <div className="relative h-full py-10 px-3 bg-flatWhite">
-      <div className="print-section">
-        <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
-          <div className="mx-6 bill-shadow rounded-md p-6">
-            <FinalPreviewBillData
-              clientData={clientData}
-              invoiceNumber={invoiceNumber}
+      <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
+        <div className="mx-6 bill-shadow rounded-md p-6">
+          <FinalPreviewBillData
+            clientData={clientData}
+            invoiceNumber={invoiceNumber}
+          />
+        </div>
+        {ItemsTableContent}
+
+        {isSuccess && (
+          <div className="mx-6 bill-shadow rounded-md p-6 my-9">
+            <FinalPreviewBillPayment
+              paymentData={paymentData}
+              costDataAsProps={costDataAsProps}
+              sellingItemsData={sellingItemsData}
             />
           </div>
-          {ItemsTableContent}
-
-          {isSuccess && (
-            <div className="mx-6 bill-shadow rounded-md p-6 my-9">
-              <FinalPreviewBillPayment
-                paymentData={paymentData}
-                costDataAsProps={costDataAsProps}
-                sellingItemsData={sellingItemsData}
-              />
-            </div>
-          )}
-          <div className="text-center">
-            <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-              {data && data?.sentence}
+        )}
+        <div className="text-center">
+          <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
+            {data && data?.sentence}
+          </p>
+          <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
+            <p>
+              {" "}
+              العنوان : {userData?.branch?.country?.name} ,{" "}
+              {userData?.branch?.city?.name} ,{" "}
+              {userData?.branch?.district?.name}
             </p>
-            <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-              <p>
-                {" "}
-                العنوان : {userData?.branch?.country?.name} ,{" "}
-                {userData?.branch?.city?.name} ,{" "}
-                {userData?.branch?.district?.name}
-              </p>
-              <p>
-                {t("phone")}: {userData?.phone}
-              </p>
-              <p>
-                {t("email")}: {userData?.email}
-              </p>
-              <p>
-                {t("tax number")}:{" "}
-                {companyData && companyData[0]?.taxRegisteration}
-              </p>
-              <p>
-                {t("Mineral license")}:{" "}
-                {companyData && companyData[0]?.mineralLicence}
-              </p>
-            </div>
+            <p>
+              {t("phone")}: {companyData?.[0]?.phone}
+            </p>
+            <p>
+              {t("email")}: {companyData?.[0]?.email}
+            </p>
+            <p>
+              {t("tax number")}:{" "}
+              {companyData && companyData[0]?.taxRegisteration}
+            </p>
+            <p>
+              {t("Mineral license")}:{" "}
+              {companyData && companyData[0]?.mineralLicence}
+            </p>
           </div>
         </div>
       </div>

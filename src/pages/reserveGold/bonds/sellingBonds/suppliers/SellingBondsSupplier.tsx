@@ -16,6 +16,8 @@ import { Table } from "../../../../../components/templates/reusableComponants/ta
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import SellingBondsSupplierPreview from "./SellingBondsSupplierPreview";
 import { numberContext } from "../../../../../context/settings/number-formatter";
+import { BiSpreadsheet } from "react-icons/bi";
+import SellingBondsSupplierInvoice from "./SellingBondsSupplierInvoice";
 
 const SellingBondsSupplier = () => {
   // STATE
@@ -23,6 +25,7 @@ const SellingBondsSupplier = () => {
   const [dataSource, setDataSource] = useState([]);
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
+  const [openModal, setOpenModal] = useState(false);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
@@ -103,14 +106,24 @@ const SellingBondsSupplier = () => {
       },
       {
         cell: (info: any) => (
-          <BsEye
-            onClick={() => {
-              setOpenInvoiceModal(true);
-              setSelectedItem(info.row.original);
-            }}
-            size={23}
-            className="text-mainGreen mx-auto cursor-pointer"
-          />
+          <div className="flex items-center justify-center gap-3">
+            <BsEye
+              onClick={() => {
+                setOpenInvoiceModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+            <BiSpreadsheet
+              onClick={() => {
+                setOpenModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+          </div>
         ),
         accessorKey: "details",
         header: () => <span>{t("details")}</span>,
@@ -260,8 +273,12 @@ const SellingBondsSupplier = () => {
       </div>
 
       {/* 3) MODAL */}
-      <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
+      <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
         <SellingBondsSupplierPreview item={selectedItem} />
+      </Modal>
+
+      <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
+        <SellingBondsSupplierInvoice item={selectedItem} />
       </Modal>
     </div>
   );

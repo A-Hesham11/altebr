@@ -46,7 +46,7 @@ const ViewSellingInvoice = () => {
         : `${search}`,
     pagination: true,
   });
-    console.log("🚀 ~ ViewSellingInvoice ~ invoiceData:", invoiceData)
+  console.log("🚀 ~ ViewSellingInvoice ~ invoiceData:", invoiceData);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -124,8 +124,6 @@ const ViewSellingInvoice = () => {
     });
     setSearch(url);
   };
-
-  
 
   // LOADING ....
   if (isLoading || isRefetching || isFetching)
@@ -224,7 +222,7 @@ const ViewSellingInvoice = () => {
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
-        <SellingInvoiceTablePreview item={selectedItem}/>
+        <SellingInvoiceTablePreview item={selectedItem} />
       </Modal>
     </div>
   );

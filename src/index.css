@@ -21,7 +21,7 @@ input[type="radio"] {
   background-size: cover;
 }
 
-@media print {
+/* @media print {
   body {
     height: 200rem;
   }
@@ -38,7 +38,7 @@ input[type="radio"] {
   .no-print {
     display: none;
   }
-}
+} */
 
 @layer base {
   * {
@@ -286,7 +286,7 @@ input[type="file"] {
 
 } */
 
-@media print {
+/* @media print {
   html,
   body {
     height: 100%;
@@ -305,20 +305,26 @@ input[type="file"] {
     text-align: right;
   }
 
-  /* English LTR Styles */
   .ltr {
     direction: ltr;
     text-align: left;
   }
 
-  .page-break {
-    page-break-before: always;
+  .print-content {
+    display: block;
   }
 
-  .no-break {
+  .item {
     page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 20px;
   }
-}
+
+  .page-break {
+    page-break-before: always;
+    break-before: always;
+  }
+} */
 
 .PieceDetails div:nth-child(19) {
   grid-column: 1 / -3;
@@ -517,6 +523,10 @@ li > .ps-menu-button:hover {
   right: 100%;
   width: 100%;
   height: 2px;
+}
+
+.test{
+  
 }
 
 /* GLOBAL ANIMATION */

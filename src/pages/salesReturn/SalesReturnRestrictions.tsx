@@ -7,11 +7,17 @@ import { useFetch, useIsRTL } from "../../hooks";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { Loading } from "../../components/organisms/Loading";
 import { formatDate, getDayAfter } from "../../utils/date";
-import { BaseInputField, DateInputField, Modal } from "../../components/molecules";
+import {
+  BaseInputField,
+  DateInputField,
+  Modal,
+} from "../../components/molecules";
 import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import SalesReturnInvoiceTablePreview from "./SalesReturnInvoiceTablePreview";
+import SellingInvoiceTablePreview from "../../components/selling/selling components/sellingWrapper/SellingInvoiceTablePreview";
+import { BiSpreadsheet } from "react-icons/bi";
 
 const SalesReturnRestrictions = () => {
   // STATE
@@ -20,7 +26,9 @@ const SalesReturnRestrictions = () => {
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
+  const [invoiceViewModal, setOpenInvoiceViewModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
+  const [selectedViewItem, setSelectedViewItem] = useState<any>({});
   const [search, setSearch] = useState("");
 
   const searchValues = {
@@ -38,7 +46,8 @@ const SalesReturnRestrictions = () => {
   } = useFetch({
     queryKey: ["salesReturn-invoice"],
     endpoint:
-      search === `/sellingReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}` ||
+      search ===
+        `/sellingReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}` ||
       search === ""
         ? `/sellingReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}?page=${page}`
         : `${search}`,
@@ -52,6 +61,11 @@ const SalesReturnRestrictions = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "invoice_number",
         header: () => <span>{t("invoice number")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "base_invoice",
+        header: () => <span>{t("selling invoice number")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
@@ -69,15 +83,30 @@ const SalesReturnRestrictions = () => {
         header: () => <span>{t("employee name")}</span>,
       },
       {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "base_invoice",
+        header: () => <span>{t("selling invoice number")}</span>,
+      },
+      {
         cell: (info: any) => (
-          <BsEye
-            onClick={() => {
-              setOpenInvoiceModal(true);
-              setSelectedItem(info.row.original);
-            }}
-            size={23}
-            className="text-mainGreen mx-auto cursor-pointer"
-          />
+          <div className="flex items-center justify-center gap-2">
+            <BsEye
+              onClick={() => {
+                setOpenInvoiceModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+            <BiSpreadsheet
+              onClick={() => {
+                setOpenInvoiceViewModal(true);
+                setSelectedViewItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+          </div>
         ),
         accessorKey: "details",
         header: () => <span>{t("details")}</span>,
@@ -219,7 +248,13 @@ const SalesReturnRestrictions = () => {
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
-        <SalesReturnInvoiceTablePreview item={selectedItem}/>
+        <SellingInvoiceTablePreview item={selectedItem} />
+      </Modal>
+      <Modal
+        isOpen={invoiceViewModal}
+        onClose={() => setOpenInvoiceViewModal(false)}
+      >
+        <SalesReturnInvoiceTablePreview item={selectedItem} />
       </Modal>
     </div>
   );

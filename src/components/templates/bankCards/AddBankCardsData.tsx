@@ -56,6 +56,7 @@ const AddBankCardsData = ({
   refetchBankCards,
   setShow,
 }: AddBankCardProps_TP) => {
+  console.log("🚀 ~ editData:", editData);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   const [accountNumberId, setAccountNumberId] = useState();
@@ -64,11 +65,12 @@ const AddBankCardsData = ({
 
   const [cardId, setCardId] = useState("");
   const [isMaxDiscountLimit, setIsMaxDiscountLimit] = useState(0);
-  console.log("🚀 ~ isMaxDiscountLimit:", typeof isMaxDiscountLimit)
+  console.log("🚀 ~ isMaxDiscountLimit:", isMaxDiscountLimit);
+  console.log("🚀 ~ isMaxDiscountLimit:", typeof isMaxDiscountLimit);
 
   useEffect(() => {
-      setCardId(editData?.card?.id)
-  }, [editData])
+    setCardId(editData?.card?.id);
+  }, [editData]);
 
   const [newValue, setNewValue] =
     useState<SingleValue<SelectOption_TP> | null>();
@@ -132,6 +134,7 @@ const AddBankCardsData = ({
   });
 
   function PostNewCard(values: bankCardsProps_TP) {
+    console.log("🚀 ~ PostNewCard ~ values:", values);
     mutate({
       endpointName: "/selling/api/v1/add_card",
       values: {
@@ -166,6 +169,7 @@ const AddBankCardsData = ({
         commission_rate: values?.commission_rate,
         max_discount_limit: values?.max_discount_limit,
         max_discount_limit_value: values?.max_discount_limit_value,
+        id: editData?.id,
         _method: "put",
       },
     });
@@ -184,13 +188,31 @@ const AddBankCardsData = ({
     mutationKey: ["BranchCards"],
     onSuccess: (data) => {
       notify("success");
-      refetchBankCards()
+      refetchBankCards();
       queryClient.refetchQueries(["all-BranchCards"]);
     },
     onError: (error) => {
       notify("error", error.response.data.message);
     },
   });
+
+  const handlePost = (values) => {
+    if (cardId === "") notify("info", "please select a card");
+
+    if (editData) {
+      PostCardEdit({
+        ...values,
+        card_id: cardId,
+        discount_percentage: values.discount_percentage / 100,
+      });
+    } else {
+      PostNewCard({
+        ...values,
+        card_id: cardId,
+        discount_percentage: values.discount_percentage / 100,
+      });
+    }
+  };
 
   if (dataSource?.length === 0 && isFetching)
     return <Loading mainTitle={t("جاري التحميل")} />;
@@ -202,24 +224,7 @@ const AddBankCardsData = ({
           <Formik
             validationSchema={() => cardsValidatingSchema()}
             initialValues={initialValues}
-            onSubmit={(values, { resetForm }) => {
-              if (cardId === "") notify("info", "please select a card");
-
-              if (editData) {
-                PostCardEdit({
-                  ...values,
-                  card_id: cardId,
-                  discount_percentage: values.discount_percentage / 100,
-                });
-              } else {
-                PostNewCard({
-                  ...values,
-                  card_id: cardId,
-                  discount_percentage: values.discount_percentage / 100,
-                });
-
-              }
-            }}
+            onSubmit={(values, { resetForm }) => {}}
           >
             {({ values, setFieldValue, resetForm }) => (
               <Form>
@@ -281,7 +286,8 @@ const AddBankCardsData = ({
                         />
                       </div>
 
-                      {(isMaxDiscountLimit == 1) || (editData?.max_discount_limit) ? (
+                      {isMaxDiscountLimit == 1 &&
+                      editData?.max_discount_limit ? (
                         <>
                           <BaseInputField
                             id="max_discount_limit"
@@ -333,6 +339,7 @@ const AddBankCardsData = ({
                         type="submit"
                         className="w-fit"
                         loading={editLoading}
+                        action={() => handlePost(values)}
                       >
                         {t("save")}
                       </Button>
