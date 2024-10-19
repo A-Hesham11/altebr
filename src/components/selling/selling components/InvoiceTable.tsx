@@ -182,7 +182,7 @@ const InvoiceTable = <T extends object>({
                     <td
                       key={key}
                       className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                      colSpan={index === 0 ? 5 : 1}
+                      colSpan={index === 0 ? 3 : 1}
                     >
                       {resultTable[0][key]}
                     </td>
