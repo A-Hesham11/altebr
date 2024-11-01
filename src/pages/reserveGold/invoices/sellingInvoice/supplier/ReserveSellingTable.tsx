@@ -29,6 +29,7 @@ interface ReserveSellingTable_TP {
 
 const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
   const { setSellingItemsData, sellingItemsData, goldPrice } = props;
+  console.log("🚀 ~ goldPrice:", goldPrice)
   const { formatGram, formatReyal } = numberContext();
   const { values, setFieldValue } = useFormikContext();
   const { userData } = useContext(authCtx);

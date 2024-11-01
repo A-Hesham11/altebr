@@ -663,6 +663,7 @@ import AddDeductionsPolicy from "../../components/templates/deductions/AddDeduct
 import AddEmployeeBenefits from "../../components/templates/employeeBenefits/AddEmployeeBenefits";
 import AddEmployeeDeductions from "../../components/templates/employeeDeductions/AddEmployeeDeductions";
 import AddCommision from "../../components/templates/commision/AddCommision";
+import AddInvoiceHeaderData from "../../components/templates/invoiceData/AddInvoiceHeaderData";
 ///
 /////////// Types
 ///
@@ -698,6 +699,7 @@ export const System = ({ title }: SystemProps_TP) => {
     gold_price: false,
     excluded_items: false,
     invoice_data: false,
+    invoice_image: false,
     Tax_Policy: false,
     colors: false,
     classifications: false,
@@ -1064,6 +1066,17 @@ export const System = ({ title }: SystemProps_TP) => {
       viewLabel: `${t("view sentence congratulatory")}`,
       viewHandler: () => navigate("/system/invoiceData"),
     },
+    {
+      id: crypto.randomUUID(),
+      title: t("Invoice data"),
+      name: "invoice_image",
+      addLabel: `${t("Add invoice data")}`,
+      addComponent: (
+        <AddInvoiceHeaderData title={`${t("Add invoice data")}`} />
+      ),
+      viewLabel: `${t("View invoice data")}`,
+      viewHandler: () => navigate("/system/invoiceHeader"),
+    },
   ];
   console.log("🚀 ~ System ~ systemCards:", systemCards.length);
 
@@ -1101,7 +1114,7 @@ export const System = ({ title }: SystemProps_TP) => {
     },
     {
       titleKey: "Account management",
-      range: [28, 33],
+      range: [28, 34],
     },
   ];
 

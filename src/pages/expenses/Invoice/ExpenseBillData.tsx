@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useFetch } from "../../../hooks";
 import { useLocation } from "react-router-dom";
 import { formatDate } from "../../../utils/date";
@@ -7,6 +7,7 @@ import { authCtx } from "../../../context/auth-and-perm/auth";
 
 import billLogo from "../../../assets/bill-logo.png";
 import { useFormikContext } from "formik";
+import { Cards_Props_TP } from "../../../components/templates/bankCards/ViewBankCards";
 
 type Client_TP = {
   clientData?: {
@@ -27,7 +28,7 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   console.log("🚀 ~ ExpenseBillData ~ clientData:", clientData);
   console.log("🚀 ~ ExpenseBillData ~ invoiceNumber:", invoiceNumber);
   const { client_id, client_value, bond_date } = clientData;
-
+  const [invoiceInfo, setInvoiceInfo] = useState(null);
   const { setFieldValue, values } = useFormikContext<any>();
   console.log("🚀 ~ ExpenseBillData ~ values:", values);
 
@@ -52,6 +53,19 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
       ? honestBondsData?.length + 1
       : invoiceNumber?.length + 1;
 
+  const { data: invoiceInformation } = useFetch<Cards_Props_TP[]>({
+    endpoint: `/companySettings/api/v1/InvoiceData`,
+    queryKey: ["InvoiceHeader_Data"],
+    pagination: true,
+    onSuccess(data) {
+      const returnData = data?.data.reduce((acc, item) => {
+        acc[item.key] = item.value;
+        return acc;
+      }, {});
+      setInvoiceInfo(returnData);
+    },
+  });
+
   return (
     <div className="flex justify-between">
       <div className="flex flex-col gap-1 mt-6">
@@ -67,7 +81,11 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">
-        <img src={billLogo} alt="bill" className=""/>
+        <img
+          src={invoiceInfo?.InvoiceCompanyLogo || billLogo}
+          alt="bill"
+          className="h-28 w-3/4 object-contain"
+        />
         <p className="text-base font-medium">{t("simplified tax invoice")}</p>
       </div>
       <div className="flex flex-col gap-1 mt-6">

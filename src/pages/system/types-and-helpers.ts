@@ -24,6 +24,7 @@ export type FormNames_TP =
   | "selling_policies"
   | "excluded_items"
   | "invoice_data"
+  | "invoice_image"
   | "Tax_Policy"
   | "colors"
   | "classifications"

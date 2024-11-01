@@ -1,15 +1,26 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { t } from "i18next";
 import { BsDatabase } from "react-icons/bs";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useFetch } from "../../../../hooks";
+import { SelectOption_TP } from "../../../../types";
+import { Employee_TP } from "../../../../pages/employees/employees-types";
 
 const BillHeader = ({ invoiceNumber, locationPath }: any) => {
   const { userData } = useContext(authCtx);
+  const [goldPriceToday, setGoldPriceToday] = useState("");
 
-  const { data: goldPriceData } = useFetch({
-    queryKey: ["static-price"],
-    endpoint: "/buyingUsedGold/api/v1/show-gold-price",
+  // const { data: goldPriceData } = useFetch({
+  //   queryKey: ["static-price"],
+  //   endpoint: "/buyingUsedGold/api/v1/show-gold-price",
+  // });
+
+  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
+    endpoint: "/attachment/api/v1/goldPrice",
+    queryKey: ["GoldPriceApi"],
+    onSuccess: (data) => {
+      setGoldPriceToday(data["price_gram_24k"]);
+    },
   });
 
   return (
@@ -31,7 +42,7 @@ const BillHeader = ({ invoiceNumber, locationPath }: any) => {
         <p className=" border-l border-[#FFA34B] px-1">
           {t("daily gold price")}
         </p>
-        <p className="px-1">{goldPriceData?.gold_price} ر.س</p>
+        <p className="px-1">{goldPriceToday} {GoldPrice?.currency}</p>
       </div>
     </div>
   );

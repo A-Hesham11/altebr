@@ -168,6 +168,9 @@ import RecentBondsPage from "../pages/management/recentBonds/RecentBondsPage";
 import SortPiecesPage from "../pages/management/sortPieces/SortPiecesPage";
 import PrintingNumberIdentities from "../pages/coding/coded_identities/PrintingNumberIdentities";
 import { SupplyYieldRestrictions } from "../components/selling/payoff/SupplyYieldRestrictions";
+import ViewInvoiceHeaderData from "../components/templates/invoiceData/ViewInvoiceHeaderData";
+import WasteSupplyReturn from "../components/selling/payoff/WasteSupplyReturn";
+import WasteSupplyReturnEntry from "../components/selling/payoff/WasteSupplyReturnEntry";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -333,6 +336,11 @@ export const AllRoutesProvider = () => {
           <Route path="/system/TaxPolicy" element={<ViewTaxPolicy />} />
 
           <Route path="/system/invoiceData" element={<ViewInvoiceData />} />
+          <Route
+            path="/system/invoiceHeader"
+            element={<ViewInvoiceHeaderData />}
+          />
+          {/* <Route path="/system/invoiceData" element={<AddInvoiceHeaderData />} /> */}
 
           <Route
             path="/system/branches/:branchesID"
@@ -562,6 +570,10 @@ export const AllRoutesProvider = () => {
             path="/selling/supplyReturn"
             element={<SupplyYieldRestrictions />}
           />
+          <Route
+            path="/selling/wasteReturn"
+            element={<WasteSupplyReturnEntry />}
+          />
           <Route path="/selling/Pieces-Sold" element={<PiecesSoldPage />} />
 
           <Route
@@ -578,6 +590,10 @@ export const AllRoutesProvider = () => {
           <Route
             path="/selling/payoff/supply-payoff"
             element={<PayoffEntryScreen />}
+          />
+          <Route
+            path="/selling/payoff/wasteReturn"
+            element={<WasteSupplyReturn />}
           />
 
           {/* المبعات */}

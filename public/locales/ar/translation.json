@@ -1417,5 +1417,20 @@
   "The parts have been returned to the administration successfully.": "تم رد القطع الي الادارة بنجاح",
   "Minimum weight 1": "الحد الادني للوزن 1",
   "Maximum weight": "الحد الاعلي للوزن",
-  "Weight is greater than the maximum limit": "الوزن اكبر من الحد الاعلي"
+  "Weight is greater than the maximum limit": "الوزن اكبر من الحد الاعلي",
+  "Enter barcode": "ادخال باركود",
+  "Manual entry": "الادخال يدوي",
+  "Invoice data": "بيانات الفاتورة",
+  "Add invoice data": "اضافة بيانات الفاتورة",
+  "View invoice data": "عرض بيانات الفاتورة",
+  "Supply return (waste)": "مردود توريد (الهدر)",
+  "Supply yield constraints (waste)": "قيود مردود التوريد (هدر)",
+  "The weight of the piece must be greater than zero.": "يجب ان يكون وزن القطعة اكبر من الصفر",
+  "The branch bears the waste": "الفرع يتحمل الهدر",
+  "Accounting entry for returning parts to management": "القيد المحاسبي لرد القطع الي الادارة",
+  "Convert new pieces to fractions": "تحويل قطع جديدة للكسر",
+  "Accounting entry for wasted wages": "القيد المحاسبي لهدر الاجور",
+  "Who should bear the waste?": "يجب اختيار من يتحمل الهدر",
+  "The parts were returned to the administration.": "تم رد  القطع الي الادارة",
+  "ID code must be entered": "يجب ادخال كود الهوية"
 }

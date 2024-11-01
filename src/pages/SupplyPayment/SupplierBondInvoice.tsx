@@ -26,6 +26,14 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
 
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   const { data } = useFetch<ClientData_TP>({
     endpoint: `/selling/api/v1/get_sentence`,
     queryKey: ["sentence"],
@@ -187,11 +195,11 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
               </p>
               <p>
                 {t("tax number")}:{" "}
-                {companyData && companyData[0]?.taxRegisteration}
+                {taxRegisteration || ""}
               </p>
               <p>
                 {t("Mineral license")}:{" "}
-                {companyData && companyData[0]?.mineralLicence}
+                {mineralLicence || ""}
               </p>
             </div>
           </div>

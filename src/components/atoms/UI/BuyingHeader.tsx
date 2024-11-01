@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { t } from "i18next";
 import { BsDatabase } from "react-icons/bs";
 import { useFetch } from "../../../hooks";
+import { SelectOption_TP } from "../../../types";
+import { Employee_TP } from "../../../pages/employees/employees-types";
 
 /**
  * 
@@ -9,14 +11,24 @@ import { useFetch } from "../../../hooks";
  * @returns jsx
  */
 const BuyingHeader = ({ invoiceNumber }: any) => {
-  // GOLD PRICE DATA FOR KILO OR GRAM API
-  const {
-    data: goldPriceData,
-  } = useFetch({
-    queryKey: ["static-price"],
-    endpoint: "/buyingUsedGold/api/v1/show-gold-price",
+  const [goldPriceToday, setGoldPriceToday] = useState("");
+
+  // // GOLD PRICE DATA FOR KILO OR GRAM API
+  // const {
+  //   data: goldPriceData,
+  // } = useFetch({
+  //   queryKey: ["static-price"],
+  //   endpoint: "/buyingUsedGold/api/v1/show-gold-price",
+  //   onSuccess: (data) => {
+  //     console.log(data);
+  //   },
+  // });
+
+  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
+    endpoint: "/attachment/api/v1/goldPrice",
+    queryKey: ["GoldPriceApi"],
     onSuccess: (data) => {
-      console.log(data);
+      setGoldPriceToday(data["price_gram_24k"]);
     },
   });
 
@@ -33,9 +45,9 @@ const BuyingHeader = ({ invoiceNumber }: any) => {
       <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
         <BsDatabase className="fill-white" />
         <p className=" border-l border-[#FFA34B] px-1">
-          {`سعر ${goldPriceData?.gold_type} اليومي`}
+          {t("daily gold price")}
         </p>
-        <p className="px-1">{goldPriceData?.gold_price} ر.س</p>
+        <p className="px-1">{goldPriceToday} {GoldPrice?.currency}</p>
       </div>
     </div>
   );

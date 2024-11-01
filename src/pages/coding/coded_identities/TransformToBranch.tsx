@@ -44,10 +44,10 @@ const TransformToBranch = ({
   };
 
   const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
-    endpoint: "/buyingUsedGold/api/v1/get-gold-price",
+    endpoint: "/attachment/api/v1/goldPrice",
     queryKey: ["GoldPriceApi"],
     onSuccess: (data) => {
-      setGoldPriceToday(data["24"]);
+      setGoldPriceToday(data["price_gram_24k"]);
     },
   });
 

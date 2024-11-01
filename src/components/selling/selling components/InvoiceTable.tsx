@@ -28,6 +28,8 @@ const InvoiceTable = <T extends object>({
   costDataAsProps,
   resultTable,
 }: ReactTableProps<T>) => {
+  console.log("🚀 ~ columns:", columns)
+
   const table = useReactTable({
     data,
     columns,
@@ -46,16 +48,16 @@ const InvoiceTable = <T extends object>({
 
   const taxRate = userData?.tax_rate / 100;
 
-  const totalWeight = data?.reduce((acc, curr) => {
-    acc += +curr.weight;
-    return acc;
-  }, 0);
+  // const totalWeight = data?.reduce((acc, curr) => {
+  //   acc += +curr.weight;
+  //   return acc;
+  // }, 0);
 
-  const totalWeightOfSelsal = data?.reduce((acc, item) => {
-    return (
-      acc + item?.selsal?.reduce((subAcc, curr) => subAcc + +curr.weight, 0)
-    );
-  }, 0);
+  // const totalWeightOfSelsal = data?.reduce((acc, item) => {
+  //   return (
+  //     acc + item?.selsal?.reduce((subAcc, curr) => subAcc + +curr.weight, 0)
+  //   );
+  // }, 0);
 
   const totalCost = data?.reduce((acc, curr) => {
     acc += +curr.cost;
@@ -91,16 +93,18 @@ const InvoiceTable = <T extends object>({
         locationPath === "/selling/payoff/sales-return" ||
         locationPath === "/selling/honesty/all-return-honest"
         ? costDataAsProps?.totalFinalCost
-        : locationPath === "/bonds/supply-return"
+        : locationPath === "/bonds/supply-return" ||
+          locationPath === "/selling/wasteReturn"
         ? costDataAsProps?.totalCost
         : totalFinalCost
     )
   );
+  console.log("🚀 ~ totalFinalCostIntoArabic:", totalFinalCostIntoArabic)
 
-  const hasSelsal =
-    locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal
-      ? totalWeightOfSelsal
-      : 0;
+  // const hasSelsal =
+  //   locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal
+  //     ? totalWeightOfSelsal
+  //     : 0;
 
   // const resultTable = [
   //   {
@@ -118,18 +122,18 @@ const InvoiceTable = <T extends object>({
   //   },
   // ];
 
-  const resultReturnTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeight) + Number(hasSelsal)),
-      cost: costDataAsProps
-        ? formatReyal(Number(costDataAsProps?.totalCost))
-        : formatReyal(Number(totalCost + totalCommissionRatio)),
-    },
-  ];
+  // const resultReturnTable = [
+  //   {
+  //     number: t("totals"),
+  //     weight: formatGram(Number(totalWeight) + Number(hasSelsal)),
+  //     cost: costDataAsProps
+  //       ? formatReyal(Number(costDataAsProps?.totalCost))
+  //       : formatReyal(Number(totalCost + totalCommissionRatio)),
+  //   },
+  // ];
 
-  const resultTotalTable =
-    locationPath === "/bonds/supply-return" ? resultReturnTable : resultTable;
+  // const resultTotalTable =
+  //   locationPath === "/bonds/supply-return" ? resultReturnTable : resultTable;
 
   return (
     <>
@@ -182,7 +186,7 @@ const InvoiceTable = <T extends object>({
                     <td
                       key={key}
                       className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                      colSpan={index === 0 ? 3 : 1}
+                      colSpan={index === 0 ? columns?.length - (Object.keys(resultTable[0])?.length - 1) : 1}
                     >
                       {resultTable[0][key]}
                     </td>

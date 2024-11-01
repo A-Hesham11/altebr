@@ -1,11 +1,12 @@
 import { t } from "i18next";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useFetch } from "../../../../hooks";
 import { formatDate, getDayAfter } from "../../../../utils/date";
 import billLogo from "../../../../assets/bill-logo.png";
 import { useLocation } from "react-router-dom";
 import { useFormikContext } from "formik";
+import { Cards_Props_TP } from "../../../templates/bankCards/ViewBankCards";
 
 type Client_TP = {
   clientData?: {
@@ -30,7 +31,8 @@ const FinalPreviewBillData = ({
   invoiceNumber,
   employee_name,
 }: Client_TP) => {
-  console.log("🚀 ~ employee_name:", employee_name);
+  const [invoiceInfo, setInvoiceInfo] = useState(null);
+  console.log("🚀 ~ invoiceInfo:", invoiceInfo);
   const { client_id, client_value, bond_date, supplier_id, supplier_name } =
     clientData;
   console.log("🚀 ~ client_id:", client_id);
@@ -59,6 +61,19 @@ const FinalPreviewBillData = ({
   const { data: honestBondsData } = useFetch({
     queryKey: [`all-retrieve-honest-bonds-${userData?.branch_id}`],
     endpoint: `branchSafety/api/v1/receive-bonds/${userData?.branch_id}`,
+  });
+
+  const { data: invoiceInformation } = useFetch<Cards_Props_TP[]>({
+    endpoint: `/companySettings/api/v1/InvoiceData`,
+    queryKey: ["InvoiceHeader_Data"],
+    pagination: true,
+    onSuccess(data) {
+      const returnData = data?.data.reduce((acc, item) => {
+        acc[item.key] = item.value;
+        return acc;
+      }, {});
+      setInvoiceInfo(returnData);
+    },
   });
 
   const billNumber =
@@ -116,7 +131,11 @@ const FinalPreviewBillData = ({
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">
-        <img src={billLogo} alt="bill" className="" />
+        <img
+          src={invoiceInfo?.InvoiceCompanyLogo || billLogo}
+          alt="bill"
+          className="h-28 w-3/4 object-contain"
+        />
         <p className="text-base font-medium">
           {/* {userData?.branch?.country?.name} , {userData?.branch?.city?.name} */}
           {textInvoice}

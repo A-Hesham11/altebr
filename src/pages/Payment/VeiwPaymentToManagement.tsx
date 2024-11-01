@@ -359,6 +359,7 @@ const VeiwPaymentToManagement = () => {
                 <PaymentFinalPreviewBillData
                   clientData={clientData}
                   invoiceNumber={selectedViewItem?.invoice_number}
+                  invoiceData={selectedViewItem}
                 />
               </div>
 

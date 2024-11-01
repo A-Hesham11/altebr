@@ -232,6 +232,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Selling_TP } from "./PaymentSellingPage";
 import billLogo from "../../assets/bill-logo.png";
 import { formatDate } from "../../utils/date";
+import { Cards_Props_TP } from "../../components/templates/bankCards/ViewBankCards";
 
 type Client_TP = {
   amount: number;
@@ -278,8 +279,17 @@ export const Zatca = ({
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [invoiceInfo, setInvoiceInfo] = useState(null);
 
   const { userData } = useContext(authCtx);
+
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
 
   const { data } = useFetch<Client_TP>({
     endpoint: `/selling/api/v1/get_sentence`,
@@ -387,6 +397,19 @@ export const Zatca = ({
     totalCost,
   };
 
+  const { data: invoiceInformation } = useFetch<Cards_Props_TP[]>({
+    endpoint: `/companySettings/api/v1/InvoiceData`,
+    queryKey: ["InvoiceHeader_Data"],
+    pagination: true,
+    onSuccess(data) {
+      const returnData = data?.data.reduce((acc, item) => {
+        acc[item.key] = item.value;
+        return acc;
+      }, {});
+      setInvoiceInfo(returnData);
+    },
+  });
+
   const SellingTableComp = () => (
     <InvoiceTable
       data={invoiceData?.items}
@@ -435,7 +458,11 @@ export const Zatca = ({
                 </p>
               </div>
               <div className="flex flex-col gap-1 items-center">
-                <img src={billLogo} alt="bill" className="" />
+                <img
+                  src={invoiceInfo?.InvoiceCompanyLogo || billLogo}
+                  alt="bill"
+                  className="h-28 w-3/4 object-contain"
+                />
                 <p className="text-xs font-medium">
                   {userData?.branch?.country?.name} ,{" "}
                   {userData?.branch?.city?.name}
@@ -491,14 +518,15 @@ export const Zatca = ({
               </p>
               <p>
                 {t("email")}: {companyData?.[0]?.email}
+                {t("email")}: {companyData?.[0]?.email}
               </p>
               <p>
                 {t("tax number")}:{" "}
-                {companyData && companyData[0]?.taxRegisteration}
+                {taxRegisteration || ""}
               </p>
               <p>
                 {t("Mineral license")}:{" "}
-                {companyData && companyData[0]?.mineralLicence}
+                {mineralLicence || ""}
               </p>
             </div>
           </div>

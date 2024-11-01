@@ -373,81 +373,148 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
     onAfterPrint: () => console.log("after printing..."),
     removeAfterPrint: true,
     pageStyle: `
-     @page {
-       size: auto;
-       margin: 20px !imporatnt;
-     }
-     @media print {
-       body {
-         -webkit-print-color-adjust: exact;
-       }
-       .break-page {
-         page-break-before: always;
-       }
-       .rtl {
-         direction: rtl;
-         text-align: right;
-       }
-       .ltr {
-         direction: ltr;
-         text-align: left;
-       }
-     }
-   `,
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+        .rtl {
+          direction: rtl;
+          text-align: right;
+        }
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+      }
+    `,
   });
 
   // COLUMNS FOR THE TABLE
+  // const tableColumnPrint = useMemo<any>(
+  //   () => [
+  //     // {
+  //     //   cell: (info: any) => {
+  //     //     if (info.getValue() == "normal") {
+  //     //       return "توريد عادي";
+  //     //     } else {
+  //     //       return info.getValue();
+  //     //     }
+  //     //   },
+  //     //   accessorKey: "type",
+  //     //   header: () => <span>{t("bond type")}</span>,
+  //     // },
+  //     {
+  //       cell: (info: any) => info.getValue() || "---",
+  //       accessorKey: "category",
+  //       header: () => <span>{t("category")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => info.getValue() || "---",
+  //       accessorKey: "karat_id",
+  //       header: () => <span>{t("karat")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => info.getValue() || "---",
+  //       accessorKey: "total_weight",
+  //       header: () => <span>{t("total weight")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => formatReyal(info.getValue()) || "---",
+  //       accessorKey: "total_wage",
+  //       header: () => <span>{t("total wages")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => formatReyal(info.getValue()) || "---",
+  //       accessorKey: "total_value",
+  //       header: () => <span>{t("total value")}</span>,
+  //     },
+  //     // {
+  //     //   cell: (info: any) => info.getValue() || "---",
+  //     //   accessorKey: "count_stones",
+  //     //   header: () => <span>{t("stones count")}</span>,
+  //     // },
+  //     {
+  //       cell: (info: any) => info.getValue() || "---",
+  //       accessorKey: "count_items",
+  //       header: () => <span>{t("pieces count")}</span>,
+  //     },
+  //   ],
+  //   []
+  // );
+
   const tableColumnPrint = useMemo<any>(
     () => [
-      // {
-      //   cell: (info: any) => {
-      //     if (info.getValue() == "normal") {
-      //       return "توريد عادي";
-      //     } else {
-      //       return info.getValue();
-      //     }
-      //   },
-      //   accessorKey: "type",
-      //   header: () => <span>{t("bond type")}</span>,
-      // },
       {
         cell: (info: any) => info.getValue() || "---",
-        accessorKey: "category",
-        header: () => <span>{t("category")}</span>,
+        accessorKey: "hwya",
+        header: () => <span>{t("hwya")}</span>,
       },
       {
         cell: (info: any) => info.getValue() || "---",
+        accessorKey: "classification_id",
+        header: () => <span>{t("category")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          return info.getValue() || info.row.original.karatmineral;
+        },
         accessorKey: "karat_id",
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "---",
-        accessorKey: "total_weight",
-        header: () => <span>{t("total weight")}</span>,
-      },
-      {
-        cell: (info: any) => formatReyal(info.getValue()) || "---",
-        accessorKey: "total_wage",
-        header: () => <span>{t("total wages")}</span>,
-      },
-      {
-        cell: (info: any) => formatReyal(info.getValue()) || "---",
-        accessorKey: "total_value",
-        header: () => <span>{t("total value")}</span>,
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
+        accessorKey: "weight",
+        header: () => <span>{t("weight")}</span>,
       },
       // {
-      //   cell: (info: any) => info.getValue() || "---",
-      //   accessorKey: "count_stones",
-      //   header: () => <span>{t("stones count")}</span>,
+      //   cell: (info: any) => info.getValue() || "-",
+      //   accessorKey: "thwelbond_id",
+      //   header: () => <span>{t("supply bond")}</span>,
       // },
       {
-        cell: (info: any) => info.getValue() || "---",
-        accessorKey: "count_items",
-        header: () => <span>{t("pieces count")}</span>,
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "-",
+        accessorKey: "wage",
+        header: () => <span>{t("wage")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          formatReyal(Number(info.getValue(info.getValue()))) || "-",
+        accessorKey: "value",
+        header: () => <span>{t("value")}</span>,
       },
     ],
     []
   );
+  const totalWeight = selectedPrintItem?.items?.reduce((acc, curr) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
+
+  const totalCost = selectedPrintItem?.items?.reduce((acc, curr) => {
+    acc += +curr.value;
+    return acc;
+  }, 0);
+
+  const totalWages = selectedPrintItem?.items?.reduce((acc, curr) => {
+    acc += +curr.wage;
+    return acc;
+  }, 0);
+
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight)),
+      wage: formatReyal(Number(totalWages)),
+      cost: formatReyal(Number(totalCost)),
+    },
+  ];
 
   // =============================================
 
@@ -515,21 +582,23 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
             </Button>
           </div>
           <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
-            <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
+            <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow " id="content-to-print">
               <div className="mx-5 bill-shadow rounded-md p-6">
                 <PaymentFinalPreviewBillData
                   isSupply
                   clientData={clientData}
                   invoiceNumber={selectedPrintItem?.id}
+                  invoiceData={selectedPrintItem}
                 />
               </div>
 
-              <InvoiceBondsReactTable
-                data={filteredItemWithoutEmpty || []}
+              <InvoiceTable
+                data={selectedPrintItem?.items || []}
                 columns={tableColumnPrint}
                 costDataAsProps={costDataAsProps}
                 finalArabicTotals={finalArabicTotals}
-              ></InvoiceBondsReactTable>
+                resultTable={resultTable}
+              ></InvoiceTable>
 
               <div className="mx-5 bill-shadow rounded-md p-6 my-9">
                 <div className="flex justify-between items-start pb-12 pe-8">

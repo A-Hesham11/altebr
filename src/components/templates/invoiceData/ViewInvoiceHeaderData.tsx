@@ -21,7 +21,7 @@ import { Loading } from "../../organisms/Loading";
 import { CLightbox } from "../../molecules/files/CLightbox";
 import { FilesUpload } from "../../molecules/files/FileUpload";
 import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutFormik";
-import AddBanks from "./AddBanks";
+import AddInvoiceHeaderData from "./AddInvoiceHeaderData";
 
 export type Cards_Props_TP = {
   title: string;
@@ -38,7 +38,7 @@ export type Cards_Props_TP = {
   files: CImageFile_TP[];
 };
 
-const ViewBanks = () => {
+const ViewInvoiceHeaderData = () => {
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
@@ -49,37 +49,36 @@ const ViewBanks = () => {
     view: false,
   });
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
-  console.log("🚀 ~ ViewBanks ~ dataSource:", dataSource)
+  console.log("🚀 ~ ViewInvoiceHeaderData ~ dataSource:", dataSource);
   const [editData, setEditData] = useState<Cards_Props_TP>();
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>();
   const [page, setPage] = useState<number>(1);
   const [files, setFiles] = useState([]);
+  const [updateDataSource, setUpdateDataSource] = useState([]);
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
       {
-        cell: (info) => info.getValue(),
+        cell: (info) => 1,
         accessorKey: "index",
         header: () => <span>{t("Sequence")} </span>,
       },
       {
-        header: () => <span>{t("card name")} </span>,
-        accessorKey: "name_ar",
         cell: (info) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("card name")} </span>,
-        accessorKey: "name_en",
-        cell: (info) => info.getValue(),
+        accessorKey: "InvoiceCompanyName",
+        header: () => <span>{t("name")} </span>,
       },
       {
         header: () => <span>{t("card image")} </span>,
-        accessorKey: "images",
-        cell: (info) => (
-          <div className="w-[30%] m-auto">
-            <FilesPreviewOutFormik images={info.row.original.images} preview />
-          </div>
-        ),
+        accessorKey: "value",
+        cell: (info) => {
+          const image = [{ preview: info?.row.original?.InvoiceCompanyLogo }];
+          return (
+            <div className="w-[30%] m-auto">
+              <FilesPreviewOutFormik images={image} preview />
+            </div>
+          );
+        },
       },
       {
         header: () => <span>{t("actions")}</span>,
@@ -100,19 +99,6 @@ const ViewBanks = () => {
                 }}
                 className="fill-mainGreen"
               />
-              <SvgDelete
-                action={() => {
-                  setOpen((prev) => !prev);
-                  setDeleteData(info.row.original);
-                  setAction({
-                    delete: true,
-                    view: false,
-                    edit: false,
-                  });
-                  setModel(false);
-                }}
-                stroke="#ef4444"
-              />
             </div>
           );
         },
@@ -131,11 +117,15 @@ const ViewBanks = () => {
     refetch,
     isFetching,
   } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/selling/api/v1/banks`,
-    queryKey: ["AllBanks"],
+    endpoint: `/companySettings/api/v1/InvoiceData`,
+    queryKey: ["InvoiceHeader_Data"],
     pagination: true,
     onSuccess(data) {
-      setDataSource(data.data);
+      const returnData = data?.data.reduce((acc, item) => {
+        acc[item.key] = item.value;
+        return acc;
+      }, {});
+      setDataSource([returnData]);
     },
     select: (data) => {
       return {
@@ -156,23 +146,16 @@ const ViewBanks = () => {
   } = useMutate<Cards_Props_TP>({
     mutationFn: mutateData,
     onSuccess: () => {
-      queryClient.refetchQueries(["AllBanks"]);
+      queryClient.refetchQueries(["InvoiceCompanyData"]);
       setOpen(false);
       notify("success");
     },
   });
 
-  const handleDelete = () => {
-    mutate({
-      endpointName: `/selling/api/v1/delete_bank/${deleteData?.id}`,
-      method: "delete",
-    });
-  };
-
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <p className="font-semibold text-lg">{t("view banks")}</p>
+        <p className="font-semibold text-lg">{t("View invoice data")}</p>
         <div className="flex gap-2">
           <AddButton
             action={() => {
@@ -192,7 +175,7 @@ const ViewBanks = () => {
           </div>
         </div>
       </div>
-      {isFetching && <Loading mainTitle={t("banks")} />}
+      {isFetching && <Loading mainTitle={t("Invoice data")} />}
 
       {isSuccess &&
       !!dataSource &&
@@ -239,7 +222,7 @@ const ViewBanks = () => {
         !dataSource.length && (
           <div className="flex justify-center items-center mt-32">
             <p className="text-lg font-bold">
-              {t("there is no available banks yet")}
+              {t("there is no available Invoice data yet")}
             </p>
           </div>
         )
@@ -256,23 +239,28 @@ const ViewBanks = () => {
 
       <Modal isOpen={open} onClose={() => setOpen(false)}>
         {action.edit && (
-          <AddBanks
+          <AddInvoiceHeaderData
             editData={editData}
             setDataSource={setDataSource}
             setShow={setOpen}
             isFetching={isFetching}
-            title={`${editData ? t("edit cards") : t("Add cards")}`}
+            refetch={refetch}
+            title={`${
+              editData ? t("edit invoice data") : t("Add invoice data")
+            }`}
             refetch={refetch}
             isSuccess={isSuccess}
           />
         )}
         {model && (
-          <AddBanks
+          <AddInvoiceHeaderData
             editData={editData}
             isFetching={isFetching}
             setDataSource={setDataSource}
             setShow={setOpen}
-            title={`${editData ? t("edit cards") : t("Add cards")}`}
+            title={`${
+              editData ? t("edit invoice data") : t("Add invoice data")
+            }`}
             refetch={refetch}
             isSuccess={isSuccess}
           />
@@ -301,4 +289,4 @@ const ViewBanks = () => {
   );
 };
 
-export default ViewBanks;
+export default ViewInvoiceHeaderData;
