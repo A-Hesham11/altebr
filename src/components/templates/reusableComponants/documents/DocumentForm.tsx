@@ -36,6 +36,7 @@ export const DocumentForm = ({
   setEditableData,
   addDocPopup,
 }: DocumentFormProps_TP) => {
+  console.log("🚀 ~ addDocPopup:", addDocPopup)
   ///
   /////////// VARIABLES
   ///
@@ -86,11 +87,11 @@ export const DocumentForm = ({
   ///
   /////////// SIDE EFFECTS
   ///
-  useEffect(() => {
-    if (addDocPopup === false) {
-      setEditableData({} as allDocs_TP);
-    }
-  }, [addDocPopup]);
+  // useEffect(() => {
+  //   if (addDocPopup === false) {
+  //     setEditableData({} as allDocs_TP);
+  //   }
+  // }, [addDocPopup]);
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///

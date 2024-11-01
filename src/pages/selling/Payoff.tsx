@@ -45,10 +45,25 @@ const Payoff = () => {
         </Link>
       ),
     },
+    {
+      icon: receiveitem,
+      title_ar: "مردود التوريد (هدر)",
+      title_en: "Supply return (waste)",
+      route: "/selling/payoff/wasteReturn",
+      underCardInfo: (
+        <Link
+          to="/selling/wasteReturn"
+          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+        >
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("Supply yield constraints (waste)")}</p>
+        </Link>
+      ),
+    },
   ];
   return (
     <>
-      <div className="flex md:gap-16 gap-4 management h-screen justify-center items-center relative">
+      <div className="flex md:gap-8 gap-4 management h-screen justify-center items-center relative">
         <div className="p-8 absolute top-0 left-5">
           <Back />
         </div>

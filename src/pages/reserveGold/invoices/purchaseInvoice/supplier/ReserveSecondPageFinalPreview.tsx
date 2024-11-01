@@ -18,6 +18,15 @@ const ReserveSecondPageFinalPreview = (props: any) => {
     bondDate,
   } = props;
   const { userData } = useContext(authCtx);
+
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   const { values } = useFormikContext();
   const clientData = {
     client_value: values!.supplier_name,
@@ -75,11 +84,11 @@ const ReserveSecondPageFinalPreview = (props: any) => {
               </p>
               <p>
                 {t("tax number")}:{" "}
-                {companyData && companyData[0]?.taxRegisteration}
+                {taxRegisteration || ""}
               </p>
               <p>
                 {t("Mineral license")}:{" "}
-                {companyData && companyData[0]?.mineralLicence}
+                {mineralLicence || ""}
               </p>
             </div>
           </div>

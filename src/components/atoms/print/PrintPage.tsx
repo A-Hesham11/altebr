@@ -33,7 +33,7 @@ const PrintPage = ({ item }) => {
                 K:
                 <span className="paragraph_title">
                   {item?.classification_id == 1
-                    ? item?.karat_value
+                    ? (item?.karat_value || item?.karat_name)
                     : item?.karatmineral_name}
                 </span>
               </p>

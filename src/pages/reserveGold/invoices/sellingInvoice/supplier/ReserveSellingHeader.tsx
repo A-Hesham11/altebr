@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { t } from "i18next";
 import { BsDatabase } from "react-icons/bs";
 import { useFetch } from "../../../../../hooks";
 import { useFormikContext } from "formik";
 import { numberContext } from "../../../../../context/settings/number-formatter";
+import { SelectOption_TP } from "../../../../../types";
+import { Employee_TP } from "../../../../employees/employees-types";
 
 interface ReserveSellingHeader_TP {
   sellingInvoiceNumber: number;
@@ -19,15 +21,17 @@ const ReserveSellingHeader: React.FC<ReserveSellingHeader_TP> = ({
 }) => {
   const { values } = useFormikContext();
   const { formatGram, formatReyal } = numberContext();
+  const [goldPriceToday, setGoldPriceToday] = useState("");
 
   // GOLD PRICE DATA FOR KILO OR GRAM API
-  const { data: goldPriceData } = useFetch({
-    queryKey: ["static-price"],
-    endpoint: "/buyingUsedGold/api/v1/show-gold-price",
-    onSuccess: (data: any) => {
-      console.log(data);
-    },
-  });
+  // const { data: goldPriceData } = useFetch({
+  //   queryKey: ["static-price"],
+  //   endpoint: "/buyingUsedGold/api/v1/show-gold-price",
+  //   onSuccess: (data: any) => {
+  //     console.log(data);
+  //   },
+  // });
+  // console.log("🚀 ~ goldPriceData:", goldPriceData)
 
   const { data: supplierAccount, refetch } = useFetch({
     endpoint: values!.supplier_id
@@ -40,6 +44,14 @@ const ReserveSellingHeader: React.FC<ReserveSellingHeader_TP> = ({
     refetch();
   }, [values!.supplier_id]);
 
+  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
+    endpoint: "/attachment/api/v1/goldPrice",
+    queryKey: ["GoldPriceApi"],
+    onSuccess: (data) => {
+      setGoldPriceToday(data["price_gram_24k"]);
+    },
+  });
+
   return (
     <div className="flex items-center gap-8 lg:gap-10">
       <div className="flex items-center gap-5">
@@ -50,9 +62,11 @@ const ReserveSellingHeader: React.FC<ReserveSellingHeader_TP> = ({
       <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
         <BsDatabase className="fill-white" />
         <p className=" border-l border-[#FFA34B] px-1">
-          {`سعر ${goldPriceData?.gold_type} اليومي`}
+          {t("daily gold price")}
         </p>
-        <p className="px-1">{goldPriceData?.gold_price} ر.س</p>
+        <p className="px-1">
+          {goldPriceToday} {GoldPrice?.currency}
+        </p>
       </div>
 
       {values!.supplier_id && (

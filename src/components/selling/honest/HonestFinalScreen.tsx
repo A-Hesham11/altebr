@@ -275,6 +275,14 @@ export const HonestFinalScreen = ({
     totalCost,
   };
 
+  const mineralLicence = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "رخصة المعادن"
+  )?.[0]?.data.docNumber;
+
+  const taxRegisteration = userData?.branch.document?.filter(
+    (item) => item.data.docType.label === "شهادة ضريبية"
+  )?.[0]?.data.docNumber;
+
   ///
   const Cols = useMemo<any>(
     () => [
@@ -413,11 +421,11 @@ export const HonestFinalScreen = ({
             </p>
             <p>
               {t("tax number")}:{" "}
-              {companyData && companyData[0]?.taxRegisteration}
+              {taxRegisteration && taxRegisteration}
             </p>
             <p>
               {t("Mineral license")}:{" "}
-              {companyData && companyData[0]?.mineralLicence}
+              {mineralLicence && mineralLicence}
             </p>
           </div>
         </div>
