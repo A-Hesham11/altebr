@@ -57,6 +57,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   taxType,
   setTaxType,
 }) => {
+  console.log("🚀 ~ paymentData:", paymentData);
   const { setFieldValue, values } = useFormikContext<Payment_TP>();
   console.log("🚀 ~ values:", values);
   const { userData } = useContext(authCtx);
@@ -282,32 +283,36 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
             loading={false}
             action={() => {
               if (values.expense_price === "") {
-                notify("error", t("please enter expense price"));
+                notify("info", t("please enter expense price"));
                 return;
               }
 
               if (values.expense_date === "") {
-                notify("error", t("please enter expense date"));
+                notify("info", t("please enter expense date"));
                 return;
               }
 
               if (values.sub_expense === "") {
-                notify("error", t("please select sub expense"));
+                notify("info", t("please select sub expense"));
                 return;
               }
 
               if (values.add_description === "") {
-                notify("error", t("please enter description"));
+                notify("info", t("please enter description"));
                 return;
               }
 
               if (totalPaymentAmount > +values.expense_price) {
                 notify(
-                  "error",
+                  "info",
                   t(
                     "the amount of payment is greater than the value of the bond"
                   )
                 );
+                return;
+              }
+              if (paymentData?.length === 0) {
+                notify("info", t("please add amount"));
                 return;
               }
 

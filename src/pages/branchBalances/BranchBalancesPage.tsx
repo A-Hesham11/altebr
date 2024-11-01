@@ -51,14 +51,26 @@ const BranchBalancesPage = () => {
       card.numeric_system == "120202"
   );
 
+  const balancesBrokenGold = balances?.filter(
+    (card) =>
+      card.numeric_system == "12010202" ||
+      card.numeric_system == "12010203" ||
+      card.numeric_system == "12010204" ||
+      card.numeric_system == "12010201"
+    // card.numeric_system == "12010103" ||
+    // card.numeric_system == "12010104" ||
+    // card.numeric_system == "120201" ||
+    // card.numeric_system == "120202"
+  );
+
   const balancesBanks = balances?.filter((card) =>
     card.numeric_system.includes("1302")
   );
 
   const isRTL = useIsRTL();
 
-//   if (isLoading || isRefetching || isFetching)
-//     return <Loading mainTitle="balances" />;
+  //   if (isLoading || isRefetching || isFetching)
+  //     return <Loading mainTitle="balances" />;
 
   return (
     <div className="selling min-h-screen pb-8 px-16">
@@ -74,7 +86,10 @@ const BranchBalancesPage = () => {
           </span>
         </h2>
         <div className="flex justify-end items-center gap-2 ">
-          <span className="text-white cursor-pointer font-semibold text-lg" onClick={() => navigate("/")}>
+          <span
+            className="text-white cursor-pointer font-semibold text-lg"
+            onClick={() => navigate("/")}
+          >
             {t("home")}
           </span>
         </div>
@@ -85,13 +100,13 @@ const BranchBalancesPage = () => {
             {t("monetary")}
           </span>
         </h2>
-        <div className="grid grid-cols-4 gap-y-8 gap-x-6 lg:gap-x-8">
+        <div className="grid grid-cols-4 gap-y-8 gap-x-4 lg:gap-x-6">
           {balancesCash?.map((card) => (
             <div
               className={` bg-white text-black font-bold  rounded-xl flex flex-col items-center justify-center cursor-pointer h-full py-3`}
             >
               <div className="flex gap-5 items-center">
-                <div className="w-14 h-14 bg-mainOrange flex justify-center items-center rounded-full">
+                <div className="w-12 h-12 bg-mainOrange flex justify-center items-center rounded-full">
                   <GiReceiveMoney size={35} className="fill-white" />
                 </div>
                 <div>
@@ -111,13 +126,33 @@ const BranchBalancesPage = () => {
         <h2 className="mb-8 font-semibold text-xl text-white rounded-md">
           <span className="border-b-2 border-white pb-1.5">{t("gold")}</span>
         </h2>
-        <div className="grid grid-cols-4 gap-y-8 gap-x-6 lg:gap-x-8">
+        <div className="grid grid-cols-4 gap-y-8 gap-x-4 lg:gap-x-6">
           {balancesGold?.map((card) => (
             <div
               className={` bg-white text-black font-semibold rounded-xl flex flex-col items-center justify-center cursor-pointer h-full p-3`}
             >
               <div className="flex gap-5 items-center">
-                <div className="w-14 h-14 bg-mainOrange flex justify-center items-center rounded-full">
+                <div className="w-12 h-12 bg-mainOrange flex justify-center items-center rounded-full">
+                  <AiFillGolden size={30} className="fill-white" />
+                </div>
+                <div>
+                  <p className="mb-3">{card.accountable}</p>
+                  <p>
+                    {formatReyal(Number(card.debtor - card.creditor))}{" "}
+                    <span>{card.unit}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-4 gap-y-8 mt-8 gap-x-4 lg:gap-x-6">
+          {balancesBrokenGold?.map((card) => (
+            <div
+              className={` bg-white text-black font-semibold rounded-xl flex flex-col items-center justify-center cursor-pointer h-full p-3`}
+            >
+              <div className="flex gap-5 items-center">
+                <div className="w-12 h-12 bg-mainOrange flex justify-center items-center rounded-full">
                   <AiFillGolden size={30} className="fill-white" />
                 </div>
                 <div>
@@ -137,13 +172,13 @@ const BranchBalancesPage = () => {
         <h2 className="mb-8 font-semibold text-xl text-white rounded-md">
           <span className="border-b-2 border-white pb-1.5">{t("banks")}</span>
         </h2>
-        <div className="grid grid-cols-4 gap-y-8 gap-x-6 lg:gap-x-8">
+        <div className="grid grid-cols-4 gap-y-8 gap-x-4 lg:gap-x-6">
           {balancesBanks?.map((card) => (
             <div
               className={` bg-white text-black font-bold  rounded-xl flex flex-col items-center justify-center cursor-pointer h-full py-3`}
             >
               <div className="flex gap-5 items-center">
-                <div className="w-14 h-14 bg-mainOrange flex justify-center items-center rounded-full">
+                <div className="w-12 h-12 bg-mainOrange flex justify-center items-center rounded-full">
                   <BsBank2 size={30} className="fill-white" />
                 </div>
                 <div>

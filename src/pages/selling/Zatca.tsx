@@ -518,6 +518,7 @@ export const Zatca = ({
               </p>
               <p>
                 {t("email")}: {companyData?.[0]?.email}
+                {t("email")}: {companyData?.[0]?.email}
               </p>
               <p>
                 {t("tax number")}:{" "}

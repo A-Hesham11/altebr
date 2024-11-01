@@ -208,8 +208,8 @@ const ReturnItemsToEdaraModal = ({
     setOperationTypeSelect([]);
   };
 
-  // if (isLoading || isFetching || isRefetching)
-  //   return <Loading mainTitle={t("loading")} />;
+  if (isLoading || isFetching || isRefetching)
+    return <Loading mainTitle={t("loading")} />;
 
   return (
     <Formik
