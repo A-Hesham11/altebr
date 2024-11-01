@@ -191,42 +191,42 @@ const ReturnItemsToEdaraModal = ({
       return;
     }
 
-    // PostNewValue({
-    //   branch_id: userData?.branch_id,
-    //   api_gold_price: values.gold_price,
-    //   entity_gold_price: values.gold_price,
-    //   type: "normal",
-    //   items: operationTypeSelectWeight.map((el, i) => {
-    //     return {
-    //       id: el.thwelbond_id,
-    //       hwya: el.hwya,
-    //       front: el.front,
-    //       weight: el.weight,
-    //       isItemWeight: el.category_selling_type === "all" ? 1 : 0,
-    //     };
-    //   }),
-    // });
-    // console.log("🚀 ~ handleSubmit ~:", {
-    //   branch_id: userData?.branch_id,
-    //   api_gold_price: values.gold_price,
-    //   entity_gold_price: values.gold_price,
-    //   type: "normal",
-    //   items: operationTypeSelectWeight.map((el, i) => {
-    //     return {
-    //       id: el.thwelbond_id,
-    //       hwya: el.hwya,
-    //       front: el.front,
-    //       weight: el.weight,
-    //       isItemWeight: el.category_selling_type === "all" ? 1 : 0
-    //     };
-    //   }),
-    // })
+    PostNewValue({
+      branch_id: userData?.branch_id,
+      api_gold_price: values.gold_price,
+      entity_gold_price: values.gold_price,
+      type: "normal",
+      items: operationTypeSelectWeight.map((el, i) => {
+        return {
+          id: el.thwelbond_id,
+          hwya: el.hwya,
+          front: el.front,
+          weight: el.weight,
+          isItemWeight: el.category_selling_type === "all" ? 1 : 0,
+        };
+      }),
+    });
+    console.log("🚀 ~ handleSubmit ~:", {
+      branch_id: userData?.branch_id,
+      api_gold_price: values.gold_price,
+      entity_gold_price: values.gold_price,
+      type: "normal",
+      items: operationTypeSelectWeight.map((el, i) => {
+        return {
+          id: el.thwelbond_id,
+          hwya: el.hwya,
+          front: el.front,
+          weight: el.weight,
+          isItemWeight: el.category_selling_type === "all" ? 1 : 0,
+        };
+      }),
+    });
 
-    // setOperationTypeSelect([]);
+    setOperationTypeSelect([]);
   };
 
-  // if (isLoading || isFetching || isRefetching)
-  //   return <Loading mainTitle={t("loading")} />;
+  if (isLoading || isFetching || isRefetching)
+    return <Loading mainTitle={t("loading")} />;
 
   return (
     <Formik

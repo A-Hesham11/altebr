@@ -79,9 +79,11 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("stone weight")} </span>,
-        accessorKey: "stone_weight",
-        cell: (info) => info.getValue() || "---",
+        header: () => (
+          <span>{`${t("precious metal weight")} (${t("in geram")})`}</span>
+        ),
+        accessorKey: "weight",
+        cell: (info) => info.getValue() || `${t("no items")}`,
       },
       {
         header: () => <span>{t("karat value")} </span>,
@@ -96,9 +98,26 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
             : "---",
       },
       {
-        header: () => <span>{`${t("weight")} (${t("In grams")})`}</span>,
-        accessorKey: "weight",
-        cell: (info) => info.getValue() || `${t("no items")}`,
+        header: () => (
+          <span>{`${t("stones weight")} (${t("in karat")})`} </span>
+        ),
+        accessorKey: "stones_weight",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{`${t("total weight")}`} </span>,
+        accessorKey: "total_Weight",
+        cell: (info) => {
+          console.log(
+            Number(info.row.original?.stone_weight) +
+              Number(info.row.original?.weight)
+          );
+
+          return (
+            Number(info.row.original?.stone_weight) +
+              Number(info.row.original?.weight) || "---"
+          );
+        },
       },
       {
         header: () => <span>{t("price before tax")} </span>,
@@ -121,6 +140,11 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
 
   const totalWeight = item?.items?.reduce((acc, curr) => {
     acc += +curr.weight;
+    return acc;
+  }, 0);
+
+  const totalStonesWeight = item?.items?.reduce((acc, curr) => {
+    acc += +curr.stonesWeight;
     return acc;
   }, 0);
 
@@ -154,6 +178,10 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     {
       number: t("totals"),
       weight: formatGram(Number(totalWeight)),
+      karat: "---",
+      stonesWeight: formatGram(Number(totalStonesWeight)) || "---",
+      totalWeight:
+        formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
       cost: formatReyal(Number(costDataAsProps?.totalCost)),
       vat: formatReyal(Number(costDataAsProps?.totalItemsTaxes)),
       total: formatReyal(Number(costDataAsProps?.totalFinalCost)),

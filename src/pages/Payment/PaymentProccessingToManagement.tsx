@@ -140,7 +140,8 @@ const PaymentProccessingToManagement = ({
   console.log("🚀 ~ costRemaining:", costRemaining);
 
   const cashId =
-    locationPath === "/selling/payoff/sales-return" && cardFrontKey === "cash";
+    locationPath === "/selling/payoff/sales-return" ||
+    (locationPath === "/expenses/expensesInvoice" && cardFrontKey === "cash");
 
   const { data, refetch } = useFetch({
     endpoint: `/sdad/api/v1/show/${cashId ? 10005 : cardId || 0}/${
@@ -234,7 +235,7 @@ const PaymentProccessingToManagement = ({
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
-          console.log("🚀 ~ values:", values)
+          console.log("🚀 ~ values:", values);
           useEffect(() => {
             if (
               cardId === 10001 ||
