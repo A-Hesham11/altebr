@@ -1441,5 +1441,8 @@
   "loading withdrawal": "تحميل بيانات السحب",
   "loading deposit": "تحميل بيانات الايداع",
   "deposit": "ايداع",
-  "there is no data to make deposit": "لا يوجد بيانات ايداع"
+  "there is no data to make deposit": "لا يوجد بيانات ايداع",
+  "there is no data to make withdrawal": "لا يوجد بيانات سحب",
+  "you should type number greater than 0": "يجب ادخال مبلغ اكبر من صفر",
+  "the deposit amount is greater than the available in cash": "مبلغ الايداع اكبر من المتاح في صندوق النقدية"
 }

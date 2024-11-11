@@ -18,6 +18,7 @@ import { mutateData } from "../../../utils/mutateData";
 import { Loading } from "../../../components/organisms/Loading";
 import WithdrawalTable from "../Withdrawal/WithdrawalTable";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
+import { ClientData_TP } from "../../selling/PaymentSellingPage";
 
 const Deposit = () => {
   const [showOperationPopup, setShowOperationPopup] = useState(false);
@@ -27,6 +28,7 @@ const Deposit = () => {
   const [depositFiles, setDepositFiles] = useState([]);
   const { formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
+  const [page, setPage] = useState(1);
   const isRTL = useIsRTL();
 
   const initialValues = {
@@ -47,8 +49,17 @@ const Deposit = () => {
     isRefetching: depositDataIsRefetch,
     refetch: depositDataRefetch,
   } = useFetch({
-    endpoint: `/aTM/api/v1/deposit/${userData?.branch_id}`,
-    queryKey: ["all-deposit-data"],
+    endpoint: `/aTM/api/v1/deposit/${userData?.branch_id}?page=${page}`,
+    queryKey: ["all-withdrawal-data"],
+    pagination: true,
+  });
+
+  const { data: naqdya } = useFetch<ClientData_TP>({
+    endpoint: `/buyingUsedGold/api/v1/get-nadya-box/${userData?.branch_id}`,
+    queryKey: ["naqdya"],
+    onError: (error) => {
+      notify("info", error?.response?.data?.msg);
+    },
   });
 
   const {
@@ -140,15 +151,29 @@ const Deposit = () => {
   });
 
   const handleSubmit = (values: any) => {
+    if (values?.cash <= 0) {
+      notify("error", `${t("you should type number greater than 0")}`);
+      return;
+    }
+
+    if (+values?.cash > +naqdya?.nadya_box) {
+      notify(
+        "error",
+        `${t("the deposit amount is greater than the available in cash")}`
+      );
+      return;
+    }
+
     const formatedValue = {
       branch_id: userData?.branch_id,
-      bankFrontKey: mainCardData?.base?.front_key_Withdraw,
+      bankFrontKey: mainCardData?.base?.front_key_Deposit,
       bond_date: values?.bond_date,
       employee_id: userData?.id,
       account_number: selectedAccountData?.value,
       cash: values?.cash,
       media: depositFiles,
     };
+    console.log("🚀 ~ handleSubmit ~ formatedValue:", formatedValue);
 
     mutate({
       endpointName: "/aTM/api/v1/deposit",
@@ -167,22 +192,18 @@ const Deposit = () => {
           <>
             <div className="overflow-hidden">
               <div className="relative h-full p-10">
-                <div>
-                  <div className="flex justify-end">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-base font-bold">{t("deposit")}</h2>
+                  <div className="flex gap-4">
+                    <Button type="button" action={handleShowPopup} className="">
+                      {t("deposit")}
+                    </Button>
                     <Back />
                   </div>
-                  <h2 className="mb-4 text-base font-bold">{t("deposit")}</h2>
                 </div>
-                <CashAndAccountTotals />
+                {/* <CashAndAccountTotals /> */}
 
                 <div className="my-12">
-                  <Button
-                    type="button"
-                    action={handleShowPopup}
-                    className="flex mr-auto mb-6 gap-2"
-                  >
-                    {t("deposit")}
-                  </Button>
                   <WithdrawalTable data={depositData || []} />
                 </div>
               </div>
@@ -260,9 +281,19 @@ const Deposit = () => {
 
                   <BaseInputField
                     id="cash"
-                    label={`${t("deposit amount")}`}
                     name="cash"
-                    type="text"
+                    type="number"
+                    label={
+                      <div className="flex justify-between items-center">
+                        <span> {t("deposit amount")}</span>{" "}
+                        {+naqdya?.nadya_box > +values?.cash && (
+                          <span className="text-mainGreen">
+                            {t("total cash amount")}{" "}
+                            {formatReyal(+naqdya?.nadya_box - +values?.cash)}
+                          </span>
+                        )}
+                      </div>
+                    }
                     placeholder={`${t("deposit amount")}`}
                     required
                   />
