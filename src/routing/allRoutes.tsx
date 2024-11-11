@@ -171,6 +171,9 @@ import { SupplyYieldRestrictions } from "../components/selling/payoff/SupplyYiel
 import ViewInvoiceHeaderData from "../components/templates/invoiceData/ViewInvoiceHeaderData";
 import WasteSupplyReturn from "../components/selling/payoff/WasteSupplyReturn";
 import WasteSupplyReturnEntry from "../components/selling/payoff/WasteSupplyReturnEntry";
+import WithdrawalAndDeposit from "../pages/WithdrawalAndDeposit/Withdrawal/Withdrawal";
+import Withdrawal from "../pages/WithdrawalAndDeposit/Withdrawal/Withdrawal";
+import Deposit from "../pages/WithdrawalAndDeposit/Deposit/Deposit";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -562,6 +565,8 @@ export const AllRoutesProvider = () => {
           <Route path="/bank" element={<Bank />} />
           <Route path="/bank/budget" element={<BankBudget />} />
           <Route path="/bank/budgetBonds" element={<BankBudgetBonds />} />
+          <Route path="/bank/withdrawal" element={<Withdrawal />} />
+          <Route path="/bank/deposit" element={<Deposit />} />
           <Route
             path="/selling/branch-identity"
             element={<SellingBranchIdentity />}
