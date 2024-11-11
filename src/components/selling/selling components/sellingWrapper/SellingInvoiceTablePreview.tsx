@@ -17,6 +17,7 @@ import { DownloadAsPDF } from "../../../../utils/DownloadAsPDF";
 import { InvoiceDownloadAsPDF } from "../../../../utils/InvoiceDownloadAsPDF";
 import Html2Pdf from "js-html2pdf";
 import { convertNumToArWord } from "../../../../utils/number to arabic words/convertNumToArWord";
+import InvoiceFooter from "../../../Invoice/InvoiceFooter";
 
 type Entry_TP = {
   bian: string;
@@ -27,21 +28,9 @@ type Entry_TP = {
 };
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
-  // const contentRef = useRef();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
-  const { userData } = useContext(authCtx);
-  const taxRate = userData?.tax_rate / 100;
-
-  const mineralLicence = userData?.branch?.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data?.docNumber;
-
-  const taxRegisteration = userData?.branch?.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data?.docNumber;
 
   const clientData = {
     client_id: item?.client_id,
@@ -49,17 +38,6 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     bond_date: item?.invoice_date,
     supplier_id: item?.supplier_id,
   };
-
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ companyData:", companyData);
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -260,30 +238,8 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
               <FinalPreviewBillPayment responseSellingData={item} />
             </div>
 
-            <div className="text-center">
-              <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-                {data && data?.sentence}
-              </p>
-              <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-                <p>
-                  {" "}
-                  العنوان : {userData?.branch?.country?.name} ,{" "}
-                  {userData?.branch?.city?.name} ,{" "}
-                  {userData?.branch?.district?.name}
-                </p>
-                <p>
-                  {t("phone")}: {companyData?.[0]?.phone}
-                </p>
-                <p>
-                  {t("email")}: {companyData?.[0]?.email}
-                </p>
-                <p>
-                  {t("tax number")}: {taxRegisteration && taxRegisteration}
-                </p>
-                <p>
-                  {t("Mineral license")}: {mineralLicence && mineralLicence}
-                </p>
-              </div>
+            <div>
+              <InvoiceFooter />
             </div>
           </div>
         </div>

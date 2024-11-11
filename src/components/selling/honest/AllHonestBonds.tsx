@@ -25,6 +25,7 @@ import HonestFinalScreenPayment from "./HonestFinalScreenPayment";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { ClientData_TP } from "../SellingClientForm";
 import { useReactToPrint } from "react-to-print";
+import InvoiceFooter from "../../Invoice/InvoiceFooter";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -44,7 +45,6 @@ export const AllHonestBonds = () => {
   ///
   const [dataSource, setDataSource] = useState<any>([]);
   const [selectedItem, setSelectedItem] = useState<any>({});
-  console.log("🚀 ~ AllHonestBonds ~ selectedItem:", selectedItem);
   const [restrictModal, setOpenRestrictModal] = useState(false);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [page, setPage] = useState(1);
@@ -72,14 +72,6 @@ export const AllHonestBonds = () => {
   };
 
   const paymentData = [];
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
 
   const invoiceCols = useMemo<any>(
     () => [
@@ -125,11 +117,6 @@ export const AllHonestBonds = () => {
 
   const Cols = useMemo<any>(
     () => [
-      // {
-      //     cell: (info: any) => <input type="radio" id={crypto.randomUUID()} name='selectedHonest' onClick={() => setSelectedItem(info.row.original)} />,
-      //     accessorKey: "radio",
-      //     header: () => <span>{t("#")}</span>,
-      // },
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "bondsafety_id",
@@ -223,18 +210,6 @@ export const AllHonestBonds = () => {
     });
     setSearch(uri);
   };
-
-  // SENTENCE API
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  // COMPANY DATA API
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Selling_Mineral_license"],
-  });
 
   const clientData = {
     client_id: selectedItem?.client_id_2,
@@ -376,17 +351,7 @@ export const AllHonestBonds = () => {
           </div>
         </div>
       </Table>
-      {/* <div className="flex justify-end mt-5">
-            <Button
-                action={() => {
-                    if (!Object.keys(selectedItem).length) {
-                        notify('info', `${t('choose item first')}`)
-                    } else {
-                        navigate(`/selling/honesty/all-honest/${selectedItem.id!}`)
-                    }
-                }}
-            >{t('next')}</Button>
-        </div> */}
+
       <Modal isOpen={restrictModal} onClose={() => setOpenRestrictModal(false)}>
         <HonestBondAccountingRestriction sanadId={selectedItem.id} />
       </Modal>
@@ -421,31 +386,9 @@ export const AllHonestBonds = () => {
                 // paymentData={paymentData}
               />
             </div>
-            <div className="text-center">
-              <p className="my-4 py-1 border-y border-mainOrange">
-                {data && data?.sentence}
-              </p>
-              <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-                <p>
-                  {" "}
-                  العنوان : {userData?.branch?.country?.name} ,{" "}
-                  {userData?.branch?.city?.name} ,{" "}
-                  {userData?.branch?.district?.name}
-                </p>
-                {/* <p>رقم المحل</p> */}
-                <p>
-                  {t("phone")}: {companyData?.[0]?.phone}
-                </p>
-                <p>
-                {t("email")}: {companyData?.[0]?.email}
-                </p>
-                <p>
-                  {t("tax number")}: {taxRegisteration && taxRegisteration}
-                </p>
-                <p>
-                  {t("Mineral license")}: {mineralLicence && mineralLicence}
-                </p>
-              </div>
+
+            <div>
+              <InvoiceFooter />
             </div>
           </div>
         </div>

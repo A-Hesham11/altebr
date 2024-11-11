@@ -1,12 +1,8 @@
 import { t } from "i18next";
-import React, { useContext, useMemo, useRef, useState } from "react";
-import { authCtx } from "../../../../../context/auth-and-perm/auth";
+import { useMemo, useRef } from "react";
 import { numberContext } from "../../../../../context/settings/number-formatter";
-import { useFetch, useIsRTL } from "../../../../../hooks";
-import {
-  ClientData_TP,
-  Selling_TP,
-} from "../../../../selling/PaymentSellingPage";
+import { useIsRTL } from "../../../../../hooks";
+import { Selling_TP } from "../../../../selling/PaymentSellingPage";
 import {
   ColumnDef,
   flexRender,
@@ -18,35 +14,14 @@ import {
 import { useReactToPrint } from "react-to-print";
 import { Button } from "../../../../../components/atoms";
 import FinalPreviewBillData from "../../../../../components/selling/selling components/bill/FinalPreviewBillData";
-import InvoiceTable from "../../../../../components/selling/selling components/InvoiceTable";
 import FinalPreviewBillPayment from "../../../../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import { convertNumToArWord } from "../../../../../utils/number to arabic words/convertNumToArWord";
-
-type Entry_TP = {
-  bian: string;
-  debtor_gram: number;
-  debtor_SRA: number;
-  creditor_gram: number;
-  creditor_SRA: number;
-};
+import InvoiceFooter from "../../../../../components/Invoice/InvoiceFooter";
 
 const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
-  // const contentRef = useRef();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ isRTL:", isRTL);
-
-  const { userData } = useContext(authCtx);
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
 
   const clientData = {
     client_id: item?.client_id,
@@ -55,16 +30,6 @@ const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
     supplier_id: item?.supplier_id,
     supplier_name: item?.supplier_name,
   };
-
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -286,30 +251,8 @@ const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
               />
             </div>
 
-            <div className="text-center">
-              <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-                {data && data?.sentence}
-              </p>
-              <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-                <p>
-                  {" "}
-                  العنوان : {userData?.branch?.country?.name} ,{" "}
-                  {userData?.branch?.city?.name} ,{" "}
-                  {userData?.branch?.district?.name}
-                </p>
-                <p>
-                  {t("phone")}: {companyData?.[0]?.phone}
-                </p>
-                <p>
-                {t("email")}: {companyData?.[0]?.email}
-                </p>
-                <p>
-                  {t("tax number")}: {taxRegisteration && taxRegisteration}
-                </p>
-                <p>
-                  {t("Mineral license")}: {mineralLicence && mineralLicence}
-                </p>
-              </div>
+            <div>
+              <InvoiceFooter />
             </div>
           </div>
         </div>

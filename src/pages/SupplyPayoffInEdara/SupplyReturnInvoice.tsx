@@ -12,6 +12,7 @@ import InvoiceTable from "../../components/selling/selling components/InvoiceTab
 import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import { Loading } from "../../components/organisms/Loading";
 import SupplyPayoffInvoiceTable from "./SupplyPayoffInvoiceTable";
+import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
 
 type Entry_TP = {
   bian: string;
@@ -226,30 +227,8 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
               <FinalPreviewBillPayment responseSellingData={item} />
             </div>
 
-            <div className="text-center">
-              <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-                {data && data?.sentence}
-              </p>
-              <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-                <p>
-                  {" "}
-                  العنوان : {userData?.branch?.country?.name} ,{" "}
-                  {userData?.branch?.city?.name} ,{" "}
-                  {userData?.branch?.district?.name}
-                </p>
-                <p>
-                  {t("phone")}: {companyData?.[0]?.phone}
-                </p>
-                <p>
-                  {t("email")}: {companyData?.[0]?.email}
-                </p>
-                <p>
-                  {t("tax number")}: {taxRegisteration && taxRegisteration}
-                </p>
-                <p>
-                  {t("Mineral license")}: {mineralLicence && mineralLicence}
-                </p>
-              </div>
+            <div>
+              <InvoiceFooter />
             </div>
           </div>
         </div>

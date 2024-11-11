@@ -28,7 +28,8 @@ const InvoiceTable = <T extends object>({
   costDataAsProps,
   resultTable,
 }: ReactTableProps<T>) => {
-  console.log("🚀 ~ columns:", columns)
+  console.log("🚀 ~ costDataAsProps:", costDataAsProps);
+  console.log("🚀 ~ columns:", columns);
 
   const table = useReactTable({
     data,
@@ -99,7 +100,7 @@ const InvoiceTable = <T extends object>({
         : totalFinalCost
     )
   );
-  console.log("🚀 ~ totalFinalCostIntoArabic:", totalFinalCostIntoArabic)
+  console.log("🚀 ~ totalFinalCostIntoArabic:", totalFinalCostIntoArabic);
 
   // const hasSelsal =
   //   locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal
@@ -186,7 +187,12 @@ const InvoiceTable = <T extends object>({
                     <td
                       key={key}
                       className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                      colSpan={index === 0 ? columns?.length - (Object.keys(resultTable[0])?.length - 1) : 1}
+                      colSpan={
+                        index === 0
+                          ? columns?.length -
+                            (Object.keys(resultTable[0])?.length - 1)
+                          : 1
+                      }
                     >
                       {resultTable[0][key]}
                     </td>
@@ -198,7 +204,11 @@ const InvoiceTable = <T extends object>({
               <tr className="text-center border-[1px] border-[#7B7B7B4D]">
                 <td
                   className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                  colSpan={columns?.length}
+                  colSpan={
+                    costDataAsProps?.isBranchWasted === true
+                      ? columns?.length / 2
+                      : columns?.length
+                  }
                 >
                   <span className="font-semibold">{t("total")}</span>:{" "}
                   <span className="font-medium">
@@ -211,6 +221,20 @@ const InvoiceTable = <T extends object>({
                     {t("Only nothing else")}
                   </span>
                 </td>
+                {costDataAsProps?.isBranchWasted === true && (
+                  <td
+                    className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
+                    colSpan={columns?.length}
+                  >
+                    <span className="font-semibold">{t("total wages")}</span>:{" "}
+                    <span className="font-medium">
+                      {costDataAsProps
+                        ? costDataAsProps?.totalFinalCostIntoArabic
+                        : totalFinalCostIntoArabic}
+                    </span>
+                    <span className="font-semibold">0.00</span>
+                  </td>
+                )}
               </tr>
             </tfoot>
           </table>

@@ -18,15 +18,10 @@ const FinalPreviewBillPayment = ({
   responseSellingData: any;
   notQRCode?: boolean;
 }) => {
+  console.log("🚀 ~ costDataAsProps:", costDataAsProps)
   const { formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData)
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license_qr"],
-  });
 
   // function getTLV(tagNum, tagValue) {
   //   var tagNumBuf = Buffer.from([tagNum], "utf8");
@@ -56,7 +51,7 @@ const FinalPreviewBillPayment = ({
   // var qrCodeBase64 = qrCodeBuf.toString("base64");
 
   return (
-    <div className="flex justify-between pe-8">
+    <div className="flex justify-between pe-8 items-center">
       <div className="text-center">
         <span className="font-medium text-xs">{t("vendor name")}</span>
         <p>{userData?.name}</p>
@@ -98,14 +93,22 @@ const FinalPreviewBillPayment = ({
             </div>
           ))}
         </div>
-        <h3 className="mt-5 font-extrabold">
-          {costDataAsProps?.prepaidAmount ? (
+        {costDataAsProps?.prepaidAmount ? (
+          <h3 className="mt-5 font-extrabold">
             <>
               <span>{t("prepaid cost")}: </span>
               <span>{formatReyal(Number(costDataAsProps.prepaidAmount))}</span>
             </>
-          ) : null}
-        </h3>
+          </h3>
+        ) : null}
+        {costDataAsProps?.recipientSignature === true ? (
+          <div className="text-center">
+            <span className="font-medium text-xs">
+              {t("recipient's signature")}
+            </span>
+            <p className="mt-3">------------------------------</p>
+          </div>
+        ) : null}
       </div>
     </div>
   );

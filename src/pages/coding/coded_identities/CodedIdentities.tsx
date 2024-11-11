@@ -39,7 +39,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   );
   const [importModal, setImportModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
-  console.log("🚀 ~ CodedIdentities ~ importFiles:", importFiles)
+  console.log("🚀 ~ CodedIdentities ~ importFiles:", importFiles);
   const [importData, setImportData] = useState(null);
   const queryClient = useQueryClient();
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
@@ -162,6 +162,11 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     setFetchEndPoint(`identity/api/v1/way_to_edara`);
   };
 
+  const handleWastedToEdara = () => {
+    setFetchKey(["Wasted-to-edara-hwya"]);
+    setFetchEndPoint(`identity/api/v1/wastingPieces`);
+  };
+
   // HANDLE PIECE BY WEIGHT
   const handlePieceByWeight = () => {
     setFetchKey(["piece_by_weight"]);
@@ -225,6 +230,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       setActiveClass("هويات جاري تسليمها في الفرع");
     if (buttonName === "هويات جاري تسليمها في الإدارة")
       setActiveClass("هويات جاري تسليمها في الإدارة");
+    if (buttonName === "هويات مهدرة جاري تسليمها في الإدارة")
+      setActiveClass("هويات مهدرة جاري تسليمها في الإدارة");
     if (buttonName === "قطع بالوزن") setActiveClass("قطع بالوزن");
   };
 
@@ -284,7 +291,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   // End Print
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col py-12 px-6">
       <div className="flex justify-between items-center gap-4 flex-wrap">
         <h2 className="text-xl font-bold text-slate-700">{title}</h2>
         <div className="flex flex-wrap gap-6 items-center">
@@ -392,6 +399,19 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           >
             {t("identities are being submitted to the administration")}
           </Button>
+          <Button
+            action={(e) => {
+              handleWastedToEdara();
+              handleActiveButton(e);
+            }}
+            className={`${
+              activeClass === "هويات مهدرة جاري تسليمها في الإدارة"
+                ? "bg-mainOrange text-white"
+                : "bg-transparent text-mainOrange"
+            } border-2 text-sm border-mainOrange flex items-center gap-2`}
+          >
+            {t("Wasted IDs being handed over to the administration")}
+          </Button>
         </div>
       </div>
 
@@ -436,7 +456,10 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           >
             {t("export")}
           </Button>
-          <Button action={() => handlePrint()} className="bg-mainGreen text-white">
+          <Button
+            action={() => handlePrint()}
+            className="bg-mainGreen text-white"
+          >
             {t("printing numbered identities")}
           </Button>
         </div>
@@ -560,8 +583,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
                   <Button
                     type="button"
                     action={() => {
-                      setOperationTypeSelect([])
-                      setOpen(false)
+                      setOperationTypeSelect([]);
+                      setOpen(false);
                     }}
                   >
                     {t("Yes")}

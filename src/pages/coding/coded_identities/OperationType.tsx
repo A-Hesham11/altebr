@@ -20,6 +20,7 @@ import InvoiceTableCodedPrint from "./InvoiceTableCodedPrint";
 import { formatDate, formatDateAndTime } from "../../../utils/date";
 import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
 import DynamicTransformToBranch from "./DynamicTransformToBranch";
+import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
 
 const options = {
   year: "numeric",
@@ -51,7 +52,6 @@ const OperationType = ({
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
   const date = new Date(bondDataPrint?.created_at);
 
   const clientData = {
@@ -60,16 +60,6 @@ const OperationType = ({
     bond_date: date.toLocaleDateString("en-US", options),
     supplier_id: operationTypeSelect?.supplier_id,
   };
-
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
 
   const tableColumn = useMemo<any>(
     () => [
@@ -212,14 +202,6 @@ const OperationType = ({
     totalFinalCost: totalOtherStoneWeight || 0,
     totalCost: totalWage,
   };
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
@@ -434,32 +416,8 @@ const OperationType = ({
                     </div>
                   </div>
 
-                  <div className="text-center">
-                    <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-                      {data && data?.sentence}
-                    </p>
-                    <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-                      <p>
-                        {" "}
-                        العنوان : {companyData?.[0]?.country?.name} ,{" "}
-                        {companyData?.[0]?.city?.name} ,{" "}
-                        {companyData?.[0]?.district?.name}
-                      </p>
-                      <p>
-                        {t("phone")}: {companyData?.[0]?.phone}
-                      </p>
-                      <p>
-                        {t("email")}: {companyData?.[0]?.email}
-                      </p>
-                      <p>
-                        {t("tax number")}:{" "}
-                        {taxRegisteration || ""}
-                      </p>
-                      <p>
-                        {t("Mineral license")}:{" "}
-                        {mineralLicence || ""}
-                      </p>
-                    </div>
+                  <div>
+                    <InvoiceFooter />
                   </div>
                 </div>
               </div>

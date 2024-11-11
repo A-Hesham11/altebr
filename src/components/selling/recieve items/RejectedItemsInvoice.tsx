@@ -8,13 +8,14 @@ import { Button } from "../../atoms";
 import PaymentFinalPreviewBillData from "../../../pages/Payment/PaymentFinalPreviewBillData";
 import InvoiceTable from "../selling components/InvoiceTable";
 import FinalPreviewBillPayment from "../selling components/bill/FinalPreviewBillPayment";
+import InvoiceFooter from "../../Invoice/InvoiceFooter";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 const RejectedItemsInvoice = ({ item }: any) => {
   console.log("🚀 ~ RejectedItemsInvoice ~ item:", item);
-  const { userData } = useContext(authCtx);
-  console.log("🚀 ~ RejectedItemsInvoice ~ userData:", userData)
   const contentRef = useRef();
   const isRTL = useIsRTL();
+  const { formatGram, formatReyal } = numberContext();
 
   const clientData = {
     client_id: item?.client_id,
@@ -22,16 +23,6 @@ const RejectedItemsInvoice = ({ item }: any) => {
     bond_date: item?.date,
     supplier_id: item?.supplier_id,
   };
-
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
 
   const Cols = useMemo<any>(
     () => [
@@ -99,13 +90,60 @@ const RejectedItemsInvoice = ({ item }: any) => {
     []
   );
 
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
+  const ColsWasted = useMemo<any>(
+    () => [
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "hwya",
+        header: () => <span>{t("identification")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "classification",
+        header: () => <span>{t("classification")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "category",
+        header: () => <span>{t("category")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "karat",
+        header: () => <span>{t("gold karat")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "weight",
+        header: () => <span>{t("weight")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        accessorKey: "wage",
+        header: () => <span>{t("wage")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          info.getValue()
+            ? formatReyal(
+                Number(info.row.original.weight * info.row.original.wage)
+              )
+            : "",
+        accessorKey: "wage_total",
+        header: () => <span>{t("total wages")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          item?.api_gold_price
+            ? formatReyal(Number(item?.api_gold_price))
+            : "---",
+        accessorKey: "api_gold_price",
+        header: () => <span>{t("selling price")}</span>,
+      },
+    ],
+    []
+  );
 
   const totalWeight = item?.items?.reduce((acc, curr) => {
     acc += +curr.weight;
@@ -149,9 +187,21 @@ const RejectedItemsInvoice = ({ item }: any) => {
     },
   ];
 
+  const resultTableWasted = [
+    {
+      number: t("totals"),
+      weight: totalWeight,
+      wage: totalWage,
+      totalWages: totalWages,
+      totalPrice: item?.api_gold_price,
+    },
+  ];
+
   const costDataAsProps = {
     // totalFinalCost,
     // totalGoldAmountGram,
+    isBranchWasted: item?.boxes2?.length !== 0 ? true : false,
+    recipientSignature: true
   };
 
   const handlePrint = useReactToPrint({
@@ -185,8 +235,8 @@ const RejectedItemsInvoice = ({ item }: any) => {
 
   const returnInvoiceToEdara = {
     bondNumber: 10,
-    invoiceName: isRTL ? "سند مردود" :  "rerurn bond",
-  }
+    invoiceName: isRTL ? "سند مردود" : "rerurn bond",
+  };
 
   return (
     <div className="relative h-full py-16 px-8">
@@ -205,50 +255,26 @@ const RejectedItemsInvoice = ({ item }: any) => {
               clientData={clientData}
               invoiceNumber={item?.invoice_number || item?.id}
               invoiceData={returnInvoiceToEdara}
-              
             />
           </div>
 
           <InvoiceTable
             data={item?.items}
-            columns={Cols}
+            columns={item?.boxes2?.length !== 0 ? ColsWasted : Cols}
             costDataAsProps={costDataAsProps}
-            resultTable={resultTable}
+            resultTable={item?.boxes2?.length !== 0 ? resultTableWasted : resultTable}
           ></InvoiceTable>
 
           <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
             <FinalPreviewBillPayment
               responseSellingData={item}
               notQRCode={true}
+              costDataAsProps={costDataAsProps}
             />
           </div>
 
-          <div className="text-center">
-            <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-              {data && data?.sentence}
-            </p>
-            <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-              <p>
-                {" "}
-                العنوان : {userData?.branch?.country?.name} ,{" "}
-                {userData?.branch?.city?.name} ,{" "}
-                {userData?.branch?.district?.name}
-              </p>
-              <p>
-                {t("phone")}: {companyData?.[0]?.phone}
-              </p>
-              <p>
-              {t("email")}: {companyData?.[0]?.email}
-              </p>
-              <p>
-                {t("tax number")}:{" "}
-                {taxRegisteration || ""}
-              </p>
-              <p>
-                {t("Mineral license")}:{" "}
-                {mineralLicence || ""}
-              </p>
-            </div>
+          <div>
+            <InvoiceFooter />
           </div>
         </div>
       </div>

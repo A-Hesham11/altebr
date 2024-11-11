@@ -18,18 +18,11 @@ import { Back } from "../../utils/utils-components/Back";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import PaymentToManagementTable from "./PaymentToManagementTable";
 import { BiSpreadsheet } from "react-icons/bi";
-import SalesReturnInvoiceTablePreview from "../salesReturn/SalesReturnInvoiceTablePreview";
-import SellingInvoiceTablePreview from "../../components/selling/selling components/sellingWrapper/SellingInvoiceTablePreview";
-import { ClientData_TP, Selling_TP } from "./PaymentToManagementPage";
-import { ColumnDef } from "@tanstack/react-table";
 import { numberContext } from "../../context/settings/number-formatter";
 import { useReactToPrint } from "react-to-print";
-import FinalPreviewBillData from "../../components/selling/selling components/bill/FinalPreviewBillData";
 import PaymentFinalPreviewBillData from "./PaymentFinalPreviewBillData";
-import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import PaymentInvoiceTable from "./PaymentInvoiceTable";
-import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
-import { number } from "yup";
+import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
 
 const VeiwPaymentToManagement = () => {
   // STATE
@@ -157,16 +150,6 @@ const VeiwPaymentToManagement = () => {
     supplier_id: selectedViewItem?.supplier_id,
   };
 
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
-
   // COLUMNS FOR THE TABLE
   const cols = useMemo<any>(
     () => [
@@ -189,14 +172,6 @@ const VeiwPaymentToManagement = () => {
     ],
     []
   );
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
 
   const totalFinalCost = selectedViewItem?.items?.reduce((acc, curr) => {
     acc += +curr.value_reyal;
@@ -386,32 +361,8 @@ const VeiwPaymentToManagement = () => {
                 </div>
               </div>
 
-              <div className="text-center">
-                <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-                  {data && data?.sentence}
-                </p>
-                <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-                  <p>
-                    {" "}
-                    العنوان : {userData?.branch?.country?.name} ,{" "}
-                    {userData?.branch?.city?.name} ,{" "}
-                    {userData?.branch?.district?.name}
-                  </p>
-                  <p>
-                    {t("phone")}: {companyData?.[0]?.phone}
-                  </p>
-                  <p>
-                  {t("email")}: {companyData?.[0]?.email}
-                  </p>
-                  <p>
-                    {t("tax number")}:{" "}
-                    {taxRegisteration || ""}
-                  </p>
-                  <p>
-                    {t("Mineral license")}:{" "}
-                    {mineralLicence || ""}
-                  </p>
-                </div>
+              <div>
+                <InvoiceFooter />
               </div>
             </div>
           </div>

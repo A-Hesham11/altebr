@@ -1,12 +1,9 @@
 import { useContext, useState } from "react";
 import { t } from "i18next";
 import { authCtx } from "../../../context/auth-and-perm/auth";
-import { useFetch } from "../../../hooks";
-import FinalPreviewBillData from "./ExpenseBillData";
-import FinalPreviewBuyingPayment from "./FinalPreviewExpensePayment";
 import { Button } from "../../../components/atoms";
 import ExpenseBillData from "./ExpenseBillData";
-import FinalPreviewExpensePayment from "./FinalPreviewExpensePayment";
+import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
 
 type Client_TP = {
   amount: number;
@@ -14,7 +11,6 @@ type Client_TP = {
   client_id: number;
   client_value: string;
   employee_id: number;
-  F;
   employee_value: string;
   id: number;
 };
@@ -33,36 +29,10 @@ type SellingFinalPreviewProps_TP = {
 export const ExpenseFinalPreview = ({
   ItemsTableContent,
   setStage,
-  paymentData,
   clientData,
-  costDataAsProps,
-  sellingItemsData,
   invoiceNumber,
-  odwyaTypeValue,
-  setOdwyaTypeValue,
-  responseSellingData,
 }: SellingFinalPreviewProps_TP) => {
   const { userData } = useContext(authCtx);
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
-
-  // SENTENCE API
-  const { data } = useFetch<Client_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  // COMPANY DATA API
-  const { data: companyData } = useFetch<Client_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Selling_Mineral_license"],
-  });
 
   return (
     <div className="relative h-full p-10 bg-flatWhite ">
@@ -93,33 +63,8 @@ export const ExpenseFinalPreview = ({
             </div>
           </div>
 
-          <div className="text-center">
-            <p className="my-4 py-1 border-y border-mainOrange">
-              {data && data?.sentence}
-            </p>
-            <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-              <p>
-                {" "}
-                العنوان : {userData?.branch?.country?.name} ,{" "}
-                {userData?.branch?.city?.name} ,{" "}
-                {userData?.branch?.district?.name}
-              </p>
-              {/* <p>رقم المحل</p> */}
-              <p>
-                {t("phone")}: {companyData?.[0]?.phone}
-              </p>
-              <p>
-                {t("email")}: {companyData?.[0]?.email}
-              </p>
-              <p>
-                {t("tax number")}:{" "}
-                {taxRegisteration || ""}
-              </p>
-              <p>
-                {t("Mineral license")}:{" "}
-                {mineralLicence || ""}
-              </p>
-            </div>
+          <div>
+            <InvoiceFooter />
           </div>
         </div>
       </div>

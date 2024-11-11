@@ -28,7 +28,8 @@ const Management = () => {
       icon: receiveitem,
       title_ar: "استلام القطع",
       title_en: "receive items",
-      route: "/selling/management/receive-items",
+      // route: "/selling/management/receive-items",
+      route: "/",
       underCardInfo: (
         <Link
           to="/selling/sortPieces"

@@ -9,6 +9,7 @@ import PaymentFinalPreviewBillData from "../../../pages/Payment/PaymentFinalPrev
 import InvoiceTable from "../selling components/InvoiceTable";
 import FinalPreviewBillPayment from "../selling components/bill/FinalPreviewBillPayment";
 import { numberContext } from "../../../context/settings/number-formatter";
+import InvoiceFooter from "../../Invoice/InvoiceFooter";
 
 const WasteSupplyRejectedInvoice = ({ item }: any) => {
   console.log("🚀 ~ RejectedItemsInvoice ~ item:", item);
@@ -24,62 +25,6 @@ const WasteSupplyRejectedInvoice = ({ item }: any) => {
     bond_date: item?.date,
     supplier_id: item?.supplier_id,
   };
-
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
-
-  //   const Cols = useMemo<any>(
-  //     () => [
-  //       {
-  //         header: () => <span>{t("identification")}</span>,
-  //         accessorKey: "hwya",
-  //         cell: (info: any) => info.getValue(),
-  //       },
-  //       {
-  //         header: () => <span>{t("category")}</span>,
-  //         accessorKey: "classification_name",
-  //         cell: (info: any) => info.getValue(),
-  //       },
-  //       {
-  //         header: () => <span>{t("classification")}</span>,
-  //         accessorKey: "category_name",
-  //         cell: (info: any) => info.getValue(),
-  //       },
-  //       {
-  //         header: () => <span>{t("karat")}</span>,
-  //         accessorKey: "karat_name",
-  //         cell: (info: any) => info.getValue(),
-  //       },
-  //       {
-  //         header: () => <span>{t("weight")}</span>,
-  //         accessorKey: "weight",
-  //         cell: (info: any) => info.getValue(),
-  //       },
-  //       {
-  //         header: () => <span>{t("wage")}</span>,
-  //         accessorKey: "wage",
-  //         cell: (info: any) => info.getValue() || "---",
-  //       },
-  //       {
-  //         header: () => <span>{t("total wages")}</span>,
-  //         accessorKey: "wage_total",
-  //         cell: (info: any) => info.getValue() || "---",
-  //       },
-  //       {
-  //         header: () => <span>{t("stones weight")}</span>,
-  //         accessorKey: "stones_weight",
-  //         cell: (info: any) => info.getValue(),
-  //       },
-  //     ],
-  //     []
-  //   );
 
   const Cols = useMemo<any>(
     () => [
@@ -136,14 +81,6 @@ const WasteSupplyRejectedInvoice = ({ item }: any) => {
     []
   );
 
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
-
   const totalWeight = item?.items?.reduce((acc, curr) => {
     acc += +curr.weight;
     return acc;
@@ -159,10 +96,10 @@ const WasteSupplyRejectedInvoice = ({ item }: any) => {
     return acc;
   }, 0);
 
-//   const totalStonesWeight = item?.items?.reduce((acc, curr) => {
-//     acc += +curr.stones_weight;
-//     return acc;
-//   }, 0);
+  //   const totalStonesWeight = item?.items?.reduce((acc, curr) => {
+  //     acc += +curr.stones_weight;
+  //     return acc;
+  //   }, 0);
 
   const resultTable = [
     {
@@ -247,30 +184,8 @@ const WasteSupplyRejectedInvoice = ({ item }: any) => {
             />
           </div>
 
-          <div className="text-center">
-            <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-              {data && data?.sentence}
-            </p>
-            <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-              <p>
-                {" "}
-                العنوان : {userData?.branch?.country?.name} ,{" "}
-                {userData?.branch?.city?.name} ,{" "}
-                {userData?.branch?.district?.name}
-              </p>
-              <p>
-                {t("phone")}: {companyData?.[0]?.phone}
-              </p>
-              <p>
-                {t("email")}: {companyData?.[0]?.email}
-              </p>
-              <p>
-                {t("tax number")}: {taxRegisteration || ""}
-              </p>
-              <p>
-                {t("Mineral license")}: {mineralLicence || ""}
-              </p>
-            </div>
+          <div>
+            <InvoiceFooter />
           </div>
         </div>
       </div>

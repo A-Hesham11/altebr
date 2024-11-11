@@ -2,6 +2,8 @@ import { t } from "i18next";
 import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import {
   BaseInputField,
+  Checkbox,
+  CheckBoxField,
   InnerFormLayout,
   Select,
 } from "../../../components/molecules";
@@ -22,16 +24,13 @@ import { authCtx } from "../../../context/auth-and-perm/auth";
 import { useQueryClient } from "@tanstack/react-query";
 
 const ReturnItemsToEdaraModal = ({
-  // operationTypeSelect,
   transformToBranchDynamicModal,
-  setIsSuccessPost,
   refetch,
   setOperationTypeSelect,
   setReturnItemsModel,
 }: any) => {
-  const [thwelIds, setThwelIds] = useState([]);
   const [goldPriceToday, setGoldPriceToday] = useState("");
-  const [search, setSearch] = useState("-");
+  const [search, setSearch] = useState("");
   console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
   console.log("🚀 ~ dataSource:", dataSource);
@@ -40,11 +39,13 @@ const ReturnItemsToEdaraModal = ({
   const { userData } = useContext(authCtx);
   const queryClient = useQueryClient();
   const [mainData, setMainData] = useState([]);
-  console.log("🚀 ~ SellingBranchIdentity ~ mainData:", mainData);
+  console.log("🚀 ~ mainData:", mainData);
   const [steps, setSteps] = useState(1);
   const [files, setFiles] = useState([]);
+  const [isBranchWaste, setIsBranchWaste] = useState(false);
+  console.log("🚀 ~ isBranchWaste:", isBranchWaste);
 
-  const operationTypeSelectWeight = dataSource.filter(
+  const operationTypeSelectWeight = dataSource?.filter(
     (el: any) => el.check_input_weight !== 0
   );
 
@@ -66,61 +67,44 @@ const ReturnItemsToEdaraModal = ({
     isSuccess,
     refetch: edaraRefetch,
   } = useFetch({
-    queryKey: ["return-edara"],
+    queryKey: ["return-edara", search],
     endpoint: `/branchManage/api/v1/all-accepted/${userData?.branch_id}?hwya[eq]=${search}`,
     onSuccess: (data) => {
-      if (search !== "كود الهوية" && data?.data?.length === 0) {
-        notify("info", t("piece doesn't exist"));
+      console.log("🚀 ~ data:", data);
+      if (data?.data?.length === 0) {
+        notify("info", `${t("piece doesn't exist")}`);
+        return;
       }
 
-      if (data?.data?.length !== 0) {
-        notify("success", t("piece was added"));
+      const branchWasteItems = data?.data?.filter(
+        (item) =>
+          item.classification_id === 1 && item.category_selling_type !== "all"
+      );
+
+      if (branchWasteItems?.length === 0 && isBranchWaste) {
+        notify("info", `${t("The piece cannot be wasted.")}`);
+        return;
       }
+
+      const findPiece = dataSource.findIndex(
+        (item) => item.id === data?.data?.[0]?.id
+      );
+
+      if (data?.data?.length > 0 && findPiece === -1) {
+        if (isBranchWaste && branchWasteItems?.length > 0) {
+          setDataSource((prev) => [...prev, branchWasteItems?.[0]]);
+          setMainData((prev) => [...prev, branchWasteItems?.[0]]);
+        } else if (!isBranchWaste) {
+          setDataSource((prev) => [...prev, data?.data?.[0]]);
+          setMainData((prev) => [...prev, data?.data?.[0]]);
+        }
+      }
+
       setSearch("");
     },
     pagination: true,
+    enabled: !!search,
   });
-
-  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
-    endpoint: "/attachment/api/v1/goldPrice",
-    queryKey: ["GoldPriceApi"],
-    onSuccess: (data) => {
-      setGoldPriceToday(data["price_gram_24k"]);
-    },
-  });
-
-  useEffect(() => {
-    if (data) {
-      setSuccessData(data?.data);
-      // setMainData(data?.data)
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (isRefetching) {
-      setSearch("");
-    }
-  }, []);
-
-  // EFFECTS
-  useEffect(() => {
-    if (search.trim().length > 0) {
-      const timeout = setTimeout(() => {
-        edaraRefetch();
-      }, 200);
-
-      return () => clearTimeout(timeout);
-    }
-
-    const findPiece = dataSource.findIndex(
-      (item) => item.id === successData?.[0]?.id
-    );
-
-    if (successData?.length > 0 && findPiece === -1) {
-      setDataSource((prev) => [...prev, successData?.[0]]);
-      setMainData((prev) => [...prev, successData?.[0]]);
-    }
-  }, [successData, search]);
 
   const { mutate, isLoading: thwelLoading } = useMutate({
     mutationFn: mutateData,
@@ -133,9 +117,12 @@ const ReturnItemsToEdaraModal = ({
           "The parts have been returned to the administration successfully."
         )}`
       );
+      refetch();
+      setDataSource([]);
+      setMainData([]);
+      setIsBranchWaste(false);
       setReturnItemsModel(false);
       setOperationTypeSelect([]);
-      refetch();
     },
     onError: (error) => {
       notify("error", error.response.data.msg);
@@ -152,26 +139,14 @@ const ReturnItemsToEdaraModal = ({
   }
 
   useEffect(() => {
-    setDataSource([]);
-    setMainData([]);
-    setSearch("كود الهوية");
     document.getElementById("search")?.focus();
   }, [transformToBranchDynamicModal]);
 
-  useEffect(() => {
-    dataSource.map((operation: any) => {
-      if (!thwelIds.includes(`${operation.id}`)) {
-        setThwelIds((prev) => [...prev, `${operation.id}`]);
-      }
-    });
-  }, []);
-
   const handleSubmit = (values: any) => {
-
     const weightComparison = mainData.map((mainItem, index) => {
       const operationItem = operationTypeSelectWeight[index];
 
-      if (!operationItem) return null; 
+      if (!operationItem) return null;
 
       return {
         mainDataId: mainItem.id,
@@ -179,10 +154,6 @@ const ReturnItemsToEdaraModal = ({
         isOperationWeightLess: operationItem.weight > mainItem.weight,
       };
     });
-    console.log(
-      "🚀 ~ weightComparison ~ weightComparison:",
-      weightComparison?.some((item) => item.isOperationWeightLess === true)
-    );
 
     if (weightComparison?.some((item) => item.isOperationWeightLess === true)) {
       notify("info", `${t("Weight is greater than the maximum limit")}`);
@@ -191,9 +162,12 @@ const ReturnItemsToEdaraModal = ({
 
     PostNewValue({
       branch_id: userData?.branch_id,
-      api_gold_price: values.gold_price,
-      entity_gold_price: values.gold_price,
+      // api_gold_price: values.gold_price,
+      // entity_gold_price: values.gold_price,
+      api_gold_price: 1000,
+      entity_gold_price: 1000,
       type: "normal",
+      branch_is_wasting: isBranchWaste ? 1 : 0,
       items: operationTypeSelectWeight.map((el, i) => {
         return {
           id: el.thwelbond_id,
@@ -218,8 +192,7 @@ const ReturnItemsToEdaraModal = ({
       enableReinitialize={true}
       onSubmit={(values) => {}}
     >
-      {({ values, setValue, resetForm }) => {
-        console.log("🚀 ~ values:", values);
+      {({ values, resetForm }) => {
         return (
           <Form>
             <div className="flex flex-col gap-10 mt-6">
@@ -249,6 +222,28 @@ const ReturnItemsToEdaraModal = ({
                   {t("Manual entry")}
                 </Button>
               </div>
+
+              <div>
+                <Checkbox
+                  label={t("The branch bears the waste")}
+                  labelClassName="text-lg"
+                  type="checkbox"
+                  id="branch_waste"
+                  name="branch_waste"
+                  checked={isBranchWaste}
+                  onChange={(e: any) => {
+                    e.target.checked
+                      ? setIsBranchWaste(true)
+                      : setIsBranchWaste(false);
+                  }}
+                  disabled={!isBranchWaste && dataSource?.length !== 0}
+                  className={
+                    !isBranchWaste && dataSource?.length !== 0
+                      ? "bg-mainDisabled cursor-not-allowed"
+                      : "cursor-pointer"
+                  }
+                />
+              </div>
               {steps === 1 && (
                 <div className="flex items-end justify-between">
                   <div className="flex gap-2 rounded-md  p-1">
@@ -258,10 +253,9 @@ const ReturnItemsToEdaraModal = ({
                       value={search}
                       autoFocus
                       label={t("id code")}
-                      type="search"
+                      type="text"
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder={`${t("id code")}`}
-                      className=""
                     />
                   </div>
                   <div className="">
@@ -277,11 +271,9 @@ const ReturnItemsToEdaraModal = ({
                       <BaseInputField
                         id="ManualSearch"
                         name="ManualSearch"
-                        // value={search}
                         autoFocus
                         label={t("id code")}
                         type="text"
-                        // onChange={(e) => setSearch(e.target.value)}
                         placeholder={`${t("id code")}`}
                         className=""
                       />
@@ -318,7 +310,7 @@ const ReturnItemsToEdaraModal = ({
                     type="button"
                     loading={thwelLoading}
                     action={() => handleSubmit(values)}
-                    className="bg-mainGreen text-white self-end"
+                    className="self-end"
                   >
                     {t("confirm")}
                   </Button>

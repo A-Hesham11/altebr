@@ -5,6 +5,7 @@ import FinalPreviewBillData from "../../components/selling/selling components/bi
 import FinalPreviewBuyingPayment from "./FinalPreviewBuyingPayment";
 import { useFetch } from "../../hooks";
 import { Button } from "../../components/atoms";
+import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
 
 type Client_TP = {
   amount: number;
@@ -37,28 +38,6 @@ export const BuyingFinalPreview = ({
   odwyaTypeValue,
   setOdwyaTypeValue,
 }: SellingFinalPreviewProps_TP) => {
-  const { userData } = useContext(authCtx);
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
-
-  // SENTENCE API
-  const { data } = useFetch<Client_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  // COMPANY DATA API
-  const { data: companyData } = useFetch<Client_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Selling_Mineral_license"],
-  });
-
   return (
     <div className="relative h-full p-10 bg-flatWhite ">
       <div className="print-section">
@@ -79,33 +58,8 @@ export const BuyingFinalPreview = ({
               setOdwyaTypeValue={setOdwyaTypeValue}
             />
           </div>
-          <div className="text-center">
-            <p className="my-4 py-1 border-y border-mainOrange">
-              {data && data?.sentence}
-            </p>
-            <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-              <p>
-                {" "}
-                العنوان : {userData?.branch?.country?.name} ,{" "}
-                {userData?.branch?.city?.name} ,{" "}
-                {userData?.branch?.district?.name}
-              </p>
-              {/* <p>رقم المحل</p> */}
-              <p>
-                {t("phone")}: {companyData?.[0]?.phone}
-              </p>
-              <p>
-                {t("email")}: {companyData?.[0]?.email}
-              </p>
-              <p>
-                {t("tax number")}:{" "}
-                {taxRegisteration || ""}
-              </p>
-              <p>
-                {t("Mineral license")}:{" "}
-                {mineralLicence || ""}
-              </p>
-            </div>
+          <div>
+            <InvoiceFooter />
           </div>
         </div>
       </div>

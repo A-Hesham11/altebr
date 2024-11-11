@@ -5,7 +5,7 @@ import { useIsRTL } from "./hooks/useIsRTL"
 // import { router } from "./routing/allRoutes"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { ToastContainer } from "react-toastify"
-import {  useLayoutEffect } from "react"
+import {  useEffect, useLayoutEffect } from "react"
 import "react-toastify/dist/ReactToastify.css"
 import { Breadcrumbs } from "./components/Breadcrumbs "
 ///
@@ -37,6 +37,15 @@ const App = () => {
   }, [])
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
+
+  // CLEAR BROWSWR CACHE
+  // useEffect(() => {
+  //   if ('caches' in window) {
+  //     caches.keys().then(cacheNames => {
+  //       cacheNames.forEach(cacheName => caches.delete(cacheName));
+  //     });
+  //   }
+  // }, []);
 
   ///
   return (
