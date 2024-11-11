@@ -152,8 +152,19 @@ const Withdrawal = () => {
   });
 
   const handleSubmit = (values: any) => {
-    if (values?.cash <= 0) {
+    if (+values?.cash <= 0) {
       notify("error", `${t("you should type number greater than 0")}`);
+      return;
+    }
+
+    if (
+      +values?.cash >
+      accountsDetailsData?.base?.debtor - accountsDetailsData?.base?.creditor
+    ) {
+      notify(
+        "error",
+        `${t("the withdrawal amount is greater than the available in account")}`
+      );
       return;
     }
 
@@ -287,6 +298,7 @@ const Withdrawal = () => {
                       label={`${t("date")}`}
                       placeholder={`${t("date")}`}
                       name="bond_date"
+                      disabled
                       // value={values.from}
                     />
                   </div>
