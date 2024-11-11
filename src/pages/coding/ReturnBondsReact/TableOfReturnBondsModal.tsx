@@ -62,6 +62,7 @@ type Entry_TP = {
 };
 
 const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
+  console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   // const [endpointApi, setEndpointApi] = useState("");
   const [test, setTest] = useState(false);
@@ -187,6 +188,27 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
     []
   );
 
+  const colsWasting = useMemo<ColumnDef<Entry_TP>[]>(
+    () => [
+      {
+        header: `${t("description")}`,
+        cell: (info) => info.renderValue() || "-",
+        accessorKey: "bian",
+      },
+      {
+        header: `${t("gram (debtor)")}`,
+        cell: (info) => formatGram(Number(info.renderValue())) || "-",
+        accessorKey: "debtor_gram",
+      },
+      {
+        header: `${t("gram (creditor)")}`,
+        cell: (info) => formatGram(Number(info.renderValue())) || "-",
+        accessorKey: "creditor_gram",
+      },
+    ],
+    []
+  );
+
   // const restrictionsData = entryAccounting ? entryAccounting : item;
 
   // const restrictionsBoxes = entryAccounting ? entryAccounting?.boxes : item?.boxes;
@@ -305,7 +327,11 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
       {item?.is_accept === 1 ? (
         <div className="mt-6">
           <h2 className="text-xl mb-5 font-bold">{t("accounting entry")}</h2>
-          <Table data={restrictions} footered columns={cols2} />
+          <Table
+            data={restrictions}
+            footered
+            columns={item?.branch_is_wasting === 1 ? colsWasting : cols2}
+          />
         </div>
       ) : (
         <Button

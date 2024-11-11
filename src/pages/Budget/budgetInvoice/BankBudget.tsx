@@ -15,7 +15,6 @@ const BankBudget = () => {
   const [selectedBankData, setSelectedBankData] = useState(null);
   const [selectedAccountData, setSelectedAccountData] = useState(null);
   const [mainCardData, setMainCardData] = useState([]);
-  console.log("🚀 ~ BankBudget ~ mainCardData:", mainCardData);
   const [operationCardData, setOperationCardData] = useState([]);
   const { userData } = useContext(authCtx);
   const [showPrint, setShowPrint] = useState(false);
@@ -77,8 +76,8 @@ const BankBudget = () => {
     bankName: "",
     accountNumber: "",
     accountBalance: "",
-    from: new Date(),
-    to: new Date(),
+    from: null,
+    to: null,
   };
 
   const { data: invoiceData } = useFetch({

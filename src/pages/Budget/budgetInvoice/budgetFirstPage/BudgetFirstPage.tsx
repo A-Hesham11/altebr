@@ -41,7 +41,6 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
   const { userData } = useContext(authCtx);
   const { values } = useFormikContext();
   const isBoxesHaveData = mainCardData?.map((data) => data?.boxes).flat();
-  console.log("🚀 ~ isBoxesHaveData:", isBoxesHaveData);
 
   const {
     data: accountsDetailsData,
@@ -54,12 +53,13 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
       userData?.branch_id
     }/${selectedAccountData ? selectedAccountData?.frontKey : 0}/${
       selectedAccountData ? selectedAccountData?.id : 0
-    }?form=${formatDate(values.from)}&to=${formatDate(values.to)}`,
+    }?form=${formatDate(values.from) || 0}&to=${formatDate(values.to) || 0}`,
     queryKey: ["accounts-details-data"],
     onSuccess: (data: any) => {
       setMainCardData(data);
     },
   });
+    console.log("🚀 ~ accountsDetailsData:", accountsDetailsData)
 
   useEffect(() => {
     accountsDetailsDataRefetch();

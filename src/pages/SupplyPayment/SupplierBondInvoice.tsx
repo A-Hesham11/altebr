@@ -4,45 +4,23 @@ import { t } from "i18next";
 import { Button } from "../../components/atoms";
 import FinalPreviewBillData from "../../components/selling/selling components/bill/FinalPreviewBillData";
 import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
-import { authCtx } from "../../context/auth-and-perm/auth";
 import {
   ColumnDef,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useFetch, useIsRTL } from "../../hooks";
-import { ClientData_TP, Selling_TP } from "../selling/PaymentSellingPage";
+import { useIsRTL } from "../../hooks";
+import { Selling_TP } from "../selling/PaymentSellingPage";
 import { useReactToPrint } from "react-to-print";
-import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 import PaymentInvoiceTable from "../Payment/PaymentInvoiceTable";
+import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
 
 const SupplierBondInvoice = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SupplierBondInvoice ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
-  const { userData } = useContext(authCtx);
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
-
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
 
   const clientData = {
     client_id: item?.client_id,
@@ -176,32 +154,8 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
             />
           </div>
 
-          <div className="text-center">
-            <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-              {data && data?.sentence}
-            </p>
-            <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-              <p>
-                {" "}
-                العنوان : {userData?.branch?.country?.name} ,{" "}
-                {userData?.branch?.city?.name} ,{" "}
-                {userData?.branch?.district?.name}
-              </p>
-              <p>
-                {t("phone")}: {companyData?.[0]?.phone}
-              </p>
-              <p>
-                {t("email")}: {companyData?.[0]?.email}
-              </p>
-              <p>
-                {t("tax number")}:{" "}
-                {taxRegisteration || ""}
-              </p>
-              <p>
-                {t("Mineral license")}:{" "}
-                {mineralLicence || ""}
-              </p>
-            </div>
+          <div>
+            <InvoiceFooter />
           </div>
         </div>
       </div>

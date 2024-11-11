@@ -1,29 +1,18 @@
 import { useContext, useMemo, useRef } from "react";
-import { authCtx } from "../../../context/auth-and-perm/auth";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { useFetch, useIsRTL } from "../../../hooks";
-import { processBudgetData } from "../../../utils/helpers";
-import { ClientData_TP } from "../../selling/PaymentSellingPage";
 import { t } from "i18next";
 import BudgetSecondPageItems from "../budgetInvoice/budgetSecondPage/BudgetSecondPageItems";
 import BudgetSecondScreenHeader from "../budgetInvoice/budgetSecondPage/BudgetSecondScreenHeader";
 import { DownloadAsPDF } from "../../../utils/DownloadAsPDF";
 import { Button } from "../../../components/atoms";
+import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
 
 const InvoiceBudgetBonds = ({ selectedItem }) => {
-  const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const { formatGram, formatReyal } = numberContext();
   const mainDataBoxes = selectedItem?.items;
   const isRTL = useIsRTL();
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
 
   // const budgetOperation = processBudgetData(selectedItem?.items);
   // const formattedBudgetOperation = Object.entries(selectedItem?.items);
@@ -69,12 +58,6 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
   //     total: 0,
   //   }
   // );
-
-  // COMPANY DATA API
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Selling_Mineral_license"],
-  });
 
   const clientData = {
     bond_number: selectedItem?.bond_number,
@@ -203,34 +186,9 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
               secondColumns={secondColumn}
               costDataAsProps={costDataAsProps}
             />
-            {/* </div> */}
-            <div className="text-center">
-              <p className="my-4 py-1 border-y border-mainOrange">
-                {t(
-                  "Attach the statement from the ATM along with all the related receipts to this report"
-                )}
-              </p>
-              <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-                <p>
-                  {" "}
-                  العنوان : {userData?.branch?.country?.name} ,{" "}
-                  {userData?.branch?.city?.name} ,{" "}
-                  {userData?.branch?.district?.name}
-                </p>
-                {/* <p>رقم المحل</p> */}
-                <p>
-                  {t("phone")}: {companyData?.[0]?.phone}
-                </p>
-                <p>
-                  {t("email")}: {companyData?.[0]?.email}
-                </p>
-                <p>
-                  {t("tax number")}: {taxRegisteration && taxRegisteration}
-                </p>
-                <p>
-                  {t("Mineral license")}: {mineralLicence && mineralLicence}
-                </p>
-              </div>
+
+            <div>
+              <InvoiceFooter />
             </div>
           </div>
         </div>

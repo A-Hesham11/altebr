@@ -17,6 +17,7 @@ import InvoiceTable from "../../../components/selling/selling components/Invoice
 import PaymentFinalPreviewBillData from "../../Payment/PaymentFinalPreviewBillData";
 import PaymentInvoiceTable from "../../Payment/PaymentInvoiceTable";
 import InvoiceBondsReactTable from "./InvoiceBondsReactTable";
+import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
 
 const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
   const { formatReyal, formatGram } = numberContext();
@@ -324,31 +325,12 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
     bondType: "توريد عادي",
   };
 
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
-
   const costDataAsProps = {
     totalWeights,
     totalWage,
     totalValues,
     totalItems,
   };
-  console.log("🚀 ~ TableOfBranchBonds ~ costDataAsProps:", costDataAsProps);
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
 
   const totalWeightConvertedTo24 =
     (+printGold18?.total_weight * 18) / 24 +
@@ -582,7 +564,10 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
             </Button>
           </div>
           <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
-            <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow " id="content-to-print">
+            <div
+              className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow "
+              id="content-to-print"
+            >
               <div className="mx-5 bill-shadow rounded-md p-6">
                 <PaymentFinalPreviewBillData
                   isSupply
@@ -617,32 +602,8 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
                 </div>
               </div>
 
-              <div className="text-center">
-                <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-                  {data && data?.sentence}
-                </p>
-                <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-                  <p>
-                    {" "}
-                    العنوان : {userData?.branch?.country?.name} ,{" "}
-                    {userData?.branch?.city?.name} ,{" "}
-                    {userData?.branch?.district?.name}
-                  </p>
-                  <p>
-                    {t("phone")}: {companyData?.[0]?.phone}
-                  </p>
-                  <p>
-                  {t("email")}: {companyData?.[0]?.email}
-                  </p>
-                  <p>
-                    {t("tax number")}:{" "}
-                    {taxRegisteration || ""}
-                  </p>
-                  <p>
-                    {t("Mineral license")}:{" "}
-                    {mineralLicence || ""}
-                  </p>
-                </div>
+              <div>
+                <InvoiceFooter />
               </div>
             </div>
           </div>

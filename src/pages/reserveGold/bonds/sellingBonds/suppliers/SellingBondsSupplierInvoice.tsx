@@ -21,6 +21,7 @@ import FinalPreviewBillData from "../../../../../components/selling/selling comp
 import InvoiceTable from "../../../../../components/selling/selling components/InvoiceTable";
 import FinalPreviewBillPayment from "../../../../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import { convertNumToArWord } from "../../../../../utils/number to arabic words/convertNumToArWord";
+import InvoiceFooter from "../../../../../components/Invoice/InvoiceFooter";
 
 type Entry_TP = {
   bian: string;
@@ -31,36 +32,9 @@ type Entry_TP = {
 };
 
 const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
-  // const contentRef = useRef();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ isRTL:", isRTL);
-
-  const { userData } = useContext(authCtx);
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
-
-  const chunkArray = (array, chunkSize) => {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
-
-  // const chunkedItems = chunkArray(item?.items, 10);
-  // console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
-
-  const chunkedItems = chunkArray(item?.items, 10);
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
 
   const clientData = {
     client_id: item?.client_id,
@@ -69,16 +43,6 @@ const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
     supplier_id: item?.supplier_id,
     supplier_name: item?.supplier_name,
   };
-
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -130,12 +94,6 @@ const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
     acc += +curr.cost_after_tax;
     return acc;
   }, 0);
-
-  const costDataAsProps = {
-    totalItemsTaxes,
-    totalFinalCost: totalFinalCost,
-    totalCost,
-  };
 
   const table = useReactTable({
     data: item?.items,
@@ -306,30 +264,8 @@ const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
               />
             </div>
 
-            <div className="text-center">
-              <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-                {data && data?.sentence}
-              </p>
-              <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-                <p>
-                  {" "}
-                  العنوان : {userData?.branch?.country?.name} ,{" "}
-                  {userData?.branch?.city?.name} ,{" "}
-                  {userData?.branch?.district?.name}
-                </p>
-                <p>
-                  {t("phone")}: {companyData?.[0]?.phone}
-                </p>
-                <p>
-                {t("email")}: {companyData?.[0]?.email}
-                </p>
-                <p>
-                  {t("tax number")}: {taxRegisteration && taxRegisteration}
-                </p>
-                <p>
-                  {t("Mineral license")}: {mineralLicence && mineralLicence}
-                </p>
-              </div>
+            <div>
+              <InvoiceFooter />
             </div>
           </div>
         </div>

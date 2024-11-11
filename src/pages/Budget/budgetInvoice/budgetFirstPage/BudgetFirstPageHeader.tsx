@@ -67,9 +67,11 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
   });
   console.log("🚀 ~ allBanksOption:", allBanksOption);
 
-  // useEffect(() => {
-  //   setSelectedBankData(allBanksOption?.[0]);
-  // }, [allBanksOption?.length === 1]);
+  useEffect(() => {
+    if (allBanksOption?.length === 1) {
+      setSelectedBankData(allBanksOption?.[0]);
+    }
+  }, [allBanksOption?.length === 1]);
 
   const {
     data: accountsOption,
@@ -93,7 +95,6 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
       });
     },
   });
-  console.log("🚀 ~ accountsOption:", accountsOption);
 
   useEffect(() => {
     if (accountsOption?.length === 1) {

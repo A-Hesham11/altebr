@@ -224,15 +224,13 @@ import { t } from "i18next";
 import React, { useContext, useMemo, useState } from "react";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useFetch } from "../../hooks";
-import FinalPreviewBillData from "../../components/selling/selling components/bill/FinalPreviewBillData";
 import { Button } from "../../components/atoms";
-import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { Selling_TP } from "./PaymentSellingPage";
 import billLogo from "../../assets/bill-logo.png";
-import { formatDate } from "../../utils/date";
 import { Cards_Props_TP } from "../../components/templates/bankCards/ViewBankCards";
+import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
 
 type Client_TP = {
   amount: number;
@@ -253,61 +251,13 @@ type SellingFinalPreviewProps_TP = {
   sellingItemsData: any;
   invoiceNumber: any;
 };
-export const Zatca = ({
-  ItemsTableContent,
-  setStage,
-  paymentData,
-  // clientData,
-  // costDataAsProps,
-  sellingItemsData,
-  invoiceNumber,
-}: SellingFinalPreviewProps_TP) => {
-  // const [printStatus, setPrintStatus] = useState("block")
-  // const handlePrint = () => {
-  //     window.print();
-  // };
-
-  // const [printContent, setPrintContent] = useState(null);
-
-  // const handlePrintClick = () => {
-  //   const contentToPrint = document.getElementsByName('content-to-print');
-  //   // setPrintContent(contentToPrint.innerHTML);
-  //   window.print();
-  // };
-  // get client data
-  // const { client_value, client_id, client_name } = clientData;
-
-  const [search, setSearch] = useState("");
+export const Zatca = ({ paymentData }: SellingFinalPreviewProps_TP) => {
   const [page, setPage] = useState(1);
   const [invoiceInfo, setInvoiceInfo] = useState(null);
 
   const { userData } = useContext(authCtx);
 
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
-
-  const { data } = useFetch<Client_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<Client_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
-
-  const {
-    data: invoiceData,
-    isLoading,
-    isFetching,
-    isRefetching,
-    refetch,
-  } = useFetch({
+  const { data: invoiceData } = useFetch({
     queryKey: ["selling-invoice-data"],
     endpoint: `selling/api/v1/invoices_per_branch/${userData?.branch_id}?page=${page}`,
     select: (invoice) => {
@@ -315,7 +265,6 @@ export const Zatca = ({
     },
     pagination: true,
   });
-  console.log("🚀 ~ ViewSellingInvoice ~ invoiceData:", invoiceData);
 
   const { data: clientInfo } = useFetch<Client_TP>({
     endpoint: `branchManage/api/v1/clients/${invoiceData?.client_id}`,
@@ -389,9 +338,6 @@ export const Zatca = ({
   }, 0);
 
   const costDataAsProps = {
-    // totalCommissionRatio,
-    // ratioForOneItem,
-    // totalCommissionTaxes,
     totalItemsTaxes,
     totalFinalCost,
     totalCost,
@@ -502,33 +448,8 @@ export const Zatca = ({
               sellingItemsData={sellingItemsData}
             /> */}
           </div>
-          <div className="text-center">
-            <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
-              {data && data?.sentence}
-            </p>
-            <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-              <p>
-                {" "}
-                العنوان : {userData?.branch?.country?.name} ,{" "}
-                {userData?.branch?.city?.name} ,{" "}
-                {userData?.branch?.district?.name}
-              </p>
-              <p>
-                {t("phone")}: {companyData?.[0]?.phone}
-              </p>
-              <p>
-                {t("email")}: {companyData?.[0]?.email}
-                {t("email")}: {companyData?.[0]?.email}
-              </p>
-              <p>
-                {t("tax number")}:{" "}
-                {taxRegisteration || ""}
-              </p>
-              <p>
-                {t("Mineral license")}:{" "}
-                {mineralLicence || ""}
-              </p>
-            </div>
+          <div>
+            <InvoiceFooter />
           </div>
         </div>
       </div>

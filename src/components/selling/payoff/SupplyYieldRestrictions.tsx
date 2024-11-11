@@ -22,19 +22,25 @@ import { BiSpreadsheet } from "react-icons/bi";
 import { RejectedItemsAccountingEntry } from "../recieve items/RejectedItemsAccountingEntry";
 import RejectedItemsInvoice from "../recieve items/RejectedItemsInvoice";
 import { SupplyYieldRestrictionsEntry } from "./SupplyYieldRestrictionsEntry";
+import { BoxesDataBase } from "../../atoms/card/BoxesDataBase";
+import WasteSupplyRejectedEntry from "./WasteSupplyRejectedEntry";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 export const SupplyYieldRestrictions = ({}) => {
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const { userData } = useContext(authCtx);
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ dataSource:", dataSource);
+  console.log("🚀 ~ SupplyYieldRestrictions ~ dataSource:", dataSource);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const [openInvoiceModal, setOpenInvoiceModal] = useState(false);
   const [restrictModal, setOpenRestrictModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(0);
-  const [stage, setStage] = useState(1)
+  console.log("🚀 ~ SupplyYieldRestrictions ~ selectedItem:", selectedItem);
+  const [stage, setStage] = useState(1);
+  const { formatReyal, formatGram } = numberContext();
+
   const { data, isSuccess, refetch, isRefetching, isLoading } = useFetch({
     endpoint:
       search === ""
@@ -61,7 +67,7 @@ export const SupplyYieldRestrictions = ({}) => {
       },
       {
         cell: (info: any) => {
-          const itemsCount = info.row.original.items.length
+          const itemsCount = info.row.original.items.length;
           return itemsCount;
         },
         accessorKey: "count_items",
@@ -98,6 +104,112 @@ export const SupplyYieldRestrictions = ({}) => {
     ],
     [data, dataSource]
   );
+
+  const tableColumn = useMemo<any>(
+    () => [
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "id",
+        header: () => <span>{t("item number")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "hwya",
+        header: () => <span>{t("identification")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "classification",
+        header: () => <span>{t("classification")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "category",
+        header: () => <span>{t("category")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "weight",
+        header: () => <span>{t("weight")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "karat",
+        header: () => <span>{t("gold karat")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        accessorKey: "wage",
+        header: () => <span>{t("wage")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          info.getValue()
+            ? formatReyal(
+                Number(info.row.original.weight * info.row.original.wage)
+              )
+            : "",
+        accessorKey: "wage_total",
+        header: () => <span>{t("total wages")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          selectedItem?.api_gold_price
+            ? formatReyal(Number(selectedItem?.api_gold_price))
+            : "---",
+        accessorKey: "api_gold_price",
+        header: () => <span>{t("selling price")}</span>,
+      },
+    ],
+    []
+  );
+
+  const total24 = selectedItem?.items?.[0]?.allboxes?.karat24 || 0;
+  const total22 = selectedItem?.items?.[0]?.allboxes?.karat22 || 0;
+  const total21 = selectedItem?.items?.[0]?.allboxes?.karat21 || 0;
+  const total18 = selectedItem?.items?.[0]?.allboxes?.karat18 || 0;
+  const allCounts = selectedItem?.items?.[0]?.allboxes?.allcounts || 0;
+  const totalWages = selectedItem?.items?.[0]?.allboxes?.wage_total || 0;
+
+  const totals = [
+    {
+      name: t("عدد القطع"),
+      key: crypto.randomUUID(),
+      unit: t(""),
+      value: allCounts,
+    },
+    {
+      name: "إجمالي وزن 24",
+      key: crypto.randomUUID(),
+      unit: t("gram"),
+      value: formatGram(total24),
+    },
+    {
+      name: "إجمالي وزن 22",
+      key: crypto.randomUUID(),
+      unit: t("gram"),
+      value: formatGram(total22),
+    },
+    {
+      name: "إجمالي وزن 21",
+      key: crypto.randomUUID(),
+      unit: t("gram"),
+      value: formatGram(total21),
+    },
+    {
+      name: t("إجمالي وزن 18"),
+      key: crypto.randomUUID(),
+      unit: t("gram"),
+      value: formatGram(total18),
+    },
+    {
+      name: t("total wages"),
+      key: crypto.randomUUID(),
+      unit: t("ryal"),
+      value: formatReyal(totalWages),
+    },
+  ];
 
   // use effects
   useEffect(() => {
@@ -193,13 +305,70 @@ export const SupplyYieldRestrictions = ({}) => {
       >
         <RejectedItemsInvoice item={selectedItem} />
       </Modal>
-      <Modal isOpen={restrictModal} onClose={() => setOpenRestrictModal(false)}>
+      {/* <Modal isOpen={restrictModal} onClose={() => setOpenRestrictModal(false)}>
         <SupplyYieldRestrictionsEntry
           selectedItem={selectedItem}
           setStage={setStage}
           isInPopup
         />
-      </Modal>
+      </Modal> */}
+
+      {selectedItem?.boxes2?.length === 0 ? (
+        <Modal
+          isOpen={restrictModal}
+          onClose={() => setOpenRestrictModal(false)}
+        >
+          <SupplyYieldRestrictionsEntry
+            selectedItem={selectedItem}
+            setStage={setStage}
+            isInPopup
+          />
+        </Modal>
+      ) : (
+        <Modal
+          isOpen={restrictModal}
+          onClose={() => setOpenRestrictModal(false)}
+        >
+          <ul className="grid grid-cols-4 gap-6 mb-5 md:mb-16 mt-14">
+            {totals.map(({ name, key, unit, value }) => (
+              <BoxesDataBase variant="secondary" key={key}>
+                <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl">
+                  {name}
+                </p>
+                <p className="bg-white px-2 py-[7px] text-black rounded-b-xl">
+                  {value} {t(unit)}
+                </p>
+              </BoxesDataBase>
+            ))}
+          </ul>
+          <Table
+            data={selectedItem?.items}
+            columns={tableColumn}
+            showNavigation
+          ></Table>
+          <div className="my-6">
+            <h2 className="text-xl mb-5 font-bold">
+              {t("Accounting entry for returning parts to management")}{" "}
+              {selectedItem && selectedItem?.branch_is_wasting === 1 && (
+                <span>({t("Convert new pieces to fractions")})</span>
+              )}
+            </h2>
+            <WasteSupplyRejectedEntry
+              boxes={selectedItem?.boxes || []}
+              currentBox={1}
+            />
+          </div>
+          <div className="my-6">
+            <h2 className="text-xl mb-5 font-bold">
+              {t("Accounting entry for wasted wages")}
+            </h2>
+            <WasteSupplyRejectedEntry
+              boxes={selectedItem?.boxes2 || []}
+              currentBox={2}
+            />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
