@@ -72,6 +72,7 @@ export const SellingTableInputData = ({
   console.log("🚀 ~ userData:", userData);
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
+  console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch);
 
   const priceWithCommissionRate =
     dataSource &&
@@ -540,7 +541,10 @@ export const SellingTableInputData = ({
                 type="text"
                 required
                 onChange={(e) => {
-                  setFieldValue("taklfa", (+e.target.value / 1.15).toFixed(2));
+                  setFieldValue(
+                    "taklfa",
+                    (+e.target.value / (+TaxRateOfBranch + 1)).toFixed(2)
+                  );
                 }}
                 disabled={userData?.include_tax === "0"}
                 className={`${
