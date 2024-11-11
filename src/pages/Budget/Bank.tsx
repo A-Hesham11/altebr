@@ -27,6 +27,18 @@ const Bank = () => {
         </Link>
       ),
     },
+    {
+      icon: receiveMoney,
+      title_ar: "السحب",
+      title_en: "withdrawal",
+      route: "/bank/withdrawal",
+    },
+    {
+      icon: receiveMoney,
+      title_ar: "الايداع",
+      title_en: "deposit",
+      route: "/bank/deposit",
+    },
   ];
 
   return (

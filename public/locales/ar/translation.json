@@ -1432,5 +1432,14 @@
   "Accounting entry for wasted wages": "القيد المحاسبي لهدر الاجور",
   "Who should bear the waste?": "يجب اختيار من يتحمل الهدر",
   "The parts were returned to the administration.": "تم رد  القطع الي الادارة",
-  "ID code must be entered": "يجب ادخال كود الهوية"
+  "ID code must be entered": "يجب ادخال كود الهوية",
+  "withdrawal": "سحب",
+  "total cash amount": "اجمالي النقدية",
+  "total bank account amount": "اجمالي البنك",
+  "withdrawal amount": "مبلغ السحب",
+  "deposit amount": "مبلغ الايداع",
+  "loading withdrawal": "تحميل بيانات السحب",
+  "loading deposit": "تحميل بيانات الايداع",
+  "deposit": "ايداع",
+  "there is no data to make deposit": "لا يوجد بيانات ايداع"
 }
