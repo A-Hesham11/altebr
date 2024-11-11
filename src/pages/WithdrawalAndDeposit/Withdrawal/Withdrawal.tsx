@@ -14,15 +14,16 @@ import WithdrawalTable from "./WithdrawalTable";
 import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
-import { formatDate } from "../../../utils/date";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { notify } from "../../../utils/toast";
 import { mutateData } from "../../../utils/mutateData";
 import { Loading } from "../../../components/organisms/Loading";
+import { ClientData_TP } from "../../selling/PaymentSellingPage";
 
 const Withdrawal = () => {
   const [showOperationPopup, setShowOperationPopup] = useState(false);
   const [selectedBankData, setSelectedBankData] = useState(null);
+  const [page, setPage] = useState(1);
   const [selectedAccountData, setSelectedAccountData] = useState(null);
   const [mainCardData, setMainCardData] = useState([]);
   const [withdrawalFiles, setWithdrawalFiles] = useState([]);
@@ -48,9 +49,19 @@ const Withdrawal = () => {
     isRefetching: withdrawalDataIsRefetch,
     refetch: withdrawalDataRefetch,
   } = useFetch({
-    endpoint: `/aTM/api/v1/withDrow/${userData?.branch_id}`,
+    endpoint: `/aTM/api/v1/withDrow/${userData?.branch_id}?page=${page}`,
     queryKey: ["all-withdrawal-data"],
+    pagination: true,
   });
+
+  const { data: naqdya } = useFetch<ClientData_TP>({
+    endpoint: `/buyingUsedGold/api/v1/get-nadya-box/${userData?.branch_id}`,
+    queryKey: ["naqdya"],
+    onError: (error) => {
+      notify("info", error?.response?.data?.msg);
+    },
+  });
+  console.log("🚀 ~ Withdrawal ~ naqdya:", naqdya);
 
   const {
     data: allBanksOption,
@@ -141,7 +152,21 @@ const Withdrawal = () => {
   });
 
   const handleSubmit = (values: any) => {
-    console.log("🚀 ~ handleSubmit ~ values:", values);
+    if (+values?.cash <= 0) {
+      notify("error", `${t("you should type number greater than 0")}`);
+      return;
+    }
+
+    if (
+      +values?.cash >
+      accountsDetailsData?.base?.debtor - accountsDetailsData?.base?.creditor
+    ) {
+      notify(
+        "error",
+        `${t("the withdrawal amount is greater than the available in account")}`
+      );
+      return;
+    }
 
     const formatedValue = {
       branch_id: userData?.branch_id,
@@ -160,6 +185,10 @@ const Withdrawal = () => {
     });
   };
 
+  useEffect(() => {
+    withdrawalDataRefetch();
+  }, [page]);
+
   if (
     withdrawalDataIsLoading ||
     withdrawalDataIsFetching ||
@@ -174,25 +203,31 @@ const Withdrawal = () => {
           <>
             <div className="overflow-hidden">
               <div className="relative h-full p-10">
-                <div>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-base font-bold">{t("withdrawal")}</h2>
+                  <div className="flex gap-4">
+                    <Button type="button" action={handleShowPopup} className="">
+                      {t("withdrawal")}
+                    </Button>
+                    <Back />
+                  </div>
+                </div>
+                {/* <div>
                   <div className="flex justify-end">
                     <Back />
                   </div>
                   <h2 className="mb-4 text-base font-bold">
                     {t("withdrawal")}
                   </h2>
-                </div>
-                <CashAndAccountTotals />
+                </div> */}
+                {/* <CashAndAccountTotals /> */}
 
                 <div className="my-12">
-                  <Button
-                    type="button"
-                    action={handleShowPopup}
-                    className="flex mr-auto mb-6 gap-2"
-                  >
-                    {t("withdrawal")}
-                  </Button>
-                  <WithdrawalTable data={withdrawalData || []} />
+                  <WithdrawalTable
+                    setPage={setPage}
+                    page={page}
+                    data={withdrawalData || []}
+                  />
                 </div>
               </div>
             </div>
@@ -263,18 +298,30 @@ const Withdrawal = () => {
                       label={`${t("date")}`}
                       placeholder={`${t("date")}`}
                       name="bond_date"
+                      disabled
                       // value={values.from}
                     />
                   </div>
 
-                  <BaseInputField
-                    id="cash"
-                    label={`${t("withdrawal amount")}`}
-                    name="cash"
-                    type="text"
-                    placeholder={`${t("withdrawal amount")}`}
-                    required
-                  />
+                  <div>
+                    <BaseInputField
+                      id="cash"
+                      label={
+                        <div className="flex justify-between items-center">
+                          <span> {t("withdrawal amount")}</span>{" "}
+                          <span className="text-mainGreen">
+                            {t("total cash amount")}{" "}
+                            {formatReyal(+naqdya?.nadya_box + +values?.cash)}
+                          </span>
+                        </div>
+                      }
+                      name="cash"
+                      type="number"
+                      min={1}
+                      placeholder={`${t("withdrawal amount")}`}
+                      required
+                    />
+                  </div>
 
                   <div className="mt-4 w-60">
                     {
