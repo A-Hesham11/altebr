@@ -25,6 +25,7 @@ type CreateHonestSanadProps_TP = {
   invoiceNumber: any;
   selectedItemDetails: any;
   sellingItemsOfWeigth: any;
+  invoiceHeaderData: any;
 };
 const SellingInvoiceData = ({
   setStage,
@@ -34,6 +35,7 @@ const SellingInvoiceData = ({
   invoiceNumber,
   selectedItemDetails,
   sellingItemsOfWeigth,
+  invoiceHeaderData
 }: CreateHonestSanadProps_TP) => {
   console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ clientData:", clientData);
@@ -420,10 +422,11 @@ const SellingInvoiceData = ({
           ItemsTableContent={<SellingTableComp />}
           setStage={setStage}
           paymentData={paymentData}
-          clientData={clientData}
+          // clientData={clientData}
+          invoiceHeaderData={invoiceHeaderData}
           sellingItemsData={sellingItemsData}
           costDataAsProps={costDataAsProps}
-          invoiceNumber={invoiceNumber}
+          // invoiceNumber={invoiceNumber}
           isSuccess={isSuccess}
           responseSellingData={responseSellingData}
         />

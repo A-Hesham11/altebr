@@ -10,6 +10,7 @@ import { AuthCtxProvider } from "./context/auth-and-perm/auth";
 import { NumberFormatterProvider } from "./context/settings/number-formatter";
 import "./index.css";
 import { PermissionProvider } from "react-permission-role";
+import { GlobalDataProvider } from "./context/settings/GlobalData";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,15 +28,17 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <BrowserRouter>
       <AuthCtxProvider>
         <NumberFormatterProvider>
-          <HelmetProvider>
-            <ProSidebarProvider>
-              <Suspense fallback={<Loading mainTitle="جاري التحميل" />}>
-                <PermissionProvider>
-                  <App />
-                </PermissionProvider>
-              </Suspense>
-            </ProSidebarProvider>
-          </HelmetProvider>
+          <GlobalDataProvider>
+            <HelmetProvider>
+              <ProSidebarProvider>
+                <Suspense fallback={<Loading mainTitle="جاري التحميل" />}>
+                  <PermissionProvider>
+                    <App />
+                  </PermissionProvider>
+                </Suspense>
+              </ProSidebarProvider>
+            </HelmetProvider>
+          </GlobalDataProvider>
         </NumberFormatterProvider>
       </AuthCtxProvider>
     </BrowserRouter>

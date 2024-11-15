@@ -85,6 +85,7 @@ const DynamicTransformToBranch = ({
       setSearch("");
     },
     pagination: true,
+    enabled: !!search
   });
 
   // BOXES DATA

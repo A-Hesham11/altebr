@@ -17,6 +17,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { GiCheckMark, GiTakeMyMoney } from "react-icons/gi";
 import { formatDate } from "../../utils/date";
 import { Modal } from "../../components/molecules";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
+import { BsDatabase } from "react-icons/bs";
 
 const SellingHome = () => {
   const { logOutHandler, userData, isLoggingOut, open, setOpen } =
@@ -34,6 +36,9 @@ const SellingHome = () => {
   );
 
   const [isDeparture, setIsDeparture] = useState(false);
+
+  const { gold_price } = GlobalDataContext();
+  console.log("🚀 ~ SellingHome ~ gold_price:", gold_price);
 
   // Assuming currentTime is in the format 'HH:mm:ss'
   const targetTime = new Date(); // Replace this with the actual current time
@@ -115,21 +120,52 @@ const SellingHome = () => {
   }
 
   return (
-    <div className="selling h-screen pb-8 px-16">
+    <div className="selling h-screen pb-8 px-8">
       <div className="flex justify-between pb-5 items-end px-20">
         <div className="bg-slate-100 pb-4 px-4 rounded-b-xl">
           <img src={logo} alt="logo" className="w-[50px] mt-5" />
         </div>
-        <h2 className="text-center font-bold md:text-xl text-white">
+        {/* <h2 className="text-center font-bold md:text-xl text-white">
           {t("welcome")}
           <span className="text-mainOrange">
             {" "}
             {t("branch")} {userData?.branch_name}
           </span>
-        </h2>
+        </h2> */}
+        {gold_price && (
+          <div className="flex gap-x-8">
+            <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
+              <BsDatabase className="fill-white" />
+              <p className=" border-l border-[#FFA34B] px-1">{t("karat 18")}</p>
+              <p className="px-1">{gold_price?.price_gram_18k}</p>
+            </div>
+
+            <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
+              <BsDatabase className="fill-white" />
+              <p className=" border-l border-[#FFA34B] px-1">{t("karat 21")}</p>
+              <p className="px-1">{gold_price?.price_gram_21k}</p>
+            </div>
+
+            <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
+              <BsDatabase className="fill-white" />
+              <p className=" border-l border-[#FFA34B] px-1">{t("karat 22")}</p>
+              <p className="px-1">{gold_price?.price_gram_22k}</p>
+            </div>
+
+            <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
+              <BsDatabase className="fill-white" />
+              <p className=" border-l border-[#FFA34B] px-1">{t("karat 24")}</p>
+              <p className="px-1">{gold_price?.price_gram_24k}</p>
+            </div>
+          </div>
+        )}
         <div className="flex justify-end items-center gap-2 ">
           <span className="text-white">
             {t("welcome")} {userData?.name}
+          </span>
+          <span className="text-mainOrange">
+            {" "}
+            {t("branch")} {userData?.branch_name}
           </span>
           <BiLogOut
             className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
@@ -186,7 +222,7 @@ const SellingHome = () => {
               navigate("/selling/balances");
             }}
           >
-            <GiTakeMyMoney 
+            <GiTakeMyMoney
               className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
               size={30}
             />

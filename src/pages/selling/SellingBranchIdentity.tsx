@@ -45,7 +45,7 @@ export const SellingBranchIdentity = () => {
   const { formatGram, formatReyal } = numberContext();
   // const [selectedItems, setSelectedItems] = useState([]);
   // console.log("🚀 ~ SellingBranchIdentity ~ selectedItem:", selectedItems);
-  const [returnItemsModel, setReturnItemsModel] = useState(false)
+  const [returnItemsModel, setReturnItemsModel] = useState(false);
 
   const navigate = useNavigate();
 
@@ -62,7 +62,7 @@ export const SellingBranchIdentity = () => {
   //     const isItemSelected = prevSelected.some(
   //       (selectedItem) => selectedItem.hwya === item.hwya
   //     );
-  
+
   //     if (isItemSelected) {
   //       return prevSelected.filter((selectedItem) => selectedItem.hwya !== item.hwya);
   //     } else {
@@ -208,8 +208,7 @@ export const SellingBranchIdentity = () => {
       setDataSource(data.data);
     },
   });
-  console.log("🚀 ~ SellingBranchIdentity ~ data:", data)
-
+  console.log("🚀 ~ SellingBranchIdentity ~ data:", data);
 
   const queryClient = useQueryClient();
   const {
@@ -241,9 +240,6 @@ export const SellingBranchIdentity = () => {
   //   });
   // }
 
-  
-
- 
   const total24 = (data && data?.data[0]?.allboxes.karat24) || 0;
   const total22 = (data && data?.data[0]?.allboxes.karat22) || 0;
   const total21 = (data && data?.data[0]?.allboxes.karat21) || 0;
@@ -455,7 +451,10 @@ export const SellingBranchIdentity = () => {
         ))}
       </ul>
       <div className="flex justify-end mb-4">
-        <Button loading={returnLoading} action={() => setReturnItemsModel(true)}>
+        <Button
+          loading={returnLoading}
+          action={() => setReturnItemsModel(true)}
+        >
           {t("return items")}
         </Button>
       </div>
@@ -507,15 +506,15 @@ export const SellingBranchIdentity = () => {
       </Modal>
 
       <Modal
-          isOpen={returnItemsModel}
-          onClose={() => setReturnItemsModel(false)}
-        >
-          <ReturnItemsToEdaraModal
-            refetch={refetch}
-            setPage={setPage}
-            setReturnItemsModel={setReturnItemsModel}            
-          />
-        </Modal>
+        isOpen={returnItemsModel}
+        onClose={() => setReturnItemsModel(false)}
+      >
+        <ReturnItemsToEdaraModal
+          refetch={refetch}
+          setPage={setPage}
+          setReturnItemsModel={setReturnItemsModel}
+        />
+      </Modal>
     </div>
   );
 };

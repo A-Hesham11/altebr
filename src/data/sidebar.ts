@@ -286,6 +286,20 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: "Waste",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "Waste bonds",
+        link: "/wasteBonds",
+        icon: CiExport,
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: "Expenses",
     icon: CiExport,
     items: [

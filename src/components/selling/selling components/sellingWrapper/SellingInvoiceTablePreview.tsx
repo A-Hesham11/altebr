@@ -18,6 +18,8 @@ import { InvoiceDownloadAsPDF } from "../../../../utils/InvoiceDownloadAsPDF";
 import Html2Pdf from "js-html2pdf";
 import { convertNumToArWord } from "../../../../utils/number to arabic words/convertNumToArWord";
 import InvoiceFooter from "../../../Invoice/InvoiceFooter";
+import InvoiceHeader from "../../../Invoice/InvoiceHeader";
+import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 
 type Entry_TP = {
   bian: string;
@@ -31,12 +33,23 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
+  const { invoice_logo } = GlobalDataContext();
 
-  const clientData = {
+  // const clientData = {
+  //   client_id: item?.client_id,
+  //   client_value: item?.client_name,
+  //   bond_date: item?.invoice_date,
+  //   supplier_id: item?.supplier_id,
+  // };
+
+  const invoiceHeaderData = {
     client_id: item?.client_id,
     client_value: item?.client_name,
     bond_date: item?.invoice_date,
     supplier_id: item?.supplier_id,
+    invoice_number: item?.invoice_number,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -219,10 +232,12 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         >
           <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
             <div className="mx-5 bill-shadow rounded-md p-6">
-              <FinalPreviewBillData
+              {/* <FinalPreviewBillData
                 clientData={clientData}
                 invoiceNumber={item?.invoice_number}
-              />
+              /> */}
+
+              <InvoiceHeader invoiceHeaderData={invoiceHeaderData} />
             </div>
 
             <div className="">

@@ -4,6 +4,7 @@ import { Button } from "../../atoms";
 import FinalPreviewBillData from "./bill/FinalPreviewBillData";
 import FinalPreviewBillPayment from "./bill/FinalPreviewBillPayment";
 import InvoiceFooter from "../../Invoice/InvoiceFooter";
+import InvoiceHeader from "../../Invoice/InvoiceHeader";
 
 type Client_TP = {
   amount: number;
@@ -25,6 +26,7 @@ type SellingFinalPreviewProps_TP = {
   invoiceNumber: any;
   isSuccess: any;
   responseSellingData: any;
+  invoiceHeaderData: any;
 };
 export const SellingFinalPreview = ({
   ItemsTableContent,
@@ -36,17 +38,18 @@ export const SellingFinalPreview = ({
   invoiceNumber,
   isSuccess,
   responseSellingData,
+  invoiceHeaderData,
 }: SellingFinalPreviewProps_TP) => {
-
   return (
     <div className="relative h-full p-10 bg-flatWhite">
       <div id="content-to-print">
         <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
           <div className="mx-5 bill-shadow rounded-md p-6">
-            <FinalPreviewBillData
+            {/* <FinalPreviewBillData
               clientData={clientData}
               invoiceNumber={invoiceNumber}
-            />
+            /> */}
+            <InvoiceHeader invoiceHeaderData={invoiceHeaderData} />
           </div>
 
           {ItemsTableContent}

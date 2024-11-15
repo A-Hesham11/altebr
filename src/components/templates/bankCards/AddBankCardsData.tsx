@@ -105,6 +105,7 @@ const AddBankCardsData = ({
   };
 
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
+  console.log("🚀 ~ dataSource:", dataSource)
 
   const {
     data,
@@ -286,7 +287,7 @@ const AddBankCardsData = ({
                         />
                       </div>
 
-                      {isMaxDiscountLimit == 1 &&
+                      {isMaxDiscountLimit == 1 ||
                       editData?.max_discount_limit ? (
                         <>
                           <BaseInputField

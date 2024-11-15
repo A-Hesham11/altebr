@@ -18,11 +18,10 @@ import { SelectOption_TP } from "../../../types";
 import { BiSearchAlt } from "react-icons/bi";
 import { formatDate } from "../../../utils/date";
 import { Loading } from "../../../components/organisms/Loading";
-import ReturnItemsToEdaraTable from "./ReturnItemsToEdaraTable";
 import { Employee_TP } from "../../../pages/employees/employees-types";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { useQueryClient } from "@tanstack/react-query";
-import { GlobalDataContext } from "../../../context/settings/GlobalData";
+import ReturnItemsToEdaraTable from "../../../components/selling/payoff/ReturnItemsToEdaraTable";
 
 const ReturnItemsToEdaraModal = ({
   transformToBranchDynamicModal,
@@ -30,7 +29,6 @@ const ReturnItemsToEdaraModal = ({
   setOperationTypeSelect,
   setReturnItemsModel,
 }: any) => {
-  const [goldPriceToday, setGoldPriceToday] = useState("");
   const [search, setSearch] = useState("");
   console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
@@ -43,18 +41,16 @@ const ReturnItemsToEdaraModal = ({
   console.log("🚀 ~ mainData:", mainData);
   const [steps, setSteps] = useState(1);
   const [files, setFiles] = useState([]);
-  const [isBranchWaste, setIsBranchWaste] = useState(false);
+  const [isBranchWaste, setIsBranchWaste] = useState(true);
   console.log("🚀 ~ isBranchWaste:", isBranchWaste);
-  const { gold_price } = GlobalDataContext();
-  console.log("🚀 ~ gold_price:", gold_price);
 
   const operationTypeSelectWeight = dataSource?.filter(
     (el: any) => el.check_input_weight !== 0
   );
+  console.log("🚀 ~ operationTypeSelectWeight:", operationTypeSelectWeight);
 
   const initialValues = {
     branch_id: "",
-    gold_price: gold_price?.price_gram_24k || "",
     sanad_type: "",
     weight_input: "",
     search: "",
@@ -71,7 +67,8 @@ const ReturnItemsToEdaraModal = ({
     refetch: edaraRefetch,
   } = useFetch({
     queryKey: ["return-edara", search],
-    endpoint: `/branchManage/api/v1/all-accepted/${userData?.branch_id}?hwya[eq]=${search}`,
+    // endpoint: `/branchManage/api/v1/all-accepted/${userData?.branch_id}?hwya[eq]=${search}`,
+    endpoint: `/identity/api/v1/getWastingEdaraaPieces?hwya[eq]=${search}`,
     onSuccess: (data) => {
       console.log("🚀 ~ data:", data);
       if (data?.data?.length === 0) {
@@ -134,7 +131,7 @@ const ReturnItemsToEdaraModal = ({
 
   function PostNewValue(value: any) {
     mutate({
-      endpointName: "/mordItems/api/v1/morditems-to-edraa",
+      endpointName: "/wastingGold/api/v1/wastingitems-to-edraa",
       values: value,
       method: "post",
       dataType: "formData",
@@ -146,36 +143,29 @@ const ReturnItemsToEdaraModal = ({
   }, [transformToBranchDynamicModal]);
 
   const handleSubmit = (values: any) => {
-    const weightComparison = mainData.map((mainItem, index) => {
-      const operationItem = operationTypeSelectWeight[index];
+    // const weightComparison = mainData.map((mainItem, index) => {
+    //   const operationItem = operationTypeSelectWeight[index];
 
-      if (!operationItem) return null;
+    //   if (!operationItem) return null;
 
-      return {
-        mainDataId: mainItem.id,
-        operationTypeSelectWeightId: operationItem.id,
-        isOperationWeightLess: operationItem.weight > mainItem.weight,
-      };
-    });
+    //   return {
+    //     mainDataId: mainItem.id,
+    //     operationTypeSelectWeightId: operationItem.id,
+    //     // isOperationWeightLess: operationItem.weight > mainItem.weight,
+    //   };
+    // });
 
-    if (weightComparison?.some((item) => item.isOperationWeightLess === true)) {
-      notify("info", `${t("Weight is greater than the maximum limit")}`);
-      return;
-    }
+    // if (weightComparison?.some((item) => item.isOperationWeightLess === true)) {
+    //   notify("info", `${t("Weight is greater than the maximum limit")}`);
+    //   return;
+    // }
 
     PostNewValue({
-      branch_id: userData?.branch_id,
-      api_gold_price: gold_price?.price_gram_24k,
-      entity_gold_price: gold_price?.price_gram_24k,
-      type: "normal",
-      branch_is_wasting: isBranchWaste ? 1 : 0,
-      items: operationTypeSelectWeight.map((el, i) => {
+      items: dataSource?.map((el, i) => {
         return {
-          id: el.thwelbond_id,
+          id: el.id,
           hwya: el.hwya,
           front: el.front,
-          weight: el.weight,
-          isItemWeight: el.category_selling_type === "all" ? 1 : 0,
         };
       }),
     });
@@ -225,7 +215,7 @@ const ReturnItemsToEdaraModal = ({
               </div>
 
               <div>
-                <Checkbox
+                {/* <Checkbox
                   label={t("The branch bears the waste")}
                   labelClassName="text-lg"
                   type="checkbox"
@@ -243,7 +233,7 @@ const ReturnItemsToEdaraModal = ({
                       ? "bg-mainDisabled cursor-not-allowed"
                       : "cursor-pointer"
                   }
-                />
+                /> */}
               </div>
               {steps === 1 && (
                 <div className="flex items-end justify-between">

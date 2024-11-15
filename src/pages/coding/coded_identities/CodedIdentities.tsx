@@ -21,6 +21,7 @@ import ImportTotals from "./ImportTotals";
 import * as fileSaver from "file-saver";
 import { useReactToPrint } from "react-to-print";
 import PrintPage from "../../../components/atoms/print/PrintPage";
+import WastedItemsInEdara from "./WastedItemsInEdara";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -29,17 +30,13 @@ type CodedIdentitiesProps_TP = {
 const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const navigate = useNavigate();
   const [activeClass, setActiveClass] = useState("هويات في الإدارة");
+  console.log("🚀 ~ CodedIdentities ~ activeClass:", activeClass)
   const [dataSource, setDataSource] = useState([]);
   const [page, setPage] = useState(1);
   const [importPageResponse, setImportPageResponse] = useState(1);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
-  console.log(
-    "🚀 ~ CodedIdentities ~ operationTypeSelect:",
-    operationTypeSelect
-  );
   const [importModal, setImportModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
-  console.log("🚀 ~ CodedIdentities ~ importFiles:", importFiles);
   const [importData, setImportData] = useState(null);
   const queryClient = useQueryClient();
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
@@ -48,6 +45,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [piecesState, setPiecesState] = useState([]);
   const [search, setSearch] = useState("");
   const [isSuccessPost, setIsSuccessPost] = useState(false);
+  const [WastedItemsInEdaraModel, setWastedItemsInEdaraModel] = useState(false);
   const [fetchEndPoint, setFetchEndPoint] = useState(
     `identity/api/v1/pieces_in_edara`
   );
@@ -162,11 +160,15 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     setFetchEndPoint(`identity/api/v1/way_to_edara`);
   };
 
-  const handleWastedToEdara = () => {
-    setFetchKey(["Wasted-to-edara-hwya"]);
+  const handleWastingToEdara = () => {
+    setFetchKey(["Wasting-to-edara-hwya"]);
     setFetchEndPoint(`identity/api/v1/wastingPieces`);
   };
 
+  const handleWastedToEdara = () => {
+    setFetchKey(["Wasted-to-edara-hwya"]);
+    setFetchEndPoint(`identity/api/v1/wastedPieces`);
+  };
   // HANDLE PIECE BY WEIGHT
   const handlePieceByWeight = () => {
     setFetchKey(["piece_by_weight"]);
@@ -232,6 +234,8 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       setActiveClass("هويات جاري تسليمها في الإدارة");
     if (buttonName === "هويات مهدرة جاري تسليمها في الإدارة")
       setActiveClass("هويات مهدرة جاري تسليمها في الإدارة");
+    if (buttonName === "هويات تم هدرها من الادارة")
+      setActiveClass("هويات تم هدرها من الادارة");
     if (buttonName === "قطع بالوزن") setActiveClass("قطع بالوزن");
   };
 
@@ -401,7 +405,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           </Button>
           <Button
             action={(e) => {
-              handleWastedToEdara();
+              handleWastingToEdara();
               handleActiveButton(e);
             }}
             className={`${
@@ -411,6 +415,19 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
             } border-2 text-sm border-mainOrange flex items-center gap-2`}
           >
             {t("Wasted IDs being handed over to the administration")}
+          </Button>
+          <Button
+            action={(e) => {
+              handleWastedToEdara();
+              handleActiveButton(e);
+            }}
+            className={`${
+              activeClass === "هويات تم هدرها من الادارة"
+                ? "bg-mainOrange text-white"
+                : "bg-transparent text-mainOrange"
+            } border-2 text-sm border-mainOrange flex items-center gap-2`}
+          >
+            {t("Identities wasted by the administration")}
           </Button>
         </div>
       </div>
@@ -475,6 +492,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           setOperationTypeSelect={setOperationTypeSelect}
           checkboxChecked={checkboxChecked}
           setCheckboxChecked={setCheckboxChecked}
+          activeClass={activeClass}
         />
       </div>
 
@@ -488,6 +506,35 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           operationTypeSelect={operationTypeSelect}
         />
       )}
+
+      {activeClass === "هويات مهدرة جاري تسليمها في الإدارة" && (
+        <Button
+          action={() => {
+            setWastedItemsInEdaraModel(true);
+          }}
+          className="border-2 border-mainGreen bg-mainGreen text-white flex items-center gap-2 w-fit my-4"
+        >
+          <span>{t("waste of parts")}</span>
+        </Button>
+      )}
+
+      <Modal
+        isOpen={WastedItemsInEdaraModel}
+        onClose={() => setWastedItemsInEdaraModel(false)}
+      >
+        <WastedItemsInEdara
+          // setFormData={setFormData}
+          // formData={formData}
+          refetch={refetch}
+          setPage={setPage}
+          setOperationTypeSelect={setOperationTypeSelect}
+          seperateModal={WastedItemsInEdaraModel}
+          setOpenSeperateModal={setWastedItemsInEdaraModel}
+          setIsSuccessPost={setIsSuccessPost}
+          operationTypeSelect={operationTypeSelect}
+          setOpenTransformToBranchModal={setWastedItemsInEdaraModel}
+        />
+      </Modal>
 
       {/* BUTTON TO BACK */}
       <Back className="w-32 self-end mt-6" />
