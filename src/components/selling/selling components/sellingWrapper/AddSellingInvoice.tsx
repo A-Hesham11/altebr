@@ -10,18 +10,21 @@ import * as Yup from "yup";
 import { useFetch } from "../../../../hooks";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { Zatca } from "../../../../pages/selling/Zatca";
+import { formatDate } from "../../../../utils/date";
+import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 
 const AddSellingInvoice = () => {
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
   console.log("🚀 ~ AddSellingInvoice ~ dataSource:", dataSource);
   const [stage, setStage] = useState<number>(1);
   const [clientData, setClientData] = useState<ClientData_TP>();
+  console.log("🚀 ~ AddSellingInvoice ~ clientData:", clientData);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [sellingItemsOfWeigth, setSellingItemsOfWeight] = useState([]);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [invoiceNumber, setInvoiceNumber] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
-
+  const { invoice_logo } = GlobalDataContext();
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ AddSellingInvoice ~ userData:", userData);
 
@@ -90,6 +93,15 @@ const AddSellingInvoice = () => {
     pagination: true,
   });
 
+  const invoiceHeaderData = {
+    client_id: clientData?.client_id,
+    client_value: clientData?.client_value,
+    bond_date: formatDate(clientData?.bond_date),
+    invoice_number: invoiceNumber,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
+  };
+
   return (
     <Formik
       initialValues={initialValues}
@@ -123,10 +135,11 @@ const AddSellingInvoice = () => {
         )}
         {stage === 3 && (
           <SellingInvoiceData
-            invoiceNumber={invoiceNumber}
+            // invoiceNumber={invoiceNumber}
             sellingItemsData={sellingItemsData}
             paymentData={paymentData}
-            clientData={clientData}
+            // clientData={clientData}
+            invoiceHeaderData={invoiceHeaderData}
             setStage={setStage}
             selectedItemDetails={selectedItemDetails}
             sellingItemsOfWeigth={sellingItemsOfWeigth}

@@ -10,12 +10,15 @@ import InvoiceTable from "../selling components/InvoiceTable";
 import FinalPreviewBillPayment from "../selling components/bill/FinalPreviewBillPayment";
 import InvoiceFooter from "../../Invoice/InvoiceFooter";
 import { numberContext } from "../../../context/settings/number-formatter";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
+import InvoiceHeader from "../../Invoice/InvoiceHeader";
 
 const RejectedItemsInvoice = ({ item }: any) => {
   console.log("🚀 ~ RejectedItemsInvoice ~ item:", item);
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
+  const { invoice_logo } = GlobalDataContext();
 
   const clientData = {
     client_id: item?.client_id,
@@ -201,7 +204,7 @@ const RejectedItemsInvoice = ({ item }: any) => {
     // totalFinalCost,
     // totalGoldAmountGram,
     isBranchWasted: item?.boxes2?.length !== 0 ? true : false,
-    recipientSignature: true
+    recipientSignature: true,
   };
 
   const handlePrint = useReactToPrint({
@@ -262,7 +265,9 @@ const RejectedItemsInvoice = ({ item }: any) => {
             data={item?.items}
             columns={item?.boxes2?.length !== 0 ? ColsWasted : Cols}
             costDataAsProps={costDataAsProps}
-            resultTable={item?.boxes2?.length !== 0 ? resultTableWasted : resultTable}
+            resultTable={
+              item?.boxes2?.length !== 0 ? resultTableWasted : resultTable
+            }
           ></InvoiceTable>
 
           <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">

@@ -151,6 +151,8 @@ import sms from "../../assets/sms.svg";
 import lock from "../../assets/lock.svg";
 import eyeShow from "../../assets/eye-show.svg";
 import eyeHide from "../../assets/eye-hide.svg";
+import { BsDatabase } from "react-icons/bs";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
 ///
 /////////// Types
 ///
@@ -166,6 +168,8 @@ const loginSchema = Yup.object().shape({
 
 export const LoginForm = () => {
   const [PassToggle, setPassToggle] = useState(false);
+
+  const { gold_price } = GlobalDataContext();
 
   const isRTL = useIsRTL();
 
@@ -191,7 +195,7 @@ export const LoginForm = () => {
           alt="logo"
         />
 
-        <div className="text-center text-white mt-12 my-5">
+        <div className="text-center text-white mt-8 my-5">
           <h1 className="font-bold leading-normal text-xl my-1">
             {t("the login")}
           </h1>
@@ -314,6 +318,42 @@ export const LoginForm = () => {
               >
                 {t("the login")}
               </Button>
+
+              {gold_price && (
+                <div className="fixed left-1/2 -translate-x-1/2 bottom-12  flex gap-8">
+                  <div className="flex items-center bg-[#295E57] p-2 rounded-lg text-white font-base text-xs">
+                    <BsDatabase className="fill-white text-xl" />
+                    <p className=" border-l  px-1 text-base">{t("karat 18")}</p>
+                    <p className="px-1 text-base">
+                      {gold_price?.price_gram_18k}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center bg-[#295E57] p-2 rounded-lg text-white font-base text-xs">
+                    <BsDatabase className="fill-white text-xl" />
+                    <p className=" border-l px-1 text-base">{t("karat 21")}</p>
+                    <p className="px-1 text-base">
+                      {gold_price?.price_gram_21k}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center bg-[#295E57] p-2 rounded-lg text-white font-base text-xs">
+                    <BsDatabase className="fill-white text-xl" />
+                    <p className=" border-l px-1 text-base">{t("karat 22")}</p>
+                    <p className="px-1 text-base">
+                      {gold_price?.price_gram_22k}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center bg-[#295E57] p-2 rounded-lg text-white font-base text-xs">
+                    <BsDatabase className="fill-white text-xl" />
+                    <p className=" border-l px-1 text-base">{t("karat 24")}</p>
+                    <p className="px-1 text-base">
+                      {gold_price?.price_gram_24k}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </Form>
         </Formik>

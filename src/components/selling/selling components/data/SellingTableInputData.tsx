@@ -27,6 +27,7 @@ import SellingTableInputWeight from "./SellingTableInputWeight";
 import { HiViewGridAdd } from "react-icons/hi";
 import { CLightbox } from "../../../molecules/files/CLightbox";
 import SellingTableInputKit from "./SellingTableInputKit";
+import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 
 type SellingTableInputData_TP = {
   dataSource: any;
@@ -66,7 +67,15 @@ export const SellingTableInputData = ({
   const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] =
     useState<number>();
-  console.log("🚀 ~ editSellingTaklfaAfterTax:", editSellingTaklfaAfterTax);
+  const { gold_price } = GlobalDataContext();
+  console.log("🚀 ~ gold_price:", gold_price);
+
+  const goldPriceFromKarat = {
+    18: gold_price?.price_gram_18k,
+    21: gold_price?.price_gram_21k,
+    22: gold_price?.price_gram_22k,
+    24: gold_price?.price_gram_24k,
+  };
 
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ userData:", userData);
@@ -74,14 +83,21 @@ export const SellingTableInputData = ({
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
   console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch);
 
+  const cost =
+    dataSource?.length && dataSource?.[0].classification_id === 1
+      ? Number(dataSource[0]?.remaining_weight) *
+          (goldPriceFromKarat[Number(dataSource[0]?.karat_name)] +
+            Number(dataSource[0]?.wage)) || 0
+      : dataSource?.[0]?.cost || 0;
+
+  console.log("🚀 ~ cost:", cost);
+
   const priceWithCommissionRate =
     dataSource &&
-    Number(dataSource[0]?.cost) * (Number(dataSource[0]?.min_selling) * 0.01) +
-      Number(dataSource[0]?.cost);
+    Number(cost) * (Number(dataSource[0]?.min_selling) * 0.01) + Number(cost);
 
   const priceWithCommissionCash =
-    dataSource &&
-    Number(dataSource[0]?.cost) + Number(dataSource[0]?.min_selling);
+    dataSource && Number(cost) + Number(dataSource[0]?.min_selling);
 
   const priceWithSellingPolicy =
     dataSource && dataSource[0]?.min_selling_type === "نسبة"
@@ -210,7 +226,9 @@ export const SellingTableInputData = ({
       if (dataSource?.length === 1) {
         setFieldValue(key, dataSource[0][key]);
 
-        setFieldValue("cost", dataSource[0]?.cost?.toFixed(2));
+        // setFieldValue("cost", dataSource[0]?.cost?.toFixed(2));
+
+        setFieldValue("cost", cost && cost);
 
         setFieldValue("weight", dataSource[0]?.remaining_weight);
 

@@ -174,6 +174,7 @@ import WasteSupplyReturnEntry from "../components/selling/payoff/WasteSupplyRetu
 import WithdrawalAndDeposit from "../pages/WithdrawalAndDeposit/Withdrawal/Withdrawal";
 import Withdrawal from "../pages/WithdrawalAndDeposit/Withdrawal/Withdrawal";
 import Deposit from "../pages/WithdrawalAndDeposit/Deposit/Deposit";
+import WastingBonds from "../pages/wasting/WastingBonds";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -333,6 +334,11 @@ export const AllRoutesProvider = () => {
           <Route
             path="/system/policiesSelling"
             element={<ViewSellingPolicies />}
+          />
+
+          <Route
+            path="/wasteBonds"
+            element={<WastingBonds />}
           />
 
           <Route path="/system/excludedItems" element={<ViewExcludedItems />} />

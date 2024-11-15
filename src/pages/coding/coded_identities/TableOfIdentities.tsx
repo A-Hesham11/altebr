@@ -22,7 +22,8 @@ const TableOfIdentities = ({
   isLoading,
   isFetching,
   isRefetching,
-}) => {
+  activeClass,
+}: any) => {
   console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
   // STATE
   const isRTL = useIsRTL();

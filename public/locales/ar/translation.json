@@ -1447,5 +1447,13 @@
   "there is no data to make withdrawal": "لا يوجد بيانات سحب",
   "you should type number greater than 0": "يجب ادخال مبلغ اكبر من صفر",
   "the deposit amount is greater than the available in cash": "مبلغ الايداع اكبر من المتاح في صندوق النقدية",
-  "the withdrawal amount is greater than the available in account": "ملبغ السحب اكبر من المتاح في الحساب"
+  "the withdrawal amount is greater than the available in account": "ملبغ السحب اكبر من المتاح في الحساب",
+  "karat 18": "عيار 18",
+  "karat 21": "عيار 21",
+  "karat 22": "عيار 22",
+  "karat 24": "عيار 24",
+  "waste of parts": "هدر القطع",
+  "Identities wasted by the administration": "هويات تم هدرها من الادارة",
+  "Waste": "الهدر",
+  "Waste bonds": "سندات الهدر"
 }

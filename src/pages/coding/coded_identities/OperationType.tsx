@@ -21,6 +21,7 @@ import { formatDate, formatDateAndTime } from "../../../utils/date";
 import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
 import DynamicTransformToBranch from "./DynamicTransformToBranch";
 import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
+import WastedItemsInEdara from "./WastedItemsInEdara";
 
 const options = {
   year: "numeric",
@@ -46,6 +47,7 @@ const OperationType = ({
     useState(false);
   const [formData, setFormData] = useState({});
   const [bondDataPrint, setBondDataPrint] = useState(null);
+  const [WastedItemsInEdaraModel, setWastedItemsInEdaraModel] = useState(false);
 
   // ==================================================================
   const contentRef = useRef();
@@ -288,6 +290,15 @@ const OperationType = ({
           >
             <span>{t("transfer import")}</span>
           </Button>
+
+          <Button
+            action={() => {
+              setWastedItemsInEdaraModel(true);
+            }}
+            className="border-2 border-mainGreen bg-white text-mainGreen flex items-center gap-2"
+          >
+            <span>{t("waste of parts")}</span>
+          </Button>
         </div>
 
         {/* MODAL */}
@@ -424,6 +435,24 @@ const OperationType = ({
             </div>
           </>
           {/* ======================================================================================== */}
+        </Modal>
+
+        <Modal
+          isOpen={WastedItemsInEdaraModel}
+          onClose={() => setWastedItemsInEdaraModel(false)}
+        >
+          <WastedItemsInEdara
+            // setFormData={setFormData}
+            // formData={formData}
+            refetch={refetch}
+            setPage={setPage}
+            setOperationTypeSelect={setOperationTypeSelect}
+            seperateModal={WastedItemsInEdaraModel}
+            setOpenSeperateModal={setWastedItemsInEdaraModel}
+            setIsSuccessPost={setIsSuccessPost}
+            operationTypeSelect={operationTypeSelect}
+            setOpenTransformToBranchModal={setWastedItemsInEdaraModel}
+          />
         </Modal>
       </div>
     </>

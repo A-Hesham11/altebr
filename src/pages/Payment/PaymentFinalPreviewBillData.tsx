@@ -13,8 +13,8 @@ const PaymentFinalPreviewBillData = ({
   invoiceNumber,
   invoiceData,
 }: any) => {
-  console.log("🚀 ~ invoiceNumber:", invoiceNumber)
-  console.log("🚀 ~ invoiceData:", invoiceData)
+  console.log("🚀 ~ invoiceNumber:", invoiceNumber);
+  console.log("🚀 ~ invoiceData:", invoiceData);
   const {
     client_id,
     client_value,
@@ -23,13 +23,15 @@ const PaymentFinalPreviewBillData = ({
     branchName,
     supplier_id,
   } = clientData;
+  console.log("🚀 ~ bond_date:", bond_date);
+
   console.log("🚀 ~ branchName:", branchName);
   const [invoiceInfo, setInvoiceInfo] = useState(null);
   const location = useLocation();
   const path = location.pathname;
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData)
+  console.log("🚀 ~ userData:", userData);
 
   const billNumber = invoiceNumber;
 
@@ -62,6 +64,7 @@ const PaymentFinalPreviewBillData = ({
             path === "/branch-bonds-react" ||
             path === "/selling/supplyReturn" ||
             path === "/selling/wasteReturn" ||
+            path === "/wasteBonds" ||
             path === "/selling/payoff/supply-payoff"
               ? bond_date
               : formatDate(bond_date)}

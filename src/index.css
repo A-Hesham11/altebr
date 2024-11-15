@@ -170,6 +170,7 @@ input::placeholder {
   height: 80%;
   border-radius: 5px;
   padding: 20px 15px;
+  margin-bottom: 50px;
 }
 
 @media (max-width: 469px) {

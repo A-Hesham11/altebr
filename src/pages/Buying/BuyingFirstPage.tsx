@@ -12,6 +12,8 @@ import { numberContext } from "../../context/settings/number-formatter";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useContext, useEffect, useState } from "react";
 import BuyingBillInput from "./BuyingBillInput";
+import { SelectOption_TP } from "../../types";
+import { Employee_TP } from "../employees/employees-types";
 
 type SellingFirstPage_TP = {
   sellingItemsData: Selling_TP;
@@ -100,11 +102,17 @@ const BuyingFirstPage = ({
       unit: "ryal",
     });
 
-  // TODAY GOLD PRICE API
-  const { data: goldPrice } = useFetch<ClientData_TP>({
-    endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
-    queryKey: ["get-gold-price"],
+  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
+    endpoint: "/attachment/api/v1/goldPrice",
+    queryKey: ["GoldPriceApi"],
   });
+
+  const goldPrice = {
+    18: GoldPrice?.price_gram_18k,
+    21: GoldPrice?.price_gram_21k,
+    22: GoldPrice?.price_gram_22k,
+    24: GoldPrice?.price_gram_24k,
+  };
 
   // CASH VALUE API
   const { data: naqdya } = useFetch<ClientData_TP>({
