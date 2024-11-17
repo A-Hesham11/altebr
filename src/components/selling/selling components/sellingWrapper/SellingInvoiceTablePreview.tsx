@@ -47,7 +47,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     client_value: item?.client_name,
     bond_date: item?.invoice_date,
     supplier_id: item?.supplier_id,
-    invoice_number: item?.invoice_number,
+    invoice_number: Number(item?.invoice_number) - 1,
     invoice_logo: invoice_logo?.InvoiceCompanyLogo,
     invoice_text: "simplified tax invoice",
   };

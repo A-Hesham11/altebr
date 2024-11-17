@@ -30,7 +30,7 @@ const InvoiceHeader = ({ invoiceHeaderData }: any) => {
         <p className="text-xs font-bold">
           {t("bill no")} :{" "}
           <span className="font-medium">
-            {invoiceHeaderData?.invoice_number}
+            {Number(invoiceHeaderData?.invoice_number) + 1}
           </span>{" "}
         </p>
         <p className="text-xs font-bold">

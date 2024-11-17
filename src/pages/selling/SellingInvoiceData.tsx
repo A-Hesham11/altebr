@@ -35,8 +35,9 @@ const SellingInvoiceData = ({
   invoiceNumber,
   selectedItemDetails,
   sellingItemsOfWeigth,
-  invoiceHeaderData
+  invoiceHeaderData,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ invoiceHeaderData:", invoiceHeaderData);
   console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ clientData:", clientData);
   const { formatGram, formatReyal } = numberContext();
@@ -257,10 +258,10 @@ const SellingInvoiceData = ({
       employee_name: userData?.name,
       employee_id: userData?.id,
       branch_id: userData?.branch_id,
-      client_id: clientData.client_id,
-      client_value: clientData.client_value,
-      invoice_date: clientData.bond_date,
-      invoice_number: invoiceNumber + 1,
+      client_id: invoiceHeaderData.client_id,
+      client_value: invoiceHeaderData.client_value,
+      invoice_date: invoiceHeaderData.bond_date,
+      invoice_number: invoiceHeaderData?.invoice_number + 1,
       count: sellingItemsData.length,
       total_vat: totalItemsTax,
       karat_price: sellingItemsData[0].gold_price,
@@ -341,6 +342,12 @@ const SellingInvoiceData = ({
       return acc;
     }, {});
 
+    const paymentCard = paymentData?.map((item) => ({
+      card_id: item.frontkey === "cash" ? "cash" : item.paymentCardId,
+      bank_id: item.paymentBankId,
+      amount: item.cost_after_tax,
+    }));
+
     const paymentCommission = paymentData.reduce((acc, curr) => {
       const commissionReyals = Number(curr.commission_riyals);
       const commissionVat =
@@ -355,12 +362,12 @@ const SellingInvoiceData = ({
 
     mutate({
       endpointName: "/selling/api/v1/add_Invoice",
-      values: { invoice, items, card, paymentCommission },
+      values: { invoice, items, card, paymentCommission, paymentCard },
     });
 
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
-      { invoice, items, card, paymentCommission }
+      { invoice, items, card, paymentCommission, paymentCard }
     );
   };
 
