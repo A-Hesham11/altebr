@@ -205,7 +205,7 @@ export const sideBarItems: MenuItem_TP[] = [
       // سندات الفروع
       {
         id: crypto.randomUUID(),
-        label: "branch bonds",
+        label: "branch transfer bonds",
         link: "/branch-bonds-react",
         icon: CiExport,
       },

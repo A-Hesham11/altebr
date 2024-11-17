@@ -29,6 +29,7 @@ const DynamicTransformToBranch = ({
   setOperationTypeSelect,
   setOpenSeperateModal,
   setTransformPrintBondsModal,
+  setPrintData,
   setBondDataPrint,
 }: any) => {
   const { formatReyal } = numberContext();
@@ -36,7 +37,7 @@ const DynamicTransformToBranch = ({
   const [rowWage, setRowWage] = useState(null);
   const [thwelIds, setThwelIds] = useState([]);
   const [goldPriceToday, setGoldPriceToday] = useState("");
-  console.log("🚀 ~ goldPriceToday:", goldPriceToday)
+  console.log("🚀 ~ goldPriceToday:", goldPriceToday);
   const [search, setSearch] = useState("-");
   console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
@@ -85,7 +86,7 @@ const DynamicTransformToBranch = ({
       setSearch("");
     },
     pagination: true,
-    enabled: !!search
+    enabled: !!search,
   });
 
   // BOXES DATA

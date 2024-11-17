@@ -1,8 +1,9 @@
 import { t } from "i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   BaseInputField,
   InnerFormLayout,
+  Modal,
   Select,
 } from "../../../components/molecules";
 import { Form, Formik } from "formik";
@@ -11,29 +12,48 @@ import { Button } from "../../../components/atoms";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { notify } from "../../../utils/toast";
 import { SelectBranches } from "../../../components/templates/reusableComponants/branches/SelectBranches";
-import { useFetch, useMutate } from "../../../hooks";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
 import { SelectOption_TP } from "../../../types";
 import { Employee_TP } from "../../employees/employees-types";
+import ThweelBondsPrint from "./ThweelBondsPrint";
 
 const TransformToBranch = ({
   operationTypeSelect,
   setOpenTransformToBranchModal,
   setIsSuccessPost,
   refetch,
+  setThwelPrint,
   setOperationTypeSelect,
   setOpenSeperateModal,
   setTransformPrintBondsModal,
+  setPrintData,
   setBondDataPrint,
+  thwelPrint,
+  bondDataPrint,
 }: any) => {
   const { formatReyal } = numberContext();
-  const [selectedOption, setSelectedOption] = useState("normal"); // Initialize the selected option.
+  const [selectedOption, setSelectedOption] = useState("normal");
   const [inputWeight, setInputWeight] = useState([]);
   const [rowWage, setRowWage] = useState(null);
   const [files, setFiles] = useState([]);
   const [thwelIds, setThwelIds] = useState([]);
   const [goldPriceToday, setGoldPriceToday] = useState("");
+
+  useEffect(() => {
+    setPrintData(operationTypeSelect);
+  }, []);
+
+  const isRTL = useIsRTL();
+  const contentRef = useRef();
+
+  const clientData = {
+    bond_number: 1,
+    bank_name: "sf",
+    account_number: "sdf",
+    account_balance: "sdf",
+  };
 
   const operationTypeSelectWeight = operationTypeSelect.filter(
     (el: any) => el.check_input_weight !== 0
@@ -43,6 +63,127 @@ const TransformToBranch = ({
     setSelectedOption(event.target.value);
   };
 
+  // COLUMNS FOR THE TABLE
+  const tableColumn = useMemo<any>(
+    () => [
+      {
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "hwya",
+        header: () => <span>{t("hwya")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "category",
+        header: () => <span>{t("classification")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "classification_name",
+        header: () => <span>{t("category")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "karat_name",
+        header: () => <span>{t("karat")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "weight",
+        header: () => <span>{t("weight")}</span>,
+      },
+      {
+        cell: (info: any) => formatReyal(info.getValue()) || "-",
+        accessorKey: "wage",
+        header: () => <span>{t("wage geram/ryal")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          const wages =
+            Number(info.row.original.wage).toFixed(2) *
+            Number(info.row.original.weight);
+          return formatReyal(wages) || "-";
+        },
+        accessorKey: "total_wages",
+        header: () => <span>{t("total wage by ryal")}</span>,
+      },
+      {
+        cell: (info: any) => formatReyal(info.getValue()) || "-",
+        accessorKey: "selling_price",
+        header: () => <span>{t("value")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          // return info.getValue()[0]?.diamondWeight || "-";
+          const stonesDetails = info.getValue().reduce((acc, curr) => {
+            return acc + curr.diamondWeight;
+          }, 0);
+
+          return stonesDetails;
+        },
+        accessorKey: "stonesDetails",
+        header: () => <span>{t("weight of diamond stone")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          const stonesDetails = info.getValue().reduce((acc, curr) => {
+            return acc + curr.weight;
+          }, 0);
+
+          return stonesDetails || "-";
+        },
+        accessorKey: "stonesDetails",
+        header: () => <span>{t("stone weight")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          setRowWage(info.row.original.wage);
+
+          if (info.row.original.check_input_weight === 1) {
+            return (
+              <>
+                <input
+                  type="number"
+                  className="w-20 rounded-md h-10"
+                  min="1"
+                  max={info.row.original.weight}
+                  name="weight_input"
+                  id="weight_input"
+                  onBlur={(e) => {
+                    setInputWeight((prev) => {
+                      // Check if the object with the same id exists in the array
+                      const existingItemIndex = prev.findIndex(
+                        (item) => item.id === info.row.original.id
+                      );
+
+                      if (existingItemIndex !== -1) {
+                        // If the object exists, update its value
+                        return prev.map((item, index) =>
+                          index === existingItemIndex
+                            ? { ...item, value: e.target.value }
+                            : item
+                        );
+                      } else {
+                        // If the object doesn't exist, add a new one
+                        return [
+                          ...prev,
+                          { value: e.target.value, id: info.row.original.id },
+                        ];
+                      }
+                    });
+                  }}
+                />
+              </>
+            );
+          } else {
+            return info.getValue();
+          }
+        },
+        accessorKey: "employee_name",
+        header: () => <span>{t("weight conversion")}</span>,
+      },
+    ],
+    []
+  );
   const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
     endpoint: "/attachment/api/v1/goldPrice",
     queryKey: ["GoldPriceApi"],
@@ -223,7 +364,11 @@ const TransformToBranch = ({
     },
   ];
 
-  const { mutate, isLoading: thwelLoading } = useMutate({
+  const {
+    mutate,
+    isLoading: thwelLoading,
+    isSuccess,
+  } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["thwel-api"],
     onSuccess: (data) => {
@@ -232,16 +377,22 @@ const TransformToBranch = ({
       // QueryClient.refetchQueries(["thwel-api"]);
       setTransformPrintBondsModal(true);
       setBondDataPrint(data?.bond);
-      setOperationTypeSelect([])
-      refetch()
+      setOperationTypeSelect([]);
+      setThwelPrint(true);
+      setOpenTransformToBranchModal(false);
+      refetch();
     },
     onError: (error) => {
       notify("error", error.response.data.msg);
     },
   });
 
-  function PostNewValue(value: any) {
-    mutate({
+  // useEffect(() => {
+  //   if (isSuccess && !thwelPrint) setOperationTypeSelect([]);
+  // }, [thwelPrint]);
+
+  async function PostNewValue(value: any) {
+    await mutate({
       endpointName: "/identity/api/v1/api-thwel",
       values: value,
       method: "post",
@@ -332,7 +483,6 @@ const TransformToBranch = ({
           // media: files
         });
 
-        setOpenTransformToBranchModal(false);
         // setOperationTypeSelect([]);
       }}
     >

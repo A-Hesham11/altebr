@@ -22,6 +22,7 @@ import { convertNumToArWord } from "../../../utils/number to arabic words/conver
 import DynamicTransformToBranch from "./DynamicTransformToBranch";
 import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
 import WastedItemsInEdara from "./WastedItemsInEdara";
+import ThweelBondsPrint from "./ThweelBondsPrint";
 
 const options = {
   year: "numeric",
@@ -48,6 +49,11 @@ const OperationType = ({
   const [formData, setFormData] = useState({});
   const [bondDataPrint, setBondDataPrint] = useState(null);
   const [WastedItemsInEdaraModel, setWastedItemsInEdaraModel] = useState(false);
+  const [thwelPrint, setThwelPrint] = useState(false);
+  console.log("🚀 ~ thwelPrint: val", thwelPrint);
+
+  const [printData, setPrintData] = useState([]);
+  console.log("🚀 ~ printData:", printData);
 
   // ==================================================================
   const contentRef = useRef();
@@ -309,6 +315,10 @@ const OperationType = ({
           <TransformToBranch
             refetch={refetch}
             setPage={setPage}
+            setThwelPrint={setThwelPrint}
+            setPrintData={setPrintData}
+            thwelPrint={thwelPrint}
+            bondDataPrint={bondDataPrint}
             setBondDataPrint={setBondDataPrint}
             setOperationTypeSelect={setOperationTypeSelect}
             setOpenSeperateModal={setOpenSeperateModal}
@@ -454,6 +464,13 @@ const OperationType = ({
             setOpenTransformToBranchModal={setWastedItemsInEdaraModel}
           />
         </Modal>
+
+        <ThweelBondsPrint
+          operationTypeSelect={printData}
+          setThwelPrint={setThwelPrint}
+          bondDataPrint={bondDataPrint}
+          thwelPrint={thwelPrint}
+        />
       </div>
     </>
   );
