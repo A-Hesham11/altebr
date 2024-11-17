@@ -53,11 +53,14 @@ const PaymentProcessing = ({
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [selectedCardId, setSelectedCardId] = useState(null);
+  console.log("🚀 ~ selectedCardId:", selectedCardId)
   const [editData, setEditData] = useState<Payment_TP>();
   console.log("🚀 ~ editData:", editData);
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<any>({});
   const { userData } = useContext(authCtx);
+  const [selectedCardData, setSelectedCardData] = useState(null)
+  console.log("🚀 ~ selectCardedData:", selectedCardData)
   console.log("🚀 ~ userData:", userData);
   console.log("🚀 ~ cardDiscountPercentage:", cardDiscountPercentage);
 
@@ -165,6 +168,8 @@ const PaymentProcessing = ({
                   id: crypto.randomUUID(),
                   card: card,
                   card_id: selectedCardId,
+                  paymentCardId: !!selectedCardData?.[0].iban ? null : selectedCardData?.[0]?.card_id,
+                  paymentBankId: !!selectedCardData?.[0].iban ? selectedCardData?.[0]?.bank_id : null,
                   // commission_riyals:
                   //   values.add_commission_ratio === "yes"
                   //     ? commissionRiyals
@@ -235,6 +240,7 @@ const PaymentProcessing = ({
                   setCardFrontKeySadad={setCardFrontKeySadad}
                   setSellingFrontKey={setSellingFrontKey}
                   setCardDiscountPercentage={setCardDiscountPercentage}
+                  setSelectedCardData={setSelectedCardData}
                 />
               </div>
               <div

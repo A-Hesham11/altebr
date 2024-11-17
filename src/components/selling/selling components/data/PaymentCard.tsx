@@ -49,6 +49,7 @@ const PaymentCard = ({
   setSelectedCardName,
   setIsMaxDiscountLimit,
   setCardFrontKeySadad,
+  setSelectedCardData,
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
@@ -287,6 +288,7 @@ const PaymentCard = ({
         (item) => item?.front_key === frontKey
       );
       console.log("🚀 ~ handleChooseCard ~ selectNewCard:", selectNewCard);
+      setSelectedCardData(selectNewCard);
 
       const selectCradIDOrBankId = selectNewCard[0]?.bank_id
         ? selectNewCard[0]?.bank_id
