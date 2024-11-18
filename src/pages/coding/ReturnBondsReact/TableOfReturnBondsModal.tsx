@@ -142,11 +142,11 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
-      {
-        cell: (info: any) => info.getValue() || "-",
-        accessorKey: "thwelbond_id",
-        header: () => <span>{t("supply bond")}</span>,
-      },
+      // {
+      //   cell: (info: any) => info.getValue() || "-",
+      //   accessorKey: "thwelbond_id",
+      //   header: () => <span>{t("supply bond")}</span>,
+      // },
       {
         cell: (info: any) => Number(info.getValue()).toFixed(2) || "-",
         accessorKey: "wage",

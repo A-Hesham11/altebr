@@ -204,37 +204,40 @@ const InvoiceTable = <T extends object>({
             </tbody>
             <tfoot className="text-center">
               <tr className="text-center border-[1px] border-[#7B7B7B4D]">
-                <td
-                  className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                  colSpan={
-                    costDataAsProps?.isBranchWasted === true
-                      ? columns?.length / 2
-                      : columns?.length
-                  }
-                >
-                  <span className="font-semibold">{t("total")}</span>:{" "}
-                  {
-                    <span className="font-medium">
-                      {totalResult ? (
+                {costDataAsProps?.totalFinalCostIntoArabic ||
+                  (totalFinalCostIntoArabic && (
+                    <td
+                      className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
+                      colSpan={
+                        costDataAsProps?.isBranchWasted === true
+                          ? columns?.length / 2
+                          : columns?.length
+                      }
+                    >
+                      <span className="font-semibold">{t("total")}</span>:{" "}
+                      {
                         <span className="font-medium">
-                          {convertNumToArWord(
-                            Math.round(totalResult?.totalSelling)
+                          {totalResult ? (
+                            <span className="font-medium">
+                              {convertNumToArWord(
+                                Math.round(totalResult?.totalSelling)
+                              )}
+                            </span>
+                          ) : (
+                            <span className="font-medium">
+                              {costDataAsProps
+                                ? costDataAsProps?.totalFinalCostIntoArabic
+                                : totalFinalCostIntoArabic}
+                            </span>
                           )}
                         </span>
-                      ) : (
-                        <span className="font-medium">
-                          {costDataAsProps
-                            ? costDataAsProps?.totalFinalCostIntoArabic
-                            : totalFinalCostIntoArabic}
-                        </span>
-                      )}
-                    </span>
-                  }
-                  <span className="font-semibold"> {t("gram")}</span>{" "}
-                  <span className="font-semibold">
-                    {t("Only nothing else")}
-                  </span>
-                </td>
+                      }
+                      <span className="font-semibold"> {t("gram")}</span>{" "}
+                      <span className="font-semibold">
+                        {t("Only nothing else")}
+                      </span>
+                    </td>
+                  ))}
                 {costDataAsProps?.isBranchWasted === true && (
                   <td
                     className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"

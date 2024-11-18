@@ -84,6 +84,8 @@ const PaymentFinalPreviewBillData = ({
         />
         {path === "/coding-react" ? (
           <p>{t("supply bond")}</p>
+        ) : path === "/wasteBonds" ? (
+          <p>{t("Waste bond")}</p>
         ) : (
           <p className="text-base font-medium">
             {invoiceData.invoiceName
@@ -95,7 +97,9 @@ const PaymentFinalPreviewBillData = ({
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">
           <span className="font-bold text-[16px] text-mainGreen">
-            {isSupply
+            {path === "/wasteBonds"
+              ? t("Waste bond")
+              : isSupply
               ? t("supply bond")
               : invoiceData?.invoiceName
               ? invoiceData?.invoiceName

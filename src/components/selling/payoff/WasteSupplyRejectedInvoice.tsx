@@ -69,14 +69,14 @@ const WasteSupplyRejectedInvoice = ({ item }: any) => {
         accessorKey: "wage_total",
         header: () => <span>{t("total wages")}</span>,
       },
-      {
-        cell: (info: any) =>
-          item?.api_gold_price
-            ? formatReyal(Number(item?.api_gold_price))
-            : "---",
-        accessorKey: "api_gold_price",
-        header: () => <span>{t("selling price")}</span>,
-      },
+      // {
+      //   cell: (info: any) =>
+      //     item?.api_gold_price
+      //       ? formatReyal(Number(item?.api_gold_price))
+      //       : "---",
+      //   accessorKey: "api_gold_price",
+      //   header: () => <span>{t("selling price")}</span>,
+      // },
     ],
     []
   );
@@ -107,7 +107,7 @@ const WasteSupplyRejectedInvoice = ({ item }: any) => {
       weight: totalWeight,
       wage: totalWage,
       totalWages: totalWages,
-      totalPrice: item?.api_gold_price,
+      // totalPrice: item?.api_gold_price,
     },
   ];
 
