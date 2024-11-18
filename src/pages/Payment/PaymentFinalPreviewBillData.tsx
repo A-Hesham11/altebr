@@ -82,11 +82,15 @@ const PaymentFinalPreviewBillData = ({
           alt="bill"
           className="h-28 w-3/4 object-contain"
         />
-        <p className="text-base font-medium">
-          {invoiceData.invoiceName
-            ? invoiceData?.invoiceName
-            : t("simplified tax invoice")}
-        </p>
+        {path === "/coding-react" ? (
+          <p>{t("supply bond")}</p>
+        ) : (
+          <p className="text-base font-medium">
+            {invoiceData.invoiceName
+              ? invoiceData?.invoiceName
+              : t("simplified tax invoice")}
+          </p>
+        )}
       </div>
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">

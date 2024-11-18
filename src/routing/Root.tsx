@@ -7,7 +7,7 @@ import { Loading } from "../components/organisms/Loading";
 import NavBar from "../components/organisms/NavBar";
 import { SideBar } from "../components/organisms/SideBar";
 import { authCtx } from "../context/auth-and-perm/auth";
-import "../components/atoms/print/print.css"
+import "../components/atoms/print/print.css";
 
 export const Root = () => {
   const { isLoggedIn, isLoadingUpdatedUserData, userData } =
