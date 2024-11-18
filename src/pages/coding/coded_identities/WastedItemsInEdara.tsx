@@ -249,9 +249,9 @@ const ReturnItemsToEdaraModal = ({
                       placeholder={`${t("id code")}`}
                     />
                   </div>
-                  <div className="">
+                  {/* <div className="">
                     <FilesUpload setFiles={setFiles} files={files} />
-                  </div>
+                  </div> */}
                 </div>
               )}
 

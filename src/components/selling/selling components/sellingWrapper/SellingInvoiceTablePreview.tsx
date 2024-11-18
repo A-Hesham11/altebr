@@ -79,13 +79,6 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         cell: (info) => info.getValue() || "---",
       },
       {
-        header: () => (
-          <span>{`${t("precious metal weight")} (${t("In grams")})`}</span>
-        ),
-        accessorKey: "weight",
-        cell: (info) => info.getValue() || `${t("no items")}`,
-      },
-      {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
         cell: (info: any) =>
@@ -99,24 +92,40 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
       },
       {
         header: () => (
-          <span>{`${t("stones weight")} (${t("in karat")})`} </span>
+          <span>{`${t("precious metal weight")} (${t("In grams")})`}</span>
+        ),
+        accessorKey: "weight",
+        cell: (info) => info.getValue() || `${t("no items")}`,
+      },
+      {
+        header: () => (
+          <span>
+            {`${t("The weight of the stones if it exceeds 5%")} (${t(
+              "in karat"
+            )})`}{" "}
+          </span>
         ),
         accessorKey: "stones_weight",
-        cell: (info) => info.getValue() || "---",
+        cell: (info) => {
+          const stoneWeigthByGram = Number(info.getValue()) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          return !!result ? info.getValue() : "---";
+        },
       },
       {
         header: () => <span>{`${t("total weight")}`} </span>,
         accessorKey: "total_Weight",
         cell: (info) => {
-          console.log(
-            Number(info.row.original?.stone_weight) +
-              Number(info.row.original?.weight)
-          );
+          const stoneWeigthByGram =
+            Number(info.row.original?.stones_weight) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          const valueOfWeight =
+            Number(result ? info.row.original?.stones_weight : 0) +
+            Number(info.row.original?.weight);
 
-          return (
-            Number(info.row.original?.stone_weight) +
-              Number(info.row.original?.weight) || "---"
-          );
+          return valueOfWeight || "---";
         },
       },
       {
@@ -144,7 +153,10 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   }, 0);
 
   const totalStonesWeight = item?.items?.reduce((acc, curr) => {
-    acc += +curr.stonesWeight;
+    const stoneWeigthByGram = Number(curr.stones_weight) / 5;
+    const weight = Number(curr.weight) * 0.05;
+    const result = stoneWeigthByGram > weight;
+    acc += result ? Number(curr.stones_weight) : 0;
     return acc;
   }, 0);
 
@@ -178,8 +190,8 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     {
       number: t("totals"),
       weight: formatGram(Number(totalWeight)),
-      karat: "---",
-      stonesWeight: formatGram(Number(totalStonesWeight)) || "---",
+      stonesWeight:
+        totalStonesWeight != 0 ? formatGram(Number(totalStonesWeight)) : "---",
       totalWeight:
         formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
       cost: formatReyal(Number(costDataAsProps?.totalCost)),
@@ -259,7 +271,10 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
             </div>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment responseSellingData={item} paymentData={paymentData} />
+              <FinalPreviewBillPayment
+                responseSellingData={item}
+                paymentData={paymentData}
+              />
             </div>
 
             <div>

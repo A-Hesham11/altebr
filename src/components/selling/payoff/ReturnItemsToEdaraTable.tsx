@@ -7,6 +7,7 @@ import { SvgDeleteIcon } from "../../../components/atoms/icons";
 import { Form, Formik } from "formik";
 import { BaseInput } from "../../atoms";
 import { notify } from "../../../utils/toast";
+import { useLocation } from "react-router-dom";
 
 const ReturnItemsToEdaraTable = ({
   operationTypeSelect,
@@ -20,6 +21,7 @@ const ReturnItemsToEdaraTable = ({
 }: any) => {
   console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
   console.log("🚀 ~ dataSource:", dataSource);
+  const location = useLocation();
   const { formatReyal, formatGram } = numberContext();
   const isContainCheckInputWeight = operationTypeSelect.some(
     (el) => el.check_input_weight === 1
@@ -34,7 +36,8 @@ const ReturnItemsToEdaraTable = ({
       },
       {
         cell: (info: any) => info.getValue(),
-        accessorKey: "thwelbond_id",
+        accessorKey:
+          location.pathname === "/coding-react" ? "bond_id" : "thwelbond_id",
         header: () => <span>{t("bond number")}</span>,
       },
       {
@@ -49,7 +52,8 @@ const ReturnItemsToEdaraTable = ({
       },
       {
         cell: (info: any) => info.getValue() || "---",
-        accessorKey: "category_name",
+        accessorKey:
+          location.pathname === "/coding-react" ? "category" : "category_name",
         header: () => <span>{t("category")}</span>,
       },
       {
@@ -138,14 +142,12 @@ const ReturnItemsToEdaraTable = ({
         header: () => <span>{t("wage")}</span>,
       },
       {
-        cell: (info: any) =>
-          info.getValue()
-            ? formatReyal(
-                Number(info.row.original.weight * info.row.original.wage)
-              )
-            : "",
-        accessorKey: "wage_total",
         header: () => <span>{t("total wages")}</span>,
+        accessorKey: "wage_total",
+        cell: (info: any) =>
+          formatReyal(
+            Number(info.row.original.weight * info.row.original.wage)
+          ) || "---",
       },
       {
         cell: (info: any) =>
@@ -164,6 +166,133 @@ const ReturnItemsToEdaraTable = ({
           info.getValue() ? formatGram(Number(info.getValue())) : "---",
         accessorKey: "diamond_weight",
         header: () => <span>{t("diamond weight")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          return (
+            <SvgDeleteIcon
+              action={() => deletePieceHandler(info.row.original.hwya)}
+              stroke="#ef4444"
+            />
+          );
+        },
+        accessorKey: "delete",
+        header: () => <span>{t("delete")}</span>,
+      },
+    ],
+    []
+  );
+
+  const tableColumnWaste = useMemo<any>(
+    () => [
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "id",
+        header: () => <span>{t("ID")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "bond_id",
+        header: () => <span>{t("bond number")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "hwya",
+        header: () => <span>{t("identification")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "classification_name",
+        header: () => <span>{t("category")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "category",
+        header: () => <span>{t("classification")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          console.log("🚀 ~ info:", info.row.index);
+          const filterItem = mainData?.filter(
+            (item) => item.id === info.row.original.id
+          );
+          console.log("🚀 ~ filterItem:", filterItem);
+          console.log("🚀 ~ filterItem:", filterItem?.[info.row.index]);
+          return (
+            <div>
+              {info.row.original.category_selling_type === "all" ? (
+                <Formik
+                  initialValues={{ weight: info.row.original.weight }}
+                  enableReinitialize={true}
+                  onSubmit={(values) => {}}
+                >
+                  {({ values, setFieldValue }) => {
+                    console.log("🚀 ~ values:", values);
+                    return (
+                      <Form>
+                        <BaseInput
+                          id="weight"
+                          name="weight"
+                          type="text"
+                          value={values.weight}
+                          onChange={(e) => {
+                            const newValue = e.target.value;
+                            setFieldValue("weight", newValue);
+                            updateData(info.row.original.id, {
+                              weight: newValue,
+                            });
+                            if (newValue < 0) {
+                              notify("info", `${t("Minimum weight 1")}`);
+                              return;
+                            }
+                            if (newValue > info.row.original.remaining_weight) {
+                              notify(
+                                "info",
+                                `${t("الحد الاعلي للوزن")} ${
+                                  info.row.original.remaining_weight
+                                }`
+                              );
+                              return;
+                            }
+                          }}
+                        />
+                      </Form>
+                    );
+                  }}
+                </Formik>
+              ) : (
+                <span>{info.row.original.weight || "---"}</span>
+              )}
+            </div>
+          );
+        },
+        accessorKey: "weight",
+        header: () => <span>{t("weight")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "karat_name",
+        header: () => <span>{t("gold karat")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        accessorKey: "wage",
+        header: () => <span>{t("wage")}</span>,
+      },
+      {
+        header: () => <span>{t("total wages")}</span>,
+        accessorKey: "wage_total",
+        cell: (info: any) =>
+          formatReyal(
+            Number(info.row.original.weight * info.row.original.wage)
+          ) || "---",
+      },
+      {
+        cell: (info: any) =>
+          info.getValue() ? formatGram(Number(info.getValue())) : "---",
+        accessorKey: "stones_weight",
+        header: () => <span>{t("other stones weight")}</span>,
       },
       {
         cell: (info: any) => {
@@ -212,7 +341,9 @@ const ReturnItemsToEdaraTable = ({
       <Table
         showNavigation
         data={operationTypeSelect || []}
-        columns={tableColumn}
+        columns={
+          location.pathname === "/coding-react" ? tableColumnWaste : tableColumn
+        }
       ></Table>
     </div>
   );
