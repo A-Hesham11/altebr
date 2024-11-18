@@ -9,6 +9,7 @@ import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { notify } from "../../../utils/toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { mutateData } from "../../../utils/mutateData";
+import { FilesUpload } from "../../../components/molecules/files/FileUpload";
 
 type TableRow_TP = {
   itemType: string;
@@ -67,6 +68,8 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
   // const [endpointApi, setEndpointApi] = useState("");
   const [test, setTest] = useState(false);
   const [constraintID, setConstraintID] = useState("");
+  const [files, setFiles] = useState([]);
+  console.log("🚀 ~ TableOfReturnBondsModal ~ files:", files);
 
   const isRTL = useIsRTL();
 
@@ -81,6 +84,7 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
       endpointName: "/identity/api/v1/accept",
       values,
       method: "post",
+      dataType: "formData",
     });
   }
 
@@ -270,12 +274,15 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
 
   return (
     <div className="flex flex-col">
-      <h2 className="text-xl font-bold text-slate-700 mb-4">
+      {/* <h2 className="text-xl font-bold text-slate-700 mb-4">
         {t("view bond details")}
-      </h2>
+      </h2> */}
 
       {/* BOND DETAILS */}
-      <div>
+      <div className="my-16">
+        <div className="w-64 mr-auto">
+          <FilesUpload setFiles={setFiles} files={files} />
+        </div>
         <div className="flex items-center justify-between mb-4 mt-8">
           <h2 className="text-xl font-bold text-slate-700">
             {t("view bond details")}
@@ -347,6 +354,7 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
             PostNewCard({
               id: item?.id,
               items: itemsReceived,
+              media: files,
             });
 
             // entryAccountingRefetch()

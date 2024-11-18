@@ -27,6 +27,7 @@ const InvoiceTable = <T extends object>({
   paymentData,
   costDataAsProps,
   resultTable,
+  totalResult,
 }: ReactTableProps<T>) => {
   console.log("🚀 ~ costDataAsProps:", costDataAsProps);
   console.log("🚀 ~ columns:", columns);
@@ -48,6 +49,7 @@ const InvoiceTable = <T extends object>({
   const { userData } = useContext(authCtx);
 
   const taxRate = userData?.tax_rate / 100;
+  const pathname = location.pathname;
 
   // const totalWeight = data?.reduce((acc, curr) => {
   //   acc += +curr.weight;
@@ -211,12 +213,24 @@ const InvoiceTable = <T extends object>({
                   }
                 >
                   <span className="font-semibold">{t("total")}</span>:{" "}
-                  <span className="font-medium">
-                    {costDataAsProps
-                      ? costDataAsProps?.totalFinalCostIntoArabic
-                      : totalFinalCostIntoArabic}
-                  </span>
-                  <span className="font-semibold"> {t("reyal")}</span>{" "}
+                  {
+                    <span className="font-medium">
+                      {totalResult ? (
+                        <span className="font-medium">
+                          {convertNumToArWord(
+                            Math.round(totalResult?.totalSelling)
+                          )}
+                        </span>
+                      ) : (
+                        <span className="font-medium">
+                          {costDataAsProps
+                            ? costDataAsProps?.totalFinalCostIntoArabic
+                            : totalFinalCostIntoArabic}
+                        </span>
+                      )}
+                    </span>
+                  }
+                  <span className="font-semibold"> {t("gram")}</span>{" "}
                   <span className="font-semibold">
                     {t("Only nothing else")}
                   </span>
@@ -226,13 +240,26 @@ const InvoiceTable = <T extends object>({
                     className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                     colSpan={columns?.length}
                   >
-                    <span className="font-semibold">{t("total wages")}</span>:{" "}
-                    <span className="font-medium">
-                      {costDataAsProps
-                        ? costDataAsProps?.totalFinalCostIntoArabic
-                        : totalFinalCostIntoArabic}
+                    <span className="font-semibold">
+                      {" "}
+                      {pathname === "/selling/branch-identity"
+                        ? t("total cash")
+                        : t("total wages")}
                     </span>
-                    <span className="font-semibold">0.00</span>
+                    :{" "}
+                    {totalResult ? (
+                      <span className="font-medium">
+                        {convertNumToArWord(
+                          Math.round(totalResult?.totalWages)
+                        )}
+                      </span>
+                    ) : (
+                      <span className="font-medium">
+                        {costDataAsProps
+                          ? costDataAsProps?.totalFinalCostIntoArabic
+                          : totalFinalCostIntoArabic}
+                      </span>
+                    )}
                   </td>
                 )}
               </tr>

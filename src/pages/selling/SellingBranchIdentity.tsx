@@ -26,6 +26,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { mutateData } from "../../utils/mutateData";
 import { notify } from "../../utils/toast";
 import ReturnItemsToEdaraModal from "../../components/selling/payoff/ReturnItemsToEdaraModal";
+import RejectedItemsInvoice from "../../components/selling/recieve items/RejectedItemsInvoice";
+import RejectedItemsInvoicePrint from "./RejectedItemsInvoicePrint";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -41,7 +43,12 @@ export const SellingBranchIdentity = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
+  const [dataSourcePrint, setDataSourcePrint] = useState([]);
+  console.log("🚀 ~ SellingBranchIdentity ~ dataSourcePrint:", dataSourcePrint);
+  const [printModal, setPrintModal] = useState(false);
+
   const isRTL = useIsRTL();
+
   const { formatGram, formatReyal } = numberContext();
   // const [selectedItems, setSelectedItems] = useState([]);
   // console.log("🚀 ~ SellingBranchIdentity ~ selectedItem:", selectedItems);
@@ -512,8 +519,15 @@ export const SellingBranchIdentity = () => {
         <ReturnItemsToEdaraModal
           refetch={refetch}
           setPage={setPage}
+          setPrintModal={setPrintModal}
+          printModal={printModal}
+          setDataSourcePrint={setDataSourcePrint}
           setReturnItemsModel={setReturnItemsModel}
         />
+      </Modal>
+
+      <Modal isOpen={printModal} onClose={() => setPrintModal(false)}>
+        <RejectedItemsInvoicePrint item={dataSourcePrint} />
       </Modal>
     </div>
   );
