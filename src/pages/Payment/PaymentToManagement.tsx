@@ -55,8 +55,6 @@ const PaymentToManagement = () => {
   //     },
   //   });
 
-
-
   const handleSeccessedData = () => {
     const postPaymentData: any = [];
     const postPaymentAllData: any = [];
@@ -118,17 +116,6 @@ const PaymentToManagement = () => {
       method: "post",
     });
 
-    console.log({
-      branch_id: userData?.branch_id,
-      items_payment: postPaymentAllData,
-      invoice_number: invoiceDataNumber.length + 1,
-      payment_date: new Date()?.toISOString().slice(0, 10),
-      employee_id: userData?.id,
-      payment: postPaymentData,
-      card: card,
-      total_payment: totalPayment,
-    });
-
     // mutateAllPaymentsData({
     //   endpointName: "/sdad/api/v1/create",
     //   values: {
@@ -140,8 +127,6 @@ const PaymentToManagement = () => {
     //   },
     //   method: "post",
     // });
-
-
   };
 
   const paymentDataToManagement = [
@@ -216,13 +201,15 @@ const PaymentToManagement = () => {
           type="submit"
           action={() => {
             // setStage(1);
-            navigate(-1)
+            navigate(-1);
           }}
           bordered
         >
           {t("back")}
         </Button>
-        <Button action={handleSeccessedData} loading={isLoading}>{t("save")}</Button>
+        <Button action={handleSeccessedData} loading={isLoading}>
+          {t("save")}
+        </Button>
       </div>
     </div>
   );

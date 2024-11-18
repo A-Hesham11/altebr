@@ -18,10 +18,11 @@ const FinalPreviewBillPayment = ({
   responseSellingData: any;
   notQRCode?: boolean;
 }) => {
-  console.log("🚀 ~ costDataAsProps:", costDataAsProps)
+  console.log("🚀 ~ costDataAsProps:", costDataAsProps);
   const { formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
+  const pathname = location.pathname;
 
   // function getTLV(tagNum, tagValue) {
   //   var tagNumBuf = Buffer.from([tagNum], "utf8");
@@ -53,7 +54,11 @@ const FinalPreviewBillPayment = ({
   return (
     <div className="flex justify-between pe-8 items-center">
       <div className="text-center">
-        <span className="font-medium text-xs">{t("vendor name")}</span>
+        <span className="font-medium text-xs">
+          {pathname === "/selling/branch-identity"
+            ? t("bond editor")
+            : t("vendor name")}
+        </span>
         <p>{userData?.name}</p>
       </div>
 

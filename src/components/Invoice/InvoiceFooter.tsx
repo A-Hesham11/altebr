@@ -12,6 +12,7 @@ const InvoiceFooter = () => {
   const districtName = userData?.branch?.district?.name;
   const phone = userData?.branch?.company?.phone;
   const email = userData?.branch?.company?.email;
+  const pathname = location.pathname;
 
   const mineralLicence = userData?.branch?.document?.filter(
     (item) => item.data.docType.label === "رخصة المعادن"

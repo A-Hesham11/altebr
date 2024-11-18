@@ -5,6 +5,7 @@ import {
   Checkbox,
   CheckBoxField,
   InnerFormLayout,
+  Modal,
   Select,
 } from "../../../components/molecules";
 import { Form, Formik } from "formik";
@@ -23,17 +24,22 @@ import { Employee_TP } from "../../../pages/employees/employees-types";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { GlobalDataContext } from "../../../context/settings/GlobalData";
+import RejectedItemsInvoice from "../recieve items/RejectedItemsInvoice";
 
 const ReturnItemsToEdaraModal = ({
   transformToBranchDynamicModal,
   refetch,
   setOperationTypeSelect,
   setReturnItemsModel,
+  setDataSourcePrint,
+  printModal,
+  setPrintModal,
 }: any) => {
   const [goldPriceToday, setGoldPriceToday] = useState("");
   const [search, setSearch] = useState("");
   console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
+
   console.log("🚀 ~ dataSource:", dataSource);
   const [successData, setSuccessData] = useState([]);
   console.log("🚀 ~ successData:", successData);
@@ -42,7 +48,7 @@ const ReturnItemsToEdaraModal = ({
   const [mainData, setMainData] = useState([]);
   console.log("🚀 ~ mainData:", mainData);
   const [steps, setSteps] = useState(1);
-  const [files, setFiles] = useState([]);
+  // const [files, setFiles] = useState([]);
   const [isBranchWaste, setIsBranchWaste] = useState(false);
   console.log("🚀 ~ isBranchWaste:", isBranchWaste);
   const { gold_price } = GlobalDataContext();
@@ -97,9 +103,11 @@ const ReturnItemsToEdaraModal = ({
         if (isBranchWaste && branchWasteItems?.length > 0) {
           setDataSource((prev) => [...prev, branchWasteItems?.[0]]);
           setMainData((prev) => [...prev, branchWasteItems?.[0]]);
+          setDataSourcePrint((prev) => [...prev, branchWasteItems?.[0]]);
         } else if (!isBranchWaste) {
           setDataSource((prev) => [...prev, data?.data?.[0]]);
           setMainData((prev) => [...prev, data?.data?.[0]]);
+          setDataSourcePrint((prev) => [...prev, data?.data?.[0]]);
         }
       }
 
@@ -124,7 +132,8 @@ const ReturnItemsToEdaraModal = ({
       setDataSource([]);
       setMainData([]);
       setIsBranchWaste(false);
-      setReturnItemsModel(false);
+      // setReturnItemsModel(false);
+      setPrintModal(true);
       setOperationTypeSelect([]);
     },
     onError: (error) => {
@@ -144,6 +153,12 @@ const ReturnItemsToEdaraModal = ({
   useEffect(() => {
     document.getElementById("search")?.focus();
   }, [transformToBranchDynamicModal]);
+
+  useEffect(() => {
+    if (!printModal) {
+      setDataSourcePrint([]);
+    }
+  }, [printModal]);
 
   const handleSubmit = (values: any) => {
     const weightComparison = mainData.map((mainItem, index) => {
@@ -195,130 +210,132 @@ const ReturnItemsToEdaraModal = ({
     >
       {({ values, resetForm }) => {
         return (
-          <Form>
-            <div className="flex flex-col gap-10 mt-6">
-              <h2>
-                <span>{t("Return the parts to the administration")}</span>
-              </h2>
+          <>
+            <Form>
+              <div className="flex flex-col gap-10 mt-6">
+                <h2>
+                  <span>{t("Return the parts to the administration")}</span>
+                </h2>
 
-              <div className="flex items-center gap-4">
-                <Button
-                  bordered={steps === 2}
-                  action={() => {
-                    setSteps(1);
-                    setSearch("");
-                    resetForm();
-                  }}
-                >
-                  {t("Enter barcode")}
-                </Button>
-                <Button
-                  bordered={steps === 1}
-                  action={() => {
-                    setSteps(2);
-                    setSearch("");
-                    resetForm();
-                  }}
-                >
-                  {t("Manual entry")}
-                </Button>
-              </div>
-
-              <div>
-                <Checkbox
-                  label={t("The branch bears the waste")}
-                  labelClassName="text-lg"
-                  type="checkbox"
-                  id="branch_waste"
-                  name="branch_waste"
-                  checked={isBranchWaste}
-                  onChange={(e: any) => {
-                    e.target.checked
-                      ? setIsBranchWaste(true)
-                      : setIsBranchWaste(false);
-                  }}
-                  disabled={!isBranchWaste && dataSource?.length !== 0}
-                  className={
-                    !isBranchWaste && dataSource?.length !== 0
-                      ? "bg-mainDisabled cursor-not-allowed"
-                      : "cursor-pointer"
-                  }
-                />
-              </div>
-              {steps === 1 && (
-                <div className="flex items-end justify-between">
-                  <div className="flex gap-2 rounded-md  p-1">
-                    <BaseInputField
-                      id="search"
-                      name="search"
-                      value={search}
-                      autoFocus
-                      label={t("id code")}
-                      type="text"
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder={`${t("id code")}`}
-                    />
-                  </div>
-                  <div className="">
-                    <FilesUpload setFiles={setFiles} files={files} />
-                  </div>
+                <div className="flex items-center gap-4">
+                  <Button
+                    bordered={steps === 2}
+                    action={() => {
+                      setSteps(1);
+                      setSearch("");
+                      resetForm();
+                    }}
+                  >
+                    {t("Enter barcode")}
+                  </Button>
+                  <Button
+                    bordered={steps === 1}
+                    action={() => {
+                      setSteps(2);
+                      setSearch("");
+                      resetForm();
+                    }}
+                  >
+                    {t("Manual entry")}
+                  </Button>
                 </div>
-              )}
 
-              {steps === 2 && (
-                <div className="flex items-end justify-between">
-                  <div className="flex items-end gap-4">
+                <div>
+                  <Checkbox
+                    label={t("The branch bears the waste")}
+                    labelClassName="text-lg"
+                    type="checkbox"
+                    id="branch_waste"
+                    name="branch_waste"
+                    checked={isBranchWaste}
+                    onChange={(e: any) => {
+                      e.target.checked
+                        ? setIsBranchWaste(true)
+                        : setIsBranchWaste(false);
+                    }}
+                    disabled={!isBranchWaste && dataSource?.length !== 0}
+                    className={
+                      !isBranchWaste && dataSource?.length !== 0
+                        ? "bg-mainDisabled cursor-not-allowed"
+                        : "cursor-pointer"
+                    }
+                  />
+                </div>
+                {steps === 1 && (
+                  <div className="flex items-end justify-between">
                     <div className="flex gap-2 rounded-md  p-1">
                       <BaseInputField
-                        id="ManualSearch"
-                        name="ManualSearch"
+                        id="search"
+                        name="search"
+                        value={search}
                         autoFocus
                         label={t("id code")}
                         type="text"
+                        onChange={(e) => setSearch(e.target.value)}
                         placeholder={`${t("id code")}`}
-                        className=""
                       />
                     </div>
-                    <Button
-                      action={() => {
-                        setSearch(values.ManualSearch);
-
-                        resetForm();
-                      }}
-                    >
-                      {t("search")}
-                    </Button>
-                  </div>
-                  <div className="">
+                    {/* <div className="">
                     <FilesUpload setFiles={setFiles} files={files} />
+                  </div> */}
                   </div>
-                </div>
-              )}
+                )}
 
-              {dataSource?.length > 0 && (
-                <>
-                  <ReturnItemsToEdaraTable
-                    mainData={mainData}
-                    operationTypeSelect={dataSource}
-                    setOperationTypeSelect={setDataSource}
-                    successData={successData}
-                    isLoading={isLoading}
-                    isFetching={isFetching}
-                    isRefetching={isRefetching}
-                    setMainData={setMainData}
-                  />
-                  <Button
-                    type="button"
-                    loading={thwelLoading}
-                    action={() => handleSubmit(values)}
-                    className="self-end"
-                  >
-                    {t("confirm")}
-                  </Button>
-                </>
-              )}
-            </div>
-          </Form>
+                {steps === 2 && (
+                  <div className="flex items-end justify-between">
+                    <div className="flex items-end gap-4">
+                      <div className="flex gap-2 rounded-md  p-1">
+                        <BaseInputField
+                          id="ManualSearch"
+                          name="ManualSearch"
+                          autoFocus
+                          label={t("id code")}
+                          type="text"
+                          placeholder={`${t("id code")}`}
+                          className=""
+                        />
+                      </div>
+                      <Button
+                        action={() => {
+                          setSearch(values.ManualSearch);
+
+                          resetForm();
+                        }}
+                      >
+                        {t("search")}
+                      </Button>
+                    </div>
+                    {/* <div className="">
+                    <FilesUpload setFiles={setFiles} files={files} />
+                  </div> */}
+                  </div>
+                )}
+
+                {dataSource?.length > 0 && (
+                  <>
+                    <ReturnItemsToEdaraTable
+                      mainData={mainData}
+                      operationTypeSelect={dataSource}
+                      setOperationTypeSelect={setDataSource}
+                      successData={successData}
+                      isLoading={isLoading}
+                      isFetching={isFetching}
+                      isRefetching={isRefetching}
+                      setMainData={setMainData}
+                    />
+                    <Button
+                      type="button"
+                      loading={thwelLoading}
+                      action={() => handleSubmit(values)}
+                      className="self-end"
+                    >
+                      {t("confirm")}
+                    </Button>
+                  </>
+                )}
+              </div>
+            </Form>
+          </>
         );
       }}
     </Formik>
