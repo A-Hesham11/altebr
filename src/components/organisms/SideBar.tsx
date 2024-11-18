@@ -1,6 +1,3 @@
-
-
-
 // /////////// IMPORTS
 // ///
 // import { Link, useLocation, useNavigate } from "react-router-dom"
@@ -101,7 +98,7 @@
 //         onClick={(e) => {
 //           if (e.button === 0) {
 //               // ctrl + left click
-//               if (!!!e.ctrlKey) 
+//               if (!!!e.ctrlKey)
 //                 navigate(Item.link)
 //         }}}
 //         icon={<Item.icon size={20} />}
@@ -153,11 +150,9 @@
 //   )
 // }
 
-
-
 /////////// IMPORTS
 ///
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom";
 // components
 import {
   Menu,
@@ -165,35 +160,35 @@ import {
   Sidebar,
   SubMenu,
   useProSidebar,
-} from "react-pro-sidebar"
-import { useIsRTL } from "../../hooks/useIsRTL"
+} from "react-pro-sidebar";
+import { useIsRTL } from "../../hooks/useIsRTL";
 // helpers
-import { useEffect, useState } from "react"
-import { useTranslation } from "react-i18next"
-import { MenuItem_TP, sideBarItems } from "../../data/sidebar"
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { MenuItem_TP, sideBarItems } from "../../data/sidebar";
 
 type OpenMenus_TP = {
-  [key: string]: boolean
-}
+  [key: string]: boolean;
+};
 
 export const SideBar = () => {
   /////////// CUSTOM HOOKS
-  const { t } = useTranslation()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const isRTL = useIsRTL()
-  const [opened, setOpened] = useState<OpenMenus_TP>({})
-  const { collapseSidebar, collapsed } = useProSidebar()
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isRTL = useIsRTL();
+  const [opened, setOpened] = useState<OpenMenus_TP>({});
+  const { collapseSidebar, collapsed } = useProSidebar();
 
-  const path = location.pathname
+  const path = location.pathname;
 
   const findPathParentMenu = (path: string) => {
-    var opened: OpenMenus_TP = {}
+    var opened: OpenMenus_TP = {};
     sideBarItems.forEach((item: MenuItem_TP) => {
       // check if item has link
       if (item.link) {
         if (item.link === path) {
-          opened[item.id] = true
+          opened[item.id] = true;
         }
       }
       // check if item has items
@@ -201,32 +196,32 @@ export const SideBar = () => {
         item.items.forEach((innerItem) => {
           if (innerItem.link) {
             if (innerItem.link === path) {
-              opened[item.id] = true
+              opened[item.id] = true;
             }
           } else if (innerItem.items) {
             innerItem.items.forEach((innerInnerItem) => {
               if (innerInnerItem.link) {
                 if (innerInnerItem.link === path) {
-                  opened[item.id] = true
-                  opened[innerItem.id] = true
+                  opened[item.id] = true;
+                  opened[innerItem.id] = true;
                 }
               }
-            })
+            });
           }
-        })
+        });
       }
-    })
-    return opened
-  }
+    });
+    return opened;
+  };
 
   useEffect(() => {
-    setOpened(findPathParentMenu(path))
-  }, [path])
+    setOpened(findPathParentMenu(path));
+  }, [path]);
 
   const isOpen = (id: string) => {
-    if (collapsed) return false
-    return opened[id]
-  }
+    if (collapsed) return false;
+    return opened[id];
+  };
   // find path parent menu
 
   const generateItem = (Item: MenuItem_TP) => {
@@ -254,17 +249,19 @@ export const SideBar = () => {
         key={Item.id}
         onClick={(e) => {
           if (e.button === 0) {
-              // ctrl + left click
-              if (!!!e.ctrlKey) 
-                navigate(Item.link)
-        }}}
+            // ctrl + left click
+            if (!!!e.ctrlKey) navigate(Item.link);
+          }
+        }}
         icon={<Item.icon size={20} />}
         active={location.pathname === Item.link}
       >
-        <Link to={`${Item.link}`}><div>{t(Item.label)}</div></Link>
+        <Link to={`${Item.link}`}>
+          <div>{t(Item.label)}</div>
+        </Link>
       </MenuItem>
-    )
-  }
+    );
+  };
 
   ///
   return (
@@ -273,12 +270,12 @@ export const SideBar = () => {
       className="col-start-1 col-end-2 row-start-1 row-end-3 "
       transitionDuration={270}
       onMouseEnter={(e) => {
-        e.preventDefault()
-        collapseSidebar(false)
+        e.preventDefault();
+        collapseSidebar(false);
       }}
       onMouseLeave={(e) => {
-        e.preventDefault()
-        collapseSidebar(true)
+        e.preventDefault();
+        collapseSidebar(true);
       }}
     >
       <Menu className="bg-mainGreen h-full">
@@ -304,6 +301,5 @@ export const SideBar = () => {
         )}
       </Menu>
     </Sidebar>
-  )
-}
-
+  );
+};
