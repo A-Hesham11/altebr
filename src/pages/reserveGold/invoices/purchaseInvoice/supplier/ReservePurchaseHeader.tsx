@@ -6,6 +6,7 @@ import { BsDatabase } from "react-icons/bs";
 import { t } from "i18next";
 import { SelectOption_TP } from "../../../../../types";
 import { Employee_TP } from "../../../../employees/employees-types";
+import { GlobalDataContext } from "../../../../../context/settings/GlobalData";
 
 interface ReservePurchaseHeader_TP {
   buyingInvoiceNumber: number;
@@ -21,16 +22,8 @@ const ReservePurchaseHeader: React.FC<ReservePurchaseHeader_TP> = ({
 }) => {
   const { values } = useFormikContext();
   const { formatGram, formatReyal } = numberContext();
-  const [goldPriceToday, setGoldPriceToday] = useState("");
 
-  // // GOLD PRICE DATA FOR KILO OR GRAM API
-  // const { data: goldPriceData } = useFetch({
-  //   queryKey: ["static-price"],
-  //   endpoint: "/buyingUsedGold/api/v1/show-gold-price",
-  //   onSuccess: (data: any) => {
-  //     console.log(data);
-  //   },
-  // });
+  const { gold_price } = GlobalDataContext();
 
   const { data: supplierAccount, refetch } = useFetch({
     endpoint: values!.supplier_id
@@ -42,14 +35,6 @@ const ReservePurchaseHeader: React.FC<ReservePurchaseHeader_TP> = ({
   useEffect(() => {
     refetch();
   }, [values!.supplier_id]);
-
-  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
-    endpoint: "/attachment/api/v1/goldPrice",
-    queryKey: ["GoldPriceApi"],
-    onSuccess: (data) => {
-      setGoldPriceToday(data["price_gram_24k"]);
-    },
-  });
 
   return (
     <div className="flex items-center gap-8 lg:gap-10">
@@ -63,7 +48,9 @@ const ReservePurchaseHeader: React.FC<ReservePurchaseHeader_TP> = ({
         <p className=" border-l border-[#FFA34B] px-1">
           {t("daily gold price")}
         </p>
-        <p className="px-1">{goldPriceToday} {GoldPrice?.currency}</p>
+        <p className="px-1">
+          {gold_price?.price_gram_24k} {gold_price?.currency}
+        </p>
       </div>
 
       {values!.supplier_id && (

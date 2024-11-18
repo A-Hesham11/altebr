@@ -16,6 +16,7 @@ import { mutateData } from "../../../utils/mutateData";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
 import { SelectOption_TP } from "../../../types";
 import { Employee_TP } from "../../employees/employees-types";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 const TransformToBranch = ({
   operationTypeSelect,
@@ -33,7 +34,7 @@ const TransformToBranch = ({
   const [rowWage, setRowWage] = useState(null);
   const [files, setFiles] = useState([]);
   const [thwelIds, setThwelIds] = useState([]);
-  const [goldPriceToday, setGoldPriceToday] = useState("");
+  const { gold_price } = GlobalDataContext();
 
   const operationTypeSelectWeight = operationTypeSelect.filter(
     (el: any) => el.check_input_weight !== 0
@@ -43,17 +44,9 @@ const TransformToBranch = ({
     setSelectedOption(event.target.value);
   };
 
-  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
-    endpoint: "/attachment/api/v1/goldPrice",
-    queryKey: ["GoldPriceApi"],
-    onSuccess: (data) => {
-      setGoldPriceToday(data["price_gram_24k"]);
-    },
-  });
-
   const initialValues = {
     branch_id: "",
-    gold_price: goldPriceToday || "",
+    gold_price: gold_price?.price_gram_24k || "",
     sanad_type: "",
     weight_input: "",
   };
@@ -232,8 +225,8 @@ const TransformToBranch = ({
       // QueryClient.refetchQueries(["thwel-api"]);
       setTransformPrintBondsModal(true);
       setBondDataPrint(data?.bond);
-      setOperationTypeSelect([])
-      refetch()
+      setOperationTypeSelect([]);
+      refetch();
     },
     onError: (error) => {
       notify("error", error.response.data.msg);

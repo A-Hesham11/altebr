@@ -37,6 +37,7 @@ const SellingInvoiceData = ({
   sellingItemsOfWeigth,
   invoiceHeaderData,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   console.log("🚀 ~ invoiceHeaderData:", invoiceHeaderData);
   console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ clientData:", clientData);
@@ -159,8 +160,13 @@ const SellingInvoiceData = ({
       },
       {
         header: () => <span>{t("stone weight")} </span>,
-        accessorKey: "stone_weight",
-        cell: (info) => info.getValue() || "---",
+        accessorKey: "stones_weight",
+        cell: (info) => {
+          const stoneWeigthByGram = Number(info.getValue()) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          return result ? info.getValue() : "---";
+        },
       },
       {
         header: () => <span>{t("karat value")} </span>,
@@ -323,6 +329,7 @@ const SellingInvoiceData = ({
         tax_rate: item.tax_rate,
         commission_oneItem: ratioForOneItem,
         commissionTax_oneItem: ratioForOneItemTaxes,
+        stones_weight: item.stones_weight,
       };
     });
     const card = paymentData.reduce((acc, curr) => {

@@ -5,23 +5,16 @@ import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useFetch } from "../../../../hooks";
 import { SelectOption_TP } from "../../../../types";
 import { Employee_TP } from "../../../../pages/employees/employees-types";
+import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 
 const BillHeader = ({ invoiceNumber, locationPath }: any) => {
   const { userData } = useContext(authCtx);
-  const [goldPriceToday, setGoldPriceToday] = useState("");
+  const { gold_price } = GlobalDataContext();
 
   // const { data: goldPriceData } = useFetch({
   //   queryKey: ["static-price"],
   //   endpoint: "/buyingUsedGold/api/v1/show-gold-price",
   // });
-
-  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
-    endpoint: "/attachment/api/v1/goldPrice",
-    queryKey: ["GoldPriceApi"],
-    onSuccess: (data) => {
-      setGoldPriceToday(data["price_gram_24k"]);
-    },
-  });
 
   return (
     <div className="flex items-center gap-8 lg:gap-16">
@@ -42,7 +35,7 @@ const BillHeader = ({ invoiceNumber, locationPath }: any) => {
         <p className=" border-l border-[#FFA34B] px-1">
           {t("daily gold price")}
         </p>
-        <p className="px-1">{goldPriceToday} {GoldPrice?.currency}</p>
+        <p className="px-1">{gold_price?.price_gram_24k} {gold_price?.currency}</p>
       </div>
     </div>
   );

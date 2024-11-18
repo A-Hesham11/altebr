@@ -23,11 +23,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import WasteSupplyReturnTable from "./WasteSupplyReturnTable";
 import { date } from "yup";
 import RadioGroup from "../../molecules/RadioGroup";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 const WasteSupplyReturn = () => {
   const [thwelIds, setThwelIds] = useState([]);
-  const [goldPriceToday, setGoldPriceToday] = useState("");
-  console.log("🚀 ~ WasteSupplyReturn ~ goldPriceToday:", goldPriceToday);
   const [search, setSearch] = useState("-");
   const [dataSource, setDataSource] = useState([]);
   console.log("🚀 ~ WasteSupplyReturn ~ dataSource:", dataSource);
@@ -38,7 +37,7 @@ const WasteSupplyReturn = () => {
   const [steps, setSteps] = useState(1);
   const [files, setFiles] = useState([]);
   const [isBranchWasting, setIsBranchWasting] = useState(null);
-  console.log("🚀 ~ WasteSupplyReturn ~ isBranchWasting:", isBranchWasting);
+  const { gold_price } = GlobalDataContext();
 
   const operationTypeSelectWeight = dataSource.filter(
     (el: any) => el.check_input_weight !== 0
@@ -46,7 +45,7 @@ const WasteSupplyReturn = () => {
 
   const initialValues = {
     branch_id: "",
-    gold_price: goldPriceToday || "1000",
+    gold_price: gold_price?.price_gram_24k || "1000",
     sanad_type: "",
     weight_input: "",
     search: "",
@@ -77,14 +76,6 @@ const WasteSupplyReturn = () => {
       setSearch("");
     },
     pagination: true,
-  });
-
-  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
-    endpoint: "/attachment/api/v1/goldPrice",
-    queryKey: ["GoldPriceApi"],
-    onSuccess: (data) => {
-      setGoldPriceToday(data["price_gram_24k"]);
-    },
   });
 
   useEffect(() => {

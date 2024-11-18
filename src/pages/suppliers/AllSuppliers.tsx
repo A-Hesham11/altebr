@@ -175,7 +175,7 @@ export const AllSuppliers = ({ title }: SupplierProps_TP) => {
     endpoint:
       search === ""
         ? `supplier/api/v1/suppliers?page=${page}`
-        : `supplier/api/v1/suppliers?page=${page}&name[lk]=${search}`,
+        : `supplier/api/v1/suppliers?page=${page}&company_name[eq]=${search}`,
     queryKey: ["suppliers"],
     pagination: true,
     onSuccess(data) {

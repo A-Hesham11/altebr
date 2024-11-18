@@ -32,6 +32,7 @@ type Payment_TP = {
   setIsMaxDiscountLimit?: any;
   setSalesReturnFrontKey?: any;
   setCardFrontKeySadad?: any;
+  setSelectedCardData?: any;
 };
 
 const PaymentCard = ({
@@ -288,7 +289,7 @@ const PaymentCard = ({
         (item) => item?.front_key === frontKey
       );
       console.log("🚀 ~ handleChooseCard ~ selectNewCard:", selectNewCard);
-      setSelectedCardData(selectNewCard);
+      setSelectedCardData?.(selectNewCard);
 
       const selectCradIDOrBankId = selectNewCard[0]?.bank_id
         ? selectNewCard[0]?.bank_id

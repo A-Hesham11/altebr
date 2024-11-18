@@ -20,6 +20,7 @@ import { convertNumToArWord } from "../../../../utils/number to arabic words/con
 import InvoiceFooter from "../../../Invoice/InvoiceFooter";
 import InvoiceHeader from "../../../Invoice/InvoiceHeader";
 import { GlobalDataContext } from "../../../../context/settings/GlobalData";
+import cashImg from "../../../../assets/cash.png";
 
 type Entry_TP = {
   bian: string;
@@ -30,6 +31,7 @@ type Entry_TP = {
 };
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
@@ -52,6 +54,13 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     invoice_text: "simplified tax invoice",
   };
 
+  const paymentData = item?.invoicepayments?.map((item) => ({
+    add_commission_ratio: "no",
+    cardImage: item.image === "cash" ? cashImg : item.image,
+    cost_after_tax: item.amount,
+  }));
+  console.log("🚀 ~ paymentData ~ paymentData:", paymentData);
+
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
       {
@@ -71,7 +80,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
       },
       {
         header: () => (
-          <span>{`${t("precious metal weight")} (${t("in geram")})`}</span>
+          <span>{`${t("precious metal weight")} (${t("In grams")})`}</span>
         ),
         accessorKey: "weight",
         cell: (info) => info.getValue() || `${t("no items")}`,
@@ -250,7 +259,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
             </div>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment responseSellingData={item} />
+              <FinalPreviewBillPayment responseSellingData={item} paymentData={paymentData} />
             </div>
 
             <div>

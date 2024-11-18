@@ -58,6 +58,7 @@ const AddSellingInvoice = () => {
     category_type: "",
     weightitems: [],
     max_selling_price: "",
+    stones_weight: "",
 
     client_id: "",
     client_value: "",

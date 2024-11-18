@@ -8,6 +8,8 @@ import SalesReturnFirstPage from "./SalesReturnFirstPage";
 import * as Yup from "yup";
 import SalesReturnSecondPage from "./SalesReturnSecondPage";
 import SalesReturnInvoiceData from "./SalesReturnInvoiceData";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
+import { formatDate } from "../../utils/date";
 
 const SalesReturnPage = () => {
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
@@ -18,8 +20,17 @@ const SalesReturnPage = () => {
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [invoiceNumber, setInvoiceNumber] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
-
+  const { invoice_logo } = GlobalDataContext();
   const { userData } = useContext(authCtx);
+
+  const invoiceHeaderData = {
+    client_id: clientData?.client_id,
+    client_value: clientData?.client_value,
+    bond_date: formatDate(clientData?.bond_date),
+    invoice_number: invoiceNumber,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
+  };
 
   const initialValues: Selling_TP = {
     invoice_id: "",
@@ -134,6 +145,7 @@ const SalesReturnPage = () => {
             setStage={setStage}
             selectedItemDetails={selectedItemDetails}
             sellingItemsOfWeigth={sellingItemsOfWeigth}
+            invoiceHeaderData={invoiceHeaderData}
           />
         )}
       </>

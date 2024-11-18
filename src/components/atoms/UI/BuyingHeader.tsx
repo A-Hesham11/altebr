@@ -4,14 +4,15 @@ import { BsDatabase } from "react-icons/bs";
 import { useFetch } from "../../../hooks";
 import { SelectOption_TP } from "../../../types";
 import { Employee_TP } from "../../../pages/employees/employees-types";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 /**
- * 
+ *
  * @param invoiceNumber invoiceNumber - {invoiceNumber}
  * @returns jsx
  */
 const BuyingHeader = ({ invoiceNumber }: any) => {
-  const [goldPriceToday, setGoldPriceToday] = useState("");
+  const { gold_price } = GlobalDataContext();
 
   // // GOLD PRICE DATA FOR KILO OR GRAM API
   // const {
@@ -23,14 +24,6 @@ const BuyingHeader = ({ invoiceNumber }: any) => {
   //     console.log(data);
   //   },
   // });
-
-  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
-    endpoint: "/attachment/api/v1/goldPrice",
-    queryKey: ["GoldPriceApi"],
-    onSuccess: (data) => {
-      setGoldPriceToday(data["price_gram_24k"]);
-    },
-  });
 
   return (
     <div className="flex items-center gap-8 lg:gap-16">
@@ -47,7 +40,9 @@ const BuyingHeader = ({ invoiceNumber }: any) => {
         <p className=" border-l border-[#FFA34B] px-1">
           {t("daily gold price")}
         </p>
-        <p className="px-1">{goldPriceToday} {GoldPrice?.currency}</p>
+        <p className="px-1">
+          {gold_price?.price_gram_24k} {gold_price?.currency}
+        </p>
       </div>
     </div>
   );

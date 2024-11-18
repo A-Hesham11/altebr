@@ -68,6 +68,7 @@ const ExpensesPage = () => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {}}
+      // enableReinitialize={true}
     >
       <>
         {stage === 1 && (
