@@ -20,6 +20,7 @@ import PaymentBondsAccountingEntry from "./PaymentBondsAccountingEntry";
 import * as Yup from "yup";
 import { SelectOption_TP } from "../../../types";
 import { useNavigate } from "react-router-dom";
+import { FilesUpload } from "../../../components/molecules/files/FileUpload";
 
 const PaymentBondsTable = ({
   item,
@@ -33,6 +34,7 @@ const PaymentBondsTable = ({
   console.log("🚀 ~ item:", item);
 
   const { formatReyal, formatGram } = numberContext();
+  const [files, setFiles] = useState([]);
 
   const isRTL = useIsRTL();
 
@@ -139,12 +141,9 @@ const PaymentBondsTable = ({
       setOpenInvoiceModal(false);
       notify("success");
       branchesWithoutEdara.map((branch) => {
-        navigate(
-          `/accept-branchBonds?id=${branch?.id}&name=${branch?.name}`,
-          {
-            branchName: branch?.name,
-          }
-        );
+        navigate(`/accept-branchBonds?id=${branch?.id}&name=${branch?.name}`, {
+          branchName: branch?.name,
+        });
       });
     },
   });
@@ -154,13 +153,15 @@ const PaymentBondsTable = ({
       initialValues={{ bank_Account: "" }}
       onSubmit={(values) => {
         var parts = values.bank_Account.split("_").slice(0, -1).join("_");
-        
+
         mutate({
           endpointName: `/sdad/api/v1/accpet/${item?.branch_id}/${item?.id}`,
           values: {
             front_key: parts,
+            media: files,
           },
           method: "post",
+          dataType: "formData",
         });
       }}
     >
@@ -221,25 +222,31 @@ const PaymentBondsTable = ({
           <div className="mt-5">
             {receive ? (
               <>
-                {isBank && (
-                  <Select
-                    id="1"
-                    label={`${t("choose bank")}`}
-                    name="bank_Account"
-                    placeholder={`${t("bank name")}`}
-                    loadingPlaceholder={`${t("loading")}`}
-                    options={accountBanks}
-                    creatable
-                    modalTitle={`${t("choose bank")}`}
-                    required
-                    fieldKey="id"
-                    // value={newValue}
-                    // isDisabled={disabled || (!BanksLoading && !!nationalityErrorReason)}
-                    // onChange={(option) => {
-                    //   setNewValue(option);
-                    // }}
-                  />
-                )}
+                <div className="flex justify-between items-end gap-6">
+                  {isBank && (
+                    <Select
+                      id="1"
+                      label={`${t("choose bank")}`}
+                      name="bank_Account"
+                      placeholder={`${t("bank name")}`}
+                      loadingPlaceholder={`${t("loading")}`}
+                      options={accountBanks}
+                      creatable
+                      modalTitle={`${t("choose bank")}`}
+                      required
+                      fieldKey="id"
+                      // value={newValue}
+                      // isDisabled={disabled || (!BanksLoading && !!nationalityErrorReason)}
+                      // onChange={(option) => {
+                      //   setNewValue(option);
+                      // }}
+                    />
+                  )}
+
+                  <div className="">
+                    <FilesUpload setFiles={setFiles} files={files} />
+                  </div>
+                </div>
                 <Button
                   type="submit"
                   className={`${isRTL ? "float-left" : "float-right"} mt-5`}
