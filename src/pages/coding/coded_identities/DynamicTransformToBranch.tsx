@@ -19,6 +19,7 @@ import { BiSearchAlt } from "react-icons/bi";
 import TableOfDynamicTransformToBranch from "./TableOfDynamicTransformToBranch";
 import { formatDate } from "../../../utils/date";
 import { Loading } from "../../../components/organisms/Loading";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 const DynamicTransformToBranch = ({
   // operationTypeSelect,
@@ -42,23 +43,15 @@ const DynamicTransformToBranch = ({
   console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
   const [successData, setSuccessData] = useState([]);
-  console.log("🚀 ~ successData:", successData);
+  const { gold_price } = GlobalDataContext();
 
   const operationTypeSelectWeight = dataSource.filter(
     (el: any) => el.check_input_weight !== 0
   );
 
-  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
-    endpoint: "/attachment/api/v1/goldPrice",
-    queryKey: ["GoldPriceApi"],
-    onSuccess: (data) => {
-      setGoldPriceToday(data["price_gram_24k"]);
-    },
-  });
-
   const initialValues = {
     branch_id: "",
-    gold_price: goldPriceToday || "",
+    gold_price: gold_price?.price_gram_24k || "",
     sanad_type: "",
     weight_input: "",
     search: "",

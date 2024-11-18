@@ -72,8 +72,7 @@ export const SupplyFirstForm = ({
   //     })
   //   })
 
-  const [goldPriceToday, setGoldPriceToday] = useState("")
-  console.log("🚀 ~ file: SupplyFirstForm.tsx:76 ~ goldPriceToday:", goldPriceToday)
+  const [goldPriceToday, setGoldPriceToday] = useState("");
 
   useEffect(() => {
     setGoldPriceToday("");
@@ -112,8 +111,8 @@ export const SupplyFirstForm = ({
         return {
           //@ts-ignore
           id: supplier.id,
-          value: supplier.name,
-          label: supplier.name,
+          value: supplier.company_name,
+          label: supplier.company_name,
           name: supplier.name,
           tax: supplier.tax,
         };
@@ -125,8 +124,8 @@ export const SupplyFirstForm = ({
     endpoint: "/attachment/api/v1/goldPrice",
     queryKey: ["GoldPriceApi"],
     onSuccess: (data) => {
-      setGoldPriceToday(data["price_gram_24k"])
-    }
+      setGoldPriceToday(data["price_gram_24k"]);
+    },
   });
 
   // fetch supplier api
@@ -187,9 +186,10 @@ export const SupplyFirstForm = ({
           goods_media: formValues?.goods_media || [],
         };
 
-
-    console.log("🚀 ~ file: SupplyFirstForm.tsx:140 ~ FirstFormInitValues:", FirstFormInitValues)
-
+  console.log(
+    "🚀 ~ file: SupplyFirstForm.tsx:140 ~ FirstFormInitValues:",
+    FirstFormInitValues
+  );
 
   /////////// SIDE EFFECTS
   ///
@@ -199,7 +199,10 @@ export const SupplyFirstForm = ({
   const handleSubmit = (values: FirstFormInitValues_TP) => {
     setStage((prev) => prev + 1);
     if (supply === "gold") {
-    console.log("🚀 ~ file: SupplyFirstForm.tsx:194 ~ handleSubmit ~ values:", values)
+      console.log(
+        "🚀 ~ file: SupplyFirstForm.tsx:194 ~ handleSubmit ~ values:",
+        values
+      );
 
       values.twred_type === "global"
         ? setFormValues(values)
@@ -239,9 +242,9 @@ export const SupplyFirstForm = ({
     <>
       <Formik
         onSubmit={(values) => {
-        console.log("🚀 ~ file: SupplyFirstForm.tsx:235 ~ values:", values)
+          console.log("🚀 ~ file: SupplyFirstForm.tsx:235 ~ values:", values);
 
-          handleSubmit(values)
+          handleSubmit(values);
         }}
         initialValues={FirstFormInitValues}
         validationSchema={
@@ -249,246 +252,246 @@ export const SupplyFirstForm = ({
         }
       >
         {({ values, setFieldValue }) => {
-        console.log("🚀 ~ file: SupplyFirstForm.tsx:490 ~ values:", values)
-          
-          return (
-          <Form>
-            {/* <HandleBackErrors errors={}> */}
+          console.log("🚀 ~ file: SupplyFirstForm.tsx:490 ~ values:", values);
 
-            <OuterFormLayout
-              submitComponent={
-                <Button type="submit" className="ms-auto mt-8">
-                  {t("next")}
-                </Button>
-              }
-            >
-              <InnerFormLayout
-                title={`${t("main data")}`}
-                leftComponent={
-                  <p className="font-bold">
-                    {`${t("bond number")}`}/
-                    <span className=" text-mainOrange">
-                      {nextBondNumber ? nextBondNumber : "تحميل رقم ..."}
-                    </span>
-                  </p>
+          return (
+            <Form>
+              {/* <HandleBackErrors errors={}> */}
+
+              <OuterFormLayout
+                submitComponent={
+                  <Button type="submit" className="ms-auto mt-8">
+                    {t("next")}
+                  </Button>
                 }
               >
-                {/* currency start */}
+                <InnerFormLayout
+                  title={`${t("main data")}`}
+                  leftComponent={
+                    <p className="font-bold">
+                      {`${t("bond number")}`}/
+                      <span className=" text-mainOrange">
+                        {nextBondNumber ? nextBondNumber : "تحميل رقم ..."}
+                      </span>
+                    </p>
+                  }
+                >
+                  {/* currency start */}
 
-                <div className="col-span-4 flex gap-x-5">
-                  <div className="flex gap-x-2 mt-8 col-span-4">
-                    <span className="font-bold">{t("supply type")}</span>
-                    <RadioGroup name="twred_type">
-                      <div className="flex gap-x-2">
-                        <RadioGroup.RadioButton
-                          value="local"
-                          label={`${t("local")}`}
-                          id="local"
-                        />
-                        <RadioGroup.RadioButton
-                          value="global"
-                          label={`${t("global")}`}
-                          id="global"
-                        />
-                      </div>
-                    </RadioGroup>
-                  </div>
-                  {supply !== "gold" && (
+                  <div className="col-span-4 flex gap-x-5">
                     <div className="flex gap-x-2 mt-8 col-span-4">
-                      <span className="font-bold">{t("currency")}</span>
-                      <RadioGroup name="currency">
+                      <span className="font-bold">{t("supply type")}</span>
+                      <RadioGroup name="twred_type">
                         <div className="flex gap-x-2">
                           <RadioGroup.RadioButton
-                            value="ryal"
-                            label={`${t("ryal")}`}
-                            id="ryal"
+                            value="local"
+                            label={`${t("local")}`}
+                            id="local"
                           />
                           <RadioGroup.RadioButton
-                            value="other_currency"
-                            label={`${t("other currency")}`}
-                            id="other_currency"
+                            value="global"
+                            label={`${t("global")}`}
+                            id="global"
                           />
                         </div>
                       </RadioGroup>
                     </div>
-                  )}
-                </div>
-                {/* currency end */}
-
-                {/* document date start */}
-                <DateInputField
-                  label={`${t("bond date")}`}
-                  name="bond_date"
-                  maxDate={new Date()}
-                />
-                {/* document date end */}
-
-                {/* buyer name name start */}
-                <div className="flex flex-col">
-                  <Select
-                    id="employee_id"
-                    label={`${t("buyer name")}`}
-                    name="employee_id"
-                    placeholder={`${t("buyer name")}`}
-                    loadingPlaceholder={`${t("loading")}`}
-                    options={employees}
-                    fieldKey="id"
-                    loading={employeesLoading}
-                    isDisabled={!employeesLoading && !!employeeError}
-                    onChange={(option: any) => {
-                      setFieldValue("employee_value", option!.value);
-                      setFieldValue("employee_id", option!.id);
-                      setFieldValue("api_gold_price", goldPriceToday);
-
-                    }}
-                    value={{
-                      value:
-                        values.employee_value || formValues?.employee_value,
-                      label:
-                        values.employee_value ||
-                        formValues?.employee_value ||
-                        t("buyer name"),
-                      id: values.employee_id || values.employee_id,
-                    }}
-                  />
-                  <RefetchErrorHandler
-                    failureReason={employeeError}
-                    isLoading={employeesLoading}
-                    refetch={refetchEmployee}
-                  />
-                </div>
-                {/* buyer name name end */}
-
-                {/* supplier name start */}
-                <div className="flex flex-col">
-                  <Select
-                    id="supplier_id"
-                    label={`${t("supplier name")}`}
-                    name="supplier_id"
-                    placeholder={`${t("supplier name")}`}
-                    loadingPlaceholder={`${t("loading")}`}
-                    options={suppliers}
-                    fieldKey="id"
-                    loading={suppliersLoading}
-                    isDisabled={!suppliersLoading && !!suppliersErrorReason}
-                    onChange={(option: any) => {
-                      setFieldValue("supplier_value", option!.value);
-                      setFieldValue("supplier_id", option!.id);
-                      setSupplierTax(option.tax);
-                    }}
-                    value={{
-                      value:
-                        values.supplier_value || formValues?.supplier_value,
-                      label:
-                        values.supplier_value ||
-                        formValues?.supplier_value ||
-                        t("supplier name"),
-                      id: values.supplier_id || values.supplier_id,
-                    }}
-                  />
-                  <RefetchErrorHandler
-                    failureReason={suppliersErrorReason}
-                    isLoading={suppliersLoading}
-                    refetch={refetchSupplier}
-                  />
-                </div>
-                {/* supplier name end */}
-
-                {/* document number start */}
-                <BaseInputField
-                  id="bond_number"
-                  label={`${t("bond number")}`}
-                  name="bond_number"
-                  type="text"
-                  placeholder={`${t("bond number")}`}
-                  required
-                />
-                {/* document number end */}
-
-                {/* gold price start */}
-                {supply === "gold" && (
-                  <BaseInputField
-                    id="entity_gold_price"
-                    label={`${t("gold price")}`}
-                    name="api_gold_price"
-                    type="text"
-                    value={goldPriceToday ? goldPriceToday : ""}
-                    placeholder={`${t("gold price")}`}
-                    onChange={(e) => {
-                      setGoldPriceToday(e.target.value)
-                      setFieldValue("api_gold_price", e.target.value);
-                    }}
-                    required
-                    disabled
-                    className="bg-mainDisabled"
-                  />
-                )}
-                {/* gold price end */}
-
-                {/* outer goods amount start */}
-                {values.twred_type === "global" && (
-                  <BaseInputField
-                    id="out_goods_value"
-                    label={`${t("out goods value")}`}
-                    name="out_goods_value"
-                    type="text"
-                    placeholder={`${t("out goods value")}`}
-                    required
-                  />
-                )}
-                {/* currency factorial start */}
-                {values.currency === "other_currency" && (
-                  <BaseInputField
-                    id="factorial"
-                    label={`${t("conversion factorial")}`}
-                    name="factorial"
-                    type="number"
-                    placeholder={`${t("conversion factorial")}`}
-                    required
-                  />
-                )}
-                {/* currency factorial end */}
-                <div className="col-span-4 flex justify-between gap-x-4">
-                  {/*doc file start */}
-                  <div
-                    className={
-                      values.twred_type === "global" ? "w-1/2" : "w-full"
-                    }
-                  >
-                    <h2>{t("attach supplier bond file")}</h2>
-                    <DropFile name="media" />
+                    {supply !== "gold" && (
+                      <div className="flex gap-x-2 mt-8 col-span-4">
+                        <span className="font-bold">{t("currency")}</span>
+                        <RadioGroup name="currency">
+                          <div className="flex gap-x-2">
+                            <RadioGroup.RadioButton
+                              value="ryal"
+                              label={`${t("ryal")}`}
+                              id="ryal"
+                            />
+                            <RadioGroup.RadioButton
+                              value="other_currency"
+                              label={`${t("other currency")}`}
+                              id="other_currency"
+                            />
+                          </div>
+                        </RadioGroup>
+                      </div>
+                    )}
                   </div>
-                  {/*doc file end */}
+                  {/* currency end */}
 
-                  {/*doc goods file start */}
-                  {values.twred_type === "global" && (
-                    <div className="w-1/2">
-                      <h2>{t("attach goods bond file")}</h2>
-                      <DropFile name="goods_media" />
-                    </div>
-                  )}
-                  {/*doc goods file end */}
-                </div>
-
-                {/* gold price start */}
-                <div className="col-span-4">
-                  <TextAreaField
-                    name="notes"
-                    className="col-span-4"
-                    rows={3}
-                    placeholder={`${t("notes")}`}
-                    id="notes"
-                    label={`${t("notes")}`}
-                    defaultValue={formValues?.notes || ""}
+                  {/* document date start */}
+                  <DateInputField
+                    label={`${t("bond date")}`}
+                    name="bond_date"
+                    maxDate={new Date()}
                   />
-                </div>
-                {/* gold price end */}
-              </InnerFormLayout>
-            </OuterFormLayout>
+                  {/* document date end */}
 
-            {/* </HandleBackErrors> */}
-          </Form>
-        )}}
+                  {/* buyer name name start */}
+                  <div className="flex flex-col">
+                    <Select
+                      id="employee_id"
+                      label={`${t("buyer name")}`}
+                      name="employee_id"
+                      placeholder={`${t("buyer name")}`}
+                      loadingPlaceholder={`${t("loading")}`}
+                      options={employees}
+                      fieldKey="id"
+                      loading={employeesLoading}
+                      isDisabled={!employeesLoading && !!employeeError}
+                      onChange={(option: any) => {
+                        setFieldValue("employee_value", option!.value);
+                        setFieldValue("employee_id", option!.id);
+                        setFieldValue("api_gold_price", goldPriceToday);
+                      }}
+                      value={{
+                        value:
+                          values.employee_value || formValues?.employee_value,
+                        label:
+                          values.employee_value ||
+                          formValues?.employee_value ||
+                          t("buyer name"),
+                        id: values.employee_id || values.employee_id,
+                      }}
+                    />
+                    <RefetchErrorHandler
+                      failureReason={employeeError}
+                      isLoading={employeesLoading}
+                      refetch={refetchEmployee}
+                    />
+                  </div>
+                  {/* buyer name name end */}
+
+                  {/* supplier name start */}
+                  <div className="flex flex-col">
+                    <Select
+                      id="supplier_id"
+                      label={`${t("supplier name")}`}
+                      name="supplier_id"
+                      placeholder={`${t("supplier name")}`}
+                      loadingPlaceholder={`${t("loading")}`}
+                      options={suppliers}
+                      fieldKey="id"
+                      loading={suppliersLoading}
+                      isDisabled={!suppliersLoading && !!suppliersErrorReason}
+                      onChange={(option: any) => {
+                        setFieldValue("supplier_value", option!.value);
+                        setFieldValue("supplier_id", option!.id);
+                        setSupplierTax(option.tax);
+                      }}
+                      value={{
+                        value:
+                          values.supplier_value || formValues?.supplier_value,
+                        label:
+                          values.supplier_value ||
+                          formValues?.supplier_value ||
+                          t("supplier name"),
+                        id: values.supplier_id || values.supplier_id,
+                      }}
+                    />
+                    <RefetchErrorHandler
+                      failureReason={suppliersErrorReason}
+                      isLoading={suppliersLoading}
+                      refetch={refetchSupplier}
+                    />
+                  </div>
+                  {/* supplier name end */}
+
+                  {/* document number start */}
+                  <BaseInputField
+                    id="bond_number"
+                    label={`${t("bond number")}`}
+                    name="bond_number"
+                    type="text"
+                    placeholder={`${t("bond number")}`}
+                    required
+                  />
+                  {/* document number end */}
+
+                  {/* gold price start */}
+                  {supply === "gold" && (
+                    <BaseInputField
+                      id="entity_gold_price"
+                      label={`${t("gold price")}`}
+                      name="api_gold_price"
+                      type="text"
+                      value={goldPriceToday ? goldPriceToday : ""}
+                      placeholder={`${t("gold price")}`}
+                      onChange={(e) => {
+                        setGoldPriceToday(e.target.value);
+                        setFieldValue("api_gold_price", e.target.value);
+                      }}
+                      required
+                      disabled
+                      className="bg-mainDisabled"
+                    />
+                  )}
+                  {/* gold price end */}
+
+                  {/* outer goods amount start */}
+                  {values.twred_type === "global" && (
+                    <BaseInputField
+                      id="out_goods_value"
+                      label={`${t("out goods value")}`}
+                      name="out_goods_value"
+                      type="text"
+                      placeholder={`${t("out goods value")}`}
+                      required
+                    />
+                  )}
+                  {/* currency factorial start */}
+                  {values.currency === "other_currency" && (
+                    <BaseInputField
+                      id="factorial"
+                      label={`${t("conversion factorial")}`}
+                      name="factorial"
+                      type="number"
+                      placeholder={`${t("conversion factorial")}`}
+                      required
+                    />
+                  )}
+                  {/* currency factorial end */}
+                  <div className="col-span-4 flex justify-between gap-x-4">
+                    {/*doc file start */}
+                    <div
+                      className={
+                        values.twred_type === "global" ? "w-1/2" : "w-full"
+                      }
+                    >
+                      <h2>{t("attach supplier bond file")}</h2>
+                      <DropFile name="media" />
+                    </div>
+                    {/*doc file end */}
+
+                    {/*doc goods file start */}
+                    {values.twred_type === "global" && (
+                      <div className="w-1/2">
+                        <h2>{t("attach goods bond file")}</h2>
+                        <DropFile name="goods_media" />
+                      </div>
+                    )}
+                    {/*doc goods file end */}
+                  </div>
+
+                  {/* gold price start */}
+                  <div className="col-span-4">
+                    <TextAreaField
+                      name="notes"
+                      className="col-span-4"
+                      rows={3}
+                      placeholder={`${t("notes")}`}
+                      id="notes"
+                      label={`${t("notes")}`}
+                      defaultValue={formValues?.notes || ""}
+                    />
+                  </div>
+                  {/* gold price end */}
+                </InnerFormLayout>
+              </OuterFormLayout>
+
+              {/* </HandleBackErrors> */}
+            </Form>
+          );
+        }}
       </Formik>
     </>
   );

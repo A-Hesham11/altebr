@@ -17,6 +17,7 @@ import { mutateData } from "../../../utils/mutateData";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
 import { SelectOption_TP } from "../../../types";
 import { Employee_TP } from "../../employees/employees-types";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
 import ThweelBondsPrint from "./ThweelBondsPrint";
 
 const TransformToBranch = ({
@@ -39,7 +40,7 @@ const TransformToBranch = ({
   const [rowWage, setRowWage] = useState(null);
   const [files, setFiles] = useState([]);
   const [thwelIds, setThwelIds] = useState([]);
-  const [goldPriceToday, setGoldPriceToday] = useState("");
+  const { gold_price } = GlobalDataContext();
 
   useEffect(() => {
     setPrintData(operationTypeSelect);
@@ -194,7 +195,7 @@ const TransformToBranch = ({
 
   const initialValues = {
     branch_id: "",
-    gold_price: goldPriceToday || "",
+    gold_price: gold_price?.price_gram_24k || "",
     sanad_type: "",
     weight_input: "",
   };

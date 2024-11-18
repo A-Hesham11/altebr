@@ -38,7 +38,7 @@ const BranchBalancesPage = () => {
   console.log("🚀 ~ BranchBalancesPage ~ balances:", balances);
 
   const balancesCash = balances?.filter(
-    (card) => card.numeric_system == "1301"
+    (card) => card.numeric_system == "1301" || card.numeric_system == "1203"
   );
 
   const balancesGold = balances?.filter(
@@ -101,24 +101,27 @@ const BranchBalancesPage = () => {
           </span>
         </h2>
         <div className="grid grid-cols-4 gap-y-8 gap-x-4 lg:gap-x-6">
-          {balancesCash?.map((card) => (
-            <div
-              className={` bg-white text-black font-bold  rounded-xl flex flex-col items-center justify-center cursor-pointer h-full py-3`}
-            >
-              <div className="flex gap-5 items-center">
-                <div className="w-12 h-12 bg-mainOrange flex justify-center items-center rounded-full">
-                  <GiReceiveMoney size={35} className="fill-white" />
-                </div>
-                <div>
-                  <p className="mb-3">{card.accountable}</p>
-                  <p>
-                    {formatReyal(Number(card.debtor - card.creditor))}{" "}
-                    <span>{card.unit}</span>
-                  </p>
+          {balancesCash
+            ?.slice()
+            ?.reverse()
+            ?.map((card) => (
+              <div
+                className={` bg-white text-black font-bold  rounded-xl flex flex-col items-center justify-center cursor-pointer h-full py-3`}
+              >
+                <div className="flex gap-5 items-center">
+                  <div className="w-12 h-12 bg-mainOrange flex justify-center items-center rounded-full">
+                    <GiReceiveMoney size={35} className="fill-white" />
+                  </div>
+                  <div>
+                    <p className="mb-3">{card.accountable}</p>
+                    <p>
+                      {formatReyal(Number(card.debtor - card.creditor))}{" "}
+                      <span>{card.unit}</span>
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
 

@@ -69,6 +69,7 @@ const PaymentProccessingToManagement = ({
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
   const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("");
+  const [selectedCardData, setSelectedCardData] = useState(null)
   const { formatReyal } = numberContext();
 
   const locationPath = location.pathname;
@@ -199,6 +200,8 @@ const PaymentProccessingToManagement = ({
                   ...values,
                   id: cardId,
                   card: card,
+                  paymentCardId: !!selectedCardData?.[0].iban ? null : selectedCardData?.[0]?.card_id,
+                  paymentBankId: !!selectedCardData?.[0].iban ? selectedCardData?.[0]?.bank_id : null,
                   card_id: selectedCardId,
                   cardImage: cardImage,
                   frontkey: cardFrontKey,
@@ -264,6 +267,7 @@ const PaymentProccessingToManagement = ({
                   setSalesReturnFrontKey={setSalesReturnFrontKey}
                   setCardId={setCardId}
                   setSelectedCardName={setSelectedCardName}
+                  setSelectedCardData={setSelectedCardData}
                 />
               </div>
               {locationPath === "/selling/payoff/sales-return" && (

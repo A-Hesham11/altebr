@@ -80,10 +80,8 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
     isRefetching: accountsIsRefetching,
     refetch: accountsRefetch,
   } = useFetch({
-    endpoint: `branchAccount/api/v1/getAccountBankBranches/${
-      userData?.branch_id
-    }/${selectedBankData?.id ? selectedBankData?.id : 0}`,
-    queryKey: ["accounts-option"],
+    endpoint: `branchAccount/api/v1/getAccountBankBranches/${userData?.branch_id}/${selectedBankData?.id}`,
+    queryKey: ["accounts-option", selectedBankData?.id],
     select: (data) => {
       return data?.map((bank) => {
         return {
@@ -94,6 +92,7 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
         };
       });
     },
+    enabled: !!selectedBankData?.id,
   });
 
   useEffect(() => {
@@ -127,6 +126,7 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
           onChange={(e) => {
             setSelectedBankData(e);
           }}
+          loading={allBankIsLoading || allBankIsFetching}
         />
       </div>
 
@@ -145,6 +145,7 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
           onChange={(e) => {
             setSelectedAccountData(e);
           }}
+          loading={accountsIsLoading || accountsIsFetching}
         />
       </div>
 

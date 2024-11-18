@@ -14,6 +14,7 @@ import { useContext, useEffect, useState } from "react";
 import BuyingBillInput from "./BuyingBillInput";
 import { SelectOption_TP } from "../../types";
 import { Employee_TP } from "../employees/employees-types";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
 
 type SellingFirstPage_TP = {
   sellingItemsData: Selling_TP;
@@ -45,6 +46,7 @@ const BuyingFirstPage = ({
   const { formatGram, formatReyal } = numberContext();
   const { values } = useFormikContext();
   const { userData } = useContext(authCtx);
+  const { gold_price } = GlobalDataContext();
 
   // FORMULA FOR RESULT
   const totalValues = sellingItemsData.reduce(
@@ -102,16 +104,11 @@ const BuyingFirstPage = ({
       unit: "ryal",
     });
 
-  const { data: GoldPrice } = useFetch<SelectOption_TP[], Employee_TP[]>({
-    endpoint: "/attachment/api/v1/goldPrice",
-    queryKey: ["GoldPriceApi"],
-  });
-
   const goldPrice = {
-    18: GoldPrice?.price_gram_18k,
-    21: GoldPrice?.price_gram_21k,
-    22: GoldPrice?.price_gram_22k,
-    24: GoldPrice?.price_gram_24k,
+    18: gold_price?.price_gram_18k,
+    21: gold_price?.price_gram_21k,
+    22: gold_price?.price_gram_22k,
+    24: gold_price?.price_gram_24k,
   };
 
   // CASH VALUE API

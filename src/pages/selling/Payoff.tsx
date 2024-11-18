@@ -45,21 +45,21 @@ const Payoff = () => {
         </Link>
       ),
     },
-    {
-      icon: receiveitem,
-      title_ar: "مردود التوريد (هدر)",
-      title_en: "Supply return (waste)",
-      route: "/selling/payoff/wasteReturn",
-      underCardInfo: (
-        <Link
-          to="/selling/wasteReturn"
-          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
-        >
-          <FaCubes className="text-mainGreen" size={25} />
-          <p className="text-mainGreen">{t("Supply yield constraints (waste)")}</p>
-        </Link>
-      ),
-    },
+    // {
+    //   icon: receiveitem,
+    //   title_ar: "مردود التوريد (هدر)",
+    //   title_en: "Supply return (waste)",
+    //   route: "/selling/payoff/wasteReturn",
+    //   underCardInfo: (
+    //     <Link
+    //       to="/selling/wasteReturn"
+    //       className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+    //     >
+    //       <FaCubes className="text-mainGreen" size={25} />
+    //       <p className="text-mainGreen">{t("Supply yield constraints (waste)")}</p>
+    //     </Link>
+    //   ),
+    // },
   ];
   return (
     <>

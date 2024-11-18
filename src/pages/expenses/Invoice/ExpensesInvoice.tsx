@@ -57,6 +57,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   taxType,
   setTaxType,
 }) => {
+  console.log("🚀 ~ files:", files);
   console.log("🚀 ~ paymentData:", paymentData);
   const { setFieldValue, values } = useFormikContext<Payment_TP>();
   console.log("🚀 ~ values:", values);
@@ -283,36 +284,41 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
             loading={false}
             action={() => {
               if (values.expense_price === "") {
-                notify("info", t("please enter expense price"));
+                notify("info", `${t("please enter expense price")}`);
                 return;
               }
 
               if (values.expense_date === "") {
-                notify("info", t("please enter expense date"));
+                notify("info", `${t("please enter expense date")}`);
                 return;
               }
 
               if (values.sub_expense === "") {
-                notify("info", t("please select sub expense"));
+                notify("info", `${t("please select sub expense")}`);
                 return;
               }
 
               if (values.add_description === "") {
-                notify("info", t("please enter description"));
+                notify("info", `${t("please enter description")}`);
                 return;
               }
 
               if (totalPaymentAmount > +values.expense_price) {
                 notify(
                   "info",
-                  t(
+                  `${t(
                     "the amount of payment is greater than the value of the bond"
-                  )
+                  )}`
                 );
                 return;
               }
+
+              if (files?.length === 0) {
+                notify("info", `${t("attachments is required")}`);
+                return;
+              }
               if (paymentData?.length === 0) {
-                notify("info", t("please add amount"));
+                notify("info", `${t("please add amount")}`);
                 return;
               }
 

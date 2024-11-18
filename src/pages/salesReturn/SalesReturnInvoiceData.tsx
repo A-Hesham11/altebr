@@ -21,6 +21,7 @@ type CreateHonestSanadProps_TP = {
   invoiceNumber: any;
   selectedItemDetails: any;
   sellingItemsOfWeigth: any;
+  invoiceHeaderData: any;
 };
 const SalesReturnInvoiceData = ({
   setStage,
@@ -28,6 +29,7 @@ const SalesReturnInvoiceData = ({
   paymentData,
   clientData,
   invoiceNumber,
+  invoiceHeaderData
 }: CreateHonestSanadProps_TP) => {
   console.log("🚀 ~ paymentData:", paymentData);
   const { formatGram, formatReyal } = numberContext();
@@ -321,13 +323,19 @@ const SalesReturnInvoiceData = ({
       return acc;
     }, {});
 
+    const paymentCard = paymentData?.map((item) => ({
+      card_id: item.frontkey === "cash" ? "cash" : item.paymentCardId,
+      bank_id: item.paymentBankId,
+      amount: item.amount, 
+    }));
+
     mutate({
       endpointName: "/sellingReturn/api/v1/add_selling_return",
-      values: { invoice, items, card },
+      values: { invoice, items, card, paymentCard },
     });
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
-      { invoice, items, card }
+      { invoice, items, card, paymentCard }
     );
   };
 
@@ -365,6 +373,7 @@ const SalesReturnInvoiceData = ({
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}
         responseSellingData={responseSellingData}
+        invoiceHeaderData={invoiceHeaderData}
       />
     </div>
   );
