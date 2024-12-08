@@ -35,6 +35,7 @@ const ExpensesPage = () => {
     value_added: "",
     value_zero: "",
     value_exempt: "",
+    tax_type: "",
     expense_price: "",
     expense_date: new Date(),
     expense_type: "",
@@ -48,9 +49,12 @@ const ExpensesPage = () => {
   };
 
   const validationSchema = Yup.object({
-    expense_price: Yup.string().required("Expense price is required"),
+    expense_price: Yup.number()
+      .required("Expense price is required")
+      .min(0, "Expense price must be at least 0"),
+    tax_type: Yup.string().required("Expense price is required"),
     expense_date: Yup.string().required("Expense date is required"),
-    add_description: Yup.string().required("Add description is required"),
+    // add_description: Yup.string().required("Add description is required"),
     sub_expense: Yup.string().required("Sub expense is required"),
     media: Yup.array().min(1, "Media is required"),
   });

@@ -1,20 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Modal } from "../../components/molecules";
-import { GiCheckMark, GiReceiveMoney, GiTakeMyMoney } from "react-icons/gi";
-import { Button } from "../../components/atoms";
+import React, { useContext } from "react";
+import { GiReceiveMoney } from "react-icons/gi";
 import { authCtx } from "../../context/auth-and-perm/auth";
-import { useFetch, useIsRTL, useMutate } from "../../hooks";
+import { useFetch, useIsRTL } from "../../hooks";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
-import { notify } from "../../utils/toast";
 import { t } from "i18next";
-import { BiLogOut } from "react-icons/bi";
-import SellingHomeCard from "../../components/selling/sellingHomeCard";
-import { IoSettingsOutline } from "react-icons/io5";
-import { sellingCards } from "../../utils/selling";
-import logo from "../../assets/altebr_logo.png";
-import { mutateData } from "../../utils/mutateData";
-import Departure from "../../assets/departure.svg";
+import Logo from "../../assets/altebr_logo.png";
 import { numberContext } from "../../context/settings/number-formatter";
 import { AiFillGolden } from "react-icons/ai";
 import { BsBank2 } from "react-icons/bs";
@@ -35,7 +25,6 @@ const BranchBalancesPage = () => {
     queryKey: ["Balances"],
     endpoint: `/branchAccount/api/v1/BranchTrigger/${userData?.branch_id}?per_page=10000`,
   });
-  console.log("🚀 ~ BranchBalancesPage ~ balances:", balances);
 
   const balancesCash = balances?.filter(
     (card) => card.numeric_system == "1301" || card.numeric_system == "1203"
@@ -69,14 +58,14 @@ const BranchBalancesPage = () => {
 
   const isRTL = useIsRTL();
 
-  //   if (isLoading || isRefetching || isFetching)
-  //     return <Loading mainTitle="balances" />;
+    if (isLoading || isRefetching || isFetching)
+      return <Loading mainTitle={t("balances")} />;
 
   return (
     <div className="selling min-h-screen pb-8 px-16">
       <div className="flex justify-between pb-5 items-end px-20">
         <div className="bg-slate-100 pb-4 px-4 rounded-b-xl">
-          <img src={logo} alt="logo" className="w-[50px] mt-5" />
+          <img src={Logo} alt="logo" className="w-[50px] mt-5" />
         </div>
         <h2 className="text-center font-bold md:text-xl text-white">
           {t("welcome")}

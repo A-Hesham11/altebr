@@ -26,13 +26,12 @@ export const Login = ({ title }: LoginProps_TP) => {
   ///
   const navigate = useNavigate()
   const { isLoggedIn } = useContext(authCtx)
-  console.log("🚀 ~ Login ~ isLoggedIn:", isLoggedIn)
   ///
   /////////// STATES
   ///
 
   ///
-  /////////// SIDE EFFECTS
+  /////////// SIDE EFFECTS 
   ///
   useEffect(() => {
     if (isLoggedIn) {

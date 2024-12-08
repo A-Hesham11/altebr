@@ -70,6 +70,7 @@ const PaymentProcessing = ({
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
+  const [exchangeFrontKey, setExchangeFrontKey] = useState<string>("");
   const { formatGram, formatReyal, digits_count } = numberContext();
   // const { formatReyal, digits_count } = numberContext();
 
@@ -154,6 +155,7 @@ const PaymentProcessing = ({
                       frontKeyAccept: editData?.frontKeyAccept,
                       frontKeySadad: editData?.frontKeySadad,
                       sellingFrontKey: editData?.sellingFrontKey,
+                      exchangeFrontKey: editData?.exchangeFrontKey
                     }
                   : item
               );
@@ -184,6 +186,7 @@ const PaymentProcessing = ({
                   frontKeyAccept: frontKeyAccept,
                   frontKeySadad: frontKeySadad,
                   sellingFrontKey: sellingFrontKey,
+                  exchangeFrontKey: exchangeFrontKey,
                   // commission_tax:
                   //   values.add_commission_ratio === "yes" ? commissionTax : 0,
                   commission_tax: commissionTax,
@@ -239,6 +242,7 @@ const PaymentProcessing = ({
                   setCardFrontKeyAccept={setCardFrontKeyAccept}
                   setCardFrontKeySadad={setCardFrontKeySadad}
                   setSellingFrontKey={setSellingFrontKey}
+                  setExchangeFrontKey={setExchangeFrontKey}
                   setCardDiscountPercentage={setCardDiscountPercentage}
                   setSelectedCardData={setSelectedCardData}
                 />

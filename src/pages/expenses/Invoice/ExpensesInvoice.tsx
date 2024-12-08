@@ -96,7 +96,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
     isRefetching,
     isFetching,
   } = useFetch({
-    endpoint: `/expenses/api/v1/sub-expence/${userData?.branch_id}`,
+    endpoint: `/expenses/api/v1/sub-expence/${userData?.branch_id}?per_page=10000`,
     queryKey: ["subExpensesOption"],
     select: (data: any) =>
       data.map((item: any) => {
@@ -133,9 +133,20 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                   name="expense_price"
                   label={`${t("expense price")}`}
                   type="number"
+                  min={1}
                   required
                   onChange={(e) => {
                     setFieldValue("expense_price", +e.target.value);
+                    if (!!values?.tax_type) {
+                      const taxModified = Number(values?.tax_type) / 100 + 1;
+                      const taxCalculate =
+                        Number(e.target.value) -
+                        Number(e.target.value) / taxModified;
+                      setFieldValue(
+                        "expense_price_after_tax",
+                        taxCalculate.toFixed(2)
+                      );
+                    }
                   }}
                 />
               </div>
@@ -167,6 +178,9 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                       taxCalculate.toFixed(2)
                     );
                   }}
+                  isDisabled={
+                    !values?.expense_price || values?.expense_price == 0
+                  }
                 />
               </div>
 
@@ -283,8 +297,14 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
             type="submit"
             loading={false}
             action={() => {
+              console.log("🚀 ~ values:", values);
               if (values.expense_price === "") {
                 notify("info", `${t("please enter expense price")}`);
+                return;
+              }
+
+              if (values.tax_type === "") {
+                notify("info", `${t("please enter tex type")}`);
                 return;
               }
 
@@ -298,10 +318,10 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                 return;
               }
 
-              if (values.add_description === "") {
-                notify("info", `${t("please enter description")}`);
-                return;
-              }
+              // if (values.add_description === "") {
+              //   notify("info", `${t("please enter description")}`);
+              //   return;
+              // }
 
               if (totalPaymentAmount > +values.expense_price) {
                 notify(

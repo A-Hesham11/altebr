@@ -1,13 +1,13 @@
 // TYPES
 export type Card_TP<T> = {
-    id: string
-    title: string
-    name?: T
-    addLabel?: string
-    viewLabel?: string
-    addComponent?: JSX.Element
-    viewHandler?: () => void
-}
+  id: string;
+  title: string;
+  name?: T;
+  addLabel?: string;
+  viewLabel?: string;
+  addComponent?: JSX.Element;
+  viewHandler?: () => void;
+};
 
 export type FormNames_TP =
   | "partners"
@@ -32,6 +32,19 @@ export type FormNames_TP =
   | "karats"
   | "categories"
   | "markets"
+  | "buying_policies"
+  | "zakat_income"
+  | "main_expenses_policies"
+  | "sub_expenses_policies"
+  | "tax_expenses_policies"
+  | "entitlements_policies"
+  | "salary_policies"
+  | "deductions_policies"
+  | "employee_benefits_policies"
+  | "employee_deductions_policies"
+  | "commission_policies"
+  | "gold_price"
+  | "work_hours";
 
 export type GlobalFormNames_TP =
   | "countries"
@@ -46,22 +59,24 @@ export type GlobalFormNames_TP =
   | "sizes"
   | "minerals"
   | "minerals_karats"
-  | "profit_margin"
+  | "profit_margin";
 
-  export type GlobalFormCards_TP =
+export type GlobalFormCards_TP =
   | "selling_policies"
   | "cities"
   | "districts"
-  | "colors"
+  | "colors";
 
+export type StonesFormNames_TP =
+  | "stones"
+  | "shapes"
+  | "qualities"
+  | "purities"
+  | "natures"
+  | "colors";
 
-export type StonesFormNames_TP = "stones" |
-    "shapes" |
-    "qualities" |
-    "purities" |
-    "natures" | 'colors'
-    
-export type MineralCardsNames_TP = "minerals" | "minerals_karats" | "profit_margin"
+export type MineralCardsNames_TP =
+  | "minerals"
+  | "minerals_karats"
+  | "profit_margin";
 // HELPERS
-
-

@@ -1,18 +1,13 @@
-import React, { useState } from "react";
 import { t } from "i18next";
-import SellingTableData from "../../components/selling/selling components/data/SellingTableData";
 import SellingBoxes from "../../components/selling/selling components/data/SellingBoxes";
 import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
-import { useNavigate } from "react-router-dom";
 import { notify } from "../../utils/toast";
 import { Form, Formik, useFormikContext } from "formik";
 import BillHeader from "../../components/selling/selling components/bill/BillHeader";
 import BillInputs from "../../components/selling/selling components/bill/BillInputs";
-import BillButtons from "../../components/selling/selling components/bill/BillButtons";
 import { ClientData_TP, Selling_TP } from "./PaymentSellingPage";
 import { SellingTableInputData } from "../../components/selling/selling components/data/SellingTableInputData";
-import { Loading } from "../../components/organisms/Loading";
 
 type SellingFirstPage_TP = {
   sellingItemsData: Selling_TP;

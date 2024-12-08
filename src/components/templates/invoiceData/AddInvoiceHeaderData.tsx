@@ -34,10 +34,15 @@ type bankCardsProps_TP = {
   setShow?: boolean;
 };
 
-const AddInvoiceHeaderData = ({ editData, refetch, setShow }: AddBankProps_TP) => {
+const AddInvoiceHeaderData = ({
+  editData,
+  refetch,
+  setShow,
+}: AddBankProps_TP) => {
   const isRTL = useIsRTL();
   const queryClient = useQueryClient();
   const [files, setFiles] = useState([]);
+  const [QRFiles, setQRFiles] = useState([]);
   console.log("🚀 ~ AddInvoiceHeaderData ~ files:", files);
 
   useEffect(() => {
@@ -57,6 +62,7 @@ const AddInvoiceHeaderData = ({ editData, refetch, setShow }: AddBankProps_TP) =
   const initialValues = {
     InvoiceCompanyName: editData?.InvoiceCompanyName || "",
     InvoiceCompanyLogo: editData?.InvoiceCompanyLogo || "",
+    QRCodeLogo: editData?.QRCodeLogo || "",
   };
 
   const {
@@ -71,8 +77,8 @@ const AddInvoiceHeaderData = ({ editData, refetch, setShow }: AddBankProps_TP) =
     onSuccess: (data) => {
       notify("success");
       queryClient.refetchQueries(["InvoiceCompanyData"]);
-      setShow(false)
-      refetch()
+      setShow(false);
+      refetch();
     },
     onError: (error) => {
       console.log(error);
@@ -90,6 +96,13 @@ const AddInvoiceHeaderData = ({ editData, refetch, setShow }: AddBankProps_TP) =
       formData.append("key", "InvoiceCompanyLogo");
       formData.append("value", files[0]);
     }
+
+    if (QRFiles?.[0]) {
+      formData.append("key", "QRCodeLogo");
+      formData.append("value", QRFiles[0]);
+    }
+    console.log("🚀 ~ PostCardEdit ~ formData:", formData);
+
     mutate({
       endpointName: "/companySettings/api/v1/updateInvoiceCompany",
       values: formData,
@@ -106,6 +119,11 @@ const AddInvoiceHeaderData = ({ editData, refetch, setShow }: AddBankProps_TP) =
     if (files?.[0]) {
       formData.append("logo", files[0]);
     }
+
+    if (QRFiles?.[0]) {
+      formData.append("QRLogo", QRFiles[0]);
+    }
+    console.log("🚀 ~ PostCardEdit ~ formData:", formData);
 
     mutate({
       endpointName: "/companySettings/api/v1/updateInvoiceCompany",
@@ -146,8 +164,13 @@ const AddInvoiceHeaderData = ({ editData, refetch, setShow }: AddBankProps_TP) =
                     }}
                   />
                 </div>
-                <div className="">
+                <div>
+                  <p className="pb-1">{t("invoice logo")}</p>
                   <FilesUpload setFiles={setFiles} files={files} />
+                </div>
+                <div>
+                  <p className="pb-1">{t("barcode logo")}</p>
+                  <FilesUpload setFiles={setQRFiles} files={QRFiles} />
                 </div>
               </div>
               <div className="flex justify-end">

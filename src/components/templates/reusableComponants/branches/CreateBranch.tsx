@@ -55,6 +55,8 @@ export const CreateBranch = ({
     fax: editData ? editData.fax : "",
     number: editData ? editData.number : "",
     main_address: editData ? editData.address : "",
+    zatca_fax_number: editData ? editData.zatca_fax_number : "",
+    zatca_name: editData ? editData.zatca_name : "",
 
     // national address data
     country_id: editData ? editData?.nationalAddress?.country.id : "",
@@ -154,6 +156,8 @@ export const CreateBranch = ({
             city_id: values.city_id_out,
             district_id: values.district_id_out,
             address: values.main_address,
+            zatca_fax_number: values.zatca_fax_number,
+            zatca_name: values.zatca_name,
             document: docsFormValues,
             nationalAddress: {
               address: values.address,

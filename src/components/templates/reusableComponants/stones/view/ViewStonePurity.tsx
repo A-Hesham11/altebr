@@ -207,7 +207,7 @@ export const ViewStonePurity = () => {
             title={`${
               editData ? t("edit stones purities") : t("add stones purities")
             }`}
-            value={editData.name}
+            value={editData?.name}
             item={editData}
             setDataSource={setDataSource}
             setShow={setOpen}

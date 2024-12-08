@@ -39,6 +39,8 @@ export type Branch_Props_TP = {
   main_address: any;
   id: string;
   address: string;
+  zatca_fax_number: string;
+  zatca_name: string;
   fax: string;
   market_number: string;
   name_ar: string;

@@ -40,6 +40,10 @@ input[type="radio"] {
   }
 } */
 
+.premiumGoldprice {
+  background: linear-gradient(87.84deg, #ffa958 2.02%, #e06a00 99.13%);
+}
+
 @layer base {
   * {
     font-family: "Almarai" !important;
@@ -526,8 +530,7 @@ li > .ps-menu-button:hover {
   height: 2px;
 }
 
-.test{
-  
+.test {
 }
 
 /* GLOBAL ANIMATION */

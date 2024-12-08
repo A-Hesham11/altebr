@@ -6,6 +6,7 @@ import { formatDate } from "../../utils/date";
 import { t } from "i18next";
 import billLogo from "../../assets/bill-logo.png";
 import { Cards_Props_TP } from "../../components/templates/bankCards/ViewBankCards";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
 
 const PaymentFinalPreviewBillData = ({
   isSupply,
@@ -13,8 +14,6 @@ const PaymentFinalPreviewBillData = ({
   invoiceNumber,
   invoiceData,
 }: any) => {
-  console.log("🚀 ~ invoiceNumber:", invoiceNumber);
-  console.log("🚀 ~ invoiceData:", invoiceData);
   const {
     client_id,
     client_value,
@@ -23,30 +22,15 @@ const PaymentFinalPreviewBillData = ({
     branchName,
     supplier_id,
   } = clientData;
-  console.log("🚀 ~ bond_date:", bond_date);
 
-  console.log("🚀 ~ branchName:", branchName);
-  const [invoiceInfo, setInvoiceInfo] = useState(null);
   const location = useLocation();
   const path = location.pathname;
+  const { invoice_logo } = GlobalDataContext();
 
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ userData:", userData);
 
   const billNumber = invoiceNumber;
-
-  const { data: invoiceInformation } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/companySettings/api/v1/InvoiceData`,
-    queryKey: ["InvoiceHeader_Data"],
-    pagination: true,
-    onSuccess(data) {
-      const returnData = data?.data.reduce((acc, item) => {
-        acc[item.key] = item.value;
-        return acc;
-      }, {});
-      setInvoiceInfo(returnData);
-    },
-  });
 
   return (
     <div className="flex justify-between">
@@ -78,7 +62,7 @@ const PaymentFinalPreviewBillData = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <img
-          src={invoiceInfo?.InvoiceCompanyLogo || billLogo}
+          src={invoice_logo?.InvoiceCompanyLogo}
           alt="bill"
           className="h-28 w-3/4 object-contain"
         />

@@ -33,20 +33,23 @@ const InvoiceFooter = () => {
         {data && data?.sentence}
       </p>
       <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
-        <p>
+        <p className="text-sm">
           {t("address")} : {countryName} , {cityName} , {districtName}
         </p>
-        <p>
+        <p className="text-sm">
           {t("phone")}: {phone}
         </p>
-        <p>
+        <p className="text-sm">
           {t("email")}: {email}
         </p>
-        <p>
+        <p className="text-sm">
           {t("tax number")}: {taxRegisteration && taxRegisteration}
         </p>
-        <p>
+        <p className="text-sm">
           {t("Mineral license")}: {mineralLicence && mineralLicence}
+        </p>
+        <p className="text-sm">
+          {t("commercial register")}: {userData?.branch?.zatca_fax_number}
         </p>
       </div>
     </div>

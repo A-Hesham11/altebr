@@ -11,7 +11,7 @@ import FinalPreviewBillPayment from "../selling components/bill/FinalPreviewBill
 import { numberContext } from "../../../context/settings/number-formatter";
 import InvoiceFooter from "../../Invoice/InvoiceFooter";
 
-const WasteSupplyRejectedInvoice = ({ item }: any) => {
+const WasteSupplyRejectedInvoice = ({ item, gold_price, invoice_logo }: any) => {
   console.log("🚀 ~ RejectedItemsInvoice ~ item:", item);
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ RejectedItemsInvoice ~ userData:", userData);

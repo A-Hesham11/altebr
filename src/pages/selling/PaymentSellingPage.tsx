@@ -6,6 +6,8 @@ import receiveMoney from "../../assets/recieveMoney.svg";
 import { Link } from "react-router-dom";
 import { FaCubes } from "react-icons/fa";
 import { t } from "i18next";
+import { useContext } from "react";
+import { authCtx } from "../../context/auth-and-perm/auth";
 
 export type Selling_TP = {
   item_id: string;
@@ -37,13 +39,22 @@ export type ClientData_TP = {
 
 const PaymentSellingPage = () => {
   const isRTL = useIsRTL();
+  const { userData } = useContext(authCtx);
+  const isDisabled = userData?.is_sellingInvoice === 1;
+
   const data = [
     {
       icon: receiveMoney,
       title_ar: "إنشاء فاتورة",
       title_en: "add selling",
-      route: "/selling/addInvoice/",
-      underCardInfo: (
+      route: isDisabled ? "/selling/addInvoiceDemo" : "/selling/addInvoice/",
+      underCardInfo: isDisabled ? (
+        <div className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray cursor-not-allowed relative overflow-hidden">
+          <div className="bg-[#00000040] absolute top-0 left-0 w-full h-full"></div>
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("invoice restrictions")}</p>
+        </div>
+      ) : (
         <Link
           to="/selling/invoice-restrictions"
           className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
@@ -57,7 +68,7 @@ const PaymentSellingPage = () => {
       icon: receiveitem,
       title_ar: "عرض الفاتورة",
       title_en: "view selling",
-      route: "/selling/viewInvoice/",
+      route: isDisabled ? "/selling/viewInvoice_Demo" : "/selling/viewInvoice",
     },
   ];
 

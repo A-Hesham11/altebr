@@ -7,6 +7,7 @@ import billLogo from "../../../../assets/bill-logo.png";
 import { useLocation } from "react-router-dom";
 import { useFormikContext } from "formik";
 import { Cards_Props_TP } from "../../../templates/bankCards/ViewBankCards";
+import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 
 type Client_TP = {
   clientData?: {
@@ -31,16 +32,12 @@ const FinalPreviewBillData = ({
   invoiceNumber,
   employee_name,
 }: Client_TP) => {
-  const [invoiceInfo, setInvoiceInfo] = useState(null);
-  console.log("🚀 ~ invoiceInfo:", invoiceInfo);
   const { client_id, client_value, bond_date, supplier_id, supplier_name } =
     clientData;
-  console.log("🚀 ~ client_id:", client_id);
-  console.log("🚀 ~ client_value:", client_value);
-  console.log("🚀 ~ supplier_name:", supplier_name);
 
   const location = useLocation();
   const path = location.pathname;
+  const { invoice_logo } = GlobalDataContext();
 
   const supplyFetch =
     path === "/supply-return" ||
@@ -61,19 +58,6 @@ const FinalPreviewBillData = ({
   const { data: honestBondsData } = useFetch({
     queryKey: [`all-retrieve-honest-bonds-${userData?.branch_id}`],
     endpoint: `branchSafety/api/v1/receive-bonds/${userData?.branch_id}`,
-  });
-
-  const { data: invoiceInformation } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/companySettings/api/v1/InvoiceData`,
-    queryKey: ["InvoiceHeader_Data"],
-    pagination: true,
-    onSuccess(data) {
-      const returnData = data?.data.reduce((acc, item) => {
-        acc[item.key] = item.value;
-        return acc;
-      }, {});
-      setInvoiceInfo(returnData);
-    },
   });
 
   const billNumber =
@@ -132,7 +116,7 @@ const FinalPreviewBillData = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <img
-          src={invoiceInfo?.InvoiceCompanyLogo || billLogo}
+          src={invoice_logo?.InvoiceCompanyLogo}
           alt="bill"
           className="h-28 w-3/4 object-contain"
         />

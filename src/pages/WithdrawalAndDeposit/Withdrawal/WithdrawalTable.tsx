@@ -32,7 +32,7 @@ const WithdrawalTable: React.FC<WithdrawalTable_TP> = ({
     () => [
       {
         cell: (info: any) => info.getValue() || "-",
-        accessorKey: "bond_number",
+        accessorKey: "id",
         header: () => <span>{t("bond number")}</span>,
       },
       {

@@ -82,14 +82,16 @@ const TableOfDynamicTransformToBranch = ({
       },
       {
         cell: (info: any) => {
-          // return info.getValue()[0]?.diamondWeight || "-";
-          const stonesDetails = info.getValue().reduce((acc, curr) => {
-            return acc + curr.diamondWeight;
-          }, 0);
+          const stonesDetails = info.row.original.stonesDetails?.reduce(
+            (acc, curr) => {
+              return acc + curr.diamondWeight;
+            },
+            0
+          );
 
           return stonesDetails;
         },
-        accessorKey: "stonesDetails",
+        accessorKey: "stonesDetails_diamond",
         header: () => <span>{t("weight of diamond stone")}</span>,
       },
       {

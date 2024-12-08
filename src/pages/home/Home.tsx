@@ -44,7 +44,8 @@ export const Home = () => {
   ///
   /////////// CUSTOM HOOKS
   ///
-  const { isLoggedIn, isLoadingUpdatedUserData, userData } = useContext(authCtx)
+  const { isLoggedIn, isLoadingUpdatedUserData, userData } =
+    useContext(authCtx);
   ///
   /////////// STATES
   ///
@@ -63,16 +64,19 @@ export const Home = () => {
   ///
   return (
     <>
-      {
-        (isLoggedIn && !isLoadingUpdatedUserData && userData?.branch_id != '1') ?
-            <SellingHome />
-          :
-          <DashboardData />
-      }
+      {isLoggedIn && !isLoadingUpdatedUserData && userData?.branch_id != "1" ? (
+        <SellingHome />
+      ) : (
+        <DashboardData />
+      )}
     </>
   );
 };
 
-{/* <h2 className="bg-mainGreen text-white">{t('gold')}</h2> */ }
+{
+  /* <h2 className="bg-mainGreen text-white">{t('gold')}</h2> */
+}
 
-{/* <SellingHome/> */ }
+{
+  /* <SellingHome/> */
+}

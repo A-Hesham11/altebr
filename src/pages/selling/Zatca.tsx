@@ -231,6 +231,7 @@ import { Selling_TP } from "./PaymentSellingPage";
 import billLogo from "../../assets/bill-logo.png";
 import { Cards_Props_TP } from "../../components/templates/bankCards/ViewBankCards";
 import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
 
 type Client_TP = {
   amount: number;
@@ -253,7 +254,7 @@ type SellingFinalPreviewProps_TP = {
 };
 export const Zatca = ({ paymentData }: SellingFinalPreviewProps_TP) => {
   const [page, setPage] = useState(1);
-  const [invoiceInfo, setInvoiceInfo] = useState(null);
+  const { invoice_logo } = GlobalDataContext();
 
   const { userData } = useContext(authCtx);
 
@@ -343,19 +344,6 @@ export const Zatca = ({ paymentData }: SellingFinalPreviewProps_TP) => {
     totalCost,
   };
 
-  const { data: invoiceInformation } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/companySettings/api/v1/InvoiceData`,
-    queryKey: ["InvoiceHeader_Data"],
-    pagination: true,
-    onSuccess(data) {
-      const returnData = data?.data.reduce((acc, item) => {
-        acc[item.key] = item.value;
-        return acc;
-      }, {});
-      setInvoiceInfo(returnData);
-    },
-  });
-
   const SellingTableComp = () => (
     <InvoiceTable
       data={invoiceData?.items}
@@ -405,7 +393,7 @@ export const Zatca = ({ paymentData }: SellingFinalPreviewProps_TP) => {
               </div>
               <div className="flex flex-col gap-1 items-center">
                 <img
-                  src={invoiceInfo?.InvoiceCompanyLogo || billLogo}
+                  src={invoice_logo?.InvoiceCompanyLogo}
                   alt="bill"
                   className="h-28 w-3/4 object-contain"
                 />

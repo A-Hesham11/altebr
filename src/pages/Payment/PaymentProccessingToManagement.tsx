@@ -69,8 +69,9 @@ const PaymentProccessingToManagement = ({
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
   const [salesReturnFrontKey, setSalesReturnFrontKey] = useState<string>("");
-  const [selectedCardData, setSelectedCardData] = useState(null)
-  const { formatReyal } = numberContext();
+  const [exchangeFrontKey, setExchangeFrontKey] = useState<string>("");
+  const [selectedCardData, setSelectedCardData] = useState(null);
+  const { formatReyal, digits_count } = numberContext();
 
   const locationPath = location.pathname;
 
@@ -154,6 +155,7 @@ const PaymentProccessingToManagement = ({
     },
     enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
   });
+  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
     if (cardId !== null && cardFrontKey !== null) {
@@ -200,8 +202,12 @@ const PaymentProccessingToManagement = ({
                   ...values,
                   id: cardId,
                   card: card,
-                  paymentCardId: !!selectedCardData?.[0].iban ? null : selectedCardData?.[0]?.card_id,
-                  paymentBankId: !!selectedCardData?.[0].iban ? selectedCardData?.[0]?.bank_id : null,
+                  paymentCardId: !!selectedCardData?.[0].iban
+                    ? null
+                    : selectedCardData?.[0]?.card_id,
+                  paymentBankId: !!selectedCardData?.[0].iban
+                    ? selectedCardData?.[0]?.bank_id
+                    : null,
                   card_id: selectedCardId,
                   cardImage: cardImage,
                   frontkey: cardFrontKey,
@@ -209,6 +215,7 @@ const PaymentProccessingToManagement = ({
                   frontKeySadad: frontKeySadad,
                   sellingFrontKey: sellingFrontKey,
                   salesReturnFrontKey: salesReturnFrontKey,
+                  exchangeFrontKey: exchangeFrontKey,
                 };
 
                 if (
@@ -268,6 +275,7 @@ const PaymentProccessingToManagement = ({
                   setCardId={setCardId}
                   setSelectedCardName={setSelectedCardName}
                   setSelectedCardData={setSelectedCardData}
+                  setExchangeFrontKey={setExchangeFrontKey}
                 />
               </div>
               {locationPath === "/selling/payoff/sales-return" && (
@@ -300,22 +308,26 @@ const PaymentProccessingToManagement = ({
                   values.amount > +costRemaining ? "items-center" : "items-end"
                 }`}
               >
-                <BaseInputField
-                  id="value"
-                  name="value"
-                  type="text"
-                  label={
-                    selectedCardName ? `${selectedCardName} ` : t("Fund totals")
-                  }
-                  placeholder={
-                    selectedCardName ? selectedCardName : t("Fund totals")
-                  }
-                  value={data ? formatReyal(Number(data?.value)) : 0}
-                  disabled
-                  className={`bg-mainDisabled text-mainGreen ${
-                    selectedCardName && "font-semibold"
-                  }`}
-                />
+                <div>
+                  <BaseInputField
+                    id="value"
+                    name="value"
+                    type="text"
+                    label={
+                      selectedCardName
+                        ? `${selectedCardName} `
+                        : t("Fund totals")
+                    }
+                    placeholder={
+                      selectedCardName ? selectedCardName : t("Fund totals")
+                    }
+                    value={data ? formatReyal(Number(data?.value)) : 0}
+                    disabled
+                    className={`bg-mainDisabled text-mainGreen ${
+                      selectedCardName && "font-semibold"
+                    } `}
+                  />
+                </div>
                 {selectedCardId == 18 ||
                 selectedCardId == 21 ||
                 selectedCardId == 22 ||
@@ -344,7 +356,29 @@ const PaymentProccessingToManagement = ({
                       type="text"
                       label={`${t("amount")}`}
                       placeholder={`${t("amount")}`}
+                      className={` ${
+                        +values.amount >
+                          Number(
+                            Number(costRemaining).toFixed(digits_count.reyal)
+                          ) && "bg-red-100"
+                      }`}
                     />
+                    <div>
+                      {+values.amount >
+                        Number(
+                          Number(costRemaining).toFixed(digits_count.reyal)
+                        ) && (
+                        <p className="text-mainRed">
+                          <span>
+                            {t("price must be less than or equal to")}
+                          </span>
+                          <span>
+                            {" "}
+                            {Number(costRemaining).toFixed(digits_count.reyal)}
+                          </span>
+                        </p>
+                      )}
+                    </div>
                   </div>
                 )}
                 <Button

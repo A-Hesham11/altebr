@@ -37,6 +37,7 @@ const DynamicTransformToBranch = ({
   const [inputWeight, setInputWeight] = useState([]);
   const [rowWage, setRowWage] = useState(null);
   const [thwelIds, setThwelIds] = useState([]);
+  console.log("🚀 ~ thwelIds:", thwelIds);
   const [goldPriceToday, setGoldPriceToday] = useState("");
   console.log("🚀 ~ goldPriceToday:", goldPriceToday);
   const [search, setSearch] = useState("-");
@@ -45,13 +46,21 @@ const DynamicTransformToBranch = ({
   const [successData, setSuccessData] = useState([]);
   const { gold_price } = GlobalDataContext();
 
+  const { data: goldPrice } = useFetch<any>({
+    endpoint: "/attachment/api/v1/goldPrice",
+    queryKey: ["GoldPriceApi"],
+    onSuccess: (data) => {
+      setGoldPriceToday(data);
+    },
+  });
+
   const operationTypeSelectWeight = dataSource.filter(
     (el: any) => el.check_input_weight !== 0
   );
 
   const initialValues = {
     branch_id: "",
-    gold_price: gold_price?.price_gram_24k || "",
+    gold_price: goldPriceToday?.price_gram_24k || "",
     sanad_type: "",
     weight_input: "",
     search: "",
@@ -112,7 +121,7 @@ const DynamicTransformToBranch = ({
       return () => clearTimeout(timeout);
     }
 
-    const findPiece = dataSource.findIndex(
+    const findPiece = dataSource?.findIndex(
       (item) => item.id === successData?.[0]?.id
     );
 
@@ -331,7 +340,7 @@ const DynamicTransformToBranch = ({
         setThwelIds((prev) => [...prev, `${operation.id}`]);
       }
     });
-  }, []);
+  }, [dataSource?.length]);
 
   const {
     data: branchesOptions,
@@ -358,6 +367,7 @@ const DynamicTransformToBranch = ({
   );
 
   const handleSubmit = (values: any) => {
+    console.log("🚀 ~ handleSubmit ~ values:", values);
     const inputWeightItem = inputWeight?.every((item) => item.value !== "");
 
     if (inputWeight?.length !== operationTypeSelectWeight?.length) {
@@ -411,7 +421,8 @@ const DynamicTransformToBranch = ({
       enableReinitialize={true}
       onSubmit={(values) => {}}
     >
-      {({ values, setValue }) => {
+      {({ values }) => {
+        console.log("🚀 ~ values:", values);
         return (
           <Form>
             <div className="flex flex-col gap-10 mt-6">
@@ -507,7 +518,7 @@ const DynamicTransformToBranch = ({
                     type="button"
                     loading={thwelLoading}
                     action={() => handleSubmit(values)}
-                    className="bg-mainGreen text-white self-end"
+                    className="w-fit self-end"
                   >
                     {t("confirm")}
                   </Button>

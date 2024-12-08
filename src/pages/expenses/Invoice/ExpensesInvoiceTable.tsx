@@ -22,6 +22,8 @@ const ExpenseInvoiceTable = <T extends object>({
   columns,
   costDataAsProps,
 }: ReactTableProps<T>) => {
+  console.log("🚀 ~ data:", data)
+  console.log("🚀 ~ costDataAsProps:", costDataAsProps)
   const { formatGram, formatReyal } = numberContext();
 
   // CUSTOM CONFIGURE FOR TABLE
@@ -34,7 +36,7 @@ const ExpenseInvoiceTable = <T extends object>({
   });
 
   const totalCost = data.reduce((acc: number, curr: any) => {
-    acc = +curr.expense_price + +curr.expense_price_tax;
+    acc = +curr.expense_price;
     return acc;
   }, 0);
 
