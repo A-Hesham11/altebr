@@ -52,7 +52,6 @@ const EdaraStocks = () => {
     endpoint: "/branchAccount/api/v1/getAccountEdara?per_page=10000",
     select: (data: any) =>
       data?.map((account: any) => {
-        console.log("🚀 ~ data?.map ~ account:", account);
         return {
           id: account?.id,
           label: (
@@ -67,14 +66,10 @@ const EdaraStocks = () => {
               </span>
             </p>
           ),
-          value: account?.accountable,
+          value: account?.id,
         };
       }),
   });
-  console.log(
-    "🚀 ~ EdaraStocks ~ accountsNameDataSelect:",
-    accountsNameDataSelect
-  );
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
@@ -220,6 +215,7 @@ const EdaraStocks = () => {
               to: values.to ? formatDate(getDayAfter(new Date(values.to))) : "",
             });
           }}
+          enableReinitialize={true}
         >
           {({ values, setFieldValue, resetForm }) => {
             return (
@@ -234,9 +230,12 @@ const EdaraStocks = () => {
                         placeholder={`${t("account name")}`}
                         loadingPlaceholder={`${t("loading")}`}
                         options={accountsNameDataSelect}
-                        value={values?.value}
+                        value={accountsNameDataSelect?.find(
+                          (option) => option.id === accountId
+                        )}
                         onChange={(option: any) => {
-                          setFieldValue("account_id", option!.id);
+                          console.log("🚀 ~ EdaraStocks ~ option:", option);
+                          setFieldValue("account_id", option.id);
                           setAccountId(option?.id);
                           resetForm();
                         }}

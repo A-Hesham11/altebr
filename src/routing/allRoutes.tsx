@@ -175,6 +175,15 @@ import WithdrawalAndDeposit from "../pages/WithdrawalAndDeposit/Withdrawal/Withd
 import Withdrawal from "../pages/WithdrawalAndDeposit/Withdrawal/Withdrawal";
 import Deposit from "../pages/WithdrawalAndDeposit/Deposit/Deposit";
 import WastingBonds from "../pages/wasting/WastingBonds";
+import CreditsDetails from "../pages/CreditsDetails";
+import RecycledGoldCorrection from "../pages/RecycledGoldInEdara/RecycledGoldCorrection";
+import RecycledGoldConvert from "../pages/RecycledGoldInEdara/RecycledGoldConvert";
+import DepositBank from "../pages/withdrawalAndDepositInEdara/DepositBank";
+import WithdrawalBank from "../pages/withdrawalAndDepositInEdara/WithdrawalBank";
+import AddSellingInvoiceDemo from "../components/selling/selling components/SellingDemo/AddSellingDemo/AddSellingInvoiceDemo";
+import ShowSellingEntryDemo from "../components/selling/selling components/SellingDemo/ShowSellingDemo/ShowSellingEntryDemo";
+import ShowSellingInvoiceDemo from "../components/selling/selling components/SellingDemo/ShowSellingDemo/ShowSellingInvoiceDemo";
+import ShowZakatIncome from "../components/templates/zakatIncome/ShowZakatIncome";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -193,6 +202,7 @@ export const AllRoutesProvider = () => {
 
           {/* CODING */}
           <Route path="/coding" element={<Coding title={t("coding")} />} />
+          <Route path="/show-credits" element={<CreditsDetails />} />
           <Route
             path="/branch-bonds"
             element={<BranchBonds title={t("branch bonds")} />}
@@ -328,6 +338,7 @@ export const AllRoutesProvider = () => {
           <Route path="/system/banks" element={<ViewBanks />} />
 
           <Route path="/system/accountsBank" element={<ViewAccountsBank />} />
+          <Route path="/system/zakatIncome" element={<ShowZakatIncome />} />
 
           <Route path="/system/bankCards" element={<ViewBankCards />} />
 
@@ -336,10 +347,7 @@ export const AllRoutesProvider = () => {
             element={<ViewSellingPolicies />}
           />
 
-          <Route
-            path="/wasteBonds"
-            element={<WastingBonds />}
-          />
+          <Route path="/wasteBonds" element={<WastingBonds />} />
 
           <Route path="/system/excludedItems" element={<ViewExcludedItems />} />
           <Route path="/system/TaxPolicy" element={<ViewTaxPolicy />} />
@@ -509,7 +517,12 @@ export const AllRoutesProvider = () => {
           />
 
           <Route path="/selling/addInvoice" element={<AddSellingInvoice />} />
+          <Route
+            path="/selling/addInvoiceDemo"
+            element={<AddSellingInvoiceDemo />}
+          />
           <Route path="/selling/viewInvoice" element={<ViewSellingInvoice />} />
+          <Route path="/selling/viewInvoice_Demo" element={<ShowSellingInvoiceDemo />} />
 
           <Route
             path="selling/clients/customersData/addClients"
@@ -530,11 +543,23 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/continuity" element={<ContinuityPage />} />
           <Route path="/selling/reports/stocks" element={<Stocks />} />
           <Route path="/credits/edara" element={<EdaraStocks />} />
+
           <Route path="/credits/branch" element={<BranchStocks />} />
           <Route
             path="/selling/reports/accounting-tree"
             element={<BranchAccountingTree />}
           />
+          <Route
+            path="/recycledGold/convert"
+            element={<RecycledGoldConvert />}
+          />
+          <Route
+            path="/recycledGold/correction"
+            element={<RecycledGoldCorrection />}
+          />
+
+          <Route path="/edara/withdrawal" element={<WithdrawalBank />} />
+          <Route path="/edara/deposit" element={<DepositBank />} />
           <Route
             path="/selling/continuity/AttendanceDeparture"
             element={<AttendanceDeparture />}

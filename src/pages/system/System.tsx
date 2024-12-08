@@ -664,6 +664,7 @@ import AddEmployeeBenefits from "../../components/templates/employeeBenefits/Add
 import AddEmployeeDeductions from "../../components/templates/employeeDeductions/AddEmployeeDeductions";
 import AddCommision from "../../components/templates/commision/AddCommision";
 import AddInvoiceHeaderData from "../../components/templates/invoiceData/AddInvoiceHeaderData";
+import AddZakatIncome from "../../components/templates/zakatIncome/AddZakatIncome";
 ///
 /////////// Types
 ///
@@ -693,6 +694,7 @@ export const System = ({ title }: SystemProps_TP) => {
     add_accountBank: false,
     selling_policies: false,
     buying_policies: false,
+    zakat_income: false,
     main_expenses_policies: false,
     sub_expenses_policies: false,
     tax_expenses_policies: false,
@@ -890,6 +892,15 @@ export const System = ({ title }: SystemProps_TP) => {
       addComponent: <AddBuyingPolicies title={`${t("add buying policy")}`} />,
       viewLabel: `${t("view buying policies")}`,
       viewHandler: () => navigate("/system/policiesBuying"),
+    },
+    {
+      id: crypto.randomUUID(),
+      title: t("Zakat and income"),
+      name: "zakat_income",
+      addLabel: `${t("Add Zakat and Income")}`,
+      addComponent: <AddZakatIncome title={`${t("Add Zakat and Income")}`} />,
+      // viewLabel: `${t("Show Zakat and Income")}`,
+      // viewHandler: () => navigate("/system/zakatIncome"),
     },
 
     // **************************************************************
@@ -1102,19 +1113,19 @@ export const System = ({ title }: SystemProps_TP) => {
     },
     {
       titleKey: "Sales and purchasing policy",
-      range: [14, 18],
+      range: [14, 19],
     },
     {
       titleKey: "Expense policies",
-      range: [18, 21],
+      range: [19, 22],
     },
     {
       titleKey: "Salary policies",
-      range: [21, 28],
+      range: [22, 28],
     },
     {
       titleKey: "Account management",
-      range: [28, 34],
+      range: [28, 35],
     },
   ];
 

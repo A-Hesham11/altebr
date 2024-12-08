@@ -34,14 +34,14 @@ const ExpensesInvoiceSecond = ({
   taxType,
   files,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData)
+  console.log("🚀 ~ paymentData:", paymentData);
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   console.log("🚀 ~ taxType:", taxType);
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
   const [responseSellingData, SetResponseSellingData] = useState(null);
-  console.log("🚀 ~ responseSellingData:", responseSellingData)
-
+  console.log("🚀 ~ responseSellingData:", responseSellingData);
 
   const { setFieldValue, values } = useFormikContext<any>();
 
@@ -71,7 +71,7 @@ const ExpensesInvoiceSecond = ({
 
   const costDataAsProps = {
     totalCost,
-    totalValueAfterTax
+    totalValueAfterTax,
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -132,12 +132,12 @@ const ExpensesInvoiceSecond = ({
   );
 
   // api
-  const { mutate, isLoading } = useMutate({
+  const { mutate, isLoading, isSuccess } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      console.log("🚀 ~ data:", data)
+      console.log("🚀 ~ data:", data);
       SetResponseSellingData(data);
-      console.log("🚀 ~ data:", data)
+      console.log("🚀 ~ data:", data);
       notify("success", `${t("success add expense invoice")}`);
       // navigate(`/selling/honesty/return-honest/${data.bond_id}`)
       // navigate(`/expenses/expensesBonds/`);
@@ -161,9 +161,20 @@ const ExpensesInvoiceSecond = ({
 
     console.log({ ...invoice });
 
+    const card = paymentData.reduce((acc, curr) => {
+      acc[curr.exchangeFrontKey] = Number(curr.amount);
+      return acc;
+    }, {});
+
+    const paymentCard = paymentData?.map((item) => ({
+      card_id: item.frontkey === "cash" ? "cash" : item.paymentCardId,
+      bank_id: item.paymentBankId,
+      amount: item.cost_after_tax,
+    }));
+
     mutate({
       endpointName: "/expenses/api/v1/add-expense-invoice",
-      values: { ...invoice, media: files },
+      values: { ...invoice, media: files, card, paymentCard },
       dataType: "formData",
     });
   };
@@ -179,13 +190,15 @@ const ExpensesInvoiceSecond = ({
           >
             {t("print")}
           </Button>
-          <Button
-            className="bg-mainOrange px-7 py-[6px]"
-            loading={isLoading}
-            action={posSellingDataHandler}
-          >
-            {t("save")}
-          </Button>
+          {!isSuccess && (
+            <Button
+              className="bg-mainOrange px-7 py-[6px]"
+              loading={isLoading}
+              action={posSellingDataHandler}
+            >
+              {t("save")}
+            </Button>
+          )}
         </div>
       </div>
       <ExpenseFinalPreview

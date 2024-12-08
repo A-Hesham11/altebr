@@ -3,6 +3,7 @@ import { useFetch } from "../../../../../hooks";
 import { Form, Formik } from "formik";
 import PurchaseInvoiceSecondPage from "./PurchaseInvoiceSecondPage";
 import PurchaseInvoiceFirstPage from "./PurchaseInvoiceFirstPage";
+import { GlobalDataContext } from "../../../../../context/settings/GlobalData";
 
 interface PurchaseInvoiceSupplier_TP {
   stage: number;
@@ -18,6 +19,13 @@ const PurchaseInvoiceSupplier: React.FC<PurchaseInvoiceSupplier_TP> = (
   const [reserveBuyingInvoiceNumber, setReserveBuyingInvoiceNumber] =
     useState<null>(null);
   const [buyingItemsData, setBuyingItemsData] = useState([]);
+  const { gold_price } = GlobalDataContext();
+  const goldPrice = {
+    18: gold_price?.price_gram_18k,
+    21: gold_price?.price_gram_21k,
+    22: gold_price?.price_gram_22k,
+    24: gold_price?.price_gram_24k,
+  };
 
   const initialValues = {
     supplier_value: "",
@@ -33,12 +41,6 @@ const PurchaseInvoiceSupplier: React.FC<PurchaseInvoiceSupplier_TP> = (
     karat_name: "",
     notes: "",
   };
-
-  // TODAY GOLD PRICE API
-  const { data: goldPrice } = useFetch({
-    endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
-    queryKey: ["get-gold-price"],
-  });
 
   const { data: bondsList } = useFetch({
     endpoint: `/reserveGold/api/v1/list_reserve_buying_Invoice?per_page=10000`,

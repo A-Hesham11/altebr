@@ -17,6 +17,8 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { Back } from "../../../utils/utils-components/Back";
 import ExpensesBondsPreview from "./ExpensesBondsPreview";
+import ExpensesBondsEntry from "./ExpensesBondsEntry";
+import { BiSpreadsheet } from "react-icons/bi";
 
 const ExpensesBonds = () => {
   // STATE
@@ -25,6 +27,7 @@ const ExpensesBonds = () => {
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
+  const [openEntryModal, setOpenEntryModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
   console.log("🚀 ~ ExpensesBonds ~ search:", search);
@@ -94,6 +97,20 @@ const ExpensesBonds = () => {
       },
       {
         cell: (info: any) => (
+          <BiSpreadsheet
+            onClick={() => {
+              setOpenEntryModal(true);
+              setSelectedItem(info.row.original);
+            }}
+            size={23}
+            className="text-mainGreen mx-auto cursor-pointer"
+          />
+        ),
+        accessorKey: "restriction",
+        header: () => <span>{t("restriction")}</span>,
+      },
+      {
+        cell: (info: any) => (
           <BsEye
             onClick={() => {
               setOpenInvoiceModal(true);
@@ -105,6 +122,52 @@ const ExpensesBonds = () => {
         ),
         accessorKey: "details",
         header: () => <span>{t("details")}</span>,
+      },
+    ],
+    []
+  );
+
+  const Cols = useMemo<ColumnDef<Selling_TP>[]>(
+    () => [
+      {
+        header: () => <span>{t("expense type")}</span>,
+        accessorKey: "expense_type_name",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("We paid to")}</span>,
+        accessorKey: "directed_to",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("description")} </span>,
+        accessorKey: "add_description",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("expense price")}</span>,
+        accessorKey: "expense_price",
+        cell: (info) =>
+          formatReyal(
+            Number(info.getValue()) - info.row.original.expense_price_after_tax
+          ),
+      },
+      {
+        header: () => <span>{t("expense tax")} </span>,
+        accessorKey: "expense_price_after_tax",
+        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+      },
+      {
+        header: () => <span>{t("total value")} </span>,
+        accessorKey: "total_value",
+        cell: (info) => {
+          return (
+            formatReyal(
+              +info.row.original.expense_price +
+                +info.row.original.expense_price_tax
+            ) || "---"
+          );
+        },
       },
     ],
     []
@@ -353,6 +416,10 @@ const ExpensesBonds = () => {
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
         <ExpensesBondsPreview item={selectedItem} />
+      </Modal>
+
+      <Modal isOpen={openEntryModal} onClose={() => setOpenEntryModal(false)}>
+        <ExpensesBondsEntry item={selectedItem} />
       </Modal>
     </div>
   );

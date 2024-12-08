@@ -69,10 +69,22 @@ const ViewInvoiceHeaderData = () => {
         header: () => <span>{t("name")} </span>,
       },
       {
-        header: () => <span>{t("card image")} </span>,
-        accessorKey: "value",
+        header: () => <span>{t("invoice logo")} </span>,
+        accessorKey: "InvoiceCompanyLogo",
         cell: (info) => {
           const image = [{ preview: info?.row.original?.InvoiceCompanyLogo }];
+          return (
+            <div className="w-[30%] m-auto">
+              <FilesPreviewOutFormik images={image} preview />
+            </div>
+          );
+        },
+      },
+      {
+        header: () => <span>{t("barcode logo")} </span>,
+        accessorKey: "QR_Code",
+        cell: (info) => {
+          const image = [{ preview: info?.row.original?.QR_Code }];
           return (
             <div className="w-[30%] m-auto">
               <FilesPreviewOutFormik images={image} preview />

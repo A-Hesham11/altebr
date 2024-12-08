@@ -35,7 +35,13 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
-  const { invoice_logo } = GlobalDataContext();
+  const { invoice_logo, gold_price } = GlobalDataContext();
+  const PriceGoldGram = {
+    "18": gold_price?.price_gram_18k,
+    "21": gold_price?.price_gram_21k,
+    "22": gold_price?.price_gram_22k,
+    "24": gold_price?.price_gram_24k,
+  };
 
   // const clientData = {
   //   client_id: item?.client_id,
@@ -79,6 +85,16 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         cell: (info) => info.getValue() || "---",
       },
       {
+        header: () => <span>{t("stone weight")} </span>,
+        accessorKey: "stones_weight",
+        cell: (info) => {
+          const stoneWeigthByGram = Number(info.getValue()) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          return result ? info.getValue() : "---";
+        },
+      },
+      {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
         cell: (info: any) =>
@@ -89,6 +105,14 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
             : info.row.original.karatmineral_name
             ? formatGram(Number(info.row.original.karatmineral_name))
             : "---",
+      },
+      {
+        header: () => <span>{t("Price per gram")} </span>,
+        accessorKey: "Price_gram",
+        cell: (info: any) =>
+          formatReyal(
+            Number(info.row.original.cost) / Number(info.row.original.weight)
+          ),
       },
       {
         header: () => (

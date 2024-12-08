@@ -33,6 +33,7 @@ type Payment_TP = {
   setSalesReturnFrontKey?: any;
   setCardFrontKeySadad?: any;
   setSelectedCardData?: any;
+  setExchangeFrontKey?: any;
 };
 
 const PaymentCard = ({
@@ -51,6 +52,7 @@ const PaymentCard = ({
   setIsMaxDiscountLimit,
   setCardFrontKeySadad,
   setSelectedCardData,
+  setExchangeFrontKey,
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
@@ -140,6 +142,73 @@ const PaymentCard = ({
       name_en: "gold box 24 karat",
       discount_percentage: 0,
       karat: 24,
+      bank_id: 10004,
+      card: {
+        id: 10004,
+        name_ar: "صندوق ذهب الكسر عيار 24",
+        name_en: "gold box 24 karat",
+        front_key: "24",
+        images: [{ preview: `${brokenGoldImg}` }],
+      },
+    },
+  ];
+
+  const RecycledGold = [
+    {
+      front_key: "18",
+      name_ar: "صندوق ذهب الكسر عيار 18",
+      name_en: "gold box 18 karat",
+      karat: 18,
+      karat_id: 2,
+      discount_percentage: 0,
+      bank_id: 10001,
+      card: {
+        id: 10001,
+        name_ar: "صندوق ذهب الكسر عيار 18",
+        name_en: "gold box 18 karat",
+        front_key: "18",
+        images: [{ preview: `${brokenGoldImg}` }],
+      },
+    },
+    {
+      front_key: "21",
+      name_ar: "صندوق ذهب الكسر عيار 21",
+      name_en: "gold box 21 karat",
+      karat: 21,
+      karat_id: 4,
+      discount_percentage: 0,
+      bank_id: 10002,
+      card: {
+        id: 10002,
+        name_ar: "صندوق ذهب الكسر عيار 21",
+        name_en: "gold box 21 karat",
+        front_key: "21",
+        images: [{ preview: `${brokenGoldImg}` }],
+      },
+    },
+    {
+      front_key: "22",
+      name_ar: "صندوق ذهب الكسر عيار 22",
+      name_en: "gold box 22 karat",
+      discount_percentage: 0,
+      karat: 22,
+      karat_id: 1,
+      bank_id: 10003,
+      card: {
+        id: 10003,
+        name_ar: "صندوق ذهب الكسر عيار 22",
+        name_en: "gold box 22 karat",
+        front_key: "22",
+        images: [{ preview: `${brokenGoldImg}` }],
+      },
+    },
+    {
+      front_key: "24",
+      name_ar: "صندوق ذهب الكسر عيار 24",
+      name_en: "gold box 24 karat",
+      discount_percentage: 0,
+      karat: 24,
+      karat_id: 3,
       bank_id: 10004,
       card: {
         id: 10004,
@@ -263,18 +332,24 @@ const PaymentCard = ({
       ? cardReimbursement
       : locationPath === "/supplier-payment"
       ? cardReimbursementSupplier
+      : locationPath === "/recycledGold/convert"
+      ? RecycledGold
       : cardOfCash;
 
   const bankscard =
     locationPath === "/selling/reimbursement" ||
     locationPath === "/expenses/expensesInvoice" ||
-    locationPath === "/selling/payoff/sales-return"
+    locationPath === "/selling/payoff/sales-return" ||
+    locationPath === "/recycledGold/convert"
       ? ""
       : dataSource;
 
   const cardsData = fetchShowMainCards
     ? [...dataSource].reverse()
+    : locationPath === "/recycledGold/convert"
+    ? [...cardCash].reverse()
     : [...bankscard, ...bankAccountCards, ...cardCash].reverse();
+  console.log("🚀 ~ cardsData:", cardsData);
 
   const { userData } = useContext(authCtx);
 
@@ -309,7 +384,7 @@ const PaymentCard = ({
         selectNewCard[0]?.bank_name ? `(${selectNewCard[0]?.bank_name})` : ""
       }`;
       const cardIMageInTable = `${selectNewCard[0]?.card.images[0]?.preview}`;
-      onSelectCard(cardNameInTable, cardIMageInTable);
+      onSelectCard(cardNameInTable, cardIMageInTable, selectNewCard[0]?.karat_id);
       setCardFronKey(selectNewCard[0]?.front_key);
       if (locationPath === "/selling/addInvoice/") {
         setSellingFrontKey?.(selectNewCard[0]?.selling_front_key || "cash");
@@ -323,6 +398,8 @@ const PaymentCard = ({
             selectNewCard[0]?.front_key ||
             "cash"
         );
+      } else if (locationPath === "/expenses/expensesInvoice") {
+        setExchangeFrontKey?.(selectNewCard[0]?.exchange_front_key || "cash");
       } else {
         setCardFrontKeyAccept?.(selectNewCard[0]?.front_key_accept || "cash");
       }

@@ -9,7 +9,10 @@ import {
   OuterFormLayout,
 } from "../../../molecules";
 import { NationalAddress } from "../../NationalAddress";
-import { allDocs_TP, Documents } from "../../reusableComponants/documents/Documents";
+import {
+  allDocs_TP,
+  Documents,
+} from "../../reusableComponants/documents/Documents";
 import { Country_city_distract_markets } from "../Country_city_distract_markets";
 import { Button } from "../../../atoms";
 import { useQueryClient } from "@tanstack/react-query";
@@ -52,7 +55,7 @@ export const BranchMainData = ({
   /////////// CUSTOM HOOKS
   ///
   const { values, setFieldValue, resetForm } = useFormikContext();
-  console.log("🚀 ~ values:", values)
+  console.log("🚀 ~ values:", values);
   const [editableData, setEditableData] = useState<allDocs_TP>();
   ///
   /////////// STATES
@@ -61,7 +64,6 @@ export const BranchMainData = ({
   ///
   /////////// SIDE EFFECTS
   ///
-
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
@@ -78,17 +80,12 @@ export const BranchMainData = ({
   }, [isSuccessPost]);
   ///
 
-
   return (
     <>
       <OuterFormLayout
         header={title}
         submitComponent={
-          <Button
-            type="submit"
-            className="mr-auto mt-8"
-            loading={isLoading}
-          >
+          <Button type="submit" className="mr-auto mt-8" loading={isLoading}>
             {t("submit")}
           </Button>
         }
@@ -236,6 +233,26 @@ export const BranchMainData = ({
               type="text"
               placeholder={`${t("fax")}`}
               defaultValue={editData && editData.fax}
+            />
+          </div>
+          <div className="col-span-1">
+            <BaseInputField
+              id="zatca_fax_number"
+              label={`${t("commercial register")}`}
+              name="zatca_fax_number"
+              type="text"
+              placeholder={`${t("commercial register")}`}
+              defaultValue={editData && editData.zatca_fax_number}
+            />
+          </div>
+          <div className="col-span-1">
+            <BaseInputField
+              id="zatca_name"
+              label={`${t("Branch name in zakat invoice")}`}
+              name="zatca_name"
+              type="text"
+              placeholder={`${t("Branch name in zakat invoice")}`}
+              defaultValue={editData && editData.zatca_name}
             />
           </div>
           {/* fax end */}

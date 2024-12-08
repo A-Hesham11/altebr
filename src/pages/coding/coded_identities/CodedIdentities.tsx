@@ -22,6 +22,7 @@ import * as fileSaver from "file-saver";
 import { useReactToPrint } from "react-to-print";
 import PrintPage from "../../../components/atoms/print/PrintPage";
 import WastedItemsInEdara from "./WastedItemsInEdara";
+import ImportStonesTotal from "./ImportStonesTotal";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -30,19 +31,25 @@ type CodedIdentitiesProps_TP = {
 const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const navigate = useNavigate();
   const [activeClass, setActiveClass] = useState("هويات في الإدارة");
-  console.log("🚀 ~ CodedIdentities ~ activeClass:", activeClass)
+  console.log("🚀 ~ CodedIdentities ~ activeClass:", activeClass);
   const [dataSource, setDataSource] = useState([]);
   const [page, setPage] = useState(1);
   const [importPageResponse, setImportPageResponse] = useState(1);
   const [operationTypeSelect, setOperationTypeSelect] = useState([]);
   const [importModal, setImportModal] = useState<boolean>(false);
+  const [importStonesModal, setImportStonesModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
+  const [importStonesFiles, setImportStonesFiles] = useState<any>([]);
   const [importData, setImportData] = useState(null);
+  const [importStonesData, setImportStonesData] = useState(null);
+  console.log("🚀 ~ CodedIdentities ~ importStonesData:", importStonesData);
   const queryClient = useQueryClient();
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [rejectedPieces, setRejectedPieces] = useState([]);
+  const [rejectedStonesPieces, setRejectedStonesPieces] = useState([]);
   const [piecesState, setPiecesState] = useState([]);
+  const [piecesStonesState, setPiecesStonesState] = useState([]);
   const [search, setSearch] = useState("");
   const [isSuccessPost, setIsSuccessPost] = useState(false);
   const [WastedItemsInEdaraModel, setWastedItemsInEdaraModel] = useState(false);
@@ -116,6 +123,24 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     onSuccess: (data: any) => {
       setImportData(data);
       setPiecesState(data[1]);
+      notify("success", `${t("imported has successfully")}`);
+    },
+    onError: (error: any) => {
+      notify("error", error?.message);
+    },
+  });
+
+  const {
+    mutate: mutateStones,
+    isLoading: postStonesIsLoading,
+    isSuccess: StonesIsSuccess,
+  } = useMutate({
+    mutationFn: mutateData,
+    mutationKey: ["files"],
+    onSuccess: (data: any) => {
+      setImportStonesData(data);
+      setPiecesStonesState(data[1]);
+      setImportStonesFiles([]);
       notify("success", `${t("imported has successfully")}`);
     },
     onError: (error: any) => {
@@ -243,6 +268,14 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     await mutate({
       endpointName: `/tarqimGold/api/v1/import?page=${importPageResponse}`,
       values: { file: importFiles[0], key: "get" },
+      dataType: "formData",
+    });
+  };
+
+  const handleImportStonesFiles = async () => {
+    await mutateStones({
+      endpointName: `/tarqimGold/api/v1/importAhgar?page=${importPageResponse}`,
+      values: { file: importStonesFiles[0], key: "get" },
       dataType: "formData",
     });
   };
@@ -465,6 +498,15 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
           </Button>
           <Button
             action={(e) => {
+              setImportStonesData(null);
+              setImportStonesModal(true);
+            }}
+            className="bg-mainGreen text-white"
+          >
+            {t("import stones")}
+          </Button>
+          <Button
+            action={(e) => {
               // COMPONENT FOR EXPORT DATA TO EXCEL FILE ACCEPT DATA AND THE NAME OF THE FILE
 
               ExportToExcel(dataExcel, formatDate(new Date()));
@@ -589,6 +631,74 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         )}
       </Modal>
 
+      <Modal
+        isOpen={importStonesModal}
+        onClose={() => {
+          setImportStonesModal(false)
+          setImportStonesData(null);
+        }}
+      >
+        <div className="mt-14 mb-10 flex items-center gap-8">
+          <FilesUpload
+            files={importStonesFiles}
+            setFiles={setImportStonesFiles}
+          />
+
+          <Button
+            loading={postStonesIsLoading}
+            action={handleImportStonesFiles}
+            className="self-end ml-9"
+            disabled={!importStonesFiles.length || postStonesIsLoading}
+          >
+            {t("add")}
+          </Button>
+        </div>
+
+        {importStonesData && (
+          <div className="flex items-center w-full justify-center">
+            <p className="text-mainGreen text-xl font-semibold py-8">
+              {t("The stones have been added successfully.")}
+            </p>
+          </div>
+        )}
+
+        {/* 
+        {importStonesData && (
+          <>
+            <div>
+              <ImportStonesTotal
+                totals={importStonesData && importStonesData[0]}
+                pieces={piecesStonesState}
+                setPiecesState={setPiecesStonesState}
+                setRejectedPieces={setRejectedStonesPieces}
+                setImportFiles={setImportStonesFiles}
+              />
+            </div>
+
+            <div className="flex justify-end my-6 gap-4">
+              <Button
+                action={() => {
+                  setImportStonesFiles([]);
+                  setImportStonesData(null);
+                  setImportStonesModal(false);
+                }}
+                className="bg-mainGreen text-white"
+              >
+                {t("refuse")}
+              </Button>
+              <Button
+                loading={finalPostStonesIsLoading}
+                disabled={finalPostStonesIsLoading}
+                action={handleFinalImportStonesFiles}
+                className="bg-transparent text-mainGreen border-mainGreen border"
+              >
+                {t("confirm")}
+              </Button>
+            </div>
+          </>
+        )} */}
+      </Modal>
+
       {/* START PRINT */}
 
       {open && (
@@ -643,7 +753,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         </div>
       )}
 
-      <div className="print-page" ref={contentRef} style={{ direction: "ltr" }}>
+      <div  ref={contentRef} style={{ direction: "ltr" }}>
         {operationTypeSelect?.map((item) => (
           <div className="break-page">
             <PrintPage item={item} />

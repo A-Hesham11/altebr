@@ -204,10 +204,11 @@ const SellingHome = () => {
       <div className="flex justify-between items-center gap-2 cursor-pointer px-20 bl">
         <div className="flex gap-8">
           <Button
-            className="bg-transparent flex items-center gap-3 p-0"
+            className="bg-transparent flex items-center gap-3 p-0 disabled:border-none"
             action={() => {
               navigate("/selling/branchSetting");
             }}
+            disabled={userData?.is_sellingInvoice === 1}
           >
             <IoSettingsOutline
               className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
@@ -217,10 +218,11 @@ const SellingHome = () => {
           </Button>
 
           <Button
-            className="bg-transparent flex items-center gap-3 p-0"
+            className="bg-transparent flex items-center gap-3 p-0 disabled:border-none"
             action={() => {
               navigate("/selling/balances");
             }}
+            disabled={userData?.is_sellingInvoice === 1}
           >
             <GiTakeMyMoney
               className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
@@ -267,7 +269,9 @@ const SellingHome = () => {
               setOpen(true);
               setIsDeparture(true);
             }}
-            disabled={departureButton == "true"}
+            disabled={
+              departureButton == "true" || userData?.is_sellingInvoice === 1
+            }
           >
             {departureButton == "true" ? (
               <GiCheckMark size={24} className="fill-mainGreen" />

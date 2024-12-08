@@ -68,11 +68,11 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
       onSuccess: (loginResponseData) => {
         if (loginResponseData) {
           const { token, user, permissions } = loginResponseData;
-          console.log("🚀 ~ AuthCtxProvider ~ loginResponseData:", loginResponseData)
+
           const permissionsAsStrings = permissions.map(
             (permission) => permission.routes
           );
-          console.log("🚀 ~ AuthCtxProvider ~ permissionsAsStrings:", permissionsAsStrings)
+
           // update token
           /* 
           cookies & context

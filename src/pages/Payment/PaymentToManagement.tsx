@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 const PaymentToManagement = () => {
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
+  console.log("🚀 ~ PaymentToManagement ~ paymentData:", paymentData)
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [stage, setStage] = useState<number>(1);
   const [selectedCardId, setSelectedCardId] = useState(null);

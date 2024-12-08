@@ -36,14 +36,15 @@ export const GlobalDataProvider = ({ children }: { children: ReactNode }) => {
   /////////// VARIABLES
   const [goldPriceToday, setGoldPriceToday] = useState(null);
   const [invoiceInfo, setInvoiceInfo] = useState(null);
+  console.log("🚀 ~ GlobalDataProvider ~ invoiceInfo:", invoiceInfo)
 
   const { data } = useFetch<any>({
     endpoint: "/attachment/api/v1/goldPrice",
     queryKey: ["GoldPriceApi"],
     onSuccess: (data) => {
-      console.log("🚀 ~ GoldPriceProvider ~ data:", data);
       setGoldPriceToday(data);
     },
+    refetchInterval: 30000,
   });
 
   const { data: invoiceInformation } = useFetch<any>({

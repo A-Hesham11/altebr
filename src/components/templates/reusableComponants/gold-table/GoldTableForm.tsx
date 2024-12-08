@@ -262,7 +262,7 @@ export const GoldTableForm = ({
                   />
                 </td>
                 <td>
-                  <Field
+                  <BaseInputField
                     id="weight"
                     name="weight"
                     type="number"
@@ -297,7 +297,7 @@ export const GoldTableForm = ({
                   />
                 </td>
                 <td>
-                  <Field
+                  <BaseInputField
                     id="stock"
                     name="stock"
                     type="number"
@@ -312,7 +312,7 @@ export const GoldTableForm = ({
                   />
                 </td>
                 <td>
-                  <Field
+                  <BaseInputField
                     id="wage"
                     name="wage"
                     type="number"

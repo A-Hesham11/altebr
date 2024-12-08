@@ -5,6 +5,7 @@ import billLogo from "../../../assets/bill-logo.png";
 import { useFetch } from "../../../hooks";
 import { ClientData_TP } from "../SellingClientForm";
 import { Cards_Props_TP } from "../../templates/bankCards/ViewBankCards";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 interface HonestFinalScreenHeader_TP {
   clientData?: any;
@@ -16,7 +17,7 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
 }) => {
   const { userData } = useContext(authCtx);
   const { client_id, client_value, bond_date } = clientData;
-  const [invoiceInfo, setInvoiceInfo] = useState(null);
+  const { invoice_logo } = GlobalDataContext();
 
   const { data } = useFetch<ClientData_TP>({
     endpoint: `branchManage/api/v1/clients/${client_id}`,
@@ -31,19 +32,6 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
 
   // const bondNumber = bondsData?.[0]?.id === null ? 1 : bondsData?.[0]?.id + 1;
   const bondNumber = bondsData?.length + 1;
-
-  const { data: invoiceInformation } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/companySettings/api/v1/InvoiceData`,
-    queryKey: ["InvoiceHeader_Data"],
-    pagination: true,
-    onSuccess(data) {
-      const returnData = data?.data.reduce((acc, item) => {
-        acc[item.key] = item.value;
-        return acc;
-      }, {});
-      setInvoiceInfo(returnData);
-    },
-  });
 
   return (
     <div className="flex justify-between mx-6 bill-shadow rounded-md p-6">
@@ -67,7 +55,7 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <img
-          src={invoiceInfo?.InvoiceCompanyLogo || billLogo}
+          src={invoice_logo?.InvoiceCompanyLogo}
           alt="bill"
           className="h-28 w-3/4 object-contain"
         />

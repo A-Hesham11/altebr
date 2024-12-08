@@ -286,6 +286,26 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: "Recycled Gold",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "Convert",
+        link: "/recycledGold/convert",
+        icon: CiExport,
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "Correction",
+        link: "/recycledGold/correction",
+        icon: CiExport,
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: "Waste",
     icon: CiExport,
     items: [
@@ -314,19 +334,46 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
-    label: "credits",
+    label: "Statement of Accounts",
     icon: CiExport,
     items: [
       {
         id: crypto.randomUUID(),
-        label: "edara credits",
+        label: "Management statement",
         link: "/credits/edara",
         icon: CiExport,
       },
       {
         id: crypto.randomUUID(),
-        label: "branch credits",
+        label: "Branch statement",
         link: "/credits/branch",
+        icon: CiExport,
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
+    label: "credits",
+    link: "/show-credits",
+    icon: CiExport,
+  },
+
+  {
+    id: crypto.randomUUID(),
+    label: "bank",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "withdrawal",
+        link: "/edara/withdrawal",
+        icon: CiExport,
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "deposit",
+        link: "/edara/deposit",
         icon: CiExport,
       },
     ],

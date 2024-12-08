@@ -8,6 +8,7 @@ import { authCtx } from "../../../context/auth-and-perm/auth";
 import billLogo from "../../../assets/bill-logo.png";
 import { useFormikContext } from "formik";
 import { Cards_Props_TP } from "../../../components/templates/bankCards/ViewBankCards";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 type Client_TP = {
   clientData?: {
@@ -29,8 +30,8 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   console.log("🚀 ~ ExpenseBillData ~ invoiceNumber:", invoiceNumber);
   const { client_id, client_value, bond_date } = clientData;
   const [invoiceInfo, setInvoiceInfo] = useState(null);
-  const { setFieldValue, values } = useFormikContext<any>();
-  console.log("🚀 ~ ExpenseBillData ~ values:", values);
+  const { invoice_logo } = GlobalDataContext();
+  console.log("🚀 ~ ExpenseBillData ~ invoice_logo:", invoice_logo);
 
   const { data } = useFetch<Client_TP>({
     endpoint: `branchManage/api/v1/clients/${client_id}`,
@@ -51,7 +52,11 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   const billNumber =
     path === "/selling/honesty/return-honest"
       ? honestBondsData?.length + 1
-      : invoiceNumber?.length + 1;
+      : path === "/expenses/expensesBonds/"
+      ? invoiceNumber + 1
+      : Number(invoiceNumber?.length) + 1;
+
+  console.log("🚀 ~ ExpenseBillData ~ billNumber:", billNumber);
 
   const { data: invoiceInformation } = useFetch<Cards_Props_TP[]>({
     endpoint: `/companySettings/api/v1/InvoiceData`,
@@ -76,17 +81,20 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
         <p className="text-xs font-bold">
           {t("expense date")} :{" "}
           <span className="font-medium">
-            {bond_date ? formatDate(bond_date) : formatDate(new Date())}
+            {/* {path === "/expenses/expensesBonds/" && bond_date} */}
+            {bond_date && path !== "/expenses/expensesBonds/"
+              ? formatDate(bond_date)
+              : formatDate(new Date())}
           </span>{" "}
         </p>
       </div>
       <div className="flex flex-col gap-1 items-center">
         <img
-          src={invoiceInfo?.InvoiceCompanyLogo || billLogo}
+          src={invoice_logo?.InvoiceCompanyLogo}
           alt="bill"
           className="h-28 w-3/4 object-contain"
         />
-        <p className="text-base font-medium">{t("simplified tax invoice")}</p>
+        <p className="text-base font-medium">{t("mere document")}</p>
       </div>
       <div className="flex flex-col gap-1 mt-6">
         <p className="text-xs font-bold">

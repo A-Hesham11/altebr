@@ -6,6 +6,7 @@ import { t } from "i18next";
 import { formatDate, formatDateAndTime } from "../../../../utils/date";
 import { numberContext } from "../../../../context/settings/number-formatter";
 import { Cards_Props_TP } from "../../../../components/templates/bankCards/ViewBankCards";
+import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 
 interface ClientData_TP {
   bank_name: string;
@@ -21,7 +22,7 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
   clientData,
 }) => {
   const { userData } = useContext(authCtx);
-  const [invoiceInfo, setInvoiceInfo] = useState(null);
+  const { invoice_logo } = GlobalDataContext();
   const { formatReyal } = numberContext();
   const {
     bank_name,
@@ -30,19 +31,6 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
     account_number,
     account_balance,
   } = clientData;
-
-  const { data: invoiceInformation } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/companySettings/api/v1/InvoiceData`,
-    queryKey: ["InvoiceHeader_Data"],
-    pagination: true,
-    onSuccess(data) {
-      const returnData = data?.data.reduce((acc, item) => {
-        acc[item.key] = item.value;
-        return acc;
-      }, {});
-      setInvoiceInfo(returnData);
-    },
-  });
 
   return (
     <div className="flex justify-between mx-6 bill-shadow rounded-md p-6">
@@ -62,7 +50,7 @@ const BudgetSecondScreenHeader: React.FC<BudgetSecondScreenHeader_TP> = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <img
-          src={invoiceInfo?.InvoiceCompanyLogo || billLogo}
+          src={invoice_logo?.InvoiceCompanyLogo}
           alt="bill"
           className="h-28 w-3/4 object-contain"
         />

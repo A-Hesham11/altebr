@@ -4,10 +4,26 @@ body {
 }
 
 .container-print {
-  direction: ltr;
+  /* direction: ltr;
   width: 30px !important;
   margin: 10px 0px 0px 3px !important;
-  padding: 0px 0.6px;
+  padding: 0px 0.6px; */
+
+  /* width: 8cm;
+  height: 1cm;
+  display: flex;
+  align-items: center;
+  justify-content: center; */
+  /* rotate: 270deg; */
+
+  width: 1cm;
+  height: 3cm;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  margin-left: -3.5px;
+  /* rotate: 270deg; */
 }
 
 .content-wrapper {

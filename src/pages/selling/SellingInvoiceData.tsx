@@ -16,6 +16,7 @@ import { notify } from "../../utils/toast";
 import { useReactToPrint } from "react-to-print";
 import { DownloadAsPDF } from "../../utils/DownloadAsPDF";
 import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -43,6 +44,14 @@ const SellingInvoiceData = ({
   console.log("🚀 ~ clientData:", clientData);
   const { formatGram, formatReyal } = numberContext();
   const contentRef = useRef();
+  const { gold_price } = GlobalDataContext();
+
+  const PriceGoldGram = {
+    "18": gold_price?.price_gram_18k,
+    "21": gold_price?.price_gram_21k,
+    "22": gold_price?.price_gram_22k,
+    "24": gold_price?.price_gram_24k,
+  };
 
   const [responseSellingData, SetResponseSellingData] = useState(null);
   console.log("🚀 ~ responseSellingData:", responseSellingData);
@@ -80,6 +89,14 @@ const SellingInvoiceData = ({
     return acc;
   }, 0);
 
+  const totalStonesWeight = sellingItemsData?.reduce((acc, curr) => {
+    const stoneWeigthByGram = Number(curr.stones_weight) / 5;
+    const weight = Number(curr.weight) * 0.05;
+    const result = stoneWeigthByGram > weight;
+    acc += result ? Number(curr.stones_weight) : 0;
+    return acc;
+  }, 0);
+
   const ratioForOneItem = totalCommissionRatio / sellingItemsData.length;
 
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
@@ -89,6 +106,7 @@ const SellingInvoiceData = ({
     +totalCommissionRatio +
     +totalCommissionTaxes
   ).toFixed(2);
+  console.log("🚀 ~ totalFinalCost:", totalFinalCost);
 
   const totalCost = (totalCostBeforeTax + totalCommissionRatio).toFixed(2);
 
@@ -96,15 +114,15 @@ const SellingInvoiceData = ({
 
   const totalItemsTax = (+totalItemsTaxes + +totalCommissionTaxes).toFixed(2);
 
-  const resultTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeight)),
-      cost: formatReyal(Number(totalCost)),
-      vat: formatReyal(Number(totalItemsTaxes)),
-      total: formatReyal(Number(totalFinalCost)),
-    },
-  ];
+  // const resultTable = [
+  //   {
+  //     number: t("totals"),
+  //     weight: formatGram(Number(totalWeight)),
+  //     cost: formatReyal(Number(totalCost)),
+  //     vat: formatReyal(Number(totalItemsTaxes)),
+  //     total: formatReyal(Number(totalFinalCost)),
+  //   },
+  // ];
 
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(Number(totalFinalCost))
@@ -119,6 +137,20 @@ const SellingInvoiceData = ({
     totalCost,
     totalFinalCostIntoArabic,
   };
+
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight)),
+      stonesWeight:
+        totalStonesWeight != 0 ? formatGram(Number(totalStonesWeight)) : "---",
+      totalWeight:
+        formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
+      cost: formatReyal(Number(costDataAsProps?.totalCost)),
+      vat: formatReyal(Number(costDataAsProps?.totalItemsTaxes)),
+      total: formatReyal(Number(costDataAsProps?.totalFinalCost)),
+    },
+  ];
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -159,16 +191,6 @@ const SellingInvoiceData = ({
         },
       },
       {
-        header: () => <span>{t("stone weight")} </span>,
-        accessorKey: "stones_weight",
-        cell: (info) => {
-          const stoneWeigthByGram = Number(info.getValue()) / 5;
-          const weight = Number(info.row.original.weight) * 0.05;
-          const result = stoneWeigthByGram > weight;
-          return result ? info.getValue() : "---";
-        },
-      },
-      {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
         cell: (info: any) =>
@@ -177,9 +199,61 @@ const SellingInvoiceData = ({
             : formatGram(Number(info.row.original.karatmineral_name)),
       },
       {
-        header: () => <span>{`${t("weight")} (${t("In grams")})`}</span>,
+        header: () => <span>{t("Price per gram")} </span>,
+        accessorKey: "Price_gram",
+        cell: (info: any) => {
+          const rowTaxEquation = +info.row.original.tax_rate / 100 + 1;
+          const totalCostFromRow =
+            +info.row.original.taklfa_after_tax / +rowTaxEquation +
+            +ratioForOneItem;
+
+          return formatReyal(
+            Number(totalCostFromRow) / Number(info.row.original.weight)
+          );
+        },
+      },
+      {
+        header: () => (
+          <span>{`${t("precious metal weight")} (${t("In grams")})`}</span>
+        ),
         accessorKey: "weight",
         cell: (info) => info.getValue() || `${t("no items")}`,
+      },
+      // {
+      //   header: () => <span>{`${t("weight")} (${t("In grams")})`}</span>,
+      //   accessorKey: "weight",
+      //   cell: (info) => info.getValue() || `${t("no items")}`,
+      // },
+      {
+        header: () => (
+          <span>
+            {`${t("The weight of the stones if it exceeds 5%")} (${t(
+              "in karat"
+            )})`}{" "}
+          </span>
+        ),
+        accessorKey: "stones_weight",
+        cell: (info) => {
+          const stoneWeigthByGram = Number(info.getValue()) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          return !!result ? info.getValue() : "---";
+        },
+      },
+      {
+        header: () => <span>{`${t("total weight")}`} </span>,
+        accessorKey: "total_Weight",
+        cell: (info) => {
+          const stoneWeigthByGram =
+            Number(info.row.original?.stones_weight) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          const valueOfWeight =
+            Number(result ? info.row.original?.stones_weight : 0) +
+            Number(info.row.original?.weight);
+
+          return valueOfWeight || "---";
+        },
       },
       {
         header: () => <span>{t("price before tax")} </span>,
@@ -298,6 +372,8 @@ const SellingInvoiceData = ({
       const isSelsal =
         item.selsal && item.selsal?.length > 0 ? Number(weightOfSelsal) : 0;
 
+      const PriceGram = PriceGoldGram?.[item?.karat_name];
+
       return {
         category_id: item.category_id,
         category_name: item.category_name,
@@ -330,6 +406,7 @@ const SellingInvoiceData = ({
         commission_oneItem: ratioForOneItem,
         commissionTax_oneItem: ratioForOneItemTaxes,
         stones_weight: item.stones_weight,
+        price_gram: PriceGram,
       };
     });
     const card = paymentData.reduce((acc, curr) => {
