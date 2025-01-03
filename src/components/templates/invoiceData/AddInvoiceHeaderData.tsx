@@ -89,16 +89,16 @@ const AddInvoiceHeaderData = ({
   function PostNewCard(values: bankCardsProps_TP) {
     const formData = new FormData();
 
-    formData.append("key", "InvoiceCompanyName");
+    formData.append("key", "name");
     formData.append("value", values?.InvoiceCompanyName || "");
 
     if (files?.[0]) {
-      formData.append("key", "InvoiceCompanyLogo");
+      formData.append("key", "logo");
       formData.append("value", files[0]);
     }
 
     if (QRFiles?.[0]) {
-      formData.append("key", "QRCodeLogo");
+      formData.append("key", "QR_Code");
       formData.append("value", QRFiles[0]);
     }
     console.log("🚀 ~ PostCardEdit ~ formData:", formData);
@@ -121,13 +121,12 @@ const AddInvoiceHeaderData = ({
     }
 
     if (QRFiles?.[0]) {
-      formData.append("QRLogo", QRFiles[0]);
+      formData.append("QR_Code", QRFiles[0]);
     }
-    console.log("🚀 ~ PostCardEdit ~ formData:", formData);
 
     mutate({
       endpointName: "/companySettings/api/v1/updateInvoiceCompany",
-      values: formData, // Pass FormData directly
+      values: formData,
       method: "post",
       dataType: "formData",
     });

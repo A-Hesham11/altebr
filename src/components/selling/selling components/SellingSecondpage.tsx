@@ -50,6 +50,7 @@ const SellingSecondpage = ({
       <div className='bg-lightGreen h-[100%] rounded-lg sales-shadow px-6 py-5'>
           <div className="bg-flatWhite rounded-lg bill-shadow py-5 px-6 h-41 my-5">
               <div className='border-mainGray'>
+                
                   <PaymentBoxes paymentData={paymentData} sellingItemsData={sellingItemsData}/>
               </div>
           </div>

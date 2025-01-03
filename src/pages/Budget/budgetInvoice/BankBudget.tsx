@@ -157,7 +157,7 @@ const BankBudget = () => {
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {({ values, setFieldValue }) => {
         return (
-          <Form>
+          <Form className="p-10">
             {stage === 1 && (
               <BudgetFirstPage
                 budgetFiles={budgetFiles}

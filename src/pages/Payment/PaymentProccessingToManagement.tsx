@@ -61,6 +61,9 @@ const PaymentProccessingToManagement = ({
   setIsCheckedCommission,
   expensePrice,
 }: Payment_TP) => {
+  console.log("🚀 ~ expensePrice:", expensePrice);
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
+  console.log("🚀 ~ paymentData:", paymentData);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
@@ -118,6 +121,7 @@ const PaymentProccessingToManagement = ({
       Number(total) + (Number(item.cost_after_tax) || Number(item.amount)),
     0
   );
+  console.log("🚀 ~ amountRemaining:", amountRemaining);
 
   const invoiceTotalOfSalesReturn = sellingItemsData.reduce(
     (total, item) => Number(total) + Number(item.total),
@@ -131,15 +135,6 @@ const PaymentProccessingToManagement = ({
       : Number(totalPriceInvoice);
 
   console.log("🚀 ~ amountIsPaid:", amountIsPaid);
-
-  const costRemaining =
-    locationPath === "/selling/payoff/sales-return"
-      ? amountIsPaid - Number(amountRemaining)
-      : locationPath === "/expenses/expensesInvoice"
-      ? Number(expensePrice) - Number(amountRemaining)
-      : Number(totalPriceInvoice) - Number(amountRemaining);
-
-  console.log("🚀 ~ costRemaining:", costRemaining);
 
   const cashId =
     locationPath === "/selling/payoff/sales-return" ||
@@ -156,6 +151,17 @@ const PaymentProccessingToManagement = ({
     enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
   });
   console.log("🚀 ~ data:", data);
+
+  const costRemaining =
+    locationPath === "/selling/payoff/sales-return"
+      ? amountIsPaid - Number(amountRemaining)
+      : locationPath === "/expenses/expensesInvoice"
+      ? Number(expensePrice) - Number(amountRemaining)
+      : locationPath === "/selling/reimbursement"
+      ? data?.value
+      : Number(totalPriceInvoice) - Number(amountRemaining);
+
+  console.log("🚀 ~ costRemaining:", costRemaining);
 
   useEffect(() => {
     if (cardId !== null && cardFrontKey !== null) {

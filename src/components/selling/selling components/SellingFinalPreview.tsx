@@ -20,7 +20,6 @@ type SellingFinalPreviewProps_TP = {
   ItemsTableContent: React.ReactNode;
   setStage: React.Dispatch<React.SetStateAction<number>>;
   paymentData: never[];
-  clientData: Client_TP;
   costDataAsProps: any;
   sellingItemsData: any;
   invoiceNumber: any;
@@ -30,12 +29,9 @@ type SellingFinalPreviewProps_TP = {
 };
 export const SellingFinalPreview = ({
   ItemsTableContent,
-  setStage,
   paymentData,
-  clientData,
   costDataAsProps,
   sellingItemsData,
-  invoiceNumber,
   isSuccess,
   responseSellingData,
   invoiceHeaderData,

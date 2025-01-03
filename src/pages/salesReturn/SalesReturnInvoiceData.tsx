@@ -12,6 +12,7 @@ import { numberContext } from "../../context/settings/number-formatter";
 import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
 import { notify } from "../../utils/toast";
 import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
+import InvoiceTableData from "../../components/selling/selling components/InvoiceTableData";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -29,7 +30,7 @@ const SalesReturnInvoiceData = ({
   paymentData,
   clientData,
   invoiceNumber,
-  invoiceHeaderData
+  invoiceHeaderData,
 }: CreateHonestSanadProps_TP) => {
   console.log("🚀 ~ paymentData:", paymentData);
   const { formatGram, formatReyal } = numberContext();
@@ -95,25 +96,37 @@ const SalesReturnInvoiceData = ({
     Math.round(totalFinalCost)
   );
 
+  // const costDataAsProps = {
+  //   totalCommissionRatio,
+  //   ratioForOneItem,
+  //   totalCommissionTaxes,
+  //   totalCost,
+  //   totalItemsTaxes,
+  //   totalFinalCost,
+  //   totalFinalCostIntoArabic,
+  // };
+
   const costDataAsProps = {
-    totalCommissionRatio,
-    ratioForOneItem,
-    totalCommissionTaxes,
-    totalCost,
     totalItemsTaxes,
     totalFinalCost,
-    totalFinalCostIntoArabic,
+    totalCost,
+    finalArabicData: [
+      {
+        title: t("total"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalWeight) + Number(totalWeightOfSelsal)),
+        cost: formatReyal(Number(totalCost)),
+        vat: formatReyal(Number(totalItemsTaxes)),
+        total: formatReyal(Number(totalFinalCost)),
+      },
+    ],
   };
-
-  const resultTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeight) + Number(totalWeightOfSelsal)),
-      cost: formatReyal(Number(totalCost)),
-      vat: formatReyal(Number(totalItemsTaxes)),
-      total: formatReyal(Number(totalFinalCost)),
-    },
-  ];
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -213,19 +226,14 @@ const SalesReturnInvoiceData = ({
   );
 
   const SellingTableComp = () => (
-    <InvoiceTable
+    <InvoiceTableData
       data={sellingItemsData}
       columns={Cols}
       paymentData={paymentData}
       costDataAsProps={costDataAsProps}
-      resultTable={resultTable}
-    ></InvoiceTable>
+    ></InvoiceTableData>
   );
 
-  //
-  const navigate = useNavigate();
-  // user data
-  // api
   const { mutate, isLoading, isSuccess } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
@@ -250,13 +258,6 @@ const SalesReturnInvoiceData = ({
     const items = sellingItemsData.map((item) => {
       console.log("🚀 ~ items ~ item:", item);
       const rowTaxEquation = Number(item.tax_rate) / 100 + 1;
-      const taklfaFromOneItem =
-        Number(item.taklfa_after_tax) +
-        Number(ratioForOneItem) +
-        Number(ratioForOneItemTaxes);
-      const totalCostFromOneItem =
-        Number(item.taklfa_after_tax) / Number(rowTaxEquation) +
-        Number(ratioForOneItem);
 
       const weightOfSelsal = item.selsal?.reduce((acc, item) => {
         acc += +item.weight;
@@ -294,9 +295,6 @@ const SalesReturnInvoiceData = ({
         wage: item.wage,
         wage_total: item.wage_total,
         weight: item.weight,
-        // cost: +totalCost,
-        // vat: +totalItemsTaxes,
-        // total: +totalFinalCost,
         cost: isCheckedCommission ? Number(item.cost) : costWithoutCommission,
         vat: isCheckedCommission ? Number(item.vat) : vatWithoutCommission,
         total: isCheckedCommission
@@ -326,7 +324,7 @@ const SalesReturnInvoiceData = ({
     const paymentCard = paymentData?.map((item) => ({
       card_id: item.frontkey === "cash" ? "cash" : item.paymentCardId,
       bank_id: item.paymentBankId,
-      amount: item.amount, 
+      amount: item.amount,
     }));
 
     mutate({

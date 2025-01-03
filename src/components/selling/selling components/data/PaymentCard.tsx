@@ -10,6 +10,9 @@ import cashImg from "../../../../assets/cash.png";
 import DiscountEarned from "../../../../assets/Discount-earned.jpeg";
 import brokenGoldImg from "../../../../assets/Frame 26085625.svg";
 import addedTax from "../../../../assets/OIP.jpeg";
+import Mada from "../../../../assets/mada.png";
+import MasterCard from "../../../../assets/master.png";
+import Visa from "../../../../assets/visa.png";
 
 type Payment_TP = {
   onSelectCard?: any;
@@ -325,6 +328,42 @@ const PaymentCard = ({
     },
   ];
 
+  const cardDemo = [
+    {
+      front_key: "mada",
+      id: 2,
+      card_id: "mada",
+      card: {
+        images: [{ preview: Mada }],
+      },
+      discount_percentage: 0,
+      name_ar: "مدى",
+      name_en: "mada",
+    },
+    {
+      front_key: "visa",
+      id: 3,
+      card_id: "visa",
+      card: {
+        images: [{ preview: Visa }],
+      },
+      discount_percentage: 0,
+      name_ar: "فيزا",
+      name_en: "visa",
+    },
+    {
+      front_key: "master",
+      id: 4,
+      card_id: "master",
+      card: {
+        images: [{ preview: MasterCard }],
+      },
+      discount_percentage: 0,
+      name_ar: "ماستر كارد",
+      name_en: "master card",
+    },
+  ];
+
   const locationPath = location.pathname;
 
   const cardCash =
@@ -335,6 +374,7 @@ const PaymentCard = ({
       : locationPath === "/recycledGold/convert"
       ? RecycledGold
       : cardOfCash;
+  console.log("🚀 ~ cardCash:", cardCash);
 
   const bankscard =
     locationPath === "/selling/reimbursement" ||
@@ -348,6 +388,8 @@ const PaymentCard = ({
     ? [...dataSource].reverse()
     : locationPath === "/recycledGold/convert"
     ? [...cardCash].reverse()
+    : locationPath === "/selling/addInvoiceDemo"
+    ? [...cardCash, ...cardDemo].reverse()
     : [...bankscard, ...bankAccountCards, ...cardCash].reverse();
   console.log("🚀 ~ cardsData:", cardsData);
 
@@ -384,7 +426,11 @@ const PaymentCard = ({
         selectNewCard[0]?.bank_name ? `(${selectNewCard[0]?.bank_name})` : ""
       }`;
       const cardIMageInTable = `${selectNewCard[0]?.card.images[0]?.preview}`;
-      onSelectCard(cardNameInTable, cardIMageInTable, selectNewCard[0]?.karat_id);
+      onSelectCard(
+        cardNameInTable,
+        cardIMageInTable,
+        selectNewCard[0]?.karat_id
+      );
       setCardFronKey(selectNewCard[0]?.front_key);
       if (locationPath === "/selling/addInvoice/") {
         setSellingFrontKey?.(selectNewCard[0]?.selling_front_key || "cash");

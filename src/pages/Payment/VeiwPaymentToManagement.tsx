@@ -23,6 +23,7 @@ import { useReactToPrint } from "react-to-print";
 import PaymentFinalPreviewBillData from "./PaymentFinalPreviewBillData";
 import PaymentInvoiceTable from "./PaymentInvoiceTable";
 import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
+import { useLocation } from "react-router-dom";
 
 const VeiwPaymentToManagement = () => {
   // STATE
@@ -34,6 +35,8 @@ const VeiwPaymentToManagement = () => {
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [invoiceViewModal, setOpenInvoiceViewModal] = useState(false);
   const [selectedViewItem, setSelectedViewItem] = useState<any>({});
+  const location = useLocation();
+  console.log("🚀 ~ VeiwPaymentToManagement ~ location:", location);
 
   const [search, setSearch] = useState("");
 
@@ -56,6 +59,20 @@ const VeiwPaymentToManagement = () => {
         : `${search}`,
     pagination: true,
   });
+
+  const locationID = location?.state !== null && Number(location?.state?.id) + 1
+  console.log("🚀 ~ VeiwPaymentToManagement ~ locationID:", locationID)
+
+  const selectedPayment =
+    dataSource?.length &&
+    dataSource?.filter((item) => item.id === Number(locationID));
+
+  useEffect(() => {
+    if (selectedPayment?.length) {
+      setSelectedViewItem(selectedPayment?.[0]);
+      setOpenInvoiceViewModal(true);
+    }
+  }, [selectedPayment?.length]);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(

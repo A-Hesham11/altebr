@@ -1,0 +1,196 @@
+import { t } from "i18next";
+import { Form, useFormikContext } from "formik";
+import { ClientData_TP, Selling_TP } from "../../selling/PaymentSellingPage";
+import BillHeader from "../../../components/selling/selling components/bill/BillHeader";
+import BillInputs from "../../../components/selling/selling components/bill/BillInputs";
+import { SellingBrokenGoldEdaraTableInputData } from "./SellingBrokenGoldEdaraTableInputData";
+import SellingBoxes from "../../../components/selling/selling components/data/SellingBoxes";
+import { Back } from "../../../utils/utils-components/Back";
+import { Button } from "../../../components/atoms";
+import { notify } from "../../../utils/toast";
+import BrokenGoldBillInputs from "./BrokenGoldBillInputs";
+import { useFetch } from "../../../hooks";
+
+type SellingFirstPage_TP = {
+  sellingItemsData: Selling_TP;
+  setSellingItemsData: any;
+  setStage: any;
+  dataSource: Selling_TP;
+  setDataSource: any;
+  clientData: ClientData_TP;
+  setClientData: any;
+  invoiceNumber: any;
+  selectedItemDetails: any;
+  setSelectedItemDetails: any;
+  sellingItemsOfWeigth: any;
+  setSellingItemsOfWeight: any;
+};
+const SellingBrokenGoldEdaraFirstPage = ({
+  invoiceNumber,
+  setStage,
+  sellingItemsData,
+  setSellingItemsData,
+  dataSource,
+  setDataSource,
+  selectedItemDetails,
+  setSelectedItemDetails,
+  clientData,
+  setClientData,
+  sellingItemsOfWeigth,
+  setSellingItemsOfWeight,
+}: SellingFirstPage_TP) => {
+
+  const { values } = useFormikContext();
+
+  const {
+    data: balances,
+    refetch,
+    isRefetching,
+    isFetching,
+  } = useFetch({
+    queryKey: ["Balances_inEdara"],
+    endpoint: `/branchAccount/api/v1/getAccountEdara?per_page=10000`,
+  });
+
+  const cleanedBalances = balances?.map((item) => {
+    return {
+      ...item,
+      accountable: item.accountable.replace(/\s*\(\d+\)$/, ""),
+    };
+  });
+
+  const numericSystems = {
+    18: "12010201",
+    21: "12010202",
+    22: "12010203",
+    24: "12010204",
+  };
+
+  const brokenGoldBoxes = Object.keys(numericSystems).reduce((acc, karat) => {
+    const filteredCards = cleanedBalances?.filter(
+      (card) => card.numeric_system === numericSystems[karat]
+    );
+    if (filteredCards?.length) {
+      acc[karat] = filteredCards[0].debtor - filteredCards[0].creditor;
+    }
+    return acc;
+  }, {});
+
+  console.log("🚀 ~ brokenGoldBoxes ~ brokenGoldBoxes:", brokenGoldBoxes);
+
+  const weightOfKarat = {
+    18: "18",
+    21: "21",
+    22: "22",
+    24: "24",
+  };
+
+  const brokenGoldItems = Object.keys(weightOfKarat).reduce((acc, karat) => {
+    const filteredItems = sellingItemsData?.filter(
+      (item) => item.karat_name === weightOfKarat[karat]
+    );
+
+    if (filteredItems?.length) {
+      acc[karat] = filteredItems.reduce((totalWeight, item) => {
+        return totalWeight + +item.weight;
+      }, 0);
+    } else {
+      acc[karat] = 0;
+    }
+
+    return acc;
+  }, {});
+
+  console.log(brokenGoldItems);
+
+  return (
+    <Form>
+      <div className="relative h-full ">
+        <h2 className="mb-5 text-lg font-bold">{t("Selling broken gold")}</h2>
+        <div className="bg-lightGreen rounded-lg sales-shadow px-6 py-5">
+          <div className="bg-flatWhite rounded-lg bill-shadow p-5 h-41 ">
+            <div className="mb-8">
+              <BillHeader invoiceNumber={invoiceNumber} />
+            </div>
+            <div>
+              <BrokenGoldBillInputs dateFieldName="bond_date" />
+            </div>
+          </div>
+
+          <div className="bg-flatWhite rounded-lg bill-shadow py-5 px-6 h-41 my-5">
+            <>
+              <SellingBrokenGoldEdaraTableInputData
+                dataSource={dataSource}
+                setDataSource={setDataSource}
+                sellingItemsData={sellingItemsData}
+                setSellingItemsData={setSellingItemsData}
+                setClientData={setClientData}
+                selectedItemDetails={selectedItemDetails}
+                setSelectedItemDetails={setSelectedItemDetails}
+                sellingItemsOfWeigth={sellingItemsOfWeigth}
+                setSellingItemsOfWeight={setSellingItemsOfWeight}
+              />
+              <div className="border-t-2 border-mainGray pt-12 py-5">
+                <h2 className="mb-4 text-base font-bold">{t("total bill")}</h2>
+                <SellingBoxes
+                  dataSource={dataSource}
+                  sellingItemsData={sellingItemsData}
+                />
+              </div>
+            </>
+          </div>
+        </div>
+        <div className="flex gap-3 justify-end mt-12 pb-8">
+          <Back />
+          <Button
+            type="submit"
+            loading={false}
+            action={() => {
+              setClientData({
+                client_value: values.client_name,
+                client_id: values.client_id,
+                supplier_id: values.supplier_id,
+                supplier_name: values.supplier_name,
+                bond_date: values.bond_date,
+              });
+
+              if (sellingItemsData?.length === 0) {
+                notify("info", `${t("please add data first")}`);
+                return;
+              }
+
+              if (!values?.client_id && !values?.supplier_id) {
+                notify(
+                  "info",
+                  `${t("choose client's name or supplier name first")}`
+                );
+                return;
+              }
+
+              let errors = {};
+              for (const karat in brokenGoldItems) {
+                if (brokenGoldItems[karat] > brokenGoldBoxes[karat]) {
+                  errors[karat] = `${t(
+                    "The entered weight is greater than the value in the box."
+                  )}  `;
+                }
+              }
+
+              if (Object.keys(errors).length > 0) {
+                Object.entries(errors).forEach(([karat, errorMessage]) => {
+                  notify("info", `${t(`karat ${karat}`)} ${errorMessage}`);
+                });
+                return;
+              }
+              setStage(2);
+            }}
+          >
+            {t("payment")}
+          </Button>
+        </div>
+      </div>
+    </Form>
+  );
+};
+
+export default SellingBrokenGoldEdaraFirstPage;

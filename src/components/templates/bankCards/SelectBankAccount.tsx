@@ -8,35 +8,34 @@
 
 // export default SelectBranchAccountBank
 
-
 /////////// IMPORTS
 ///
-import { useFormikContext } from "formik"
-import { t } from "i18next"
-import { useContext, useEffect, useState } from "react"
-import { SingleValue } from "react-select"
-import { Select } from "../../molecules"
-import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler"
-import { SelectOption_TP } from "../../../types"
-import { useFetch, useIsRTL } from "../../../hooks"
-import { authCtx } from "../../../context/auth-and-perm/auth"
+import { useFormikContext } from "formik";
+import { t } from "i18next";
+import { useContext, useEffect, useState } from "react";
+import { SingleValue } from "react-select";
+import { Select } from "../../molecules";
+import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler";
+import { SelectOption_TP } from "../../../types";
+import { useFetch, useIsRTL } from "../../../hooks";
+import { authCtx } from "../../../context/auth-and-perm/auth";
 ///
 /////////// Types
 type SelectBankAccountProps_TP = {
-  editData?: any
-  resetSelect?:any
-  isSuccessPost?:any
-  disabled?:Boolean
-  bankId?: string
-  setAccountNumberId?:any
-  accountNumberId?:string
-  main_account_number?:string
+  editData?: any;
+  resetSelect?: any;
+  isSuccessPost?: any;
+  disabled?: Boolean;
+  bankId?: string;
+  setAccountNumberId?: any;
+  accountNumberId?: string;
+  main_account_number?: string;
 
   id?: string | number | undefined;
   value: string;
   label: string;
   name?: string | undefined;
-}
+};
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -50,7 +49,7 @@ export const SelectBankAccount = ({
   disabled,
   bankId,
   setAccountNumberId,
-  accountNumberId
+  accountNumberId,
 }: SelectBankAccountProps_TP) => {
   /////////// VARIABLES
   ///
@@ -64,35 +63,35 @@ export const SelectBankAccount = ({
     isLoading: banksAccountLoading,
     refetch: refetchBankAccount,
     failureReason: nationalityErrorReason,
-    isFetching
+    isFetching,
   } = useFetch<SelectBankAccountProps_TP[]>({
     endpoint: `/selling/api/v1/accounts_per_bank/${bankId?.id}`,
     queryKey: ["bankAccount"],
     select: (banks) =>
-        banks.map((bank) => {
-          return {
-            id: bank.id,
-            value: bank.main_account_number,
-            label: bank.main_account_number,
-            name: bank.main_account_number,
-          }
+      banks.map((bank) => {
+        return {
+          id: bank.id,
+          value: bank.main_account_number,
+          label: bank.main_account_number,
+          name: bank.main_account_number,
+        };
       }),
-  })
+  });
 
   useEffect(() => {
-    refetchBankAccount()
-  }, [bankId?.id])
-
+    refetchBankAccount();
+  }, [bankId?.id]);
 
   ///
   /////////// STATES
   ///
   const [newValue, setNewValue] =
-  useState<SingleValue<SelectOption_TP> | null>()
+    useState<SingleValue<SelectOption_TP> | null>();
+  console.log("🚀 ~ newValue:", newValue);
 
   useEffect(() => {
-      setAccountNumberId(newValue && newValue)
-  }, [newValue?.id])
+    setAccountNumberId(newValue && newValue);
+  }, [newValue?.id]);
   ///
   /////////// SIDE EFFECTS
   ///
@@ -101,8 +100,8 @@ export const SelectBankAccount = ({
       id: editData?.id,
       value: editData?.main_account_number,
       label: editData?.main_account_number || `${t("account number")}`,
-    })
-  }, [])
+    });
+  }, []);
 
   ///
   /////////// IF CASES
@@ -113,10 +112,10 @@ export const SelectBankAccount = ({
         id: "",
         value: "",
         label: `${t("account number")}`,
-      })
-      if (resetSelect) resetSelect()
+      });
+      if (resetSelect) resetSelect();
     }
-  }, [isSuccessPost])
+  }, [isSuccessPost]);
   ///
   /////////// FUNCTIONS & EVENTS
   ///
@@ -137,9 +136,11 @@ export const SelectBankAccount = ({
         required
         fieldKey="id"
         value={newValue}
-        isDisabled={disabled || !banksAccountLoading && !!nationalityErrorReason}
+        isDisabled={
+          disabled || (!banksAccountLoading && !!nationalityErrorReason)
+        }
         onChange={(option) => {
-          setNewValue(option)
+          setNewValue(option);
         }}
       />
       <RefetchErrorHandler
@@ -148,5 +149,5 @@ export const SelectBankAccount = ({
         refetch={refetchBankAccount}
       />
     </div>
-  )
-}
+  );
+};

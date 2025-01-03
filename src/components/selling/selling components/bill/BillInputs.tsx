@@ -1,18 +1,13 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { CiCalendarDate } from "react-icons/ci";
 import { IoMdAdd } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
-import * as Yup from "yup";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useFetch } from "../../../../hooks";
 import { DateInputField, Modal, Select } from "../../../molecules";
-import { InitialValues_TP } from "../../../templates/employee/validation-and-types";
 import SellingClientForm from "../../SellingClientForm";
 import { formatDate } from "../../../../utils/date";
 import { Form, useFormikContext } from "formik";
 import { t } from "i18next";
 import { useContext, useState } from "react";
-import { notify } from "../../../../utils/toast";
 import { RefetchErrorHandler } from "../../../molecules/RefetchErrorHandler";
 
 const BillInputs = ({
@@ -22,19 +17,10 @@ const BillInputs = ({
   dateFieldName: string;
   suppliersData: any;
 }) => {
-  console.log("🚀 ~ suppliersData:", suppliersData);
-
-  const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
-  const navigate = useNavigate();
   const { userData } = useContext(authCtx);
   const { setFieldValue, values } = useFormikContext();
-
-  const validationSchema = Yup.object().shape({
-    dateField: Yup.date().required("Date is required"),
-    client: Yup.string().required("Client is required"),
-  });
 
   const { data: clientsNameOptions, isLoading } = useFetch({
     endpoint: `/branchManage/api/v1/all-clients/${userData?.branch_id}?per_page=10000`,

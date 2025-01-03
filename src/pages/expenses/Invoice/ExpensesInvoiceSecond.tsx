@@ -21,11 +21,14 @@ type CreateHonestSanadProps_TP = {
   clientData: ClientData_TP;
   invoiceNumber: any;
   selectedItemDetails: any;
+  setFiles: any;
+  setPaymentData: any;
 };
 const ExpensesInvoiceSecond = ({
   setStage,
   sellingItemsData,
   paymentData,
+  setPaymentData,
   clientData,
   invoiceNumber,
   selectedItemDetails,
@@ -33,6 +36,7 @@ const ExpensesInvoiceSecond = ({
   setOdwyaTypeValue,
   taxType,
   files,
+  setFiles,
 }: CreateHonestSanadProps_TP) => {
   console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ sellingItemsData:", sellingItemsData);
@@ -43,7 +47,7 @@ const ExpensesInvoiceSecond = ({
   const [responseSellingData, SetResponseSellingData] = useState(null);
   console.log("🚀 ~ responseSellingData:", responseSellingData);
 
-  const { setFieldValue, values } = useFormikContext<any>();
+  const { setFieldValue, values, resetForm } = useFormikContext<any>();
 
   // FORMULA TO CALC THE TOTAL COST OF BUYING INVOICE
   const totalCost = sellingItemsData?.reduce((acc: number, curr: any) => {
@@ -139,6 +143,9 @@ const ExpensesInvoiceSecond = ({
       SetResponseSellingData(data);
       console.log("🚀 ~ data:", data);
       notify("success", `${t("success add expense invoice")}`);
+      resetForm();
+      setFiles([])
+      setPaymentData([])
       // navigate(`/selling/honesty/return-honest/${data.bond_id}`)
       // navigate(`/expenses/expensesBonds/`);
     },

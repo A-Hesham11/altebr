@@ -15,6 +15,7 @@ import InvoiceTable from "../../InvoiceTable";
 import { notify } from "../../../../../utils/toast";
 import { Button } from "../../../../atoms";
 import { SellingFinalPreview } from "../../SellingFinalPreview";
+import InvoiceTableData from "../../InvoiceTableData";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -34,7 +35,6 @@ const SellingInvoiceDataDemo = ({
 }: CreateHonestSanadProps_TP) => {
   const { formatGram, formatReyal } = numberContext();
   const contentRef = useRef();
-  //   const taxRate = values.karat_name === "24" ? 1 : 1.15;
 
   const [responseSellingData, SetResponseSellingData] = useState(null);
 
@@ -42,19 +42,12 @@ const SellingInvoiceDataDemo = ({
 
   const isRTL = useIsRTL();
 
-  const totalCommissionRatio = paymentData.reduce((acc, card) => {
-    if (card.add_commission_ratio === "yes") {
-      acc += +card.commission_riyals;
-    }
-    return acc;
-  }, 0);
-
   const totalWeight = sellingItemsData?.reduce((acc, curr) => {
     acc += +curr.weight;
     return acc;
   }, 0);
 
-  const totalCostBeforeTax = sellingItemsData.reduce((acc, curr) => {
+  const totalCost = sellingItemsData.reduce((acc, curr) => {
     acc += +curr.taklfa;
     return acc;
   }, 0);
@@ -64,7 +57,7 @@ const SellingInvoiceDataDemo = ({
     return acc;
   }, 0);
 
-  const totalCostAfterTax = sellingItemsData.reduce((acc, curr) => {
+  const totalFinalCost = sellingItemsData.reduce((acc, curr) => {
     acc += +curr.taklfa_after_tax;
     return acc;
   }, 0);
@@ -77,39 +70,36 @@ const SellingInvoiceDataDemo = ({
     return acc;
   }, 0);
 
-  // const resultTable = [
-  //   {
-  //     number: t("totals"),
-  //     weight: formatGram(Number(totalWeight)),
-  //     cost: formatReyal(Number(totalCostBeforeTax)),
-  //     vat: formatReyal(Number(totalVat)),
-  //     total: formatReyal(Number(totalCostAfterTax)),
-  //   },
-  // ];
-
   const totalFinalCostIntoArabic = convertNumToArWord(
-    Math.round(Number(totalCostAfterTax))
+    Math.round(Number(totalFinalCost))
   );
 
   const costDataAsProps = {
-    totalCommissionRatio,
-    totalCostAfterTax,
-    totalFinalCostIntoArabic,
+    totalFinalCost,
+    totalCost,
+    finalArabicData: [
+      {
+        title: t("total"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalWeight)),
+        stonesWeight:
+          totalStonesWeight != 0
+            ? formatGram(Number(totalStonesWeight))
+            : "---",
+        totalWeight:
+          formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
+        cost: formatReyal(Number(totalCost)),
+        vat: formatReyal(Number(totalVat)),
+        total: formatReyal(Number(totalFinalCost)),
+      },
+    ],
   };
-
-  const resultTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeight)),
-      stonesWeight:
-        totalStonesWeight != 0 ? formatGram(Number(totalStonesWeight)) : "---",
-      totalWeight:
-        formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
-      cost: formatReyal(Number(totalCostBeforeTax)),
-      vat: formatReyal(Number(totalVat)),
-      total: formatReyal(Number(totalCostAfterTax)),
-    },
-  ];
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -214,25 +204,13 @@ const SellingInvoiceDataDemo = ({
     []
   );
 
-  const chunkArray = (array, chunkSize) => {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
-
-  const chunkedItems = chunkArray(sellingItemsData, 10);
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
-
   const SellingTableComp = () => (
-    <InvoiceTable
+    <InvoiceTableData
       data={sellingItemsData}
       columns={Cols}
       paymentData={paymentData}
       costDataAsProps={costDataAsProps}
-      resultTable={resultTable}
-    ></InvoiceTable>
+    ></InvoiceTableData>
   );
 
   //
@@ -297,31 +275,31 @@ const SellingInvoiceDataDemo = ({
     }, {});
 
     const paymentCard = paymentData?.map((item) => ({
-      card_id: item.frontkey === "cash" ? "cash" : item.paymentCardId,
-      bank_id: item.paymentBankId,
+      card_id: item.card_id,
+      bank_id: "",
       amount: item.cost_after_tax,
     }));
 
-    const paymentCommission = paymentData.reduce((acc, curr) => {
-      const commissionReyals = Number(curr.commission_riyals);
-      const commissionVat =
-        Number(curr.commission_riyals) * Number(userData?.tax_rate / 100);
+    // const paymentCommission = paymentData.reduce((acc, curr) => {
+    //   const commissionReyals = Number(curr.commission_riyals);
+    //   const commissionVat =
+    //     Number(curr.commission_riyals) * Number(userData?.tax_rate / 100);
 
-      acc[curr.sellingFrontKey] = {
-        commission: commissionReyals,
-        vat: commissionVat,
-      };
-      return acc;
-    }, {});
+    //   acc[curr.sellingFrontKey] = {
+    //     commission: commissionReyals,
+    //     vat: commissionVat,
+    //   };
+    //   return acc;
+    // }, {});
 
     mutate({
       endpointName: "/invoiceSales/api/v1/add_Invoice",
-      values: { invoice, items, card, paymentCommission, paymentCard },
+      values: { invoice, items, card, paymentCard },
     });
 
     console.log(
       "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
-      { invoice, items, card, paymentCommission, paymentCard }
+      { invoice, items, card, paymentCard }
     );
   };
 
@@ -383,11 +361,9 @@ const SellingInvoiceDataDemo = ({
           ItemsTableContent={<SellingTableComp />}
           setStage={setStage}
           paymentData={paymentData}
-          // clientData={clientData}
           invoiceHeaderData={invoiceHeaderData}
           sellingItemsData={sellingItemsData}
           costDataAsProps={costDataAsProps}
-          // invoiceNumber={invoiceNumber}
           isSuccess={isSuccess}
           responseSellingData={responseSellingData}
         />

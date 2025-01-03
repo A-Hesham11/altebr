@@ -91,11 +91,11 @@ const TableOfIdentities = ({
           );
         },
       },
-      {
-        cell: (info: any) => info.getValue() || "---",
-        accessorKey: "id",
-        header: () => <span>{t("Id number")}</span>,
-      },
+      // {
+      //   cell: (info: any) => info.getValue() || "---",
+      //   accessorKey: "id",
+      //   header: () => <span>{t("Id number")}</span>,
+      // },
       {
         cell: (info: any) => info.getValue() || "---",
         accessorKey: "hwya",

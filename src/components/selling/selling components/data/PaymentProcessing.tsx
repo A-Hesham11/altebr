@@ -53,14 +53,14 @@ const PaymentProcessing = ({
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [selectedCardId, setSelectedCardId] = useState(null);
-  console.log("🚀 ~ selectedCardId:", selectedCardId)
+  console.log("🚀 ~ selectedCardId:", selectedCardId);
   const [editData, setEditData] = useState<Payment_TP>();
   console.log("🚀 ~ editData:", editData);
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<any>({});
   const { userData } = useContext(authCtx);
-  const [selectedCardData, setSelectedCardData] = useState(null)
-  console.log("🚀 ~ selectCardedData:", selectedCardData)
+  const [selectedCardData, setSelectedCardData] = useState(null);
+  console.log("🚀 ~ selectCardedData:", selectedCardData);
   console.log("🚀 ~ userData:", userData);
   console.log("🚀 ~ cardDiscountPercentage:", cardDiscountPercentage);
 
@@ -142,7 +142,8 @@ const PaymentProcessing = ({
                 item.id === editData.id
                   ? {
                       ...values,
-                      id: editData.id,
+                      id: editData?.id,
+                      payment_id: editData?.payment_id,
                       card: editData?.card,
                       card_id: editData?.card_id,
                       commission_riyals: commissionRiyals,
@@ -155,7 +156,7 @@ const PaymentProcessing = ({
                       frontKeyAccept: editData?.frontKeyAccept,
                       frontKeySadad: editData?.frontKeySadad,
                       sellingFrontKey: editData?.sellingFrontKey,
-                      exchangeFrontKey: editData?.exchangeFrontKey
+                      exchangeFrontKey: editData?.exchangeFrontKey,
                     }
                   : item
               );
@@ -170,12 +171,20 @@ const PaymentProcessing = ({
                   id: crypto.randomUUID(),
                   card: card,
                   card_id: selectedCardId,
-                  paymentCardId: !!selectedCardData?.[0].iban ? null : selectedCardData?.[0]?.card_id,
-                  paymentBankId: !!selectedCardData?.[0].iban ? selectedCardData?.[0]?.bank_id : null,
+                  paymentCardId: !!selectedCardData?.[0].iban
+                    ? null
+                    : selectedCardData?.[0]?.card_id,
+                  paymentBankId: !!selectedCardData?.[0].iban
+                    ? selectedCardData?.[0]?.bank_id
+                    : null,
+                  bank_account_id: !!selectedCardData?.[0].iban
+                    ? selectedCardData?.[0]?.id
+                    : selectedCardData?.[0]?.bank_account_id,
                   // commission_riyals:
                   //   values.add_commission_ratio === "yes"
                   //     ? commissionRiyals
                   //     : 0,
+                  payment_id: selectedCardData?.[0].id,
                   commission_riyals: commissionRiyals,
                   max_discount_limit_value:
                     cardDiscountPercentage?.max_discount_limit_value,

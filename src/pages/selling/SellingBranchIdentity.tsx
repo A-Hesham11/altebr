@@ -28,6 +28,7 @@ import { notify } from "../../utils/toast";
 import ReturnItemsToEdaraModal from "../../components/selling/payoff/ReturnItemsToEdaraModal";
 import RejectedItemsInvoice from "../../components/selling/recieve items/RejectedItemsInvoice";
 import RejectedItemsInvoicePrint from "./RejectedItemsInvoicePrint";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -46,12 +47,11 @@ export const SellingBranchIdentity = () => {
   const [dataSourcePrint, setDataSourcePrint] = useState([]);
   console.log("🚀 ~ SellingBranchIdentity ~ dataSourcePrint:", dataSourcePrint);
   const [printModal, setPrintModal] = useState(false);
+  const { gold_price } = GlobalDataContext();
 
   const isRTL = useIsRTL();
 
   const { formatGram, formatReyal } = numberContext();
-  // const [selectedItems, setSelectedItems] = useState([]);
-  // console.log("🚀 ~ SellingBranchIdentity ~ selectedItem:", selectedItems);
   const [returnItemsModel, setReturnItemsModel] = useState(false);
 
   const navigate = useNavigate();
@@ -64,42 +64,8 @@ export const SellingBranchIdentity = () => {
     wage: "",
   };
 
-  // const handleCheckboxChange = (item) => {
-  //   setSelectedItems((prevSelected) => {
-  //     const isItemSelected = prevSelected.some(
-  //       (selectedItem) => selectedItem.hwya === item.hwya
-  //     );
-
-  //     if (isItemSelected) {
-  //       return prevSelected.filter((selectedItem) => selectedItem.hwya !== item.hwya);
-  //     } else {
-  //       return [...prevSelected, item];
-  //     }
-  //   });
-  // };
-
   const Cols = useMemo<any>(
     () => [
-      // {
-      //   header: () => <span>{t("#")}</span>,
-      //   accessorKey: "action",
-      //   cell: (info) => {
-      //     return (
-      //       <input
-      //         type="checkbox"
-      //         className="border-mainGreen text-mainGreen rounded"
-      //         id={crypto.randomUUID()}
-      //         name="selectedItem"
-      //         onChange={() =>
-      //           handleCheckboxChange({
-      //             hwya: info.row.original.hwya,
-      //             thwelbond_id: info.row.original.thwelbond_id,
-      //           })
-      //         }
-      //       />
-      //     );
-      //   },
-      // },
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "id",
@@ -237,16 +203,6 @@ export const SellingBranchIdentity = () => {
     },
   });
 
-  // function PostNewValue() {
-  //   mutate({
-  //     endpointName: "/branchManage/api/v1/change-status-item",
-  //     values: {
-  //       branch_id: userData.branch_id,
-  //       items: selectedItems,
-  //     },
-  //   });
-  // }
-
   const total24 = (data && data?.data[0]?.allboxes.karat24) || 0;
   const total22 = (data && data?.data[0]?.allboxes.karat22) || 0;
   const total21 = (data && data?.data[0]?.allboxes.karat21) || 0;
@@ -333,6 +289,7 @@ export const SellingBranchIdentity = () => {
       setPage(1);
     }
   }, [search]);
+
   //
   // functions
   const getSearchResults = async (req: any) => {
@@ -516,14 +473,28 @@ export const SellingBranchIdentity = () => {
         isOpen={returnItemsModel}
         onClose={() => setReturnItemsModel(false)}
       >
-        <ReturnItemsToEdaraModal
-          refetch={refetch}
-          setPage={setPage}
-          setPrintModal={setPrintModal}
-          printModal={printModal}
-          setDataSourcePrint={setDataSourcePrint}
-          setReturnItemsModel={setReturnItemsModel}
-        />
+        <Formik
+          validationSchema=""
+          initialValues={{
+            branch_id: "",
+            gold_price: gold_price?.price_gram_24k || "",
+            sanad_type: "",
+            weight_input: "",
+            search: "",
+            ManualSearch: "",
+          }}
+          enableReinitialize={true}
+          onSubmit={(values) => {}}
+        >
+          <ReturnItemsToEdaraModal
+            refetch={refetch}
+            setPage={setPage}
+            setPrintModal={setPrintModal}
+            printModal={printModal}
+            setDataSourcePrint={setDataSourcePrint}
+            setReturnItemsModel={setReturnItemsModel}
+          />
+        </Formik>
       </Modal>
 
       <Modal isOpen={printModal} onClose={() => setPrintModal(false)}>

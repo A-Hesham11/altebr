@@ -18,6 +18,7 @@ import { AccessoriesTable } from "../templates/reusableComponants/accessories-ta
 ///
 type GoldSupplySecondFormProps_TP = {
   supplierTax: supplierTax_TP;
+  supplierTaxDiamond: supplierTax_TP;
   setBoxesView: Dispatch<SetStateAction<Box_TP[] | undefined>>;
   supply: Supply_TP;
   formValues: FirstFormInitValues_TP | undefined;
@@ -62,6 +63,7 @@ export type OTableDataTypes = GoldTableProperties_TP & TableHelperValues_TP;
 ///
 export const SupplySecondForm = ({
   supplierTax,
+  supplierTaxDiamond,
   formValues,
   supply,
   setStage,
@@ -245,7 +247,11 @@ export const SupplySecondForm = ({
           total_tax: {
             title: "total value added tax",
             value: boxValues.reduce((acc, curr) => {
-              return +acc + Number(curr.diamond_value_ryal) * 0.15;
+              return (
+                +acc +
+                Number(curr.diamond_value_ryal) *
+                  (supplierTaxDiamond ? 0 : 0.15)
+              );
             }, 0),
             unit: "reyal",
           },
@@ -301,7 +307,11 @@ export const SupplySecondForm = ({
           total_tax: {
             title: "total value added tax",
             value: boxValues.reduce((acc, curr) => {
-              return +acc + Number(curr.accessory_value_ryal) * 0.15;
+              return (
+                +acc +
+                Number(curr.accessory_value_ryal) *
+                  (supplierTaxDiamond ? 0 : 0.15)
+              );
             }, 0),
             unit: "reyal",
           },
@@ -347,6 +357,8 @@ export const SupplySecondForm = ({
           },
         };
 
+  console.log("🚀 ~ boxes:", boxes);
+
   const boxesView = Object.values(boxes).map((box) => {
     return {
       title: box.title,
@@ -386,6 +398,7 @@ export const SupplySecondForm = ({
             />
           ) : supply == "diamond" ? (
             <DiamondTable
+              supplierTaxDiamond={supplierTaxDiamond}
               dirty={dirty}
               setDirty={setDirty}
               data={data}
@@ -398,6 +411,7 @@ export const SupplySecondForm = ({
             />
           ) : supply == "accessories" ? (
             <AccessoriesTable
+              supplierTaxDiamond={supplierTaxDiamond}
               dirty={dirty}
               setDirty={setDirty}
               data={data}
@@ -483,7 +497,9 @@ export const SupplySecondForm = ({
                             Number(item.gold_weight) +
                             Number(item.diamond_stone_weight) / 5 +
                             Number(item.other_stones_weight) / 5,
-                          diamond_tax: Number(item.diamond_value_ryal) * 0.15,
+                          diamond_tax:
+                            Number(item.diamond_value_ryal) *
+                            (supplierTaxDiamond ? 0 : 0.15),
                         }
                       : {
                           ...item,
@@ -492,7 +508,8 @@ export const SupplySecondForm = ({
                             Number(item.gold_weight) +
                             Number(item.other_stones_weight) / 5,
                           accessory_tax:
-                            Number(item.accessory_value_ryal) * 0.15,
+                            Number(item.accessory_value_ryal) *
+                            (supplierTaxDiamond ? 0 : 0.15),
                         };
                   }),
                 });

@@ -14,8 +14,9 @@ import {
 import { useIsRTL } from "../../hooks";
 import { Selling_TP } from "../selling/PaymentSellingPage";
 import { useReactToPrint } from "react-to-print";
-import PaymentInvoiceTable from "../Payment/PaymentInvoiceTable";
 import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
+import InvoiceTableData from "../../components/selling/selling components/InvoiceTableData";
+import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 
 const SupplierBondInvoice = ({ item }: { item?: {} }) => {
   const { formatGram, formatReyal } = numberContext();
@@ -29,28 +30,42 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
     supplier_id: item?.supplier,
   };
 
-  // const resultTable = [
-  //   {
-  //     number: t("totals"),
-  //     weight: totalWeight,
-  //     cost: totalCost,
-  //   },
-  // ];
-
   const totalFinalCost = item?.items?.reduce((acc, curr) => {
     acc += +curr.value_reyal;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalFinalCost ~ totalFinalCost:", totalFinalCost);
 
   const totalGoldAmountGram = item?.items?.reduce((acc, curr) => {
     acc += +curr.value_gram;
     return acc;
   }, 0);
 
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(totalFinalCost)
+  );
+
   const costDataAsProps = {
     totalFinalCost,
-    totalGoldAmountGram,
+    finalArabicData: [
+      {
+        title: t("total"),
+      },
+      {
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+      {
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        cost: totalFinalCost,
+        weight: totalGoldAmountGram,
+      },
+    ],
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -140,11 +155,17 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
           </div>
 
           <div className="mx-5">
-            <PaymentInvoiceTable
+            {/* <PaymentInvoiceTable
               data={item?.items}
               columns={Cols || []}
               costDataAsProps={costDataAsProps}
-            ></PaymentInvoiceTable>
+            ></PaymentInvoiceTable> */}
+
+            <InvoiceTableData
+              data={item?.items}
+              columns={Cols || []}
+              costDataAsProps={costDataAsProps}
+            ></InvoiceTableData>
           </div>
 
           <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">

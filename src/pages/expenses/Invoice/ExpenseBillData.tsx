@@ -26,12 +26,8 @@ type Client_TP = {
 };
 
 const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
-  console.log("🚀 ~ ExpenseBillData ~ clientData:", clientData);
-  console.log("🚀 ~ ExpenseBillData ~ invoiceNumber:", invoiceNumber);
   const { client_id, client_value, bond_date } = clientData;
-  const [invoiceInfo, setInvoiceInfo] = useState(null);
   const { invoice_logo } = GlobalDataContext();
-  console.log("🚀 ~ ExpenseBillData ~ invoice_logo:", invoice_logo);
 
   const { data } = useFetch<Client_TP>({
     endpoint: `branchManage/api/v1/clients/${client_id}`,
@@ -39,12 +35,6 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   });
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ ExpenseBillData ~ userData:", userData);
-
-  // const { data: honestBondsData } = useFetch({
-  //   queryKey: [`all-retrieve-honest-bonds-${userData?.branch_id}`],
-  //   endpoint: `branchSafety/api/v1/receive-bonds/${userData?.branch_id}`,
-  // });
 
   const location = useLocation();
   const path = location.pathname;
@@ -55,21 +45,6 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
       : path === "/expenses/expensesBonds/"
       ? invoiceNumber + 1
       : Number(invoiceNumber?.length) + 1;
-
-  console.log("🚀 ~ ExpenseBillData ~ billNumber:", billNumber);
-
-  const { data: invoiceInformation } = useFetch<Cards_Props_TP[]>({
-    endpoint: `/companySettings/api/v1/InvoiceData`,
-    queryKey: ["InvoiceHeader_Data"],
-    pagination: true,
-    onSuccess(data) {
-      const returnData = data?.data.reduce((acc, item) => {
-        acc[item.key] = item.value;
-        return acc;
-      }, {});
-      setInvoiceInfo(returnData);
-    },
-  });
 
   return (
     <div className="flex justify-between">

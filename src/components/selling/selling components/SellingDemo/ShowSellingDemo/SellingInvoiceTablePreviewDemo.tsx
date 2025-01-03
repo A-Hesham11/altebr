@@ -2,6 +2,9 @@ import { t } from "i18next";
 import React, { useContext, useMemo, useRef, useState } from "react";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 import cashImg from "../../../../../assets/cash.png";
+import Visa from "../../../../../assets/visa.png";
+import Master from "../../../../../assets/master.png";
+import Mada from "../../../../../assets/mada.png";
 import { numberContext } from "../../../../../context/settings/number-formatter";
 import { useIsRTL } from "../../../../../hooks";
 import { GlobalDataContext } from "../../../../../context/settings/GlobalData";
@@ -13,6 +16,7 @@ import InvoiceHeader from "../../../../Invoice/InvoiceHeader";
 import InvoiceTable from "../../InvoiceTable";
 import FinalPreviewBillPayment from "../../bill/FinalPreviewBillPayment";
 import InvoiceFooter from "../../../../Invoice/InvoiceFooter";
+import InvoiceTableData from "../../InvoiceTableData";
 
 type Entry_TP = {
   bian: string;
@@ -54,7 +58,16 @@ const SellingInvoiceTablePreviewDemo = ({ item }: { item?: {} }) => {
 
   const paymentData = item?.invoicepayments?.map((item) => ({
     add_commission_ratio: "no",
-    cardImage: item.image === "cash" ? cashImg : item.image,
+    cardImage:
+      item.image === "cash"
+        ? cashImg
+        : item.image === "visa"
+        ? Visa
+        : item.image === "mada"
+        ? Mada
+        : item.image === "master"
+        ? Master
+        : item.image,
     cost_after_tax: item.amount,
   }));
   console.log("🚀 ~ paymentData ~ paymentData:", paymentData);
@@ -163,7 +176,7 @@ const SellingInvoiceTablePreviewDemo = ({ item }: { item?: {} }) => {
     return acc;
   }, 0);
 
-  const totalItemsTaxes = item?.items?.reduce((acc, curr) => {
+  const totalVat = item?.items?.reduce((acc, curr) => {
     acc += +curr.vat;
     return acc;
   }, 0);
@@ -178,25 +191,32 @@ const SellingInvoiceTablePreviewDemo = ({ item }: { item?: {} }) => {
   );
 
   const costDataAsProps = {
-    totalItemsTaxes,
-    totalFinalCost: totalFinalCost,
+    totalFinalCost,
+    totalVat,
     totalCost,
-    totalFinalCostIntoArabic,
+    finalArabicData: [
+      {
+        title: t("total"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalWeight)),
+        stonesWeight:
+          totalStonesWeight != 0
+            ? formatGram(Number(totalStonesWeight))
+            : "---",
+        totalWeight:
+          formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
+        cost: formatReyal(Number(totalCost)),
+        vat: formatReyal(Number(totalVat)),
+        total: formatReyal(Number(totalFinalCost)),
+      },
+    ],
   };
-
-  const resultTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeight)),
-      stonesWeight:
-        totalStonesWeight != 0 ? formatGram(Number(totalStonesWeight)) : "---",
-      totalWeight:
-        formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
-      cost: formatReyal(Number(costDataAsProps?.totalCost)),
-      vat: formatReyal(Number(costDataAsProps?.totalItemsTaxes)),
-      total: formatReyal(Number(costDataAsProps?.totalFinalCost)),
-    },
-  ];
 
   const handlePrint = useReactToPrint({
     content: () => invoiceRefs.current,
@@ -251,21 +271,15 @@ const SellingInvoiceTablePreviewDemo = ({ item }: { item?: {} }) => {
         >
           <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
             <div className="mx-5 bill-shadow rounded-md p-6">
-              {/* <FinalPreviewBillData
-                clientData={clientData}
-                invoiceNumber={item?.invoice_number}
-              /> */}
-
               <InvoiceHeader invoiceHeaderData={invoiceHeaderData} />
             </div>
 
             <div className="">
-              <InvoiceTable
+              <InvoiceTableData
                 data={item?.items}
                 columns={Cols}
                 costDataAsProps={costDataAsProps}
-                resultTable={resultTable}
-              ></InvoiceTable>
+              ></InvoiceTableData>
             </div>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">

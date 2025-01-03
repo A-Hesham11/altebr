@@ -45,6 +45,7 @@ export const BuyingTable = ({
   const { values, setFieldValue } = useFormikContext();
   const { userData } = useContext(authCtx);
   const [data, setData] = useState("");
+  const isDisabled = userData?.is_sellingInvoice === 1;
 
   // CASH VALUE API
   const { data: maxingUser } = useFetch({
@@ -94,6 +95,7 @@ export const BuyingTable = ({
       value: "يوجد",
     },
   ];
+  console.log("🚀 ~ stonesOption:", stonesOption);
 
   // COLUMN FOR TABLES
   const buyingColumns = useMemo<ColumnDef<Selling_TP>[]>(
@@ -223,26 +225,41 @@ export const BuyingTable = ({
                 }}
                 onChange={(option) => {
                   setFieldValue("category_name", option!.value);
+                  if (isDisabled) {
+                    setFieldValue("stones_name", stonesOption?.[0]?.name);
+                    setFieldValue("stones_id", stonesOption?.[0]?.id);
+                  }
                 }}
               />
             </td>
             <td className="w-36">
-              <Select
-                placeholder={`${t("stones")}`}
-                id="stones_id"
-                className="text-center text-black"
-                name="stones_id"
-                options={stonesOption}
-                onChange={(option) => {
-                  setFieldValue("stones_name", option!.value);
-                  setFieldValue("stones_id", option!.id);
-                }}
-                value={{
-                  id: values.stones_id,
-                  value: values.stones_id,
-                  label: values.stones_name || t("stones"),
-                }}
-              />
+              {isDisabled ? (
+                <BaseInputField
+                  placeholder={`${t("stones")}`}
+                  id="stones_id"
+                  className="text-center text-black bg-mainDisabled"
+                  name="stones_id"
+                  value={stonesOption?.[0]?.name}
+                  disabled={isDisabled}
+                />
+              ) : (
+                <Select
+                  placeholder={`${t("stones")}`}
+                  id="stones_id"
+                  className="text-center text-black"
+                  name="stones_id"
+                  options={stonesOption}
+                  onChange={(option) => {
+                    setFieldValue("stones_name", option!.value);
+                    setFieldValue("stones_id", option!.id);
+                  }}
+                  value={{
+                    id: values.stones_id,
+                    value: values.stones_id,
+                    label: values.stones_name || t("stones"),
+                  }}
+                />
+              )}
             </td>
             <td>
               <BaseInputField

@@ -59,15 +59,15 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
       setMainCardData(data);
     },
   });
-    console.log("🚀 ~ accountsDetailsData:", accountsDetailsData)
+  console.log("🚀 ~ accountsDetailsData:", accountsDetailsData);
 
   useEffect(() => {
     accountsDetailsDataRefetch();
   }, [selectedAccountData, values, accountsDetailsData]);
 
   return (
-    <div className="overflow-hidden">
-      <div className="relative h-full p-10">
+    <div className="">
+      <div className="relative h-full">
         <div className="flex justify-end">
           <Back />
         </div>

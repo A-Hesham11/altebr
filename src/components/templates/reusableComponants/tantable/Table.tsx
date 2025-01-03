@@ -6,10 +6,10 @@ import {
   FilterFn,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import type { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef, TableState } from "@tanstack/react-table";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { Button } from "../../../atoms";
-import { ReactNode } from "react";
+import { ReactNode, useRef } from "react";
 import { t } from "i18next";
 import { useIsRTL } from "../../../../hooks";
 interface ReactTableProps<T extends object> {
@@ -21,6 +21,8 @@ interface ReactTableProps<T extends object> {
   footered?: boolean;
   children?: ReactNode;
   rowBackground?: string;
+  className?: string;
+  initialState?: number;
 }
 
 export const Table = <T extends object>({
@@ -30,13 +32,22 @@ export const Table = <T extends object>({
   footered = false,
   children,
   rowBackground,
+  className,
+  initialState,
 }: ReactTableProps<T>) => {
+  const tableContainerRef = useRef<HTMLDivElement>(null);
   const table = useReactTable({
     data,
     columns,
+    // getScrollElement: () => tableContainerRef.current,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    // initialState: {
+    //   pagination: {
+    //     pageSize: data.length,
+    //   },
+    // },
   });
 
   const isRTL = useIsRTL();
@@ -44,18 +55,22 @@ export const Table = <T extends object>({
   return (
     <>
       <div
-        className={`${
-          footered ? "" : "GlobalTable"
-        }  w-full flex flex-col gap-4`}
+        ref={tableContainerRef}
+        className={`${footered ? "" : "GlobalTable"} w-full flex flex-col`}
       >
-        <table className="min-w-full text-center">
-          <thead className="border-b bg-mainGreen">
+        {/* Table Header */}
+        <table className="min-w-full text-center border-b ">
+          <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-6 py-4 text-sm font-medium text-white"
+                    className={`${
+                      className
+                        ? className
+                        : "bg-mainGreen text-white font-medium"
+                    } px-6 py-4 text-sm`}
                   >
                     {header.isPlaceholder
                       ? null
@@ -74,12 +89,12 @@ export const Table = <T extends object>({
                 {row.getVisibleCells().map((cell) => (
                   <td
                     className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                      footered && i == table.getRowModel().rows.length - 1
+                      footered && i === table.getRowModel().rows.length - 1
                         ? "!bg-mainGreen !text-white"
                         : `${
                             rowBackground ? rowBackground : "!bg-lightGreen"
                           } !text-gray-900`
-                    } `}
+                    }`}
                     key={cell.id}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -89,19 +104,21 @@ export const Table = <T extends object>({
             ))}
           </tbody>
         </table>
+
+        {/* Navigation */}
         {showNavigation ? (
           <div className="mt-3 flex items-center justify-end gap-5 p-2">
             <div className="flex items-center gap-2 font-bold">
               {t("page")}
-              <span className=" text-mainGreen">
+              <span className="text-mainGreen">
                 {table.getState().pagination.pageIndex + 1}
               </span>
               {t("from")}
-              <span className=" text-mainGreen">{table.getPageCount()} </span>
+              <span className="text-mainGreen">{table.getPageCount()} </span>
             </div>
-            <div className="flex items-center gap-2 ">
+            <div className="flex items-center gap-2">
               <Button
-                className=" rounded bg-mainGreen p-[.18rem] "
+                className="rounded bg-mainGreen p-[.18rem]"
                 action={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
               >
@@ -112,7 +129,7 @@ export const Table = <T extends object>({
                 )}
               </Button>
               <Button
-                className=" rounded bg-mainGreen p-[.18rem] "
+                className="rounded bg-mainGreen p-[.18rem]"
                 action={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
               >
@@ -125,6 +142,7 @@ export const Table = <T extends object>({
             </div>
           </div>
         ) : null}
+
         {children && children}
       </div>
     </>

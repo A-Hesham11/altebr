@@ -18,6 +18,7 @@ const FinalPreviewBillPayment = ({
   responseSellingData: any;
   notQRCode?: boolean;
 }) => {
+  console.log("🚀 ~ paymentData:", paymentData)
   console.log("🚀 ~ costDataAsProps:", costDataAsProps);
   const { formatReyal } = numberContext();
 

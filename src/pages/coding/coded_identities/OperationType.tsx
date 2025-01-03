@@ -23,6 +23,7 @@ import DynamicTransformToBranch from "./DynamicTransformToBranch";
 import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
 import WastedItemsInEdara from "./WastedItemsInEdara";
 import ThweelBondsPrint from "./ThweelBondsPrint";
+import { Formik } from "formik";
 
 const options = {
   year: "numeric",
@@ -451,18 +452,28 @@ const OperationType = ({
           isOpen={WastedItemsInEdaraModel}
           onClose={() => setWastedItemsInEdaraModel(false)}
         >
-          <WastedItemsInEdara
-            // setFormData={setFormData}
-            // formData={formData}
-            refetch={refetch}
-            setPage={setPage}
-            setOperationTypeSelect={setOperationTypeSelect}
-            seperateModal={WastedItemsInEdaraModel}
-            setOpenSeperateModal={setWastedItemsInEdaraModel}
-            setIsSuccessPost={setIsSuccessPost}
-            operationTypeSelect={operationTypeSelect}
-            setOpenTransformToBranchModal={setWastedItemsInEdaraModel}
-          />
+          <Formik
+            initialValues={{
+              branch_id: "",
+              sanad_type: "",
+              weight_input: "",
+              search: "",
+              ManualSearch: "",
+            }}
+            enableReinitialize={true}
+            onSubmit={(values) => {}}
+          >
+            <WastedItemsInEdara
+              refetch={refetch}
+              setPage={setPage}
+              setOperationTypeSelect={setOperationTypeSelect}
+              seperateModal={WastedItemsInEdaraModel}
+              setOpenSeperateModal={setWastedItemsInEdaraModel}
+              setIsSuccessPost={setIsSuccessPost}
+              operationTypeSelect={operationTypeSelect}
+              setOpenTransformToBranchModal={setWastedItemsInEdaraModel}
+            />
+          </Formik>
         </Modal>
 
         <ThweelBondsPrint

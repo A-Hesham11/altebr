@@ -181,9 +181,19 @@ import RecycledGoldConvert from "../pages/RecycledGoldInEdara/RecycledGoldConver
 import DepositBank from "../pages/withdrawalAndDepositInEdara/DepositBank";
 import WithdrawalBank from "../pages/withdrawalAndDepositInEdara/WithdrawalBank";
 import AddSellingInvoiceDemo from "../components/selling/selling components/SellingDemo/AddSellingDemo/AddSellingInvoiceDemo";
-import ShowSellingEntryDemo from "../components/selling/selling components/SellingDemo/ShowSellingDemo/ShowSellingEntryDemo";
 import ShowSellingInvoiceDemo from "../components/selling/selling components/SellingDemo/ShowSellingDemo/ShowSellingInvoiceDemo";
 import ShowZakatIncome from "../components/templates/zakatIncome/ShowZakatIncome";
+import CashTransfer from "../pages/BranchTransfers/CashTransfer";
+import ReceiveMoney from "../pages/management/receiveMoney/ReceiveMoney";
+import ReceiveMoneyBonds from "../pages/management/receiveMoney/ReceiveMoneyBonds";
+import SellingBrokenGoldEdara from "../pages/RecycledGoldInEdara/SellingBrokenGoldEdara/SellingBrokenGoldEdara";
+import ViewRecycledGoldBonds from "../pages/RecycledGoldInEdara/SellingBrokenGoldEdara/ViewRecycledGoldBonds";
+import BankBudgetInEdara from "../pages/withdrawalAndDepositInEdara/BudgetInEdara/BankBudgetInEdara";
+import BankBudgetBondsInEdara from "../pages/withdrawalAndDepositInEdara/BudgetInEdara/BankBudgetBondsInEdara";
+import ZakatIncomeDemo  from "../components/templates/zakatIncome/ZakatIncomeDemo";
+import Inventory from "../pages/selling/Inventory/Inventory";
+import CreatingInventoryBond from "../pages/selling/Inventory/CreatingInventoryBond";
+import ViewInventoryBonds from "../pages/selling/Inventory/ViewInventoryBonds";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -339,6 +349,7 @@ export const AllRoutesProvider = () => {
 
           <Route path="/system/accountsBank" element={<ViewAccountsBank />} />
           <Route path="/system/zakatIncome" element={<ShowZakatIncome />} />
+          <Route path="/system/zakatIncome_demo" element={<ZakatIncomeDemo />} />
 
           <Route path="/system/bankCards" element={<ViewBankCards />} />
 
@@ -522,7 +533,10 @@ export const AllRoutesProvider = () => {
             element={<AddSellingInvoiceDemo />}
           />
           <Route path="/selling/viewInvoice" element={<ViewSellingInvoice />} />
-          <Route path="/selling/viewInvoice_Demo" element={<ShowSellingInvoiceDemo />} />
+          <Route
+            path="/selling/viewInvoice_Demo"
+            element={<ShowSellingInvoiceDemo />}
+          />
 
           <Route
             path="selling/clients/customersData/addClients"
@@ -545,6 +559,7 @@ export const AllRoutesProvider = () => {
           <Route path="/credits/edara" element={<EdaraStocks />} />
 
           <Route path="/credits/branch" element={<BranchStocks />} />
+          <Route path="/cash/transfer" element={<CashTransfer />} />
           <Route
             path="/selling/reports/accounting-tree"
             element={<BranchAccountingTree />}
@@ -554,11 +569,21 @@ export const AllRoutesProvider = () => {
             element={<RecycledGoldConvert />}
           />
           <Route
+            path="/recycledGold/Selling"
+            element={<SellingBrokenGoldEdara />}
+          />
+          <Route
+            path="/viewRecycledBonds"
+            element={<ViewRecycledGoldBonds />}
+          />
+          <Route
             path="/recycledGold/correction"
             element={<RecycledGoldCorrection />}
           />
 
           <Route path="/edara/withdrawal" element={<WithdrawalBank />} />
+          <Route path="/bank/budgetEdara" element={<BankBudgetInEdara />} />
+          <Route path="/bank/budgetBondEdara" element={<BankBudgetBondsInEdara />} />
           <Route path="/edara/deposit" element={<DepositBank />} />
           <Route
             path="/selling/continuity/AttendanceDeparture"
@@ -663,10 +688,19 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/recentBonds" element={<RecentBondsPage />} />
           <Route path="/selling/sortPieces" element={<SortPiecesPage />} />
 
+          <Route path="/selling/receiveMoney" element={<ReceiveMoney />} />
+          <Route
+            path="/selling/receiveMoneyBonds"
+            element={<ReceiveMoneyBonds />}
+          />
+
           {/* neighbors start */}
           <Route path="/selling/neighbors" element={<NeighborsPage />} />
           {/* neighbors end */}
           <Route path="/selling/reports" element={<Reports />} />
+          <Route path="/selling/inventory" element={<Inventory />} />
+          <Route path="/selling/inventory/create/:id" element={<CreatingInventoryBond />} />
+          <Route path="/selling/inventory/view" element={<ViewInventoryBonds />} />
 
           {/* honest start */}
           <Route path="/selling/honesty/new-honest" element={<NewHonest />} />

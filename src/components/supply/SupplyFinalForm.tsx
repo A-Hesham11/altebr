@@ -36,6 +36,7 @@ export const SupplyFinalForm = ({
   setFormValues,
   finalData,
 }: GoldSupplyFinalFormProps_TP) => {
+  console.log("🚀 ~ finalData:", finalData)
   console.log("🚀 ~ formValues:", formValues);
   /////////// VARIABLES
   ///
@@ -647,6 +648,7 @@ export const SupplyFinalForm = ({
           ? [...formValues?.media, ...formValues?.goods_media]
           : formValues?.media,
     };
+    console.log("🚀 ~ sendForm ~ sendData:", sendData)
 
     mutate({
       endpointName:

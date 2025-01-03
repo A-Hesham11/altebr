@@ -12,6 +12,8 @@ import ReserveSecondPageTable from "./ReserveSecondPageTable";
 import ReserveSecondPageFinalPreview from "./ReserveSecondPageFinalPreview";
 import { useFormikContext } from "formik";
 import { getDayAfter } from "../../../../../utils/date";
+import { convertNumToArWord } from "../../../../../utils/number to arabic words/convertNumToArWord";
+import InvoiceTableData from "../../../../../components/selling/selling components/InvoiceTableData";
 
 interface purchaseInvoicesSecondPage_TP {
   setStage?: Dispatch<SetStateAction<number>>;
@@ -62,10 +64,30 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
     0
   );
 
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(totalValueAfterTax)
+  );
+
   const costDataAsProps = {
-    totalCost,
     totalValueAddedTax,
     totalValueAfterTax,
+    totalCost,
+    finalArabicData: [
+      {
+        title: t("total"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalNetWeight)),
+        cost: formatReyal(Number(totalCost)),
+        vat: formatReyal(Number(totalValueAddedTax)),
+        total: formatReyal(Number(totalValueAfterTax)),
+      },
+    ],
   };
 
   const Cols = useMemo<ColumnDef<any>[]>(
@@ -109,18 +131,18 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
   );
 
   const ReserveTable = () => (
-    <ReserveSecondPageTable
+    <InvoiceTableData
       data={sellingItemsData}
       columns={Cols}
       costDataAsProps={costDataAsProps}
-    ></ReserveSecondPageTable>
+    ></InvoiceTableData>
   );
 
   // api
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      notify("success", t("bond created successfully"));
+      notify("success", `${t("bond created successfully")}`);
       navigate(`/viewSellingBonds`);
     },
   });

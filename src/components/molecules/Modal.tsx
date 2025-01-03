@@ -9,7 +9,7 @@ import { boolean } from "yup";
 type ModalProps_TP = {
   isOpen: boolean;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
-  title?: string;
+  title?: string | undefined;
   children: ReactNode;
   maxWidth?: string;
   blur?: `max-w-[${number}px]`;
@@ -83,7 +83,7 @@ export const Modal = ({
                     type="button"
                     //@ts-ignore
                     className={`absolute left-3 z-10 ${
-                      children?.props?.title === undefined ? "top-3" : "top-5"
+                      children?.props?.title === undefined ? "top-0" : "top-5"
                     }  `}
                     onClick={() => onClose(false)}
                   >

@@ -21,6 +21,7 @@ import InvoiceFooter from "../../../Invoice/InvoiceFooter";
 import InvoiceHeader from "../../../Invoice/InvoiceHeader";
 import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 import cashImg from "../../../../assets/cash.png";
+import InvoiceTableData from "../InvoiceTableData";
 
 type Entry_TP = {
   bian: string;
@@ -205,24 +206,31 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
 
   const costDataAsProps = {
     totalItemsTaxes,
-    totalFinalCost: totalFinalCost,
+    totalFinalCost,
     totalCost,
-    totalFinalCostIntoArabic,
+    finalArabicData: [
+      {
+        title: t("total"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalWeight)),
+        stonesWeight:
+          totalStonesWeight != 0
+            ? formatGram(Number(totalStonesWeight))
+            : "---",
+        totalWeight:
+          formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
+        cost: formatReyal(Number(totalCost)),
+        vat: formatReyal(Number(totalItemsTaxes)),
+        total: formatReyal(Number(totalFinalCost)),
+      },
+    ],
   };
-
-  const resultTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeight)),
-      stonesWeight:
-        totalStonesWeight != 0 ? formatGram(Number(totalStonesWeight)) : "---",
-      totalWeight:
-        formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
-      cost: formatReyal(Number(costDataAsProps?.totalCost)),
-      vat: formatReyal(Number(costDataAsProps?.totalItemsTaxes)),
-      total: formatReyal(Number(costDataAsProps?.totalFinalCost)),
-    },
-  ];
 
   const handlePrint = useReactToPrint({
     content: () => invoiceRefs.current,
@@ -277,21 +285,22 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         >
           <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
             <div className="mx-5 bill-shadow rounded-md p-6">
-              {/* <FinalPreviewBillData
-                clientData={clientData}
-                invoiceNumber={item?.invoice_number}
-              /> */}
-
               <InvoiceHeader invoiceHeaderData={invoiceHeaderData} />
             </div>
 
             <div className="">
-              <InvoiceTable
+              {/* <InvoiceTable
                 data={item?.items}
                 columns={Cols}
                 costDataAsProps={costDataAsProps}
                 resultTable={resultTable}
-              ></InvoiceTable>
+              ></InvoiceTable> */}
+
+              <InvoiceTableData
+                data={item?.items}
+                columns={Cols}
+                costDataAsProps={costDataAsProps}
+              ></InvoiceTableData>
             </div>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">

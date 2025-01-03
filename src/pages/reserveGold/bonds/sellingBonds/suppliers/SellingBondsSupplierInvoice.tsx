@@ -22,6 +22,7 @@ import InvoiceTable from "../../../../../components/selling/selling components/I
 import FinalPreviewBillPayment from "../../../../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import { convertNumToArWord } from "../../../../../utils/number to arabic words/convertNumToArWord";
 import InvoiceFooter from "../../../../../components/Invoice/InvoiceFooter";
+import InvoiceTableData from "../../../../../components/selling/selling components/InvoiceTableData";
 
 type Entry_TP = {
   bian: string;
@@ -108,19 +109,31 @@ const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
     },
   });
 
-  const resultSellingBondTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeigth)),
-      cost: formatReyal(Number(totalCost)),
-      vat: formatReyal(Number(totalItemsTaxes)),
-      total: formatReyal(Number(totalFinalCost)),
-    },
-  ];
-
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(totalFinalCost)
   );
+
+  const costDataAsProps = {
+    totalItemsTaxes,
+    totalFinalCost,
+    totalCost,
+    finalArabicData: [
+      {
+        title: t("total"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalWeigth)),
+        cost: formatReyal(Number(totalCost)),
+        vat: formatReyal(Number(totalItemsTaxes)),
+        total: formatReyal(Number(totalFinalCost)),
+      },
+    ],
+  };
 
   const handlePrint = useReactToPrint({
     content: () => invoiceRefs.current,
@@ -173,89 +186,11 @@ const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
               />
             </div>
 
-            <div className="mx-5">
-              <div className="mb-6 overflow-x-auto lg:overflow-x-visible w-full">
-                <table className="mt-8 w-full table-shadow">
-                  <thead className="bg-mainGreen text-white">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                      <tr
-                        key={headerGroup.id}
-                        className="py-4 px-2 text-center"
-                      >
-                        {headerGroup.headers.map((header) => (
-                          <th
-                            key={header.id}
-                            className="p-4 text-sm font-medium text-mainGreen bg-[#E5ECEB] border border-[#7B7B7B4D]"
-                          >
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                          </th>
-                        ))}
-                      </tr>
-                    ))}
-                  </thead>
-                  <tbody>
-                    {table.getRowModel().rows.map((row) => {
-                      return (
-                        <tr key={row.id} className="text-center item">
-                          {row.getVisibleCells().map((cell, i) => {
-                            return (
-                              <td
-                                className="px-2 py-2 text-mainGreen bg-white gap-x-2 items-center border border-[#7B7B7B4D]"
-                                key={cell.id}
-                                colSpan={1}
-                              >
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext()
-                                )}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      );
-                    })}
-
-                    <tr className="text-center">
-                      {Object.keys(resultSellingBondTable[0]).map(
-                        (key, index) => {
-                          return (
-                            <td
-                              key={key}
-                              className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                              colSpan={index === 0 ? 1 : 1}
-                            >
-                              {resultSellingBondTable[0][key]}
-                            </td>
-                          );
-                        }
-                      )}
-                    </tr>
-                  </tbody>
-                  <tfoot className="text-center">
-                    <tr className="text-center border-[1px] border-[#7B7B7B4D]">
-                      <td
-                        className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                        colSpan={9}
-                      >
-                        <span className="font-semibold">{t("total")}</span>:{" "}
-                        <span className="font-medium">
-                          {totalFinalCostIntoArabic}
-                        </span>
-                        <span className="font-semibold"> {t("reyal")}</span>{" "}
-                        <span className="font-semibold">
-                          {t("Only nothing else")}
-                        </span>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </div>
+            <InvoiceTableData
+              data={item?.items}
+              columns={Cols || []}
+              costDataAsProps={costDataAsProps}
+            ></InvoiceTableData>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
               <FinalPreviewBillPayment

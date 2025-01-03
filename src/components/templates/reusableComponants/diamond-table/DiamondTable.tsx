@@ -10,9 +10,11 @@ import {
 } from "../../../supply/SupplySecondForm"
 import { FirstFormInitValues_TP } from "../../../supply/formInitialValues_types"
 import { DiamondTableForm } from "./DiamondTableForm"
+import { supplierTax_TP } from "../../../../pages/supply/Supply"
 
 type OTableProps_TP = {
   dirty: boolean,
+  supplierTaxDiamond: supplierTax_TP,
   setDirty: Dispatch<SetStateAction<boolean>>
   data: OTableDataTypes[]
   setData: Dispatch<SetStateAction<OTableDataTypes[]>>
@@ -50,6 +52,7 @@ export function DiamondTable({
   editData,
   formValues,
   setBoxValues,
+  supplierTaxDiamond
 }: OTableProps_TP) {
   // states
   const [editRow, setEditRow] = useState(false)
@@ -105,6 +108,7 @@ export function DiamondTable({
       >
         {({}) => (
           <DiamondTableForm
+          supplierTaxDiamond={supplierTaxDiamond}
             dirty={dirty}
             setDirty={setDirty}
             editRow={editRow}

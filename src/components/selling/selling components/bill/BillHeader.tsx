@@ -10,6 +10,7 @@ import PremiumImg from "../../../../assets/premium.svg";
 
 const BillHeader = ({ invoiceNumber, locationPath }: any) => {
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ BillHeader ~ userData:", userData)
   const { gold_price } = GlobalDataContext();
   const isDisabled = userData?.is_sellingInvoice === 1;
 

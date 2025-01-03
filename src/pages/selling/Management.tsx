@@ -13,14 +13,14 @@ const Management = () => {
       icon: receiveMoney,
       title_ar: "استلام نقدية",
       title_en: "receive money",
-      route: "/selling/management/receive-money",
+      route: "/selling/receiveMoney",
       underCardInfo: (
         <Link
-          to="/selling/recentBonds"
+          to="/selling/receiveMoneyBonds"
           className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
         >
           <FaCubes className="text-mainGreen" size={25} />
-          <p className="text-mainGreen">{t("recent bonds")}</p>
+          <p className="text-mainGreen">{t("Cash receipt bonds")}</p>
         </Link>
       ),
     },
@@ -28,8 +28,8 @@ const Management = () => {
       icon: receiveitem,
       title_ar: "استلام القطع",
       title_en: "receive items",
+      route: "/selling/recentBonds",
       // route: "/selling/management/receive-items",
-      route: "/",
       underCardInfo: (
         <Link
           to="/selling/sortPieces"

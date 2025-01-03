@@ -6,9 +6,13 @@ import { FaCubes } from "react-icons/fa";
 import { t } from "i18next";
 import { Back } from "../../utils/utils-components/Back";
 import SellingSubCard from "../../components/selling/SellingSubCard";
+import { authCtx } from "../../context/auth-and-perm/auth";
+import { useContext } from "react";
 
 const Expenses = () => {
   const isRTL = useIsRTL();
+  const { userData } = useContext(authCtx);
+  const isDisabled = userData?.is_sellingInvoice === 1;
 
   const data = [
     {
@@ -40,6 +44,7 @@ const Expenses = () => {
         title_ar: "المرتبات",
         title_en: "Salaries",
         route: "/selling/salaries",
+        isDisabled: isDisabled,
         // underCardInfo: (
         //   <Link
         //     to="/buying/weightAdjustmentBonds/"
@@ -65,6 +70,7 @@ const Expenses = () => {
             route={item.route}
             underCardInfo={item.underCardInfo}
             key={crypto.randomUUID()}
+            isDisabled={item.isDisabled}
           />
         ))}
       </div>

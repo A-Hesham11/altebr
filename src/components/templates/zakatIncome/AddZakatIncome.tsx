@@ -8,6 +8,8 @@ import { BaseInputField, OuterFormLayout } from "../../molecules";
 import { Button } from "../../atoms";
 import RadioGroup, { RadioField } from "../../molecules/RadioGroup";
 import { HiQuestionMarkCircle } from "react-icons/hi";
+import { MdNotInterested, MdOutlineCheckCircleOutline } from "react-icons/md";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 
 type ZakatProps_TP = {
   otp: string;
@@ -48,7 +50,8 @@ const AddZakatIncome = ({
   const [visibleExampleIndex, setVisibleExampleIndex] = useState<string | null>(
     null
   );
-  const [isActiveZakat, setIsActiveZakat] = useState<number>(0);
+  const isActiveZakat = localStorage.getItem("isActiveZakat");
+  console.log("🚀 ~ isActiveZakat:", isActiveZakat);
 
   const isRTL = useIsRTL();
 
@@ -199,7 +202,10 @@ const AddZakatIncome = ({
   const { mutate: isActiveZakatMutate } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      localStorage.setItem("isActiveZakat", isActiveZakat);
+      localStorage.setItem(
+        "isActiveZakat",
+        isActiveZakat === "true" ? "false" : "true"
+      );
       notify("success");
     },
   });
@@ -261,16 +267,33 @@ const AddZakatIncome = ({
                   </RadioGroup>
                 </div>
                 <Button
+                  className={`rounded-xl py-3 ${
+                    isActiveZakat === "true"
+                      ? "bg-mainGreen text-white"
+                      : "bg-[#b2171725] text-[#B21717]"
+                  }`}
                   action={() => {
                     isActiveZakatMutate({
-                      endpointName: "/attachment/api/v1/zatca",
+                      endpointName: "/companySettings/api/v1/zatcaActive",
                       values: {
-                        isActive_Zakat: isActiveZakat,
+                        isActive_Zakat: isActiveZakat === "true" ? 0 : 1,
                       },
                     });
                   }}
                 >
-                  {t("")}
+                  <div className="flex items-center gap-x-2">
+                    <p>
+                      {isActiveZakat === "true" ? (
+                        <MdOutlineCheckCircleOutline size={25} />
+                      ) : (
+                        <MdNotInterested size={25} />
+                      )}
+                    </p>
+
+                    <span>
+                      {isActiveZakat === "true" ? t("Activate") : t("Disable")}
+                    </span>
+                  </div>
                 </Button>
               </div>
 
