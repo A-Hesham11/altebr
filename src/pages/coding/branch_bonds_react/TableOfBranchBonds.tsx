@@ -18,6 +18,8 @@ import PaymentFinalPreviewBillData from "../../Payment/PaymentFinalPreviewBillDa
 import PaymentInvoiceTable from "../../Payment/PaymentInvoiceTable";
 import InvoiceBondsReactTable from "./InvoiceBondsReactTable";
 import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
+import InvoiceTableData from "../../../components/selling/selling components/InvoiceTableData";
+import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
 
 const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
   const { formatReyal, formatGram } = numberContext();
@@ -85,6 +87,27 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
         cell: (info: any) => info.getValue() || "---",
         accessorKey: "count_stones",
         header: () => <span>{t("stones count")}</span>,
+      },
+      {
+        cell: (info: any) => {
+          return (
+            <>
+              {info.row.original.images.length ? (
+                <div className="flex items-center gap-4 justify-center">
+                  <FilesPreviewOutFormik
+                    images={info.row.original.images || []}
+                    preview
+                    pdfs={[]}
+                  />
+                </div>
+              ) : (
+                "---"
+              )}
+            </>
+          );
+        },
+        accessorKey: "attachment",
+        header: () => <span>{t("attachment")}</span>,
       },
       {
         cell: (info: any) => (
@@ -311,10 +334,40 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
     0
   );
 
+  // const TotalNet = filteredItem?.reduce(
+  //   (acc, curr) => (acc += +curr?.weight * ),
+  //   0
+  // );
+
   ////////////////////////////////////////////////////////////
 
   // ========================================================
   const contentRef = useRef();
+
+  const totalNet = selectedPrintItem?.items?.reduce((acc, curr) => {
+    acc += (+curr.karat_id * +curr.weight) / 24;
+    return acc;
+  }, 0);
+
+  const totalWages = selectedPrintItem?.items?.reduce((acc, curr) => {
+    acc += +curr.wage * +curr.weight;
+    return acc;
+  }, 0);
+
+  const totalvalue = selectedPrintItem?.items?.reduce((acc, curr) => {
+    acc += +curr.value;
+    return acc;
+  }, 0);
+
+  const totalWeight = selectedPrintItem?.items?.reduce((acc, curr) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
+
+  const totalCost = selectedPrintItem?.items?.reduce((acc, curr) => {
+    acc += +curr.value;
+    return acc;
+  }, 0);
 
   const clientData = {
     client_id: selectedPrintItem?.client_id,
@@ -330,6 +383,28 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
     totalWage,
     totalValues,
     totalItems,
+    finalArabicData: [
+      {
+        title: t("Total net"),
+        totalFinalCostIntoArabic: formatGram(totalNet),
+        type: t("gram"),
+      },
+      {
+        title: t("total cash"),
+        totalFinalCostIntoArabic: formatReyal(
+          Number(totalWages) + Number(totalvalue)
+        ),
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalWeight)),
+        wage: formatReyal(Number(totalWages)),
+        cost: formatReyal(Number(totalCost)),
+      },
+    ],
   };
 
   const totalWeightConvertedTo24 =
@@ -378,59 +453,6 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
     `,
   });
 
-  // COLUMNS FOR THE TABLE
-  // const tableColumnPrint = useMemo<any>(
-  //   () => [
-  //     // {
-  //     //   cell: (info: any) => {
-  //     //     if (info.getValue() == "normal") {
-  //     //       return "توريد عادي";
-  //     //     } else {
-  //     //       return info.getValue();
-  //     //     }
-  //     //   },
-  //     //   accessorKey: "type",
-  //     //   header: () => <span>{t("bond type")}</span>,
-  //     // },
-  //     {
-  //       cell: (info: any) => info.getValue() || "---",
-  //       accessorKey: "category",
-  //       header: () => <span>{t("category")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue() || "---",
-  //       accessorKey: "karat_id",
-  //       header: () => <span>{t("karat")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue() || "---",
-  //       accessorKey: "total_weight",
-  //       header: () => <span>{t("total weight")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => formatReyal(info.getValue()) || "---",
-  //       accessorKey: "total_wage",
-  //       header: () => <span>{t("total wages")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => formatReyal(info.getValue()) || "---",
-  //       accessorKey: "total_value",
-  //       header: () => <span>{t("total value")}</span>,
-  //     },
-  //     // {
-  //     //   cell: (info: any) => info.getValue() || "---",
-  //     //   accessorKey: "count_stones",
-  //     //   header: () => <span>{t("stones count")}</span>,
-  //     // },
-  //     {
-  //       cell: (info: any) => info.getValue() || "---",
-  //       accessorKey: "count_items",
-  //       header: () => <span>{t("pieces count")}</span>,
-  //     },
-  //   ],
-  //   []
-  // );
-
   const tableColumnPrint = useMemo<any>(
     () => [
       {
@@ -451,19 +473,22 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
         header: () => <span>{t("karat")}</span>,
       },
       {
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "-",
+        accessorKey: "wage",
+        header: () => <span>{t("wage")}</span>,
+      },
+      {
         cell: (info: any) => formatGram(Number(info.getValue())) || "---",
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
-      // {
-      //   cell: (info: any) => info.getValue() || "-",
-      //   accessorKey: "thwelbond_id",
-      //   header: () => <span>{t("supply bond")}</span>,
-      // },
       {
-        cell: (info: any) => formatReyal(Number(info.getValue())) || "-",
-        accessorKey: "wage",
-        header: () => <span>{t("wage")}</span>,
+        cell: (info: any) =>
+          formatReyal(
+            Number(info.row.original.wage) * Number(info.row.original.weight)
+          ) || "-",
+        accessorKey: "total_wages",
+        header: () => <span>{t("total wages")}</span>,
       },
       {
         cell: (info: any) =>
@@ -474,29 +499,6 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
     ],
     []
   );
-  const totalWeight = selectedPrintItem?.items?.reduce((acc, curr) => {
-    acc += +curr.weight;
-    return acc;
-  }, 0);
-
-  const totalCost = selectedPrintItem?.items?.reduce((acc, curr) => {
-    acc += +curr.value;
-    return acc;
-  }, 0);
-
-  const totalWages = selectedPrintItem?.items?.reduce((acc, curr) => {
-    acc += +curr.wage;
-    return acc;
-  }, 0);
-
-  const resultTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeight)),
-      wage: formatReyal(Number(totalWages)),
-      cost: formatReyal(Number(totalCost)),
-    },
-  ];
 
   // =============================================
 
@@ -577,13 +579,12 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
                 />
               </div>
 
-              <InvoiceTable
+              <InvoiceTableData
                 data={selectedPrintItem?.items || []}
                 columns={tableColumnPrint}
                 costDataAsProps={costDataAsProps}
                 finalArabicTotals={finalArabicTotals}
-                resultTable={resultTable}
-              ></InvoiceTable>
+              ></InvoiceTableData>
 
               <div className="mx-5 bill-shadow rounded-md p-6 my-9">
                 <div className="flex justify-between items-start pb-12 pe-8">

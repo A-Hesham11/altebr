@@ -45,6 +45,8 @@ export const Supply = ({ title }: GoldSupplyProps_TP) => {
   const [stage, setStage] = useState(1)
   const [formValues, setFormValues] = useState<FirstFormInitValues_TP>()
   const [supplierTax, setSupplierTax] = useState<supplierTax_TP>('no')
+  const [supplierTaxDiamond, setSupplierTaxDiamond] = useState<supplierTax_TP>('no')
+  console.log("🚀 ~ Supply ~ supplierTaxDiamond:", supplierTaxDiamond)
   const [finalData, setFinalData] = useState<FinalData_TP>()
   console.log("🚀 ~ Supply ~ finalData:", finalData)
   const [data, setData] = useState<OTableDataTypes[]>([])
@@ -136,6 +138,7 @@ export const Supply = ({ title }: GoldSupplyProps_TP) => {
           supply={supply}
           nextBondNumber={nextBondNumber?.supply_bond_number}
           setSupplierTax={setSupplierTax}
+          setSupplierTaxDiamond={setSupplierTaxDiamond}
           formValues={formValues}
           setFormValues={setFormValues}
           setStage={setStage}
@@ -144,6 +147,7 @@ export const Supply = ({ title }: GoldSupplyProps_TP) => {
       {stage === 2 && (
         <SupplySecondForm 
           supplierTax={supplierTax}
+          supplierTaxDiamond={supplierTaxDiamond}
           key={supply}
           setBoxesView={setBoxesView}
           supply={supply}

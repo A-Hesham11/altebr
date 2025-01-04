@@ -44,6 +44,7 @@ const AddSupplier = ({
   setDataSource,
   setShow,
 }: AddSupplierProps_TP) => {
+  console.log("🚀 ~ editData:", editData);
   /////////// VARIABLES
 
   const [supplierType, setSupplierType] = useState("");
@@ -189,6 +190,8 @@ const AddSupplier = ({
         ? true
         : false
       : true,
+
+    diamond_tax: editData?.diamond_tax,
     company_name: editData ? editData?.company_name : "",
     country_id: editData ? editData?.country?.id : "",
     city_id: editData ? editData?.city?.id : "",
@@ -300,6 +303,8 @@ const AddSupplier = ({
               ? "wages"
               : "no";
 
+          console.log("🚀 ~ tax:", tax);
+
           const is_mediator = values.is_mediator ? 1 : 0;
           let editedValues = {
             ...values,
@@ -307,6 +312,7 @@ const AddSupplier = ({
             country_id: values.country_id_out,
             document: docsFormValues,
             tax,
+            diamond_tax: values.diamond_tax ? 1 : 0,
             is_mediator,
             logo: values.logo[0],
             nationalAddress: {

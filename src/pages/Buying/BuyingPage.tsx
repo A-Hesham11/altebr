@@ -8,6 +8,8 @@ import receiveMoney from "../../assets/recieveMoney.svg";
 import { Link } from "react-router-dom";
 import { FaCubes } from "react-icons/fa";
 import { t } from "i18next";
+import { useContext } from "react";
+import { authCtx } from "../../context/auth-and-perm/auth";
 
 export type Selling_TP = {
   item_id: string;
@@ -38,6 +40,8 @@ export type ClientData_TP = {
 
 const BuyingPage = () => {
   const isRTL = useIsRTL();
+  const { userData } = useContext(authCtx);
+  const isDisabled = userData?.is_sellingInvoice === 1;
 
   const data = [
     {
@@ -54,22 +58,20 @@ const BuyingPage = () => {
           <p className="text-mainGreen">{t("purchase bonds")}</p>
         </Link>
       ),
-      // underCardInfo: (
-      //   <Link
-      //     to="/buying/invoice-restrictions"
-      //     className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
-      //   >
-      //     <FaCubes className="text-mainGreen" size={25} />
-      //     <p className="text-mainGreen">{t("invoice restrictions")}</p>
-      //   </Link>
-      // ),
     },
     {
       icon: receiveitem,
       title_ar: "تعديل الوزن",
       title_en: "weight adjustment",
       route: "/buying/weightAdjustment/",
-      underCardInfo: (
+      isDisabled: isDisabled,
+      underCardInfo: isDisabled ? (
+        <div className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray cursor-not-allowed relative overflow-hidden">
+          <div className="bg-[#00000040] absolute top-0 left-0 w-full h-full"></div>
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("wegith adjustment bonds")}</p>
+        </div>
+      ) : (
         <Link
           to="/buying/weightAdjustmentBonds/"
           className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
@@ -89,13 +91,14 @@ const BuyingPage = () => {
         </div>
         <div className="flex flex-wrap justify-center items-center gap-5">
           {data.map((item) => (
-              <SellingSubCard
-                icon={item.icon}
-                title={isRTL ? item.title_ar : item.title_en}
-                route={item.route}
-                underCardInfo={item.underCardInfo}
-                key={crypto.randomUUID()}
-              />
+            <SellingSubCard
+              icon={item.icon}
+              title={isRTL ? item.title_ar : item.title_en}
+              route={item.route}
+              underCardInfo={item.underCardInfo}
+              key={crypto.randomUUID()}
+              isDisabled={item.isDisabled}
+            />
           ))}
         </div>
       </div>

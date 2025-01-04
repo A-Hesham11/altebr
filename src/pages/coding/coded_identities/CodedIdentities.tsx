@@ -23,6 +23,7 @@ import { useReactToPrint } from "react-to-print";
 import PrintPage from "../../../components/atoms/print/PrintPage";
 import WastedItemsInEdara from "./WastedItemsInEdara";
 import ImportStonesTotal from "./ImportStonesTotal";
+import { Form, Formik } from "formik";
 
 type CodedIdentitiesProps_TP = {
   title: string;
@@ -136,7 +137,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     isSuccess: StonesIsSuccess,
   } = useMutate({
     mutationFn: mutateData,
-    mutationKey: ["files"],
+    mutationKey: ["stones_files"],
     onSuccess: (data: any) => {
       setImportStonesData(data);
       setPiecesStonesState(data[1]);
@@ -564,18 +565,28 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         isOpen={WastedItemsInEdaraModel}
         onClose={() => setWastedItemsInEdaraModel(false)}
       >
-        <WastedItemsInEdara
-          // setFormData={setFormData}
-          // formData={formData}
-          refetch={refetch}
-          setPage={setPage}
-          setOperationTypeSelect={setOperationTypeSelect}
-          seperateModal={WastedItemsInEdaraModel}
-          setOpenSeperateModal={setWastedItemsInEdaraModel}
-          setIsSuccessPost={setIsSuccessPost}
-          operationTypeSelect={operationTypeSelect}
-          setOpenTransformToBranchModal={setWastedItemsInEdaraModel}
-        />
+        <Formik
+          initialValues={{
+            branch_id: "",
+            sanad_type: "",
+            weight_input: "",
+            search: "",
+            ManualSearch: "",
+          }}
+          enableReinitialize={true}
+          onSubmit={(values) => {}}
+        >
+          <WastedItemsInEdara
+            refetch={refetch}
+            setPage={setPage}
+            setOperationTypeSelect={setOperationTypeSelect}
+            seperateModal={WastedItemsInEdaraModel}
+            setOpenSeperateModal={setWastedItemsInEdaraModel}
+            setIsSuccessPost={setIsSuccessPost}
+            operationTypeSelect={operationTypeSelect}
+            setOpenTransformToBranchModal={setWastedItemsInEdaraModel}
+          />
+        </Formik>
       </Modal>
 
       {/* BUTTON TO BACK */}
@@ -634,7 +645,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
       <Modal
         isOpen={importStonesModal}
         onClose={() => {
-          setImportStonesModal(false)
+          setImportStonesModal(false);
           setImportStonesData(null);
         }}
       >

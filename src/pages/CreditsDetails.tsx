@@ -72,15 +72,10 @@ const CreditsDetails = () => {
   const supplierCreditReyal = cleanedBalances?.filter(
     (card) => card.numeric_system.includes("2201") && card.unit_id === 1
   );
-  console.log(
-    "🚀 ~ CreditsDetails ~ supplierCreditReyal:",
-    supplierCreditReyal
-  );
 
   const supplierCreditGram = cleanedBalances?.filter(
     (card) => card.numeric_system.includes("2201") && card.unit_id === 2
   );
-  console.log("🚀 ~ CreditsDetails ~ supplierCreditGram:", supplierCreditGram);
 
   if (isLoading || isRefetching || isFetching)
     return <Loading mainTitle={t("balances")} />;

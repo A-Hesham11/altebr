@@ -33,6 +33,7 @@ export type DiamondSupplyFirstForm = {
   out_goods_value?: string;
   media: any;
   goods_media?: any;
+  tax?: any;
 };
 
 export type FirstFormInitValues_TP =

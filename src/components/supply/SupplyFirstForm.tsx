@@ -34,6 +34,7 @@ import {
 ///
 type FirstFormProps_TP = {
   setSupplierTax: Dispatch<SetStateAction<supplierTax_TP>>;
+  setSupplierTaxDiamond: Dispatch<SetStateAction<supplierTax_TP>>;
   supply: Supply_TP;
   formValues: FirstFormInitValues_TP | undefined;
   setFormValues: React.Dispatch<
@@ -52,6 +53,7 @@ export const SupplyFirstForm = ({
   setFormValues,
   setStage,
   nextBondNumber,
+  setSupplierTaxDiamond
 }: FirstFormProps_TP) => {
   ///
   /////////// CUSTOM HOOKS
@@ -115,6 +117,7 @@ export const SupplyFirstForm = ({
           label: supplier.company_name,
           name: supplier.name,
           tax: supplier.tax,
+          diamond_tax: supplier.diamond_tax,
         };
       }),
   });
@@ -377,6 +380,7 @@ export const SupplyFirstForm = ({
                         setFieldValue("supplier_value", option!.value);
                         setFieldValue("supplier_id", option!.id);
                         setSupplierTax(option.tax);
+                        setSupplierTaxDiamond(!option.diamond_tax);
                       }}
                       value={{
                         value:

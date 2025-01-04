@@ -19,6 +19,7 @@ import { formatDate } from "../../utils/date";
 import { Modal } from "../../components/molecules";
 import { GlobalDataContext } from "../../context/settings/GlobalData";
 import { BsDatabase } from "react-icons/bs";
+import PremiumImg from "../../assets/premium.svg";
 
 const SellingHome = () => {
   const { logOutHandler, userData, isLoggingOut, open, setOpen } =
@@ -27,6 +28,7 @@ const SellingHome = () => {
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isDisabled = userData?.is_sellingInvoice === 1;
 
   const [audienceButton, setAudienceButton] = useState(
     localStorage.getItem("audience")
@@ -38,7 +40,6 @@ const SellingHome = () => {
   const [isDeparture, setIsDeparture] = useState(false);
 
   const { gold_price } = GlobalDataContext();
-  console.log("🚀 ~ SellingHome ~ gold_price:", gold_price);
 
   // Assuming currentTime is in the format 'HH:mm:ss'
   const targetTime = new Date(); // Replace this with the actual current time
@@ -132,32 +133,51 @@ const SellingHome = () => {
             {t("branch")} {userData?.branch_name}
           </span>
         </h2> */}
-        {gold_price && (
-          <div className="flex gap-x-8">
-            <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
-              <BsDatabase className="fill-white" />
-              <p className=" border-l border-[#FFA34B] px-1">{t("karat 18")}</p>
-              <p className="px-1">{gold_price?.price_gram_18k}</p>
-            </div>
-
-            <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
-              <BsDatabase className="fill-white" />
-              <p className=" border-l border-[#FFA34B] px-1">{t("karat 21")}</p>
-              <p className="px-1">{gold_price?.price_gram_21k}</p>
-            </div>
-
-            <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
-              <BsDatabase className="fill-white" />
-              <p className=" border-l border-[#FFA34B] px-1">{t("karat 22")}</p>
-              <p className="px-1">{gold_price?.price_gram_22k}</p>
-            </div>
-
-            <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
-              <BsDatabase className="fill-white" />
-              <p className=" border-l border-[#FFA34B] px-1">{t("karat 24")}</p>
-              <p className="px-1">{gold_price?.price_gram_24k}</p>
-            </div>
+        {isDisabled ? (
+          <div className="flex items-center gap-x-2 premiumGoldprice px-6 py-2.5 rounded-xl">
+            <img src={PremiumImg} alt="premium" />
+            <h2 className="text-white text-sm font-semibold">
+              {t("daily gold price")}
+            </h2>
           </div>
+        ) : (
+          <>
+            {gold_price && (
+              <div className="flex gap-x-8">
+                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
+                  <BsDatabase className="fill-white" />
+                  <p className=" border-l border-[#FFA34B] px-1">
+                    {t("karat 18")}
+                  </p>
+                  <p className="px-1">{gold_price?.price_gram_18k}</p>
+                </div>
+
+                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
+                  <BsDatabase className="fill-white" />
+                  <p className=" border-l border-[#FFA34B] px-1">
+                    {t("karat 21")}
+                  </p>
+                  <p className="px-1">{gold_price?.price_gram_21k}</p>
+                </div>
+
+                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
+                  <BsDatabase className="fill-white" />
+                  <p className=" border-l border-[#FFA34B] px-1">
+                    {t("karat 22")}
+                  </p>
+                  <p className="px-1">{gold_price?.price_gram_22k}</p>
+                </div>
+
+                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
+                  <BsDatabase className="fill-white" />
+                  <p className=" border-l border-[#FFA34B] px-1">
+                    {t("karat 24")}
+                  </p>
+                  <p className="px-1">{gold_price?.price_gram_24k}</p>
+                </div>
+              </div>
+            )}
+          </>
         )}
         <div className="flex justify-end items-center gap-2 ">
           <span className="text-white">

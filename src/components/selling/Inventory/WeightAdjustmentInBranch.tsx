@@ -1,0 +1,147 @@
+import { t } from "i18next";
+import React, { useMemo, useState } from "react";
+import { Table } from "../../templates/reusableComponants/tantable/Table";
+import { Button } from "../../atoms";
+import { BoxesDataBase } from "../../atoms/card/BoxesDataBase";
+import { numberContext } from "../../../context/settings/number-formatter";
+
+const WeightAdjustmentInBranch = ({
+  editWeight,
+  setIdentitiesCheckedItems,
+}: any) => {
+  const [weightItems, setWeightItems] = useState([]);
+  console.log("🚀 ~ weightItems:", weightItems);
+  const [weightNumber, setWeightNumber] = useState("");
+  const { formatGram, formatReyal } = numberContext();
+
+  const columns = useMemo<any>(
+    () => [
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "hwya",
+        header: () => <span>{t("الكود")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "classification_name",
+        header: () => <span>{t("category")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "category_name",
+        header: () => <span>{t("classification")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "weight",
+        header: () => <span>{t("weight")}</span>,
+      },
+    ],
+    []
+  );
+
+  const handleAddWeight = () => {
+    if (weightNumber.trim() === "") return; // Prevent adding empty values
+    setWeightItems((prev) => [
+      ...prev,
+      { id: prev.length + 1, weight: weightNumber },
+    ]);
+    // setWeightNumber(""); // Clear the input
+  };
+
+  return (
+    <div>
+      <div className="my-8">
+        <p className="text-lg">{t("hwya")}</p>
+        <h2 className="text-mainGreen text-xl font-semibold">
+          #{editWeight.hwya}
+        </h2>
+      </div>
+
+      <Table data={[editWeight]} columns={columns} />
+
+      <div>
+        <h2 className="mt-8 mb-5 text-lg font-semibold">
+          {t("Enter the total weight of the item:")}
+        </h2>
+        <div className="flex gap-x-5 w-full">
+          <div className="bg-[#F4F7F6] rounded-2xl p-8 w-3/4">
+            <div>
+              <input
+                name="weight"
+                placeholder={t("weight")}
+                onChange={(e) => setWeightNumber(e.target.value)}
+                value={weightNumber}
+                className="border-none p-3 rounded-xl me-5"
+              />
+              <Button bordered action={handleAddWeight}>
+                {t("add")}
+              </Button>
+            </div>
+            <ul className="mt-8 flex items-center gap-x-4">
+              {weightItems?.map((item) => (
+                <li className="bg-[#DB802833] text-mainOrange w-fit px-5 py-2 rounded-2xl text-[15px]">
+                  <p>
+                    <span className="font-semibold">
+                      {t("weight")} {item.id} :
+                    </span>{" "}
+                    {item.weight} {t("gram")}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="w-1/4">
+            <ul>
+              <li className="border border-mainGreen rounded-xl mb-3">
+                <p className="bg-mainGreen text-white px-2 py-2.5 flex items-center justify-center rounded-t-xl">
+                  {t("total weight")}
+                </p>
+                <p className="px-2 py-[7px] text-mainGreen text-center rounded-b-xl">
+                  {formatGram(Number(editWeight?.total_weight))} {t("gram")}
+                </p>
+              </li>
+              <li className="border border-mainOrange rounded-xl">
+                <p className="bg-mainOrange text-white px-2 py-2.5 flex items-center justify-center rounded-t-xl">
+                  {t("remaining weight")}
+                </p>
+                <p className="px-2 py-[7px] text-mainOrange rounded-b-xl text-center">
+                  {formatGram(Number(editWeight?.remaining_weight))} {t("gram")}
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex justify-end mt-10">
+        <Button
+          action={() => {
+            setIdentitiesCheckedItems((prevState) => {
+              return prevState.map((group) => {
+                console.log("🚀 ~ returnprevState.map ~ group:", group)
+                return {
+                  ...group,
+                  items: group.items.map((item) => {
+                    console.log("🚀 ~ items:group.items.map ~ item:", item)
+                    if (editWeight?.hwya == item.hwya) {
+                      return {
+                        ...item,
+                        weight: weightNumber, // Update weight based on hwyaMap
+                      };
+                    }
+                    return item; // Keep the same if no match
+                  }),
+                };
+              });
+            });
+          }}
+        >
+          {t("confirm")}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default WeightAdjustmentInBranch;

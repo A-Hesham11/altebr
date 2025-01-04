@@ -119,11 +119,11 @@ export const codingSanad_schema = yup.object().shape({
   color_id: yup.string().trim().required(requiredTranslation),
   country_id: yup.string().trim().required(requiredTranslation),
   model_number: yup.string().trim().required(requiredTranslation),
-  weight: yup
-    .number()
-    .required()
-    .min(0, weightValidate)
-    .max(yup.ref("left_weight")),
+  // weight: yup
+  //   .number()
+  //   .required()
+  //   .min(0, weightValidate)
+  //   .max(yup.ref("left_weight")),
   wage: yup.number().required().min(yup.ref("init_wage")),
   has_stones: yup.boolean(),
   // media: yup.array().required().min(1),

@@ -7,6 +7,7 @@ type SellingSubCardProps_TP = {
   route: string;
   underCardInfo?: React.ReactNode;
   data?: any;
+  isDisabled?: any;
 };
 const SellingSubCard = ({
   icon,
@@ -14,15 +15,21 @@ const SellingSubCard = ({
   route,
   underCardInfo,
   data,
+  isDisabled,
 }: SellingSubCardProps_TP) => {
   const navigate = useNavigate();
   return (
     <div
       className={`${
         data?.length === 3 ? "lg:w-72 w-56" : "w-72"
-      } relative flex flex-col h-44 rounded-xl text-center cursor-pointer text-sm font-bold shadow-md bg-slate-200`}
-      onClick={() => navigate(route)}
+      } relative flex flex-col h-44 rounded-xl text-center text-sm font-bold shadow-md bg-slate-200 ${
+        isDisabled ? "cursor-not-allowed" : "cursor-pointer"
+      }`}
+      onClick={() => (isDisabled ? undefined : navigate(route))}
     >
+      {isDisabled && (
+        <div className="bg-[#00000040] rounded-xl absolute top-0 left-0 w-full h-full"></div>
+      )}
       <div className="h-[70%] flex items-center justify-center">
         <img src={icon} alt="icon" className="w-[80px] mx-auto" />
       </div>

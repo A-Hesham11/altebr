@@ -12,12 +12,16 @@ import InvoiceFooter from "../../Invoice/InvoiceFooter";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { GlobalDataContext } from "../../../context/settings/GlobalData";
 import InvoiceHeader from "../../Invoice/InvoiceHeader";
+import InvoiceTableData from "../selling components/InvoiceTableData";
+import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
+import { useLocation } from "react-router-dom";
 
 const RejectedItemsInvoice = ({ item }: any) => {
   console.log("🚀 ~ RejectedItemsInvoice ~ item:", item);
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
+  const location = useLocation();
   const { invoice_logo } = GlobalDataContext();
 
   const clientData = {
@@ -181,31 +185,57 @@ const RejectedItemsInvoice = ({ item }: any) => {
   const resultTable = [
     {
       number: t("totals"),
-      weight: totalWeight,
-      wage: totalWage,
-      totalWages: totalWages,
-      diamondValue: totalDiamondValue,
-      diamondWeight: totalDiamondWeight,
-      stonesWeight: totalStonesWeight,
+      weight: formatGram(Number(totalWeight)),
+      wage: formatReyal(Number(totalWage)),
+      totalWages: formatReyal(Number(totalWages)),
+      diamondValue: formatReyal(Number(totalDiamondValue)),
+      diamondWeight: formatGram(Number(totalDiamondWeight)),
+      stonesWeight: formatGram(Number(totalStonesWeight)),
     },
   ];
 
   const resultTableWasted = [
     {
       number: t("totals"),
-      weight: totalWeight,
-      wage: totalWage,
-      totalWages: totalWages,
-      totalPrice: item?.api_gold_price,
+      weight: formatGram(Number(totalWeight)),
+      wage: formatReyal(Number(totalWage)),
+      totalWages: formatReyal(Number(totalWages)),
+      totalPrice: formatReyal(
+        Number(item?.api_gold_price * item?.items?.length)
+      ),
     },
   ];
 
+  // const costDataAsProps = {
+  //   // totalFinalCost,
+  //   // totalGoldAmountGram,
+  //   isBranchWasted: item?.boxes2?.length !== 0 ? true : false,
+  //   recipientSignature: true,
+  // };
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(Number(totalWages))
+  );
+
   const costDataAsProps = {
-    // totalFinalCost,
-    // totalGoldAmountGram,
-    isBranchWasted: item?.boxes2?.length !== 0 ? true : false,
-    recipientSignature: true,
+    finalArabicData: [
+      {
+        title: t("total wages"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+    ],
+    resultTable: item?.boxes2?.length !== 0 ? resultTableWasted : resultTable,
   };
+
+  const totalWeightByKarat = item?.items.reduce((acc, { karat, weight }) => {
+    const parsedWeight = parseFloat(weight) || 0;
+    acc[karat] = (acc[karat] || 0) + parsedWeight;
+    return acc;
+  }, {});
+  console.log(
+    "🚀 ~ totalWeightByKarat ~ totalWeightByKarat:",
+    totalWeightByKarat
+  );
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
@@ -261,14 +291,37 @@ const RejectedItemsInvoice = ({ item }: any) => {
             />
           </div>
 
-          <InvoiceTable
+          {/* <InvoiceTable
             data={item?.items}
             columns={item?.boxes2?.length !== 0 ? ColsWasted : Cols}
             costDataAsProps={costDataAsProps}
             resultTable={
               item?.boxes2?.length !== 0 ? resultTableWasted : resultTable
             }
-          ></InvoiceTable>
+          ></InvoiceTable> */}
+
+          <InvoiceTableData
+            data={item?.items}
+            columns={item?.boxes2?.length !== 0 ? ColsWasted : Cols}
+            costDataAsProps={costDataAsProps}
+          ></InvoiceTableData>
+
+          {location.pathname === "/selling/payoff/supply-payoff" && (
+            <div className="grid grid-cols-2 gap-4 mx-5">
+              {["18", "21", "22", "24"]
+                .filter((karat) => totalWeightByKarat?.[karat])
+                .map((karat) => (
+                  <div key={karat}>
+                    <p className="font-bold">
+                      {t(`total ${karat} gold box`)} :{" "}
+                      <span className="text-mainGreen">
+                        {totalWeightByKarat[karat]} {t("gram")}
+                      </span>
+                    </p>
+                  </div>
+                ))}
+            </div>
+          )}
 
           <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
             <FinalPreviewBillPayment

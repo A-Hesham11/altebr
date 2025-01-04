@@ -1,12 +1,12 @@
 /////////// IMPORTS
 ///
-import { FormikSharedConfig, useFormikContext } from "formik"
-import { t } from "i18next"
-import { useEffect, useState } from "react"
-import { useFetch } from "../../../../hooks"
-import { supplier } from "../../../../pages/suppliers/AllSuppliers"
-import { SelectOption_TP } from "../../../../types"
-import { Button } from "../../../atoms"
+import { FormikSharedConfig, useFormikContext } from "formik";
+import { t } from "i18next";
+import { useEffect, useState } from "react";
+import { useFetch } from "../../../../hooks";
+import { supplier } from "../../../../pages/suppliers/AllSuppliers";
+import { SelectOption_TP } from "../../../../types";
+import { Button } from "../../../atoms";
 import {
   BaseInputField,
   CheckBoxField,
@@ -14,25 +14,25 @@ import {
   InnerFormLayout,
   OuterFormLayout,
   PhoneInput,
-} from "../../../molecules"
-import RadioGroup from "../../../molecules/RadioGroup"
-import { DropFile } from "../../../molecules/files/DropFile"
-import { NationalAddress } from "../../NationalAddress"
-import { Country_city_distract_markets } from "../../reusableComponants/Country_city_distract_markets"
-import { Documents } from "../../reusableComponants/documents/Documents"
-import { SelectNationality } from "../SelectNationality"
+} from "../../../molecules";
+import RadioGroup from "../../../molecules/RadioGroup";
+import { DropFile } from "../../../molecules/files/DropFile";
+import { NationalAddress } from "../../NationalAddress";
+import { Country_city_distract_markets } from "../../reusableComponants/Country_city_distract_markets";
+import { Documents } from "../../reusableComponants/documents/Documents";
+import { SelectNationality } from "../SelectNationality";
 ///
 /////////// Types
 ///
 type SupplierMainDataProps_TP = {
-  title: string
-  editData?: supplier
-  postLoading?: any
-  isSuccessPost?: any
-  restData?: any
-  setDocsFormValues?: any
-  docsFormValues?: any
-}
+  title: string;
+  editData?: supplier;
+  postLoading?: any;
+  isSuccessPost?: any;
+  restData?: any;
+  setDocsFormValues?: any;
+  docsFormValues?: any;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 ///
@@ -44,12 +44,13 @@ export const SupplierMainData = ({
   restData,
   setDocsFormValues,
   docsFormValues,
-  setSupplierType
+  setSupplierType,
 }: SupplierMainDataProps_TP) => {
   /////////// VARIABLES
   /////
   const { setFieldValue, values, resetForm } =
-    useFormikContext<FormikSharedConfig>()
+    useFormikContext<FormikSharedConfig>();
+  console.log("🚀 ~ values:", values);
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -67,12 +68,12 @@ export const SupplierMainData = ({
         value: nationality.id,
         label: nationality.name,
       })),
-  })
+  });
 
   ///
   /////////// STATES
   ///
-  const [updateLogo, setUpdateLogo] = useState(false)
+  const [updateLogo, setUpdateLogo] = useState(false);
   ///
   /////////// SIDE EFFECTS
 
@@ -81,24 +82,25 @@ export const SupplierMainData = ({
   useEffect(() => {
     if (isSuccessPost) {
       if (!editData) {
-        resetForm()
-      restData()
-      setFieldValue("end_date", new Date())
-      setFieldValue("start_date", new Date())
-      setDocsFormValues([])
-      } 
+        resetForm();
+        restData();
+        setFieldValue("end_date", new Date());
+        setFieldValue("start_date", new Date());
+        setDocsFormValues([]);
+      }
     }
-  }, [isSuccessPost])
+  }, [isSuccessPost]);
 
   useEffect(() => {
     if (!!!editData && values.type == "global") {
-      setFieldValue("gold_tax", false)
-      setFieldValue("wages_tax", false)
+      setFieldValue("gold_tax", false);
+      setFieldValue("wages_tax", false);
     } else if (!!!editData && values.type == "local") {
-      setFieldValue("gold_tax", true)
-      setFieldValue("wages_tax", true)
+      setFieldValue("gold_tax", true);
+      setFieldValue("wages_tax", true);
+      setFieldValue("diamond_tax", true);
     }
-  }, [values.type])
+  }, [values.type]);
   ///
 
   return (
@@ -115,7 +117,10 @@ export const SupplierMainData = ({
           <div className="col-span-4 flex justify-between">
             <div className="flex gap-3 items-center">
               <span className="font-bold">{t("supplier type")}:</span>
-              <RadioGroup name="type" onChange={(value) => setSupplierType(value)}>
+              <RadioGroup
+                name="type"
+                onChange={(value) => setSupplierType(value)}
+              >
                 <div className="flex gap-3">
                   <RadioGroup.RadioButton
                     value="local"
@@ -148,6 +153,11 @@ export const SupplierMainData = ({
                 label={`${t("wages tax")}`}
                 name="wages_tax"
                 id="wages_tax"
+              />
+              <CheckBoxField
+                label={`${t("diamond and accessory tax")}`}
+                name="diamond_tax"
+                id="diamond_tax"
               />
             </div>
           </div>
@@ -183,24 +193,25 @@ export const SupplierMainData = ({
             countryLabel={`${t("country")}`}
             isSuccessPost={isSuccessPost}
             resetSelect={restData}
-            editData={editData 
-              ? ({
-                  nationalAddress: {
-                    country: {
-                      id: editData?.country?.id,
-                      name: editData?.country?.name,
-                    },
-                    city: {
-                      id: editData?.city?.id,
-                      name: editData?.city?.name,
-                    },
-                    district: {
-                      id: editData?.nationalAddress?.district?.id,
-                      name: editData?.nationalAddress?.district?.name,
+            editData={
+              editData
+                ? {
+                    nationalAddress: {
+                      country: {
+                        id: editData?.country?.id,
+                        name: editData?.country?.name,
+                      },
+                      city: {
+                        id: editData?.city?.id,
+                        name: editData?.city?.name,
+                      },
+                      district: {
+                        id: editData?.nationalAddress?.district?.id,
+                        name: editData?.nationalAddress?.district?.name,
+                      },
                     },
                   }
-                })
-              : undefined
+                : undefined
             }
           />
           {!!!editData?.phone && (
@@ -288,10 +299,10 @@ export const SupplierMainData = ({
           <NationalAddress
             editData={editData}
             isSuccessPost={!editData && isSuccessPost}
-            resetSelect={!editData &&  restData}
+            resetSelect={!editData && restData}
           />
         )}
       </OuterFormLayout>
     </>
-  )
-}
+  );
+};

@@ -131,7 +131,7 @@ const viewBankCards = () => {
 
   const { data, isSuccess, isLoading, isError, error, isRefetching, refetch, isFetching } =
   useFetch<Cards_Props_TP[]>({
-    endpoint:`/selling/api/v1/cards`,
+    endpoint:`/selling/api/v1/cards?page=${page}`,
     queryKey: ["AllCards"],
     pagination: true,
     onSuccess(data) {
@@ -176,6 +176,10 @@ const viewBankCards = () => {
       method: "delete",
     })
   }
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
 
   return (
     <div>

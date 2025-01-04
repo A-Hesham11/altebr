@@ -71,9 +71,9 @@ export const sellingCards = [
   },
   {
     icon: itemInfo,
-    title_en: "item information",
-    title_ar: "معلومات القطعه",
-    route: "/selling/item-information",
+    title_en: "Inventory",
+    title_ar: "الجرد",
+    route: "/selling/inventory",
   },
   {
     icon: continuity,

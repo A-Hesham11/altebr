@@ -17,6 +17,7 @@ import { useReactToPrint } from "react-to-print";
 import { DownloadAsPDF } from "../../utils/DownloadAsPDF";
 import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 import { GlobalDataContext } from "../../context/settings/GlobalData";
+import InvoiceTableData from "../../components/selling/selling components/InvoiceTableData";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -114,28 +115,36 @@ const SellingInvoiceData = ({
 
   const totalItemsTax = (+totalItemsTaxes + +totalCommissionTaxes).toFixed(2);
 
-  // const resultTable = [
-  //   {
-  //     number: t("totals"),
-  //     weight: formatGram(Number(totalWeight)),
-  //     cost: formatReyal(Number(totalCost)),
-  //     vat: formatReyal(Number(totalItemsTaxes)),
-  //     total: formatReyal(Number(totalFinalCost)),
-  //   },
-  // ];
-
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(Number(totalFinalCost))
   );
 
   const costDataAsProps = {
-    totalCommissionRatio,
-    ratioForOneItem,
-    totalCommissionTaxes,
     totalItemsTaxes,
     totalFinalCost,
     totalCost,
-    totalFinalCostIntoArabic,
+    finalArabicData: [
+      {
+        title: t("total"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalWeight)),
+        stonesWeight:
+          totalStonesWeight != 0
+            ? formatGram(Number(totalStonesWeight))
+            : "---",
+        totalWeight:
+          formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
+        cost: formatReyal(Number(totalCost)),
+        vat: formatReyal(Number(totalItemsTaxes)),
+        total: formatReyal(Number(totalFinalCost)),
+      },
+    ],
   };
 
   const resultTable = [
@@ -256,6 +265,37 @@ const SellingInvoiceData = ({
         },
       },
       {
+        header: () => (
+          <span>
+            {`${t("The weight of the stones if it exceeds 5%")} (${t(
+              "in karat"
+            )})`}{" "}
+          </span>
+        ),
+        accessorKey: "stones_weight",
+        cell: (info) => {
+          const stoneWeigthByGram = Number(info.getValue()) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          return !!result ? info.getValue() : "---";
+        },
+      },
+      {
+        header: () => <span>{`${t("total weight")}`} </span>,
+        accessorKey: "total_Weight",
+        cell: (info) => {
+          const stoneWeigthByGram =
+            Number(info.row.original?.stones_weight) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          const valueOfWeight =
+            Number(result ? info.row.original?.stones_weight : 0) +
+            Number(info.row.original?.weight);
+
+          return valueOfWeight || "---";
+        },
+      },
+      {
         header: () => <span>{t("price before tax")} </span>,
         accessorKey: "cost",
         cell: (info: any) => {
@@ -311,13 +351,12 @@ const SellingInvoiceData = ({
   console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
 
   const SellingTableComp = () => (
-    <InvoiceTable
+    <InvoiceTableData
       data={sellingItemsData}
       columns={Cols}
       paymentData={paymentData}
       costDataAsProps={costDataAsProps}
-      resultTable={resultTable}
-    ></InvoiceTable>
+    ></InvoiceTableData>
   );
 
   //
@@ -440,7 +479,7 @@ const SellingInvoiceData = ({
       acc[curr.sellingFrontKey] = {
         commission: commissionReyals,
         vat: commissionVat,
-      };
+      }; 
       return acc;
     }, {});
 
@@ -513,11 +552,9 @@ const SellingInvoiceData = ({
           ItemsTableContent={<SellingTableComp />}
           setStage={setStage}
           paymentData={paymentData}
-          // clientData={clientData}
           invoiceHeaderData={invoiceHeaderData}
           sellingItemsData={sellingItemsData}
           costDataAsProps={costDataAsProps}
-          // invoiceNumber={invoiceNumber}
           isSuccess={isSuccess}
           responseSellingData={responseSellingData}
         />

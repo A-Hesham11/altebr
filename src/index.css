@@ -76,7 +76,7 @@ input[type="radio"] {
     @apply scrollbar-thin scrollbar-thumb-mainGreen scrollbar-track-green hover:scrollbar-thumb-mainOrange;
   }
   .GlobalTable th {
-    @apply border-b-2 border-l-2 bg-mainGreen  p-2  text-center  text-white;
+    @apply border-b-2 border-l-2   p-2  text-center ;
   }
   .GlobalTable td {
     @apply border-b-2 border-l-2  bg-lightGreen p-2  text-center  text-mainGreen;

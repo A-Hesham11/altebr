@@ -1,43 +1,51 @@
-import { useQueryClient } from "@tanstack/react-query"
-import { Formik } from "formik"
-import { t } from "i18next"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import * as Yup from "yup"
+import { useQueryClient } from "@tanstack/react-query";
+import { Formik } from "formik";
+import { t } from "i18next";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import * as Yup from "yup";
 import {
   GoldTableProperties_TP,
   OTableDataTypes,
   TableHelperValues_TP,
-} from "../../../supply/SupplySecondForm"
-import { FirstFormInitValues_TP } from "../../../supply/formInitialValues_types"
-import { AccessoriesTableForm } from "./AccessoriesTableForm"
+} from "../../../supply/SupplySecondForm";
+import { FirstFormInitValues_TP } from "../../../supply/formInitialValues_types";
+import { AccessoriesTableForm } from "./AccessoriesTableForm";
+import { supplierTax_TP } from "../../../../pages/supply/Supply";
 
 type OTableProps_TP = {
-  dirty: boolean,
-  setDirty: Dispatch<SetStateAction<boolean>>
-  data: OTableDataTypes[]
-  setData: Dispatch<SetStateAction<OTableDataTypes[]>>
-  defaultValues: GoldTableProperties_TP & TableHelperValues_TP
-  setEditData: Dispatch<SetStateAction<OTableDataTypes>>
-  editData: OTableDataTypes
-  formValues: FirstFormInitValues_TP | undefined
-  setBoxValues: Dispatch<SetStateAction<OTableDataTypes[]>>
-}
+  supplierTaxDiamond: supplierTax_TP;
+  dirty: boolean;
+  setDirty: Dispatch<SetStateAction<boolean>>;
+  data: OTableDataTypes[];
+  setData: Dispatch<SetStateAction<OTableDataTypes[]>>;
+  defaultValues: GoldTableProperties_TP & TableHelperValues_TP;
+  setEditData: Dispatch<SetStateAction<OTableDataTypes>>;
+  editData: OTableDataTypes;
+  formValues: FirstFormInitValues_TP | undefined;
+  setBoxValues: Dispatch<SetStateAction<OTableDataTypes[]>>;
+};
 
-const requiredTranslation = () => `${t("required")}`
-const positiveError = () => `${t('please enter a valid number')}`
-const stockError = () => `${t('please enter a valid stock')}`
-const stockRatioError = () => `${t('top stock value is 1')}`
-const weightError = () => `${t('please enter a valid weight')}`
+const requiredTranslation = () => `${t("required")}`;
+const positiveError = () => `${t("please enter a valid number")}`;
+const stockError = () => `${t("please enter a valid stock")}`;
+const stockRatioError = () => `${t("top stock value is 1")}`;
+const weightError = () => `${t("please enter a valid weight")}`;
 
 const validationSchema = Yup.object({
   category_id: Yup.string().trim().required(requiredTranslation),
   mineral_id: Yup.string().trim().required(requiredTranslation),
   karatmineral_id: Yup.string().trim().required(requiredTranslation),
   gold_weight: Yup.number().min(0, positiveError).required(requiredTranslation),
-  accessory_value: Yup.number().positive(positiveError).required(requiredTranslation),
-  accessory_amount: Yup.number().positive(positiveError).required(requiredTranslation),
-  other_stones_weight: Yup.number().min(0, positiveError).required(requiredTranslation),
-})
+  accessory_value: Yup.number()
+    .positive(positiveError)
+    .required(requiredTranslation),
+  accessory_amount: Yup.number()
+    .positive(positiveError)
+    .required(requiredTranslation),
+  other_stones_weight: Yup.number()
+    .min(0, positiveError)
+    .required(requiredTranslation),
+});
 
 export function AccessoriesTable({
   dirty,
@@ -49,16 +57,17 @@ export function AccessoriesTable({
   editData,
   formValues,
   setBoxValues,
+  supplierTaxDiamond,
 }: OTableProps_TP) {
   // states
-  const [editRow, setEditRow] = useState(false)
-  const [categoriesOptions, setCategoriesOptions] = useState([])
-  const [karatsOptions, setKaratsOptions] = useState([])
+  const [editRow, setEditRow] = useState(false);
+  const [categoriesOptions, setCategoriesOptions] = useState([]);
+  const [karatsOptions, setKaratsOptions] = useState([]);
 
   // query client
-  const queryClient = useQueryClient()
-  const categories = queryClient.getQueryData(["categories"])
-  const karats = queryClient.getQueryData(["karats"])
+  const queryClient = useQueryClient();
+  const categories = queryClient.getQueryData(["categories"]);
+  const karats = queryClient.getQueryData(["karats"]);
 
   // side effects
   useEffect(() => {
@@ -68,10 +77,10 @@ export function AccessoriesTable({
         value: category.name,
         label: category.name,
         id: category.id,
-      }))
-      setCategoriesOptions(categoriesArray)
+      }));
+      setCategoriesOptions(categoriesArray);
     }
-  }, [categories])
+  }, [categories]);
 
   useEffect(() => {
     if (karats) {
@@ -80,31 +89,34 @@ export function AccessoriesTable({
         value: karat.name,
         label: karat.name,
         id: karat.id,
-      }))
-      setKaratsOptions(karatsArray)
+      }));
+      setKaratsOptions(karatsArray);
     }
-  }, [karats])
+  }, [karats]);
 
   return (
     <div>
       <Formik
         initialValues={defaultValues}
         onSubmit={(values, { resetForm, setFieldValue }) => {
-          console.log(values)
-          const uniqueID = crypto.randomUUID() // because i need the same id for both data of row and boxes
+          console.log(values);
+          const uniqueID = crypto.randomUUID(); // because i need the same id for both data of row and boxes
           // setData((prev) => [...Array.from(prev), { ...values, id: uniqueID }])
-          setData((prev) => [...Array.from(prev), { ...values, id: uniqueID }].reverse())
-          setEditRow(false)
-          resetForm()
+          setData((prev) =>
+            [...Array.from(prev), { ...values, id: uniqueID }].reverse()
+          );
+          setEditRow(false);
+          resetForm();
           setBoxValues((prev) => [
             ...Array.from(prev),
             { ...values, id: uniqueID },
-          ])
+          ]);
         }}
-      validationSchema={validationSchema}
+        validationSchema={validationSchema}
       >
         {({}) => (
           <AccessoriesTableForm
+            supplierTaxDiamond={supplierTaxDiamond}
             dirty={dirty}
             setDirty={setDirty}
             editRow={editRow}
@@ -121,5 +133,5 @@ export function AccessoriesTable({
         )}
       </Formik>
     </div>
-  )
+  );
 }

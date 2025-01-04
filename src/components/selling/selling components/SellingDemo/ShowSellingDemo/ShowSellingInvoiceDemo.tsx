@@ -130,7 +130,7 @@ const ShowSellingInvoiceDemo = () => {
     return <Loading mainTitle={`${t("loading items")}`} />;
 
   return (
-    <div className="p-16">
+    <div className="p-12">
       <div className="mb-8 flex flex-col items-center gap-6 lg:flex-row lg:items-end lg:justify-between">
         {/* 1) FORM */}
         <Formik

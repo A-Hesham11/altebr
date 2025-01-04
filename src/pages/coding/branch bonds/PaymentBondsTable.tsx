@@ -85,7 +85,7 @@ const PaymentBondsTable = ({
       {
         cell: (info: any) =>
           info.getValue() ? formatReyal(Number(info.getValue())) : "---",
-        accessorKey: "value_reyal",
+        accessorKey: "amount",
         header: () => <span>{t("amount")}</span>,
       },
       {
@@ -140,7 +140,7 @@ const PaymentBondsTable = ({
       refetchBoxsData();
       setOpenInvoiceModal(false);
       notify("success");
-      branchesWithoutEdara.map((branch) => {
+      branchesWithoutEdara?.map((branch) => {
         navigate(`/accept-branchBonds?id=${branch?.id}&name=${branch?.name}`, {
           branchName: branch?.name,
         });

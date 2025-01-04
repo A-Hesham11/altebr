@@ -209,7 +209,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
   // });
 
   return (
-    <div className="overflow-hidden p-10 h-full">
+    <div className="overflow-hidden h-full">
       <div className="py-10">
         <div className="print-section space-y-12 bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
           <div

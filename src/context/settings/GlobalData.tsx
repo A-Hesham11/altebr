@@ -1,29 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
 import { createContext, ReactNode, useContext, useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
-import { mutateData } from "../../utils/mutateData";
-import { notify } from "../../utils/toast";
-import { useLocalStorage } from "../../hooks";
-import { MutateDataParameters_TP } from "../../types";
-
-// type digits_count_TP = {reyal: number, gram: number}
-
-// type numberFormatter_TP = {
-//   digits_count: digits_count_TP
-//   changeDigitsCount: (digit: digits_count_TP) => void
-//   formatReyal: (digit: number | string) => string
-//   formatGram: (digit: number | string) => string
-//   digits_countLoading: boolean
-// }
-
-// type ResponseData_TP = {
-//   id: number
-//   value: number
-// }
-
-// type Setting_TP = {
-//   value: number
-// }
+import Cookies from "js-cookie";
 
 export const GlobalDataCtx = createContext<any>({
   gold_price: {},
@@ -33,8 +10,8 @@ export const GlobalDataCtx = createContext<any>({
 export const GlobalDataContext = () => useContext(GlobalDataCtx);
 
 export const GlobalDataProvider = ({ children }: { children: ReactNode }) => {
-  /////////// VARIABLES
   const [goldPriceToday, setGoldPriceToday] = useState(null);
+  const token = Cookies.get("token");
   const [invoiceInfo, setInvoiceInfo] = useState(null);
   console.log("🚀 ~ GlobalDataProvider ~ invoiceInfo:", invoiceInfo)
 
@@ -58,6 +35,7 @@ export const GlobalDataProvider = ({ children }: { children: ReactNode }) => {
       }, {});
       setInvoiceInfo(returnData);
     },
+    enabled: !!token,
   });
 
   return (

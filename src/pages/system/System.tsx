@@ -899,8 +899,8 @@ export const System = ({ title }: SystemProps_TP) => {
       name: "zakat_income",
       addLabel: `${t("Add Zakat and Income")}`,
       addComponent: <AddZakatIncome title={`${t("Add Zakat and Income")}`} />,
-      // viewLabel: `${t("Show Zakat and Income")}`,
-      // viewHandler: () => navigate("/system/zakatIncome"),
+      viewLabel: `${t("Trial version on Zakat and Income")}`,
+      viewHandler: () => navigate("/system/zakatIncome_demo"),
     },
 
     // **************************************************************

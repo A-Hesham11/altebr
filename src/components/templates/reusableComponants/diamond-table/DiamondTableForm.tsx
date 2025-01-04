@@ -18,10 +18,12 @@ import { FirstFormInitValues_TP } from "../../../supply/formInitialValues_types"
 import AddMinerals from "../../systemEstablishment/minerals/AddMinerals";
 import SelectCategory from "../categories/select/SelectCategory";
 import { SelectMineralKarat } from "../minerals/SelectMineralKarat";
+import { supplierTax_TP } from "../../../../pages/supply/Supply";
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 type OTableFormProps_TP = {
   dirty: boolean;
+  supplierTaxDiamond: supplierTax_TP;
   setDirty: Dispatch<SetStateAction<boolean>>;
   editRow: boolean;
   categoriesOptions: never[];
@@ -55,6 +57,7 @@ export const DiamondTableForm = ({
   editData,
   setEditRow,
   setEditData,
+  supplierTaxDiamond,
 }: OTableFormProps_TP) => {
   const { formatGram, formatReyal } = numberContext();
   let { enableReinitialize, resetForm, values, setFieldValue, submitForm } =
@@ -141,7 +144,10 @@ export const DiamondTableForm = ({
     }),
     columnHelper.accessor("diamond_tax", {
       header: `${t("added tax")}`,
-      cell: (info) => formatReyal(info.row.original.diamond_value_ryal * 0.15),
+      cell: (info) =>
+        formatReyal(
+          info.row.original.diamond_value_ryal * (supplierTaxDiamond ? 0 : 0.15)
+        ),
     }),
     columnHelper.accessor("actions", {
       header: `${t("actions")}`,
@@ -604,7 +610,8 @@ export const DiamondTableForm = ({
                     id="diamond_tax"
                     name="diamond_tax"
                     value={formatReyal(
-                      Number(values.diamond_value_ryal) * 0.15
+                      Number(values.diamond_value_ryal) *
+                        (supplierTaxDiamond ? 0 : 0.15)
                     )}
                     className="border-none bg-inherit outline-none cursor-default caret-transparent text-center w-full"
                   />

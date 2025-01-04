@@ -38,8 +38,6 @@ const DynamicTransformToBranch = ({
   const [rowWage, setRowWage] = useState(null);
   const [thwelIds, setThwelIds] = useState([]);
   console.log("🚀 ~ thwelIds:", thwelIds);
-  const [goldPriceToday, setGoldPriceToday] = useState("");
-  console.log("🚀 ~ goldPriceToday:", goldPriceToday);
   const [search, setSearch] = useState("-");
   console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
@@ -60,7 +58,7 @@ const DynamicTransformToBranch = ({
 
   const initialValues = {
     branch_id: "",
-    gold_price: goldPriceToday?.price_gram_24k || "",
+    gold_price: gold_price.price_gram_24k || "",
     sanad_type: "",
     weight_input: "",
     search: "",
@@ -418,7 +416,7 @@ const DynamicTransformToBranch = ({
     <Formik
       validationSchema=""
       initialValues={initialValues}
-      enableReinitialize={true}
+      // enableReinitialize={true}
       onSubmit={(values) => {}}
     >
       {({ values }) => {

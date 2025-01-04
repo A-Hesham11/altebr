@@ -53,9 +53,8 @@ export const SellingTableInputData = ({
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
   console.log("🚀 ~ sellingItemsData:", sellingItemsData);
-  console.log("🚀 ~ dataSource:", dataSource);
-  console.log("🚀 ~ selectedItemDetails:", selectedItemDetails);
   const [search, setSearch] = useState("");
+  console.log("🚀 ~ search:", search);
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
   const [kitDetails, setKitDetails] = useState([]);
@@ -78,10 +77,8 @@ export const SellingTableInputData = ({
   };
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
 
   const TaxRateOfBranch = dataSource && dataSource[0]?.tax_rate / 100;
-  console.log("🚀 ~ TaxRateOfBranch:", TaxRateOfBranch);
 
   const cost =
     dataSource?.length && dataSource?.[0].classification_id === 1
@@ -89,8 +86,6 @@ export const SellingTableInputData = ({
           (goldPriceFromKarat[Number(dataSource[0]?.karat_name)] +
             Number(dataSource[0]?.wage)) || 0
       : dataSource?.[0]?.cost || 0;
-
-  console.log("🚀 ~ cost:", cost);
 
   const priceWithCommissionRate =
     dataSource &&
@@ -110,15 +105,27 @@ export const SellingTableInputData = ({
   const { values, setFieldValue } = useFormikContext<any>();
   console.log("🚀 ~ values:", values);
 
-  const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
-    queryKey: ["branch-all-accepted-selling"],
-    endpoint:
-      search === ""
-        ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}`
-        : `${search}`,
+  // const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
+  //   queryKey: ["branch-all-accepted-selling"],
+  //   endpoint:
+  //     search === ""
+  //       ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}`
+  //       : `${search}`,
+  //   onSuccess: (data) => {
+  //     setDataSource(data);
+  //   },
+  // });
+
+  const isSearch = values.hwya.split("").map((item) => item)?.length >= 6;
+  console.log("🚀 ~ isSearch:", isSearch);
+
+  const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
+    queryKey: ["branch-all-accepted-selling", values.hwya],
+    endpoint: `/branchManage/api/v1/all-accepted/${userData?.branch_id}?hwya[eq]=${values.hwya}`,
     onSuccess: (data) => {
       setDataSource(data);
     },
+    enabled: isSearch,
   });
 
   const { data: karatValues } = useFetch<KaratValues_TP[]>({
@@ -223,10 +230,8 @@ export const SellingTableInputData = ({
     const { client_id, bond_date, client_value, client_name, ...restValues } =
       values;
     Object.keys(restValues).map((key) => {
-      if (dataSource?.length === 1) {
+      if (dataSource?.length > 0) {
         setFieldValue(key, dataSource[0][key]);
-
-        // setFieldValue("cost", dataSource[0]?.cost?.toFixed(2));
 
         setFieldValue("cost", cost && cost);
 
@@ -246,9 +251,13 @@ export const SellingTableInputData = ({
             priceWithSellingPolicy
           ).toFixed(2)
         );
+      } else {
+        if (key !== "hwya") {
+          setFieldValue(key, "");
+        }
       }
     });
-  }, [dataSource, search]);
+  }, [dataSource]);
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
@@ -268,33 +277,38 @@ export const SellingTableInputData = ({
     setFieldValue("taklfa_after_tax", "");
   };
 
-  const getSearchResults = async (hwya: any) => {
-    let uri = `branchManage/api/v1/all-accepted/${userData?.branch_id}`;
-    let first = false;
-    Object.keys(hwya).forEach((key) => {
-      if (hwya[key] !== "") {
-        if (first) {
-          uri += `&${key}[eq]=${hwya[key]}`;
-          first = false;
-        } else {
-          uri += `?${key}[eq]=${hwya[key]}`;
-        }
-      }
-    });
-    setSearch(uri);
-  };
+  // const getSearchResults = async (hwya: any) => {
+  //   console.log("🚀 ~ getSearchResults ~ hwya:", hwya)
+  //   let uri = `branchManage/api/v1/all-accepted/${userData?.branch_id}`;
+  //   let first = false;
+  //   Object.keys(hwya).forEach((key) => {
+  //     if (hwya[key] !== "") {
+  //       if (first) {
+  //         uri += `&${key}[eq]=${hwya[key]}`;
+  //         first = false;
+  //       } else {
+  //         uri += `?${key}[eq]=${hwya[key]}`;
+  //       }
+  //     }
+  //   });
+  //   setSearch(uri);
+  // };
 
   useEffect(() => {
-    refetch();
-  }, [search]);
+    setDataSource([]);
+  }, [!isSearch]);
 
-  useEffect(() => {
-    if (page == 1) {
-      refetch();
-    } else {
-      setPage(1);
-    }
-  }, [search]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [search]);
+
+  // useEffect(() => {
+  //   if (page == 1) {
+  //     refetch();
+  //   } else {
+  //     setPage(1);
+  //   }
+  // }, [search]);
 
   useEffect(() => {
     setEditSellingTaklfa(+values?.taklfa);
@@ -351,11 +365,11 @@ export const SellingTableInputData = ({
                 type="text"
                 onChange={(e) => {
                   setFieldValue("hwya", e.target.value);
-                  getSearchResults({ hwya: e.target.value });
+                  // getSearchResults({ hwya: e.target.value });
+
                   handleInputChange(e);
                 }}
-                className={`${!isSuccess && "bg-mainDisabled"} text-center`}
-                disabled={!isSuccess}
+                className={` text-center`}
               />
             </td>
             <td>

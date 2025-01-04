@@ -301,6 +301,31 @@ export const sideBarItems: MenuItem_TP[] = [
         link: "/recycledGold/correction",
         icon: CiExport,
       },
+      {
+        id: crypto.randomUUID(),
+        label: "Selling broken gold",
+        icon: CiExport,
+        items: [
+          {
+            id: crypto.randomUUID(),
+            label: "Create Invoice",
+            link: "/recycledGold/Selling",
+            icon: IoAdd,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: "View Invoices",
+            link: "/viewRecycledBonds",
+            icon: CiGrid2H,
+          },
+        ],
+      },
+      // {
+      //   id: crypto.randomUUID(),
+      //   label: "Selling broken gold",
+      //   link: "/recycledGold/Selling",
+      //   icon: CiExport,
+      // },
     ],
   },
 
@@ -354,6 +379,20 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: "Branch Transfers",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "Cash Transfer",
+        link: "/cash/transfer",
+        icon: CiExport,
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: "credits",
     link: "/show-credits",
     icon: CiExport,
@@ -375,6 +414,31 @@ export const sideBarItems: MenuItem_TP[] = [
         label: "deposit",
         link: "/edara/deposit",
         icon: CiExport,
+      },
+      // {
+      //   id: crypto.randomUUID(),
+      //   label: "budget",
+      //   link: "/bank/budgetEdara",
+      //   icon: CiExport,
+      // },
+      {
+        id: crypto.randomUUID(),
+        label: "budget",
+        icon: CiExport,
+        items: [
+          {
+            id: crypto.randomUUID(),
+            label: "add",
+            link: "/bank/budgetEdara",
+            icon: IoAdd,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: "view",
+            link: "/bank/budgetBondEdara",
+            icon: CiGrid2H,
+          },
+        ],
       },
     ],
   },

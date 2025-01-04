@@ -1,16 +1,18 @@
 import QRCode from "react-qr-code";
 import "./print.css";
 import Logo from "../../../assets/qr-logo.png";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
+import B2 from "../../../assets/b2.png";
 
-const PrintPage = ({ item }) => {
-  console.log("🚀 ~ PrintPage ~ item:", item);
+const PrintPage = ({ item }: any) => {
+  const { invoice_logo } = GlobalDataContext();
   return (
     <>
       <div className="container-print">
         <div className="component">
           <div className="content-wrapper">
             <div className="grid-layout">
-              <img src={Logo} alt="logo" className="img" />
+              <img src={invoice_logo?.QR_Code} alt="logo" className="img" />
               <QRCode
                 className="img_qr"
                 value={item?.hwya || 0}
@@ -33,7 +35,7 @@ const PrintPage = ({ item }) => {
                 K:
                 <span className="paragraph_title">
                   {item?.classification_id == 1
-                    ? (item?.karat_value || item?.karat_name)
+                    ? item?.karat_value || item?.karat_name
                     : item?.karatmineral_name}
                 </span>
               </p>

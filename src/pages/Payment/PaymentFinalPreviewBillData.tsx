@@ -14,6 +14,7 @@ const PaymentFinalPreviewBillData = ({
   invoiceNumber,
   invoiceData,
 }: any) => {
+  console.log("🚀 ~ isSupply:", isSupply);
   const {
     client_id,
     client_value,
@@ -66,10 +67,12 @@ const PaymentFinalPreviewBillData = ({
           alt="bill"
           className="h-28 w-3/4 object-contain"
         />
-        {path === "/coding-react" ? (
+        {path === "/coding-react" || path === "/branch-bonds-react" ? (
           <p>{t("supply bond")}</p>
         ) : path === "/wasteBonds" ? (
           <p>{t("Waste bond")}</p>
+        ) : path === "/selling/viewPayment" ? (
+          <p>{t("bond payment")}</p>
         ) : (
           <p className="text-base font-medium">
             {invoiceData.invoiceName

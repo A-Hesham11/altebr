@@ -11,6 +11,7 @@ import { Button } from "../../../components/atoms";
 import PaymentFinalPreviewBillData from "../../Payment/PaymentFinalPreviewBillData";
 import InvoiceTable from "../../../components/selling/selling components/InvoiceTable";
 import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
+import InvoiceTableData from "../../../components/selling/selling components/InvoiceTableData";
 
 const ThweelBondsPrint = ({
   operationTypeSelect,
@@ -18,6 +19,7 @@ const ThweelBondsPrint = ({
   setThwelPrint,
   bondDataPrint,
 }) => {
+  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
   console.log("🚀 ~ thwelPrint:", thwelPrint);
   const { formatReyal, formatGram } = numberContext();
 
@@ -238,12 +240,12 @@ const ThweelBondsPrint = ({
   //   bondType: "توريد عادي",
   // };
 
-  const costDataAsProps = {
-    totalWeights,
-    totalWage,
-    totalValues,
-    totalItems,
-  };
+  // const costDataAsProps = {
+  //   totalWeights,
+  //   totalWage,
+  //   totalValues,
+  //   totalItems,
+  // };
 
   const totalWeightConvertedTo24 =
     (+printGold18?.total_weight * 18) / 24 +
@@ -291,59 +293,6 @@ const ThweelBondsPrint = ({
     `,
   });
 
-  // COLUMNS FOR THE TABLE
-  // const tableColumnPrint = useMemo<any>(
-  //   () => [
-  //     // {
-  //     //   cell: (info: any) => {
-  //     //     if (info.getValue() == "normal") {
-  //     //       return "توريد عادي";
-  //     //     } else {
-  //     //       return info.getValue();
-  //     //     }
-  //     //   },
-  //     //   accessorKey: "type",
-  //     //   header: () => <span>{t("bond type")}</span>,
-  //     // },
-  //     {
-  //       cell: (info: any) => info.getValue() || "---",
-  //       accessorKey: "category",
-  //       header: () => <span>{t("category")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue() || "---",
-  //       accessorKey: "karat_id",
-  //       header: () => <span>{t("karat")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue() || "---",
-  //       accessorKey: "total_weight",
-  //       header: () => <span>{t("total weight")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => formatReyal(info.getValue()) || "---",
-  //       accessorKey: "total_wage",
-  //       header: () => <span>{t("total wages")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => formatReyal(info.getValue()) || "---",
-  //       accessorKey: "total_value",
-  //       header: () => <span>{t("total value")}</span>,
-  //     },
-  //     // {
-  //     //   cell: (info: any) => info.getValue() || "---",
-  //     //   accessorKey: "count_stones",
-  //     //   header: () => <span>{t("stones count")}</span>,
-  //     // },
-  //     {
-  //       cell: (info: any) => info.getValue() || "---",
-  //       accessorKey: "count_items",
-  //       header: () => <span>{t("pieces count")}</span>,
-  //     },
-  //   ],
-  //   []
-  // );
-
   const tableColumnPrint = useMemo<any>(
     () => [
       {
@@ -353,7 +302,7 @@ const ThweelBondsPrint = ({
       },
       {
         cell: (info: any) => info.getValue() || "---",
-        accessorKey: "classification_name",
+        accessorKey: "classification_id",
         header: () => <span>{t("category")}</span>,
       },
       {
@@ -364,29 +313,37 @@ const ThweelBondsPrint = ({
         header: () => <span>{t("karat")}</span>,
       },
       {
-        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
-        accessorKey: "weight",
-        header: () => <span>{t("weight")}</span>,
-      },
-      // {
-      //   cell: (info: any) => info.getValue() || "-",
-      //   accessorKey: "thwelbond_id",
-      //   header: () => <span>{t("supply bond")}</span>,
-      // },
-      {
         cell: (info: any) => formatReyal(Number(info.getValue())) || "-",
         accessorKey: "wage",
         header: () => <span>{t("wage")}</span>,
       },
       {
+        cell: (info: any) => formatGram(Number(info.getValue())) || "---",
+        accessorKey: "weight",
+        header: () => <span>{t("weight")}</span>,
+      },
+      {
         cell: (info: any) =>
-          formatReyal(Number(info.getValue(info.getValue()))) || "-",
+          formatReyal(
+            Number(info.row.original.wage) * Number(info.row.original.weight)
+          ) || "-",
+        accessorKey: "total_wages",
+        header: () => <span>{t("total wages")}</span>,
+      },
+      {
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "-",
         accessorKey: "selling_price",
         header: () => <span>{t("value")}</span>,
       },
     ],
     []
   );
+
+  const totalNet = operationTypeSelect?.reduce((acc, curr) => {
+    acc += (+curr.karat_id * +curr.weight) / 24;
+    return acc;
+  }, 0);
+
   const totalWeight = operationTypeSelect?.reduce((acc, curr) => {
     acc += +curr.weight;
     return acc;
@@ -402,14 +359,34 @@ const ThweelBondsPrint = ({
     return acc;
   }, 0);
 
-  const resultTable = [
-    {
-      number: t("totals"),
-      weight: formatGram(Number(totalWeight)),
-      wage: formatReyal(Number(totalWages)),
-      cost: formatReyal(Number(totalCost)),
-    },
-  ];
+  const costDataAsProps = {
+    totalWeights,
+    totalWage,
+    totalValues,
+    totalItems,
+    finalArabicData: [
+      {
+        title: t("Total net"),
+        totalFinalCostIntoArabic: formatGram(totalNet),
+        type: t("gram"),
+      },
+      {
+        title: t("total cash"),
+        totalFinalCostIntoArabic: formatReyal(
+          Number(totalWages) + Number(totalCost)
+        ),
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalWeight)),
+        wage: formatReyal(Number(totalWages)),
+        cost: formatReyal(Number(totalCost)),
+      },
+    ],
+  };
 
   // =============================================
 
@@ -438,13 +415,11 @@ const ThweelBondsPrint = ({
               />
             </div>
 
-            <InvoiceTable
+            <InvoiceTableData
               data={operationTypeSelect || []}
               columns={tableColumnPrint}
               costDataAsProps={costDataAsProps}
-              finalArabicTotals={finalArabicTotals}
-              resultTable={resultTable}
-            ></InvoiceTable>
+            ></InvoiceTableData>
 
             <div className="mx-5 bill-shadow rounded-md p-6 my-9">
               <div className="flex justify-between items-start pb-12 pe-8">
