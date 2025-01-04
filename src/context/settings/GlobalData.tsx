@@ -13,6 +13,7 @@ export const GlobalDataProvider = ({ children }: { children: ReactNode }) => {
   const [goldPriceToday, setGoldPriceToday] = useState(null);
   const token = Cookies.get("token");
   const [invoiceInfo, setInvoiceInfo] = useState(null);
+  console.log("🚀 ~ GlobalDataProvider ~ invoiceInfo:", invoiceInfo)
 
   const { data } = useFetch<any>({
     endpoint: "/attachment/api/v1/goldPrice",

@@ -147,6 +147,20 @@ const SellingInvoiceData = ({
     ],
   };
 
+  const resultTable = [
+    {
+      number: t("totals"),
+      weight: formatGram(Number(totalWeight)),
+      stonesWeight:
+        totalStonesWeight != 0 ? formatGram(Number(totalStonesWeight)) : "---",
+      totalWeight:
+        formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
+      cost: formatReyal(Number(costDataAsProps?.totalCost)),
+      vat: formatReyal(Number(costDataAsProps?.totalItemsTaxes)),
+      total: formatReyal(Number(costDataAsProps?.totalFinalCost)),
+    },
+  ];
+
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
       {
@@ -213,6 +227,42 @@ const SellingInvoiceData = ({
         ),
         accessorKey: "weight",
         cell: (info) => info.getValue() || `${t("no items")}`,
+      },
+      // {
+      //   header: () => <span>{`${t("weight")} (${t("In grams")})`}</span>,
+      //   accessorKey: "weight",
+      //   cell: (info) => info.getValue() || `${t("no items")}`,
+      // },
+      {
+        header: () => (
+          <span>
+            {`${t("The weight of the stones if it exceeds 5%")} (${t(
+              "in karat"
+            )})`}{" "}
+          </span>
+        ),
+        accessorKey: "stones_weight",
+        cell: (info) => {
+          const stoneWeigthByGram = Number(info.getValue()) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          return !!result ? info.getValue() : "---";
+        },
+      },
+      {
+        header: () => <span>{`${t("total weight")}`} </span>,
+        accessorKey: "total_Weight",
+        cell: (info) => {
+          const stoneWeigthByGram =
+            Number(info.row.original?.stones_weight) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          const valueOfWeight =
+            Number(result ? info.row.original?.stones_weight : 0) +
+            Number(info.row.original?.weight);
+
+          return valueOfWeight || "---";
+        },
       },
       {
         header: () => (

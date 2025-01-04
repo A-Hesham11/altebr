@@ -44,6 +44,14 @@ const DynamicTransformToBranch = ({
   const [successData, setSuccessData] = useState([]);
   const { gold_price } = GlobalDataContext();
 
+  const { data: goldPrice } = useFetch<any>({
+    endpoint: "/attachment/api/v1/goldPrice",
+    queryKey: ["GoldPriceApi"],
+    onSuccess: (data) => {
+      setGoldPriceToday(data);
+    },
+  });
+
   const operationTypeSelectWeight = dataSource.filter(
     (el: any) => el.check_input_weight !== 0
   );

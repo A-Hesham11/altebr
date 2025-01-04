@@ -1520,6 +1520,7 @@
   "Basic": "الاساسي",
   "Promotional": "الترويجي",
   "Please fill out the missing fields": " يرجى ملء الحقول الناقصة",
+
   "Disable": "تعطيل",
   "Activate": "تفعيل",
   "Branch Transfers": "تحويلات الفروع",
@@ -1576,4 +1577,6 @@
   "The manager": "المدير",
   "The employee cannot be deleted during inventory.": "لا يمكن حذف الموظف أثناء الجرد",
   "Update an inventory process":"تحديث عملية الجرد"
+  "Disable":"تعطيل",
+  "Activate":"تفعيل"
 }

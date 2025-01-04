@@ -28,7 +28,6 @@ type Client_TP = {
 const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   const { client_id, client_value, bond_date } = clientData;
   const { invoice_logo } = GlobalDataContext();
-
   const { data } = useFetch<Client_TP>({
     endpoint: `branchManage/api/v1/clients/${client_id}`,
     queryKey: [`clients`, client_id],
