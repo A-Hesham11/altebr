@@ -46,9 +46,9 @@ const SellingHomeCard = ({
 
   const allowedRoutes = [
     "/selling",
-    "/selling/buying",
-    "/selling/exchange",
-    "/selling/clients",
+    // "/selling/buying",
+    // "/selling/exchange",
+    // "/selling/clients",
   ];
 
   const handleNavigation = () => {

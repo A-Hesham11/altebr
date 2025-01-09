@@ -1,0 +1,265 @@
+import Logo from "../../../assets/bill-logo.png";
+import { t } from "i18next";
+import { useContext, useMemo, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { authCtx } from "../../../context/auth-and-perm/auth";
+import { useIsRTL, useMutate } from "../../../hooks";
+import { Button } from "../../../components/atoms";
+import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
+import { mutateData } from "../../../utils/mutateData";
+import { notify } from "../../../utils/toast";
+import { useNavigate, useParams } from "react-router-dom";
+
+interface Totals {
+  name: string;
+  key: number;
+  unit: string;
+  value: number;
+  bgColor: string;
+}
+
+interface Item {
+  id: string;
+  weight?: number;
+  is_exist?: number;
+  [key: string]: any;
+}
+
+interface CompleteInventoryProcessProps {
+  setSteps: (value: number) => void;
+  currenGroupNumber: number;
+  numberItemsInBranch: number;
+  availableItems: Item[];
+  identitiesCheckedItems: any[];
+  unknownIdentities: Item[];
+  goldBrokenAndCashData: any;
+}
+
+const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
+  setSteps,
+  numberItemsInBranch,
+  currenGroupNumber,
+  availableItems,
+  identitiesCheckedItems,
+  unknownIdentities,
+  goldBrokenAndCashData,
+}: any) => {
+  console.log("🚀 ~ goldBrokenAndCashData:", goldBrokenAndCashData);
+  console.log("🚀 ~ identitiesCheckedItems:", identitiesCheckedItems);
+  const { userData } = useContext(authCtx);
+  const contentRef = useRef();
+  const isRTL = useIsRTL();
+  const { id } = useParams();
+  const navigate = useNavigate()
+
+  const identitiesCheckedItem = identitiesCheckedItems
+    ?.map((group) => group.items)
+    .flat();
+
+  const allItems = [...unknownIdentities, ...identitiesCheckedItem];
+
+  const totalNumberItemsInspected = identitiesCheckedItems?.reduce(
+    (count, group) => count + group.items.length,
+    0
+  );
+
+  const totals: Totals[] = [
+    {
+      name: t("Number of items in the branch"),
+      key: 1,
+      unit: "item",
+      value: numberItemsInBranch,
+      bgColor: "#295E56",
+    },
+    {
+      name: t("Number of items inspected"),
+      key: 2,
+      unit: "item",
+      value: totalNumberItemsInspected,
+      bgColor: "#DB8028",
+    },
+    {
+      name: t("Uninspected items"),
+      key: 3,
+      unit: "item",
+      value: numberItemsInBranch - totalNumberItemsInspected,
+      bgColor: "#218A7A",
+    },
+    {
+      name: t("Unidentified items"),
+      key: 4,
+      unit: "item",
+      value: unknownIdentities?.length,
+      bgColor: "#E4A261",
+    },
+  ];
+
+  const columns = useMemo<any>(
+    () => [
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "hwya",
+        header: () => <span>{t("hwya")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "classification_name",
+        header: () => <span>{t("category")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "category_name",
+        header: () => <span>{t("classification")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "weight",
+        header: () => <span>{t("weight")}</span>,
+      },
+      {
+        cell: (info: any) => t(info.getValue()) || "---",
+        accessorKey: "status",
+        header: () => <span>{t("piece status")}</span>,
+      },
+    ],
+    []
+  );
+
+  const handleSuccessInventoryData = () => {
+    notify("success");
+    [
+      "currenGroupNumber",
+      "unknownIdentities",
+      "identitiesCheckedItems",
+    ].forEach((key) => localStorage.removeItem(key));
+    navigate("/selling/inventory/view")
+  };
+
+  const handlePostInventoryData = () => {
+    const lostItems = unknownIdentities.map((item) => ({
+      inventory_id: id,
+      branch_id: userData?.branch_id,
+      ...item,
+    }));
+
+    const goldAndCash = {
+      inventory_id: id,
+      branch_id: userData?.branch_id,
+      gold_18: goldBrokenAndCashData?.brokenGold_18,
+      gold_21: goldBrokenAndCashData?.brokenGold_21,
+      gold_22: goldBrokenAndCashData?.brokenGold_22,
+      gold_24: goldBrokenAndCashData?.brokenGold_24,
+      cash: goldBrokenAndCashData?.cash_Box,
+    };
+
+    mutateInventoryData({
+      endpointName: `/inventory/api/v1/missinginventories`,
+      values: {
+        lostItems,
+        goldAndCash,
+      },
+    });
+  };
+
+  const { mutate: mutateInventoryData, isLoading: isLoadingInventoryData } =
+    useMutate({
+      mutationFn: mutateData,
+      onSuccess: handleSuccessInventoryData,
+    });
+
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+        .rtl {
+          direction: rtl;
+          text-align: right;
+        }
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+        .container_print {
+          width: 100%;
+          padding: 20px;
+          box-sizing: border-box;
+        }
+      }
+    `,
+  });
+
+  return (
+    <div className="py-12 px-16">
+      <div className="flex items-center justify-between">
+        <h2 className="text-[17px]">
+          <span className="font-semibold">{t("date")} : </span> 23/ 12 / 2024
+        </h2>
+        <div>
+          <Button action={handlePrint}>{t("print")}</Button>
+        </div>
+      </div>
+
+      <div
+        ref={contentRef}
+        className={`${isRTL ? "rtl" : "ltr"} container_print`}
+      >
+        <div className="my-6 text-center">
+          <img src={Logo} alt="logo" className="mx-auto" />
+          <h2 className="text-lg font-semibold">{t("Inventory Report")}</h2>
+        </div>
+
+        <ul className="grid grid-cols-4 gap-x-8  gap-y-6 my-8">
+          {totals?.map((item, index) => (
+            <li
+              key={index}
+              className={`text-center text-white p-4 rounded-xl`}
+              style={{
+                backgroundColor: item.bgColor,
+              }}
+            >
+              <h2>{item.name}</h2>
+              <p className="mt-3">
+                <span className="font-semibold">{item.value ?? 0}</span>{" "}
+                {t("item")}
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        <Table data={allItems ?? []} columns={columns} />
+
+        <div className="flex items-center justify-between mt-8 mb-4">
+          <div className="text-center">
+            <h2 className="text-[17px] font-medium">
+              {t("recipient's signature")}
+            </h2>
+            <p className="text-xl mt-1.5">
+              .................................................
+            </p>
+          </div>
+          <div className="flex gap-x-3 no-print">
+            <Button action={() => setSteps(2)} bordered>
+              {t("back")}
+            </Button>
+            <Button action={handlePostInventoryData}>{t("save")}</Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CompleteInventoryProcess;
