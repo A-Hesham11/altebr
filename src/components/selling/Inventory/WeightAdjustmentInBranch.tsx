@@ -119,11 +119,9 @@ const WeightAdjustmentInBranch = ({
           action={() => {
             setIdentitiesCheckedItems((prevState) => {
               return prevState.map((group) => {
-                console.log("🚀 ~ returnprevState.map ~ group:", group)
                 return {
                   ...group,
                   items: group.items.map((item) => {
-                    console.log("🚀 ~ items:group.items.map ~ item:", item)
                     if (editWeight?.hwya == item.hwya) {
                       return {
                         ...item,

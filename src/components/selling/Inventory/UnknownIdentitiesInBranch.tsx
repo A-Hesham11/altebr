@@ -17,111 +17,6 @@ const UnknownIdentitiesInBranch = ({
   unknownIdentities,
   setUnknownIdentities,
 }: any) => {
-  const { userData } = useContext(authCtx);
-
-  const IdentitiesCheckedItems = [
-    {
-      hwya: "93ABE5",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "10",
-    },
-    {
-      hwya: "93ABE6",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "20",
-    },
-    {
-      hwya: "93ABE5",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "10",
-    },
-    {
-      hwya: "93ABE6",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "20",
-    },
-    {
-      hwya: "93ABE5",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "10",
-    },
-    {
-      hwya: "93ABE6",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "20",
-    },
-    {
-      hwya: "93ABE5",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "10",
-    },
-    {
-      hwya: "93ABE6",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "20",
-    },
-    {
-      hwya: "93ABE5",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "10",
-    },
-    {
-      hwya: "93ABE6",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "20",
-    },
-    {
-      hwya: "93ABE6",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "20",
-    },
-    {
-      hwya: "93ABE5",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "10",
-    },
-    {
-      hwya: "93ABE6",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "20",
-    },
-    {
-      hwya: "93ABE6",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "20",
-    },
-    {
-      hwya: "93ABE5",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "10",
-    },
-    {
-      hwya: "93ABE6",
-      classification_name: "دهب",
-      category_name: "طقم",
-      weight: "20",
-    },
-  ];
-
-  useEffect(() => {
-    setUnknownIdentities(IdentitiesCheckedItems);
-  }, []);
-
   const columns = useMemo<any>(
     () => [
       {
@@ -148,13 +43,10 @@ const UnknownIdentitiesInBranch = ({
     []
   );
 
-  const totalWeight = IdentitiesCheckedItems?.reduce(
-    (acc: number, curr: any) => {
-      acc += +curr.weight;
-      return acc;
-    },
-    0
-  );
+  const totalWeight = unknownIdentities?.reduce((acc: number, curr: any) => {
+    acc += +curr.weight;
+    return acc;
+  }, 0);
 
   const table = useReactTable({
     data: unknownIdentities,
@@ -184,7 +76,7 @@ const UnknownIdentitiesInBranch = ({
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className={`${"!bg-[#218A7A33] text-[#218A7A] font-semibold"} px-6 py-4 text-sm`}
+                      className={`${"!bg-[#218A7A33] text-[#218A7A] font-semibold"} text-start px-4 py-4 text-sm`}
                     >
                       {header.isPlaceholder
                         ? null
@@ -199,14 +91,14 @@ const UnknownIdentitiesInBranch = ({
             </thead>
           </table>
 
-          <div className="max-h-[455px] overflow-y-scroll">
-            <table className="min-w-full text-center">
+          <div className="max-h-[455px] h-[455px] overflow-y-scroll">
+            <table className="min-w-full text-start">
               <tbody>
                 {table.getRowModel().rows.map((row, i) => (
                   <tr key={row.id} className="border-b">
                     {row.getVisibleCells().map((cell) => (
                       <td
-                        className={`whitespace-nowrap px-0 py-3 text-sm font-light bg-[#FAFAFA] !text-gray-900`}
+                        className={`whitespace-nowrap px-3 py-3 text-sm font-light bg-[#FAFAFA] !text-gray-900`}
                         key={cell.id}
                       >
                         {flexRender(

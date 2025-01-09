@@ -1,57 +1,45 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useFetch } from "../../../hooks";
-import { authCtx } from "../../../context/auth-and-perm/auth";
+import { useMemo, useRef, useState } from "react";
 import { t } from "i18next";
-import { Table } from "../../templates/reusableComponants/tantable/Table";
-import InfiniteScroll from "react-infinite-scroll-component";
 import {
   getCoreRowModel,
   useReactTable,
   flexRender,
   getPaginationRowModel,
-  FilterFn,
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import { GiWeight } from "react-icons/gi";
-import { Button } from "../../atoms";
 import { Modal } from "../../molecules";
 import WeightAdjustmentInBranch from "./WeightAdjustmentInBranch";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 const IdentitiesCheckedByBranch = ({
   identitiesCheckedItems,
   setIdentitiesCheckedItems,
+  currenGroupNumber,
 }: any) => {
-  console.log(
-    "🚀 ~ IdentitiesCheckedByBranch ~ identitiesCheckedItems:",
-    identitiesCheckedItems
-  );
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const [page, setPage] = useState<any>(1);
-  const { userData } = useContext(authCtx);
-  console.log("🚀 ~ IdentitiesCheckedByBranch ~ userData:", userData);
-  const [hasMore, setHasMore] = useState(true);
   const [open, setOpen] = useState(false);
   const [editWeight, setEditWeight] = useState({});
-  console.log("🚀 ~ editWeight:", editWeight);
+  const { formatGram } = numberContext();
 
-  //   const { data, refetch, isLoading } = useFetch({
-  //     queryKey: ["available_items_inBranch", page],
-  //     endpoint: `/branchManage/api/v1/all-accepted/${userData?.branch_id}?page=${page}`,
-  //     onSuccess: (data) => {
-  //       if (data?.data?.length > 0) {
-  //         setAvailableItems((prevItems) => [...prevItems, ...data?.data]);
-  //       } else {
-  //         setHasMore(false);
-  //       }
-  //     },
-  //     pagination: true,
-  //   });
+  const totalNumberItemsInspected = identitiesCheckedItems?.reduce(
+    (count, group) => count + group.items.length,
+    0
+  );
 
-  //   useEffect(() => {
-  //     if (page > 1) {
-  //       refetch();
-  //     }
-  //   }, [page]);
+  const totalWeightOfAllGroups = identitiesCheckedItems.reduce(
+    (total, group) => {
+      const groupItemsWeight = group.items
+        ? group.items.reduce(
+            (itemTotal, item) => itemTotal + parseFloat(item.weight || 0),
+            0
+          )
+        : 0;
+
+      return total + groupItemsWeight;
+    },
+    0
+  );
 
   const columns = useMemo<any>(
     () => [
@@ -79,104 +67,11 @@ const IdentitiesCheckedByBranch = ({
     []
   );
 
-  const IdentitiesCheckedItems = [
-    {
-      id: 1,
-      groupName: "المجموعة الاولي",
-      totalItems: 3500,
-      totalWeight: 1500,
-      items: [
-        {
-          hwya: "93ABE5",
-          category_selling_type: "all",
-          classification_name: "دهب",
-          category_name: "طقم",
-          weight: "10",
-        },
-        {
-          hwya: "93ABE6",
-          classification_name: "دهب",
-          category_name: "طقم",
-          weight: "20",
-        },
-      ],
-    },
-    {
-      id: 2,
-      groupName: "المجموعة الثانية",
-      totalItems: 2000,
-      totalWeight: 1200,
-      items: [
-        {
-          hwya: "93ABF7",
-          classification_name: "فضة",
-          category_name: "خاتم",
-          weight: "15",
-        },
-        {
-          hwya: "93ABF8",
-          classification_name: "فضة",
-          category_name: "خاتم",
-          weight: "25",
-        },
-      ],
-    },
-    {
-      id: 3,
-      groupName: "المجموعة الثالثة",
-      totalItems: 2000,
-      totalWeight: 1200,
-      items: [
-        {
-          hwya: "93ABF7",
-          classification_name: "فضة",
-          category_name: "خاتم",
-          weight: "15",
-        },
-        {
-          hwya: "93ABF8",
-          classification_name: "فضة",
-          category_name: "خاتم",
-          weight: "25",
-        },
-      ],
-    },
-    {
-      id: 4,
-      groupName: "المجموعة الرابعة",
-      totalItems: 2000,
-      totalWeight: 1200,
-      items: [
-        {
-          hwya: "93ABF7",
-          classification_name: "فضة",
-          category_name: "خاتم",
-          weight: "15",
-        },
-        {
-          hwya: "93ABF8",
-          classification_name: "فضة",
-          category_name: "خاتم",
-          weight: "25",
-        },
-      ],
-    },
-  ];
-
-  const testID = 1;
-
   const sortedIdentitiesCheckedItems = [
-    ...identitiesCheckedItems.filter((group) => group.id === testID),
-    ...identitiesCheckedItems.filter((group) => group.id !== testID),
+    ...identitiesCheckedItems.filter((group) => group.id === currenGroupNumber),
+    ...identitiesCheckedItems.filter((group) => group.id !== currenGroupNumber),
   ];
-  console.log(
-    "🚀 ~ IdentitiesCheckedByBranch ~ sortedIdentitiesCheckedItems:",
-    sortedIdentitiesCheckedItems
-  );
-
-//   useEffect(() => {
-//     setIdentitiesCheckedItems(IdentitiesCheckedItems);
-//   }, []);
+  console.log("🚀 ~ sortedIdentitiesCheckedItems:", sortedIdentitiesCheckedItems)
 
   const table = useReactTable({
     data: sortedIdentitiesCheckedItems,
@@ -222,7 +117,7 @@ const IdentitiesCheckedByBranch = ({
               </thead>
             </table>
 
-            <div className="max-h-[455px] overflow-y-scroll">
+            <div className="max-h-[455px] h-[455px] overflow-y-scroll">
               <table className="min-w-full text-center">
                 <tbody>
                   {sortedIdentitiesCheckedItems?.map((group) => (
@@ -235,14 +130,14 @@ const IdentitiesCheckedByBranch = ({
                           colSpan={columns.length / 2}
                           className="text-start font-bold p-3"
                         >
-                          {group.groupName}
+                          {t("group")} {group.groupName}
                         </td>
                         <td
                           colSpan={columns.length / 2}
                           className="text-end font-bold px-3 text-mainOrange"
                         >
-                          {group.totalItems} {t("item")} -{group.totalWeight}{" "}
-                          {t("gram")}
+                          {group.totalItems} {t("item")} -{" "}
+                          {formatGram(Number(group.totalWeight))} {t("gram")}
                         </td>
                       </tr>
 
@@ -293,12 +188,12 @@ const IdentitiesCheckedByBranch = ({
 
       <div className="bg-[#E8E8E2] rounded-b-2xl py-3.5 flex items-center justify-between px-4">
         <h2 className="text-center text-[13.5px]">
-          <span className="font-semibold">{t("Total pieces")} : </span> {2500}{" "}
-          {t("item")}
+          <span className="font-semibold">{t("Total pieces")} : </span>{" "}
+          {totalNumberItemsInspected} {t("item")}
         </h2>
         <h2 className="text-center text-[13.5px]">
-          <span className="font-semibold">{t("total weight")} : </span> {1000}{" "}
-          {t("gram")}
+          <span className="font-semibold">{t("total weight")} : </span>{" "}
+          {formatGram(Number(totalWeightOfAllGroups))} {t("gram")}
         </h2>
       </div>
 

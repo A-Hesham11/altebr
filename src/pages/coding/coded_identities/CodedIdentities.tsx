@@ -764,7 +764,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         </div>
       )}
 
-      <div  ref={contentRef} style={{ direction: "ltr" }}>
+      <div className="print-page" ref={contentRef} style={{ direction: "ltr" }}>
         {operationTypeSelect?.map((item) => (
           <div className="break-page">
             <PrintPage item={item} />

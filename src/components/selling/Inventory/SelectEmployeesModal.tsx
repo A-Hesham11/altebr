@@ -43,6 +43,7 @@ const SelectEmployeesModal = ({
           id: employee.id,
           value: employee.id || "",
           label: employee.name || "",
+          is_start: 0,
         };
       }),
     onError: (err) => console.log(err),

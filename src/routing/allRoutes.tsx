@@ -190,10 +190,11 @@ import SellingBrokenGoldEdara from "../pages/RecycledGoldInEdara/SellingBrokenGo
 import ViewRecycledGoldBonds from "../pages/RecycledGoldInEdara/SellingBrokenGoldEdara/ViewRecycledGoldBonds";
 import BankBudgetInEdara from "../pages/withdrawalAndDepositInEdara/BudgetInEdara/BankBudgetInEdara";
 import BankBudgetBondsInEdara from "../pages/withdrawalAndDepositInEdara/BudgetInEdara/BankBudgetBondsInEdara";
-import ZakatIncomeDemo  from "../components/templates/zakatIncome/ZakatIncomeDemo";
+import ZakatIncomeDemo from "../components/templates/zakatIncome/ZakatIncomeDemo";
 import Inventory from "../pages/selling/Inventory/Inventory";
 import CreatingInventoryBond from "../pages/selling/Inventory/CreatingInventoryBond";
 import ViewInventoryBonds from "../pages/selling/Inventory/ViewInventoryBonds";
+import InventoryReportes from "../pages/selling/Inventory/Reportes/InventoryReportes";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -349,7 +350,10 @@ export const AllRoutesProvider = () => {
 
           <Route path="/system/accountsBank" element={<ViewAccountsBank />} />
           <Route path="/system/zakatIncome" element={<ShowZakatIncome />} />
-          <Route path="/system/zakatIncome_demo" element={<ZakatIncomeDemo />} />
+          <Route
+            path="/system/zakatIncome_demo"
+            element={<ZakatIncomeDemo />}
+          />
 
           <Route path="/system/bankCards" element={<ViewBankCards />} />
 
@@ -583,7 +587,10 @@ export const AllRoutesProvider = () => {
 
           <Route path="/edara/withdrawal" element={<WithdrawalBank />} />
           <Route path="/bank/budgetEdara" element={<BankBudgetInEdara />} />
-          <Route path="/bank/budgetBondEdara" element={<BankBudgetBondsInEdara />} />
+          <Route
+            path="/bank/budgetBondEdara"
+            element={<BankBudgetBondsInEdara />}
+          />
           <Route path="/edara/deposit" element={<DepositBank />} />
           <Route
             path="/selling/continuity/AttendanceDeparture"
@@ -699,8 +706,18 @@ export const AllRoutesProvider = () => {
           {/* neighbors end */}
           <Route path="/selling/reports" element={<Reports />} />
           <Route path="/selling/inventory" element={<Inventory />} />
-          <Route path="/selling/inventory/create/:id" element={<CreatingInventoryBond />} />
-          <Route path="/selling/inventory/view" element={<ViewInventoryBonds />} />
+          <Route
+            path="/selling/inventory/reportes"
+            element={<InventoryReportes />}
+          />
+          <Route
+            path="/selling/inventory/create/:id"
+            element={<CreatingInventoryBond />}
+          />
+          <Route
+            path="/selling/inventory/view"
+            element={<ViewInventoryBonds />}
+          />
 
           {/* honest start */}
           <Route path="/selling/honesty/new-honest" element={<NewHonest />} />

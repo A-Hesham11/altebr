@@ -11,26 +11,18 @@ const IdentityInformationInBranch = ({
 }: any) => {
   const { userData } = useContext(authCtx);
 
-  const IdentitiesCheckedItems = {
-    hwya: "93ABE5",
-    classification_name: "دهب",
-    category_name: "طقم",
-    weight: "10",
-    karat: "22",
-  };
-
   const listItems = [
-    { label: "hwya", value: IdentitiesCheckedItems.hwya },
-    { label: "category", value: IdentitiesCheckedItems.classification_name },
-    { label: "classification", value: IdentitiesCheckedItems.category_name },
-    { label: "weight", value: IdentitiesCheckedItems.weight },
-    { label: "karat", value: IdentitiesCheckedItems.karat },
+    { label: "hwya", value: selectedItem?.hwya ?? "---" },
+    { label: "category", value: selectedItem?.classification_name ?? "---"},
+    { label: "classification", value: selectedItem?.category_name ?? "---" },
+    { label: "weight", value: selectedItem?.weight ?? "---" },
+    { label: "karat", value: selectedItem?.karat_name ?? "---" },
   ];
 
   return (
     <div>
       <h2 className="bg-[#838383] rounded-t-2xl py-6 text-center text-white font-semibold">
-        {t("Identities checked")}
+        {t("Identity information")}
       </h2>
 
       <div className="bg-white rounded-b-2xl pb-5 pt-3">

@@ -24,14 +24,34 @@ const ViewInventoryBonds = () => {
   const navigate = useNavigate();
 
   const dropListItems = [
-    { drop_id: 1, title: t("Lost and Found Report") },
-    { drop_id: 2, title: t("Inventory groups") },
-    { drop_id: 3, title: t("Breakage and Cash Loss Report") },
-    { drop_id: 4, title: t("Branch Inventory Report") },
-    { drop_id: 5, title: t("Minutes of delivery of custody") },
-    { drop_id: 6, title: t("Minutes of receipt of the trust") },
-    { drop_id: 7, title: t("Inventory report") },
-    { drop_id: 8, title: t("Promissory note") },
+    { drop_id: "a", title: t("Lost and Found Report") },
+    { drop_id: "b", title: t("Inventory groups") },
+    { drop_id: "c", title: t("Breakage and Cash Loss Report") },
+    {
+      drop_id: "d",
+      title: t("Branch Inventory Report"),
+      report_name: t("Branch Inventory Report"),
+    },
+    {
+      drop_id: "e",
+      title: t("Minutes of delivery of custody"),
+      report_name: "Custody Handover Report",
+    },
+    {
+      drop_id: "f",
+      title: t("Minutes of receipt of the trust"),
+      report_name: "Custody Receipt Report",
+    },
+    {
+      drop_id: "g",
+      title: t("Inventory report"),
+      report_name: "Branch inventory report",
+    },
+    {
+      drop_id: "h",
+      title: t("Promissory note"),
+      report_name: "Promissory note",
+    },
   ];
 
   const columns = useMemo<ColumnDef<any>[]>(
@@ -86,6 +106,8 @@ const ViewInventoryBonds = () => {
         accessorKey: "action",
         cell: (info) => {
           const rowId = info.row.original.id;
+          const reportNumber = info.row.original.bond_number;
+          const date = info.row.original.date;
 
           const employeesData = info.row.original.employees.map((item) => ({
             id: item.employee_id,
@@ -122,6 +144,7 @@ const ViewInventoryBonds = () => {
                   setOpen(true);
                 }}
               />
+
               <HiDotsHorizontal
                 size={20}
                 className="text-mainGreen cursor-pointer"
@@ -134,6 +157,17 @@ const ViewInventoryBonds = () => {
                     <li
                       key={item.drop_id}
                       className="p-2 text-[#000000B2] text-[17px] hover:bg-gray-100 cursor-pointer border-b py-4 px-5 text-start"
+                      onClick={() => {
+                        navigate("/selling/inventory/reportes", {
+                          state: {
+                            reportID: item.drop_id,
+                            reportName: item.report_name,
+                            inventoryID: rowId,
+                            reportNumber,
+                            date,
+                          },
+                        });
+                      }}
                     >
                       {item.title}
                     </li>
@@ -151,7 +185,7 @@ const ViewInventoryBonds = () => {
   const { data, isLoading, isFetching, isRefetching, refetch } = useFetch<
     any[]
   >({
-    endpoint: `/inventory/api/v1/inventory?page=${page}`,
+    endpoint: `/inventory/api/v1/inventory/${userData?.branch_id}?page=${page}`,
     queryKey: ["InventoryBonds"],
     pagination: true,
     onSuccess(data) {

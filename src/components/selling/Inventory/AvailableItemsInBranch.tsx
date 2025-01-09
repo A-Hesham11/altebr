@@ -13,18 +13,25 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import { GiWeight } from "react-icons/gi";
+import { numberContext } from "../../../context/settings/number-formatter";
 
-const AvailableItemsInBranch = ({ availableItems, setAvailableItems }: any) => {
+const AvailableItemsInBranch = ({
+  availableItems,
+  setAvailableItems,
+  setNumberItemsInBranch,
+}: any) => {
   console.log("🚀 ~ AvailableItemsInBranch ~ availableItems:", availableItems);
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState<any>(1);
   const { userData } = useContext(authCtx);
   const [hasMore, setHasMore] = useState(true);
+  const { formatGram } = numberContext();
 
   const { data, refetch, isLoading } = useFetch({
     queryKey: ["available_items_inBranch", page],
     endpoint: `/inventory/api/v1/getItems/${userData?.branch_id}?page=${page}`,
     onSuccess: (data) => {
+      setNumberItemsInBranch(data?.total);
       if (data?.data?.length > 0) {
         setAvailableItems((prevItems) => [...prevItems, ...data?.data]);
       } else {
@@ -33,6 +40,7 @@ const AvailableItemsInBranch = ({ availableItems, setAvailableItems }: any) => {
     },
     pagination: true,
   });
+  console.log("🚀 ~ AvailableItemsInBranch ~ data:", data);
 
   const fetchMoreData = () => {
     setPage((prevPage) => {
@@ -114,7 +122,7 @@ const AvailableItemsInBranch = ({ availableItems, setAvailableItems }: any) => {
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
-                        className={`${"!bg-[#295E5633] text-mainGreen font-semibold"} px-6 py-4 text-sm`}
+                        className={`${"!bg-[#295E5633] text-mainGreen font-semibold"} text-start px-4 py-4 text-sm`}
                       >
                         {header.isPlaceholder
                           ? null
@@ -139,13 +147,13 @@ const AvailableItemsInBranch = ({ availableItems, setAvailableItems }: any) => {
               }
               height={455}
             >
-              <table className="min-w-full text-center">
+              <table className="min-w-full text-start">
                 <tbody>
                   {table.getRowModel().rows.map((row, i) => (
                     <tr key={row.id} className="border-b">
                       {row.getVisibleCells().map((cell) => (
                         <td
-                          className={`whitespace-nowrap px-0 py-3 text-sm font-light bg-[#FAFAFA] !text-gray-900 w-fit`}
+                          className={`whitespace-nowrap px-3 py-3 text-sm font-light bg-[#FAFAFA] !text-gray-900 w-fit `}
                           key={cell.id}
                         >
                           {flexRender(
@@ -169,8 +177,8 @@ const AvailableItemsInBranch = ({ availableItems, setAvailableItems }: any) => {
           {data?.total} {t("item")}
         </h2>
         <h2 className="text-center text-[13.5px]">
-          <span className="font-semibold">{t("total weight")} : </span> {1000}{" "}
-          {t("gram")}
+          <span className="font-semibold">{t("total weight")} : </span>{" "}
+          {formatGram(Number(data?.total_weight_24))} {t("gram")}
         </h2>
       </div>
     </div>
