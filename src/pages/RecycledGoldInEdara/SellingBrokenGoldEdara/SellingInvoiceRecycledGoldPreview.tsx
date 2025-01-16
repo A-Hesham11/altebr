@@ -13,6 +13,7 @@ import InvoiceTableData from "../../../components/selling/selling components/Inv
 import FinalPreviewBillPayment from "../../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
 import { authCtx } from "../../../context/auth-and-perm/auth";
+import cashImg from "../../../assets/cash.png";
 
 type Entry_TP = {
   bian: string;
