@@ -44,13 +44,14 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
   unknownIdentities,
   goldBrokenAndCashData,
 }: any) => {
+  console.log("🚀 ~ unknownIdentities:", unknownIdentities);
   console.log("🚀 ~ goldBrokenAndCashData:", goldBrokenAndCashData);
   console.log("🚀 ~ identitiesCheckedItems:", identitiesCheckedItems);
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { id } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const identitiesCheckedItem = identitiesCheckedItems
     ?.map((group) => group.items)
@@ -131,16 +132,21 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
       "currenGroupNumber",
       "unknownIdentities",
       "identitiesCheckedItems",
+      "weightItems",
     ].forEach((key) => localStorage.removeItem(key));
-    navigate("/selling/inventory/view")
+    navigate("/selling/inventory/view");
   };
 
   const handlePostInventoryData = () => {
-    const lostItems = unknownIdentities.map((item) => ({
-      inventory_id: id,
-      branch_id: userData?.branch_id,
-      ...item,
-    }));
+    const lostItems = unknownIdentities.map((item) => {
+      const { branch_id, ...rest } = item;
+      return {
+        inventory_id: id,
+        branch_id: userData?.branch_id,
+        branch_exist_id: branch_id,
+        ...rest,
+      };
+    });
 
     const goldAndCash = {
       inventory_id: id,
@@ -155,6 +161,10 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
     mutateInventoryData({
       endpointName: `/inventory/api/v1/missinginventories`,
       values: {
+        branch_id: userData?.branch_id,
+        employee_id: userData?.id,
+        type_employe: false,
+        inventory_id: id,
         lostItems,
         goldAndCash,
       },
@@ -254,7 +264,12 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
             <Button action={() => setSteps(2)} bordered>
               {t("back")}
             </Button>
-            <Button action={handlePostInventoryData}>{t("save")}</Button>
+            <Button
+              action={handlePostInventoryData}
+              loading={isLoadingInventoryData}
+            >
+              {t("save")}
+            </Button>
           </div>
         </div>
       </div>

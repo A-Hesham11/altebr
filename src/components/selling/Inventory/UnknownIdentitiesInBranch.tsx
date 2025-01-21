@@ -1,9 +1,5 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useFetch } from "../../../hooks";
-import { authCtx } from "../../../context/auth-and-perm/auth";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { t } from "i18next";
-import { Table } from "../../templates/reusableComponants/tantable/Table";
-import InfiniteScroll from "react-infinite-scroll-component";
 import {
   getCoreRowModel,
   useReactTable,
@@ -12,17 +8,35 @@ import {
   FilterFn,
   getFilteredRowModel,
 } from "@tanstack/react-table";
+import { ViewIcon } from "../../atoms/icons";
+import { UseClickOutsideAndKeyboardDrop } from "../../../utils/UseClickOutsideAndKeyboardDrop";
 
 const UnknownIdentitiesInBranch = ({
   unknownIdentities,
-  setUnknownIdentities,
+  setOpenDetailsItem,
+  setUnknownItemDetails,
+  setSelectedItem,
+  activeTableId,
+  setActiveTableId
 }: any) => {
+
+  const unknownTableRef = useRef<HTMLDivElement>(null);
+
+  const { selectedRow, setSelectedRow } = UseClickOutsideAndKeyboardDrop(
+    unknownIdentities,
+    setSelectedItem,
+    unknownTableRef,
+    "Unknown",
+    activeTableId,
+    setActiveTableId
+  );
+
   const columns = useMemo<any>(
     () => [
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "hwya",
-        header: () => <span>{t("الكود")}</span>,
+        header: () => <span>{t("hwya")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
@@ -38,6 +52,20 @@ const UnknownIdentitiesInBranch = ({
         cell: (info: any) => info.getValue(),
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
+      },
+      {
+        cell: (info: any) => (
+          <ViewIcon
+            size={21}
+            action={() => {
+              setOpenDetailsItem(true);
+              setUnknownItemDetails(info.row.original);
+            }}
+            className="text-mainGreen mx-auto"
+          />
+        ),
+        accessorKey: "#",
+        header: () => <span>{t("#")}</span>,
       },
     ],
     []
@@ -67,7 +95,7 @@ const UnknownIdentitiesInBranch = ({
         {t("Unknown identities")}
       </h2>
 
-      <div>
+      <div ref={unknownTableRef} onClick={() => setActiveTableId("Unknown")}>
         <>
           <table className="min-w-full text-center border-b ">
             <thead>
@@ -94,21 +122,35 @@ const UnknownIdentitiesInBranch = ({
           <div className="max-h-[455px] h-[455px] overflow-y-scroll">
             <table className="min-w-full text-start">
               <tbody>
-                {table.getRowModel().rows.map((row, i) => (
-                  <tr key={row.id} className="border-b">
-                    {row.getVisibleCells().map((cell) => (
-                      <td
-                        className={`whitespace-nowrap px-3 py-3 text-sm font-light bg-[#FAFAFA] !text-gray-900`}
-                        key={cell.id}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
+                {table.getRowModel().rows.map((row, i) => {
+                  return (
+                    <tr
+                      key={row.id}
+                      className={`border-b ${
+                        selectedRow === i && !!unknownTableRef ? "bg-[#295E5608]" : "bg-[#FAFAFA]"
+                      }`}
+                      onClick={() => {
+                        setSelectedRow(i);
+                      }}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          className={`whitespace-nowrap px-3 py-3 text-sm font-light cursor-pointer ${
+                            selectedRow === i && !!unknownTableRef 
+                              ? "bg-[#295E5608]"
+                              : "bg-[#FAFAFA]"
+                          } !text-gray-900`}
+                          key={cell.id}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

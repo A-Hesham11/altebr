@@ -21,11 +21,10 @@ const SelectEmployeesModal = ({
   const [selectedEmployees, setSelectedEmployees] = useState(
     editEmployees?.employe ?? []
   );
-  console.log("🚀 ~ selectedEmployees:", selectedEmployees);
   const { userData } = useContext(authCtx);
 
   const { data: nextbond } = useFetch<any[]>({
-    endpoint: `/inventory/api/v1/nextbond`,
+    endpoint: `/inventory/api/v1/nextbond/${userData?.branch_id}`,
     queryKey: ["nextbond"],
     enabled: !editEmployees.report_number && !!open,
   });
@@ -50,6 +49,7 @@ const SelectEmployeesModal = ({
   });
 
   const handleSuccess = () => {
+    // console.log("🚀 ~ handleSuccess ~ data:", data);
     setOpen(false);
     notify("success");
     refetch();
@@ -58,6 +58,9 @@ const SelectEmployeesModal = ({
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: handleSuccess,
+    onError: (error) => {
+      notify("info", error?.response.data.errors?.[0]);
+    },
   });
 
   const { mutate: mutateEditEmployees, isLoading: isLoadingEdit } = useMutate({

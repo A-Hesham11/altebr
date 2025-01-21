@@ -3,27 +3,22 @@ body {
   font-family: "Roboto Mono", monospace;
 }
 
-.container-print {
-  /* direction: ltr;
-  width: 30px !important;
-  margin: 10px 0px 0px 3px !important;
-  padding: 0px 0.6px; */
-
-  /* width: 8cm;
-  height: 1cm;
-  display: flex;
-  align-items: center;
-  justify-content: center; */
-  /* rotate: 270deg; */
-
+.container-print-gold,
+.container-print-accessory {
   width: 1cm;
   height: 3cm;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 15px;
   margin-left: -3.5px;
-  /* rotate: 270deg; */
+}
+
+.container-print-gold {
+  margin-top: 15px;
+}
+
+.container-print-accessory {
+  margin-top: 20px;
 }
 
 .content-wrapper {

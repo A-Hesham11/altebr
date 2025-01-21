@@ -3,7 +3,7 @@ import { t } from "i18next";
 import { useContext, useEffect, useState } from "react";
 import { Button } from "../../../components/atoms";
 import { AddIcon } from "../../../components/atoms/icons";
-import { BaseInputField } from "../../../components/molecules";
+import { BaseInputField, Modal } from "../../../components/molecules";
 import { BoxesDataBase } from "../../../components/atoms/card/BoxesDataBase";
 import AvailableItemsInBranch from "../../../components/selling/Inventory/AvailableItemsInBranch";
 import IdentitiesCheckedByBranch from "../../../components/selling/Inventory/IdentitiesCheckedByBranch";
@@ -14,8 +14,21 @@ import { numberContext } from "../../../context/settings/number-formatter";
 import { useFetch, useMutate } from "../../../hooks";
 import { notify } from "../../../utils/toast";
 import { authCtx } from "../../../context/auth-and-perm/auth";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { mutateData } from "../../../utils/mutateData";
+import ShowDetailsItemOfInventory from "./ShowDetailsItemOfInventory";
+import WeightAdjustmentInBranch from "../../../components/selling/Inventory/WeightAdjustmentInBranch";
+import InventoryKitInBranch from "../../../components/selling/Inventory/InventoryKitInBranch";
+
+const playBeep = (frequency: number) => {
+  const context = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = context.createOscillator();
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+  oscillator.connect(context.destination);
+  oscillator.start();
+  oscillator.stop(context.currentTime + 0.2);
+};
 
 interface Totals {
   name: string;
@@ -69,6 +82,14 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   const { formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [openDetailsItem, setOpenDetailsItem] = useState(false);
+  const [unknownItemDetails, setUnknownItemDetails] = useState<any>({});
+  const [openWeightItem, setOpenWeightItem] = useState(false);
+  const [openKitItems, setOpenKitItems] = useState(false);
+  const [kitItemsData, setKitItemsData] = useState([]);
+  const [editWeight, setEditWeight] = useState({});
+  const [activeTableId, setActiveTableId] = useState<string | null>(null);
 
   const totalNumberItemsInspected = identitiesCheckedItems?.reduce(
     (count, group) => count + group.items.length,
@@ -102,32 +123,56 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     },
   ];
 
-  const playBeep = (frequency: number) => {
-    const context = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = context.createOscillator();
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(frequency, context.currentTime);
-    oscillator.connect(context.destination);
-    oscillator.start();
-    oscillator.stop(context.currentTime + 0.2);
-  };
+  const addItemToIdentity = (id: number, newItem: Item, isChecked: boolean) => {
+    const groupExists = identitiesCheckedItems.some(
+      (identity) => identity.id === id
+    );
+    if (!groupExists) {
+      notify("info", `${t("A group must be created first.")}`);
+      return;
+    }
 
-  const addItemToIdentity = (id: number, newItem: Item) => {
-    if (newItem?.is_exist) {
-      const updatedIdentities = identitiesCheckedItems.map((identity) =>
-        identity.id === id
-          ? {
-              ...identity,
-              items: [{ ...newItem, status: "Checked" }, ...identity.items],
-              totalItems: identity.items.length + 1,
-              totalWeight: identity.items.reduce(
-                (sum: number, item: Item) => Number(sum) + Number(item.weight),
-                newItem?.weight
-              ),
-            }
-          : identity
+    if (newItem?.is_exist && isChecked) {
+      const group = identitiesCheckedItems.find(
+        (identity) => identity.id === id
       );
 
+      const itemAlreadyExists = group?.items.some(
+        (item) => item.id === newItem.id
+      );
+
+      if (itemAlreadyExists && newItem?.category_selling_type !== "all") {
+        notify("info", `${t("This item is already added")}`);
+        return;
+      }
+
+      const updatedIdentities = identitiesCheckedItems.map((identity) => {
+        if (identity.id !== id) return identity;
+
+        const updatedItems = [
+          // Add the new item if it doesn't already exist
+          ...(!identity.items.some((item) => item.id === newItem.id)
+            ? [{ ...newItem, status: "Checked" }]
+            : []),
+          // Update weight if the item already exists
+          ...identity.items.map((item) =>
+            item.id === newItem.id
+              ? { ...item, weight: Number(newItem.weight), kitItems: newItem }
+              : item
+          ),
+        ];
+
+        return {
+          ...identity,
+          items: updatedItems,
+          totalItems: updatedItems.length,
+          totalWeight: updatedItems.reduce(
+            (sum: number, item: Item) => sum + Number(item.weight),
+            0
+          ),
+        };
+      });
+      handleItemIdentity(newItem);
       setIdentitiesCheckedItems(updatedIdentities);
       localStorage.setItem(
         "identitiesCheckedItems",
@@ -135,10 +180,22 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       );
       playBeep(200);
     } else {
+      // Check if the item is already in unknown items
+      const itemAlreadyExistsInUnknowns = unknownIdentities.some(
+        (item) => item.id === newItem.id
+      );
+
+      if (itemAlreadyExistsInUnknowns) {
+        notify("info", `${t("This item is already added to unknown items.")}`);
+        return;
+      }
+
+      // Add item to unknown identities
       const updatedUnknowns = [
         { ...newItem, status: "Unknown" },
         ...unknownIdentities,
       ];
+
       setUnknownIdentities(updatedUnknowns);
       localStorage.setItem(
         "unknownIdentities",
@@ -147,13 +204,25 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       playBeep(1000);
     }
   };
-  const { data, refetch, isSuccess, isRefetching, isLoading } = useFetch({
+
+  const { data } = useFetch({
     queryKey: ["branch-all-accepted-items", search],
     pagination: true,
     endpoint: `/inventory/api/v1/getItembyhwya/${userData?.branch_id}?hwya[lk]=${search}`,
     onSuccess: (data) => {
-      addItemToIdentity(currenGroupNumber, data?.data);
       setSelectedItem(data?.data);
+      const isKit =
+        data?.data?.weightitems?.length &&
+        data?.data?.weightitems?.some((item) => item.status === 1);
+
+      if (data?.data?.category_selling_type === "all") {
+        setEditWeight(data?.data);
+        setOpenWeightItem(true);
+      } else if (isKit) {
+        setOpenKitItems(true);
+      } else {
+        addItemToIdentity(currenGroupNumber, data?.data, true);
+      }
       setSearch("");
     },
     enabled: !!search,
@@ -162,9 +231,9 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   const {
     data: nextGroup,
     isLoading: isNextGroupLoading,
-    refetch: fetchNextGroup,
+    refetch: refetchNextGroup,
   } = useFetch({
-    endpoint: `/inventory/api/v1/next-group/${userData?.branch_id}`,
+    endpoint: `/inventory/api/v1/next-group/${userData?.branch_id}/${id}`,
     queryKey: ["next-group"],
   });
 
@@ -192,6 +261,8 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
 
       return updatedItems;
     });
+
+    refetchNextGroup();
   };
 
   const { mutate, isLoading: isLoadingMutate } = useMutate({
@@ -199,15 +270,35 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     onSuccess: (data) => handleSuccess(data),
   });
 
-  const handleCreateGroups = async () => {
-    if (isNextGroupLoading) {
-      console.error("Fetching next group data. Please wait.");
-      return;
-    }
+  const { mutate: mutateItemIdentity, isLoading: isLoadingItemIdentity } =
+    useMutate({
+      mutationFn: mutateData,
+    });
 
-    if (!nextGroup) {
-      console.error("Failed to fetch next group data. Retrying...");
-      await fetchNextGroup();
+  const handleItemIdentity = async (data) => {
+    console.log("🚀 ~ handleItemIdentity ~ data:", data);
+    const kitItems = data?.weightitems?.map((item) => ({
+      category_id: item.category_id,
+      weight: item.weight,
+    }));
+    mutateItemIdentity({
+      endpointName: `/inventory/api/v1/group-item`,
+      values: {
+        item_id: data?.item_id,
+        group_id: currenGroupNumber,
+        weight: data?.weight,
+        weightitems: data?.weightitems?.length ? kitItems : null,
+      },
+    });
+  };
+
+  const handleCreateGroups = async () => {
+    const groupHasEmptyItems = identitiesCheckedItems.some(
+      (identity) => identity.items?.length === 0
+    );
+
+    if (groupHasEmptyItems) {
+      notify("info", `${t("Group already created")}`);
       return;
     }
 
@@ -222,6 +313,43 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     });
   };
 
+  // End Of The Inventory Process For Employees
+  const handleSuccessInventoryData = () => {
+    notify("success");
+    [
+      "currenGroupNumber",
+      "unknownIdentities",
+      "identitiesCheckedItems",
+    ].forEach((key) => localStorage.removeItem(key));
+    navigate("/selling/inventory/view");
+  };
+
+  const { mutate: mutateInventoryData, isLoading: isLoadingInventoryData } =
+    useMutate({
+      mutationFn: mutateData,
+      onSuccess: handleSuccessInventoryData,
+    });
+
+  const handlePostInventoryData = () => {
+    const lostItems = unknownIdentities.map((item) => ({
+      inventory_id: id,
+      branch_id: userData?.branch_id,
+      ...item,
+    }));
+
+    mutateInventoryData({
+      endpointName: `/inventory/api/v1/missinginventories`,
+      values: {
+        branch_id: userData?.branch_id,
+        employee_id: userData?.id,
+        type_employe: true,
+        inventory_id: id,
+        lostItems,
+      },
+    });
+  };
+  // End Of The Inventory Process For Employees
+
   return (
     <div className="px-10 py-8">
       <div className="flex items-center justify-between text-mainGreen border-b-2 pb-3">
@@ -230,8 +358,9 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
           {t("Inventory of new gold, diamonds and miscellaneous")}
         </p>
       </div>
-      <Formik initialValues={{ hwya: "" }} onSubmit={(values) => {}}>
+      <Formik initialValues={{ search: "" }} onSubmit={(values) => {}}>
         {({ values }) => {
+          console.log("🚀 ~ values:", values);
           return (
             <Form>
               <div className="flex items-end gap-x-8">
@@ -239,7 +368,9 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
                   bordered
                   className="flex items-center gap-x-2"
                   loading={isLoadingMutate}
-                  action={handleCreateGroups}
+                  action={() => {
+                    handleCreateGroups();
+                  }}
                 >
                   <AddIcon size={22} />
                   <span>{t("Create a group")}</span>
@@ -252,6 +383,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
                     autoFocus
                     label={`${t("id code")}`}
                     type="text"
+                    value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder={`${t("id code")}`}
                     className="placeholder-slate-400  w-80 !shadow-transparent focus:border-transparent"
@@ -279,9 +411,13 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
               <div className="flex items-center gap-x-4 w-full bg-[#295E5608] py-8 rounded-2xl">
                 <div className="w-[30%]">
                   <AvailableItemsInBranch
+                    selectedItem={selectedItem}
+                    setSelectedItem={setSelectedItem}
                     availableItems={availableItems}
                     setAvailableItems={setAvailableItems}
                     setNumberItemsInBranch={setNumberItemsInBranch}
+                    activeTableId={activeTableId}
+                    setActiveTableId={setActiveTableId}
                   />
                 </div>
                 <div className="w-[30%]">
@@ -289,18 +425,29 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
                     identitiesCheckedItems={identitiesCheckedItems}
                     setIdentitiesCheckedItems={setIdentitiesCheckedItems}
                     currenGroupNumber={currenGroupNumber}
+                    setOpenWeightItem={setOpenWeightItem}
+                    setEditWeight={setEditWeight}
+                    setSelectedItem={setSelectedItem}
+                    activeTableId={activeTableId}
+                    setActiveTableId={setActiveTableId}
                   />
                 </div>
                 <div className="w-[30%]">
                   <UnknownIdentitiesInBranch
                     unknownIdentities={unknownIdentities}
                     setUnknownIdentities={setUnknownIdentities}
+                    setOpenDetailsItem={setOpenDetailsItem}
+                    setUnknownItemDetails={setUnknownItemDetails}
+                    setSelectedItem={setSelectedItem}
+                    activeTableId={activeTableId}
+                    setActiveTableId={setActiveTableId}
                   />
                 </div>
                 <div className="w-[25%]">
                   <IdentityInformationInBranch
                     selectedItem={selectedItem}
                     setSelectedItem={setSelectedItem}
+                    setOpenDetailsItem={setOpenDetailsItem}
                   />
                 </div>
               </div>
@@ -309,14 +456,69 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
         }}
       </Formik>
 
-      <div className="flex justify-end mt-5">
-        <Button
-          action={() => {
-            setSteps(2);
-          }}
-        >
-          {t("next")}
-        </Button>
+      {/* Edit Weight Item */}
+      <Modal
+        onClose={() => setOpenWeightItem(false)}
+        isOpen={openWeightItem}
+        title={`${t("Enter weight for a piece")}`}
+      >
+        <WeightAdjustmentInBranch
+          editWeight={editWeight}
+          setIdentitiesCheckedItems={setIdentitiesCheckedItems}
+          setOpenWeightItem={setOpenWeightItem}
+          currenGroupNumber={currenGroupNumber}
+          addItemToIdentity={addItemToIdentity}
+        />
+      </Modal>
+
+      {/* kit Items */}
+      <Modal
+        onClose={() => setOpenKitItems(false)}
+        isOpen={openKitItems}
+        title={`${t("Enter weight for a piece")}`}
+      >
+        <InventoryKitInBranch
+          selectedItem={selectedItem}
+          setIdentitiesCheckedItems={setIdentitiesCheckedItems}
+          kitItemsData={kitItemsData}
+          setKitItemsData={setKitItemsData}
+          addItemToIdentity={addItemToIdentity}
+          currenGroupNumber={currenGroupNumber}
+          setOpenKitItems={setOpenKitItems}
+        />
+      </Modal>
+
+      {/* Show Details Item */}
+      <Modal
+        isOpen={openDetailsItem}
+        onClose={() => {
+          setOpenDetailsItem(false);
+        }}
+      >
+        <ShowDetailsItemOfInventory itemDetails={[selectedItem]} />
+      </Modal>
+
+      <div>
+        {userData?.role_id === 3 ? (
+          <div className="flex justify-end mt-5">
+            <Button
+              action={() => {
+                setSteps(2);
+              }}
+            >
+              {t("next")}
+            </Button>
+          </div>
+        ) : (
+          <div className="flex justify-end mt-5">
+            <Button
+              loading={isLoadingInventoryData}
+              action={handlePostInventoryData}
+            >
+              {t("save")}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

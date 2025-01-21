@@ -236,7 +236,7 @@ export const Bonds = ({ title }: BondsProps_TP) => {
         cell: (info) => formatGram(Number(info.getValue())),
       },
       {
-        header: () => <span>{t("total money")} </span>,
+        header: () => <span>{t("total wages")} </span>,
         accessorKey: "total_money",
         cell: (info) => formatReyal(Number(info.getValue())),
       },
