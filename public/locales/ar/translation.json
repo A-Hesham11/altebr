@@ -1640,6 +1640,9 @@
   "That I commit to utilizing or handling these amounts in accordance with the company's instructions, without any breach or violation.": "أن أقر بأن أي إخلال أو سوء تصرف بالقيم المستلمة يجعلني عرضة للمساءلة القانونية أمام الجهات المختصة.",
   "Recipient": "المستلم",
   "Company Representative": "مُمثل الشركة",
-  "Signature":"التوقيع",
-  "Please select the recipient's name.":"فضلاً اختر اسم المستلم"
+  "Signature": "التوقيع",
+  "Please select the recipient's name.": "فضلاً اختر اسم المستلم",
+  "missing pieces": "القطع المفقودة",
+  "there is no pieces": "لا توجد قطع",
+  "missing pieces from the stocktaking": "القطع المفقودة من الجرد"
 }
