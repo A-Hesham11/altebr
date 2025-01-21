@@ -24,8 +24,10 @@ interface InventoryItem {
 const CreatingInventoryBond: React.FC = () => {
   const { userData } = useContext(authCtx);
   const { id } = useParams<{ id: string }>();
+  console.log("🚀 ~ id:", id);
   const [steps, setSteps] = useState<number>(1);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+  console.log("🚀 ~ selectedItem:", selectedItem);
   const [currenGroupNumber, setCurrenGroupNumber] = useState<number>(
     JSON.parse(localStorage.getItem("currenGroupNumber") || "0")
   );
@@ -39,6 +41,7 @@ const CreatingInventoryBond: React.FC = () => {
     JSON.parse(localStorage.getItem("unknownIdentities") || "[]")
   );
   const [numberItemsInBranch, setNumberItemsInBranch] = useState<number>(0);
+  console.log("🚀 ~ numberItemsInBranch:", numberItemsInBranch)
   const [goldBrokenAndCashData, setGoldBrokenAndCashData] = useState({});
 
   const { data: goldBrokenAndCash } = useFetch({

@@ -8,12 +8,13 @@ import { Button } from "../../atoms";
 const IdentityInformationInBranch = ({
   selectedItem,
   setSelectedItem,
+  setOpenDetailsItem,
 }: any) => {
   const { userData } = useContext(authCtx);
 
   const listItems = [
     { label: "hwya", value: selectedItem?.hwya ?? "---" },
-    { label: "category", value: selectedItem?.classification_name ?? "---"},
+    { label: "category", value: selectedItem?.classification_name ?? "---" },
     { label: "classification", value: selectedItem?.category_name ?? "---" },
     { label: "weight", value: selectedItem?.weight ?? "---" },
     { label: "karat", value: selectedItem?.karat_name ?? "---" },
@@ -41,7 +42,12 @@ const IdentityInformationInBranch = ({
           ))}
         </ul>
 
-        <Button bordered className="block mx-auto mt-8">
+        <Button
+          action={() => setOpenDetailsItem(true)}
+          bordered
+          className="block mx-auto mt-8"
+          id="view-details-button"
+        >
           {t("View identity details")}
         </Button>
       </div>

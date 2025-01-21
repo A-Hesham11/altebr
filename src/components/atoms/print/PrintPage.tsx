@@ -24,7 +24,13 @@ const PrintPage = ({ item }: any) => {
 
   return (
     <>
-      <div className="container-print">
+      <div
+        className={
+          item?.classification_id == 1
+            ? "container-print-gold"
+            : "container-print-accessory"
+        }
+      >
         <div className="component">
           <div className="content-wrapper">
             <div className="grid-layout">
@@ -32,7 +38,6 @@ const PrintPage = ({ item }: any) => {
               <QRCode
                 className="img_qr"
                 value={item?.hwya || 0}
-                // value={`${Math.round(12355)}`}
                 viewBox={`0 0 300 300`}
               />
               <p className="small-text">{item?.hwya}</p>

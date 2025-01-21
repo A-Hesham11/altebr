@@ -125,7 +125,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 items-end gap-12 mb-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 items-end gap-12 mb-6">
               <div>
                 <BaseInputField
                   placeholder={`${t("expense price")}`}
@@ -193,6 +193,16 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                   type="text"
                   disabled
                   className="bg-mainDisabled border-mainDisabled"
+                />
+              </div>
+
+              <div>
+                <BaseInputField
+                  placeholder={`${t("tax number")}`}
+                  id="tax_number"
+                  name="tax_number"
+                  label={`${t("tax number")}`}
+                  type="text"
                 />
               </div>
             </div>
