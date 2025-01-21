@@ -1649,5 +1649,8 @@
   "Status": "الحالة",
   "The weight of the pieces must match the weight of the set.": "يجب ان يكون وزن القطع متوافق مع وزن الطقم",
   "checked": "تم الفحص",
-  "Undefined":"غير معرفة"
+  "Undefined": "غير معرفة",
+  "missing pieces": "القطع المفقودة",
+  "there is no pieces": "لا توجد قطع",
+  "missing pieces from the stocktaking": "القطع المفقودة من الجرد"
 }

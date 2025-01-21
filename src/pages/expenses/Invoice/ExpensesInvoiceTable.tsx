@@ -22,8 +22,8 @@ const ExpenseInvoiceTable = <T extends object>({
   columns,
   costDataAsProps,
 }: ReactTableProps<T>) => {
-  console.log("🚀 ~ data:", data)
-  console.log("🚀 ~ costDataAsProps:", costDataAsProps)
+  console.log("🚀 ~ data:", data);
+  console.log("🚀 ~ costDataAsProps:", costDataAsProps);
   const { formatGram, formatReyal } = numberContext();
 
   // CUSTOM CONFIGURE FOR TABLE
@@ -58,8 +58,8 @@ const ExpenseInvoiceTable = <T extends object>({
   return (
     <>
       <div className="mx-6">
-        <div className="mb-6 overflow-x-scroll lg:overflow-x-visible w-full">
-          <table className="mt-8 w-[872px] lg:w-full table-shadow">
+        <div className="mb-6 overflow-x-auto  w-full">
+          <table className="mt-8 w-full table-shadow">
             <thead className="bg-mainGreen text-white">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id} className="py-4 px-2">

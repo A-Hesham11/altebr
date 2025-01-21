@@ -1,60 +1,47 @@
-/////////// IMPORTS
-///
-//import classes from './SellingBranchIdentity.module.css'
-///
-/////////// Types
-///
-
-import { Form, Formik } from "formik";
-import { t } from "i18next";
-import { useContext, useEffect, useMemo, useState } from "react";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import { Button } from "../../components/atoms";
-import { BoxesDataBase } from "../../components/atoms/card/BoxesDataBase";
-import { ViewIcon } from "../../components/atoms/icons";
-import { BaseInputField, Modal } from "../../components/molecules";
-import { Loading } from "../../components/organisms/Loading";
-import { ItemDetailsTable } from "../../components/selling/recieve items/ItemDetailsTable";
-import { SelectMineralKarat } from "../../components/templates/reusableComponants/minerals/SelectMineralKarat";
-import { Table } from "../../components/templates/reusableComponants/tantable/Table";
-import { authCtx } from "../../context/auth-and-perm/auth";
-import { useFetch, useIsRTL, useMutate } from "../../hooks";
-import SelectClassification from "../../components/templates/reusableComponants/classifications/select/SelectClassification";
+import { useContext, useEffect, useMemo, useReducer, useState } from "react";
+import { authCtx } from "../../../context/auth-and-perm/auth";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
+import { numberContext } from "../../../context/settings/number-formatter";
 import { useNavigate } from "react-router-dom";
-import { numberContext } from "../../context/settings/number-formatter";
-import { useQueryClient } from "@tanstack/react-query";
-import { mutateData } from "../../utils/mutateData";
-import { notify } from "../../utils/toast";
-import ReturnItemsToEdaraModal from "../../components/selling/payoff/ReturnItemsToEdaraModal";
-import RejectedItemsInvoice from "../../components/selling/recieve items/RejectedItemsInvoice";
-import RejectedItemsInvoicePrint from "./RejectedItemsInvoicePrint";
-import { GlobalDataContext } from "../../context/settings/GlobalData";
+import { t } from "i18next";
+import { notify } from "../../../utils/toast";
+import { Loading } from "../../../components/organisms/Loading";
+import { Form, Formik } from "formik";
+import { Button } from "../../../components/atoms";
+import { BaseInputField, Modal } from "../../../components/molecules";
+import { SelectMineralKarat } from "../../../components/templates/reusableComponants/minerals/SelectMineralKarat";
+import SelectClassification from "../../../components/templates/reusableComponants/classifications/select/SelectClassification";
+import { BoxesDataBase } from "../../../components/atoms/card/BoxesDataBase";
+import { mutateData } from "../../../utils/mutateData";
+import { ViewIcon } from "../../../components/atoms/icons";
+import { missingPiecesReducer } from "../../../Reducers/reducers";
+import { MissingPiecesInitialState } from "../../../Reducers/InitialState";
+import {
+  SET_DATA_SOURCE,
+  SET_MODAL_OPEN,
+  SET_PAGE,
+  SET_SEARCH,
+  SET_SELECTED_ROW_DETAILS_ID,
+} from "../../../Reducers/GlobalVariables";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { MissingItemsDetails } from "./MissingItemsDetails";
+import SelectionTable from "./SelectionTable";
 
-/////////// HELPER VARIABLES & FUNCTIONS
-///
-
-///
-export const SellingBranchIdentity = () => {
-  /////////// VARIABLES
-  ///
-  const { userData } = useContext(authCtx);
-  const [dataSource, setDataSource] = useState({});
-  console.log("🚀 ~ SellingBranchIdentity ~ dataSource:", dataSource);
-  const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [page, setPage] = useState<number>(1);
-  const [search, setSearch] = useState("");
-  const [dataSourcePrint, setDataSourcePrint] = useState([]);
-  console.log("🚀 ~ SellingBranchIdentity ~ dataSourcePrint:", dataSourcePrint);
-  const [printModal, setPrintModal] = useState(false);
-  const { gold_price } = GlobalDataContext();
-
+function MissingPieces() {
   const isRTL = useIsRTL();
-
-  const { formatGram, formatReyal } = numberContext();
-  const [returnItemsModel, setReturnItemsModel] = useState(false);
-
   const navigate = useNavigate();
+  const isLocation = location.pathname;
+  const { formatGram, formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
+  const [rowSelection, setRowSelection] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const [state, dispatch] = useReducer(
+    missingPiecesReducer,
+    MissingPiecesInitialState
+  );
+
+  const { dataSource, selectedRowDetailsId, modalOpen, page, search } = state;
 
   const searchValues = {
     id: "",
@@ -64,7 +51,14 @@ export const SellingBranchIdentity = () => {
     wage: "",
   };
 
-  const Cols = useMemo<any>(
+  const convertSelectionObjToArray = () =>
+    Object.keys(rowSelection).map((key) => {
+      return {
+        restore_id: +key,
+      };
+    });
+
+  const missingPiecesTableCols = useMemo<any>(
     () => [
       {
         cell: (info: any) => info.getValue(),
@@ -155,8 +149,11 @@ export const SellingBranchIdentity = () => {
           <ViewIcon
             size={23}
             action={() => {
-              setModalOpen(true);
-              setSelectedRowDetailsId(info.row.original.id);
+              dispatch({ type: SET_MODAL_OPEN, payload: true });
+              dispatch({
+                type: SET_SELECTED_ROW_DETAILS_ID,
+                payload: info.row.original.id,
+              });
             }}
             className="text-mainGreen mx-auto"
           />
@@ -167,34 +164,28 @@ export const SellingBranchIdentity = () => {
     ],
     []
   );
-  ///
-  /////////// CUSTOM HOOKS
-  ///
+
   const { data, refetch, isSuccess, isRefetching, isLoading } = useFetch({
-    queryKey: ["branch-all-accepted-items"],
+    queryKey: ["missing-pieces"],
     pagination: true,
     endpoint:
       search === ""
-        ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}?page=${page}`
+        ? `/branchManage/api/v1/getMissingItems/${userData?.branch_id}?page=${page}`
         : `${search}`,
     onSuccess: (data) => {
-      setDataSource(data.data);
+      dispatch({ type: SET_DATA_SOURCE, payload: data?.data });
     },
   });
-  console.log("🚀 ~ SellingBranchIdentity ~ data:", data);
 
-  const queryClient = useQueryClient();
   const {
     mutate,
     isLoading: returnLoading,
     isSuccess: isSuccessData,
-    reset,
   } = useMutate({
     mutationFn: mutateData,
-    mutationKey: ["returnToSort"],
+    mutationKey: ["return-item"],
     onSuccess: (data) => {
       notify("success");
-      queryClient.refetchQueries(["returnToSort"]);
       refetch();
     },
     onError: (error) => {
@@ -203,80 +194,82 @@ export const SellingBranchIdentity = () => {
     },
   });
 
-  const total24 = (data && data?.data[0]?.allboxes.karat24) || 0;
-  const total22 = (data && data?.data[0]?.allboxes.karat22) || 0;
-  const total21 = (data && data?.data[0]?.allboxes.karat21) || 0;
-  const total18 = (data && data?.data[0]?.allboxes.karat18) || 0;
-  const allItemsCount = (data && data?.data[0]?.allboxes.allcounts) || 0;
-  const allGoldCount = (data && data?.data[0]?.allboxes.allGoldCount) || 0;
-  const allDiamondCount =
-    (data && data?.data[0]?.allboxes.allDiamondCount) || 0;
-  const allMotafareqatCount =
-    (data && data?.data[0]?.allboxes.allMotafareqatCount) || 0;
-  const diamondAllPrice =
-    (data && data?.data[0]?.allboxes.diamondAllPrice) || 0;
-  const motafareqatAllPrice =
-    (data && data?.data[0]?.allboxes.motafareqatAllPrice) || 0;
+  const fetchValue = (path: string, defaultValue = 0) =>
+    data?.data?.[0]?.allboxes?.[path] || defaultValue;
 
-  const totals = [
-    {
-      name: t("عدد القطع"),
-      key: crypto.randomUUID(),
-      unit: t(""),
-      value: allItemsCount,
-    },
-    {
-      name: "إجمالي وزن 24",
-      key: crypto.randomUUID(),
-      unit: t("gram"),
-      value: formatGram(Number(total24)),
-    },
-    {
-      name: "إجمالي وزن 22",
-      key: crypto.randomUUID(),
-      unit: t("gram"),
-      value: formatGram(Number(total22)),
-    },
-    {
-      name: "إجمالي وزن 21",
-      key: crypto.randomUUID(),
-      unit: t("gram"),
-      value: formatGram(Number(total21)),
-    },
-    {
-      name: t("إجمالي وزن 18"),
-      key: crypto.randomUUID(),
-      unit: t("gram"),
-      value: formatGram(Number(total18)),
-    },
-    {
-      name: t("total gold pieces"),
-      key: crypto.randomUUID(),
-      value: allGoldCount,
-    },
-    {
-      name: t("total diamonds"),
-      key: crypto.randomUUID(),
-      value: allDiamondCount,
-    },
-    {
-      name: t("total miscellaneous pieces"),
-      key: crypto.randomUUID(),
-      value: allMotafareqatCount,
-    },
-    {
-      name: t("total diamonds price"),
-      key: crypto.randomUUID(),
-      unit: t("reyal"),
-      value: formatReyal(Number(diamondAllPrice)),
-    },
-    {
-      name: t("total miscellaneous price"),
-      key: crypto.randomUUID(),
-      unit: t("reyal"),
-      value: formatReyal(Number(motafareqatAllPrice)),
-    },
-  ];
+  const totals = useMemo(() => {
+    const values = {
+      total24: fetchValue("karat24"),
+      total22: fetchValue("karat22"),
+      total21: fetchValue("karat21"),
+      total18: fetchValue("karat18"),
+      allItemsCount: fetchValue("allcounts"),
+      allGoldCount: fetchValue("allGoldCount"),
+      allDiamondCount: fetchValue("allDiamondCount"),
+      allMotafareqatCount: fetchValue("allMotafareqatCount"),
+      diamondAllPrice: fetchValue("diamondAllPrice"),
+      motafareqatAllPrice: fetchValue("motafareqatAllPrice"),
+    };
+
+    return [
+      {
+        name: t("عدد القطع"),
+        key: crypto.randomUUID(),
+        value: values.allItemsCount,
+      },
+      {
+        name: "إجمالي وزن 24",
+        key: crypto.randomUUID(),
+        unit: "gram",
+        value: formatGram(Number(values.total24)),
+      },
+      {
+        name: "إجمالي وزن 22",
+        key: crypto.randomUUID(),
+        unit: "gram",
+        value: formatGram(Number(values.total22)),
+      },
+      {
+        name: "إجمالي وزن 21",
+        key: crypto.randomUUID(),
+        unit: "gram",
+        value: formatGram(Number(values.total21)),
+      },
+      {
+        name: t("إجمالي وزن 18"),
+        key: crypto.randomUUID(),
+        unit: "gram",
+        value: formatGram(Number(values.total18)),
+      },
+      {
+        name: t("total gold pieces"),
+        key: crypto.randomUUID(),
+        value: values.allGoldCount,
+      },
+      {
+        name: t("total diamonds"),
+        key: crypto.randomUUID(),
+        value: values.allDiamondCount,
+      },
+      {
+        name: t("total miscellaneous pieces"),
+        key: crypto.randomUUID(),
+        value: values.allMotafareqatCount,
+      },
+      {
+        name: t("total diamonds price"),
+        key: crypto.randomUUID(),
+        unit: "reyal",
+        value: formatReyal(Number(values.diamondAllPrice)),
+      },
+      {
+        name: t("total miscellaneous price"),
+        key: crypto.randomUUID(),
+        unit: "reyal",
+        value: formatReyal(Number(values.motafareqatAllPrice)),
+      },
+    ];
+  }, [data]);
 
   useEffect(() => {
     refetch();
@@ -286,31 +279,29 @@ export const SellingBranchIdentity = () => {
     if (page == 1) {
       refetch();
     } else {
-      setPage(1);
+      dispatch({ type: SET_PAGE, payload: 1 });
     }
   }, [search]);
 
-  //
-  // functions
   const getSearchResults = async (req: any) => {
-    let uri = `branchManage/api/v1/all-accepted/${userData?.branch_id}`;
+    let url = `branchManage/api/v1/getMissingItems/${userData?.branch_id}`;
     let first = false;
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
         if (first) {
-          uri += `&${key}[eq]=${req[key]}`;
+          url += `&${key}[eq]=${req[key]}`;
           first = false;
         } else {
-          uri += `?${key}[eq]=${req[key]}`;
+          url += `?${key}[eq]=${req[key]}`;
         }
       }
     });
-    setSearch(uri);
+    dispatch({ type: SET_SEARCH, payload: url });
   };
-  const isLocation = location.pathname;
-  ///
+
   if (isLoading || isRefetching)
     return <Loading mainTitle={t("loading items")} />;
+
   return (
     <div className="px-8 md:px-16">
       <div>
@@ -364,7 +355,7 @@ export const SellingBranchIdentity = () => {
                         : "bg-transparent border-2 border-mainOrange text-mainOrange"
                     } h-12`}
                   >
-                    {t("missing pieces")}
+                    {t("missing pieces from the stocktaking")}
                   </Button>
                 </div>
               </div>
@@ -427,62 +418,85 @@ export const SellingBranchIdentity = () => {
           </BoxesDataBase>
         ))}
       </ul>
-      <div className="flex justify-end mb-4">
-        <Button
-          loading={returnLoading}
-          action={() => setReturnItemsModel(true)}
-        >
-          {t("return items")}
-        </Button>
-      </div>
+      {dataSource?.length > 0 && (
+        <div className="flex justify-end mb-4">
+          <Button
+            loading={returnLoading}
+            action={() =>
+              mutate({
+                endpointName: `branchManage/api/v1/restoreItem`,
+                method: "post",
+                values: {
+                  restores: convertSelectionObjToArray(),
+                },
+              })
+            }
+          >
+            {t("return items")}
+          </Button>
+        </div>
+      )}
       {isSuccess &&
-        !!dataSource &&
-        !isLoading &&
-        !isRefetching &&
-        !!dataSource.length && (
-          <Table data={dataSource} columns={Cols}>
-            <div className="mt-3 flex items-center justify-end gap-5 p-2">
-              <div className="flex items-center gap-2 font-bold">
-                {t("page")}
-                <span className=" text-mainGreen">{data.current_page}</span>
-                {t("from")}
-                <span className=" text-mainGreen">{data.pages}</span>
-              </div>
-              <div className="flex items-center gap-2 ">
-                <Button
-                  className=" rounded bg-mainGreen p-[.18rem]"
-                  action={() => setPage((prev) => prev - 1)}
-                  disabled={page == 1}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-                <Button
-                  className="rounded bg-mainGreen p-[.18rem]"
-                  action={() => setPage((prev) => prev + 1)}
-                  disabled={page == data.pages}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-              </div>
+      !!dataSource &&
+      !isLoading &&
+      !isRefetching &&
+      !!dataSource.length ? (
+        <SelectionTable
+          getRowId={(row) => row.restore_id}
+          columns={missingPiecesTableCols}
+          rowSelection={rowSelection}
+          setRowSelection={setRowSelection}
+          data={dataSource}
+        >
+          <div className="mt-3 flex items-center justify-end gap-5 p-2">
+            <div className="flex items-center gap-2 font-bold">
+              {t("page")}
+              <span className=" text-mainGreen">{data.current_page}</span>
+              {t("from")}
+              <span className=" text-mainGreen">{data.pages}</span>
             </div>
-          </Table>
-        )}
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <ItemDetailsTable
+            <div className="flex items-center gap-2 ">
+              <Button
+                className=" rounded bg-mainGreen p-[.18rem]"
+                action={() => dispatch({ type: SET_PAGE, payload: page - 1 })}
+                disabled={page == 1}
+              >
+                {isRTL ? (
+                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                ) : (
+                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                )}
+              </Button>
+              <Button
+                className="rounded bg-mainGreen p-[.18rem]"
+                action={() => dispatch({ type: SET_PAGE, payload: page + 1 })}
+                disabled={page == data.pages}
+              >
+                {isRTL ? (
+                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                ) : (
+                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                )}
+              </Button>
+            </div>
+          </div>
+        </SelectionTable>
+      ) : (
+        <p className="text-center text-2xl font-bold text-mainGreen my-8">
+          {t("there is no pieces")}
+        </p>
+      )}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => dispatch({ type: SET_MODAL_OPEN, payload: false })}
+      >
+        <MissingItemsDetails
           selectedItem={data?.data}
           selectedRowDetailsId={selectedRowDetailsId}
         />
       </Modal>
 
-      <Modal
+      {/* <Modal
         isOpen={returnItemsModel}
         onClose={() => setReturnItemsModel(false)}
       >
@@ -512,7 +526,9 @@ export const SellingBranchIdentity = () => {
 
       <Modal isOpen={printModal} onClose={() => setPrintModal(false)}>
         <RejectedItemsInvoicePrint item={dataSourcePrint} />
-      </Modal>
+      </Modal> */}
     </div>
   );
-};
+}
+
+export default MissingPieces;

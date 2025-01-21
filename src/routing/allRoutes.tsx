@@ -195,6 +195,7 @@ import Inventory from "../pages/selling/Inventory/Inventory";
 import CreatingInventoryBond from "../pages/selling/Inventory/CreatingInventoryBond";
 import ViewInventoryBonds from "../pages/selling/Inventory/ViewInventoryBonds";
 import InventoryReportes from "../pages/selling/Inventory/Reportes/InventoryReportes";
+import MissingPieces from "../pages/selling/MissingPiecesFromStocktacking/MissingPieces";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -515,6 +516,7 @@ export const AllRoutesProvider = () => {
           />
 
           <Route path="/supplier-payment" element={<SupplierPayment />} />
+          <Route path="/missing-pieces" element={<MissingPieces />} />
 
           <Route
             path="/bonds/supplier-payment"
