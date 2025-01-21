@@ -9,23 +9,34 @@ import {
   useReactTable,
   flexRender,
   getPaginationRowModel,
-  FilterFn,
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import { GiWeight } from "react-icons/gi";
 import { numberContext } from "../../../context/settings/number-formatter";
+import { UseClickOutsideAndKeyboardDrop } from "../../../utils/UseClickOutsideAndKeyboardDrop";
 
 const AvailableItemsInBranch = ({
   availableItems,
   setAvailableItems,
   setNumberItemsInBranch,
+  setSelectedItem,
+  activeTableId,
+  setActiveTableId,
 }: any) => {
-  console.log("🚀 ~ AvailableItemsInBranch ~ availableItems:", availableItems);
-  const tableContainerRef = useRef<HTMLDivElement>(null);
-  const [page, setPage] = useState<any>(1);
+  const availabletableCRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState<number>(1);
   const { userData } = useContext(authCtx);
   const [hasMore, setHasMore] = useState(true);
   const { formatGram } = numberContext();
+
+  const { selectedRow, setSelectedRow } = UseClickOutsideAndKeyboardDrop(
+    availableItems,
+    setSelectedItem,
+    availabletableCRef,
+    "Available",
+    activeTableId,
+    setActiveTableId
+  );
 
   const { data, refetch, isLoading } = useFetch({
     queryKey: ["available_items_inBranch", page],
@@ -40,12 +51,9 @@ const AvailableItemsInBranch = ({
     },
     pagination: true,
   });
-  console.log("🚀 ~ AvailableItemsInBranch ~ data:", data);
 
   const fetchMoreData = () => {
-    setPage((prevPage) => {
-      return prevPage + 1;
-    });
+    setPage((prevPage) => prevPage + 1);
   };
 
   useEffect(() => {
@@ -114,7 +122,11 @@ const AvailableItemsInBranch = ({
 
       <div>
         <>
-          <div ref={tableContainerRef} className={` w-full flex flex-col`}>
+          <div
+            ref={availabletableCRef}
+            className={` w-full flex flex-col`}
+            onClick={() => setActiveTableId("Available")}
+          >
             <table className="min-w-full text-center border-b ">
               <thead>
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -150,10 +162,18 @@ const AvailableItemsInBranch = ({
               <table className="min-w-full text-start">
                 <tbody>
                   {table.getRowModel().rows.map((row, i) => (
-                    <tr key={row.id} className="border-b">
+                    <tr
+                      key={row.id}
+                      className={`border-b cursor-pointer ${
+                        selectedRow === i && !!availabletableCRef
+                          ? "bg-[#295E5608]"
+                          : "bg-[#FAFAFA]"
+                      }`}
+                      onClick={() => setSelectedRow(i)}
+                    >
                       {row.getVisibleCells().map((cell) => (
                         <td
-                          className={`whitespace-nowrap px-3 py-3 text-sm font-light bg-[#FAFAFA] !text-gray-900 w-fit `}
+                          className={`whitespace-nowrap px-3 py-3 text-sm font-light !text-gray-900 w-fit`}
                           key={cell.id}
                         >
                           {flexRender(

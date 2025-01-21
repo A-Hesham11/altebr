@@ -15,12 +15,14 @@ import { useNavigate } from "react-router-dom";
 
 const ViewInventoryBonds = () => {
   const [dataSource, setDataSource] = useState([]);
+  console.log("🚀 ~ ViewInventoryBonds ~ dataSource:", dataSource);
   const [open, setOpen] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [openRowId, setOpenRowId] = useState(null);
   const [editEmployees, setEditEmployees] = useState({});
   const isRTL = useIsRTL();
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ ViewInventoryBonds ~ userData:", userData);
   const navigate = useNavigate();
 
   const dropListItems = [
@@ -73,32 +75,32 @@ const ViewInventoryBonds = () => {
       },
       {
         header: () => <span>{t("Number of items in the branch")} </span>,
-        accessorKey: "aaa",
+        accessorKey: "count_items",
         cell: (info) => info.getValue() ?? "---",
       },
       {
         header: () => <span>{t("Total missing parts")} </span>,
-        accessorKey: "waisting_items",
+        accessorKey: "missing_count_items",
         cell: (info) => info.getValue() ?? "---",
       },
       {
         header: () => <span>{t("total weight")} </span>,
-        accessorKey: "weight_to_24",
+        accessorKey: "total_weight",
         cell: (info) => info.getValue() ?? "---",
       },
       {
         header: () => <span>{t("Total weight lost")} </span>,
-        accessorKey: "waisting_weight",
+        accessorKey: "missing_total_weight",
         cell: (info) => info.getValue() ?? "---",
       },
       {
         header: () => <span>{t("Total cash")} </span>,
-        accessorKey: "total_mony",
+        accessorKey: "cashing",
         cell: (info) => info.getValue() ?? "---",
       },
       {
         header: () => <span>{t("Total cash lost")} </span>,
-        accessorKey: "waisting_mony",
+        accessorKey: "missing_cashing",
         cell: (info) => info.getValue() ?? "---",
       },
       {
@@ -108,6 +110,7 @@ const ViewInventoryBonds = () => {
           const rowId = info.row.original.id;
           const reportNumber = info.row.original.bond_number;
           const date = info.row.original.date;
+          const statusBond = info.row.original.status;
 
           const employeesData = info.row.original.employees.map((item) => ({
             id: item.employee_id,
@@ -115,6 +118,7 @@ const ViewInventoryBonds = () => {
             label: item.employee_name,
             is_start: item.is_start,
           }));
+          console.log("🚀 ~ employeesData ~ employeesData:", employeesData);
 
           const toggleDropdown = () => {
             if (openRowId === rowId) {
@@ -125,31 +129,37 @@ const ViewInventoryBonds = () => {
           };
           return (
             <div className="flex items-center justify-center gap-5 relative">
-              <ViewIcon
-                size={19}
-                className="text-mainGreen"
-                action={() => {
-                  navigate(`/selling/inventory/create/${rowId}`);
-                }}
-              />
-              <EditIcon
-                size={19}
-                className="text-mainGreen"
-                action={() => {
-                  setEditEmployees({
-                    id: info.row.original.id,
-                    report_number: info.row.original.bond_number,
-                    employe: employeesData,
-                  });
-                  setOpen(true);
-                }}
-              />
-
-              <HiDotsHorizontal
-                size={20}
-                className="text-mainGreen cursor-pointer"
-                onClick={toggleDropdown}
-              />
+              {statusBond === 0 ? (
+                <>
+                  <ViewIcon
+                    size={19}
+                    className="text-mainGreen"
+                    action={() => {
+                      navigate(`/selling/inventory/create/${rowId}`);
+                    }}
+                  />
+                  {userData?.role_id === 3 && (
+                    <EditIcon
+                      size={19}
+                      className="text-mainGreen"
+                      action={() => {
+                        setEditEmployees({
+                          id: info.row.original.id,
+                          report_number: info.row.original.bond_number,
+                          employe: employeesData,
+                        });
+                        setOpen(true);
+                      }}
+                    />
+                  )}
+                </>
+              ) : (
+                <HiDotsHorizontal
+                  size={20}
+                  className="text-mainGreen cursor-pointer"
+                  onClick={toggleDropdown}
+                />
+              )}
 
               {openRowId === rowId && (
                 <ul className="absolute top-6 left-0 z-50 bg-white shadow-md rounded-xl">

@@ -7,6 +7,8 @@ import { useFetch } from "../../../hooks";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { Form, Formik } from "formik";
 import { BaseInputField } from "../../../components/molecules";
+import * as Yup from "yup";
+import { notify } from "../../../utils/toast";
 
 interface Totals {
   name: string;
@@ -83,6 +85,7 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
         type="number"
         label={label}
         placeholder={placeholder}
+        required
       />
       <p className="bg-[#DB80281A] text-mainOrange py-2 px-5 rounded-xl w-fit mt-4">
         <span className="font-semibold">{t("The Difference")}:</span>{" "}
@@ -209,6 +212,35 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
                   </Button>
                   <Button
                     action={() => {
+                      const validateField = (fieldValue: any) => {
+                        if (fieldValue === "") {
+                          notify("info", `${t("This field is required")}`);
+                          return false;
+                        }
+                        if (fieldValue < 0) {
+                          notify(
+                            "info",
+                            `${t("Value must be greater than or equal to 0")}`
+                          );
+                          return false;
+                        }
+                        return true;
+                      };
+
+                      const fieldsToValidate = [
+                        { value: values.brokenGold_18, name: "brokenGold_18" },
+                        { value: values.brokenGold_21, name: "brokenGold_21" },
+                        { value: values.brokenGold_22, name: "brokenGold_22" },
+                        { value: values.brokenGold_24, name: "brokenGold_24" },
+                        { value: values.cash_Box, name: "cash_Box" },
+                      ];
+
+                      for (const field of fieldsToValidate) {
+                        if (!validateField(field.value, field.name)) {
+                          return;
+                        }
+                      }
+
                       setGoldBrokenAndCashData({
                         brokenGold_18: values.brokenGold_18,
                         brokenGold_21: values.brokenGold_21,
@@ -218,6 +250,7 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
                       });
                       setSteps(3);
                     }}
+                    type="button"
                   >
                     {t("next")}
                   </Button>

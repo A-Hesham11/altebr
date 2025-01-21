@@ -53,12 +53,12 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
       },
       {
         cell: (info: any) => info.getValue() || "---",
-        accessorKey: "wage",
+        accessorKey: "start_time",
         header: () => <span>{t("Start Time")}</span>,
       },
       {
-        cell: (info: any) => info.row.original.value || "---",
-        accessorKey: "value",
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "end_time",
         header: () => <span>{t("End Time")}</span>,
       },
     ],
@@ -119,7 +119,7 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
         <div className="my-6 text-center">
           <img src={Logo} alt="logo" className="mx-auto" />
           <h2 className="text-lg font-semibold">
-            {t("Lost and Found Report")}
+            {t("Inventory groups")}
           </h2>
         </div>
 

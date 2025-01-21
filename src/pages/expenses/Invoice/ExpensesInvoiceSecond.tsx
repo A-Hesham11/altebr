@@ -163,6 +163,7 @@ const ExpensesInvoiceSecond = ({
       description: values.add_description,
       expence_amount: +values.expense_price,
       expence_tax: +values.expense_price_after_tax,
+      tax_number: +values.tax_number,
       expencetax_id: taxType?.expencetax_id ? taxType?.expencetax_id : "",
     };
 

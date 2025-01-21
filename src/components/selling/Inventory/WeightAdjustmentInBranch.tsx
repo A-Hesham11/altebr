@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Table } from "../../templates/reusableComponants/tantable/Table";
 import { Button } from "../../atoms";
 import { BoxesDataBase } from "../../atoms/card/BoxesDataBase";
@@ -8,11 +8,23 @@ import { numberContext } from "../../../context/settings/number-formatter";
 const WeightAdjustmentInBranch = ({
   editWeight,
   setIdentitiesCheckedItems,
+  setOpenWeightItem,
+  addItemToIdentity,
+  currenGroupNumber,
 }: any) => {
-  const [weightItems, setWeightItems] = useState([]);
+  console.log("🚀 ~ editWeight:", editWeight);
+  const [weightItems, setWeightItems] = useState({});
   console.log("🚀 ~ weightItems:", weightItems);
   const [weightNumber, setWeightNumber] = useState("");
+  console.log("🚀 ~ weightNumber:", weightNumber);
   const { formatGram, formatReyal } = numberContext();
+
+  useEffect(() => {
+    const storedWeights = localStorage.getItem("weightItems");
+    if (storedWeights) {
+      setWeightItems(JSON.parse(storedWeights));
+    }
+  }, []);
 
   const columns = useMemo<any>(
     () => [
@@ -41,13 +53,30 @@ const WeightAdjustmentInBranch = ({
   );
 
   const handleAddWeight = () => {
-    if (weightNumber.trim() === "") return; // Prevent adding empty values
-    setWeightItems((prev) => [
-      ...prev,
-      { id: prev.length + 1, weight: weightNumber },
-    ]);
-    // setWeightNumber(""); // Clear the input
+    if (weightNumber.trim() === "") return;
+
+    setWeightItems((prev) => {
+      const updatedWeights = { ...prev };
+
+      if (!updatedWeights[editWeight?.hwya]) {
+        updatedWeights[editWeight?.hwya] = [];
+      }
+
+      updatedWeights[editWeight?.hwya].push({
+        id: updatedWeights[editWeight?.hwya].length + 1,
+        weight: weightNumber,
+      });
+
+      localStorage.setItem("weightItems", JSON.stringify(updatedWeights));
+
+      return updatedWeights;
+    });
   };
+
+  const totalWeight = weightItems?.[editWeight?.hwya]?.reduce(
+    (acc, item) => acc + parseFloat(item.weight || 0),
+    0
+  );
 
   return (
     <div>
@@ -66,20 +95,22 @@ const WeightAdjustmentInBranch = ({
         </h2>
         <div className="flex gap-x-5 w-full">
           <div className="bg-[#F4F7F6] rounded-2xl p-8 w-3/4">
-            <div>
-              <input
-                name="weight"
-                placeholder={t("weight")}
-                onChange={(e) => setWeightNumber(e.target.value)}
-                value={weightNumber}
-                className="border-none p-3 rounded-xl me-5"
-              />
-              <Button bordered action={handleAddWeight}>
-                {t("add")}
-              </Button>
-            </div>
+            {!editWeight?.details_weight && (
+              <div>
+                <input
+                  name="weight"
+                  placeholder={`${t("weight")}`}
+                  onChange={(e) => setWeightNumber(e.target.value)}
+                  value={weightNumber}
+                  className="border-none p-3 rounded-xl me-5"
+                />
+                <Button bordered action={handleAddWeight}>
+                  {t("add")}
+                </Button>
+              </div>
+            )}
             <ul className="mt-8 flex items-center gap-x-4">
-              {weightItems?.map((item) => (
+              {weightItems?.[editWeight?.hwya]?.map((item) => (
                 <li className="bg-[#DB802833] text-mainOrange w-fit px-5 py-2 rounded-2xl text-[15px]">
                   <p>
                     <span className="font-semibold">
@@ -98,7 +129,7 @@ const WeightAdjustmentInBranch = ({
                   {t("total weight")}
                 </p>
                 <p className="px-2 py-[7px] text-mainGreen text-center rounded-b-xl">
-                  {formatGram(Number(editWeight?.total_weight))} {t("gram")}
+                  {formatGram(Number(editWeight?.weight))} {t("gram")}
                 </p>
               </li>
               <li className="border border-mainOrange rounded-xl">
@@ -106,7 +137,8 @@ const WeightAdjustmentInBranch = ({
                   {t("remaining weight")}
                 </p>
                 <p className="px-2 py-[7px] text-mainOrange rounded-b-xl text-center">
-                  {formatGram(Number(editWeight?.remaining_weight))} {t("gram")}
+                  {formatGram(Number(editWeight?.weight - totalWeight))}{" "}
+                  {t("gram")}
                 </p>
               </li>
             </ul>
@@ -114,30 +146,38 @@ const WeightAdjustmentInBranch = ({
         </div>
       </div>
 
-      <div className="flex justify-end mt-10">
-        <Button
-          action={() => {
-            setIdentitiesCheckedItems((prevState) => {
-              return prevState.map((group) => {
-                return {
-                  ...group,
-                  items: group.items.map((item) => {
-                    if (editWeight?.hwya == item.hwya) {
-                      return {
-                        ...item,
-                        weight: weightNumber, // Update weight based on hwyaMap
-                      };
-                    }
-                    return item; // Keep the same if no match
-                  }),
-                };
+      {!editWeight?.details_weight && (
+        <div className="flex justify-end mt-10">
+          <Button
+            action={() => {
+              const { weight, ...rest } = editWeight;
+              setIdentitiesCheckedItems((prevState) => {
+                return prevState.map((group) => {
+                  return {
+                    ...group,
+                    items: group.items.map((item) => {
+                      if (editWeight?.hwya == item.hwya) {
+                        return {
+                          ...item,
+                          weight: totalWeight,
+                        };
+                      }
+                      return item;
+                    }),
+                  };
+                });
               });
-            });
-          }}
-        >
-          {t("confirm")}
-        </Button>
-      </div>
+              addItemToIdentity(currenGroupNumber, {
+                ...editWeight,
+                weight: Number(totalWeight),
+              }, true);
+              setOpenWeightItem(false);
+            }}
+          >
+            {t("confirm")}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

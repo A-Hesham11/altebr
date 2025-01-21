@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { t } from "i18next";
 import {
   getCoreRowModel,
@@ -11,16 +11,29 @@ import { GiWeight } from "react-icons/gi";
 import { Modal } from "../../molecules";
 import WeightAdjustmentInBranch from "./WeightAdjustmentInBranch";
 import { numberContext } from "../../../context/settings/number-formatter";
+import { UseClickOutsideAndKeyboardDrop } from "../../../utils/UseClickOutsideAndKeyboardDrop";
 
 const IdentitiesCheckedByBranch = ({
   identitiesCheckedItems,
-  setIdentitiesCheckedItems,
   currenGroupNumber,
+  setOpenWeightItem,
+  setEditWeight,
+  setSelectedItem,
+  activeTableId,
+  setActiveTableId,
 }: any) => {
-  const tableContainerRef = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState(false);
-  const [editWeight, setEditWeight] = useState({});
+  const identitiesTableRef = useRef<HTMLDivElement>(null);
   const { formatGram } = numberContext();
+  const itemsDrop = identitiesCheckedItems.flatMap((group) => group.items);
+
+  const { selectedRow, setSelectedRow } = UseClickOutsideAndKeyboardDrop(
+    itemsDrop,
+    setSelectedItem,
+    identitiesTableRef,
+    "Identities",
+    activeTableId,
+    setActiveTableId
+  );
 
   const totalNumberItemsInspected = identitiesCheckedItems?.reduce(
     (count, group) => count + group.items.length,
@@ -71,7 +84,6 @@ const IdentitiesCheckedByBranch = ({
     ...identitiesCheckedItems.filter((group) => group.id === currenGroupNumber),
     ...identitiesCheckedItems.filter((group) => group.id !== currenGroupNumber),
   ];
-  console.log("🚀 ~ sortedIdentitiesCheckedItems:", sortedIdentitiesCheckedItems)
 
   const table = useReactTable({
     data: sortedIdentitiesCheckedItems,
@@ -94,7 +106,11 @@ const IdentitiesCheckedByBranch = ({
 
       <div>
         <>
-          <div ref={tableContainerRef} className={` w-full flex flex-col`}>
+          <div
+            ref={identitiesTableRef}
+            className={` w-full flex flex-col`}
+            onClick={() => setActiveTableId("Identities")}
+          >
             <table className="min-w-full text-center border-b ">
               <thead>
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -121,7 +137,7 @@ const IdentitiesCheckedByBranch = ({
               <table className="min-w-full text-center">
                 <tbody>
                   {sortedIdentitiesCheckedItems?.map((group) => (
-                    <>
+                    <Fragment key={group.id}>
                       <tr
                         key={`group-${group.id}`}
                         className="border-t border-[#db7f2857] bg-[#E8E8E2] w-full text-sm"
@@ -145,7 +161,12 @@ const IdentitiesCheckedByBranch = ({
                         return (
                           <tr
                             key={`item-${group.id}-${index}`}
-                            className="border-b !bg-[#FAFAFA]"
+                            className={`border-b cursor-pointer ${
+                              selectedRow === index && !!identitiesTableRef
+                                ? "bg-[#295E5608]"
+                                : "bg-[#FAFAFA]"
+                            }`}
+                            onClick={() => setSelectedRow(index)}
                           >
                             {columns.map((col) => {
                               return (
@@ -158,8 +179,11 @@ const IdentitiesCheckedByBranch = ({
                                     <div
                                       className="flex items-end justify-center gap-x-1 cursor-pointer"
                                       onClick={() => {
-                                        setOpen(true);
-                                        setEditWeight(item);
+                                        setOpenWeightItem(true);
+                                        setEditWeight({
+                                          ...item,
+                                          details_weight: true,
+                                        });
                                       }}
                                     >
                                       <GiWeight
@@ -177,7 +201,7 @@ const IdentitiesCheckedByBranch = ({
                           </tr>
                         );
                       })}
-                    </>
+                    </Fragment>
                   ))}
                 </tbody>
               </table>
@@ -196,17 +220,6 @@ const IdentitiesCheckedByBranch = ({
           {formatGram(Number(totalWeightOfAllGroups))} {t("gram")}
         </h2>
       </div>
-
-      <Modal
-        onClose={() => setOpen(false)}
-        isOpen={open}
-        title={`${t("Enter weight for a piece")}`}
-      >
-        <WeightAdjustmentInBranch
-          editWeight={editWeight}
-          setIdentitiesCheckedItems={setIdentitiesCheckedItems}
-        />
-      </Modal>
     </div>
   );
 };

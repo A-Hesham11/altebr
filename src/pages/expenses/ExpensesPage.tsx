@@ -37,6 +37,7 @@ const ExpensesPage = () => {
     value_zero: "",
     value_exempt: "",
     tax_type: "",
+    tax_number:"",
     expense_price: "",
     expense_date: new Date(),
     expense_type: "",
