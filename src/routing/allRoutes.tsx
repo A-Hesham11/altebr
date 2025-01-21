@@ -196,6 +196,8 @@ import CreatingInventoryBond from "../pages/selling/Inventory/CreatingInventoryB
 import ViewInventoryBonds from "../pages/selling/Inventory/ViewInventoryBonds";
 import InventoryReportes from "../pages/selling/Inventory/Reportes/InventoryReportes";
 import MissingPieces from "../pages/selling/MissingPiecesFromStocktacking/MissingPieces";
+import ViewEdaraExpenses from "../pages/expensesInEdara/view/ViewEdaraExpenses";
+import AddEdaraExpenses from "../pages/expensesInEdara/add/AddEdaraExpenses";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -750,6 +752,8 @@ export const AllRoutesProvider = () => {
             element={<WeightAdjustment />}
           />
           <Route path="/expenses/Salaries" element={<SalariesPage />} />
+          <Route path="/edara/addExpenses" element={<AddEdaraExpenses />} />
+          <Route path="/edara/viewExpenses" element={<ViewEdaraExpenses />} />
           <Route path="/buying/purchaseBonds" element={<PurchaseBonds />} />
           <Route
             path="/buying/weightAdjustmentBonds"

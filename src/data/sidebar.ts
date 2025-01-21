@@ -1,5 +1,5 @@
 import { AiFillGolden, AiOutlineBars, AiOutlineGold } from "react-icons/ai";
-import { CiExport, CiGrid2H, CiSettings } from "react-icons/ci";
+import { CiExport, CiGrid2H, CiSettings, CiViewList } from "react-icons/ci";
 import { GiBigDiamondRing, GiCutDiamond, GiGems } from "react-icons/gi";
 import { IoAdd, IoDiamondOutline, IoDocumentsOutline } from "react-icons/io5";
 import { IconType } from "react-icons/lib";
@@ -10,6 +10,7 @@ import { TebrLogo } from "../components/atoms/icons/TebrLogo";
 // import {altebrLogo}  from "../components/atoms/icons/altebrLogo.svg";
 // import {sideBarLogo} from "../assets/sideBar-logo.svg";
 import { BsQuestionSquare } from "react-icons/bs";
+import { BiDollar } from "react-icons/bi";
 export type MenuItem_TP = {
   id: string;
   icon: IconType;
@@ -348,6 +349,25 @@ export const sideBarItems: MenuItem_TP[] = [
     label: "Expenses",
     icon: CiExport,
     items: [
+      {
+        id: crypto.randomUUID(),
+        label: "Expenses",
+        icon: CiExport,
+        items: [
+          {
+            id: crypto.randomUUID(),
+            label: "add expense",
+            link: "/edara/addExpenses",
+            icon: BiDollar,
+          },
+          {
+            id: crypto.randomUUID(),
+            label: "expenses bonds",
+            link: "/edara/viewExpenses",
+            icon: CiViewList,
+          },
+        ],
+      },
       {
         id: crypto.randomUUID(),
         label: "Salaries",

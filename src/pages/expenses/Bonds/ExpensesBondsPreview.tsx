@@ -16,7 +16,13 @@ import ExpenseInvoiceTable from "../Invoice/ExpensesInvoiceTable";
 import ExpenseBillData from "../Invoice/ExpenseBillData";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 
-const ExpensesBondsPreview = ({ item }: { item?: {} }) => {
+const ExpensesBondsPreview = ({
+  item,
+  inEdara,
+}: {
+  item?: {};
+  inEdara?: boolean;
+}) => {
   console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
