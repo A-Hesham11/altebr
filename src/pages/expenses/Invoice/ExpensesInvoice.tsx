@@ -57,10 +57,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
   taxType,
   setTaxType,
 }) => {
-  console.log("🚀 ~ files:", files);
-  console.log("🚀 ~ paymentData:", paymentData);
   const { setFieldValue, values } = useFormikContext<Payment_TP>();
-  console.log("🚀 ~ values:", values);
   const { userData } = useContext(authCtx);
 
   const [open, setOpen] = useState(false);

@@ -1652,5 +1652,7 @@
   "Undefined": "غير معرفة",
   "missing pieces": "القطع المفقودة",
   "there is no pieces": "لا توجد قطع",
-  "missing pieces from the stocktaking": "القطع المفقودة من الجرد"
+  "missing pieces from the stocktaking": "القطع المفقودة من الجرد",
+  "select at least one item": "اختر قطعه على الاقل",
+  "add expense": "اضافة مصروف"
 }

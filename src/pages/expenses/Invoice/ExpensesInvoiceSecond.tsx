@@ -37,15 +37,13 @@ const ExpensesInvoiceSecond = ({
   taxType,
   files,
   setFiles,
+  isInEdara,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData);
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
-  console.log("🚀 ~ taxType:", taxType);
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
+  const { pathname } = location;
   const navigate = useNavigate();
   const [responseSellingData, SetResponseSellingData] = useState(null);
-  console.log("🚀 ~ responseSellingData:", responseSellingData);
 
   const { setFieldValue, values, resetForm } = useFormikContext<any>();
 
@@ -144,8 +142,8 @@ const ExpensesInvoiceSecond = ({
       console.log("🚀 ~ data:", data);
       notify("success", `${t("success add expense invoice")}`);
       resetForm();
-      setFiles([])
-      setPaymentData([])
+      setFiles([]);
+      setPaymentData([]);
       // navigate(`/selling/honesty/return-honest/${data.bond_id}`)
       // navigate(`/expenses/expensesBonds/`);
     },
@@ -155,24 +153,49 @@ const ExpensesInvoiceSecond = ({
   });
 
   const posSellingDataHandler = () => {
-    const invoice = {
-      expence_date: values.expense_date || formatDate(new Date()),
-      branch_id: userData?.branch_id,
-      expence_bond_number: invoiceNumber?.length + 1,
-      child_id: values.sub_expense,
-      description: values.add_description,
-      expence_amount: +values.expense_price,
-      expence_tax: +values.expense_price_after_tax,
-      tax_number: +values.tax_number,
-      expencetax_id: taxType?.expencetax_id ? taxType?.expencetax_id : "",
-    };
+    let invoice;
 
-    console.log({ ...invoice });
+    if (pathname === "/edara/addExpenses") {
+      invoice = {
+        expense_date: values.expense_date || formatDate(new Date()),
+        branch_id: userData?.branch_id,
+        expense_bond_number: invoiceNumber?.length + 1,
+        child_id: values.sub_expense,
+        description: values.add_description,
+        expense_amount: +values.expense_price,
+        expense_tax: +values.expense_price_after_tax,
+        tax_number: +values.tax_number,
+        expensetax_id: taxType?.expencetax_id ? taxType?.expencetax_id : "",
+      };
+    } else {
+      invoice = {
+        expence_date: values.expense_date || formatDate(new Date()),
+        branch_id: userData?.branch_id,
+        expence_bond_number: invoiceNumber?.length + 1,
+        child_id: values.sub_expense,
+        description: values.add_description,
+        expence_amount: +values.expense_price,
+        expence_tax: +values.expense_price_after_tax,
+        tax_number: +values.tax_number,
+        expencetax_id: taxType?.expencetax_id ? taxType?.expencetax_id : "",
+      };
+    }
 
-    const card = paymentData.reduce((acc, curr) => {
-      acc[curr.exchangeFrontKey] = Number(curr.amount);
-      return acc;
-    }, {});
+    let card;
+
+    if (isInEdara) {
+      card = paymentData.reduce((acc, curr) => {
+        acc[curr.frontKeyExpenseEdaraa] = Number(curr.amount);
+        return acc;
+      }, {});
+    } else {
+      card = paymentData.reduce((acc, curr) => {
+        acc[curr.exchangeFrontKey] = Number(curr.amount);
+        return acc;
+      }, {});
+    }
+    console.log("🚀 ~ card ~ paymentData:", paymentData);
+    console.log("🚀 ~ card ~ carddd:", card);
 
     const paymentCard = paymentData?.map((item) => ({
       card_id: item.frontkey === "cash" ? "cash" : item.paymentCardId,
@@ -181,7 +204,10 @@ const ExpensesInvoiceSecond = ({
     }));
 
     mutate({
-      endpointName: "/expenses/api/v1/add-expense-invoice",
+      endpointName:
+        pathname === "/edara/addExpenses"
+          ? "/edaraaExpense/api/v1/edaraaExpense-invoices"
+          : "/expenses/api/v1/add-expense-invoice",
       values: { ...invoice, media: files, card, paymentCard },
       dataType: "formData",
     });

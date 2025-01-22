@@ -16,10 +16,17 @@ import ExpenseInvoiceTable from "../Invoice/ExpensesInvoiceTable";
 import ExpenseBillData from "../Invoice/ExpenseBillData";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 
-const ExpensesBondsPreview = ({ item }: { item?: {} }) => {
+const ExpensesBondsPreview = ({
+  item,
+  inEdara,
+}: {
+  item?: {};
+  inEdara?: boolean;
+}) => {
   console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
-  const { formatGram, formatReyal } = numberContext();
+  const { formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
+  const { pathname } = location;
   const isRTL = useIsRTL();
   const { userData } = useContext(authCtx);
 
@@ -27,9 +34,18 @@ const ExpensesBondsPreview = ({ item }: { item?: {} }) => {
     {
       add_description: item?.description,
       directed_to: item?.description,
-      expense_date: item?.expence_date,
-      expense_price: item?.expence_amount,
-      expense_price_after_tax: item?.expence_tax,
+      expense_date:
+        pathname === "/edara/viewExpenses"
+          ? item?.expense_date
+          : item?.expence_date,
+      expense_price:
+        pathname === "/edara/viewExpenses"
+          ? item?.expense_amount
+          : item?.expence_amount,
+      expense_price_after_tax:
+        pathname === "/edara/viewExpenses"
+          ? item?.expense_tax
+          : item?.expence_tax,
       expense_type_name: item?.child,
     },
   ];
@@ -198,7 +214,11 @@ const ExpensesBondsPreview = ({ item }: { item?: {} }) => {
             <div className="mx-6 bill-shadow rounded-md p-6">
               <ExpenseBillData
                 clientData={clientData}
-                invoiceNumber={Number(item?.expence_bond_number) - 1}
+                invoiceNumber={
+                  pathname === "/edara/viewExpenses"
+                    ? Number(item?.expense_bond_number) - 1
+                    : Number(item?.expence_bond_number) - 1
+                }
               />
             </div>
 

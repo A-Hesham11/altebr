@@ -1,23 +1,20 @@
-import { Formik } from "formik";
-import { useContext, useState } from "react";
-import { Selling_TP } from "../data/SellingTableData";
-import { ClientData_TP } from "../../SellingClientForm";
-import { Payment_TP } from "../data/PaymentProcessing";
+import React, { useContext, useState } from "react";
+import { authCtx } from "../../../context/auth-and-perm/auth";
 import * as Yup from "yup";
-import { useFetch } from "../../hooks";
-import { authCtx } from "../../context/auth-and-perm/auth";
-import ExpensesInvoice from "./Invoice/ExpensesInvoice";
-import ExpensesInvoiceSecond from "./Invoice/ExpensesInvoiceSecond";
+import { useFetch } from "../../../hooks";
+import { Formik } from "formik";
+import ExpensesInvoiceSecond from "../../expenses/Invoice/ExpensesInvoiceSecond";
+import ExpensesInvoice from "../../expenses/Invoice/ExpensesInvoice";
 
-const ExpensesPage = () => {
+const AddEdaraExpenses = () => {
   const { userData } = useContext(authCtx);
 
   // STATE
-  const [dataSource, setDataSource] = useState<Selling_TP[]>();
+  const [dataSource, setDataSource] = useState();
   const [stage, setStage] = useState<number>(1);
-  const [clientData, setClientData] = useState<ClientData_TP>();
+  const [clientData, setClientData] = useState();
   const [sellingItemsData, setSellingItemsData] = useState([]);
-  const [invoiceNumber, setInvoiceNumber] = useState([]);
+  const [invoiceNumber, setInvoiceNumber] = useState(null);
   console.log("🚀 ~ ExpensesPage ~ invoiceNumber:", invoiceNumber);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const [odwyaTypeValue, setOdwyaTypeValue] = useState();
@@ -27,11 +24,11 @@ const ExpensesPage = () => {
   const [taxAdded, setTaxAdded] = useState<boolean>(null);
   const [taxZero, setTaxZero] = useState<boolean>(null);
   const [taxExempt, setTaxExempt] = useState<boolean>(null);
-  const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
+  const [paymentData, setPaymentData] = useState([]);
   const [selectedCardId, setSelectedCardId] = useState<number>(null);
   const [taxType, setTaxType] = useState<any>(null);
 
-  const initialValues: Selling_TP = {
+  const initialValues = {
     include_tax: "",
     value_added: "",
     value_zero: "",
@@ -61,10 +58,10 @@ const ExpensesPage = () => {
     media: Yup.array().min(1, "Media is required"),
   });
 
-  const { data: expensesInvoice } = useFetch<ClientData_TP>({
-    endpoint: `/expenses/api/v1/expense-invoices/${userData?.branch_id}`,
+  const { data: expensesInvoice } = useFetch({
+    endpoint: `/edaraaExpense/api/v1/edaraaExpense-invoices`,
     queryKey: ["get_expense_invoice"],
-    onSuccess(data) {
+    onSuccess(data: any) {
       setInvoiceNumber(data);
     },
   });
@@ -124,6 +121,7 @@ const ExpensesPage = () => {
             files={files}
             setFiles={setFiles}
             taxType={taxType}
+            isInEdara
           />
         )}
       </>
@@ -131,4 +129,4 @@ const ExpensesPage = () => {
   );
 };
 
-export default ExpensesPage;
+export default AddEdaraExpenses;

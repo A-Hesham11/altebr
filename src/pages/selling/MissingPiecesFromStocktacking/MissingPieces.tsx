@@ -22,7 +22,7 @@ import {
   SET_PAGE,
   SET_SEARCH,
   SET_SELECTED_ROW_DETAILS_ID,
-} from "../../../Reducers/GlobalVariables";
+} from "../../../Reducers/Constants";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { MissingItemsDetails } from "./MissingItemsDetails";
 import SelectionTable from "./SelectionTable";
@@ -299,6 +299,29 @@ function MissingPieces() {
     dispatch({ type: SET_SEARCH, payload: url });
   };
 
+  const processItemReturn = () => {
+    if (!validateReturnItems()) return;
+    submitReturnRequest();
+  };
+
+  const validateReturnItems = () => {
+    if (convertSelectionObjToArray().length === 0) {
+      notify("error", `${t("select at least one item")}`);
+      return false;
+    }
+    return true;
+  };
+
+  const submitReturnRequest = () => {
+    mutate({
+      endpointName: `branchManage/api/v1/restoreItem`,
+      method: "post",
+      values: {
+        restores: convertSelectionObjToArray(),
+      },
+    });
+  };
+
   if (isLoading || isRefetching)
     return <Loading mainTitle={t("loading items")} />;
 
@@ -420,18 +443,7 @@ function MissingPieces() {
       </ul>
       {dataSource?.length > 0 && (
         <div className="flex justify-end mb-4">
-          <Button
-            loading={returnLoading}
-            action={() =>
-              mutate({
-                endpointName: `branchManage/api/v1/restoreItem`,
-                method: "post",
-                values: {
-                  restores: convertSelectionObjToArray(),
-                },
-              })
-            }
-          >
+          <Button loading={returnLoading} action={processItemReturn}>
             {t("return items")}
           </Button>
         </div>
