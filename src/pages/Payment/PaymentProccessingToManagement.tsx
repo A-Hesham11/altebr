@@ -61,13 +61,12 @@ const PaymentProccessingToManagement = ({
   setIsCheckedCommission,
   expensePrice,
 }: Payment_TP) => {
-  console.log("🚀 ~ expensePrice:", expensePrice);
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
-  console.log("🚀 ~ paymentData:", paymentData);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [editData, setEditData] = useState<Payment_TP>();
   const [cardFrontKey, setCardFronKey] = useState<string>("");
+  const [cardFrontKeyExpenseEdaraa, setCardFrontKeyExpenseEdaraa] =
+    useState<string>("");
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
   const [sellingFrontKey, setSellingFrontKey] = useState<string>("");
@@ -138,12 +137,22 @@ const PaymentProccessingToManagement = ({
 
   const cashId =
     locationPath === "/selling/payoff/sales-return" ||
-    (locationPath === "/expenses/expensesInvoice" && cardFrontKey === "cash");
+    locationPath === "/edara/addExpenses" ||
+    (locationPath === "/expenses/expensesInvoice" && cardFrontKey === "cash"); // BUG:
+
+  // https://api-alexon.altebr.com/edaraaExpense/api/v1/trigger/eoR5_rjOy_hisham_0016161600_16_45
+
+  let endpoint = `/edaraaExpense/api/v1/trigger/${
+    cardFrontKeyExpenseEdaraa || 10005
+  }`;
 
   const { data, refetch } = useFetch({
-    endpoint: `/sdad/api/v1/show/${cashId ? 10005 : cardId || 0}/${
-      userData?.branch_id
-    }/${cardFrontKey || 0}`,
+    endpoint:
+      locationPath === "/edara/addExpenses"
+        ? endpoint // BUG:
+        : `/sdad/api/v1/show/${cashId ? 10005 : cardId || 0}/${
+            userData?.branch_id
+          }/${cardFrontKey || 0}`,
     queryKey: ["showValueOfCards"],
     onSuccess(data) {
       return data.data;
@@ -156,6 +165,8 @@ const PaymentProccessingToManagement = ({
     locationPath === "/selling/payoff/sales-return"
       ? amountIsPaid - Number(amountRemaining)
       : locationPath === "/expenses/expensesInvoice"
+      ? Number(expensePrice) - Number(amountRemaining)
+      : locationPath === "/edara/addExpenses" // BUG:
       ? Number(expensePrice) - Number(amountRemaining)
       : locationPath === "/selling/reimbursement"
       ? data?.value
@@ -217,6 +228,7 @@ const PaymentProccessingToManagement = ({
                   card_id: selectedCardId,
                   cardImage: cardImage,
                   frontkey: cardFrontKey,
+                  frontKeyExpenseEdaraa: cardFrontKeyExpenseEdaraa,
                   frontKeyAccept: frontKeyAccept,
                   frontKeySadad: frontKeySadad,
                   sellingFrontKey: sellingFrontKey,
@@ -278,6 +290,8 @@ const PaymentProccessingToManagement = ({
                   setSellingFrontKey={setSellingFrontKey}
                   setCardFrontKeySadad={setCardFrontKeySadad}
                   setSalesReturnFrontKey={setSalesReturnFrontKey}
+                  cardFrontKeyExpenseEdaraa={cardFrontKeyExpenseEdaraa}
+                  setCardFrontKeyExpenseEdaraa={setCardFrontKeyExpenseEdaraa}
                   setCardId={setCardId}
                   setSelectedCardName={setSelectedCardName}
                   setSelectedCardData={setSelectedCardData}
@@ -349,13 +363,14 @@ const PaymentProccessingToManagement = ({
                   </div>
                 ) : (
                   <div className="relative">
-                    {(locationPath === "/selling/payoff/sales-return" ||
-                      locationPath === "/expenses/expensesInvoice") && (
-                      <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
-                        <span>{t("remaining cost")} : </span>{" "}
-                        {formatReyal(Number(costRemaining))}
-                      </p>
-                    )}
+                    {locationPath === "/selling/payoff/sales-return" ||
+                      locationPath === "/expenses/expensesInvoice" ||
+                      (locationPath === "/edara/addExpenses" && (
+                        <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
+                          <span>{t("remaining cost")} : </span>{" "}
+                          {formatReyal(Number(costRemaining))}
+                        </p>
+                      ))}
                     <BaseInputField
                       id="amount"
                       name="amount"

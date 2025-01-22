@@ -49,54 +49,6 @@ const ViewEdaraExpenses = () => {
     pagination: true,
   });
 
-  // const Cols = useMemo<ColumnDef<Selling_TP>[]>(
-  //   () => [
-  //     {
-  //       header: () => <span>{t("expense type")}</span>,
-  //       accessorKey: "expense_type_name",
-  //       cell: (info) => info.getValue() || "---",
-  //     },
-  //     {
-  //       header: () => <span>{t("We paid to")}</span>,
-  //       accessorKey: "directed_to",
-  //       cell: (info) => info.getValue() || "---",
-  //     },
-  //     {
-  //       header: () => <span>{t("description")} </span>,
-  //       accessorKey: "add_description",
-  //       cell: (info) => info.getValue() || "---",
-  //     },
-  //     {
-  //       header: () => <span>{t("expense price")}</span>,
-  //       accessorKey: "expense_price",
-  //       cell: (info) =>
-  //         formatReyal(
-  //           Number(info.getValue()) - info.row.original.expense_price_after_tax
-  //         ),
-  //     },
-  //     {
-  //       header: () => <span>{t("expense tax")} </span>,
-  //       accessorKey: "expense_price_after_tax",
-  //       cell: (info) => formatReyal(Number(info.getValue())) || "---",
-  //     },
-  //     {
-  //       header: () => <span>{t("total value")} </span>,
-  //       accessorKey: "total_value",
-  //       cell: (info) => {
-  //         return (
-  //           formatReyal(
-  //             +info.row.original.expense_price +
-  //               +info.row.original.expense_price_tax
-  //           ) || "---"
-  //         );
-  //       },
-  //     },
-  //   ],
-  //   []
-  // );
-
-  // EFFECTS
-
   useEffect(() => {
     if (expenseData) {
       dispatch({ type: SET_DATA_SOURCE, payload: expenseData.data });

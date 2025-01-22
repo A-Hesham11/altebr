@@ -37,30 +37,26 @@ const EdaraExpensesFilter = ({
     expence_to_date: "",
   };
 
-  // SEARCH FUNCTIONALITY
-  const getSearchResults = async (req: any) => {
-    let url = `/edaraaExpense/api/v1/edaraaExpense-invoices?`;
-    let first = false;
-    Object.keys(req).forEach((key) => {
-      if (req[key] !== "") {
-        if (first) {
-          // url += `?${key}[eq]=${req[key]}`;
-          if (key === "expence_from_date")
-            url += `?expence_from_date[gte]=${formatDate(req[key])}`;
-          else if (key === "expence_to_date")
-            url += `?expence_to_date[lte]=${formatDate(req[key])}`;
-          else url += `?${key}[eq]=${req[key]}`;
-          first = false;
-        } else {
-          // url += `&${key}[eq]=${req[key]}`;
-          if (key === "expence_from_date")
-            url += `&expence_from_date[gte]=${formatDate(req[key])}`;
-          else if (key === "expence_to_date")
-            url += `&expence_to_date[lte]=${formatDate(req[key])}`;
-          else url += `&${key}[eq]=${req[key]}`;
-        }
+  const buildUrl = (req: any) => {
+    const formatQueryParam = (key: string, value: any): string => {
+      if (key === "expence_from_date") {
+        return `expence_from_date[gte]=${formatDate(value)}`;
+      } else if (key === "expence_to_date") {
+        return `expence_to_date[lte]=${formatDate(value)}`;
       }
-    });
+      return `${key}[eq]=${value}`;
+    };
+
+    return Object.keys(req)
+      .filter((key) => req[key] !== "")
+      .reduce((acc, key, index) => {
+        const queryParam = formatQueryParam(key, req[key]);
+        return index === 0 ? `?${queryParam}` : `${acc}&${queryParam}`;
+      }, "");
+  };
+
+  const getSearchResults = async (req: any) => {
+    const url = `/edaraaExpense/api/v1/edaraaExpense-invoices${buildUrl(req)}`;
     dispatch({ type: SET_SEARCH, payload: url });
   };
 

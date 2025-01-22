@@ -56,6 +56,8 @@ const PaymentCard = ({
   setCardFrontKeySadad,
   setSelectedCardData,
   setExchangeFrontKey,
+  setCardFrontKeyExpenseEdaraa,
+  cardFrontKeyExpenseEdaraa,
 }: Payment_TP) => {
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
@@ -437,6 +439,10 @@ const PaymentCard = ({
       } else if (locationPath === "/selling/payoff/sales-return") {
         setSalesReturnFrontKey?.(
           selectNewCard[0]?.return_selling_front_key || "cash"
+        );
+      } else if (locationPath === "/edara/addExpenses") {
+        setCardFrontKeyExpenseEdaraa?.(
+          selectNewCard[0]?.front_key_ExpenseEdaraa || "cash"
         );
       } else if (locationPath === "/selling/reimbursement") {
         setCardFrontKeySadad?.(

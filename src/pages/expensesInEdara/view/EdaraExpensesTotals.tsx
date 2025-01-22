@@ -1,7 +1,9 @@
 import { t } from "i18next";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { useFetch } from "../../../hooks";
 import { authCtx } from "../../../context/auth-and-perm/auth";
+import "../../Support/searchResultLoading.css";
+import Loader from "./Loader";
 
 type TExpensesBoxes = {
   yearlyExpenseCount: number;
@@ -10,10 +12,13 @@ type TExpensesBoxes = {
 };
 
 const EdaraExpensesTotals = () => {
-  const { userData } = useContext(authCtx);
-
-  const { data: expensesBoxes } = useFetch<TExpensesBoxes>({
-    endpoint: `/expenses/api/v1/expense-count/${userData?.branch_id}`,
+  const {
+    data: expensesBoxes,
+    isLoading,
+    isFetching,
+    isRefetching,
+  } = useFetch<TExpensesBoxes>({
+    endpoint: `/edaraaExpense/api/v1/expense-count`,
     queryKey: ["expensesBoxes"],
   });
 
@@ -34,6 +39,13 @@ const EdaraExpensesTotals = () => {
       value: expensesBoxes?.yearlyExpenseCount,
     },
   ];
+
+  if (isLoading || isFetching || isRefetching)
+    return (
+      <div className="flex justify-center my-12">
+        <Loader />
+      </div>
+    );
 
   return (
     <>
