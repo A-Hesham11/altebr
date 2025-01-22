@@ -41,7 +41,7 @@ const ExpenseBillData = ({ clientData, invoiceNumber }: Client_TP) => {
   const billNumber =
     path === "/selling/honesty/return-honest"
       ? honestBondsData?.length + 1
-      : path === "/expenses/expensesBonds/"
+      : path === "/expenses/expensesBonds/" || path === "/edara/viewExpenses"
       ? invoiceNumber + 1
       : Number(invoiceNumber?.length) + 1;
 
