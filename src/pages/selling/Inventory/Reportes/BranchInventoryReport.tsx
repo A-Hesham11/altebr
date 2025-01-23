@@ -1,7 +1,7 @@
 import Logo from "../../../../assets/bill-logo.png";
 import { t } from "i18next";
 import { Button } from "../../../../components/atoms";
-import { useContext, useMemo, useRef } from "react";
+import { useContext, useRef } from "react";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useIsRTL } from "../../../../hooks";
 import { useReactToPrint } from "react-to-print";
@@ -10,16 +10,22 @@ import { useLocation } from "react-router-dom";
 
 const BranchInventoryReport = ({
   dataSource,
-  reportNumber,
   date,
   reportName,
 }: any) => {
-  console.log("🚀 ~ LostItemsReports ~ dataSource:", dataSource);
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
   const { state } = useLocation();
+
+  const BanksData = Object.entries({ ...dataSource?.banks }).map(
+    ([bankName, value]) => ({
+      title: bankName,
+      value: formatReyal(value),
+      unit: t("reyal"),
+    })
+  );
 
   const totals = [
     {
@@ -27,11 +33,6 @@ const BranchInventoryReport = ({
       value: formatReyal(dataSource?.assets.cash),
       unit: t("reyal"),
     },
-    // {
-    //   title: t("Total Bank Amount"),
-    //   value: formatReyal(dataSource?.assets.cash),
-    //   unit: t("reyal"),
-    // },
     {
       title: t("total wages"),
       value: formatReyal(dataSource?.assets.wages),
@@ -39,45 +40,45 @@ const BranchInventoryReport = ({
     },
     {
       title: t("Total New Gold 18 karat"),
-      value: formatReyal(dataSource?.assets.new_18),
+      value: formatGram(dataSource?.assets.new_18),
       unit: t("gram"),
     },
     {
       title: t("Total New Gold 21 karat"),
-      value: formatReyal(dataSource?.assets.new_21),
+      value: formatGram(dataSource?.assets.new_21),
       unit: t("gram"),
     },
     {
       title: t("Total New Gold 22 karat"),
-      value: formatReyal(dataSource?.assets.new_22),
+      value: formatGram(dataSource?.assets.new_22),
       unit: t("gram"),
     },
     {
       title: t("Total New Gold 24 karat"),
-      value: formatReyal(dataSource?.assets.new_24),
+      value: formatGram(dataSource?.assets.new_24),
       unit: t("gram"),
     },
     {
       title: t("Total gold fraction 18"),
-      value: formatReyal(dataSource?.assets.old_18),
+      value: formatGram(dataSource?.assets.old_18),
       unit: t("gram"),
     },
     {
       title: t("Total gold fraction 21"),
-      value: formatReyal(dataSource?.assets.old_21),
+      value: formatGram(dataSource?.assets.old_21),
       unit: t("gram"),
     },
     {
       title: t("Total gold fraction 22"),
-      value: formatReyal(dataSource?.assets.old_22),
+      value: formatGram(dataSource?.assets.old_22),
       unit: t("gram"),
     },
     {
       title: t("Total gold fraction 24"),
-      value: formatReyal(dataSource?.assets.old_24),
+      value: formatGram(dataSource?.assets.old_24),
       unit: t("gram"),
     },
-
+    ...BanksData,
     {
       title: t("diamond value"),
       value: formatReyal(dataSource?.assets.diamond_value),
@@ -105,7 +106,7 @@ const BranchInventoryReport = ({
     },
     {
       title: t("Total Gold 24"),
-      value: formatReyal(dataSource?.assets.total_weightNewGold_24),
+      value: formatGram(dataSource?.assets.total_weightNewGold_24),
       unit: t("gram"),
     },
   ];
