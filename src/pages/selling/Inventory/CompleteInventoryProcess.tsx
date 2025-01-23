@@ -32,21 +32,16 @@ interface CompleteInventoryProcessProps {
   availableItems: Item[];
   identitiesCheckedItems: any[];
   unknownIdentities: Item[];
-  goldBrokenAndCashData: any;
+  goldBrokenCashBanksFinalData: any;
 }
 
 const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
   setSteps,
   numberItemsInBranch,
-  currenGroupNumber,
-  availableItems,
   identitiesCheckedItems,
   unknownIdentities,
-  goldBrokenAndCashData,
+  goldBrokenCashBanksFinalData,
 }: any) => {
-  console.log("🚀 ~ unknownIdentities:", unknownIdentities);
-  console.log("🚀 ~ goldBrokenAndCashData:", goldBrokenAndCashData);
-  console.log("🚀 ~ identitiesCheckedItems:", identitiesCheckedItems);
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();
@@ -151,11 +146,7 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
     const goldAndCash = {
       inventory_id: id,
       branch_id: userData?.branch_id,
-      gold_18: goldBrokenAndCashData?.brokenGold_18,
-      gold_21: goldBrokenAndCashData?.brokenGold_21,
-      gold_22: goldBrokenAndCashData?.brokenGold_22,
-      gold_24: goldBrokenAndCashData?.brokenGold_24,
-      cash: goldBrokenAndCashData?.cash_Box,
+      ...goldBrokenCashBanksFinalData,
     };
 
     mutateInventoryData({
