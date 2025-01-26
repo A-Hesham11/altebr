@@ -67,9 +67,9 @@ const ViewEdaraExpenses = () => {
     }
   }, [search]);
 
-  // LOADING ....
-  if (isLoading || isRefetching || isFetching)
-    return <Loading mainTitle={`${t("loading items")}`} />;
+  // // LOADING ....
+  // if (isLoading || isRefetching || isFetching)
+  //   return <Loading mainTitle={`${t("loading items")}`} />;
 
   return (
     <div className="">
@@ -88,6 +88,9 @@ const ViewEdaraExpenses = () => {
         dataSource={dataSource}
         dispatch={dispatch}
         expenseData={expenseData}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        isRefetching={isRefetching}
         page={page}
       />
 

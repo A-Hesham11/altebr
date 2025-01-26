@@ -13,11 +13,11 @@ import { authCtx } from "../../../context/auth-and-perm/auth";
 import { Button } from "../../../components/atoms";
 
 type TSearchValues = {
-  expence_bond_number: string;
-  expence_amount: string;
+  expense_bond_number: string;
+  expense_amount: string;
   child_id: string;
-  expence_from_date: string;
-  expence_to_date: string;
+  expense_from_date: string;
+  expense_to_date: string;
 };
 
 const EdaraExpensesFilter = ({
@@ -30,19 +30,19 @@ const EdaraExpensesFilter = ({
   const { userData } = useContext(authCtx);
 
   const searchValues: TSearchValues = {
-    expence_bond_number: "",
-    expence_amount: "",
+    expense_bond_number: "",
+    expense_amount: "",
     child_id: "",
-    expence_from_date: "",
-    expence_to_date: "",
+    expense_from_date: "",
+    expense_to_date: "",
   };
 
   const buildUrl = (req: any) => {
     const formatQueryParam = (key: string, value: any): string => {
-      if (key === "expence_from_date") {
-        return `expence_from_date[gte]=${formatDate(value)}`;
-      } else if (key === "expence_to_date") {
-        return `expence_to_date[lte]=${formatDate(value)}`;
+      if (key === "expense_from_date") {
+        return `expense_from_date[gte]=${value}`;
+      } else if (key === "expense_to_date") {
+        return `expense_to_date[lte]=${value}`;
       }
       return `${key}[eq]=${value}`;
     };
@@ -78,13 +78,14 @@ const EdaraExpensesFilter = ({
       <Formik
         initialValues={searchValues}
         onSubmit={(values: TSearchValues) => {
+          console.log("🚀 ~ values:", values);
           getSearchResults({
             ...values,
-            expence_to_date: values.expence_to_date
-              ? formatDate(getDayAfter(new Date(values.expence_to_date)))
+            expense_to_date: values.expense_to_date
+              ? formatDate(getDayAfter(new Date(values.expense_to_date)))
               : "",
-            expence_from_date: values.expence_from_date
-              ? formatDate(getDayAfter(new Date(values.expence_from_date)))
+            expense_from_date: values.expense_from_date
+              ? formatDate(getDayAfter(new Date(values.expense_from_date)))
               : "",
           });
         }}
@@ -94,8 +95,8 @@ const EdaraExpensesFilter = ({
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 items-end gap-3">
               <div className="">
                 <BaseInputField
-                  id="expence_bond_number"
-                  name="expence_bond_number"
+                  id="expense_bond_number"
+                  name="expense_bond_number"
                   label={`${t("invoice number")}`}
                   placeholder={`${t("invoice number")}`}
                   className="shadow-xs"
@@ -104,8 +105,8 @@ const EdaraExpensesFilter = ({
               </div>
               <div className="">
                 <BaseInputField
-                  id="expence_amount"
-                  name="expence_amount"
+                  id="expense_amount"
+                  name="expense_amount"
                   label={`${t("expense amount")}`}
                   placeholder={`${t("expense amount")}`}
                   className="shadow-xs"
@@ -126,7 +127,7 @@ const EdaraExpensesFilter = ({
                 <DateInputField
                   label={`${t("expense from date")}`}
                   placeholder={`${t("expense from date")}`}
-                  name="epxence_from_date"
+                  name="expense_from_date"
                   labelProps={{ className: "mt-10" }}
                 />
               </div>
@@ -134,7 +135,7 @@ const EdaraExpensesFilter = ({
                 <DateInputField
                   label={`${t("expense to date")}`}
                   placeholder={`${t("expense to date")}`}
-                  name="expence_to_date"
+                  name="expense_to_date"
                   labelProps={{ className: "mt-10" }}
                 />
               </div>
