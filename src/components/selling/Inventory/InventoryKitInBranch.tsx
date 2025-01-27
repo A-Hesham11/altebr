@@ -25,12 +25,11 @@ const InventoryKitInBranch = ({
   currenGroupNumber,
   setOpenKitItems,
 }: any) => {
-  console.log("🚀 ~ InventoryKitInBranch ~ kitItemsData:", kitItemsData);
+  console.log("🚀 ~ kitItemsData:", kitItemsData)
   const { formatGram, formatReyal } = numberContext();
 
   const KitItemDetails = selectedItem?.weightitems;
-  console.log("🚀 ~ KitItemDetails:", KitItemDetails);
-
+ 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
       {
@@ -48,18 +47,18 @@ const InventoryKitInBranch = ({
                 }`}
                 id={info.row.original.id}
                 name="selectedItem"
-                // onChange={(e) => {
-                //   if (e.target.checked) {
-                //     setSelectedItemDetails((prev) => [
-                //       ...prev,
-                //       { ...info.row.original, index: info.row.index },
-                //     ]);
-                //   } else {
-                //     setSelectedItemDetails((prev) =>
-                //       prev.filter((item) => item.index !== info.row.index)
-                //     );
-                //   }
-                // }}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setKitItemsData((prev) => [
+                      ...prev,
+                      { ...info.row.original, index: info.row.index },
+                    ]);
+                  } else {
+                    setKitItemsData((prev) =>
+                      prev.filter((item) => item.index !== info.row.index)
+                    );
+                  }
+                }}
                 disabled={info.row.original.status}
               />
             </div>
@@ -87,21 +86,9 @@ const InventoryKitInBranch = ({
     []
   );
 
-  //   const tablePopup = useReactTable({
-  //     data: kitItemsData,
-  //     columns: Cols,
-  //     getCoreRowModel: getCoreRowModel(),
-  //     getFilteredRowModel: getFilteredRowModel(),
-  //     getPaginationRowModel: getPaginationRowModel(),
-  //   });
-
-  //   const filterStatusOfKit = values.weightitems.filter(
-  //     (item) => item.status === 0
-  //   );
-
   return (
     <Formik initialValues={{ category_name: "" }} onSubmit={() => {}}>
-      {({ values, setFieldValue }) => {
+      {({ setFieldValue }) => {
         return (
           <Form>
             <div>
@@ -176,46 +163,6 @@ const InventoryKitInBranch = ({
               ) : (
                 <>
                   <Table data={KitItemDetails} columns={Cols} />
-                  {/* <table className="mt-8 w-[815px] lg:w-full">
-                    <thead className="bg-mainGreen text-white text-center">
-                      {tablePopup.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id} className="py-4 px-2 w-full">
-                          {headerGroup.headers.map((header) => (
-                            <th
-                              key={header.id}
-                              className="py-4 px-2 text-sm font-medium text-white border w-[11%]"
-                            >
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
-                            </th>
-                          ))}
-                        </tr>
-                      ))}
-                    </thead>
-                    <tbody>
-                      {tablePopup.getRowModel().rows.map((row) => {
-                        return (
-                          <tr key={row.id} className="text-center">
-                            {row.getVisibleCells().map((cell, i) => (
-                              <td
-                                className="px-2 py-2 bg-lightGreen bg-[#295E5608] gap-x-2 items-center border border-[#C4C4C4]"
-                                key={cell.id}
-                              >
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext()
-                                )}
-                              </td>
-                            ))}
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table> */}
                 </>
               )}
             </div>
@@ -281,7 +228,7 @@ const InventoryKitInBranch = ({
                     },
                     true
                   );
-                  setKitItemsData([])
+                  setKitItemsData([]);
                   setOpenKitItems(false);
                 }}
               >

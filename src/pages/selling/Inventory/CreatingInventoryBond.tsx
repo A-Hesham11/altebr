@@ -24,7 +24,6 @@ interface InventoryItem {
 const CreatingInventoryBond: React.FC = () => {
   const { userData } = useContext(authCtx);
   const { id } = useParams<{ id: string }>();
-  console.log("🚀 ~ id:", id);
   const [steps, setSteps] = useState<number>(1);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   console.log("🚀 ~ selectedItem:", selectedItem);
@@ -41,10 +40,10 @@ const CreatingInventoryBond: React.FC = () => {
     JSON.parse(localStorage.getItem("unknownIdentities") || "[]")
   );
   const [numberItemsInBranch, setNumberItemsInBranch] = useState<number>(0);
-  console.log("🚀 ~ numberItemsInBranch:", numberItemsInBranch)
-  const [goldBrokenAndCashData, setGoldBrokenAndCashData] = useState({});
+  const [goldBrokenCashBanksFinalData, setGoldBrokenCashBanksFinalData] = useState({});
+  console.log("🚀 ~ goldBrokenCashBanksFinalData:", goldBrokenCashBanksFinalData)
 
-  const { data: goldBrokenAndCash } = useFetch({
+  const { data: goldBrokenCashBanks } = useFetch({
     endpoint: `/inventory/api/v1/getAccount/${userData?.branch_id}`,
     queryKey: ["brokenGold_cash"],
   });
@@ -74,9 +73,9 @@ const CreatingInventoryBond: React.FC = () => {
       {steps === 2 && (
         <InventoryBrokenGoldCashBox
           setSteps={setSteps}
-          goldBrokenAndCash={goldBrokenAndCash}
-          goldBrokenAndCashData={goldBrokenAndCashData}
-          setGoldBrokenAndCashData={setGoldBrokenAndCashData}
+          goldBrokenCashBanks={goldBrokenCashBanks}
+          goldBrokenCashBanksFinalData={goldBrokenCashBanksFinalData}
+          setGoldBrokenCashBanksFinalData={setGoldBrokenCashBanksFinalData}
         />
       )}
 
@@ -88,7 +87,7 @@ const CreatingInventoryBond: React.FC = () => {
           identitiesCheckedItems={identitiesCheckedItems}
           unknownIdentities={unknownIdentities}
           setSteps={setSteps}
-          goldBrokenAndCashData={goldBrokenAndCashData}
+          goldBrokenCashBanksFinalData={goldBrokenCashBanksFinalData}
         />
       )}
     </div>
