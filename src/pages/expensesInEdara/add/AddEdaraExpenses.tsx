@@ -25,6 +25,7 @@ const AddEdaraExpenses = () => {
   const [taxZero, setTaxZero] = useState<boolean>(null);
   const [taxExempt, setTaxExempt] = useState<boolean>(null);
   const [paymentData, setPaymentData] = useState([]);
+  console.log("🚀 ~ AddEdaraExpenses ~ paymentData:", paymentData);
   const [selectedCardId, setSelectedCardId] = useState<number>(null);
   const [taxType, setTaxType] = useState<any>(null);
 
@@ -55,6 +56,7 @@ const AddEdaraExpenses = () => {
     expense_date: Yup.string().required("Expense date is required"),
     // add_description: Yup.string().required("Add description is required"),
     sub_expense: Yup.string().required("Sub expense is required"),
+    directed_to: Yup.string().required("Directed to is required"),
     media: Yup.array().min(1, "Media is required"),
   });
 

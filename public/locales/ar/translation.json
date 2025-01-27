@@ -1654,5 +1654,8 @@
   "there is no pieces": "لا توجد قطع",
   "missing pieces from the stocktaking": "القطع المفقودة من الجرد",
   "select at least one item": "اختر قطعه على الاقل",
-  "add expense": "اضافة مصروف"
+  "add expense": "اضافة مصروف",
+  "please enter tex type": "من فضلك ادخل نوع الضريبة",
+  "please add amount": "من فضلك اضف قيمة",
+  "please enter directed to": "من فضلك ادخل المستلم"
 }
