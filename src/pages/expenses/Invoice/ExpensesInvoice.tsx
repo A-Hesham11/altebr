@@ -249,7 +249,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               <DateInputField
                 label={`${t("expense date")}`}
                 name="expense_date"
-                minDate={new Date()}
+                maxDate={new Date()}
                 icon={<CiCalendarDate />}
                 required
                 labelProps={{ className: "mb-2" }}
@@ -322,6 +322,11 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
 
               if (values.sub_expense === "") {
                 notify("info", `${t("please select sub expense")}`);
+                return;
+              }
+
+              if (values.directed_to === "") {
+                notify("info", `${t("please enter directed to")}`);
                 return;
               }
 

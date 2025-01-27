@@ -97,8 +97,8 @@ const EdaraExpensesFilter = ({
                 <BaseInputField
                   id="expense_bond_number"
                   name="expense_bond_number"
-                  label={`${t("invoice number")}`}
-                  placeholder={`${t("invoice number")}`}
+                  label={`${t("expenses bond number")}`}
+                  placeholder={`${t("expenses bond number")}`}
                   className="shadow-xs"
                   type="text"
                 />
