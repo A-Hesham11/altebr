@@ -276,18 +276,18 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     });
 
   const handleItemIdentity = async (data) => {
-    console.log("🚀 ~ handleItemIdentity ~ data:", data);
     const kitItems = data?.weightitems?.map((item) => ({
       category_id: item.category_id,
       weight: item.weight,
     }));
+
     mutateItemIdentity({
       endpointName: `/inventory/api/v1/group-item`,
       values: {
         item_id: data?.item_id,
         group_id: currenGroupNumber,
-        weight: data?.weight,
-        weightitems: data?.weightitems?.length ? kitItems : null,
+        weight: Number(data?.weight),
+        kitItems: data?.weightitems?.length ? kitItems : null,
       },
     });
   };
@@ -495,7 +495,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
           setOpenDetailsItem(false);
         }}
       >
-        <ShowDetailsItemOfInventory itemDetails={[selectedItem]} />
+        <ShowDetailsItemOfInventory itemDetails={!!selectedItem ? [selectedItem] : []} />
       </Modal>
 
       <div>
