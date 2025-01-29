@@ -3,19 +3,23 @@
 //import classes from './StonesCard.module.css'
 ///
 /////////// Types
-import { BiPlus } from "react-icons/bi"
-import { BsEye } from "react-icons/bs"
+import { BiPlus } from "react-icons/bi";
+import { BsEye } from "react-icons/bs";
 ///
 type SystemCardProps_TP = {
-  addHandler: () => void
-  viewHandler?: () => void
-  title: string
-}
+  addHandler: () => void;
+  viewHandler?: () => void;
+  title: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
 ///
-export const StonesCard = ({ addHandler, title, viewHandler }: SystemCardProps_TP) => {
+export const StonesCard = ({
+  addHandler,
+  title,
+  viewHandler,
+}: SystemCardProps_TP) => {
   /////////// VARIABLES
   ///
 
@@ -39,11 +43,11 @@ export const StonesCard = ({ addHandler, title, viewHandler }: SystemCardProps_T
     <>
       <h3>{title}</h3>
       <div className="flex gap-3 rounded-lg bg-green bg-opacity-20 p-2">
-        <BiPlus onClick={addHandler} className="cursor-pointer"/>
+        <BiPlus onClick={addHandler} className="cursor-pointer" />
         {viewHandler && (
-          <BsEye  onClick={viewHandler} className="cursor-pointer"/>
+          <BsEye onClick={viewHandler} className="cursor-pointer" />
         )}
       </div>
     </>
-  )
-}
+  );
+};

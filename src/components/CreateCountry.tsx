@@ -49,7 +49,6 @@ export const CreateCountry = ({ value, onAdd }: CreateCountryProps_TP) => {
   const { mutate, error: errorQuery } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      console.log('data ==>' , data);
       
     
         queryClient.setQueryData(["countries"], (old: any) => {

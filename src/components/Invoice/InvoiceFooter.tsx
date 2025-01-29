@@ -5,7 +5,6 @@ import { t } from "i18next";
 
 const InvoiceFooter = () => {
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ InvoiceFooter ~ userData:", userData);
 
   const countryName = userData?.branch?.country?.name;
   const cityName = userData?.branch?.city?.name;

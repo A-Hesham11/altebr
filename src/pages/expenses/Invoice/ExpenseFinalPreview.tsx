@@ -62,7 +62,11 @@ export const ExpenseFinalPreview = ({
                       key={index}
                       className="flex flex-col  items-center gap-1"
                     >
-                      <img src={card.cardImage} alt="card image" />
+                      <img
+                        src={card.cardImage}
+                        alt="card image"
+                        className="w-22 h-12"
+                      />
                       <p>{card.card}</p>
                     </div>
                   </>

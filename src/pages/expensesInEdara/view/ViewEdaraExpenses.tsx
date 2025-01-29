@@ -48,6 +48,7 @@ const ViewEdaraExpenses = () => {
     endpoint: getEndpoint(),
     pagination: true,
   });
+  console.log("🚀 ~ ViewEdaraExpenses ~ expenseData:", expenseData);
 
   useEffect(() => {
     if (expenseData) {
