@@ -1,43 +1,43 @@
 /////////// IMPORTS
 ///
-import { t } from "i18next"
-import { useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { useNavigate } from "react-router-dom"
-import { CreateSizes } from "../../components/CreateSizes"
-import { Modal } from "../../components/molecules"
-import { CreateNationalities } from "../../components/templates/CreateNationalities"
-import CreateColor from "../../components/templates/reusableComponants/CreateColor"
-import CreateCategory from "../../components/templates/reusableComponants/categories/create/CreateCategory"
-import { CreateClassification } from "../../components/templates/reusableComponants/classifications/create/CreateClassification"
-import CreateKarat from "../../components/templates/reusableComponants/karats/create/CreateKarat"
-import CreateStoneNature from "../../components/templates/reusableComponants/stones/create/CreateStoneNature"
-import CreateStonePurity from "../../components/templates/reusableComponants/stones/create/CreateStonePurity"
-import CreateStoneQuality from "../../components/templates/reusableComponants/stones/create/CreateStoneQuality"
-import CreateStoneShape from "../../components/templates/reusableComponants/stones/create/CreateStoneShape"
-import CreateStoneType from "../../components/templates/reusableComponants/stones/create/CreateStoneType"
-import { AddCities } from "../../components/templates/systemEstablishment/AddCities"
-import { AddCountry } from "../../components/templates/systemEstablishment/AddCountry"
-import { AddDistrict } from "../../components/templates/systemEstablishment/AddDistrict"
-import { StonesCard } from "../../components/templates/systemEstablishment/StonesCard"
-import { SystemCard } from "../../components/templates/systemEstablishment/SystemCard"
-import { AddMarket } from "../../components/templates/systemEstablishment/markets/AddMarket"
-import AddMineralsKarats from "../../components/templates/systemEstablishment/minerals karats/AddMaineralsKarat"
-import AddMinerals from "../../components/templates/systemEstablishment/minerals/AddMinerals"
-import ProfitMarginSelect from "../../context/settings/ProfitMarginSelect"
-import { Back } from "../../utils/utils-components/Back"
+import { t } from "i18next";
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
+import { CreateSizes } from "../../components/CreateSizes";
+import { Modal } from "../../components/molecules";
+import { CreateNationalities } from "../../components/templates/CreateNationalities";
+import CreateColor from "../../components/templates/reusableComponants/CreateColor";
+import CreateCategory from "../../components/templates/reusableComponants/categories/create/CreateCategory";
+import { CreateClassification } from "../../components/templates/reusableComponants/classifications/create/CreateClassification";
+import CreateKarat from "../../components/templates/reusableComponants/karats/create/CreateKarat";
+import CreateStoneNature from "../../components/templates/reusableComponants/stones/create/CreateStoneNature";
+import CreateStonePurity from "../../components/templates/reusableComponants/stones/create/CreateStonePurity";
+import CreateStoneQuality from "../../components/templates/reusableComponants/stones/create/CreateStoneQuality";
+import CreateStoneShape from "../../components/templates/reusableComponants/stones/create/CreateStoneShape";
+import CreateStoneType from "../../components/templates/reusableComponants/stones/create/CreateStoneType";
+import { AddCities } from "../../components/templates/systemEstablishment/AddCities";
+import { AddCountry } from "../../components/templates/systemEstablishment/AddCountry";
+import { AddDistrict } from "../../components/templates/systemEstablishment/AddDistrict";
+import { StonesCard } from "../../components/templates/systemEstablishment/StonesCard";
+import { SystemCard } from "../../components/templates/systemEstablishment/SystemCard";
+import { AddMarket } from "../../components/templates/systemEstablishment/markets/AddMarket";
+import AddMineralsKarats from "../../components/templates/systemEstablishment/minerals karats/AddMaineralsKarat";
+import AddMinerals from "../../components/templates/systemEstablishment/minerals/AddMinerals";
+import ProfitMarginSelect from "../../context/settings/ProfitMarginSelect";
+import { Back } from "../../utils/utils-components/Back";
 import {
   Card_TP,
   GlobalFormNames_TP,
   MineralCardsNames_TP,
-  StonesFormNames_TP
-} from "./types-and-helpers"
+  StonesFormNames_TP,
+} from "./types-and-helpers";
 ///
 /////////// Types
 ///
 type GlobalAndStonesProps_TP = {
-  title: string
-}
+  title: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -45,7 +45,7 @@ type GlobalAndStonesProps_TP = {
 export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
   /////////// VARIABLES
   ///
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const globalCards: Card_TP<GlobalFormNames_TP>[] = [
     {
       id: crypto.randomUUID(),
@@ -139,7 +139,7 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
       viewLabel: `${t("view markets")}`,
       viewHandler: () => navigate("/system/global-and-stones/markets"),
     },
-  ]
+  ];
 
   const stonesCards: Card_TP<StonesFormNames_TP>[] = [
     {
@@ -186,7 +186,7 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
       name: "natures",
       viewHandler: () => navigate("/system/global-and-stones/stones-natures"),
     },
-  ]
+  ];
 
   const mineralCards: Card_TP<MineralCardsNames_TP>[] = [
     {
@@ -213,7 +213,7 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
       addLabel: `${t("edit profit margin")}`,
       addComponent: <ProfitMarginSelect />,
     },
-  ]
+  ];
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -222,7 +222,7 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
   /////////// STATES
   ///
   const [globalsPopups, setGlobalsPopups] = useState<{
-    [key in GlobalFormNames_TP]: boolean
+    [key in GlobalFormNames_TP]: boolean;
   }>({
     countries: false,
     cities: false,
@@ -236,11 +236,11 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
     nationalities: false,
     karats: false,
     sizes: false,
-    profit_margin: false
-  })
+    profit_margin: false,
+  });
 
   const [stonesPopups, setStonesPopups] = useState<{
-    [key in StonesFormNames_TP]: boolean
+    [key in StonesFormNames_TP]: boolean;
   }>({
     stones: false,
     shapes: false,
@@ -248,15 +248,15 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
     purities: false,
     natures: false,
     colors: false,
-  })
+  });
 
   const [mineralPopups, setMineralPopups] = useState<{
-    [key in MineralCardsNames_TP]: boolean
+    [key in MineralCardsNames_TP]: boolean;
   }>({
     minerals: false,
     minerals_karats: false,
     profit_margin: false,
-  })
+  });
   ///
   /////////// SIDE EFFECTS
   ///
@@ -265,32 +265,35 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   const openGlobalPopup = (formName: GlobalFormNames_TP | StonesFormNames_TP) =>
-    setGlobalsPopups((prev) => ({ ...prev, [formName]: true }))
+    setGlobalsPopups((prev) => ({ ...prev, [formName]: true }));
 
   const closeGlobalPopup = (
     formName: GlobalFormNames_TP | StonesFormNames_TP
-  ) => setGlobalsPopups((prev) => ({ ...prev, [formName]: false }))
+  ) => setGlobalsPopups((prev) => ({ ...prev, [formName]: false }));
 
   const openStonesPopup = (formName: GlobalFormNames_TP | StonesFormNames_TP) =>
-    setStonesPopups((prev) => ({ ...prev, [formName]: true }))
+    setStonesPopups((prev) => ({ ...prev, [formName]: true }));
 
   const closeStonesPopup = (
     formName: GlobalFormNames_TP | StonesFormNames_TP
-  ) => setStonesPopups((prev) => ({ ...prev, [formName]: false }))
+  ) => setStonesPopups((prev) => ({ ...prev, [formName]: false }));
 
-  const openMineralPopup = (formName: GlobalFormNames_TP | MineralCardsNames_TP) =>
-    setMineralPopups((prev) => ({ ...prev, [formName]: true }))
+  const openMineralPopup = (
+    formName: GlobalFormNames_TP | MineralCardsNames_TP
+  ) => setMineralPopups((prev) => ({ ...prev, [formName]: true }));
 
   const closeMineralPopup = (
     formName: GlobalFormNames_TP | MineralCardsNames_TP
-  ) => setMineralPopups((prev) => ({ ...prev, [formName]: false }))
+  ) => setMineralPopups((prev) => ({ ...prev, [formName]: false }));
   return (
     <>
       <Helmet>
         <title>{title}</title>
       </Helmet>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-lg font-bold underline underline-offset-8">{t("Another")}</h1>
+        <h1 className="text-lg font-bold underline underline-offset-8">
+          {t("Another")}
+        </h1>
         {/* <Back path="/system" /> */}
       </div>
 
@@ -319,34 +322,34 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
       </div>
 
       <br />
-        <div className="mt-12 grid grid-cols-4 gap-6">
-          <div className="col-span-1 flex w-full flex-col items-center gap-4">
-            <div className="flex w-full items-center justify-center gap-2  rounded-lg  bg-mainGreen p-3 text-white">
-              <h2>{t("stones management")}</h2>
-            </div>
-            {stonesCards.map(
-              ({
-                id,
-                title,
-                addComponent,
-                addLabel,
-                viewHandler,
-                viewLabel,
-                name,
-              }) => (
-                <div
-                  key={id}
-                  className="flex w-full items-center justify-between rounded-lg border border-mainGreen p-2 text-mainGreen"
-                >
-                  <StonesCard
-                    addHandler={() => openStonesPopup(name as GlobalFormNames_TP)}
-                    title={title}
-                    viewHandler={viewHandler}
-                  />
-                </div>
-              )
-            )}
+      <div className="mt-12 grid grid-cols-4 gap-6">
+        <div className="col-span-1 flex w-full flex-col items-center gap-4">
+          <div className="flex w-full items-center justify-center gap-2  rounded-lg  bg-mainGreen p-3 text-white">
+            <h2>{t("stones management")}</h2>
           </div>
+          {stonesCards.map(
+            ({
+              id,
+              title,
+              addComponent,
+              addLabel,
+              viewHandler,
+              viewLabel,
+              name,
+            }) => (
+              <div
+                key={id}
+                className="flex w-full items-center justify-between rounded-lg border border-mainGreen p-2 text-mainGreen"
+              >
+                <StonesCard
+                  addHandler={() => openStonesPopup(name as GlobalFormNames_TP)}
+                  title={title}
+                  viewHandler={viewHandler}
+                />
+              </div>
+            )
+          )}
+        </div>
         {/* المعادن */}
         <div className="col-span-1 flex w-full flex-col items-center gap-4">
           <div className="col-span-1 flex w-full flex-col items-center gap-4">
@@ -368,7 +371,9 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
                   className="flex w-full items-center justify-between rounded-lg border border-mainGreen p-2 text-mainGreen"
                 >
                   <StonesCard
-                    addHandler={() => openMineralPopup(name as GlobalFormNames_TP)}
+                    addHandler={() =>
+                      openMineralPopup(name as GlobalFormNames_TP)
+                    }
                     title={title}
                     viewHandler={viewHandler}
                   />
@@ -391,7 +396,7 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
             >
               {addComponent}
             </Modal>
-          )
+          );
         }
       })}
 
@@ -407,7 +412,7 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
             >
               {addComponent}
             </Modal>
-          )
+          );
         }
       })}
 
@@ -423,9 +428,9 @@ export const GlobalAndStones = ({ title }: GlobalAndStonesProps_TP) => {
             >
               {addComponent}
             </Modal>
-          )
+          );
         }
       })}
     </>
-  )
-}
+  );
+};

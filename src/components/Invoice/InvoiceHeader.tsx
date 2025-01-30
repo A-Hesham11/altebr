@@ -24,7 +24,6 @@ const InvoiceHeader = ({ invoiceHeaderData }: any) => {
     ],
     enabled: !!invoiceHeaderData?.client_id || !!invoiceHeaderData?.supplier_id,
   });
-  console.log("🚀 ~ InvoiceHeader ~ data:", data);
 
   return (
     <div className="flex justify-between">

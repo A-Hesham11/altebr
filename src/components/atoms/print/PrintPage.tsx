@@ -6,9 +6,7 @@ import B2 from "../../../assets/b2.png";
 import { numberContext } from "../../../context/settings/number-formatter";
 
 const PrintPage = ({ item }: any) => {
-  console.log("🚀 ~ PrintPage ~ item:", item);
   const { invoice_logo } = GlobalDataContext();
-  console.log("🚀 ~ PrintPage ~ invoice_logo:", invoice_logo);
   const { formatGram, formatReyal } = numberContext();
 
   const totalDiamondWeight = item?.stonesDetails?.reduce(
@@ -16,10 +14,6 @@ const PrintPage = ({ item }: any) => {
       return (acc += curr?.diamondWeight);
     },
     0
-  );
-  console.log(
-    "🚀 ~ totalDiamondWeight ~ totalDiamondWeight:",
-    totalDiamondWeight
   );
 
   return (

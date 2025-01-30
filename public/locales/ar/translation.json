@@ -1658,5 +1658,5 @@
   "please enter tex type": "من فضلك ادخل نوع الضريبة",
   "please add amount": "من فضلك اضف قيمة",
   "please enter directed to": "من فضلك ادخل المستلم",
-  "Cash and Bank Balance":"رصيد صندوق النقدية والبنوك"
+  "the amount of payment is less than the value of the bond": "قيمة الدفع اقل من مبلغ الصرف"
 }

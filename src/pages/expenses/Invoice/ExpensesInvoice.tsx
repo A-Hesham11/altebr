@@ -345,6 +345,16 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                 return;
               }
 
+              if (totalPaymentAmount < +values.expense_price) {
+                notify(
+                  "info",
+                  `${t(
+                    "the amount of payment is less than the value of the bond"
+                  )}`
+                );
+                return;
+              }
+
               if (files?.length === 0) {
                 notify("info", `${t("attachments is required")}`);
                 return;

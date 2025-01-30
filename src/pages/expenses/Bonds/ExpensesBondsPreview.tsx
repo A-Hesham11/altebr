@@ -239,6 +239,24 @@ const ExpensesBondsPreview = ({
                   </span>
                   <p>------------------------------</p>
                 </div>
+
+                <div className="flex items-center">
+                  {paymentData?.map((card, index) => (
+                    <>
+                      <div
+                        key={index}
+                        className="flex flex-col  items-center gap-1"
+                      >
+                        <img
+                          src={card.cardImage}
+                          alt="card image"
+                          className="w-22 h-12"
+                        />
+                        <p>{card.card}</p>
+                      </div>
+                    </>
+                  ))}
+                </div>
                 <div className="text-center flex flex-col gap-4">
                   <span className="font-medium text-xs">
                     {t("bond organizer")}

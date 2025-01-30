@@ -145,7 +145,7 @@ const ExpensesInvoiceSecond = ({
       notify("success", `${t("success add expense invoice")}`);
       resetForm();
       setFiles([]);
-      setPaymentData([]);
+
       // navigate(`/selling/honesty/return-honest/${data.bond_id}`)
       // navigate(`/expenses/expensesBonds/`);
     },
@@ -252,18 +252,18 @@ const ExpensesInvoiceSecond = ({
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
           <Button
-            className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-            action={handlePrint}
+            className="bg-mainOrange px-7 py-[6px]"
+            loading={isLoading}
+            action={posSellingDataHandler}
           >
-            {t("print")}
+            {t("save")}
           </Button>
-          {!isSuccess && (
+          {isSuccess && (
             <Button
-              className="bg-mainOrange px-7 py-[6px]"
-              loading={isLoading}
-              action={posSellingDataHandler}
+              className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
+              action={handlePrint}
             >
-              {t("save")}
+              {t("print")}
             </Button>
           )}
         </div>
@@ -273,6 +273,7 @@ const ExpensesInvoiceSecond = ({
         setStage={setStage}
         paymentData={paymentData}
         clientData={clientData}
+        setPaymentData={setPaymentData}
         sellingItemsData={sellingItemsData}
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}
