@@ -11,6 +11,10 @@ import { Form, Formik } from "formik";
 import { Select } from "../../molecules";
 import { formatDate } from "../../../utils/date";
 import { Loading } from "../../organisms/Loading";
+import Cookies from "js-cookie";
+import axios from "axios";
+
+const SOCKET_SERVER_URL = "https://backend.alexonsolutions.net";
 
 const SelectEmployeesModal = ({
   editEmployees,
@@ -28,6 +32,15 @@ const SelectEmployeesModal = ({
     queryKey: ["nextbond"],
     enabled: !editEmployees.report_number && !!open,
   });
+
+  const getTenantFromUrl = (() => {
+    const url = window.location.hostname;
+    const parts = url.split(".");
+    return parts.length > 1 ? parts[0] : null;
+  })();
+
+  const isGetTenantFromUrl =
+    getTenantFromUrl === null ? "alexon" : getTenantFromUrl;
 
   const {
     data: employeesOptions,
@@ -48,24 +61,34 @@ const SelectEmployeesModal = ({
     onError: (err) => console.log(err),
   });
 
-  const handleSuccess = () => {
-    // console.log("🚀 ~ handleSuccess ~ data:", data);
+  const handleSuccess = async (data: any) => {
     setOpen(false);
     notify("success");
     refetch();
+    await axios.get(
+      `${SOCKET_SERVER_URL}/api/createBond/${isGetTenantFromUrl}/${userData?.branch_id}/${data?.id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   };
 
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: handleSuccess,
     onError: (error) => {
-      notify("info", error?.response.data.errors?.[0]);
+      notify("info", `${error?.response.data.errors?.[0]}`);
     },
   });
 
   const { mutate: mutateEditEmployees, isLoading: isLoadingEdit } = useMutate({
     mutationFn: mutateData,
     onSuccess: handleSuccess,
+    onError: (error) => {
+      notify("info", `${error?.response.data.errors?.[0]}`);
+    },
   });
 
   return (

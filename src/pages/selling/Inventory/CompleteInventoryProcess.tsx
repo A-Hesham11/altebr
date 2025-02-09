@@ -9,6 +9,8 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { useNavigate, useParams } from "react-router-dom";
+import { Group_TP } from "./CreatingInventoryBond";
+import { formatDate } from "../../../utils/date";
 
 interface Totals {
   name: string;
@@ -27,7 +29,7 @@ interface Item {
 
 interface CompleteInventoryProcessProps {
   setSteps: (value: number) => void;
-  currenGroupNumber: number;
+  currenGroup: Group_TP | null;
   numberItemsInBranch: number;
   availableItems: Item[];
   identitiesCheckedItems: any[];
@@ -38,10 +40,12 @@ interface CompleteInventoryProcessProps {
 const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
   setSteps,
   numberItemsInBranch,
+  availableItems,
   identitiesCheckedItems,
   unknownIdentities,
   goldBrokenCashBanksFinalData,
 }: any) => {
+  console.log("🚀 ~ availableItems:", availableItems);
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();
@@ -124,7 +128,7 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
   const handleSuccessInventoryData = () => {
     notify("success");
     [
-      "currenGroupNumber",
+      "currenGroup",
       "unknownIdentities",
       "identitiesCheckedItems",
       "weightItems",
@@ -133,15 +137,18 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
   };
 
   const handlePostInventoryData = () => {
-    const lostItems = unknownIdentities.map((item) => {
-      const { branch_id, ...rest } = item;
-      return {
+    const formatItems = (items: any) =>
+      items?.map(({ branch_id, branchId, companyKey, ...rest }) => ({
         inventory_id: id,
         branch_id: userData?.branch_id,
         branch_exist_id: branch_id,
+        item_id: rest.item_id ? rest.item_id : rest.itemId,
         ...rest,
-      };
-    });
+      }));
+
+    const formattedAvailableItems = formatItems(availableItems);
+    const lostItems = formatItems(unknownIdentities);
+    const combinedLostItems = [...lostItems, ...formattedAvailableItems];
 
     const goldAndCash = {
       inventory_id: id,
@@ -156,7 +163,7 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
         employee_id: userData?.id,
         type_employe: false,
         inventory_id: id,
-        lostItems,
+        lostItems: combinedLostItems,
         goldAndCash,
       },
     });
@@ -206,7 +213,8 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
     <div className="py-12 px-16">
       <div className="flex items-center justify-between">
         <h2 className="text-[17px]">
-          <span className="font-semibold">{t("date")} : </span> 23/ 12 / 2024
+          <span className="font-semibold">{t("date")} : </span>{" "}
+          {formatDate(new Date())}
         </h2>
         <div>
           <Button action={handlePrint}>{t("print")}</Button>

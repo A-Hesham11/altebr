@@ -15,14 +15,12 @@ import { useNavigate } from "react-router-dom";
 
 const ViewInventoryBonds = () => {
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ ViewInventoryBonds ~ dataSource:", dataSource);
   const [open, setOpen] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [openRowId, setOpenRowId] = useState(null);
   const [editEmployees, setEditEmployees] = useState({});
   const isRTL = useIsRTL();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ ViewInventoryBonds ~ userData:", userData);
   const navigate = useNavigate();
 
   const dropListItems = [
@@ -118,7 +116,6 @@ const ViewInventoryBonds = () => {
             label: item.employee_name,
             is_start: item.is_start,
           }));
-          console.log("🚀 ~ employeesData ~ employeesData:", employeesData);
 
           const toggleDropdown = () => {
             if (openRowId === rowId) {

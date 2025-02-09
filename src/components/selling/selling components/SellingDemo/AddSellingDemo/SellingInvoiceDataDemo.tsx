@@ -236,7 +236,6 @@ const SellingInvoiceDataDemo = ({
       invoice_date: invoiceHeaderData.bond_date,
       invoice_number: invoiceHeaderData?.invoice_number + 1,
       count: sellingItemsData.length,
-      //   total_vat: totalItemsTax,
       karat_price: sellingItemsData[0].gold_price,
     };
     const items = sellingItemsData.map((item) => {
@@ -255,6 +254,7 @@ const SellingInvoiceDataDemo = ({
         taklfa_after_tax: item.taklfa_after_tax,
         cost: item.taklfa,
         total: item.taklfa_after_tax,
+        tax_rate: item.karat_name === "24" ? 0 : 15,
       };
     });
     const card = paymentData.reduce((acc, curr) => {

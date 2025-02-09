@@ -8,7 +8,11 @@ export function UseClickOutsideAndKeyboardDrop<T>(
   activeTable: string | null,
   setActiveTable: (id: string | null) => void
 ) {
+  console.log("🚀 ~ activeTable:", activeTable);
+  console.log("🚀 ~ tableId:", tableId);
+  console.log("🚀 ~ items:", items);
   const [selectedRow, setSelectedRow] = useState<number | null>(0);
+  console.log("🚀 ~ selectedRow:", selectedRow)
 
   const buttonId = "view-details-button";
 

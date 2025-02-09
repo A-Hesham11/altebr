@@ -72,75 +72,6 @@ const LostItemsReports = ({ dataSource, reportNumber, date }: any) => {
     },
   ];
 
-  // const columns = useMemo<any>(
-  //   () => [
-  //     {
-  //       cell: (info: any) => info.getValue(),
-  //       accessorKey: "hwya",
-  //       header: () => <span>{t("hwya")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue(),
-  //       accessorKey: "classification_name",
-  //       header: () => <span>{t("category")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.getValue(),
-  //       accessorKey: "category_name",
-  //       header: () => <span>{t("classification")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) =>
-  //         info.row.original.karat_name === "18"
-  //           ? info.row.original.weight
-  //           : "---",
-  //       accessorKey: "weight_18",
-  //       header: () => <span>{t("weight")} 18</span>,
-  //     },
-  //     {
-  //       cell: (info: any) =>
-  //         info.row.original.karat_name === "21"
-  //           ? info.row.original.weight
-  //           : "---",
-  //       accessorKey: "weight_21",
-  //       header: () => <span>{t("weight")} 21</span>,
-  //     },
-  //     {
-  //       cell: (info: any) =>
-  //         info.row.original.karat_name === "22"
-  //           ? info.row.original.weight
-  //           : "---",
-  //       accessorKey: "weight_22",
-  //       header: () => <span>{t("weight")} 22</span>,
-  //     },
-  //     {
-  //       cell: (info: any) =>
-  //         info.row.original.karat_name === "24"
-  //           ? info.row.original.weight
-  //           : "---",
-  //       accessorKey: "weight_24",
-  //       header: () => <span>{t("weight")} 24</span>,
-  //     },
-  //     {
-  //       cell: (info: any) =>
-  //         info.getValue() * info.row.original.weight || "---",
-  //       accessorKey: "wage",
-  //       header: () => <span>{t("wages")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.row.original.value || "---",
-  //       accessorKey: "diamond",
-  //       header: () => <span>{t("diamond")}</span>,
-  //     },
-  //     {
-  //       cell: (info: any) => info.row.original.value || "---",
-  //       accessorKey: "accessories",
-  //       header: () => <span>{t("accessories")}</span>,
-  //     },
-  //   ],
-  //   []
-  // );
-
   const columns = useMemo<any>(
     () => [
       {
@@ -246,7 +177,6 @@ const LostItemsReports = ({ dataSource, reportNumber, date }: any) => {
           </h2>
         </div>
 
-        
         {/* <ul className="grid grid-cols-4 gap-x-8  gap-y-6 my-8">
           {totals?.map((item, index) => (
             <li key={index} className=" text-center">

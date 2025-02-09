@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useMemo, useRef } from "react";
 import { t } from "i18next";
 import {
   getCoreRowModel,
@@ -8,14 +8,12 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import { GiWeight } from "react-icons/gi";
-import { Modal } from "../../molecules";
-import WeightAdjustmentInBranch from "./WeightAdjustmentInBranch";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { UseClickOutsideAndKeyboardDrop } from "../../../utils/UseClickOutsideAndKeyboardDrop";
 
 const IdentitiesCheckedByBranch = ({
   identitiesCheckedItems,
-  currenGroupNumber,
+  currenGroup,
   setOpenWeightItem,
   setEditWeight,
   setSelectedItem,
@@ -24,16 +22,6 @@ const IdentitiesCheckedByBranch = ({
 }: any) => {
   const identitiesTableRef = useRef<HTMLDivElement>(null);
   const { formatGram } = numberContext();
-  const itemsDrop = identitiesCheckedItems.flatMap((group) => group.items);
-
-  const { selectedRow, setSelectedRow } = UseClickOutsideAndKeyboardDrop(
-    itemsDrop,
-    setSelectedItem,
-    identitiesTableRef,
-    "Identities",
-    activeTableId,
-    setActiveTableId
-  );
 
   const totalNumberItemsInspected = identitiesCheckedItems?.reduce(
     (count, group) => count + group.items.length,
@@ -81,8 +69,12 @@ const IdentitiesCheckedByBranch = ({
   );
 
   const sortedIdentitiesCheckedItems = [
-    ...identitiesCheckedItems.filter((group) => group.id === currenGroupNumber),
-    ...identitiesCheckedItems.filter((group) => group.id !== currenGroupNumber),
+    ...identitiesCheckedItems.filter(
+      (group) => group?.["_id"] === currenGroup?.id
+    ),
+    ...identitiesCheckedItems.filter(
+      (group) => group?.["_id"] !== currenGroup?.id
+    ),
   ];
 
   const table = useReactTable({
@@ -136,73 +128,77 @@ const IdentitiesCheckedByBranch = ({
             <div className="max-h-[455px] h-[455px] overflow-y-scroll">
               <table className="min-w-full text-center">
                 <tbody>
-                  {sortedIdentitiesCheckedItems?.map((group) => (
-                    <Fragment key={group.id}>
-                      <tr
-                        key={`group-${group.id}`}
-                        className="border-t border-[#db7f2857] bg-[#E8E8E2] w-full text-sm"
-                      >
-                        <td
-                          colSpan={columns.length / 2}
-                          className="text-start font-bold p-3"
-                        >
-                          {t("group")} {group.groupName}
-                        </td>
-                        <td
-                          colSpan={columns.length / 2}
-                          className="text-end font-bold px-3 text-mainOrange"
-                        >
-                          {group.totalItems} {t("item")} -{" "}
-                          {formatGram(Number(group.totalWeight))} {t("gram")}
-                        </td>
-                      </tr>
+                  {sortedIdentitiesCheckedItems?.map((group) => {
+                    const totalWeight = group?.items?.reduce(
+                      (sum, item) =>
+                        sum + +item.weight * (+item.karat_name / 24),
+                      0
+                    );
 
-                      {group.items.map((item, index) => {
-                        return (
-                          <tr
-                            key={`item-${group.id}-${index}`}
-                            className={`border-b cursor-pointer ${
-                              selectedRow === index && !!identitiesTableRef
-                                ? "bg-[#295E5608]"
-                                : "bg-[#FAFAFA]"
-                            }`}
-                            onClick={() => setSelectedRow(index)}
+                    return (
+                      <Fragment key={group.id}>
+                        <tr
+                          key={`group-${group.id}`}
+                          className="border-t border-[#db7f2857] bg-[#E8E8E2] w-full text-sm"
+                        >
+                          <td
+                            colSpan={columns.length / 2}
+                            className="text-start font-bold p-3"
                           >
-                            {columns.map((col) => {
-                              return (
-                                <td
-                                  className={`whitespace-nowrap px-0 py-3 text-sm font-light !text-gray-900`}
-                                  key={col.accessorKey}
-                                >
-                                  {col.accessorKey === "weight" &&
-                                  item["category_selling_type"] === "all" ? (
-                                    <div
-                                      className="flex items-end justify-center gap-x-1 cursor-pointer"
-                                      onClick={() => {
-                                        setOpenWeightItem(true);
-                                        setEditWeight({
-                                          ...item,
-                                          details_weight: true,
-                                        });
-                                      }}
-                                    >
-                                      <GiWeight
-                                        className="text-mainGreen"
-                                        size={24}
-                                      />
-                                      <p>{item[col.accessorKey]}</p>
-                                    </div>
-                                  ) : (
-                                    item[col.accessorKey]
-                                  )}
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        );
-                      })}
-                    </Fragment>
-                  ))}
+                            {t("group")} {group.groupName}
+                          </td>
+                          <td
+                            colSpan={columns.length / 2}
+                            className="text-end font-bold px-3 text-mainOrange"
+                          >
+                            {group.items.length} {t("item")} -{" "}
+                            {formatGram(Number(totalWeight))} {t("gram")}
+                          </td>
+                        </tr>
+
+                        {group.items.map((item, index) => {
+                          return (
+                            <tr
+                              key={`item-${group.id}-${index}`}
+                              className={`border-b cursor-pointer bg-[#FAFAFA]`}
+                              // onClick={() => setSelectedRow(index)}
+                            >
+                              {columns.map((col) => {
+                                return (
+                                  <td
+                                    className={`whitespace-nowrap px-0 py-3 text-sm font-light !text-gray-900`}
+                                    key={col.accessorKey}
+                                  >
+                                    {col.accessorKey === "weight" &&
+                                    item["category_selling_type"] === "all" ? (
+                                      <div
+                                        className="flex items-end justify-center gap-x-1 cursor-pointer"
+                                        onClick={() => {
+                                          setOpenWeightItem(true);
+                                          setEditWeight({
+                                            ...item,
+                                            details_weight: true,
+                                          });
+                                        }}
+                                      >
+                                        <GiWeight
+                                          className="text-mainGreen"
+                                          size={24}
+                                        />
+                                        <p>{item[col.accessorKey]}</p>
+                                      </div>
+                                    ) : (
+                                      item[col.accessorKey]
+                                    )}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+                      </Fragment>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -225,3 +221,20 @@ const IdentitiesCheckedByBranch = ({
 };
 
 export default IdentitiesCheckedByBranch;
+
+// const itemsDrop = identitiesCheckedItems.flatMap((group) => group.items);
+
+// const { selectedRow, setSelectedRow } = UseClickOutsideAndKeyboardDrop(
+//   itemsDrop,
+//   setSelectedItem,
+//   identitiesTableRef,
+//   "Identities",
+//   activeTableId,
+//   setActiveTableId
+// );
+
+// ${
+//   selectedRow === index && !!identitiesTableRef
+//     ? "bg-[#295E5608]"
+//     : "bg-[#FAFAFA]"
+// }

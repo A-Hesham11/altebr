@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PaymentCard from "../selling/selling components/data/PaymentCard";
-import { Payment_TP } from "../selling/selling components/data/PaymentProcessing";
 import { Form, Formik } from "formik";
 import { t } from "i18next";
-import { BaseInput, Button, FormikError } from "../atoms";
+import { Button } from "../atoms";
 import SelectKarat from "../templates/reusableComponants/karats/select/SelectKarat";
 import { BaseInputField } from "../molecules";
 import { useFetch, useMutate } from "../../hooks";
@@ -73,7 +72,6 @@ const RecycledGoldConvertProcess = ({ refetch, setOpen }: any) => {
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          console.log("🚀 ~ RecycledGoldConvertProcess ~ values:", values);
           const notifyInfo = (messageKey) => notify("info", `${t(messageKey)}`);
 
           if (!cardId) {
@@ -166,12 +164,16 @@ const RecycledGoldConvertProcess = ({ refetch, setOpen }: any) => {
                   id="value"
                   name="value"
                   type="text"
-                  label={
-                    selectedCardName ? `${selectedCardName} ` : t("Fund totals")
-                  }
-                  placeholder={
+                  label={`
+                    ${
+                      selectedCardName
+                        ? `${selectedCardName} `
+                        : t("Fund totals")
+                    }
+                  `}
+                  placeholder={`${
                     selectedCardName ? selectedCardName : t("Fund totals")
-                  }
+                  }`}
                   value={data?.value ? formatReyal(Number(data?.value)) : 0}
                   disabled
                   className={`bg-mainDisabled text-mainGreen ${
@@ -184,8 +186,8 @@ const RecycledGoldConvertProcess = ({ refetch, setOpen }: any) => {
                     id="weight"
                     name="weight"
                     type="number"
-                    placeholder={t("weight")}
-                    label={t("weight")}
+                    placeholder={`${t("weight")}`}
+                    label={`${t("weight")}`}
                   />
                   <p className="text-mainRed mt-0.5">
                     {values?.weight &&
@@ -203,7 +205,7 @@ const RecycledGoldConvertProcess = ({ refetch, setOpen }: any) => {
                     name="karat_name"
                     noMb={true}
                     placement="top"
-                    label={t("Convert karat to")}
+                    label={`${t("Convert karat to")}`}
                     onChange={(option) => {
                       setFieldValue("karat_name", option!.value);
                       setFieldValue("karat_id", option!.id);
@@ -220,8 +222,8 @@ const RecycledGoldConvertProcess = ({ refetch, setOpen }: any) => {
                   <BaseInputField
                     id="Caliber_difference"
                     name="Caliber_difference"
-                    placeholder={t("Caliber difference")}
-                    label={t("Caliber difference")}
+                    placeholder={`${t("Caliber difference")}`}
+                    label={`${t("Caliber difference")}`}
                     disabled
                     className={`bg-mainDisabled`}
                     value={formatReyal(Number(totalCaliberDifference))}
@@ -230,8 +232,8 @@ const RecycledGoldConvertProcess = ({ refetch, setOpen }: any) => {
                 <BaseInputField
                   id="remaining_weight"
                   name="remaining_weight"
-                  placeholder={t("Weight converted to")}
-                  label={t("Weight converted to")}
+                  placeholder={`${t("Weight converted to")}`}
+                  label={`${t("Weight converted to")}`}
                   disabled
                   className={`bg-mainDisabled`}
                   value={formatReyal(Number(totalRemainingWeight))}

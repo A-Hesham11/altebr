@@ -20,12 +20,14 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
       value: dataSource?.reduce((acc, curr) => {
         return +acc + Number(curr.items_number);
       }, 0),
+      unit: t("item"),
     },
     {
       title: t("total weight"),
       value: dataSource?.reduce((acc, curr) => {
         return +acc + Number(curr.weight_to_24);
       }, 0),
+      unit: t("weight"),
     },
   ];
 
@@ -64,6 +66,7 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
     ],
     []
   );
+  
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
     onBeforePrint: () => console.log("before printing..."),
@@ -118,9 +121,7 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
       >
         <div className="my-6 text-center">
           <img src={Logo} alt="logo" className="mx-auto" />
-          <h2 className="text-lg font-semibold">
-            {t("Inventory groups")}
-          </h2>
+          <h2 className="text-lg font-semibold">{t("Inventory groups")}</h2>
         </div>
 
         <Table data={dataSource ?? []} columns={columns} />
