@@ -1,18 +1,19 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ExpenseFinalPreview } from "./ExpenseFinalPreview";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { ClientData_TP, Selling_TP } from "../../selling/PaymentSellingPage";
 import { mutateData } from "../../../utils/mutateData";
-import { useMutate } from "../../../hooks";
+import { useIsRTL, useMutate } from "../../../hooks";
 import { Button } from "../../../components/atoms";
 import ExpenseInvoiceTable from "./ExpensesInvoiceTable";
 import { useFormikContext } from "formik";
 import { formatDate } from "../../../utils/date";
 import { notify } from "../../../utils/toast";
+import { useReactToPrint } from "react-to-print";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -43,6 +44,7 @@ const ExpensesInvoiceSecond = ({
   const { userData } = useContext(authCtx);
   const { pathname } = location;
   const navigate = useNavigate();
+  const isRTL = useIsRTL();
   const [responseSellingData, SetResponseSellingData] = useState(null);
 
   const { setFieldValue, values, resetForm } = useFormikContext<any>();
@@ -143,7 +145,7 @@ const ExpensesInvoiceSecond = ({
       notify("success", `${t("success add expense invoice")}`);
       resetForm();
       setFiles([]);
-      setPaymentData([]);
+
       // navigate(`/selling/honesty/return-honest/${data.bond_id}`)
       // navigate(`/expenses/expensesBonds/`);
     },
@@ -213,24 +215,55 @@ const ExpensesInvoiceSecond = ({
     });
   };
 
+  const contentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 20px !imporatnt;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+        }
+        .break-page {
+          page-break-before: always;
+        }
+      .rtl {
+        direction: rtl;
+        text-align: right;
+      }
+
+      .ltr {
+        direction: ltr;
+        text-align: left;
+      }
+    }
+    `,
+  });
+
   return (
-    <div>
-      <div className="flex items-center justify-between mx-8 mt-8">
+    <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
+      <div className="flex items-center print:hidden justify-between mx-8 mt-8">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
           <Button
-            className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-            action={() => window.print()}
+            className="bg-mainOrange px-7 py-[6px]"
+            loading={isLoading}
+            action={posSellingDataHandler}
           >
-            {t("print")}
+            {t("save")}
           </Button>
-          {!isSuccess && (
+          {isSuccess && (
             <Button
-              className="bg-mainOrange px-7 py-[6px]"
-              loading={isLoading}
-              action={posSellingDataHandler}
+              className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
+              action={handlePrint}
             >
-              {t("save")}
+              {t("print")}
             </Button>
           )}
         </div>
@@ -240,6 +273,7 @@ const ExpensesInvoiceSecond = ({
         setStage={setStage}
         paymentData={paymentData}
         clientData={clientData}
+        setPaymentData={setPaymentData}
         sellingItemsData={sellingItemsData}
         costDataAsProps={costDataAsProps}
         invoiceNumber={invoiceNumber}
