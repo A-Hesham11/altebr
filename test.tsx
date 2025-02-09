@@ -17,5 +17,3 @@ sub_number: "eAr"
 city_value: ""
 country_id: 28
 district_value: "فرد منها"
-
-// 

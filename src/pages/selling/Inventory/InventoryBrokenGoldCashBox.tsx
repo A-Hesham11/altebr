@@ -29,9 +29,7 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
   goldBrokenCashBanksFinalData,
   setGoldBrokenCashBanksFinalData,
 }) => {
-  console.log("🚀 ~ goldBrokenCashBanks:", goldBrokenCashBanks);
   const { formatReyal, formatGram } = numberContext();
-  const { userData } = useContext(authCtx);
 
   const keyReplacements = {
     "18": { key: "gold_18", name: t("Weight of Broken Gold 18") },
@@ -55,8 +53,6 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
   const filteredCashBanks = Object.entries(goldBrokenCashBanks)
     .filter(([key]) => ![18, 21, 22, 24].includes(Number(key)))
     .map(([key, value]) => ({ key, value }));
-
-  console.log(filteredCashBanks);
 
   const totalsBrokenGold: Totals[] = [
     {
@@ -92,18 +88,6 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
 
     return acc;
   }, {});
-
-  console.log("🚀 ~ initialValues ~ initialValues:", initialValues);
-
-  // console.log("🚀 ~ initialValuess ~ initialValuess:", initialValuess);
-
-  // const initialValues = {
-  //   brokenGold_18: goldBrokenCashBanksData?.brokenGold_18 || "",
-  //   brokenGold_21: goldBrokenCashBanksData?.brokenGold_21 || "",
-  //   brokenGold_22: goldBrokenCashBanksData?.brokenGold_22 || "",
-  //   brokenGold_24: goldBrokenCashBanksData?.brokenGold_24 || "",
-  //   cash_Box: goldBrokenCashBanksData?.cash_Box || "",
-  // };
 
   const InputField = ({
     id,
@@ -176,7 +160,6 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
           onSubmit={(value) => console.log("🚀 ~ value:", value)}
         >
           {({ values }) => {
-            console.log("🚀 ~ values:", values);
             return (
               <Form>
                 <div className="bg-[#295E5608] p-8 rounded-2xl">
@@ -184,56 +167,6 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
                     {t("Please enter the following values:")}
                   </h2>
                   <div className="grid grid-cols-4 gap-8">
-                    {/* <InputField
-                      id="brokenGold_18"
-                      label={t("Weight of Broken Gold 18")}
-                      differenceValue={formatGram(
-                        goldBrokenCashBanks?.["18"] -
-                          Number(values?.brokenGold_18)
-                      )}
-                      placeholder={t("Weight of Broken Gold 18")}
-                      unit={t("gram")}
-                    />
-                    <InputField
-                      id="brokenGold_21"
-                      label={t("Weight of Broken Gold 21")}
-                      differenceValue={formatGram(
-                        goldBrokenCashBanks?.["21"] -
-                          Number(values?.brokenGold_21)
-                      )}
-                      placeholder={t("Weight of Broken Gold 21")}
-                      unit={t("gram")}
-                    />
-                    <InputField
-                      id="brokenGold_22"
-                      label={t("Weight of Broken Gold 22")}
-                      differenceValue={formatGram(
-                        goldBrokenCashBanks?.["22"] -
-                          Number(values?.brokenGold_22)
-                      )}
-                      placeholder={t("Weight of Broken Gold 22")}
-                      unit={t("gram")}
-                    />
-                    <InputField
-                      id="brokenGold_24"
-                      label={t("Weight of Broken Gold 24")}
-                      differenceValue={formatGram(
-                        goldBrokenCashBanks?.["24"] -
-                          Number(values?.brokenGold_24)
-                      )}
-                      placeholder={t("Weight of Broken Gold 24")}
-                      unit={t("gram")}
-                    /> */}
-
-                    {/* <InputField 
-                      id="cash_Box"
-                      label={t("Cash Box")}
-                      differenceValue={formatReyal(
-                        goldBrokenCashBanks?.["1301"] - Number(values?.cash_Box)
-                      )}
-                      placeholder={t("Cash Box")}
-                      unit={t("reyal")}
-                    /> */}
                     {allData?.map((item) => (
                       <InputField
                         id={item.key}
@@ -284,8 +217,8 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
                       }
 
                       const finalData = allData?.map((item) => item);
-                      console.log("🚀 ~ finalData:", finalData)
- 
+                      console.log("🚀 ~ finalData:", finalData);
+
                       setGoldBrokenCashBanksFinalData(values);
                       setSteps(3);
                     }}

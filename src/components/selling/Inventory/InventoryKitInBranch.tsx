@@ -1,13 +1,6 @@
-import React, { Fragment, useMemo } from "react";
-import { Form, Formik, useFormikContext } from "formik";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { useMemo } from "react";
+import { Form, Formik } from "formik";
+import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { Selling_TP } from "../../../pages/selling/PaymentSellingPage";
@@ -20,24 +13,22 @@ const InventoryKitInBranch = ({
   selectedItem,
   kitItemsData,
   setKitItemsData,
-  setIdentitiesCheckedItems,
   addItemToIdentity,
-  currenGroupNumber,
+  currenGroup,
   setOpenKitItems,
 }: any) => {
-  console.log("🚀 ~ kitItemsData:", kitItemsData)
   const { formatGram, formatReyal } = numberContext();
 
   const KitItemDetails = selectedItem?.weightitems;
- 
+
+  const currenGroupId = currenGroup?.id;
+
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
       {
         header: () => "#",
         accessorKey: "action",
         cell: (info: any) => {
-          console.log("🚀 ~ info:", info.row.index);
-
           return (
             <div className="flex items-center justify-center gap-4">
               <input
@@ -170,7 +161,7 @@ const InventoryKitInBranch = ({
             <div className="flex gap-4 justify-end items-center w-full mt-6">
               <Button
                 action={() => {
-                  addItemToIdentity(currenGroupNumber, selectedItem, false);
+                  addItemToIdentity(currenGroupId, selectedItem, false);
                   setOpenKitItems(false);
                 }}
                 className="bg-mainRed"
@@ -180,6 +171,7 @@ const InventoryKitInBranch = ({
               <Button
                 type="submit"
                 action={() => {
+                  const currenGroupId = currenGroup?.id;
                   const { weightitems, ...rest } = selectedItem;
                   const kitItemsSold = KitItemDetails?.filter(
                     (item) => item.status !== 0
@@ -220,7 +212,7 @@ const InventoryKitInBranch = ({
                   }
 
                   addItemToIdentity(
-                    currenGroupNumber,
+                    currenGroupId,
                     {
                       ...selectedItem,
                       weightitems: kitItemsData,

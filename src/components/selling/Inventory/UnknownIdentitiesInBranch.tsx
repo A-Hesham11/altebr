@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { t } from "i18next";
 import {
   getCoreRowModel,
   useReactTable,
   flexRender,
   getPaginationRowModel,
-  FilterFn,
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import { ViewIcon } from "../../atoms/icons";
 import { UseClickOutsideAndKeyboardDrop } from "../../../utils/UseClickOutsideAndKeyboardDrop";
+import { numberContext } from "../../../context/settings/number-formatter";
 
 const UnknownIdentitiesInBranch = ({
   unknownIdentities,
@@ -17,10 +17,10 @@ const UnknownIdentitiesInBranch = ({
   setUnknownItemDetails,
   setSelectedItem,
   activeTableId,
-  setActiveTableId
+  setActiveTableId,
 }: any) => {
-
   const unknownTableRef = useRef<HTMLDivElement>(null);
+  const { formatGram } = numberContext();
 
   const { selectedRow, setSelectedRow } = UseClickOutsideAndKeyboardDrop(
     unknownIdentities,
@@ -71,10 +71,10 @@ const UnknownIdentitiesInBranch = ({
     []
   );
 
-  const totalWeight = unknownIdentities?.reduce((acc: number, curr: any) => {
-    acc += +curr.weight;
-    return acc;
-  }, 0);
+  const totalWeight = unknownIdentities?.reduce(
+    (sum, item) => sum + item.weight * (item.karat_name / 24),
+    0
+  );
 
   const table = useReactTable({
     data: unknownIdentities,
@@ -127,7 +127,9 @@ const UnknownIdentitiesInBranch = ({
                     <tr
                       key={row.id}
                       className={`border-b ${
-                        selectedRow === i && !!unknownTableRef ? "bg-[#295E5608]" : "bg-[#FAFAFA]"
+                        selectedRow === i && !!unknownTableRef
+                          ? "bg-[#295E5608]"
+                          : "bg-[#FAFAFA]"
                       }`}
                       onClick={() => {
                         setSelectedRow(i);
@@ -136,7 +138,7 @@ const UnknownIdentitiesInBranch = ({
                       {row.getVisibleCells().map((cell) => (
                         <td
                           className={`whitespace-nowrap px-3 py-3 text-sm font-light cursor-pointer ${
-                            selectedRow === i && !!unknownTableRef 
+                            selectedRow === i && !!unknownTableRef
                               ? "bg-[#295E5608]"
                               : "bg-[#FAFAFA]"
                           } !text-gray-900`}
@@ -164,7 +166,7 @@ const UnknownIdentitiesInBranch = ({
         </h2>
         <h2 className="text-center text-[13.5px]">
           <span className="font-semibold">{t("total weight")} : </span>{" "}
-          {totalWeight} {t("gram")}
+          {formatGram(Number(totalWeight))} {t("gram")}
         </h2>
       </div>
     </div>

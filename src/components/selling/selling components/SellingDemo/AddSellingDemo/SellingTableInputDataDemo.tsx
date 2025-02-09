@@ -23,6 +23,7 @@ import { notify } from "../../../../../utils/toast";
 import { DeleteIcon, EditIcon } from "../../../../atoms/icons";
 import { HiViewGridAdd } from "react-icons/hi";
 import SelectClassification from "../../../../templates/reusableComponants/classifications/select/SelectClassification";
+import SelectKarat from "../../../../templates/reusableComponants/karats/select/SelectKarat";
 
 type SellingTableInputData_TP = {
   dataSource: any;
@@ -53,18 +54,13 @@ export const SellingTableInputDataDemo = ({
   console.log("🚀 ~ values:", values);
   const taxRate = values.karat_name === "24" ? 1 : 1.15;
 
-  //   const { data: karatValues } = useFetch<KaratValues_TP[]>({
-  //     endpoint: "classification/api/v1/allkarats",
-  //     queryKey: ["karats_select"],
-  //   });
+  const { data: karatValues } = useFetch<KaratValues_TP[]>({
+    endpoint: "classification/api/v1/allkarats",
+    queryKey: ["karats_select"],
+  });
 
   const sellingCols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
-      //   {
-      //     header: () => <span>{t("piece number")}</span>,
-      //     accessorKey: "hwya",
-      //     cell: (info) => info.getValue() || "---",
-      //   },
       {
         header: () => <span>{t("category")}</span>,
         accessorKey: "classification_id",
@@ -185,18 +181,6 @@ export const SellingTableInputDataDemo = ({
         </thead>
         <tbody>
           <tr className="border-b text-center table-shadow last:shadow-0">
-            {/* <td>
-              <BaseInputField
-                placeholder={`${t("piece number")}`}
-                id="hwya"
-                name="hwya"
-                type="text"
-                onChange={(e) => {
-                  setFieldValue("hwya", e.target.value);
-                }}
-                className={`text-center`}
-              />
-            </td> */}
             <td>
               <SelectClassification field="id" name="classification_id" />
             </td>
@@ -243,13 +227,17 @@ export const SellingTableInputDataDemo = ({
                 className={`text-center`}
               />
             </td>
+
             <td>
-              <BaseInputField
-                placeholder={`${t("karat")}`}
-                id="karat_name"
+              <SelectKarat
+                field="id"
                 name="karat_name"
-                type="text"
-                className={`text-center`}
+                noMb={true}
+                placement="top"
+                onChange={(option) => {
+                  console.log("🚀 ~ option:", option);
+                  setFieldValue("karat_name", option!.value);
+                }}
               />
             </td>
             <td>

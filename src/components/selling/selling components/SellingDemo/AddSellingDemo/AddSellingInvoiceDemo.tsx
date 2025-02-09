@@ -40,8 +40,8 @@ const AddSellingInvoiceDemo = () => {
     vat: "",
     taklfa: "",
     taklfa_after_tax: "",
-    client_id: "",
-    client_value: "",
+    client_id: 2,
+    client_value: "غير معرف",
     bond_date: new Date(),
   };
 

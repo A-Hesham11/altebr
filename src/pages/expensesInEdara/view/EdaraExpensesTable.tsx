@@ -12,12 +12,17 @@ import { t } from "i18next";
 import { Button } from "../../../components/atoms";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useIsRTL } from "../../../hooks";
+import Loader from "./Loader";
+import { Loading } from "../../../components/organisms/Loading";
 
 type TEdaraExpensesTableProps = {
   dataSource: any;
   dispatch: any;
   expenseData: any;
   page: number;
+  isLoading: boolean;
+  isFetching: boolean;
+  isRefetching: boolean;
 };
 
 const EdaraExpensesTable: React.FC<TEdaraExpensesTableProps> = ({
@@ -25,6 +30,9 @@ const EdaraExpensesTable: React.FC<TEdaraExpensesTableProps> = ({
   dispatch,
   expenseData,
   page,
+  isLoading,
+  isFetching,
+  isRefetching,
 }) => {
   const isRTL = useIsRTL();
 
@@ -99,6 +107,10 @@ const EdaraExpensesTable: React.FC<TEdaraExpensesTableProps> = ({
     ],
     []
   );
+
+  if (isLoading || isFetching || isRefetching) {
+    return <Loading mainTitle={t("loading expenses ")} />;
+  }
 
   return (
     <>

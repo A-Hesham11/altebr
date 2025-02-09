@@ -14,6 +14,8 @@ import {
 import { GiWeight } from "react-icons/gi";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { UseClickOutsideAndKeyboardDrop } from "../../../utils/UseClickOutsideAndKeyboardDrop";
+import { io } from "socket.io-client";
+import { useParams } from "react-router-dom";
 
 const AvailableItemsInBranch = ({
   availableItems,
@@ -24,6 +26,7 @@ const AvailableItemsInBranch = ({
   setActiveTableId,
 }: any) => {
   const availabletableCRef = useRef<HTMLDivElement>(null);
+  const { id } = useParams<{ id: string }>();
   const [page, setPage] = useState<number>(1);
   const { userData } = useContext(authCtx);
   const [hasMore, setHasMore] = useState(true);
@@ -38,36 +41,41 @@ const AvailableItemsInBranch = ({
     setActiveTableId
   );
 
-  const { data, refetch, isLoading } = useFetch({
-    queryKey: ["available_items_inBranch", page],
-    endpoint: `/inventory/api/v1/getItems/${userData?.branch_id}?page=${page}`,
-    onSuccess: (data) => {
-      setNumberItemsInBranch(data?.total);
-      if (data?.data?.length > 0) {
-        setAvailableItems((prevItems) => [...prevItems, ...data?.data]);
-      } else {
-        setHasMore(false);
-      }
-    },
-    pagination: true,
-  });
+  const totalWeight = availableItems?.reduce(
+    (sum, item) => sum + +item.weight * (+item.karat_name / 24),
+    0
+  );
+
+  // const { data, refetch, isLoading } = useFetch({
+  //   queryKey: ["available_items_inBranch", page],
+  //   endpoint: `/inventory/api/v1/getItems/${userData?.branch_id}?page=${page}`,
+  //   onSuccess: (data) => {
+  //     setNumberItemsInBranch(data?.total);
+  //     if (data?.data?.length > 0) {
+  //       setAvailableItems((prevItems) => [...prevItems, ...data?.data]);
+  //     } else {
+  //       setHasMore(false);
+  //     }
+  //   },
+  //   pagination: true,
+  // });
 
   const fetchMoreData = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
-  useEffect(() => {
-    if (page > 1) {
-      refetch();
-    }
-  }, [page]);
+  // useEffect(() => {
+  //   if (page > 1) {
+  //     refetch();
+  //   }
+  // }, [page]);
 
   const columns = useMemo<any>(
     () => [
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "hwya",
-        header: () => <span>{t("الكود")}</span>,
+        header: () => <span>{t("hwya")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
@@ -102,7 +110,7 @@ const AvailableItemsInBranch = ({
   );
 
   const table = useReactTable({
-    data: availableItems,
+    data: availableItems || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -194,11 +202,13 @@ const AvailableItemsInBranch = ({
       <div className="bg-[#C3D0CE] rounded-b-2xl py-3.5 flex items-center justify-between px-4">
         <h2 className="text-center text-[13.5px]">
           <span className="font-semibold">{t("Total pieces")} : </span>{" "}
-          {data?.total} {t("item")}
+          {/* {data?.total} {t("item")} */}
+          {availableItems?.length} {t("item")}
         </h2>
         <h2 className="text-center text-[13.5px]">
           <span className="font-semibold">{t("total weight")} : </span>{" "}
-          {formatGram(Number(data?.total_weight_24))} {t("gram")}
+          {/* {formatGram(Number(data?.total_weight_24))} {t("gram")} */}
+          {formatGram(Number(totalWeight))} {t("gram")}
         </h2>
       </div>
     </div>

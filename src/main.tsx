@@ -12,6 +12,8 @@ import "./index.css";
 import { PermissionProvider } from "react-permission-role";
 import { GlobalDataProvider } from "./context/settings/GlobalData";
 
+// cloc --by-file --include-lang=JavaScript,TypeScript,jsx,tsx .
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: false },

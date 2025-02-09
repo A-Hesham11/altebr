@@ -2,22 +2,17 @@ import { t } from "i18next";
 import React, { useEffect, useMemo, useState } from "react";
 import { Table } from "../../templates/reusableComponants/tantable/Table";
 import { Button } from "../../atoms";
-import { BoxesDataBase } from "../../atoms/card/BoxesDataBase";
 import { numberContext } from "../../../context/settings/number-formatter";
 
 const WeightAdjustmentInBranch = ({
   editWeight,
-  setIdentitiesCheckedItems,
   setOpenWeightItem,
   addItemToIdentity,
-  currenGroupNumber,
+  currenGroup,
 }: any) => {
-  console.log("🚀 ~ editWeight:", editWeight);
   const [weightItems, setWeightItems] = useState({});
-  console.log("🚀 ~ weightItems:", weightItems);
   const [weightNumber, setWeightNumber] = useState("");
-  console.log("🚀 ~ weightNumber:", weightNumber);
-  const { formatGram, formatReyal } = numberContext();
+  const { formatGram } = numberContext();
 
   useEffect(() => {
     const storedWeights = localStorage.getItem("weightItems");
@@ -77,6 +72,8 @@ const WeightAdjustmentInBranch = ({
     (acc, item) => acc + parseFloat(item.weight || 0),
     0
   );
+
+  const currentWeight = weightItems?.[editWeight?.hwya]?.at(-1);
 
   return (
     <div>
@@ -150,27 +147,16 @@ const WeightAdjustmentInBranch = ({
         <div className="flex justify-end mt-10">
           <Button
             action={() => {
+              const currenGroupNumber = currenGroup?.id;
               const { weight, ...rest } = editWeight;
-              setIdentitiesCheckedItems((prevState) => {
-                return prevState.map((group) => {
-                  return {
-                    ...group,
-                    items: group.items.map((item) => {
-                      if (editWeight?.hwya == item.hwya) {
-                        return {
-                          ...item,
-                          weight: totalWeight,
-                        };
-                      }
-                      return item;
-                    }),
-                  };
-                });
-              });
-              addItemToIdentity(currenGroupNumber, {
-                ...editWeight,
-                weight: Number(totalWeight),
-              }, true);
+              addItemToIdentity(
+                currenGroupNumber,
+                {
+                  ...editWeight,
+                  weight: Number(currentWeight?.weight),
+                },
+                true
+              );
               setOpenWeightItem(false);
             }}
           >
@@ -183,3 +169,20 @@ const WeightAdjustmentInBranch = ({
 };
 
 export default WeightAdjustmentInBranch;
+
+// setIdentitiesCheckedItems((prevState) => {
+//   return prevState.map((group) => {
+//     return {
+//       ...group,
+//       items: group.items.map((item) => {
+//         if (editWeight?.hwya == item.hwya) {
+//           return {
+//             ...item,
+//             weight: totalWeight,
+//           };
+//         }
+//         return item;
+//       }),
+//     };
+//   });
+// });

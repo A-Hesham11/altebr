@@ -1655,5 +1655,6 @@
   "missing pieces from the stocktaking": "القطع المفقودة من الجرد",
   "select at least one item": "اختر قطعه على الاقل",
   "add expense": "اضافة مصروف",
-  "Cash and Bank Balance":"رصيد صندوق النقدية والبنوك"
+  "Cash and Bank Balance": "رصيد صندوق النقدية والبنوك",
+  "The group has been created successfully.": "تم إنشاء المجموعة بنجاح"
 }
