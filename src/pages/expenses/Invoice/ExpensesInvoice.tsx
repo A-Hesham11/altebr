@@ -249,7 +249,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               <DateInputField
                 label={`${t("expense date")}`}
                 name="expense_date"
-                minDate={new Date()}
+                maxDate={new Date()}
                 icon={<CiCalendarDate />}
                 required
                 labelProps={{ className: "mb-2" }}
@@ -325,6 +325,11 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                 return;
               }
 
+              if (values.directed_to === "") {
+                notify("info", `${t("please enter directed to")}`);
+                return;
+              }
+
               // if (values.add_description === "") {
               //   notify("info", `${t("please enter description")}`);
               //   return;
@@ -335,6 +340,16 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
                   "info",
                   `${t(
                     "the amount of payment is greater than the value of the bond"
+                  )}`
+                );
+                return;
+              }
+
+              if (totalPaymentAmount < +values.expense_price) {
+                notify(
+                  "info",
+                  `${t(
+                    "the amount of payment is less than the value of the bond"
                   )}`
                 );
                 return;

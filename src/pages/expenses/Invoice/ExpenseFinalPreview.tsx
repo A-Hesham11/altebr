@@ -31,6 +31,8 @@ export const ExpenseFinalPreview = ({
   setStage,
   clientData,
   invoiceNumber,
+  paymentData,
+  setPaymentData,
 }: SellingFinalPreviewProps_TP) => {
   const { userData } = useContext(authCtx);
 
@@ -54,6 +56,23 @@ export const ExpenseFinalPreview = ({
                 </span>
                 <p>------------------------------</p>
               </div>
+              <div className="flex items-center">
+                {paymentData.map((card, index) => (
+                  <>
+                    <div
+                      key={index}
+                      className="flex flex-col  items-center gap-1"
+                    >
+                      <img
+                        src={card.cardImage}
+                        alt="card image"
+                        className="w-22 h-12"
+                      />
+                      <p>{card.card}</p>
+                    </div>
+                  </>
+                ))}
+              </div>
               <div className="text-center flex flex-col gap-4">
                 <span className="font-medium text-xs">
                   {t("bond organizer")}
@@ -70,8 +89,14 @@ export const ExpenseFinalPreview = ({
       </div>
       {/* {printContent && <div style={{ display: 'none' }}>{printContent}</div>}    */}
 
-      <div className="flex gap-3 justify-end mt-14">
-        <Button bordered action={() => setStage(1)}>
+      <div className="flex gap-3 print:hidden justify-end mt-14">
+        <Button
+          bordered
+          action={() => {
+            setPaymentData([]);
+            setStage(1);
+          }}
+        >
           {t("back")}
         </Button>
       </div>
