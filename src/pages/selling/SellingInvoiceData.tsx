@@ -348,7 +348,6 @@ const SellingInvoiceData = ({
   };
 
   const chunkedItems = chunkArray(sellingItemsData, 10);
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ chunkedItems:", chunkedItems);
 
   const SellingTableComp = () => (
     <InvoiceTableData

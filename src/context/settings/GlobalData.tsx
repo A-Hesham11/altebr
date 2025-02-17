@@ -20,7 +20,6 @@ export const GlobalDataContext = () => useContext(GlobalDataCtx);
 
 export const GlobalDataProvider = ({ children }: { children: ReactNode }) => {
   const [goldPriceToday, setGoldPriceToday] = useState(null);
-  console.log("🚀 ~ GlobalDataProvider ~ goldPriceToday:", goldPriceToday);
   const token = Cookies.get("token");
   const [invoiceInfo, setInvoiceInfo] = useState(null);
 

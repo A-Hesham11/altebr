@@ -45,7 +45,6 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
   unknownIdentities,
   goldBrokenCashBanksFinalData,
 }: any) => {
-  console.log("🚀 ~ availableItems:", availableItems);
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();
@@ -118,7 +117,7 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
       },
       {
         cell: (info: any) => t(info.getValue()) || "---",
-        accessorKey: "status",
+        accessorKey: "Iban",
         header: () => <span>{t("piece status")}</span>,
       },
     ],
@@ -127,12 +126,9 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
 
   const handleSuccessInventoryData = () => {
     notify("success");
-    [
-      "currenGroup",
-      "unknownIdentities",
-      "identitiesCheckedItems",
-      "weightItems",
-    ].forEach((key) => localStorage.removeItem(key));
+    ["currenGroup", "weightItems"].forEach((key) =>
+      localStorage.removeItem(key)
+    );
     navigate("/selling/inventory/view");
   };
 
@@ -143,6 +139,10 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
         branch_id: userData?.branch_id,
         branch_exist_id: branch_id,
         item_id: rest.item_id ? rest.item_id : rest.itemId,
+        value:
+          rest.classification_id == 1
+            ? Number(rest.wage) * Number(rest.weight)
+            : rest.diamond_value,
         ...rest,
       }));
 
@@ -216,9 +216,9 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
           <span className="font-semibold">{t("date")} : </span>{" "}
           {formatDate(new Date())}
         </h2>
-        <div>
+        {/* <div>
           <Button action={handlePrint}>{t("print")}</Button>
-        </div>
+        </div> */}
       </div>
 
       <div

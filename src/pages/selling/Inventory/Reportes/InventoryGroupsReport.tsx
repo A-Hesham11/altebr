@@ -9,8 +9,7 @@ import { useIsRTL } from "../../../../hooks";
 import { useReactToPrint } from "react-to-print";
 
 const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
-  console.log("🚀 ~ LostItemsReports ~ dataSource:", dataSource);
-  const { userData } = useContext(authCtx);
+  console.log("🚀 ~ InventoryGroupsReport ~ dataSource:", dataSource)
   const contentRef = useRef();
   const isRTL = useIsRTL();
 
@@ -66,7 +65,7 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
     ],
     []
   );
-  
+
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
     onBeforePrint: () => console.log("before printing..."),

@@ -69,6 +69,21 @@ const PaymentSellingPage = () => {
       title_ar: "عرض الفاتورة",
       title_en: "view selling",
       route: isDisabled ? "/selling/viewInvoice_Demo" : "/selling/viewInvoice",
+      underCardInfo: isDisabled ? (
+        <div className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray cursor-not-allowed relative overflow-hidden">
+          <div className="bg-[#00000040] absolute top-0 left-0 w-full h-full"></div>
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("Sales Reports")}</p>
+        </div>
+      ) : (
+        <Link
+          to="/selling/salesReports"
+          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+        >
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("Sales Reports")}</p>
+        </Link>
+      ),
     },
   ];
 

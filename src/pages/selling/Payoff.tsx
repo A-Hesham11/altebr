@@ -15,13 +15,22 @@ const Payoff = () => {
       title_en: "selling payoff",
       route: "/selling/payoff/sales-return",
       underCardInfo: (
-        <Link
-          to="/selling/return-entry"
-          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
-        >
-          <FaCubes className="text-mainGreen" size={25} />
-          <p className="text-mainGreen">{t("Sales return restrictions")}</p>
-        </Link>
+        <div className="flex flex-col relative top-12 gap-y-2">
+          <Link
+            to="/selling/return-entry"
+            className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+          >
+            <FaCubes className="text-mainGreen" size={25} />
+            <p className="text-mainGreen">{t("Sales return restrictions")}</p>
+          </Link>
+          <Link
+            to="/selling/payoff/salesReturnReports"
+            className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+          >
+            <FaCubes className="text-mainGreen" size={25} />
+            <p className="text-mainGreen">{t("Sales Return Reports")}</p>
+          </Link>
+        </div>
       ),
     },
     {

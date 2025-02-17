@@ -35,6 +35,7 @@ export const Table = <T extends object>({
   className,
   initialState,
 }: ReactTableProps<T>) => {
+  console.log("🚀 ~ data:", data)
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const table = useReactTable({
     data,
@@ -43,11 +44,11 @@ export const Table = <T extends object>({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    // initialState: {
-    //   pagination: {
-    //     pageSize: data.length,
-    //   },
-    // },
+    initialState: {
+      pagination: {
+        pageSize: data.length > 10 ? 10000 : 10,
+      },
+    },
   });
 
   const isRTL = useIsRTL();

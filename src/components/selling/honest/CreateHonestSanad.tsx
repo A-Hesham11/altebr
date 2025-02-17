@@ -49,33 +49,24 @@ export const CreateHonestSanad = ({
   paymentData,
   setPaymentData,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ selectedItem:", selectedItem);
-
   /////////// VARIABLES
   ///
   const [data, setData] = useState(selectedItem.items);
-  console.log("🚀 ~ data:", data);
   const [editCost, setEditCost] = useState(false);
   const [open, setOpen] = useState(false);
   const [openTotal, setOpenTotal] = useState(false);
   const { formatGram, formatReyal, digits_count } = numberContext();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
 
-
-  const [costAfterTax, setCostAfterTax] = useState()
+  const [costAfterTax, setCostAfterTax] = useState();
 
   const [costValue, setCostValue] = useState({
     id: null,
     value: "0",
   });
-  console.log("🚀 ~ costValue:", costValue);
 
   const taxRate = userData?.tax_rate / 100;
-  console.log("🚀 ~ taxRate:", taxRate);
   const [refundAmount, setRefundAmount] = useState(0);
-  console.log("🚀 ~ refundAmount:", refundAmount);
-
   const [selectedRows, setSelectedRows] = useState([]);
 
   const navigate = useNavigate();
@@ -117,6 +108,7 @@ export const CreateHonestSanad = ({
       color: "violet",
     },
   ];
+  
   const totalCommission = paymentData.reduce((acc, item) => {
     return acc + item.commission_riyals;
   }, 0);
@@ -137,7 +129,6 @@ export const CreateHonestSanad = ({
     },
     {
       id: 2,
-
       account: `${t("total commission")}`,
       value: totalCommission,
       unit: "ر.س",
@@ -757,7 +748,7 @@ export const CreateHonestSanad = ({
                 //   id: costValue.id,
                 //   value: e.target.value,
                 // });
-                setCostAfterTax(e.target.value)
+                setCostAfterTax(e.target.value);
               }}
             />
           </div>

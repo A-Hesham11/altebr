@@ -198,6 +198,8 @@ import InventoryReportes from "../pages/selling/Inventory/Reportes/InventoryRepo
 import MissingPieces from "../pages/selling/MissingPiecesFromStocktacking/MissingPieces";
 import ViewEdaraExpenses from "../pages/expensesInEdara/view/ViewEdaraExpenses";
 import AddEdaraExpenses from "../pages/expensesInEdara/add/AddEdaraExpenses";
+import SalesReports from "../pages/selling/SalesReports";
+import SalesReturnReports from "../pages/selling/SalesReturnReports";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -611,6 +613,7 @@ export const AllRoutesProvider = () => {
             path="/selling/honesty/return-honest"
             element={<RetrieveHonestEntryScreen />}
           />
+
           <Route
             path="/selling/honesty/all-honest"
             element={<AllHonestBonds />}
@@ -664,6 +667,10 @@ export const AllRoutesProvider = () => {
             element={<PayoffEntryScreen />}
           />
           <Route
+            path="/selling/payoff/salesReturnReports"
+            element={<SalesReturnReports />}
+          />
+          <Route
             path="/selling/payoff/wasteReturn"
             element={<WasteSupplyReturn />}
           />
@@ -676,6 +683,7 @@ export const AllRoutesProvider = () => {
             path="/selling/invoice-restrictions"
             element={<SellingRestrictionsInvoice />}
           />
+          <Route path="/selling/salesReports" element={<SalesReports />} />
 
           <Route
             path="/selling/return-entry"

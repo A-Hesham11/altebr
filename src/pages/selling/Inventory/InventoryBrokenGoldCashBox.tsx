@@ -50,6 +50,15 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
     };
   });
 
+  const validationSchema = Yup.object().shape({
+    ...allData.reduce((acc, item) => {
+      acc[item.key] = Yup.number()
+        .min(0, "Value cannot be less than 0")
+        .required("Required");
+      return acc;
+    }, {}),
+  });
+
   const filteredCashBanks = Object.entries(goldBrokenCashBanks)
     .filter(([key]) => ![18, 21, 22, 24].includes(Number(key)))
     .map(([key, value]) => ({ key, value }));
@@ -157,9 +166,10 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
       <div>
         <Formik
           initialValues={initialValues}
+          validationSchema={validationSchema}
           onSubmit={(value) => console.log("🚀 ~ value:", value)}
         >
-          {({ values }) => {
+          {({ values, touched, errors }) => {
             return (
               <Form>
                 <div className="bg-[#295E5608] p-8 rounded-2xl">
@@ -176,6 +186,11 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
                           Number(item?.value) - Number(values?.[item.key])
                         )}
                         unit={t("reyal")}
+                        error={
+                          touched[item.key] && errors[item.key]
+                            ? errors[item.key]
+                            : ""
+                        }
                       />
                     ))}
                   </div>
@@ -217,7 +232,6 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
                       }
 
                       const finalData = allData?.map((item) => item);
-                      console.log("🚀 ~ finalData:", finalData);
 
                       setGoldBrokenCashBanksFinalData(values);
                       setSteps(3);
