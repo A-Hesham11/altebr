@@ -10,6 +10,8 @@ import { useLocation } from "react-router-dom";
 import { Form, Formik } from "formik";
 import { Select } from "../../../../components/molecules";
 import { SelectOption_TP } from "../../../../types";
+import { convertNumToArWord } from "../../../../utils/number to arabic words/convertNumToArWord";
+import { Table } from "../../../../components/templates/reusableComponants/tantable/Table";
 
 const PromissoryNote = ({
   dataSource,
@@ -25,7 +27,7 @@ const PromissoryNote = ({
   const { formatGram, formatReyal } = numberContext();
   const { state } = useLocation();
   const [selectedEmployees, setSelectedEmployees] = useState({});
-  console.log("🚀 ~ selectedEmployees:", selectedEmployees)
+  console.log("🚀 ~ selectedEmployees:", selectedEmployees);
 
   const totals = [
     {
@@ -78,6 +80,66 @@ const PromissoryNote = ({
     onError: (err) => console.log(err),
   });
   console.log("🚀 ~ employeesOptions:", employeesOptions);
+
+  const data = [
+    {
+      name: t("Gold value"),
+      amount: formatGram(dataSource?.assets.cash),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.cash)),
+    },
+    {
+      name: t("diamond value"),
+      amount: formatGram(dataSource?.assets.diamond_value),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.assets.diamond_value)
+      ),
+    },
+    {
+      name: t("accessory value"),
+      amount: formatGram(dataSource?.assets.accessory_value),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.assets.accessory_value)
+      ),
+    },
+    {
+      name: t("total wages"),
+      amount: formatGram(dataSource?.assets.wages),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.wages)),
+    },
+    {
+      name: t("The value of scrap gold"),
+      amount: formatGram(dataSource?.assets.total_weightNewGold_24),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.assets.total_weightNewGold_24)
+      ),
+    },
+    {
+      name: t("Total cash"),
+      amount: formatGram(dataSource?.assets.totalCash),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.totalCash)),
+    },
+  ];
+
+  const columns = useMemo<any>(
+    () => [
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "name",
+        header: () => <span>{t("name")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "amount",
+        header: () => <span>{t("amount")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "amountAR",
+        header: () => <span>{t("amount in words")}</span>,
+      },
+    ],
+    []
+  );
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
@@ -140,7 +202,7 @@ const PromissoryNote = ({
           <h2 className="text-lg font-semibold">{t("Promissory note")}</h2>
         </div>
 
-        <div>
+        <div className="no-print">
           <h2 className="font-semibold">{t("Totals")}</h2>
           <ul className="grid grid-cols-4 gap-x-8  gap-y-6 my-6">
             {totals?.map((item, index) => (
@@ -159,7 +221,11 @@ const PromissoryNote = ({
           </ul>
         </div>
 
-        <div className="bg-white mt-8 p-12 rounded-xl text-[17.3px] ">
+        <div className="print-only my-5">
+          <Table data={data} columns={columns} />
+        </div>
+
+        <div className="bg-white mt-8 p-12 rounded-xl text-[17.3px] no-print">
           <Formik initialValues={{ employees: "" }} onSubmit={() => {}}>
             <Form>
               <div className="w-1/3">
@@ -191,8 +257,10 @@ const PromissoryNote = ({
             {t("That I have received on behalf of the company")} /{" "}
             <span className="font-semibold">{userData?.branch_name}</span> ,{" "}
             {t("Commercial Registration Number")}{" "}
-            <span className="font-semibold">{userData?.branch?.zatca_fax_number}</span> ,{" "}
-            {t("And its address")}{" "}
+            <span className="font-semibold">
+              {userData?.branch?.zatca_fax_number}
+            </span>{" "}
+            , {t("And its address")}{" "}
             <span className="font-semibold">{userData?.address}</span>,{" "}
             {t("The total amounts outlined above:")}
           </span>

@@ -10,7 +10,6 @@ import { useReactToPrint } from "react-to-print";
 
 const LostItemsReports = ({ dataSource, reportNumber, date }: any) => {
   console.log("🚀 ~ LostItemsReports ~ dataSource:", dataSource);
-  const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();
 
@@ -90,7 +89,10 @@ const LostItemsReports = ({ dataSource, reportNumber, date }: any) => {
         header: () => <span>{t("classification")}</span>,
       },
       {
-        cell: (info: any) => info.getValue() || "---",
+        cell: (info: any) =>
+          info.row.original.classification_id == 1
+            ? info.getValue()
+            : info.row.original.karatmineral || "---",
         accessorKey: "karat_name",
         header: () => <span>{t("karat")}</span>,
       },

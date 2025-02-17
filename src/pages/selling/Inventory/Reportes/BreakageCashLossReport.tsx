@@ -8,6 +8,7 @@ import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useIsRTL } from "../../../../hooks";
 import { useReactToPrint } from "react-to-print";
 import { numberContext } from "../../../../context/settings/number-formatter";
+import { convertNumToArWord } from "../../../../utils/number to arabic words/convertNumToArWord";
 
 const BreakageCashLossReport = ({ dataSource, reportNumber, date }: any) => {
   console.log("🚀 ~ LostItemsReports ~ dataSource:", dataSource);
@@ -54,6 +55,84 @@ const BreakageCashLossReport = ({ dataSource, reportNumber, date }: any) => {
       ),
     },
   ];
+
+  const data = [
+    {
+      name: t("Total Actual Broken Gold"),
+      amount: formatGram(
+        dataSource?.totalWeightGoldOld_to_24?.assets_OldGold_to_24
+      ),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.totalWeightGoldOld_to_24?.assets_OldGold_to_24)
+      ),
+    },
+    {
+      name: t("Total Recorded Broken Gold"),
+      amount: formatGram(
+        dataSource?.totalWeightGoldOld_to_24?.missing_OldGold_to_24
+      ),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.totalWeightGoldOld_to_24?.missing_OldGold_to_24)
+      ),
+    },
+    {
+      name: t("Broken Gold Difference"),
+      amount: formatGram(
+        dataSource?.totalWeightGoldOld_to_24?.assets_OldGold_to_24 -
+          dataSource?.totalWeightGoldOld_to_24?.missing_OldGold_to_24
+      ),
+      amountAR: convertNumToArWord(
+        Math.round(
+          dataSource?.totalWeightGoldOld_to_24?.assets_OldGold_to_24 -
+            dataSource?.totalWeightGoldOld_to_24?.missing_OldGold_to_24
+        )
+      ),
+    },
+    {
+      name: t("Total Actual Cash Box Amount"),
+      amount: formatGram(dataSource?.cashing.assets_cash),
+      amountAR: convertNumToArWord(Math.round(dataSource?.cashing.assets_cash)),
+    },
+    {
+      name: t("Total Recorded Cash Box Amount"),
+      amount: formatGram(dataSource?.cashing?.missing_cash),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.cashing?.missing_cash)
+      ),
+    },
+    {
+      name: t("Cash Box Difference"),
+      amount: formatGram(
+        dataSource?.cashing.assets_cash - dataSource?.cashing?.missing_cash
+      ),
+      amountAR: convertNumToArWord(
+        Math.round(
+          dataSource?.cashing.assets_cash - dataSource?.cashing?.missing_cash
+        )
+      ),
+    },
+  ];
+
+  const columns = useMemo<any>(
+    () => [
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "name",
+        header: () => <span>{t("name")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "amount",
+        header: () => <span>{t("amount")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "amountAR",
+        header: () => <span>{t("amount in words")}</span>,
+      },
+    ],
+    []
+  );
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
@@ -120,7 +199,7 @@ const BreakageCashLossReport = ({ dataSource, reportNumber, date }: any) => {
           </h2>
         </div>
 
-        <div>
+        <div className="no-print">
           <h2 className="font-semibold">{t("Totals")}</h2>
           <ul className="grid grid-cols-3 gap-x-8  gap-y-6 my-6">
             {totalsBrokenGold?.map((item, index) => (
@@ -152,6 +231,10 @@ const BreakageCashLossReport = ({ dataSource, reportNumber, date }: any) => {
               </li>
             ))}
           </ul>
+        </div>
+
+        <div className="print-only my-5">
+          <Table data={data} columns={columns} />
         </div>
 
         <div className="flex items-center justify-between mt-8 mb-4">

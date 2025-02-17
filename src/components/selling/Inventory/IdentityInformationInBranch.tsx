@@ -7,17 +7,20 @@ import { Button } from "../../atoms";
 
 const IdentityInformationInBranch = ({
   selectedItem,
-  setSelectedItem,
   setOpenDetailsItem,
 }: any) => {
-  const { userData } = useContext(authCtx);
-
   const listItems = [
     { label: "hwya", value: selectedItem?.hwya ?? "---" },
     { label: "category", value: selectedItem?.classification_name ?? "---" },
     { label: "classification", value: selectedItem?.category_name ?? "---" },
     { label: "weight", value: selectedItem?.weight ?? "---" },
-    { label: "karat", value: selectedItem?.karat_name ?? "---" },
+    {
+      label: "karat",
+      value:
+        selectedItem?.classification_id == 1
+          ? selectedItem?.karat_name
+          : selectedItem?.karatmineral_name ?? "---",
+    },
   ];
 
   return (

@@ -40,6 +40,21 @@ input[type="radio"] {
   }
 } */
 
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+
+@media print {
+  .print-only {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+  }
+}
+
 .premiumGoldprice {
   background: linear-gradient(87.84deg, #ffa958 2.02%, #e06a00 99.13%);
 }
@@ -76,7 +91,7 @@ input[type="radio"] {
     @apply scrollbar-thin scrollbar-thumb-mainGreen scrollbar-track-green hover:scrollbar-thumb-mainOrange;
   }
   .GlobalTable th {
-    @apply border-b-2 border-l-2   p-2  text-center ;
+    @apply border-b-2 border-l-2   p-2  text-center;
   }
   .GlobalTable td {
     @apply border-b-2 border-l-2  bg-lightGreen p-2  text-center  text-mainGreen;

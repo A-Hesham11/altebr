@@ -1,32 +1,33 @@
 import { t } from "i18next";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Table } from "../../templates/reusableComponants/tantable/Table";
 import { Button } from "../../atoms";
 import { numberContext } from "../../../context/settings/number-formatter";
+import { notify } from "../../../utils/toast";
 
 const WeightAdjustmentInBranch = ({
   editWeight,
   setOpenWeightItem,
   addItemToIdentity,
   currenGroup,
+  socket,
+  BasicCompanyData,
 }: any) => {
-  const [weightItems, setWeightItems] = useState({});
+  const [weightItems, setWeightItems] = useState([]);
   const [weightNumber, setWeightNumber] = useState("");
   const { formatGram } = numberContext();
 
-  useEffect(() => {
-    const storedWeights = localStorage.getItem("weightItems");
-    if (storedWeights) {
-      setWeightItems(JSON.parse(storedWeights));
-    }
-  }, []);
+  const filterWeightItemsByHwya = weightItems?.filter(
+    (item) => item.hwya === editWeight.hwya
+  );
+  console.log("🚀 ~ filterWeightItemsByHwya:", filterWeightItemsByHwya);
 
   const columns = useMemo<any>(
     () => [
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "hwya",
-        header: () => <span>{t("الكود")}</span>,
+        header: () => <span>{t("hwya")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
@@ -40,6 +41,11 @@ const WeightAdjustmentInBranch = ({
       },
       {
         cell: (info: any) => info.getValue(),
+        accessorKey: "karat_name",
+        header: () => <span>{t("karat")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
         accessorKey: "weight",
         header: () => <span>{t("weight")}</span>,
       },
@@ -47,33 +53,31 @@ const WeightAdjustmentInBranch = ({
     []
   );
 
-  const handleAddWeight = () => {
-    if (weightNumber.trim() === "") return;
-
-    setWeightItems((prev) => {
-      const updatedWeights = { ...prev };
-
-      if (!updatedWeights[editWeight?.hwya]) {
-        updatedWeights[editWeight?.hwya] = [];
-      }
-
-      updatedWeights[editWeight?.hwya].push({
-        id: updatedWeights[editWeight?.hwya].length + 1,
-        weight: weightNumber,
-      });
-
-      localStorage.setItem("weightItems", JSON.stringify(updatedWeights));
-
-      return updatedWeights;
-    });
+  const handleWeightItemsResponse = (data: any) => {
+    setWeightItems(data.success ? data?.data : []);
   };
 
-  const totalWeight = weightItems?.[editWeight?.hwya]?.reduce(
+  useEffect(() => {
+    socket.on("connect");
+
+    socket.emit("getSelsal", BasicCompanyData);
+    socket.on("getSelsalResponse", handleWeightItemsResponse);
+
+    return () => {
+      socket.off("getSelsalResponse", handleWeightItemsResponse);
+    };
+  }, []);
+
+  const totalCurrentWeight = filterWeightItemsByHwya?.reduce(
+    (acc, item) => Number(acc) + Number(parseFloat(item.weight || 0)),
+    0
+  );
+  console.log("🚀 ~ totalCurrentWeight:", totalCurrentWeight);
+
+  const totalWeight = filterWeightItemsByHwya?.reduce(
     (acc, item) => acc + parseFloat(item.weight || 0),
     0
   );
-
-  const currentWeight = weightItems?.[editWeight?.hwya]?.at(-1);
 
   return (
     <div>
@@ -101,13 +105,10 @@ const WeightAdjustmentInBranch = ({
                   value={weightNumber}
                   className="border-none p-3 rounded-xl me-5"
                 />
-                <Button bordered action={handleAddWeight}>
-                  {t("add")}
-                </Button>
               </div>
             )}
-            <ul className="mt-8 flex items-center gap-x-4">
-              {weightItems?.[editWeight?.hwya]?.map((item) => (
+            <ul className="mt-8 flex items-center flex-wrap gap-4">
+              {filterWeightItemsByHwya?.map((item) => (
                 <li className="bg-[#DB802833] text-mainOrange w-fit px-5 py-2 rounded-2xl text-[15px]">
                   <p>
                     <span className="font-semibold">
@@ -134,7 +135,9 @@ const WeightAdjustmentInBranch = ({
                   {t("remaining weight")}
                 </p>
                 <p className="px-2 py-[7px] text-mainOrange rounded-b-xl text-center">
-                  {formatGram(Number(editWeight?.weight - totalWeight))}{" "}
+                  {totalWeight
+                    ? formatGram(Number(+editWeight?.weight - +totalWeight))
+                    : 0}{" "}
                   {t("gram")}
                 </p>
               </li>
@@ -149,11 +152,39 @@ const WeightAdjustmentInBranch = ({
             action={() => {
               const currenGroupNumber = currenGroup?.id;
               const { weight, ...rest } = editWeight;
+              if (!weightNumber) {
+                notify("info", `${t("Enter weight for a piece")}`);
+                return;
+              }
+
+              const currentWeight =
+                Number(totalCurrentWeight) + Number(weightNumber);
+              console.log("🚀 ~ currentWeight:", currentWeight);
+
+              if (currentWeight > editWeight.weight) {
+                notify("info", `${t("The full weight has been added.")}`);
+                return;
+              }
+
+              const payload = {
+                ...BasicCompanyData,
+                id: filterWeightItemsByHwya?.length + 1,
+                hwya: editWeight?.hwya,
+                weight: weightNumber,
+              };
+
+              socket.emit("selsalPieces", payload);
+
+              socket.on("selsalPiecesResponse", () => {
+                socket.emit("getSelsal", BasicCompanyData);
+                socket.on("getSelsalResponse", handleWeightItemsResponse);
+              });
+
               addItemToIdentity(
                 currenGroupNumber,
                 {
                   ...editWeight,
-                  weight: Number(currentWeight?.weight),
+                  weight: Number(weightNumber),
                 },
                 true
               );
@@ -169,20 +200,3 @@ const WeightAdjustmentInBranch = ({
 };
 
 export default WeightAdjustmentInBranch;
-
-// setIdentitiesCheckedItems((prevState) => {
-//   return prevState.map((group) => {
-//     return {
-//       ...group,
-//       items: group.items.map((item) => {
-//         if (editWeight?.hwya == item.hwya) {
-//           return {
-//             ...item,
-//             weight: totalWeight,
-//           };
-//         }
-//         return item;
-//       }),
-//     };
-//   });
-// });

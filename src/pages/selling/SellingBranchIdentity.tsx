@@ -12,7 +12,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { Button } from "../../components/atoms";
 import { BoxesDataBase } from "../../components/atoms/card/BoxesDataBase";
 import { ViewIcon } from "../../components/atoms/icons";
-import { BaseInputField, Modal } from "../../components/molecules";
+import { BaseInputField, Modal, Select } from "../../components/molecules";
 import { Loading } from "../../components/organisms/Loading";
 import { ItemDetailsTable } from "../../components/selling/recieve items/ItemDetailsTable";
 import { SelectMineralKarat } from "../../components/templates/reusableComponants/minerals/SelectMineralKarat";
@@ -29,6 +29,7 @@ import ReturnItemsToEdaraModal from "../../components/selling/payoff/ReturnItems
 import RejectedItemsInvoice from "../../components/selling/recieve items/RejectedItemsInvoice";
 import RejectedItemsInvoicePrint from "./RejectedItemsInvoicePrint";
 import { GlobalDataContext } from "../../context/settings/GlobalData";
+import SelectCategory from "../../components/templates/reusableComponants/categories/select/SelectCategory";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -60,8 +61,12 @@ export const SellingBranchIdentity = () => {
     id: "",
     hwya: "",
     classification_id: "",
+    category_id: "",
+    karat_minerals: "",
     weight: "",
     wage: "",
+    bond_id: "",
+    model_number: "",
   };
 
   const Cols = useMemo<any>(
@@ -278,6 +283,23 @@ export const SellingBranchIdentity = () => {
     },
   ];
 
+  // METAL OPTION
+  const { data: karatMineralsOption } = useFetch({
+    endpoint: "/classification/api/v1/karatminerals?type=all",
+    queryKey: ["karat_mineral_option"],
+    select: (karats) =>
+      karats.map((karat: any) => ({
+        id: karat?.id,
+        label: karat?.karatmineral,
+        name: karat?.karatmineral,
+        value: karat?.id,
+      })),
+  });
+  console.log(
+    "🚀 ~ SellingBranchIdentity ~ karatMineralsOption:",
+    karatMineralsOption
+  );
+
   useEffect(() => {
     refetch();
   }, [page]);
@@ -369,7 +391,7 @@ export const SellingBranchIdentity = () => {
                 </div>
               </div>
               <p className="font-bold mb-2">{t("filter")}</p>
-              <div className="grid grid-cols-4 gap-x-4">
+              <div className="grid grid-cols-4 gap-4">
                 <BaseInputField
                   id="hwya"
                   name="hwya"
@@ -377,6 +399,13 @@ export const SellingBranchIdentity = () => {
                   placeholder={`${t("identification")}`}
                   className="shadow-xs"
                   type="text"
+                />
+                <BaseInputField
+                  id="bond_id"
+                  label={`${t("supply voucher number")}`}
+                  name="bond_id"
+                  type="text"
+                  placeholder={`${t("supply voucher number")}`}
                 />
                 <BaseInputField
                   id="weight"
@@ -399,6 +428,31 @@ export const SellingBranchIdentity = () => {
                   name="classification_id"
                   field="id"
                   label={`${t("category")}`}
+                />
+                <div className="">
+                  <SelectCategory
+                    name="category_id"
+                    all={true}
+                    showItems={true}
+                    label={t("classification")}
+                  />
+                </div>
+                <div className="">
+                  <Select
+                    id="karat_minerals"
+                    label={`${t("mineral karat")}`}
+                    name="karat_minerals"
+                    placeholder={`${t("mineral karat")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={karatMineralsOption}
+                  />
+                </div>
+                <BaseInputField
+                  id="model_number"
+                  label={`${t("modal number")}`}
+                  name="model_number"
+                  type="text"
+                  placeholder={`${t("modal number")}`}
                 />
               </div>
               <Button

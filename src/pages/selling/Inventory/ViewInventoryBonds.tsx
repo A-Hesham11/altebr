@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 const ViewInventoryBonds = () => {
   const [dataSource, setDataSource] = useState([]);
+  console.log("🚀 ~ ViewInventoryBonds ~ dataSource:", dataSource)
   const [open, setOpen] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [openRowId, setOpenRowId] = useState(null);
