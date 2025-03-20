@@ -77,6 +77,26 @@ const SellingBrokenGoldEdara = () => {
     invoice_text: "simplified tax invoice",
   };
 
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: formatDate(clientData?.bond_date),
+    second_title: clientData?.client_value ? "client name" : "supplier name",
+    second_value: clientData?.client_value
+      ? clientData?.client_value
+      : clientData?.supplier_name,
+    bond_date: formatDate(clientData?.bond_date),
+    bond_title: "bill no",
+    invoice_number: invoiceNumber,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
+    client_id: clientData?.client_id,
+    supplier_id: clientData?.supplier_id,
+  };
+  console.log(
+    "🚀 ~ SellingBrokenGoldEdara ~ invoiceHeaderBasicData:",
+    invoiceHeaderBasicData
+  );
+
   return (
     <Formik
       initialValues={initialValues}
@@ -112,7 +132,7 @@ const SellingBrokenGoldEdara = () => {
           <SellingBrokenGoldInvoiceData
             sellingItemsData={sellingItemsData}
             paymentData={paymentData}
-            invoiceHeaderData={invoiceHeaderData}
+            invoiceHeaderData={invoiceHeaderBasicData}
             setStage={setStage}
             selectedItemDetails={selectedItemDetails}
             sellingItemsOfWeigth={sellingItemsOfWeigth}

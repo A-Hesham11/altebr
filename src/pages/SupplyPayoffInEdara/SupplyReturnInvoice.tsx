@@ -13,6 +13,8 @@ import FinalPreviewBillPayment from "../../components/selling/selling components
 import { Loading } from "../../components/organisms/Loading";
 import SupplyPayoffInvoiceTable from "./SupplyPayoffInvoiceTable";
 import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
+import InvoiceTableData from "../../components/selling/selling components/InvoiceTableData";
+import InvoiceBasicHeader from "../../components/Invoice/InvoiceBasicHeader";
 
 type Entry_TP = {
   bian: string;
@@ -22,38 +24,17 @@ type Entry_TP = {
   creditor_SRA: number;
 };
 
-const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
+const SupplyReturnInvoice = ({
+  item,
+  invoiceHeaderBasicData,
+}: {
+  item?: {};
+  invoiceHeaderBasicData?: {};
+}) => {
   console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
-
-  const { userData } = useContext(authCtx);
-
-  const mineralLicence = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "رخصة المعادن"
-  )?.[0]?.data.docNumber;
-
-  const taxRegisteration = userData?.branch.document?.filter(
-    (item) => item.data.docType.label === "شهادة ضريبية"
-  )?.[0]?.data.docNumber;
-
-  const clientData = {
-    client_id: item?.client_id,
-    client_value: item?.supplier_id,
-    bond_date: item?.date,
-    supplier_id: item?.supplier,
-  };
-
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/get_sentence`,
-    queryKey: ["sentence"],
-  });
-
-  const { data: companyData } = useFetch<ClientData_TP>({
-    endpoint: `/companySettings/api/v1/companies`,
-    queryKey: ["Mineral_license"],
-  });
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -78,14 +59,14 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
         cell: (info: any) => info.getValue() || "---",
       },
       {
-        header: () => <span>{t("weight")}</span>,
-        accessorKey: "weight",
-        cell: (info) => formatGram(Number(info.getValue())),
-      },
-      {
         header: () => <span>{t("fare")}</span>,
         accessorKey: "wage",
         cell: (info) => formatReyal(Number(info.getValue())),
+      },
+      {
+        header: () => <span>{t("weight")}</span>,
+        accessorKey: "weight",
+        cell: (info) => formatGram(Number(info.getValue())),
       },
       {
         header: () => <span>{t("VAT")} </span>,
@@ -100,35 +81,6 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
     ],
     []
   );
-
-  // const totalwages = item?.items?.reduce((acc, card) => {
-  //   console.log("🚀 ~ totalwages ~ card:", card);
-  //   acc += +card.wage * +card.weight;
-  //   return acc;
-  // }, 0);
-
-  // setFieldValue(
-  //   "vat",
-  //   dataSource[0]?.classification_id === 1
-  //     ? goldVat
-  //     : Number(dataSource[0]?.cost_item) * taxRateOfKarat24
-  // );
-
-  // setFieldValue(
-  //   "cost",
-  //   dataSource[0]?.classification_id === 1
-  //     ? goldTaklfa
-  //     : Number(dataSource[0]?.cost_item) *
-  //         Number(dataSource[0]?.conversion_factor)
-  // );
-
-  // const goldTaklfa =
-  //   dataSource &&
-  //   (Number(dataSource[0]?.wage) + Number(dataSource[0]?.api_gold_price)) *
-  //     Number(dataSource[0]?.weight);
-
-  // const goldVat = goldTaklfa * taxRateOfKarat24;
-  // console.log("🚀 ~ goldVat:", goldVat);
 
   const totalwages = item?.items?.reduce((acc, card) => {
     acc += +card.wage;
@@ -155,7 +107,21 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
     totalFinalCost: totalCost,
     totalCost,
     totalWeight,
-    totalwages,
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalWeight)),
+        vat: formatReyal(Number(totalItemsTaxes)),
+        cost: formatReyal(Number(totalCost)),
+      },
+    ],
+    finalArabicData: [
+      {
+        title: t("total"),
+        totalFinalCostIntoArabic: totalCost,
+        type: t("reyal"),
+      },
+    ],
   };
 
   const handlePrint = useReactToPrint({
@@ -164,28 +130,30 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
     onAfterPrint: () => console.log("after printing..."),
     removeAfterPrint: true,
     pageStyle: `
-      @page {
-        size: auto;
-        margin: 20px !imporatnt;
+    @page {
+      size: A5 landscape;;
+      margin: 15px !important;
+    }
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        zoom: 0.5;
       }
-      @media print {
-        body {
-          -webkit-print-color-adjust: exact;
-        }
-        .break-page {
-          page-break-before: always;
-        }
       .rtl {
         direction: rtl;
         text-align: right;
       }
-
       .ltr {
         direction: ltr;
         text-align: left;
       }
+      .container_print {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+      }
     }
-    `,
+  `,
   });
 
   return (
@@ -200,36 +168,25 @@ const SupplyReturnInvoice = ({ item }: { item?: {} }) => {
           </Button>
         </div>
 
-        <div className={`${isRTL ? "rtl" : "ltr"} m-4`} ref={invoiceRefs}>
-          <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
-            <div className="mx-5 bill-shadow rounded-md p-6">
-              <FinalPreviewBillData
-                clientData={clientData}
-                invoiceNumber={item?.id}
-              />
-            </div>
+        <div
+          className={`${isRTL ? "rtl" : "ltr"} container_print`}
+          ref={invoiceRefs}
+        >
+          <div className="print-header">
+            <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+          </div>
 
-            <div className="">
-              {/* <InvoiceTable
-                data={item?.items}
-                columns={Cols}
-                costDataAsProps={costDataAsProps}
-              ></InvoiceTable> */}
+          <div className="print-content">
+            <InvoiceTableData
+              data={item?.items}
+              columns={Cols}
+              costDataAsProps={costDataAsProps}
+            />
+          </div>
 
-              <SupplyPayoffInvoiceTable
-                data={item?.items}
-                columns={Cols}
-                costDataAsProps={costDataAsProps}
-              ></SupplyPayoffInvoiceTable>
-            </div>
-
-            <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment responseSellingData={item} />
-            </div>
-
-            <div>
-              <InvoiceFooter />
-            </div>
+          <div className="print-footer">
+            <FinalPreviewBillPayment responseSellingData={item} />
+            <InvoiceFooter />
           </div>
         </div>
       </div>

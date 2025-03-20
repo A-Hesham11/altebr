@@ -161,7 +161,7 @@ const AvailableItemsInBranch = ({
               dataLength={table.getRowModel().rows.length}
               next={fetchMoreData}
               hasMore={hasMore}
-              loader={<h4 className="text-center">{t("loading")} ...</h4>}
+              // loader={<h4 className="text-center">{t("loading")} ...</h4>}
               endMessage={
                 <p className="text-center">{t("No more items to load")}</p>
               }
@@ -202,12 +202,10 @@ const AvailableItemsInBranch = ({
       <div className="bg-[#C3D0CE] rounded-b-2xl py-3.5 flex items-center justify-between px-4">
         <h2 className="text-center text-[13.5px]">
           <span className="font-semibold">{t("Total pieces")} : </span>{" "}
-          {/* {data?.total} {t("item")} */}
           {availableItems?.length} {t("item")}
         </h2>
         <h2 className="text-center text-[13.5px]">
           <span className="font-semibold">{t("total weight")} : </span>{" "}
-          {/* {formatGram(Number(data?.total_weight_24))} {t("gram")} */}
           {formatGram(Number(totalWeight))} {t("gram")}
         </h2>
       </div>

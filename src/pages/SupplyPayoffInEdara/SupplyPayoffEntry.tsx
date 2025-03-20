@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 const SupplyPayoffEntry = ({ item }: { item?: {} }) => {
   const { formatGram, formatReyal } = numberContext();
 
-  const cols2 = useMemo<ColumnDef<Entry_TP>[]>(
+  const cols2 = useMemo<ColumnDef<any>[]>(
     () => [
       {
         header: `${t("description")}`,

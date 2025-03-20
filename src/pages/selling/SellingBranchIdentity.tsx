@@ -12,7 +12,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { Button } from "../../components/atoms";
 import { BoxesDataBase } from "../../components/atoms/card/BoxesDataBase";
 import { ViewIcon } from "../../components/atoms/icons";
-import { BaseInputField, Modal } from "../../components/molecules";
+import { BaseInputField, Modal, Select } from "../../components/molecules";
 import { Loading } from "../../components/organisms/Loading";
 import { ItemDetailsTable } from "../../components/selling/recieve items/ItemDetailsTable";
 import { SelectMineralKarat } from "../../components/templates/reusableComponants/minerals/SelectMineralKarat";
@@ -29,6 +29,7 @@ import ReturnItemsToEdaraModal from "../../components/selling/payoff/ReturnItems
 import RejectedItemsInvoice from "../../components/selling/recieve items/RejectedItemsInvoice";
 import RejectedItemsInvoicePrint from "./RejectedItemsInvoicePrint";
 import { GlobalDataContext } from "../../context/settings/GlobalData";
+import SelectCategory from "../../components/templates/reusableComponants/categories/select/SelectCategory";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -43,9 +44,9 @@ export const SellingBranchIdentity = () => {
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState<number>(1);
+  // const [searchPage, setSearchPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const [dataSourcePrint, setDataSourcePrint] = useState([]);
-  console.log("🚀 ~ SellingBranchIdentity ~ dataSourcePrint:", dataSourcePrint);
   const [printModal, setPrintModal] = useState(false);
   const { gold_price } = GlobalDataContext();
 
@@ -59,9 +60,13 @@ export const SellingBranchIdentity = () => {
   const searchValues = {
     id: "",
     hwya: "",
+    thwelbond_id: "",
     classification_id: "",
+    category_id: "",
+    karat_minerals: "",
     weight: "",
     wage: "",
+    model_number: "",
   };
 
   const Cols = useMemo<any>(
@@ -170,13 +175,24 @@ export const SellingBranchIdentity = () => {
   ///
   /////////// CUSTOM HOOKS
   ///
+  // const { data, refetch, isSuccess, isRefetching, isLoading } = useFetch({
+  //   queryKey: ["branch-all-accepted-items"],
+  //   pagination: true,
+  //   endpoint:
+  //     search === ""
+  //       ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}?page=${page}`
+  //       : `${search}`,
+  //   onSuccess: (data) => {
+  //     setDataSource(data.data);
+  //   },
+  // });
+
   const { data, refetch, isSuccess, isRefetching, isLoading } = useFetch({
-    queryKey: ["branch-all-accepted-items"],
+    queryKey: ["branch-all-accepted-items", page, search],
     pagination: true,
-    endpoint:
-      search === ""
-        ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}?page=${page}`
-        : `${search}`,
+    endpoint: search
+      ? `${search}&page=${page}`
+      : `/branchManage/api/v1/all-accepted/${userData?.branch_id}?page=${page}`,
     onSuccess: (data) => {
       setDataSource(data.data);
     },
@@ -278,6 +294,19 @@ export const SellingBranchIdentity = () => {
     },
   ];
 
+  // METAL OPTION
+  const { data: karatMineralsOption } = useFetch({
+    endpoint: "/classification/api/v1/karatminerals?type=all",
+    queryKey: ["karat_mineral_option"],
+    select: (karats) =>
+      karats.map((karat: any) => ({
+        id: karat?.id,
+        label: karat?.karatmineral,
+        name: karat?.karatmineral,
+        value: karat?.id,
+      })),
+  });
+
   useEffect(() => {
     refetch();
   }, [page]);
@@ -307,6 +336,23 @@ export const SellingBranchIdentity = () => {
     });
     setSearch(uri);
   };
+
+  // const getSearchResults = async (req: any) => {
+  //   let uri = `branchManage/api/v1/all-accepted/${userData?.branch_id}`;
+  //   let params = [];
+
+  //   Object.keys(req).forEach((key) => {
+  //     if (req[key] !== "") {
+  //       params.push(`${key}[eq]=${req[key]}`);
+  //     }
+  //   });
+
+  //   if (params.length > 0) {
+  //     uri += `?${params.join("&")}`;
+  //   }
+
+  //   setSearch(uri);
+  // };
   const isLocation = location.pathname;
   ///
   if (isLoading || isRefetching)
@@ -320,6 +366,7 @@ export const SellingBranchIdentity = () => {
             getSearchResults({
               ...values,
             });
+            setPage(1);
           }}
         >
           {({ setFieldValue }) => (
@@ -369,7 +416,7 @@ export const SellingBranchIdentity = () => {
                 </div>
               </div>
               <p className="font-bold mb-2">{t("filter")}</p>
-              <div className="grid grid-cols-4 gap-x-4">
+              <div className="grid grid-cols-4 gap-4">
                 <BaseInputField
                   id="hwya"
                   name="hwya"
@@ -377,6 +424,13 @@ export const SellingBranchIdentity = () => {
                   placeholder={`${t("identification")}`}
                   className="shadow-xs"
                   type="text"
+                />
+                <BaseInputField
+                  id="thwelbond_id"
+                  label={`${t("supply voucher number")}`}
+                  name="thwelbond_id"
+                  type="text"
+                  placeholder={`${t("supply voucher number")}`}
                 />
                 <BaseInputField
                   id="weight"
@@ -399,6 +453,31 @@ export const SellingBranchIdentity = () => {
                   name="classification_id"
                   field="id"
                   label={`${t("category")}`}
+                />
+                <div className="">
+                  <SelectCategory
+                    name="category_id"
+                    all={true}
+                    showItems={true}
+                    label={t("classification")}
+                  />
+                </div>
+                <div className="">
+                  <Select
+                    id="karat_minerals"
+                    label={`${t("mineral karat")}`}
+                    name="karat_minerals"
+                    placeholder={`${t("mineral karat")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={karatMineralsOption}
+                  />
+                </div>
+                <BaseInputField
+                  id="model_number"
+                  label={`${t("modal number")}`}
+                  name="model_number"
+                  type="text"
+                  placeholder={`${t("modal number")}`}
                 />
               </div>
               <Button

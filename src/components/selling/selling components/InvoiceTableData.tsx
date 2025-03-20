@@ -39,7 +39,7 @@ const InvoiceTableData = <T extends object>({
   });
 
   return (
-    <div className="mx-5">
+    <div>
       <div className="mb-6 overflow-x-auto lg:overflow-x-visible w-full">
         <table className="mt-8 w-full table-shadow">
           {/* Table Header */}
@@ -117,7 +117,7 @@ const InvoiceTableData = <T extends object>({
                       )}
                     >
                       {item.title && (
-                        <span className="font-semibold">{item.title} :</span>
+                        <span className="font-semibold">{item.title} : </span>
                       )}
                       <span className="font-medium">
                         {item.totalFinalCostIntoArabic}

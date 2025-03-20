@@ -58,10 +58,7 @@ export const AllRetrieveHonestBonds = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log(
-    "🚀 ~ AllRetrieveHonestBonds ~ honestBondsData:",
-    honestBondsData
-  );
+
   /////////// VARIABLES
   ///
 

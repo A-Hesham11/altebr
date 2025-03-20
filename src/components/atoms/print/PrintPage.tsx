@@ -60,12 +60,17 @@ const PrintPage = ({ item }: any) => {
                 <p className="rotated-paragraph">
                   D:
                   <span className="paragraph_title">
-                    {item?.classification_id !== 1 ? totalDiamondWeight : 0}
+                    {item?.classification_id !== 1
+                      ? formatGram(Number(totalDiamondWeight))
+                      : 0}
                   </span>
                 </p>
               )}
               <p className="rotated-paragraph">
-                S:<span className="paragraph_title">{item?.ahgar_weight}</span>
+                S:
+                <span className="paragraph_title">
+                  {formatGram(Number(item?.ahgar_weight))}
+                </span>
               </p>
               {item?.classification_id != 1 && (
                 <p className="rotated-paragraph">

@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../../components/atoms";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditIcon, ViewIcon } from "../../../components/atoms/icons";
@@ -12,16 +12,39 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { Loading } from "../../../components/organisms/Loading";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { BiSpreadsheet } from "react-icons/bi";
+import InventoryEntry from "./InventoryEntry";
+import TableEntry from "../../../components/templates/reusableComponants/tantable/TableEntry";
 
 const ViewInventoryBonds = () => {
   const [dataSource, setDataSource] = useState([]);
   const [open, setOpen] = useState<boolean>(false);
+  const [openEntry, setOpenEntry] = useState<boolean>(false);
+  const [entryItemData, setEntryItemData] = useState<any>([]);
+  console.log("🚀 ~ ViewInventoryBonds ~ entryItemData:", entryItemData)
+  const [entryItemLostData, setEntryItemLostData] = useState<any>([]);
+  console.log("🚀 ~ ViewInventoryBonds ~ entryItemLostData:", entryItemLostData)
   const [page, setPage] = useState<number>(1);
   const [openRowId, setOpenRowId] = useState(null);
   const [editEmployees, setEditEmployees] = useState({});
   const isRTL = useIsRTL();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenRowId(null);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [setOpenRowId]);
 
   const dropListItems = [
     { drop_id: "a", title: t("Lost and Found Report") },
@@ -117,7 +140,8 @@ const ViewInventoryBonds = () => {
             is_start: item.is_start,
           }));
 
-          const toggleDropdown = () => {
+          const toggleDropdown = (event) => {
+            event.stopPropagation();
             if (openRowId === rowId) {
               setOpenRowId(null);
             } else {
@@ -125,7 +149,10 @@ const ViewInventoryBonds = () => {
             }
           };
           return (
-            <div className="flex items-center justify-center gap-5 relative">
+            <div
+              className="flex items-center justify-center gap-5 relative"
+              ref={dropdownRef}
+            >
               {statusBond === 0 ? (
                 <>
                   <ViewIcon
@@ -141,8 +168,8 @@ const ViewInventoryBonds = () => {
                       className="text-mainGreen"
                       action={() => {
                         setEditEmployees({
-                          id: info.row.original.id,
-                          report_number: info.row.original.bond_number,
+                          id: rowId,
+                          report_number: reportNumber,
                           employe: employeesData,
                         });
                         setOpen(true);
@@ -151,16 +178,27 @@ const ViewInventoryBonds = () => {
                   )}
                 </>
               ) : (
-                <HiDotsHorizontal
-                  size={20}
-                  className="text-mainGreen cursor-pointer"
-                  onClick={toggleDropdown}
-                />
+                <div className="flex items-center gap-x-3">
+                  <HiDotsHorizontal
+                    size={22}
+                    className="text-mainGreen cursor-pointer"
+                    onClick={toggleDropdown}
+                  />
+                  <BiSpreadsheet
+                    onClick={() => {
+                      setEntryItemData(info.row.original);
+                      setEntryItemLostData(info.row.original)
+                      setOpenEntry(true);
+                    }}
+                    size={23}
+                    className="text-mainGreen mx-auto cursor-pointer"
+                  />
+                </div>
               )}
 
               {openRowId === rowId && (
                 <ul className="absolute top-6 left-0 z-50 bg-white shadow-md rounded-xl">
-                  {dropListItems?.map((item) => (
+                  {dropListItems.map((item) => (
                     <li
                       key={item.drop_id}
                       className="p-2 text-[#000000B2] text-[17px] hover:bg-gray-100 cursor-pointer border-b py-4 px-5 text-start"
@@ -261,16 +299,21 @@ const ViewInventoryBonds = () => {
         </Table>
       </div>
 
-      <div>
-        <Modal isOpen={open} onClose={() => setOpen(false)}>
-          <SelectEmployeesModal
-            editEmployees={editEmployees}
-            open={open}
-            setOpen={setOpen}
-            refetch={refetch}
-          />
-        </Modal>
-      </div>
+      <Modal isOpen={open} onClose={() => setOpen(false)}>
+        <SelectEmployeesModal
+          editEmployees={editEmployees}
+          open={open}
+          setOpen={setOpen}
+          refetch={refetch}
+        />
+      </Modal>
+
+      <Modal isOpen={openEntry} onClose={() => setOpenEntry(false)}>
+        <div>
+          <InventoryEntry item={entryItemData} />
+          {/* <InventoryEntry item={entryItemLostData} /> */}
+        </div>
+      </Modal>
     </div>
   );
 };

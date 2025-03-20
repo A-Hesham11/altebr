@@ -1,18 +1,16 @@
 import Logo from "../../../../assets/bill-logo.png";
 import { t } from "i18next";
 import { Button } from "../../../../components/atoms";
-import { useContext, useRef } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useIsRTL } from "../../../../hooks";
 import { useReactToPrint } from "react-to-print";
 import { numberContext } from "../../../../context/settings/number-formatter";
 import { useLocation } from "react-router-dom";
+import { Table } from "../../../../components/templates/reusableComponants/tantable/Table";
+import { convertNumToArWord } from "../../../../utils/number to arabic words/convertNumToArWord";
 
-const BranchInventoryReport = ({
-  dataSource,
-  date,
-  reportName,
-}: any) => {
+const BranchInventoryReport = ({ dataSource, date, reportNumber }: any) => {
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();
@@ -24,6 +22,14 @@ const BranchInventoryReport = ({
       title: bankName,
       value: formatReyal(value),
       unit: t("reyal"),
+    })
+  );
+
+  const BanksDataTable = Object.entries({ ...dataSource?.banks }).map(
+    ([bankName, value]) => ({
+      name: bankName,
+      amount: formatReyal(value),
+      amountAR: convertNumToArWord(Math.round(value)),
     })
   );
 
@@ -111,6 +117,123 @@ const BranchInventoryReport = ({
     },
   ];
 
+  const data = [
+    {
+      name: t("Cash"),
+      amount: formatGram(dataSource?.assets.cash),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.cash)),
+    },
+    {
+      name: t("total wages"),
+      amount: formatGram(dataSource?.assets.wages),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.wages)),
+    },
+    {
+      name: t("Total New Gold 18 karat"),
+      amount: formatGram(dataSource?.assets.new_18),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.new_18)),
+    },
+    {
+      name: t("Total New Gold 21 karat"),
+      amount: formatGram(dataSource?.assets.new_21),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.new_21)),
+    },
+    {
+      name: t("Total New Gold 22 karat"),
+      amount: formatGram(dataSource?.assets.new_22),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.new_22)),
+    },
+    {
+      name: t("Total New Gold 24 karat"),
+      amount: formatGram(dataSource?.assets.new_24),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.new_24)),
+    },
+
+    {
+      name: t("Total gold fraction 18"),
+      amount: formatGram(dataSource?.assets.old_18),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.old_18)),
+    },
+    {
+      name: t("Total gold fraction 21"),
+      amount: formatGram(dataSource?.assets.old_21),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.old_21)),
+    },
+    {
+      name: t("Total gold fraction 22"),
+      amount: formatGram(dataSource?.assets.old_22),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.old_22)),
+    },
+    {
+      name: t("Total gold fraction 24"),
+      amount: formatGram(dataSource?.assets.old_24),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.old_24)),
+    },
+    ...BanksDataTable,
+    {
+      name: t("diamond value"),
+      amount: formatGram(dataSource?.assets.diamond_value),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.assets.diamond_value)
+      ),
+    },
+    {
+      name: t("accessory value"),
+      amount: formatGram(dataSource?.assets.accessory_value),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.assets.accessory_value)
+      ),
+    },
+
+    {
+      name: t("Diamond Quantity"),
+      amount: formatGram(dataSource?.assets.diamond_count),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.assets.diamond_count)
+      ),
+    },
+    {
+      name: t("accessory Quantity"),
+      amount: formatGram(dataSource?.assets.accessory_count),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.assets.accessory_count)
+      ),
+    },
+    {
+      name: t("Total cash"),
+      amount: formatGram(dataSource?.assets.totalCash),
+      amountAR: convertNumToArWord(Math.round(dataSource?.assets.totalCash)),
+    },
+    {
+      name: t("Total Gold 24"),
+      amount: formatGram(dataSource?.assets.total_weightNewGold_24),
+      amountAR: convertNumToArWord(
+        Math.round(dataSource?.assets.total_weightNewGold_24)
+      ),
+    },
+  ];
+
+  const columns = useMemo<any>(
+    () => [
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "name",
+        header: () => <span>{t("name")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "amount",
+        header: () => <span>{t("amount")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "amountAR",
+        header: () => <span>{t("amount in words")}</span>,
+      },
+    ],
+    []
+  );
+
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
     onBeforePrint: () => console.log("before printing..."),
@@ -146,14 +269,8 @@ const BranchInventoryReport = ({
   });
 
   return (
-    <div className="py-12 px-20">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2>
-            <span className="font-semibold">{t("date")} : </span> {date}
-          </h2>
-        </div>
-
+    <div className="p-12">
+      <div className="flex items-center justify-end">
         <div>
           <Button action={handlePrint}>{t("print")}</Button>
         </div>
@@ -163,12 +280,30 @@ const BranchInventoryReport = ({
         ref={contentRef}
         className={`${isRTL ? "rtl" : "ltr"} container_print`}
       >
-        <div className="my-6 text-center">
-          <img src={Logo} alt="logo" className="mx-auto" />
-          <h2 className="text-lg font-semibold">{t(reportName)}</h2>
+        <div className="my-6 grid grid-cols-3 ">
+          <div>
+            <h2>
+              <span className="font-semibold">{t("date")} : </span> {date}
+            </h2>
+            <h2 className="mt-1.5">
+              <span className="font-semibold">{t("Report number")} : </span>{" "}
+              {reportNumber}
+            </h2>
+          </div>
+          <div className="flex justify-center flex-col items-center">
+            <img src={Logo} alt="logo" className="mx-auto" />
+            <h2 className="text-lg font-semibold">
+              {t("Lost and Found Report")}
+            </h2>
+          </div>
+          <div className="flex justify-end">
+            <p>
+              {t("branch number")} : {userData?.branch_id}
+            </p>
+          </div>
         </div>
 
-        <div>
+        <div className="no-print">
           <h2 className="font-semibold">{t("Totals")}</h2>
           <ul className="grid grid-cols-4 gap-x-8  gap-y-6 my-6">
             {totals?.map((item, index) => (
@@ -185,6 +320,10 @@ const BranchInventoryReport = ({
               </li>
             ))}
           </ul>
+        </div>
+
+        <div className="print-only my-5">
+          <Table data={data} columns={columns} />
         </div>
 
         {["e", "f", "g"].includes(state?.reportID) && (

@@ -22,6 +22,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { DownloadAsPDF } from "../../../../utils/DownloadAsPDF";
 import InvoiceFooter from "../../../../components/Invoice/InvoiceFooter";
+import { useNavigate } from "react-router-dom";
 
 interface BudgetSecondPage_TP {
   setStage: React.Dispatch<SetStateAction<number>>;
@@ -45,6 +46,7 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
   const { formatGram, formatReyal } = numberContext();
   const mainDataBoxes = mainCardData?.cards?.map((card) => card.boxes).flat();
   const isRTL = useIsRTL();
+  const navigate = useNavigate();
 
   const budgetOperation = processBudgetData(mainCardData.cards);
   const formattedBudgetOperation = Object.entries(budgetOperation);
@@ -231,7 +233,14 @@ const BudgetSecondPage: React.FC<BudgetSecondPage_TP> = ({
         </div>
         <div className="flex items-center justify-end gap-x-4 mr-auto mt-8">
           {showPrint && (
-            <div className="animate_from_right">
+            <div className="animate_from_right flex gap-4">
+              <Button
+                className="bg-transparent border text-mainGreen border-mainGreen"
+                type="button"
+                action={() => navigate("/bank")}
+              >
+                {t("back")}
+              </Button>
               <Button
                 bordered
                 action={() => DownloadAsPDF(contentRef.current, "Budget")}

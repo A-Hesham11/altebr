@@ -18,6 +18,7 @@ import { Table } from "../../components/templates/reusableComponants/tantable/Ta
 import SupplyPayoffInvoiceTablePreview from "./SupplyPayoffInvoiceTablePreview";
 import { BiSpreadsheet } from "react-icons/bi";
 import SupplyReturnInvoice from "./SupplyReturnInvoice";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
 
 const SupplyPayoffBonds = () => {
   // STATE
@@ -28,7 +29,23 @@ const SupplyPayoffBonds = () => {
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [returnInvoiceModal, setOpenReturnInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
+  console.log("🚀 ~ SupplyPayoffBonds ~ selectedItem:", selectedItem);
   const [search, setSearch] = useState("");
+  const { invoice_logo } = GlobalDataContext();
+
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: selectedItem?.date,
+    second_title: "supplier name",
+    second_value: selectedItem?.supplier_id,
+    third_title: "mobile number",
+    third_value: selectedItem?.supplier_phone,
+    bond_title: "bill no",
+    invoice_number: selectedItem?.id,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
+    bond_date: selectedItem?.data,
+  };
 
   const searchValues = {
     invoice_number: "",
@@ -237,7 +254,10 @@ const SupplyPayoffBonds = () => {
 
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
-        <SupplyReturnInvoice item={selectedItem} />
+        <SupplyReturnInvoice
+          item={selectedItem}
+          invoiceHeaderBasicData={invoiceHeaderBasicData}
+        />
       </Modal>
 
       <Modal

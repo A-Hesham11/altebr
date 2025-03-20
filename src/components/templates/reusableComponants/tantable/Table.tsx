@@ -22,7 +22,7 @@ interface ReactTableProps<T extends object> {
   children?: ReactNode;
   rowBackground?: string;
   className?: string;
-  initialState?: number;
+  Totals?: any;
 }
 
 export const Table = <T extends object>({
@@ -33,21 +33,20 @@ export const Table = <T extends object>({
   children,
   rowBackground,
   className,
-  initialState,
+  Totals,
 }: ReactTableProps<T>) => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const table = useReactTable({
     data,
     columns,
-    // getScrollElement: () => tableContainerRef.current,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    // initialState: {
-    //   pagination: {
-    //     pageSize: data.length,
-    //   },
-    // },
+    initialState: {
+      pagination: {
+        pageSize: data.length > 10 ? 100000 : 10,
+      },
+    },
   });
 
   const isRTL = useIsRTL();
@@ -103,6 +102,20 @@ export const Table = <T extends object>({
               </tr>
             ))}
           </tbody>
+          {Totals && (
+            <tfoot className="text-center ">
+              <tr className="text-center ">
+                {Totals?.map((item) => (
+                  <td
+                    key={item.id}
+                    className="!bg-mainGreen font-medium !text-white border-x px-2 py-2  gap-x-2 items-center "
+                  >
+                    {item.value}
+                  </td>
+                ))}
+              </tr>
+            </tfoot>
+          )}
         </table>
 
         {/* Navigation */}

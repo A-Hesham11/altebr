@@ -94,6 +94,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   SOCKET_SERVER_URL,
   socket,
 }) => {
+  console.log("🚀 ~ currenGroup:", currenGroup);
   const { id } = useParams<{ id: string }>();
   const { userData } = useContext(authCtx);
   const { formatReyal } = numberContext();
@@ -107,6 +108,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   const [kitItemsData, setKitItemsData] = useState([]);
   const [editWeight, setEditWeight] = useState({});
   const [activeTableId, setActiveTableId] = useState<string | null>(null);
+  const [nextGroup, setNextGroup] = useState<number>(0);
 
   const numbers = ConvertNumberToWordGroup();
 
@@ -148,6 +150,10 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     },
   ];
 
+  useEffect(() => {
+    setNextGroup(identitiesCheckedItems?.length);
+  }, [identitiesCheckedItems?.length]);
+
   const handleBondItemsResponse = (data: any) => {
     setAvailableItems(data.success ? data?.data?.items : []);
   };
@@ -163,6 +169,8 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   useEffect(() => {
     socket.on("connect");
 
+    socket.emit("joinBranch", BasicCompanyData);
+
     socket.emit("getBondItems", BasicCompanyData);
     socket.on("getBondItemsResponse", handleBondItemsResponse);
 
@@ -176,6 +184,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       socket.off("getBondItemsResponse", handleBondItemsResponse);
       socket.off("roomData", handleRoomData);
       socket.off("getmissingPieces", handleUnknownIdentitiesData);
+      socket.disconnect();
     };
   }, []);
 
@@ -183,6 +192,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     const isGroupExists = identitiesCheckedItems.some(
       (identity) => identity?._id === id
     );
+
     if (!isGroupExists) {
       notify("info", `${t("A group must be created first.")}`);
       return;
@@ -206,14 +216,13 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       isWeight: item.category_selling_type === "all" ? 1 : 0,
       karat_name:
         item.classification_id === 1 ? item.karat_name : item.karatmineral_name,
-      diamond_value: item.diamond_value,
-      classification_id: item.classification_id,
       classification_name: item.classification_name,
       category_id: item.category_id,
       category_name: item.category_name,
       weight: item.weight,
       hwya: item.hwya,
       itemId: item.id,
+      diamond_value: item.diamond_value,
     };
 
     socket.emit("addPieceToRoom", payload);
@@ -236,9 +245,10 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   const handleAddMissingPieces = (item: any) => {
     const payload = {
       ...BasicCompanyData,
+      karat_id: item.karat_id,
+      mineral_id: item.mineral_id,
       karat_name:
         item.classification_id === 1 ? item.karat_name : item.karatmineral_name,
-      diamond_value: item.diamond_value,
       classification_id: item.classification_id,
       classification_name: item.classification_name,
       category_id: item.category_id,
@@ -246,6 +256,9 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       weight: item.weight,
       hwya: item.hwya,
       itemId: item.id,
+      Iban: item.Iban,
+      wage: item.wage,
+      diamond_value: item.diamond_value,
     };
 
     socket.emit("missingPieces", payload);
@@ -270,16 +283,16 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   };
 
   const handleCheckedItem = async (newItemId: string, newItem: Item) => {
+    console.log("🚀 ~ handleCheckedItem ~ newItem:", newItem);
     const group = identitiesCheckedItems.find(
       (identity) => identity?._id === newItemId
     );
+
     const isItemAlreadyInGroup = group.items.some(
-      (item: any) => item.itemId === newItem.item_id
+      (item: any) => item.hwya === newItem.hwya
     );
 
-    if (!group) return;
-
-    if (isItemAlreadyInGroup) {
+    if (isItemAlreadyInGroup && newItem?.category_selling_type === "part") {
       notify("info", `${t("This item is already added")}`);
       return;
     }
@@ -290,7 +303,10 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   };
 
   const handleUnknownItem = (newItem: Item) => {
-    if (unknownIdentities.some((item) => item.id === newItem.id)) {
+    const isItemAlreadyInunknown = unknownIdentities.some(
+      (item: any) => item.hwya === newItem.hwya
+    );
+    if (isItemAlreadyInunknown) {
       notify("info", `${t("This item is already added to unknown items.")}`);
       return;
     }
@@ -306,6 +322,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     endpoint: `/inventory/api/v1/getItembyhwya/${userData?.branch_id}?hwya[lk]=${search}`,
     enabled: Boolean(search),
     onSuccess: (data) => {
+      console.log("🚀 ~ data:", data);
       if (!data?.data) return;
 
       const { weightitems, category_selling_type } = data?.data;
@@ -328,14 +345,12 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     },
   });
 
-  const { data: nextGroup, refetch: refetchNextGroup } = useFetch({
-    endpoint: `/inventory/api/v1/next-group/${userData?.branch_id}/${id}`,
-    queryKey: ["next-group"],
-  });
-
   const { mutateAsync, isLoading: isLoadingMutate } = useMutate({
     mutationFn: mutateData,
     onSuccess: () => {
+      socket.emit("getRooms", BasicCompanyData);
+      socket.on("roomData", handleRoomData);
+
       notify("success", `${t("The group has been created successfully.")}`);
     },
   });
@@ -345,7 +360,11 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   });
 
   const handleSuccess = ({ data, dataNode }: SuccessParams): void => {
-    const currentGroup = { number: data?.id, id: dataNode?.["_id"] };
+    const currentGroup = {
+      number: data?.id,
+      id: dataNode?.["_id"],
+      groupName: dataNode?.groupName,
+    };
     localStorage.setItem("currentGroup", JSON.stringify(currentGroup));
 
     const storedValue = localStorage.getItem("currentGroup");
@@ -369,7 +388,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       return updatedItems;
     });
 
-    refetchNextGroup();
+    // refetchNextGroup();
   };
 
   const { mutate: mutateItemIdentity } = useMutate({
@@ -411,7 +430,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
         endpointName: `/inventory/api/v1/inventorygroups`,
         values: {
           inventory_id: id,
-          group_name: numbers?.[Number(nextGroup?.group_num - 1)],
+          group_name: numbers?.[Number(nextGroup)],
           employee_id: userData?.id,
           branch_id: userData?.branch_id,
         },
@@ -423,7 +442,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
           companyKey: isGetTenantFromUrl,
           employeeId: String(userData?.id),
           groupId: "0",
-          groupName: numbers?.[Number(nextGroup?.group_num - 1)],
+          groupName: numbers?.[Number(nextGroup)],
           inventoryId: String(id),
         },
       }),
@@ -434,10 +453,10 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
 
   // Start Of The Inventory Process For Employees
   const handleSuccessInventoryData = () => {
-    notify("success");
-    ["currenGroup", "unknownIdentities", "identitiesCheckedItems"].forEach(
-      (key) => localStorage.removeItem(key)
+    ["currenGroup", "weightItems"].forEach((key) =>
+      localStorage.removeItem(key)
     );
+    notify("success", `${t("The inventory process has been completed.")}`);
     navigate("/selling/inventory/view");
   };
 
@@ -448,20 +467,13 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     });
 
   const handlePostInventoryData = () => {
-    const lostItems = unknownIdentities.map((item) => ({
-      inventory_id: id,
-      branch_id: userData?.branch_id,
-      ...item,
-    }));
-
     mutateInventoryData({
-      endpointName: `/inventory/api/v1/missinginventories`,
+      endpointName: `/inventory/api/v1/finishedInventories`,
       values: {
         branch_id: userData?.branch_id,
         employee_id: userData?.id,
         type_employe: true,
         inventory_id: id,
-        lostItems,
       },
     });
   };
@@ -476,102 +488,101 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
         </p>
       </div>
       <Formik initialValues={{ search: "" }} onSubmit={(values) => {}}>
-        {({ values }) => {
-          return (
-            <Form>
-              <div className="flex items-end gap-x-8">
-                <Button
-                  bordered
-                  className="flex items-center gap-x-2"
-                  loading={isLoadingMutate}
-                  action={() => {
-                    handleCreateGroups();
-                  }}
-                >
-                  <AddIcon size={22} />
-                  <span>{t("Create a group")}</span>
-                </Button>
+        <Form>
+          <div className="flex items-end gap-x-8">
+            <Button
+              bordered
+              className="flex items-center gap-x-2"
+              loading={isLoadingMutate}
+              action={() => {
+                handleCreateGroups();
+              }}
+            >
+              <AddIcon size={22} />
+              <span>{t("Create a group")}</span>
+            </Button>
 
-                <div className="flex gap-2 items-center justify-center rounded-md  p-1">
-                  <BaseInputField
-                    id="search"
-                    name="search"
-                    autoFocus
-                    label={`${t("id code")}`}
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder={`${t("id code")}`}
-                    className="placeholder-slate-400  w-80 !shadow-transparent focus:border-transparent"
-                  />
-                </div>
+            <div className="flex gap-2 items-center justify-center rounded-md  p-1">
+              <BaseInputField
+                id="search"
+                name="search"
+                autoFocus
+                label={`${t("id code")}`}
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={`${t("id code")}`}
+                className="placeholder-slate-400  w-80 !shadow-transparent focus:border-transparent"
+              />
+            </div>
 
-                <div className="bg-mainGreen rounded-full py-1.5 px-8 text-white">
-                  <h2>{t("first group")}</h2>
-                </div>
+            {!!currenGroup?.groupName && (
+              <div className="bg-mainGreen rounded-full py-1.5 px-8 text-white">
+                <h2>
+                  {t("group")} {currenGroup?.groupName}
+                </h2>
               </div>
+            )}
+          </div>
 
-              <ul className="grid grid-cols-4 gap-6 mb-5 my-5">
-                {totals.map(({ name, key, unit, value }) => (
-                  <BoxesDataBase variant="secondary" key={key}>
-                    <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl">
-                      {name}
-                    </p>
-                    <p className="bg-white px-2 py-[7px] text-black rounded-b-xl">
-                      {formatReyal(Number(value))} {t(unit)}
-                    </p>
-                  </BoxesDataBase>
-                ))}
-              </ul>
+          <ul className="grid grid-cols-4 gap-6 mb-5 my-5">
+            {totals.map(({ name, key, unit, value }) => (
+              <BoxesDataBase variant="secondary" key={key}>
+                <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl">
+                  {name}
+                </p>
+                <p className="bg-white px-2 py-[7px] text-black rounded-b-xl">
+                  {formatReyal(Number(value))} {t(unit)}
+                </p>
+              </BoxesDataBase>
+            ))}
+          </ul>
 
-              <div className="flex items-center gap-x-4 w-full bg-[#295E5608] py-8 rounded-2xl">
-                <div className="w-[30%]">
-                  <AvailableItemsInBranch
-                    selectedItem={selectedItem}
-                    setSelectedItem={setSelectedItem}
-                    availableItems={availableItems}
-                    setAvailableItems={setAvailableItems}
-                    setNumberItemsInBranch={setNumberItemsInBranch}
-                    activeTableId={activeTableId}
-                    setActiveTableId={setActiveTableId}
-                    isGetTenantFromUrl={isGetTenantFromUrl}
-                    SOCKET_SERVER_URL={SOCKET_SERVER_URL}
-                  />
-                </div>
-                <div className="w-[30%]">
-                  <IdentitiesCheckedByBranch
-                    identitiesCheckedItems={identitiesCheckedItems}
-                    setIdentitiesCheckedItems={setIdentitiesCheckedItems}
-                    currenGroup={currenGroup}
-                    setOpenWeightItem={setOpenWeightItem}
-                    setEditWeight={setEditWeight}
-                    setSelectedItem={setSelectedItem}
-                    activeTableId={activeTableId}
-                    setActiveTableId={setActiveTableId}
-                  />
-                </div>
-                <div className="w-[30%]">
-                  <UnknownIdentitiesInBranch
-                    unknownIdentities={unknownIdentities}
-                    setUnknownIdentities={setUnknownIdentities}
-                    setOpenDetailsItem={setOpenDetailsItem}
-                    setUnknownItemDetails={setUnknownItemDetails}
-                    setSelectedItem={setSelectedItem}
-                    activeTableId={activeTableId}
-                    setActiveTableId={setActiveTableId}
-                  />
-                </div>
-                <div className="w-[25%]">
-                  <IdentityInformationInBranch
-                    selectedItem={selectedItem}
-                    setSelectedItem={setSelectedItem}
-                    setOpenDetailsItem={setOpenDetailsItem}
-                  />
-                </div>
-              </div>
-            </Form>
-          );
-        }}
+          <div className="flex items-center gap-x-4 w-full bg-[#295E5608] py-8 rounded-2xl">
+            <div className="w-[30%]">
+              <AvailableItemsInBranch
+                selectedItem={selectedItem}
+                setSelectedItem={setSelectedItem}
+                availableItems={availableItems}
+                setAvailableItems={setAvailableItems}
+                setNumberItemsInBranch={setNumberItemsInBranch}
+                activeTableId={activeTableId}
+                setActiveTableId={setActiveTableId}
+                isGetTenantFromUrl={isGetTenantFromUrl}
+                SOCKET_SERVER_URL={SOCKET_SERVER_URL}
+              />
+            </div>
+            <div className="w-[30%]">
+              <IdentitiesCheckedByBranch
+                identitiesCheckedItems={identitiesCheckedItems}
+                setIdentitiesCheckedItems={setIdentitiesCheckedItems}
+                currenGroup={currenGroup}
+                setOpenWeightItem={setOpenWeightItem}
+                setEditWeight={setEditWeight}
+                setSelectedItem={setSelectedItem}
+                activeTableId={activeTableId}
+                setActiveTableId={setActiveTableId}
+              />
+            </div>
+            <div className="w-[30%]">
+              <UnknownIdentitiesInBranch
+                unknownIdentities={unknownIdentities}
+                setUnknownIdentities={setUnknownIdentities}
+                setOpenDetailsItem={setOpenDetailsItem}
+                setUnknownItemDetails={setUnknownItemDetails}
+                setSelectedItem={setSelectedItem}
+                activeTableId={activeTableId}
+                setActiveTableId={setActiveTableId}
+              />
+            </div>
+            <div className="w-[25%]">
+              <IdentityInformationInBranch
+                selectedItem={selectedItem}
+                setOpenDetailsItem={setOpenDetailsItem}
+              />
+            </div>
+          </div>
+        </Form>
       </Formik>
 
       {/* Edit Weight Item */}
@@ -586,6 +597,8 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
           setOpenWeightItem={setOpenWeightItem}
           currenGroup={currenGroup}
           addItemToIdentity={addItemToIdentity}
+          BasicCompanyData={BasicCompanyData}
+          socket={socket}
         />
       </Modal>
 
@@ -635,7 +648,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
               loading={isLoadingInventoryData}
               action={handlePostInventoryData}
             >
-              {t("save")}
+              {t("Finished")}
             </Button>
           </div>
         )}
@@ -645,6 +658,12 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
 };
 
 export default InventoryNewGoldDiamondsMiscellaneous;
+
+// const { data: nextGroups, refetch: refetchNextGroup } = useFetch({
+//   endpoint: `/inventory/api/v1/next-group/${userData?.branch_id}/${id}`,
+//   queryKey: ["next-group"],
+// });
+// console.log("🚀 ~ nextGroup:", nextGroups);
 
 // ---------------------------------------------------------------------------------
 // NEW

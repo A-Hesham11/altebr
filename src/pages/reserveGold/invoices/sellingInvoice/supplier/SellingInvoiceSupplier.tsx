@@ -18,7 +18,7 @@ const SellingInvoiceSupplier: React.FC<SellingInvoiceSupplier_TP> = (props) => {
     useState<null>(null);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const { gold_price } = GlobalDataContext();
-  
+
   const goldPrice = {
     18: gold_price?.price_gram_18k,
     21: gold_price?.price_gram_21k,
@@ -41,13 +41,6 @@ const SellingInvoiceSupplier: React.FC<SellingInvoiceSupplier_TP> = (props) => {
     karat_name: "",
     notes: "",
   };
-
-  // TODAY GOLD PRICE API
-  // const { data: goldPrice } = useFetch({
-  //   endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
-  //   queryKey: ["get-gold-price"],
-  // });
-  // console.log("🚀 ~ goldPrice:", goldPrice)
 
   const { data: bondsList } = useFetch({
     endpoint: `/reserveGold/api/v1/list_reserve_selling_Invoice?per_page=10000`,

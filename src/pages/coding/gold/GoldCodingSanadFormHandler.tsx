@@ -2,7 +2,7 @@
 ///
 import { useFormikContext } from "formik";
 import { t } from "i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "../../../components/atoms";
 import { Header } from "../../../components/atoms/Header";
@@ -73,6 +73,8 @@ export const GoldCodingSanadFormHandler = ({
 
   const [editWage, setEditWage] = useState("");
   const { formatGram, formatReyal } = numberContext();
+  const weightInputRef = useRef(null);
+  console.log("🚀 ~ weightInputRef:", weightInputRef);
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
@@ -258,7 +260,7 @@ export const GoldCodingSanadFormHandler = ({
       // prepareItemsToShowInCaseOfTa2m
       setFieldValue("category_id", activeBand.category.id);
     } else if (!!activeBand && activeBand.category.id == 1) {
-      setFieldValue("category_id", "");
+      // setFieldValue("category_id", "");
       setFieldValue("weightitems", []);
     }
 
@@ -403,6 +405,7 @@ export const GoldCodingSanadFormHandler = ({
                         setActiveBand={setActiveBand}
                         selectedSanad={selectedSanad}
                         setEditWage={setEditWage}
+                        weightInputRef={weightInputRef}
                       />
                     )}
                   </div>
@@ -431,9 +434,18 @@ export const GoldCodingSanadFormHandler = ({
             )}
             {totalLeftWeight !== 0 && (
               <Button
-                action={() => {
-                  submitForm();
-                  // if(isValid) setFieldValue("left_weight", activeBand?.leftWeight - values.weight)
+                action={async () => {
+                  await submitForm();
+                  setFieldValue("weight", "");
+                  setTimeout(() => {
+                    const inputElement = document.getElementById(
+                      "wight"
+                    ) as HTMLInputElement;
+                    if (inputElement) {
+                      inputElement.disabled = false;
+                      inputElement.focus();
+                    }
+                  }, 0);
                 }}
               >
                 {t("save")}

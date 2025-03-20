@@ -19,6 +19,7 @@ type HonestProvisonsProps_TP = {
   setTableData: any;
   paymentData: never[];
   setPaymentData: React.Dispatch<React.SetStateAction<never[]>>;
+  setClientData: any;
 };
 ///
 export const NewHonestForm = ({
@@ -26,6 +27,7 @@ export const NewHonestForm = ({
   setTableData,
   paymentData,
   setPaymentData,
+  setClientData,
 }: HonestProvisonsProps_TP) => {
   /////////// VARIABLES
   ///
@@ -34,6 +36,7 @@ export const NewHonestForm = ({
   /////////// CUSTOM HOOKS
   ///
   const { submitForm, setFieldValue, values } = useFormikContext();
+  console.log("🚀 ~ values:", values);
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
@@ -102,6 +105,20 @@ export const NewHonestForm = ({
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
+
+  const { data: clientInfo } = useFetch<any>({
+    endpoint: `branchManage/api/v1/clients/${values?.client_id}`,
+    queryKey: [`clients_info`, values?.client_id],
+    enabled: !!values?.client_id,
+    onSuccess(data) {
+      setClientData({
+        client_id: values?.client_id,
+        client_name: values?.client_name,
+        bond_date: values?.bond_date,
+        phone: data.phone,
+      });
+    },
+  });
 
   // SHOW NOTIFY WHEN INPUT IS EMPTY AND SUBMIT FORM
   const handleSubmit = () => {

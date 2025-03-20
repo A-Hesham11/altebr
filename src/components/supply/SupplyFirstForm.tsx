@@ -30,6 +30,7 @@ import {
   diamondValidatingSchema,
   goldValidatingSchema,
 } from "./formInitialValues_types";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
 
 ///
 type FirstFormProps_TP = {
@@ -42,6 +43,8 @@ type FirstFormProps_TP = {
   >;
   setStage: React.Dispatch<React.SetStateAction<number>>;
   nextBondNumber: string | undefined;
+  goldPriceToday: string;
+  setGoldPriceToday: any;
 };
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -53,32 +56,15 @@ export const SupplyFirstForm = ({
   setFormValues,
   setStage,
   nextBondNumber,
-  setSupplierTaxDiamond
+  setSupplierTaxDiamond,
+  goldPriceToday,
+  setGoldPriceToday,
 }: FirstFormProps_TP) => {
-  ///
-  /////////// CUSTOM HOOKS
-  ///
-  // fetch gold price api to set it as default price
-  // fetch buyer api
-  // const { data: employees, isLoading: employeesLoading, failureReason: employeeError, refetch: refetchEmployee } = useFetch<SelectOption_TP[], Employee_TP[]>
-  //   ({
-  //     endpoint: "employee/api/v1/employees?per_page=10000",
-  //     queryKey: ["employees"],
-  //     select: (employess) => employess.map((employee) => {
-  //       return {
-  //         id: employee.id,
-  //         value: employee.name,
-  //         label: employee.name,
-  //         name: employee.name
-  //       }
-  //     })
-  //   })
+  // const [goldPriceToday, setGoldPriceToday] = useState("");
 
-  const [goldPriceToday, setGoldPriceToday] = useState("");
-
-  useEffect(() => {
-    setGoldPriceToday("");
-  }, []);
+  // useEffect(() => {
+  //   setGoldPriceToday("");
+  // }, []);
 
   const {
     data: employees,
@@ -217,8 +203,8 @@ export const SupplyFirstForm = ({
             employee_value: values.employee_value,
             supplier_value: values.supplier_value,
             bond_number: values.bond_number,
-            api_gold_price: values.api_gold_price,
-            entity_gold_price: values.entity_gold_price,
+            api_gold_price: values.api_gold_price || goldPriceToday,
+            entity_gold_price: values.entity_gold_price || "20",
             notes: values.notes,
             media: values.media,
           });
@@ -344,7 +330,7 @@ export const SupplyFirstForm = ({
                       onChange={(option: any) => {
                         setFieldValue("employee_value", option!.value);
                         setFieldValue("employee_id", option!.id);
-                        setFieldValue("api_gold_price", goldPriceToday);
+                        setFieldValue("api_gold_price", goldPrice24);
                       }}
                       value={{
                         value:
@@ -425,8 +411,6 @@ export const SupplyFirstForm = ({
                         setFieldValue("api_gold_price", e.target.value);
                       }}
                       required
-                      disabled
-                      className="bg-mainDisabled"
                     />
                   )}
                   {/* gold price end */}

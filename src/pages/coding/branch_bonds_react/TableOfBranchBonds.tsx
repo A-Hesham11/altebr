@@ -20,8 +20,11 @@ import InvoiceBondsReactTable from "./InvoiceBondsReactTable";
 import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
 import InvoiceTableData from "../../../components/selling/selling components/InvoiceTableData";
 import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
+import InvoiceBasicHeader from "../../../components/Invoice/InvoiceBasicHeader";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
+  console.log("🚀 ~ TableOfBranchBonds ~ dataSource:", dataSource);
   const { formatReyal, formatGram } = numberContext();
   const invoiceRefs = useRef([]);
 
@@ -35,9 +38,33 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
     "🚀 ~ TableOfBranchBonds ~ selectedPrintItem:",
     selectedPrintItem
   );
+  const { invoice_logo } = GlobalDataContext();
   const [printItems, setPrintItems] = useState([]);
   console.log("🚀 ~ TableOfBranchBonds ~ printItems:", printItems);
   const { userData } = useContext(authCtx);
+
+  // const clientData = {
+  //   client_id: selectedPrintItem?.client_id,
+  //   client_value: selectedPrintItem?.client_name,
+  //   bond_date: selectedPrintItem?.date,
+  //   supplier_id: selectedPrintItem?.supplier_id,
+  //   branchName: selectedPrintItem?.branch_id,
+  //   bondType: "توريد عادي",
+  // };
+
+  const invoiceHeaderBasicData = {
+    first_title: "branch name",
+    first_value: selectedPrintItem?.branch_id,
+    second_title: "bond date",
+    second_value: selectedPrintItem?.date,
+    third_title: "bond type",
+    third_value: "توريد عادي",
+    bond_date: selectedPrintItem?.date,
+    bond_title: "bond number",
+    invoice_number: Number(selectedPrintItem?.id) - 1,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
+  };
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -565,29 +592,26 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
               {t("print")}
             </Button>
           </div>
-          <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
-            <div
-              className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow "
-              id="content-to-print"
-            >
-              <div className="mx-5 bill-shadow rounded-md p-6">
-                <PaymentFinalPreviewBillData
-                  isSupply
-                  clientData={clientData}
-                  invoiceNumber={selectedPrintItem?.id}
-                  invoiceData={selectedPrintItem}
-                />
-              </div>
+          <div
+            className={`${isRTL ? "rtl" : "ltr"} container_print`}
+            ref={contentRef}
+          >
+            <div className="print-header">
+              <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+            </div>
 
+            <div className="print-content">
               <InvoiceTableData
                 data={selectedPrintItem?.items || []}
                 columns={tableColumnPrint}
                 costDataAsProps={costDataAsProps}
                 finalArabicTotals={finalArabicTotals}
               ></InvoiceTableData>
+            </div>
 
-              <div className="mx-5 bill-shadow rounded-md p-6 my-9">
-                <div className="flex justify-between items-start pb-12 pe-8">
+            <div className="print-footer">
+              <div>
+                <div className="flex justify-between items-start pt-3 pb-6 pe-5">
                   <div className="text-center flex flex-col gap-4">
                     <span className="font-medium text-xs">
                       {t("recipient's signature")}
@@ -602,10 +626,7 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
                   </div>
                 </div>
               </div>
-
-              <div>
-                <InvoiceFooter />
-              </div>
+              <InvoiceFooter />
             </div>
           </div>
         </div>

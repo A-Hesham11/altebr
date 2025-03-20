@@ -14,8 +14,8 @@ const BillInputs = ({
   dateFieldName,
   suppliersData,
 }: {
-  dateFieldName: string;
-  suppliersData: any;
+  dateFieldName?: string;
+  suppliersData?: any;
 }) => {
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
