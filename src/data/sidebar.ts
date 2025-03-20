@@ -399,6 +399,26 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: "Receipt Bonds",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "add",
+        link: "/addReceiptBonds",
+        icon: CiExport,
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "view",
+        link: "/viewReceiptBonds",
+        icon: CiExport,
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: "Branch Transfers",
     icon: CiExport,
     items: [

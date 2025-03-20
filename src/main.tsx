@@ -11,6 +11,8 @@ import { NumberFormatterProvider } from "./context/settings/number-formatter";
 import "./index.css";
 import { PermissionProvider } from "react-permission-role";
 import { GlobalDataProvider } from "./context/settings/GlobalData";
+import { Provider } from "react-redux";
+import store from "./pages/store";
 
 // cloc --by-file --include-lang=JavaScript,TypeScript,jsx,tsx .
 
@@ -26,23 +28,25 @@ const permissions = [
 ];
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <AuthCtxProvider>
-        <NumberFormatterProvider>
-          <GlobalDataProvider>
-            <HelmetProvider>
-              <ProSidebarProvider>
-                <Suspense fallback={<Loading mainTitle="جاري التحميل" />}>
-                  <PermissionProvider>
-                    <App />
-                  </PermissionProvider>
-                </Suspense>
-              </ProSidebarProvider>
-            </HelmetProvider>
-          </GlobalDataProvider>
-        </NumberFormatterProvider>
-      </AuthCtxProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
+  <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthCtxProvider>
+          <NumberFormatterProvider>
+            <GlobalDataProvider>
+              <HelmetProvider>
+                <ProSidebarProvider>
+                  <Suspense fallback={<Loading mainTitle="جاري التحميل" />}>
+                    <PermissionProvider>
+                      <App />
+                    </PermissionProvider>
+                  </Suspense>
+                </ProSidebarProvider>
+              </HelmetProvider>
+            </GlobalDataProvider>
+          </NumberFormatterProvider>
+        </AuthCtxProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </Provider>
 );
