@@ -203,7 +203,6 @@ import SalesReports from "../pages/selling/SalesReports";
 import SalesReturnReports from "../pages/selling/SalesReturnReports";
 import InventoryEntry from "../pages/selling/Inventory/InventoryEntry";
 import SalesReturnPageDemo from "../pages/salesReturnDemo/SalesReturnPageDemo";
-import AddReceiptBonds from "../pages/ReceiptBonds/add/AddReceiptBonds";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);

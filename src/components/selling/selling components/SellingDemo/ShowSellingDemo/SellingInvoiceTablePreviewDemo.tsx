@@ -32,6 +32,10 @@ const SellingInvoiceTablePreviewDemo = ({ item }: { item?: {} }) => {
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
   const { invoice_logo, gold_price } = GlobalDataContext();
+  console.log(
+    "🚀 ~ SellingInvoiceTablePreviewDemo ~ invoice_logo:",
+    invoice_logo
+  );
   const PriceGoldGram = {
     "18": gold_price?.price_gram_18k,
     "21": gold_price?.price_gram_21k,
