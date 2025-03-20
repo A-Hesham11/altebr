@@ -1660,5 +1660,15 @@
   "please enter tex type": "من فضلك ادخل نوع الضريبة",
   "please add amount": "من فضلك اضف قيمة",
   "please enter directed to": "من فضلك ادخل المستلم",
-  "the amount of payment is less than the value of the bond": "قيمة الدفع اقل من مبلغ الصرف"
+  "the amount of payment is less than the value of the bond": "قيمة الدفع اقل من مبلغ الصرف",
+  "Receipt Bonds": "سندات القبض",
+  "add receipt bond": "اضافة سند قبض",
+  "receipt bond number": "سند قبض رقم",
+  "receipt price": "المبلغ المستلم",
+  "beneficiary": "اسم المستفيد",
+  "receipt date": "تاريخ سند القبض",
+  "agency / beneficiary": "الجهة / المستفيد",
+  "is there a tax": "هل يوجد ضريبة",
+  "reason": "السبب",
+  "net amount": "المبلغ الصافي"
 }
