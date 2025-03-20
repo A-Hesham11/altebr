@@ -24,14 +24,6 @@ const HonestFinalScreenHeader: React.FC<HonestFinalScreenHeader_TP> = ({
     queryKey: [`clients`, client_id],
   });
 
-  const { data: bondsData } = useFetch<ClientData_TP>({
-    endpoint: `branchSafety/api/v1/bonds/${userData?.branch_id}?per_page=10000`,
-    queryKey: [`bondsData`],
-  });
-  console.log("🚀 ~ bondsData:", bondsData);
-
-  // const bondNumber = bondsData?.[0]?.id === null ? 1 : bondsData?.[0]?.id + 1;
-  const bondNumber = bondsData?.length + 1;
 
   return (
     <div className="flex justify-between mx-6 bill-shadow rounded-md p-6">

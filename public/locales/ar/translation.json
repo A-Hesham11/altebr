@@ -1675,7 +1675,11 @@
   "Sales Return Reports": "تقارير مردود المبيعات",
   "loading Sales Report": "تحميل تقرير المبيعات",
   "loading Sales Returns Report": "تحميل تقرير مردود المبيعات",
-  "The full weight has been added.":"تم إضافة الوزن بالكامل",
-  "amount in words":"التفقيط",
-  "Value cannot be less than 0":"القيمة لا يمكن أن تكون أقل من 0"
+  "The full weight has been added.": "تم إضافة الوزن بالكامل",
+  "amount in words": "التفقيط",
+  "Value cannot be less than 0": "القيمة لا يمكن أن تكون أقل من 0",
+  "Record inventory differences as gain Record": "قيد فروقات الجرد مكسب",
+  "inventory differences as loss": "قيد فروقات الجرد خساره",
+  "No tax": "بدون ضريبة",
+  "Later": "لاحقا"
 }

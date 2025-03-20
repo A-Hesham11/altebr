@@ -10,7 +10,12 @@ import React, { useMemo } from "react";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { Loading } from "../../organisms/Loading";
 
-const SalesReportsTable = ({ dataSource, isLoading,  isRefetching, isFetching}: any) => {
+const SalesReportsTable = ({
+  dataSource,
+  isLoading,
+  isRefetching,
+  isFetching,
+}: any) => {
   const { formatReyal, formatGram } = numberContext();
   const columnsHeader = useMemo<any>(
     () => [
@@ -30,13 +35,13 @@ const SalesReportsTable = ({ dataSource, isLoading,  isRefetching, isFetching}: 
         colSpan: 2,
       },
       {
-        accessorKey: "non_Gold",
-        header: () => <span>{t("Non-Gold")}</span>,
+        accessorKey: "gold",
+        header: () => <span>{t("Gold")}</span>,
         colSpan: 4,
       },
       {
-        accessorKey: "gold",
-        header: () => <span>{t("Gold")}</span>,
+        accessorKey: "non_Gold",
+        header: () => <span>{t("Non-Gold")}</span>,
         colSpan: 2,
       },
     ],
@@ -169,9 +174,9 @@ const SalesReportsTable = ({ dataSource, isLoading,  isRefetching, isFetching}: 
     { id: crypto.randomUUID(), total: formatReyal(totalAccessory) },
   ];
 
-  const totalGold18convert24 = Number(totalGold18) * Number(totalGold18 / 24);
-  const totalGold21convert24 = Number(totalGold21) * Number(totalGold21 / 24);
-  const totalGold22convert24 = Number(totalGold22) * Number(totalGold22 / 24);
+  const totalGold18convert24 = Number(totalGold18) * Number(18 / 24);
+  const totalGold21convert24 = Number(totalGold21) * Number(21 / 24);
+  const totalGold22convert24 = Number(totalGold22) * Number(22 / 24);
 
   const totalGoldConverter24 =
     totalGold18convert24 +
@@ -200,8 +205,8 @@ const SalesReportsTable = ({ dataSource, isLoading,  isRefetching, isFetching}: 
     { id: crypto.randomUUID(), total: "", colSpan: 2 },
   ];
 
-    if (isLoading || isRefetching || isFetching)
-      return <Loading mainTitle={`${t("loading statement of accounts")}`} />;
+  if (isLoading || isRefetching || isFetching)
+    return <Loading mainTitle={`${t("loading statement of accounts")}`} />;
 
   return (
     <div className="rounded-2xl overflow-hidden">

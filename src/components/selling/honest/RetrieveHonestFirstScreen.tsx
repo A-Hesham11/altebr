@@ -66,7 +66,6 @@ export const RetrieveHonestFirstScreen = ({
     queryKey: ["all-honest-bonds"],
     pagination: true,
   });
-  console.log("🚀 ~ data:", data);
 
   const { mutate } = useMutate({
     mutationFn: mutateData,

@@ -79,6 +79,8 @@ export const Bonds = ({ title }: BondsProps_TP) => {
       },
     });
 
+  console.log("🚀 ~ Bonds ~ data:", data);
+
   const diamondCols = useMemo<ColumnDef<Bond_TP>[]>(
     () => [
       {
@@ -97,8 +99,8 @@ export const Bonds = ({ title }: BondsProps_TP) => {
         cell: (info) => t(`${info.getValue()}`),
       },
       {
-        header: () => <span>{t("supplier name")} </span>,
-        accessorKey: "supplier_name",
+        header: () => <span>{t("company name")} </span>,
+        accessorKey: "company_name",
         cell: (info) => info.getValue(),
       },
       {
@@ -159,8 +161,8 @@ export const Bonds = ({ title }: BondsProps_TP) => {
         cell: (info) => t(`${info.getValue()}`),
       },
       {
-        header: () => <span>{t("supplier name")} </span>,
-        accessorKey: "supplier_name",
+        header: () => <span>{t("company name")} </span>,
+        accessorKey: "company_name",
         cell: (info) => info.getValue(),
       },
       {
@@ -221,8 +223,8 @@ export const Bonds = ({ title }: BondsProps_TP) => {
         cell: (info) => t(`${info.getValue()}`),
       },
       {
-        header: () => <span>{t("supplier name")} </span>,
-        accessorKey: "supplier_name",
+        header: () => <span>{t("company name")} </span>,
+        accessorKey: "company_name",
         cell: (info) => info.getValue(),
       },
       {

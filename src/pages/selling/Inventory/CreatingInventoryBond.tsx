@@ -47,7 +47,7 @@ const CreatingInventoryBond: React.FC = () => {
   console.log("🚀 ~ availableItems:", availableItems);
   console.log("🚀 ~ identitiesCheckedItems:", identitiesCheckedItems);
   console.log("🚀 ~ unknownIdentities:", unknownIdentities);
- 
+
   const { data: goldBrokenCashBanks } = useFetch({
     endpoint: `/inventory/api/v1/getAccount/${userData?.branch_id}`,
     queryKey: ["brokenGold_cash"],

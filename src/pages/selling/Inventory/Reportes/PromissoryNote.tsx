@@ -176,18 +176,8 @@ const PromissoryNote = ({
   });
 
   return (
-    <div className="py-12 px-20">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2>
-            <span className="font-semibold">{t("date")} : </span> {date}
-          </h2>
-          <h2>
-            <span className="font-semibold">{t("Report number")} : </span>{" "}
-            {reportNumber}
-          </h2>
-        </div>
-
+    <div className="p-12">
+      <div className="flex items-center justify-end">
         <div>
           <Button action={handlePrint}>{t("print")}</Button>
         </div>
@@ -197,9 +187,27 @@ const PromissoryNote = ({
         ref={contentRef}
         className={`${isRTL ? "rtl" : "ltr"} container_print`}
       >
-        <div className="my-6 text-center">
-          <img src={Logo} alt="logo" className="mx-auto" />
-          <h2 className="text-lg font-semibold">{t("Promissory note")}</h2>
+        <div className="my-6 grid grid-cols-3 ">
+          <div>
+            <h2>
+              <span className="font-semibold">{t("date")} : </span> {date}
+            </h2>
+            <h2 className="mt-1.5">
+              <span className="font-semibold">{t("Report number")} : </span>{" "}
+              {reportNumber}
+            </h2>
+          </div>
+          <div className="flex justify-center flex-col items-center">
+            <img src={Logo} alt="logo" className="mx-auto" />
+            <h2 className="text-lg font-semibold">
+              {t("Lost and Found Report")}
+            </h2>
+          </div>
+          <div className="flex justify-end">
+            <p>
+              {t("branch number")} : {userData?.branch_id}
+            </p>
+          </div>
         </div>
 
         <div className="no-print">

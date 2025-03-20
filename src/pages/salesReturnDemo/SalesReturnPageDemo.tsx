@@ -4,14 +4,14 @@ import { ClientData_TP, Selling_TP } from "../selling/PaymentSellingPage";
 import { Payment_TP } from "../Payment/PaymentProccessingToManagement";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useFetch } from "../../hooks";
-import SalesReturnFirstPage from "./SalesReturnFirstPage";
 import * as Yup from "yup";
-import SalesReturnSecondPage from "./SalesReturnSecondPage";
-import SalesReturnInvoiceData from "./SalesReturnInvoiceData";
 import { GlobalDataContext } from "../../context/settings/GlobalData";
 import { formatDate } from "../../utils/date";
+import SalesReturnFirstPageDemo from "./SalesReturnFirstPageDemo";
+import SalesReturnSecondPage from "../salesReturn/SalesReturnSecondPage";
+import SalesReturnInvoiceData from "../salesReturn/SalesReturnInvoiceData";
 
-const SalesReturnPage = () => {
+const SalesReturnPageDemo = () => {
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
   const [stage, setStage] = useState<number>(1);
   const [clientData, setClientData] = useState<ClientData_TP>();
@@ -22,6 +22,15 @@ const SalesReturnPage = () => {
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const { invoice_logo } = GlobalDataContext();
   const { userData } = useContext(authCtx);
+
+  const invoiceHeaderData = {
+    client_id: clientData?.client_id,
+    client_value: clientData?.client_value,
+    bond_date: formatDate(clientData?.bond_date),
+    invoice_number: invoiceNumber,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
+  };
 
   const initialValues: Selling_TP = {
     invoice_id: "",
@@ -95,27 +104,6 @@ const SalesReturnPage = () => {
     pagination: true,
   });
 
-  const { data: clientInfo } = useFetch<any>({
-    endpoint: `branchManage/api/v1/clients/${clientData?.client_id}`,
-    queryKey: [`client_return_info`, clientData?.client_id],
-    enabled: !!clientData?.client_id,
-  });
-
-  const invoiceHeaderBasicData = {
-    first_title: "bill date",
-    first_value: formatDate(clientData?.bond_date),
-    second_title: "client name",
-    second_value: clientData?.client_value,
-    third_title: "mobile number",
-    third_value: clientInfo?.phone,
-    bond_title: "bill no",
-    invoice_number: invoiceNumber,
-    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
-    invoice_text: "simplified tax invoice",
-    bond_date: formatDate(clientData?.bond_date),
-    client_id: clientData?.client_id,
-  };
-
   return (
     <Formik
       initialValues={initialValues}
@@ -124,7 +112,7 @@ const SalesReturnPage = () => {
     >
       <>
         {stage === 1 && (
-          <SalesReturnFirstPage
+          <SalesReturnFirstPageDemo
             invoiceNumber={invoiceNumber}
             dataSource={dataSource}
             setDataSource={setDataSource}
@@ -157,7 +145,7 @@ const SalesReturnPage = () => {
             setStage={setStage}
             selectedItemDetails={selectedItemDetails}
             sellingItemsOfWeigth={sellingItemsOfWeigth}
-            invoiceHeaderData={invoiceHeaderBasicData}
+            invoiceHeaderData={invoiceHeaderData}
           />
         )}
       </>
@@ -165,4 +153,4 @@ const SalesReturnPage = () => {
   );
 };
 
-export default SalesReturnPage;
+export default SalesReturnPageDemo;

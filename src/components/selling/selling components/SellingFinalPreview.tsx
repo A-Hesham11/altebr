@@ -5,6 +5,7 @@ import FinalPreviewBillData from "./bill/FinalPreviewBillData";
 import FinalPreviewBillPayment from "./bill/FinalPreviewBillPayment";
 import InvoiceFooter from "../../Invoice/InvoiceFooter";
 import InvoiceHeader from "../../Invoice/InvoiceHeader";
+import InvoiceBasicHeader from "../../Invoice/InvoiceBasicHeader";
 
 type Client_TP = {
   amount: number;
@@ -37,21 +38,15 @@ export const SellingFinalPreview = ({
   invoiceHeaderData,
 }: SellingFinalPreviewProps_TP) => {
   return (
-    <div className="relative h-full p-10 bg-flatWhite">
+    <div className="relative h-full my-5 py-5 px-10 bg-white">
       <div id="content-to-print">
-        <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
-          <div className="mx-5 bill-shadow rounded-md p-6">
-            {/* <FinalPreviewBillData
-              clientData={clientData}
-              invoiceNumber={invoiceNumber}
-            /> */}
-            <InvoiceHeader invoiceHeaderData={invoiceHeaderData} />
-          </div>
+        <div className="rounded-lg">
+          <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderData} />
 
           {ItemsTableContent}
 
           {isSuccess && (
-            <div className="mx-5 bill-shadow rounded-md p-6 my-9">
+            <div className="bill-shadow rounded-md p-6 my-9">
               <FinalPreviewBillPayment
                 paymentData={paymentData}
                 costDataAsProps={costDataAsProps}

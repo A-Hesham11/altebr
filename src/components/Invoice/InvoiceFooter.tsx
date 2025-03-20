@@ -5,6 +5,7 @@ import { t } from "i18next";
 
 const InvoiceFooter = () => {
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ InvoiceFooter ~ userData:", userData)
 
   const countryName = userData?.branch?.country?.name;
   const cityName = userData?.branch?.city?.name;
@@ -28,10 +29,16 @@ const InvoiceFooter = () => {
 
   return (
     <div className="text-center">
-      <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
+      {/* <p className="my-4 py-1 border-y border-mainOrange text-[15px]">
         {data && data?.sentence}
-      </p>
-      <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
+      </p> */}
+      <div className="border-2 border-[#00000014] rounded-lg p-2 my-5">
+        <p className="bg-[#F3F3F3] font-semibold rounded-md p-1">
+          {data && data?.sentence}
+        </p>
+      </div>
+
+      {/* <div className="flex justify-between items-center px-8 py-2 bg-[#E5ECEB] bill-shadow">
         <p className="text-sm">
           {t("address")} : {countryName} , {cityName} , {districtName}
         </p>
@@ -49,6 +56,31 @@ const InvoiceFooter = () => {
         </p>
         <p className="text-sm">
           {t("commercial register")}: {userData?.branch?.zatca_fax_number}
+        </p>
+      </div> */}
+
+      <div className="grid grid-cols-3 gap-y-2 px-8 py-3 bg-mainGreen text-white">
+        <p>
+          <span className="font-semibold">{t("address")} :</span> {countryName}{" "}
+          , {cityName} , {districtName}
+        </p>
+        <p className="text-sm">
+          <span className="font-semibold">{t("phone")} :</span> {phone}
+        </p>
+        <p className="text-sm">
+          <span className="font-semibold">{t("email")} :</span> {email}
+        </p>
+        <p className="text-sm">
+          <span className="font-semibold">{t("tax number")} :</span>{" "}
+          {taxRegisteration && taxRegisteration}
+        </p>
+        <p className="text-sm">
+          <span className="font-semibold">{t("Mineral license")} :</span>{" "}
+          {mineralLicence && mineralLicence}
+        </p>
+        <p className="text-sm">
+          <span className="font-semibold">{t("commercial register")} :</span>{" "}
+          {userData?.branch?.zatca_fax_number}
         </p>
       </div>
     </div>

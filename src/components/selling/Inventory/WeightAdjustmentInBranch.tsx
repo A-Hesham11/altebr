@@ -65,6 +65,7 @@ const WeightAdjustmentInBranch = ({
 
     return () => {
       socket.off("getSelsalResponse", handleWeightItemsResponse);
+      socket.disconnect();
     };
   }, []);
 

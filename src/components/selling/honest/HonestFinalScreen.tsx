@@ -1,190 +1,3 @@
-// /////////// Types
-
-// import { t } from "i18next";
-// import { useContext, useEffect, useMemo, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { authCtx } from "../../../context/auth-and-perm/auth";
-// import { useMutate } from "../../../hooks";
-// import { mutateData } from "../../../utils/mutateData";
-// import { notify } from "../../../utils/toast";
-// import { Button } from "../../atoms";
-// import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutFormik";
-// import { Table } from "../../templates/reusableComponants/tantable/Table";
-// import { numberContext } from "../../../context/settings/number-formatter";
-
-// ///
-// type HonestFinalScreenProps_TP = {
-//   sanadData: any;
-//   setStage: any;
-// };
-// /////////// HELPER VARIABLES & FUNCTIONS
-// ///
-
-// ///
-// export const HonestFinalScreen = ({
-//   sanadData,
-//   setStage,
-// }: HonestFinalScreenProps_TP) => {
-//   console.log("🚀 ~ sanadData:", sanadData.card);
-//   /////////// VARIABLES
-//   const { userData } = useContext(authCtx);
-//   const { formatGram, formatReyal } = numberContext();
-
-//   const mainSanadData = {
-//     client_id: sanadData.client_id,
-//     employee_id: userData?.id,
-//     branch_id: userData?.branch_id,
-//     bond_date: new Date(sanadData.bond_date)?.toISOString().slice(0, 10),
-//     remaining_amount: sanadData.remaining_amount,
-//     amount: sanadData.amount,
-//   };
-//   const items = sanadData.tableData.map((item) => ({
-//     bond_number: null,
-//     category_id: item.category_id,
-//     karat_id: item.karat_id,
-//     mineral_id: null,
-//     cost: item.cost,
-//     karatmineral_id: null,
-//     description: item.notes,
-//     weight: item.weight,
-//     media: item.media,
-//   }));
-//   const finalData = {
-//     bond: mainSanadData,
-//     card: sanadData.card,
-//     items,
-//   };
-//   console.log("🚀 ~ finalData:", finalData);
-//   ///
-//   const Cols = useMemo<any>(
-//     () => [
-//       {
-//         cell: (info) => info.getValue() || "---",
-//         accessorKey: "category_value",
-//         header: () => <span>{t("category")}</span>,
-//       },
-//       {
-//         cell: (info) => formatGram(Number(info.getValue())) || "---",
-//         accessorKey: "weight",
-//         header: () => <span>{t("weight")}</span>,
-//       },
-//       {
-//         cell: (info) => info.getValue() || "---",
-//         accessorKey: "karat_value",
-//         header: () => <span>{t("karat")}</span>,
-//       },
-//       {
-//         cell: (info) =>
-//           info.getValue() ? formatReyal(Number(info.getValue())) : "---",
-//         accessorKey: "cost",
-//         header: () => <span>{t("approximate cost")}</span>,
-//       },
-//       {
-//         cell: (info) => info.getValue() || "---",
-//         accessorKey: "notes",
-//         header: () => <span>{t("notes")}</span>,
-//       },
-//       {
-//         cell: (info) => {
-//           const media = info?.row?.original?.media?.map((file) => ({
-//             id: info.row.id,
-//             path: URL.createObjectURL(file),
-//             preview: URL.createObjectURL(file),
-//           }));
-
-//           return (
-//             <FilesPreviewOutFormik images={media || []} preview pdfs={[]} />
-//           );
-//         },
-//         accessorKey: "media",
-//         header: () => <span>{t("attachments")}</span>,
-//       },
-//     ],
-//     []
-//   );
-//   ///
-//   /////////// CUSTOM HOOKS
-//   ///
-//   const navigate = useNavigate();
-//   const { mutate, isLoading } = useMutate({
-//     mutationFn: mutateData,
-//     onSuccess: (data) => {
-//       notify("success");
-//       navigate(`/selling/honesty/all-honest/${data.bond_id}`);
-//     },
-//   });
-//   ///
-//   /////////// STATES
-//   ///
-//   const [dataSource, setDataSource] = useState([]);
-//   ///
-//   /////////// SIDE EFFECTS
-//   ///
-//   useEffect(() => {
-//     setDataSource(sanadData.tableData);
-//   }, []);
-//   /////////// FUNCTIONS | EVENTS | IF CASES
-//   ///
-
-//   ///
-//   return (
-//     <div className="py-16">
-//       <h3 className="font-bold mb-2">{t("main data")}</h3>
-//       <div className="p-8 rounded bg-white shadow-lg">
-//         <ul className="columns-3 list-disc">
-//           <li className="py-1">
-//             <span className="font-bold">{t("client name")}: </span>
-//             {sanadData.client_name}
-//           </li>
-//           <li className="py-1">
-//             <span className="font-bold">{t("approximate cost")}: </span>
-//             {formatReyal(Number(sanadData.totalApproximateCost))}
-//           </li>
-//           <li className="py-1">
-//             <span className="font-bold">{t("paid cost")}: </span>
-//             {formatReyal(Number(sanadData.amount))}
-//           </li>
-//           <li className="py-1">
-//             <span className="font-bold">{t("remaining cost")}: </span>
-//             {formatReyal(Number(sanadData.remaining_amount))}
-//           </li>
-//           <li className="py-1">
-//             <span className="font-bold">{t("date")}: </span>
-//             {new Date(sanadData.bond_date).toISOString().slice(0, 10)}
-//           </li>
-//         </ul>
-//       </div>
-//       <div className="my-8">
-//         <h3 className="font-bold mb-2">{t("final review")}</h3>
-//         <Table data={dataSource} columns={Cols}></Table>
-//       </div>
-//       <div className="flex items-center justify-end gap-x-4 mr-auto">
-//         <div className="animate_from_right">
-//           <Button bordered action={() => setStage(1)}>
-//             {t("back")}
-//           </Button>
-//         </div>
-//         <div className="animate_from_bottom">
-//           <Button
-//             action={() => {
-//               mutate({
-//                 endpointName: "branchSafety/api/v1/create",
-//                 values: finalData,
-//                 dataType: "formData",
-//               });
-//             }}
-//             loading={isLoading}
-//           >
-//             {t("save")}
-//           </Button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-/////////// Types
-
 import { t } from "i18next";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -193,20 +6,20 @@ import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
 import { Button } from "../../atoms";
-import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutFormik";
-import { Table } from "../../templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../../context/settings/number-formatter";
-import HonestFinalScreenHeader from "./HonestFinalScreenHeader";
-import HonestFinalScreenItems from "./HonestFinalScreenItems";
-import HonestFinalScreenPayment from "./HonestFinalScreenPayment";
-import { ClientData_TP } from "../SellingClientForm";
 import { useReactToPrint } from "react-to-print";
 import InvoiceFooter from "../../Invoice/InvoiceFooter";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
+import InvoiceBasicHeader from "../../Invoice/InvoiceBasicHeader";
+import InvoiceTableData from "../selling components/InvoiceTableData";
+import FinalPreviewBillPayment from "../selling components/bill/FinalPreviewBillPayment";
+import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
 
 ///
 type HonestFinalScreenProps_TP = {
   sanadData: any;
   setStage: any;
+  paymentData: never[];
 };
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -246,25 +59,11 @@ export const HonestFinalScreen = ({
     media: item.media,
   }));
 
-  // const finalData = {
-  //   bond: mainSanadData,
-  //   card: sanadData.card,
-  //   items,
-  // };
-
   const finalData = {
     bond: mainSanadData,
     card: sanadData.card,
     paymentCommission: sanadData.paymentCommission,
     items,
-    paymentCommission: sanadData.paymentCommission,
-  };
-  console.log("🚀 ~ finalData:", finalData);
-
-  const clientData = {
-    client_id: sanadData?.client_id,
-    client_value: sanadData?.client_value,
-    bond_date: sanadData?.bond_date,
   };
 
   const totalCost = sanadData?.tableData?.reduce((acc: number, curr: any) => {
@@ -272,8 +71,35 @@ export const HonestFinalScreen = ({
     return acc;
   }, 0);
 
+  const totalFinalCostIntoArabic = convertNumToArWord(Math.round(totalCost));
+
+  const totalFinalAmountIntoArabic = convertNumToArWord(
+    Math.round(sanadData?.amount)
+  );
+
+  const totalFinalRemainingAmountIntoArabic = convertNumToArWord(
+    Math.round(sanadData?.remaining_amount)
+  );
+
   const costDataAsProps = {
     totalCost,
+    finalArabicData: [
+      {
+        title: t("total of estimated cost"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+      {
+        title: t("total of amount paid"),
+        totalFinalCostIntoArabic: totalFinalAmountIntoArabic,
+        type: t("reyal"),
+      },
+      {
+        title: t("deserved amount"),
+        totalFinalCostIntoArabic: totalFinalRemainingAmountIntoArabic,
+        type: t("reyal"),
+      },
+    ],
   };
 
   ///
@@ -311,19 +137,19 @@ export const HonestFinalScreen = ({
   ///
   /////////// CUSTOM HOOKS
   ///
-  const navigate = useNavigate();
+
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
       notify("success");
       setShowPrint(true);
-      // navigate(`/selling/honesty/all-honest/${data.bond_id}`);
     },
   });
   ///
   /////////// STATES
   ///
   const [dataSource, setDataSource] = useState([]);
+  console.log("🚀 ~ dataSource:", dataSource);
   ///
   /////////// SIDE EFFECTS
   ///
@@ -340,15 +166,13 @@ export const HonestFinalScreen = ({
     removeAfterPrint: true,
     pageStyle: `
       @page {
-        size: auto;
-        margin: 20px !imporatnt;
+        size: A5 landscape;;
+        margin: 15px !important;
       }
       @media print {
         body {
           -webkit-print-color-adjust: exact;
-        }
-        .break-page {
-          page-break-before: always;
+          zoom: 0.5;
         }
         .rtl {
           direction: rtl;
@@ -357,6 +181,11 @@ export const HonestFinalScreen = ({
         .ltr {
           direction: ltr;
           text-align: left;
+        }
+        .container_print {
+          width: 100%;
+          padding: 10px;
+          box-sizing: border-box;
         }
       }
     `,
@@ -367,24 +196,28 @@ export const HonestFinalScreen = ({
     <div className="py-8">
       <div
         ref={contentRef}
-        className={`space-y-12 my-8 mx-3 bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ${
-          isRTL ? "rtl" : "ltr"
-        }`}
+        className={`${isRTL ? "rtl" : "ltr"} container_print`}
       >
-        <HonestFinalScreenHeader clientData={clientData} />
-        <HonestFinalScreenItems
-          sanadData={sanadData}
-          data={dataSource}
-          columns={Cols}
-          costDataAsProps={costDataAsProps}
-        />
-        <div className="pe-8">
-          <HonestFinalScreenPayment
-            items={dataSource}
-            paymentData={paymentData}
+        <div className="print-header">
+          <InvoiceBasicHeader
+            invoiceHeaderData={sanadData?.invoiceHeaderBasicData}
           />
         </div>
-        <div>
+
+        <div className="print-content">
+          <InvoiceTableData
+            data={sanadData?.tableData || []}
+            columns={Cols}
+            costDataAsProps={costDataAsProps}
+          />
+        </div>
+
+        <div className="print-footer">
+          <FinalPreviewBillPayment
+            responseSellingData={sanadData?.tableData}
+            paymentData={paymentData}
+            notQRCode={true}
+          />
           <InvoiceFooter />
         </div>
       </div>

@@ -14,6 +14,8 @@ import FinalPreviewBillPayment from "../selling components/bill/FinalPreviewBill
 import { formatDate } from "../../../utils/date";
 import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
 import InvoiceFooter from "../../Invoice/InvoiceFooter";
+import InvoiceBasicHeader from "../../Invoice/InvoiceBasicHeader";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 type Entry_TP = {
   bian: string;
@@ -23,16 +25,39 @@ type Entry_TP = {
   creditor_SRA: number;
 };
 
-const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
+const ReturnHonestInvoice = ({ item }: { item?: any }) => {
+  console.log("🚀 ~ ReturnHonestInvoice ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
+  const { invoice_logo } = GlobalDataContext();
 
-  const clientData = {
-    client_id: item?.client_id_2,
-    client_value: item?.client_id,
+  // const clientData = {
+  //   client_id: item?.client_id_2,
+  //   client_value: item?.client_id,
+  //   bond_date: item?.bond_date,
+  //   supplier_id: item?.supplier_id,
+  // };
+
+  const { data: clientInfo } = useFetch<any>({
+    endpoint: `branchManage/api/v1/clients/${item?.client_id_2}`,
+    queryKey: [`clients_info`, item?.client_id_2],
+    enabled: !!item?.client_id_2,
+  });
+
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: item?.bond_date,
+    second_title: "client name",
+    second_value: item?.client_id,
+    third_title: "mobile number",
+    third_value: clientInfo?.phone,
+    bond_title: "bill no",
+    invoice_number: item?.id,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
     bond_date: item?.bond_date,
-    supplier_id: item?.supplier_id,
+    client_id: item?.client_id_2,
   };
 
   const Cols = useMemo<any>(
@@ -135,32 +160,34 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
     removeAfterPrint: true,
     pageStyle: `
       @page {
-        size: auto;
-        margin: 20px !imporatnt;
+        size: A5 landscape;;
+        margin: 5px !important;
       }
       @media print {
         body {
           -webkit-print-color-adjust: exact;
+          zoom: 0.5;
         }
-        .break-page {
-          page-break-before: always;
+        .rtl {
+          direction: rtl;
+          text-align: right;
         }
-      .rtl {
-        direction: rtl;
-        text-align: right;
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+        .container_print {
+          width: 100%;
+          padding: 10px;
+          box-sizing: border-box;
+        }
       }
-
-      .ltr {
-        direction: ltr;
-        text-align: left;
-      }
-    }
     `,
   });
 
   return (
     <>
-      <div className="relative h-full py-16 px-8">
+      <div className="relative h-full py-16 px-4">
         <div className="flex justify-end mb-8 w-full">
           <Button
             className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
@@ -170,34 +197,36 @@ const ReturnHonestInvoice = ({ item }: { item?: {} }) => {
           </Button>
         </div>
 
-        <div className={`${isRTL ? "rtl" : "ltr"} m-4`} ref={invoiceRefs}>
-          <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
-            <div className="mx-5 bill-shadow rounded-md p-6">
+        <div
+          className={`${isRTL ? "rtl" : "ltr"} container_print`}
+          ref={invoiceRefs}
+        >
+          {/* <div className="mx-5 bill-shadow rounded-md p-6">
               <FinalPreviewBillData
                 clientData={clientData}
                 invoiceNumber={item?.bond_id}
               />
-            </div>
+            </div> */}
 
-            <div className="">
-              <InvoiceTable
-                data={item?.items}
-                columns={Cols}
-                costDataAsProps={costDataAsProps}
-                resultTable={resultTable}
-              ></InvoiceTable>
-            </div>
+          <div className="print-header">
+            <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+          </div>
 
-            <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment
-                responseSellingData={item}
-                notQRCode={true}
-              />
-            </div>
+          <div className="print-content -mx-5">
+            <InvoiceTable
+              data={item?.items}
+              columns={Cols}
+              costDataAsProps={costDataAsProps}
+              resultTable={resultTable}
+            ></InvoiceTable>
+          </div>
 
-            <div>
-              <InvoiceFooter />
-            </div>
+          <div className="print-footer">
+            <FinalPreviewBillPayment
+              responseSellingData={item}
+              notQRCode={true}
+            />
+            <InvoiceFooter />
           </div>
         </div>
       </div>

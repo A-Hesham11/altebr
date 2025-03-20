@@ -49,6 +49,7 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
       value,
     };
   });
+  console.log("🚀 ~ allData ~ allData:", allData);
 
   const validationSchema = Yup.object().shape({
     ...allData.reduce((acc, item) => {
@@ -94,32 +95,8 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
 
   const initialValues = allData.reduce((acc, item) => {
     acc[item.key] = "";
-
     return acc;
   }, {});
-
-  const InputField = ({
-    id,
-    label,
-    differenceValue,
-    placeholder,
-    unit,
-  }: any) => (
-    <div>
-      <BaseInputField
-        id={id}
-        name={id}
-        type="number"
-        label={label}
-        placeholder={placeholder}
-        required
-      />
-      <p className="bg-[#DB80281A] text-mainOrange py-2 px-5 rounded-xl w-fit mt-4">
-        <span className="font-semibold">{t("The Difference")}:</span>{" "}
-        {differenceValue} {unit}
-      </p>
-    </div>
-  );
 
   return (
     <div className="px-10 py-8">
@@ -169,30 +146,48 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
           validationSchema={validationSchema}
           onSubmit={(value) => console.log("🚀 ~ value:", value)}
         >
-          {({ values, touched, errors }) => {
+          {({ values, touched, errors, setFieldValue }) => {
+            console.log("🚀 ~ values:", values);
             return (
               <Form>
                 <div className="bg-[#295E5608] p-8 rounded-2xl">
                   <h2 className="font-semibold text-lg mb-8">
                     {t("Please enter the following values:")}
                   </h2>
+
                   <div className="grid grid-cols-4 gap-8">
-                    {allData?.map((item) => (
-                      <InputField
-                        id={item.key}
-                        label={item.name}
-                        placeholder={item.name}
-                        differenceValue={formatReyal(
-                          Number(item?.value) - Number(values?.[item.key])
-                        )}
-                        unit={t("reyal")}
-                        error={
-                          touched[item.key] && errors[item.key]
-                            ? errors[item.key]
-                            : ""
-                        }
-                      />
-                    ))}
+                    {Array.isArray(allData) &&
+                      allData.map((item) => {
+                        return (
+                          <div>
+                            <BaseInputField
+                              id={item.key}
+                              name={item.key}
+                              type="number"
+                              label={item.name}
+                              placeholder={item.name}
+                              error={
+                                touched[item.key] && errors[item.key]
+                                  ? errors[item.key]
+                                  : ""
+                              }
+                              required
+                            />
+                            <p className="bg-[#DB80281A] text-mainOrange py-2 px-5 rounded-xl w-fit mt-4">
+                              <span className="font-semibold">
+                                {t("The Difference")}:
+                              </span>{" "}
+                              {formatReyal(
+                                Math.abs(
+                                  Number(item?.value || 0) -
+                                    Number(values?.[item.key] || 0)
+                                )
+                              )}{" "}
+                              {t("reyal")}
+                            </p>
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
                 <div className="flex justify-end mt-5 gap-x-4">
@@ -207,10 +202,6 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
                   <Button
                     action={() => {
                       const validateField = (fieldValue: any) => {
-                        console.log(
-                          "🚀 ~ validateField ~ fieldValue:",
-                          fieldValue
-                        );
                         if (fieldValue === "") {
                           notify("info", `${t("This field is required")}`);
                           return false;
@@ -231,9 +222,16 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
                         }
                       }
 
-                      const finalData = allData?.map((item) => item);
+                      const finalData = allData?.reduce(
+                        (acc, { key, value }) => {
+                          const diff = Number(values?.[key]) - Number(value);
+                          acc[key] = diff;
+                          return acc;
+                        },
+                        {}
+                      );
 
-                      setGoldBrokenCashBanksFinalData(values);
+                      setGoldBrokenCashBanksFinalData(finalData);
                       setSteps(3);
                     }}
                     type="button"

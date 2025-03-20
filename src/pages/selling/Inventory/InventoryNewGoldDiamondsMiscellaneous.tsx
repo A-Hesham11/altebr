@@ -184,6 +184,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       socket.off("getBondItemsResponse", handleBondItemsResponse);
       socket.off("roomData", handleRoomData);
       socket.off("getmissingPieces", handleUnknownIdentitiesData);
+      socket.disconnect();
     };
   }, []);
 
@@ -237,6 +238,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     return () => {
       socket.off("getBondItemsResponse", handleBondItemsResponse);
       socket.off("roomData", handleRoomData);
+      socket.disconnect();
     };
   };
 
@@ -276,6 +278,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       socket.off("getBondItemsResponse", handleBondItemsResponse);
       socket.off("roomData", handleRoomData);
       socket.off("getmissingPieces", handleUnknownIdentitiesData);
+      socket.disconnect();
     };
   };
 

@@ -17,6 +17,7 @@ const SellingSubCard = ({
   data,
   isDisabled,
 }: SellingSubCardProps_TP) => {
+  console.log("🚀 ~ isDisabled:", isDisabled)
   const navigate = useNavigate();
   return (
     <div
