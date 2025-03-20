@@ -1,7 +1,7 @@
 import { t } from "i18next";
 import { useMemo, useRef } from "react";
 import { numberContext } from "../../../../../context/settings/number-formatter";
-import { useIsRTL } from "../../../../../hooks";
+import { useFetch, useIsRTL } from "../../../../../hooks";
 import { Selling_TP } from "../../../../selling/PaymentSellingPage";
 import {
   ColumnDef,
@@ -17,18 +17,33 @@ import FinalPreviewBillData from "../../../../../components/selling/selling comp
 import FinalPreviewBillPayment from "../../../../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import { convertNumToArWord } from "../../../../../utils/number to arabic words/convertNumToArWord";
 import InvoiceFooter from "../../../../../components/Invoice/InvoiceFooter";
+import { GlobalDataContext } from "../../../../../context/settings/GlobalData";
+import InvoiceTableData from "../../../../../components/selling/selling components/InvoiceTableData";
+import InvoiceBasicHeader from "../../../../../components/Invoice/InvoiceBasicHeader";
 
 const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
+  const { invoice_logo } = GlobalDataContext();
 
-  const clientData = {
-    client_id: item?.client_id,
-    client_value: item?.client_name,
+  const { data } = useFetch<any>({
+    endpoint: `/supplier/api/v1/supplier/${item?.supplier_id}`,
+    queryKey: [`clients`],
+  });
+
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: item?.invoice_date,
+    second_title: "supplier name",
+    second_value: item?.supplier_name,
+    third_title: "mobile number",
+    third_value: data?.phone,
     bond_date: item?.invoice_date,
-    supplier_id: item?.supplier_id,
-    supplier_name: item?.supplier_name,
+    bond_title: "bill no",
+    invoice_number: Number(item?.invoice_number),
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -109,34 +124,58 @@ const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
     Math.round(totalFinalCost)
   );
 
+  const costDataAsProps = {
+    totalItemsTaxes,
+    totalFinalCost,
+    totalCost,
+    finalArabicData: [
+      {
+        title: t("total"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        weight: formatGram(Number(totalWeigth)),
+        cost: formatReyal(Number(totalCost)),
+        vat: formatReyal(Number(totalItemsTaxes)),
+        total: formatReyal(Number(totalFinalCost)),
+      },
+    ],
+  };
+
   const handlePrint = useReactToPrint({
     content: () => invoiceRefs.current,
     onBeforePrint: () => console.log("before printing..."),
     onAfterPrint: () => console.log("after printing..."),
     removeAfterPrint: true,
     pageStyle: `
-      @page {
-        size: auto;
-        margin: 20px !imporatnt;
+    @page {
+      size: A5 landscape;;
+      margin: 15px !important;
+    }
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        zoom: 0.5;
       }
-      @media print {
-        body {
-          -webkit-print-color-adjust: exact;
-        }
-        .break-page {
-          page-break-before: always;
-        }
       .rtl {
         direction: rtl;
         text-align: right;
       }
-
       .ltr {
         direction: ltr;
         text-align: left;
       }
+      .container_print {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+      }
     }
-    `,
+  `,
   });
 
   return (
@@ -152,108 +191,24 @@ const PurchaseBondsSupplierInvoice = ({ item }: { item?: {} }) => {
         </div>
 
         <div className={`${isRTL ? "rtl" : "ltr"} m-4`} ref={invoiceRefs}>
-          <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
-            <div className="mx-5 bill-shadow rounded-md p-6">
-              <FinalPreviewBillData
-                clientData={clientData}
-                invoiceNumber={item?.id}
-              />
-            </div>
+          <div className="print-header">
+            <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+          </div>
 
-            <div className="mx-5">
-              <div className="mb-6 overflow-x-auto lg:overflow-x-visible w-full">
-                <table className="mt-8 w-full table-shadow">
-                  <thead className="bg-mainGreen text-white">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                      <tr
-                        key={headerGroup.id}
-                        className="py-4 px-2 text-center"
-                      >
-                        {headerGroup.headers.map((header) => (
-                          <th
-                            key={header.id}
-                            className="p-4 text-sm font-medium text-mainGreen bg-[#E5ECEB] border border-[#7B7B7B4D]"
-                          >
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                          </th>
-                        ))}
-                      </tr>
-                    ))}
-                  </thead>
-                  <tbody>
-                    {table.getRowModel().rows.map((row) => {
-                      return (
-                        <tr key={row.id} className="text-center item">
-                          {row.getVisibleCells().map((cell, i) => {
-                            return (
-                              <td
-                                className="px-2 py-2 text-mainGreen bg-white gap-x-2 items-center border border-[#7B7B7B4D]"
-                                key={cell.id}
-                                colSpan={1}
-                              >
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext()
-                                )}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      );
-                    })}
+          <div className="print-content">
+            <InvoiceTableData
+              data={item?.items}
+              columns={Cols || []}
+              costDataAsProps={costDataAsProps}
+            ></InvoiceTableData>
+          </div>
 
-                    <tr className="text-center">
-                      {Object.keys(resultSellingBondTable[0]).map(
-                        (key, index) => {
-                          return (
-                            <td
-                              key={key}
-                              className="bg-[#F3F3F3] px-2 py-2 text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                              colSpan={index === 0 ? 1 : 1}
-                            >
-                              {resultSellingBondTable[0][key]}
-                            </td>
-                          );
-                        }
-                      )}
-                    </tr>
-                  </tbody>
-                  <tfoot className="text-center">
-                    <tr className="text-center border-[1px] border-[#7B7B7B4D]">
-                      <td
-                        className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                        colSpan={9}
-                      >
-                        <span className="font-semibold">{t("total")}</span>:{" "}
-                        <span className="font-medium">
-                          {totalFinalCostIntoArabic}
-                        </span>
-                        <span className="font-semibold"> {t("reyal")}</span>{" "}
-                        <span className="font-semibold">
-                          {t("Only nothing else")}
-                        </span>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </div>
-
-            <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment
-                responseSellingData={item}
-                notQRCode={true}
-              />
-            </div>
-
-            <div>
-              <InvoiceFooter />
-            </div>
+          <div className="print-footer">
+            <FinalPreviewBillPayment
+              responseSellingData={item}
+              notQRCode={true}
+            />
+            <InvoiceFooter />
           </div>
         </div>
       </div>

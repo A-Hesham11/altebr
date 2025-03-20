@@ -22,6 +22,7 @@ import InvoiceHeader from "../../../Invoice/InvoiceHeader";
 import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 import cashImg from "../../../../assets/cash.png";
 import InvoiceTableData from "../InvoiceTableData";
+import InvoiceBasicHeader from "../../../Invoice/InvoiceBasicHeader";
 
 type Entry_TP = {
   bian: string;
@@ -32,7 +33,6 @@ type Entry_TP = {
 };
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
@@ -44,18 +44,30 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     "24": gold_price?.price_gram_24k,
   };
 
-  // const clientData = {
+  // const invoiceHeaderData = {
   //   client_id: item?.client_id,
   //   client_value: item?.client_name,
   //   bond_date: item?.invoice_date,
   //   supplier_id: item?.supplier_id,
+  //   invoice_number: Number(item?.invoice_number) - 1,
+  //   invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+  //   invoice_text: "simplified tax invoice",
   // };
 
-  const invoiceHeaderData = {
-    client_id: item?.client_id,
-    client_value: item?.client_name,
+  const { data } = useFetch<any>({
+    endpoint: `branchManage/api/v1/clients/${item?.client_id}`,
+    queryKey: [`clients`],
+  });
+
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: item?.invoice_date,
+    second_title: "client name",
+    second_value: item?.client_name,
+    third_title: "mobile number",
+    third_value: data?.phone,
     bond_date: item?.invoice_date,
-    supplier_id: item?.supplier_id,
+    bond_title: "bill no",
     invoice_number: Number(item?.invoice_number) - 1,
     invoice_logo: invoice_logo?.InvoiceCompanyLogo,
     invoice_text: "simplified tax invoice",
@@ -85,16 +97,16 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         accessorKey: "category_name",
         cell: (info) => info.getValue() || "---",
       },
-      {
-        header: () => <span>{t("stone weight")} </span>,
-        accessorKey: "stones_weight",
-        cell: (info) => {
-          const stoneWeigthByGram = Number(info.getValue()) / 5;
-          const weight = Number(info.row.original.weight) * 0.05;
-          const result = stoneWeigthByGram > weight;
-          return result ? info.getValue() : "---";
-        },
-      },
+      // {
+      //   header: () => <span>{t("stone weight")} </span>,
+      //   accessorKey: "stones_weight",
+      //   cell: (info) => {
+      //     const stoneWeigthByGram = Number(info.getValue()) / 5;
+      //     const weight = Number(info.row.original.weight) * 0.05;
+      //     const result = stoneWeigthByGram > weight;
+      //     return result ? info.getValue() : "---";
+      //   },
+      // },
       {
         header: () => <span>{t("karat value")} </span>,
         accessorKey: "karat_name",
@@ -138,20 +150,51 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
           return !!result ? info.getValue() : "---";
         },
       },
+      // {
+      //   header: () => <span>{`${t("total weight")}`} </span>,
+      //   accessorKey: "total_Weight",
+      //   cell: (info) => {
+      //     const stoneWeigthByGram =
+      //       Number(info.row.original?.stones_weight) / 5;
+      //     const weight = Number(info.row.original.weight) * 0.05;
+      //     const result = stoneWeigthByGram > weight;
+      //     const valueOfWeight =
+      //       Number(result ? info.row.original?.stones_weight : 0) +
+      //       Number(info.row.original?.weight);
+      //     return valueOfWeight || "---";
+      //   },
+      // },
       {
-        header: () => <span>{`${t("total weight")}`} </span>,
-        accessorKey: "total_Weight",
-        cell: (info) => {
-          const stoneWeigthByGram =
-            Number(info.row.original?.stones_weight) / 5;
-          const weight = Number(info.row.original.weight) * 0.05;
-          const result = stoneWeigthByGram > weight;
-          const valueOfWeight =
-            Number(result ? info.row.original?.stones_weight : 0) +
-            Number(info.row.original?.weight);
-
-          return valueOfWeight || "---";
-        },
+        header: () => <span>{t("18")}</span>,
+        accessorKey: "gold_18",
+        cell: (info: any) =>
+          info.row.original.karat_name === "18"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
+      },
+      {
+        header: () => <span>{t("21")}</span>,
+        accessorKey: "gold_21",
+        cell: (info: any) =>
+          info.row.original.karat_name === "21"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
+      },
+      {
+        header: () => <span>{t("22")}</span>,
+        accessorKey: "gold_22",
+        cell: (info: any) =>
+          info.row.original.karat_name === "22"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
+      },
+      {
+        header: () => <span>{t("24")}</span>,
+        accessorKey: "gold_24",
+        cell: (info: any) =>
+          info.row.original.karat_name === "24"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
       },
       {
         header: () => <span>{t("price before tax")} </span>,
@@ -204,6 +247,23 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     Math.round(totalFinalCost)
   );
 
+  const totalGold18 =
+    item?.items?.reduce((acc, curr) => {
+      return curr.karat_name === "18" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+  const totalGold21 =
+    item?.items?.reduce((acc, curr) => {
+      return curr.karat_name === "21" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+  const totalGold22 =
+    item?.items?.reduce((acc, curr) => {
+      return curr.karat_name === "22" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+  const totalGold24 =
+    item?.items?.reduce((acc, curr) => {
+      return curr.karat_name === "24" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+
   const costDataAsProps = {
     totalItemsTaxes,
     totalFinalCost,
@@ -223,8 +283,12 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
           totalStonesWeight != 0
             ? formatGram(Number(totalStonesWeight))
             : "---",
-        totalWeight:
-          formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
+        // totalWeight:
+        //   formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
+        totalGold18,
+        totalGold21,
+        totalGold22,
+        totalGold24,
         cost: formatReyal(Number(totalCost)),
         vat: formatReyal(Number(totalItemsTaxes)),
         total: formatReyal(Number(totalFinalCost)),
@@ -239,31 +303,28 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     removeAfterPrint: true,
     pageStyle: `
       @page {
-        size: auto;
-        margin: 20px !imporatnt;
+        size: A5 landscape;;
+        margin: 15px !important;
       }
       @media print {
         body {
           -webkit-print-color-adjust: exact;
+          zoom: 0.5;
         }
-        .break-page {
-          page-break-before: always;
+        .rtl {
+          direction: rtl;
+          text-align: right;
         }
-      .rtl {
-        direction: rtl;
-        text-align: right;
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+        .container_print {
+          width: 100%;
+          padding: 10px;
+          box-sizing: border-box;
+        }
       }
-
-      .ltr {
-        direction: ltr;
-        text-align: left;
-      }
-      .container_print {
-        width: 100%;
-        padding: 10px;
-        box-sizing: border-box;
-      }
-    }
     `,
   });
 
@@ -283,36 +344,27 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
           className={`${isRTL ? "rtl" : "ltr"} container_print`}
           ref={invoiceRefs}
         >
-          <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
-            <div className="mx-5 bill-shadow rounded-md p-6">
-              <InvoiceHeader invoiceHeaderData={invoiceHeaderData} />
-            </div>
+          {/* Header that will be repeated on every page */}
+          <div className="print-header">
+            <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+          </div>
 
-            <div className="">
-              {/* <InvoiceTable
-                data={item?.items}
-                columns={Cols}
-                costDataAsProps={costDataAsProps}
-                resultTable={resultTable}
-              ></InvoiceTable> */}
+          {/* Main content including the table */}
+          <div className="print-content">
+            <InvoiceTableData
+              data={item?.items}
+              columns={Cols}
+              costDataAsProps={costDataAsProps}
+            />
+          </div>
 
-              <InvoiceTableData
-                data={item?.items}
-                columns={Cols}
-                costDataAsProps={costDataAsProps}
-              ></InvoiceTableData>
-            </div>
-
-            <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment
-                responseSellingData={item}
-                paymentData={paymentData}
-              />
-            </div>
-
-            <div>
-              <InvoiceFooter />
-            </div>
+          {/* Footer that will be repeated on every page */}
+          <div className="print-footer">
+            <FinalPreviewBillPayment
+              responseSellingData={item}
+              paymentData={paymentData}
+            />
+            <InvoiceFooter />
           </div>
         </div>
       </div>

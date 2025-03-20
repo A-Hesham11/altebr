@@ -53,7 +53,7 @@ const ReserveSecondPageTable = (props: any) => {
 
   return (
     <>
-      <div className="mx-6">
+      <div>
         <div className="mb-6 overflow-x-scroll lg:overflow-x-visible w-full">
           <table className="mt-8 w-[872px] lg:w-full table-shadow">
             <thead className="bg-mainGreen text-white">

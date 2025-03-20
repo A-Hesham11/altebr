@@ -200,6 +200,8 @@ import ViewEdaraExpenses from "../pages/expensesInEdara/view/ViewEdaraExpenses";
 import AddEdaraExpenses from "../pages/expensesInEdara/add/AddEdaraExpenses";
 import SalesReports from "../pages/selling/SalesReports";
 import SalesReturnReports from "../pages/selling/SalesReturnReports";
+import InventoryEntry from "../pages/selling/Inventory/InventoryEntry";
+import SalesReturnPageDemo from "../pages/salesReturnDemo/SalesReturnPageDemo";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -747,6 +749,10 @@ export const AllRoutesProvider = () => {
           <Route
             path="/selling/payoff/sales-return"
             element={<SalesReturnPage />}
+          />
+          <Route
+            path="/selling/payoff/sales-returnDemo"
+            element={<SalesReturnPageDemo />}
           />
 
           {/* BUYING START */}

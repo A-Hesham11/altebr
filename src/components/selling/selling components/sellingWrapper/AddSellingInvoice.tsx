@@ -94,13 +94,25 @@ const AddSellingInvoice = () => {
     pagination: true,
   });
 
-  const invoiceHeaderData = {
-    client_id: clientData?.client_id,
-    client_value: clientData?.client_value,
-    bond_date: formatDate(clientData?.bond_date),
+  const { data: clientInfo } = useFetch<any>({
+    endpoint: `branchManage/api/v1/clients/${clientData?.client_id}`,
+    queryKey: [`clients_info`, clientData?.client_id],
+    enabled: !!clientData?.client_id,
+  });
+
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: formatDate(clientData?.bond_date),
+    second_title: "client name",
+    second_value: clientData?.client_value,
+    third_title: "mobile number",
+    third_value: clientInfo?.phone,
+    bond_title: "bill no",
     invoice_number: invoiceNumber,
     invoice_logo: invoice_logo?.InvoiceCompanyLogo,
     invoice_text: "simplified tax invoice",
+    bond_date: formatDate(clientData?.bond_date),
+    client_id: clientData?.client_id,
   };
 
   return (
@@ -136,11 +148,9 @@ const AddSellingInvoice = () => {
         )}
         {stage === 3 && (
           <SellingInvoiceData
-            // invoiceNumber={invoiceNumber}
             sellingItemsData={sellingItemsData}
             paymentData={paymentData}
-            // clientData={clientData}
-            invoiceHeaderData={invoiceHeaderData}
+            invoiceHeaderData={invoiceHeaderBasicData}
             setStage={setStage}
             selectedItemDetails={selectedItemDetails}
             sellingItemsOfWeigth={sellingItemsOfWeigth}

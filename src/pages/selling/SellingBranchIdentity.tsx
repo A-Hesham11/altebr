@@ -44,9 +44,9 @@ export const SellingBranchIdentity = () => {
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState<number>(1);
+  // const [searchPage, setSearchPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const [dataSourcePrint, setDataSourcePrint] = useState([]);
-  console.log("🚀 ~ SellingBranchIdentity ~ dataSourcePrint:", dataSourcePrint);
   const [printModal, setPrintModal] = useState(false);
   const { gold_price } = GlobalDataContext();
 
@@ -60,12 +60,12 @@ export const SellingBranchIdentity = () => {
   const searchValues = {
     id: "",
     hwya: "",
+    thwelbond_id: "",
     classification_id: "",
     category_id: "",
     karat_minerals: "",
     weight: "",
     wage: "",
-    bond_id: "",
     model_number: "",
   };
 
@@ -175,13 +175,24 @@ export const SellingBranchIdentity = () => {
   ///
   /////////// CUSTOM HOOKS
   ///
+  // const { data, refetch, isSuccess, isRefetching, isLoading } = useFetch({
+  //   queryKey: ["branch-all-accepted-items"],
+  //   pagination: true,
+  //   endpoint:
+  //     search === ""
+  //       ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}?page=${page}`
+  //       : `${search}`,
+  //   onSuccess: (data) => {
+  //     setDataSource(data.data);
+  //   },
+  // });
+
   const { data, refetch, isSuccess, isRefetching, isLoading } = useFetch({
-    queryKey: ["branch-all-accepted-items"],
+    queryKey: ["branch-all-accepted-items", page, search],
     pagination: true,
-    endpoint:
-      search === ""
-        ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}?page=${page}`
-        : `${search}`,
+    endpoint: search
+      ? `${search}&page=${page}`
+      : `/branchManage/api/v1/all-accepted/${userData?.branch_id}?page=${page}`,
     onSuccess: (data) => {
       setDataSource(data.data);
     },
@@ -295,10 +306,6 @@ export const SellingBranchIdentity = () => {
         value: karat?.id,
       })),
   });
-  console.log(
-    "🚀 ~ SellingBranchIdentity ~ karatMineralsOption:",
-    karatMineralsOption
-  );
 
   useEffect(() => {
     refetch();
@@ -329,6 +336,23 @@ export const SellingBranchIdentity = () => {
     });
     setSearch(uri);
   };
+
+  // const getSearchResults = async (req: any) => {
+  //   let uri = `branchManage/api/v1/all-accepted/${userData?.branch_id}`;
+  //   let params = [];
+
+  //   Object.keys(req).forEach((key) => {
+  //     if (req[key] !== "") {
+  //       params.push(`${key}[eq]=${req[key]}`);
+  //     }
+  //   });
+
+  //   if (params.length > 0) {
+  //     uri += `?${params.join("&")}`;
+  //   }
+
+  //   setSearch(uri);
+  // };
   const isLocation = location.pathname;
   ///
   if (isLoading || isRefetching)
@@ -342,6 +366,7 @@ export const SellingBranchIdentity = () => {
             getSearchResults({
               ...values,
             });
+            setPage(1);
           }}
         >
           {({ setFieldValue }) => (
@@ -401,9 +426,9 @@ export const SellingBranchIdentity = () => {
                   type="text"
                 />
                 <BaseInputField
-                  id="bond_id"
+                  id="thwelbond_id"
                   label={`${t("supply voucher number")}`}
-                  name="bond_id"
+                  name="thwelbond_id"
                   type="text"
                   placeholder={`${t("supply voucher number")}`}
                 />

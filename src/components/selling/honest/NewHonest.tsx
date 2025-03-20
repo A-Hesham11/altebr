@@ -16,6 +16,10 @@ import { NewHonestForm } from "./NewHonestForm";
 import { Button } from "../../atoms";
 import { Context } from "react-zoom-pan-pinch";
 import { authCtx } from "../../../context/auth-and-perm/auth";
+import { useFetch } from "../../../hooks";
+import { ClientData_TP } from "../SellingClientForm";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
+import { formatDate } from "../../../utils/date";
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -31,12 +35,13 @@ export const NewHonest = () => {
   ///
   /////////// STATES
   ///
-  const [sanaData, setSanadData] = useState({});
-  console.log("🚀 ~ NewHonest ~ sanaData:", sanaData);
+  const [sanadData, setSanadData] = useState({});
+  console.log("🚀 ~ NewHonest ~ sanaData:", sanadData);
   const [tableData, setTableData] = useState<any>([]);
   const [paymentData, setPaymentData] = useState([]);
-  console.log("🚀 ~ NewHonest ~ paymentData:", paymentData);
+  const [clientData, setClientData] = useState<string>({});
   const { userData } = useContext(authCtx);
+  const { invoice_logo } = GlobalDataContext();
   const totalApproximateCost = tableData.reduce((acc, curr) => {
     acc += +curr.cost;
     return acc;
@@ -78,6 +83,28 @@ export const NewHonest = () => {
     remaining_amount: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
   });
 
+  const { data: bondsData } = useFetch<ClientData_TP>({
+    endpoint: `branchSafety/api/v1/bonds/${userData?.branch_id}?per_page=10000`,
+    queryKey: [`bondsData`],
+  });
+
+  const bondNumber = bondsData?.length + 1;
+
+  const invoiceHeaderBasicData = {
+    first_title: "honest bond date",
+    first_value: formatDate(clientData?.bond_date),
+    second_title: "client name",
+    second_value: clientData?.client_name,
+    third_title: "mobile number",
+    third_value: clientData?.phone,
+    bond_title: "honest bond number",
+    invoice_number: bondNumber,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "honest bond",
+    bond_date: formatDate(clientData?.bond_date),
+    client_id: clientData?.client_id,
+  };
+
   ///
   ///
   /////////// SIDE EFFECTS
@@ -98,26 +125,11 @@ export const NewHonest = () => {
         onSubmit={(values) => {
           const { weight, category_id, cost, karat_id } = values;
           if (weight || category_id || cost || karat_id) {
-            notify("info", t("add tabel item first"));
+            notify("info", `${t("add tabel item first")}`);
             return;
           }
           if (!tableData.length) {
           } else {
-            // const card = paymentData.reduce((acc, curr) => {
-            //   const addDiscountPercentage =
-            //     curr.add_commission_ratio === "yes"
-            //       ? Number(curr.discount_percentage / 100)
-            //       : 0;
-            //   const addTaxToResult =
-            //     curr.add_commission_ratio === "yes"
-            //       ? Number(curr.commission_riyals) * 0.15
-            //       : 0;
-            //   acc[curr.frontkey] =
-            //     Number(curr.amount) * addDiscountPercentage +
-            //     +curr.amount +
-            //     addTaxToResult;
-            //   return acc;
-            // }, {});
             const card = paymentData.reduce((acc, curr) => {
               const maxDiscountOrNOt =
                 curr.amount >= curr.max_discount_limit
@@ -155,6 +167,7 @@ export const NewHonest = () => {
               card,
               paymentCommission,
               totalApproximateCost,
+              invoiceHeaderBasicData,
             });
           }
         }}
@@ -168,11 +181,12 @@ export const NewHonest = () => {
               setTableData={setTableData}
               paymentData={paymentData}
               setPaymentData={setPaymentData}
+              setClientData={setClientData}
             />
           )}
           {stage === 2 && (
             <HonestFinalScreen
-              sanadData={sanaData}
+              sanadData={sanadData}
               setStage={setStage}
               paymentData={paymentData}
             />

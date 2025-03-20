@@ -1,10 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import { authCtx } from "../../context/auth-and-perm/auth";
-import { useMutate } from "../../hooks";
+import { useIsRTL, useMutate } from "../../hooks";
 import { mutateData } from "../../utils/mutateData";
 import { Button } from "../../components/atoms";
 import { SellingFinalPreview } from "../../components/selling/selling components/SellingFinalPreview";
@@ -13,6 +13,7 @@ import { ClientData_TP, Selling_TP } from "../Buying/BuyingPage";
 import { notify } from "../../utils/toast";
 import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 import InvoiceTableData from "../../components/selling/selling components/InvoiceTableData";
+import { useReactToPrint } from "react-to-print";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -35,7 +36,8 @@ const SalesReturnInvoiceData = ({
   console.log("🚀 ~ paymentData:", paymentData);
   const { formatGram, formatReyal } = numberContext();
   const [responseSellingData, SetResponseSellingData] = useState(null);
-
+  const invoiceRefs = useRef([]);
+  const isRTL = useIsRTL();
   const { userData } = useContext(authCtx);
 
   const isCheckedCommission = paymentData.some(
@@ -65,6 +67,23 @@ const SalesReturnInvoiceData = ({
     acc += +curr.weight;
     return acc;
   }, 0);
+
+  const totalGold18 =
+    sellingItemsData?.reduce((acc, curr) => {
+      return curr.karat_name === "18" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+  const totalGold21 =
+    sellingItemsData?.reduce((acc, curr) => {
+      return curr.karat_name === "21" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+  const totalGold22 =
+    sellingItemsData?.reduce((acc, curr) => {
+      return curr.karat_name === "22" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+  const totalGold24 =
+    sellingItemsData?.reduce((acc, curr) => {
+      return curr.karat_name === "24" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
 
   const totalWeightOfSelsal = sellingItemsData?.reduce((acc, item) => {
     return (
@@ -120,7 +139,11 @@ const SalesReturnInvoiceData = ({
     resultTable: [
       {
         number: t("totals"),
-        weight: formatGram(Number(totalWeight) + Number(totalWeightOfSelsal)),
+        // weight: formatGram(Number(totalWeight) + Number(totalWeightOfSelsal)),
+        totalGold18,
+        totalGold21,
+        totalGold22,
+        totalGold24,
         cost: formatReyal(Number(totalCost)),
         vat: formatReyal(Number(totalItemsTaxes)),
         total: formatReyal(Number(totalFinalCost)),
@@ -176,15 +199,47 @@ const SalesReturnInvoiceData = ({
             ? formatReyal(Number(info.getValue()))
             : formatGram(Number(info.row.original.karatmineral_name)),
       },
+      // {
+      //   header: () => <span>{t("weight")}</span>,
+      //   accessorKey: "weight",
+      //   cell: (info) =>
+      //     formatGram(
+      //       Number(info.getValue()) +
+      //         (info.row.original.sel_weight &&
+      //           Number(info.row.original.sel_weight))
+      //     ) || `${t("no items")}`,
+      // },
       {
-        header: () => <span>{t("weight")}</span>,
-        accessorKey: "weight",
-        cell: (info) =>
-          formatGram(
-            Number(info.getValue()) +
-              (info.row.original.sel_weight &&
-                Number(info.row.original.sel_weight))
-          ) || `${t("no items")}`,
+        header: () => <span>{t("18")}</span>,
+        accessorKey: "gold_18",
+        cell: (info: any) =>
+          info.row.original.karat_name === "18"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
+      },
+      {
+        header: () => <span>{t("21")}</span>,
+        accessorKey: "gold_21",
+        cell: (info: any) =>
+          info.row.original.karat_name === "21"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
+      },
+      {
+        header: () => <span>{t("22")}</span>,
+        accessorKey: "gold_22",
+        cell: (info: any) =>
+          info.row.original.karat_name === "22"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
+      },
+      {
+        header: () => <span>{t("24")}</span>,
+        accessorKey: "gold_24",
+        cell: (info: any) =>
+          info.row.original.karat_name === "24"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
       },
       {
         header: () => <span>{t("cost")} </span>,
@@ -337,6 +392,38 @@ const SalesReturnInvoiceData = ({
     );
   };
 
+  const handlePrint = useReactToPrint({
+    content: () => invoiceRefs.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+        @page {
+          size: A5 landscape;;
+          margin: 15px !important;
+        }
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact;
+            zoom: 0.5;
+          }
+          .rtl {
+            direction: rtl;
+            text-align: right;
+          }
+          .ltr {
+            direction: ltr;
+            text-align: left;
+          }
+          .container_print {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+          }
+        }
+      `,
+  });
+
   return (
     <div>
       <div className="flex items-center justify-between mx-8 mt-8">
@@ -345,7 +432,7 @@ const SalesReturnInvoiceData = ({
           {isSuccess ? (
             <Button
               className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-              action={() => window.print()}
+              action={handlePrint}
             >
               {t("print")}
             </Button>
@@ -361,18 +448,23 @@ const SalesReturnInvoiceData = ({
         </div>
       </div>
 
-      <SellingFinalPreview
-        ItemsTableContent={<SellingTableComp />}
-        setStage={setStage}
-        paymentData={paymentData}
-        clientData={clientData}
-        isSuccess={isSuccess}
-        sellingItemsData={sellingItemsData}
-        costDataAsProps={costDataAsProps}
-        invoiceNumber={invoiceNumber}
-        responseSellingData={responseSellingData}
-        invoiceHeaderData={invoiceHeaderData}
-      />
+      <div
+        className={`${isRTL ? "rtl" : "ltr"} container_print`}
+        ref={invoiceRefs}
+      >
+        <SellingFinalPreview
+          ItemsTableContent={<SellingTableComp />}
+          setStage={setStage}
+          paymentData={paymentData}
+          clientData={clientData}
+          isSuccess={isSuccess}
+          sellingItemsData={sellingItemsData}
+          costDataAsProps={costDataAsProps}
+          invoiceNumber={invoiceNumber}
+          responseSellingData={responseSellingData}
+          invoiceHeaderData={invoiceHeaderData}
+        />
+      </div>
     </div>
   );
 };

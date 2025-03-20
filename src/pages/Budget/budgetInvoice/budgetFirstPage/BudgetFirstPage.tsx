@@ -6,7 +6,7 @@ import BudgetOperationsData from "./BudgetOperationsData";
 import { useFetch } from "../../../../hooks";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useFormikContext } from "formik";
-import { formatDate } from "../../../../utils/date";
+import { formatDate, getDayAfter, getDayBefore } from "../../../../utils/date";
 
 interface BudgetFirstPage_TP {
   budgetFiles: File[];
@@ -40,7 +40,15 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
   console.log("🚀 ~ mainCardData:", mainCardData);
   const { userData } = useContext(authCtx);
   const { values } = useFormikContext();
+  console.log("🚀 ~ values:", values);
+  console.log(
+    "🚀 ~ values:",
+    values?.from && formatDate(getDayAfter(values.from))
+  );
   const isBoxesHaveData = mainCardData?.map((data) => data?.boxes).flat();
+
+  const formDate = values?.from ? formatDate(getDayAfter(values?.from)) : 0;
+  const toDate = values?.to ? formatDate(getDayAfter(values?.to)) : 0;
 
   const {
     data: accountsDetailsData,
@@ -53,7 +61,7 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
       userData?.branch_id
     }/${selectedAccountData ? selectedAccountData?.frontKey : 0}/${
       selectedAccountData ? selectedAccountData?.id : 0
-    }?form=${formatDate(values.from) || 0}&to=${formatDate(values.to) || 0}`,
+    }?form=${formDate}&to=${toDate}`,
     queryKey: ["accounts-details-data"],
     onSuccess: (data: any) => {
       setMainCardData(data);

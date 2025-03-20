@@ -77,6 +77,7 @@ export function ExpandableTable({
 
   //states
   const [data, setData] = useState(modifiedData)
+  console.log("🚀 ~ data:", data)
 
   const [expanded, setExpanded] = React.useState<ExpandedState>({})
   const [modalOpen, setModalOpen] = useState(false)
@@ -100,6 +101,9 @@ export function ExpandableTable({
       }),
       columnHelper.accessor("model_number", {
         header: `${t("model number")}`,
+      }),
+      columnHelper.accessor("karat_value", {
+        header: `${t("karat")}`,
       }),
       columnHelper.accessor("weight", {
         header: `${t("weight")}`,

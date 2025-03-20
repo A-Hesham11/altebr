@@ -46,6 +46,7 @@ const SellingHomeCard = ({
 
   const allowedRoutes = [
     "/selling",
+    "/selling/payoff",
     // "/selling/buying",
     // "/selling/exchange",
     // "/selling/clients",

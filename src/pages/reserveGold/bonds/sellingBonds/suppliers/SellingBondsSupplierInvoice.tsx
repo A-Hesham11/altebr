@@ -23,6 +23,8 @@ import FinalPreviewBillPayment from "../../../../../components/selling/selling c
 import { convertNumToArWord } from "../../../../../utils/number to arabic words/convertNumToArWord";
 import InvoiceFooter from "../../../../../components/Invoice/InvoiceFooter";
 import InvoiceTableData from "../../../../../components/selling/selling components/InvoiceTableData";
+import { GlobalDataContext } from "../../../../../context/settings/GlobalData";
+import InvoiceBasicHeader from "../../../../../components/Invoice/InvoiceBasicHeader";
 
 type Entry_TP = {
   bian: string;
@@ -36,13 +38,25 @@ const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
+  const { invoice_logo } = GlobalDataContext();
 
-  const clientData = {
-    client_id: item?.client_id,
-    client_value: item?.client_name,
+  const { data } = useFetch<any>({
+    endpoint: `/supplier/api/v1/supplier/${item?.supplier_id}`,
+    queryKey: [`clients`],
+  });
+
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: item?.invoice_date,
+    second_title: "supplier name",
+    second_value: item?.supplier_name,
+    third_title: "mobile number",
+    third_value: data?.phone,
     bond_date: item?.invoice_date,
-    supplier_id: item?.supplier_id,
-    supplier_name: item?.supplier_name,
+    bond_title: "bill no",
+    invoice_number: Number(item?.invoice_number) - 1,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -141,28 +155,30 @@ const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
     onAfterPrint: () => console.log("after printing..."),
     removeAfterPrint: true,
     pageStyle: `
-      @page {
-        size: auto;
-        margin: 20px !imporatnt;
+    @page {
+      size: A5 landscape;;
+      margin: 15px !important;
+    }
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        zoom: 0.5;
       }
-      @media print {
-        body {
-          -webkit-print-color-adjust: exact;
-        }
-        .break-page {
-          page-break-before: always;
-        }
       .rtl {
         direction: rtl;
         text-align: right;
       }
-
       .ltr {
         direction: ltr;
         text-align: left;
       }
+      .container_print {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+      }
     }
-    `,
+  `,
   });
 
   return (
@@ -177,31 +193,31 @@ const SellingBondsSupplierInvoice = ({ item }: { item?: {} }) => {
           </Button>
         </div>
 
-        <div className={`${isRTL ? "rtl" : "ltr"}`} ref={invoiceRefs}>
-          <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
-            <div className="mx-5 bill-shadow rounded-md p-6">
-              <FinalPreviewBillData
-                clientData={clientData}
-                invoiceNumber={item?.invoice_number}
-              />
-            </div>
+        <div
+          className={`${isRTL ? "rtl" : "ltr"} container_print`}
+          ref={invoiceRefs}
+        >
+          <div className="print-header">
+            <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+          </div>
 
+          <div className="print-content">
             <InvoiceTableData
               data={item?.items}
               columns={Cols || []}
               costDataAsProps={costDataAsProps}
             ></InvoiceTableData>
+          </div>
 
-            <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment
-                responseSellingData={item}
-                notQRCode={true}
-              />
-            </div>
+          <div className="print-footer">
+            <FinalPreviewBillPayment
+              responseSellingData={item}
+              notQRCode={true}
+            />
+          </div>
 
-            <div>
-              <InvoiceFooter />
-            </div>
+          <div>
+            <InvoiceFooter />
           </div>
         </div>
       </div>

@@ -6,12 +6,6 @@ const InvoiceHeader = ({ invoiceHeaderData }: any) => {
   const location = useLocation();
   const path = location.pathname;
 
-  // const supplyFetch =
-  //   path === "/supply-return" ||
-  //   path === "/bonds/supply-return" ||
-  //   path === "/viewPurchaseBonds" ||
-  //   path === "/viewSellingBonds";
-
   const { data } = useFetch<any>({
     endpoint: !!invoiceHeaderData?.supplier_id
       ? `/supplier/api/v1/supplier/${invoiceHeaderData?.supplier_id}`

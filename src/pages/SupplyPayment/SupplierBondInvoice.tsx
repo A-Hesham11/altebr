@@ -17,17 +17,33 @@ import { useReactToPrint } from "react-to-print";
 import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
 import InvoiceTableData from "../../components/selling/selling components/InvoiceTableData";
 import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
+import InvoiceBasicHeader from "../../components/Invoice/InvoiceBasicHeader";
 
 const SupplierBondInvoice = ({ item }: { item?: {} }) => {
+  console.log("🚀 ~ SupplierBondInvoice ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
+  const { invoice_logo } = GlobalDataContext();
 
   const clientData = {
     client_id: item?.client_id,
     client_value: item?.supplier_id,
     bond_date: item?.date,
     supplier_id: item?.supplier,
+  };
+
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: item?.date,
+    second_title: "employee name",
+    second_value: item?.employee_name,
+    bond_date: item?.date,
+    bond_title: "bill no",
+    invoice_number: Number(item?.id) - 1,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
   };
 
   const totalFinalCost = item?.items?.reduce((acc, curr) => {
@@ -110,26 +126,28 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
     removeAfterPrint: true,
     pageStyle: `
       @page {
-        size: auto;
-        margin: 20px !imporatnt;
+        size: A5 landscape;;
+        margin: 15px !important;
       }
       @media print {
         body {
           -webkit-print-color-adjust: exact;
+          zoom: 0.5;
         }
-        .break-page {
-          page-break-before: always;
+        .rtl {
+          direction: rtl;
+          text-align: right;
         }
-      .rtl {
-        direction: rtl;
-        text-align: right;
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+        .container_print {
+          width: 100%;
+          padding: 10px;
+          box-sizing: border-box;
+        }
       }
-
-      .ltr {
-        direction: ltr;
-        text-align: left;
-      }
-    }
     `,
   });
 
@@ -144,40 +162,28 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
         </Button>
       </div>
 
-      <div className={`${isRTL ? "rtl" : "ltr"} m-4`} ref={invoiceRefs}>
-        <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
-          <div className="mx-5 bill-shadow rounded-md p-6">
-            <FinalPreviewBillData
-              clientData={clientData}
-              invoiceNumber={item?.id}
-              employee_name={item?.employee_name}
-            />
-          </div>
+      <div
+        className={`${isRTL ? "rtl" : "ltr"} container_print`}
+        ref={invoiceRefs}
+      >
+        <div className="print-header">
+          <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+        </div>
 
-          <div className="mx-5">
-            {/* <PaymentInvoiceTable
-              data={item?.items}
-              columns={Cols || []}
-              costDataAsProps={costDataAsProps}
-            ></PaymentInvoiceTable> */}
+        <div className="print-content">
+          <InvoiceTableData
+            data={item?.items}
+            columns={Cols || []}
+            costDataAsProps={costDataAsProps}
+          ></InvoiceTableData>
+        </div>
 
-            <InvoiceTableData
-              data={item?.items}
-              columns={Cols || []}
-              costDataAsProps={costDataAsProps}
-            ></InvoiceTableData>
-          </div>
-
-          <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-            <FinalPreviewBillPayment
-              responseSellingData={item}
-              notQRCode={true}
-            />
-          </div>
-
-          <div>
-            <InvoiceFooter />
-          </div>
+        <div className="print-footer">
+          <FinalPreviewBillPayment
+            responseSellingData={item}
+            notQRCode={true}
+          />
+          <InvoiceFooter />
         </div>
       </div>
     </div>

@@ -7,67 +7,118 @@ import { useContext, useMemo, useRef } from "react";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useIsRTL } from "../../../../hooks";
 import { useReactToPrint } from "react-to-print";
+import { numberContext } from "../../../../context/settings/number-formatter";
+import { convertNumToArWord } from "../../../../utils/number to arabic words/convertNumToArWord";
 
 const LostItemsReports = ({ dataSource, reportNumber, date }: any) => {
   console.log("🚀 ~ LostItemsReports ~ dataSource:", dataSource);
   const contentRef = useRef();
   const isRTL = useIsRTL();
+  const { formatGram, formatReyal } = numberContext();
+  const { userData } = useContext(authCtx);
 
-  const karat_24_values = dataSource?.filter(
-    (item) => item.karat_name === "24"
-  );
-  const karat_22_values = dataSource?.filter(
-    (item) => item.karat_name === "22"
+  const LostReportsData = dataSource?.map((item) => {
+    return {
+      hwya: item.hwya,
+      classification_id: item.classification_id,
+      classification_name: item.classification_name,
+      category_name: item.category_name,
+      karat_name: item.karat_name,
+      karatmineral: item.karatmineral,
+      gold_18: item.karat_name == "18" ? item.weight : null,
+      gold_21: item.karat_name == "21" ? item.weight : null,
+      gold_22: item.karat_name == "22" ? item.weight : null,
+      gold_24: item.karat_name == "24" ? item.weight : null,
+      weight: item.weight,
+      wage: item.wage,
+      value: item.value,
+    };
+  });
+
+  const totalCash = dataSource
+    ?.filter((item) => item.classification_id != 1)
+    .reduce((acc, curr) => {
+      return +acc + Number(curr.value);
+    }, 0);
+
+  const totalWages = dataSource
+    ?.filter((item) => item.classification_id == 1)
+    .reduce((acc, curr) => {
+      return +acc + Number(curr.wage * curr.weight);
+    }, 0);
+
+  const karat_18_values = dataSource?.filter(
+    (item) => item.karat_name === "18"
   );
   const karat_21_values = dataSource?.filter(
     (item) => item.karat_name === "21"
   );
-  const karat_18_values = dataSource?.filter(
-    (item) => item.karat_name === "18"
+  const karat_22_values = dataSource?.filter(
+    (item) => item.karat_name === "22"
   );
+  const karat_24_values = dataSource?.filter(
+    (item) => item.karat_name === "24"
+  );
+
+  const weight_18 = karat_18_values?.reduce((acc, curr) => {
+    return +acc + Number(curr.weight);
+  }, 0);
+  const weight_21 = karat_21_values?.reduce((acc, curr) => {
+    return +acc + Number(curr.weight);
+  }, 0);
+  const weight_22 = karat_22_values?.reduce((acc, curr) => {
+    return +acc + Number(curr.weight);
+  }, 0);
+  const weight_24 = karat_24_values?.reduce((acc, curr) => {
+    return +acc + Number(curr.weight);
+  }, 0);
+
+  const totalWeightConvertTo24 =
+    weight_18 * (18 / 24) +
+    weight_21 * (21 / 24) +
+    weight_22 * (22 / 24) +
+    weight_24;
 
   const totals = [
     {
-      title: t("total 18 gold box"),
-      number: karat_18_values?.length,
-      weight: karat_18_values?.reduce((acc, curr) => {
-        return +acc + Number(curr.weight);
-      }, 0),
+      id: crypto.randomUUID(),
+      value: dataSource?.length,
     },
     {
-      title: t("total 21 gold box"),
-      number: karat_21_values?.length,
-      weight: karat_21_values?.reduce((acc, curr) => {
-        return +acc + Number(curr.weight);
-      }, 0),
+      id: crypto.randomUUID(),
+      value: "",
     },
     {
-      title: t("total 22 gold box"),
-      number: karat_22_values?.length,
-      weight: karat_22_values?.reduce((acc, curr) => {
-        return +acc + Number(curr.weight);
-      }, 0),
+      id: crypto.randomUUID(),
+      value: "",
     },
     {
-      title: t("total 24 gold box"),
-      number: karat_24_values?.length,
-      weight: karat_24_values?.reduce((acc, curr) => {
-        return +acc + Number(curr.weight);
-      }, 0),
+      id: crypto.randomUUID(),
+      value: "",
     },
     {
-      title: t("Total cash"),
-      number: dataSource?.length,
-      weight: dataSource?.reduce((acc, curr) => {
-        return +acc + Number(curr.value);
-      }, 0),
+      id: crypto.randomUUID(),
+      value: formatGram(weight_18),
     },
     {
-      title: t("total wages"),
-      number: dataSource?.length,
-      value: dataSource?.reduce((acc, curr) => {
-        return +acc + Number(curr.wage);
-      }, 0),
+      id: crypto.randomUUID(),
+      value: formatGram(weight_21),
+    },
+    {
+      id: crypto.randomUUID(),
+      value: formatGram(weight_22),
+    },
+    {
+      id: crypto.randomUUID(),
+      value: formatGram(weight_24),
+    },
+    {
+      id: crypto.randomUUID(),
+      value: formatReyal(totalWages),
+    },
+    {
+      id: crypto.randomUUID(),
+      value: formatReyal(totalCash),
     },
   ];
 
@@ -98,22 +149,44 @@ const LostItemsReports = ({ dataSource, reportNumber, date }: any) => {
       },
       {
         cell: (info: any) => info.getValue() || "---",
-        accessorKey: "weight",
-        header: () => <span>{t("weight")}</span>,
+        accessorKey: "gold_18",
+        header: () => <span>{t("18")}</span>,
       },
       {
         cell: (info: any) => info.getValue() || "---",
+        accessorKey: "gold_21",
+        header: () => <span>{t("21")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "gold_22",
+        header: () => <span>{t("22")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "gold_24",
+        header: () => <span>{t("24")}</span>,
+      },
+      {
+        cell: (info: any) =>
+          info.row.original.classification_id === 1
+            ? info.row.original.value
+            : "---",
         accessorKey: "wage",
         header: () => <span>{t("wage")}</span>,
       },
       {
-        cell: (info: any) => info.row.original.value || "---",
+        cell: (info: any) =>
+          info.row.original.classification_id !== 1
+            ? info.row.original.value
+            : "---",
         accessorKey: "value",
         header: () => <span>{t("value")}</span>,
       },
     ],
-    []
+    [LostReportsData?.length]
   );
+
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
     onBeforePrint: () => console.log("before printing..."),
@@ -149,57 +222,56 @@ const LostItemsReports = ({ dataSource, reportNumber, date }: any) => {
   });
 
   return (
-    <div className="py-12 px-20">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2>
-            <span className="font-semibold">{t("date")} : </span> {date}
-          </h2>
-          <h2 className="mt-1.5">
-            <span className="font-semibold">
-              {t("Lost and Found Report Number")} :{" "}
-            </span>{" "}
-            {reportNumber}
-          </h2>
-        </div>
-
-        <div>
-          <Button action={handlePrint}>{t("print")}</Button>
-        </div>
+    <div className="p-12">
+      <div className="flex items-center justify-end">
+        <Button action={handlePrint}>{t("print")}</Button>
       </div>
 
       <div
         ref={contentRef}
         className={`${isRTL ? "rtl" : "ltr"} container_print`}
       >
-        <div className="my-6 text-center">
-          <img src={Logo} alt="logo" className="mx-auto" />
-          <h2 className="text-lg font-semibold">
-            {t("Lost and Found Report")}
-          </h2>
+        <div className="my-6 grid grid-cols-3 ">
+          <div>
+            <h2>
+              <span className="font-semibold">{t("date")} : </span> {date}
+            </h2>
+            <h2 className="mt-1.5">
+              <span className="font-semibold">{t("Report number")} : </span>{" "}
+              {reportNumber}
+            </h2>
+          </div>
+          <div className="flex justify-center flex-col items-center">
+            <img src={Logo} alt="logo" className="mx-auto" />
+            <h2 className="text-lg font-semibold">
+              {t("Lost and Found Report")}
+            </h2>
+          </div>
+          <div className="flex justify-end">
+            <p>
+              {t("branch number")} : {userData?.branch_id}
+            </p>
+          </div>
         </div>
 
-        {/* <ul className="grid grid-cols-4 gap-x-8  gap-y-6 my-8">
-          {totals?.map((item, index) => (
-            <li key={index} className=" text-center">
-              <h2 className="bg-mainGreen text-white p-4 rounded-t-xl">
-                {item.title}
-              </h2>
-              <div className="bg-[#295E560D] border border-mainGreen p-3 text-mainGreen rounded-b-xl">
-                <p>
-                  <span className="font-semibold">{item.number ?? 0}</span>{" "}
-                  {t("item")}
-                </p>
-                <p>
-                  <span className="font-semibold">{item.weight ?? 0}</span>{" "}
-                  {t("gram")}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul> */}
+        <Table data={LostReportsData ?? []} columns={columns} Totals={totals} />
 
-        <Table data={dataSource ?? []} columns={columns} />
+        <div className="font-semibold text-mainGreen flex items-center mt-8">
+          <h2 className="w-72">{t("total weight of adapter 24")}</h2>
+          <p className="w-44">{formatGram(totalWeightConvertTo24)}</p>
+          <p>
+            {convertNumToArWord(Math.round(totalWeightConvertTo24))}{" "}
+            <span>{t("gram")}</span>
+          </p>
+        </div>
+        <div className="font-semibold text-mainOrange flex items-center mt-3">
+          <h2 className="w-72">{t("total cash")}</h2>
+          <p className="w-44">{formatGram(totalCash + totalWages)}</p>
+          <p>
+            {convertNumToArWord(Math.round(totalCash + totalWages))}{" "}
+            <span>{t("reyal")}</span>
+          </p>
+        </div>
 
         {/* <div className="bg-white mt-8 p-12 rounded-xl text-[17.3px] text-center">
           <span>

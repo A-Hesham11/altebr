@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useFetch, useIsRTL } from "../../hooks";
 import { formatDate, getDayAfter } from "../../utils/date";
-import { DateInputField } from "../../components/molecules";
+import { DateInputField, Select } from "../../components/molecules";
 import { t } from "i18next";
 import { Button } from "../../components/atoms";
 import SalesReportsTable from "../../components/selling/selling components/SalesReportsTable";
@@ -24,7 +24,14 @@ const SalesReports = () => {
     branch_id: "",
     from: "",
     to: "",
+    is_tax: "",
   };
+
+  const taxOptions = [
+    { id: "all", label: t("all"), value: "all" },
+    { id: "tax", label: t("include tax"), value: "tax" },
+    { id: "no_Tax", label: t("No tax"), value: "no_Tax" },
+  ];
 
   const { isLoading, isFetching, isRefetching, refetch } = useFetch({
     queryKey: ["sales-reports"],
@@ -106,10 +113,12 @@ const SalesReports = () => {
                 ? formatDate(getDayAfter(new Date(values.from)))
                 : "",
               to: values.to ? formatDate(getDayAfter(new Date(values.to))) : "",
+              is_tax: values.is_tax !== "all" ? values.is_tax : "",
             });
           }}
         >
           {({ values }) => {
+            console.log("🚀 ~ SalesReports ~ values:", values);
             return (
               <Form className="w-full">
                 <div className="flex w-full justify-between items-end gap-3">
@@ -128,6 +137,16 @@ const SalesReports = () => {
                         placeholder={`${t("date to")}`}
                         name="to"
                         labelProps={{ className: "mt-10" }}
+                      />
+                    </div>
+                    <div className="w-2/6 lg:w-1/5">
+                      <Select
+                        id="is_tax"
+                        label={`${t("type of tax")}`}
+                        name="is_tax"
+                        placeholder={`${t("type of tax")}`}
+                        loadingPlaceholder={`${t("loading")}`}
+                        options={taxOptions}
                       />
                     </div>
                     <Button

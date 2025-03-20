@@ -45,6 +45,8 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
   unknownIdentities,
   goldBrokenCashBanksFinalData,
 }: any) => {
+  console.log("🚀 ~ availableItems:", availableItems);
+  console.log("🚀 ~ numberItemsInBranch:", numberItemsInBranch);
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();
@@ -67,7 +69,7 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
       name: t("Number of items in the branch"),
       key: 1,
       unit: "item",
-      value: numberItemsInBranch,
+      value: availableItems?.length + totalNumberItemsInspected,
       bgColor: "#295E56",
     },
     {
@@ -81,7 +83,7 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
       name: t("Uninspected items"),
       key: 3,
       unit: "item",
-      value: numberItemsInBranch - totalNumberItemsInspected,
+      value: availableItems?.length,
       bgColor: "#218A7A",
     },
     {
@@ -109,6 +111,11 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
         cell: (info: any) => info.getValue() || "---",
         accessorKey: "category_name",
         header: () => <span>{t("classification")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "karat_name",
+        header: () => <span>{t("karat")}</span>,
       },
       {
         cell: (info: any) => info.getValue() || "---",
@@ -150,10 +157,17 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
     const lostItems = formatItems(unknownIdentities);
     const combinedLostItems = [...lostItems, ...formattedAvailableItems];
 
+    const { cash, gold_18, gold_21, gold_22, gold_24, ...rest } =
+      goldBrokenCashBanksFinalData;
+
     const goldAndCash = {
       inventory_id: id,
       branch_id: userData?.branch_id,
-      ...goldBrokenCashBanksFinalData,
+      cash,
+      gold_18,
+      gold_21,
+      gold_22,
+      gold_24,
     };
 
     mutateInventoryData({
@@ -165,6 +179,7 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
         inventory_id: id,
         lostItems: combinedLostItems,
         goldAndCash,
+        banks: rest,
       },
     });
   };
@@ -174,40 +189,6 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
       mutationFn: mutateData,
       onSuccess: handleSuccessInventoryData,
     });
-
-  const handlePrint = useReactToPrint({
-    content: () => contentRef.current,
-    onBeforePrint: () => console.log("before printing..."),
-    onAfterPrint: () => console.log("after printing..."),
-    removeAfterPrint: true,
-    pageStyle: `
-      @page {
-        size: auto;
-        margin: 20px !imporatnt;
-      }
-      @media print {
-        body {
-          -webkit-print-color-adjust: exact;
-        }
-        .break-page {
-          page-break-before: always;
-        }
-        .rtl {
-          direction: rtl;
-          text-align: right;
-        }
-        .ltr {
-          direction: ltr;
-          text-align: left;
-        }
-        .container_print {
-          width: 100%;
-          padding: 20px;
-          box-sizing: border-box;
-        }
-      }
-    `,
-  });
 
   return (
     <div className="py-12 px-16">
@@ -250,15 +231,15 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
 
         <Table data={allItems ?? []} columns={columns} />
 
-        <div className="flex items-center justify-between mt-8 mb-4">
-          <div className="text-center">
+        <div className="flex items-center justify-end mt-8 mb-4">
+          {/* <div className="text-center">
             <h2 className="text-[17px] font-medium">
               {t("recipient's signature")}
             </h2>
             <p className="text-xl mt-1.5">
               .................................................
             </p>
-          </div>
+          </div> */}
           <div className="flex gap-x-3 no-print">
             <Button action={() => setSteps(2)} bordered>
               {t("back")}
