@@ -198,6 +198,7 @@ import InventoryReportes from "../pages/selling/Inventory/Reportes/InventoryRepo
 import MissingPieces from "../pages/selling/MissingPiecesFromStocktacking/MissingPieces";
 import ViewEdaraExpenses from "../pages/expensesInEdara/view/ViewEdaraExpenses";
 import AddEdaraExpenses from "../pages/expensesInEdara/add/AddEdaraExpenses";
+import AddReceiptBonds from "../pages/ReceiptBonds/add/AddReceiptBonds";
 import SalesReports from "../pages/selling/SalesReports";
 import SalesReturnReports from "../pages/selling/SalesReturnReports";
 import InventoryEntry from "../pages/selling/Inventory/InventoryEntry";
