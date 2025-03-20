@@ -249,7 +249,7 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
               <DateInputField
                 label={`${t("expense date")}`}
                 name="expense_date"
-                maxDate={new Date()}
+                // maxDate={new Date()}
                 icon={<CiCalendarDate />}
                 required
                 labelProps={{ className: "mb-2" }}

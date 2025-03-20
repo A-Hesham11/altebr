@@ -8,6 +8,7 @@ import { boolean } from "yup";
 ///
 type ModalProps_TP = {
   isOpen: boolean;
+  icon?: boolean;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
   title?: string | undefined;
   children: ReactNode;
@@ -25,6 +26,7 @@ export const Modal = ({
   children,
   maxWidth,
   blur,
+  icon,
 }: ModalProps_TP) => {
   /////////// VARIABLES
   ///
@@ -79,31 +81,33 @@ export const Modal = ({
                   className="text-lg font-medium leading-6 text-gray-900 relative mb-2 "
                 >
                   {title}
-                  <button
-                    type="button"
-                    //@ts-ignore
-                    className={`absolute left-3 z-10 ${
-                      children?.props?.title === undefined ? "top-0" : "top-5"
-                    }  `}
-                    onClick={() => onClose(false)}
-                  >
-                    <span className="sr-only">Close</span>
-                    <svg
-                      className="h-6 w-6 animate_scale animation_delay-11 text-gray-400 hover:text-gray-500 rounded-md hover:border-mainRed hover:border-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
+                  {!icon && (
+                    <button
+                      type="button"
+                      //@ts-ignore
+                      className={`absolute left-3 z-10 ${
+                        children?.props?.title === undefined ? "top-0" : "top-5"
+                      }  `}
+                      onClick={() => onClose(false)}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+                      <span className="sr-only">Close</span>
+                      <svg
+                        className="h-6 w-6 animate_scale animation_delay-11 text-gray-400 hover:text-gray-500 rounded-md hover:border-mainRed hover:border-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  )}
                 </Dialog.Title>
                 {children}
               </Dialog.Panel>

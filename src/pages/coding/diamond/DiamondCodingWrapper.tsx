@@ -244,7 +244,7 @@ export const DiamondCodingWrapper = ({
         </div>
       )}
 
-      <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+      <Modal isOpen={openModal} onClose={() => {}} icon>
         {open ? (
           <>
             <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
@@ -262,7 +262,10 @@ export const DiamondCodingWrapper = ({
             <div className="bg-gray-50 px-4 pt-3 pb-5 sm:flex sm:flex-row-reverse sm:px-6 justify-center gap-5 z-50">
               <Button
                 type="button"
-                action={() => setOpen(false)}
+                action={() => {
+                  setOpen(false);
+                  localStorage.removeItem("printItems");
+                }}
                 bordered
                 className="cursor-pointer z-50"
               >
@@ -273,6 +276,7 @@ export const DiamondCodingWrapper = ({
                 action={() => {
                   setOpenFinishedModal(true);
                   localStorage.removeItem("printItems");
+                  setOpenModal(false);
                 }}
               >
                 {t("Yes")}
@@ -287,25 +291,34 @@ export const DiamondCodingWrapper = ({
             >
               {t("printing process")}
             </h3>
-            <div className="flex justify-center items-center mt-8 mb-2">
+            <div className="flex justify-center items-center mt-8 mb-2 gap-4">
               <Button type="button" action={handlePrint}>
                 {t("printing numbered identities")}
+              </Button>
+              <Button
+                type="button"
+                bordered
+                action={() => {
+                  setOpen(false);
+                  localStorage.removeItem("printItems");
+                  setOpenModal(false);
+                }}
+              >
+                {t("Later")}
               </Button>
             </div>
           </div>
         )}
       </Modal>
 
-      <Modal
-        isOpen={openFinishedModal}
-        onClose={() => setOpenFinishedModal(false)}
-      >
+      <Modal isOpen={openFinishedModal} onClose={() => {}} icon>
         <div className="flex gap-x-2 p-16 justify-center items-center">
           <Button
             type="button"
             action={() => {
               setOpenModal(false);
-              setOpenFinishedModal(false)
+              setOpenFinishedModal(false);
+              setOpen(false);
               setStage(1);
               setAddedPiecesLocal([]);
             }}

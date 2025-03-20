@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
 import LostItemsReports from "./LostItemsReports";
 import { useFetch } from "../../../../hooks";
@@ -14,18 +14,15 @@ const InventoryReportes = () => {
   const [dataSource, setDataSource] = useState();
   const { userData } = useContext(authCtx);
   const { state } = useLocation();
-  console.log("🚀 ~ InventoryReportes ~ state:", state?.reportID);
 
   const isActiveReport = ["d", "e", "f", "g", "h"].includes(state?.reportID)
     ? "c"
     : state?.reportID;
 
-  console.log("🚀 ~ InventoryReportes ~ isActiveReport:", isActiveReport);
-
   const { data, isLoading, isFetching, isRefetching, refetch } = useFetch<
     any[]
   >({
-    endpoint: `/inventory/api/v1/handleReport?key=${isActiveReport}&inventory_id=${state?.inventoryID}&branch_id=${userData?.branch_id}`,
+    endpoint: `/inventory/api/v1/handleReport?key=${isActiveReport}&inventory_id=${state?.inventoryID}&branch_id=${userData?.branch_id}?per_page=10000`,
     queryKey: ["InventoryBonds"],
     pagination: true,
     onSuccess(data) {
@@ -33,7 +30,6 @@ const InventoryReportes = () => {
     },
     enabled: Boolean(state?.reportID) && Boolean(state?.inventoryID),
   });
-  console.log("🚀 ~ InventoryReportes ~ data:", data);
 
   if (isLoading || isFetching || isRefetching)
     return <Loading mainTitle={t("reportes")} />;

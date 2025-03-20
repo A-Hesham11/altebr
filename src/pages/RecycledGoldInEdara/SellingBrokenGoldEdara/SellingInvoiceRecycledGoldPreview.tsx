@@ -14,6 +14,7 @@ import FinalPreviewBillPayment from "../../../components/selling/selling compone
 import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
 import { authCtx } from "../../../context/auth-and-perm/auth";
 import cashImg from "../../../assets/cash.png";
+import InvoiceBasicHeader from "../../../components/Invoice/InvoiceBasicHeader";
 
 type Entry_TP = {
   bian: string;
@@ -24,18 +25,20 @@ type Entry_TP = {
 };
 
 const SellingInvoiceRecycledGoldPreview = ({ item }: { item?: {} }) => {
+  console.log("🚀 ~ SellingInvoiceRecycledGoldPreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
   const { invoice_logo, gold_price } = GlobalDataContext();
   const { userData } = useContext(authCtx);
 
-  const invoiceHeaderData = {
-    client_id: item?.client_id,
-    client_value: item?.client_name,
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: item?.invoice_date,
+    second_title: item?.client_name ? "client name" : "supplier name",
+    second_value: item?.client_name ? item?.client_name : item?.supplier_name,
     bond_date: item?.invoice_date,
-    supplier_id: item?.supplier_id,
-    supplier_name: item?.supplier_name,
+    bond_title: "bill no",
     invoice_number: Number(item?.id) - 1,
     invoice_logo: invoice_logo?.InvoiceCompanyLogo,
     invoice_text: "simplified tax invoice",
@@ -149,22 +152,19 @@ const SellingInvoiceRecycledGoldPreview = ({ item }: { item?: {} }) => {
     onAfterPrint: () => console.log("after printing..."),
     removeAfterPrint: true,
     pageStyle: `
-      @page {
-        size: auto;
-        margin: 20px !imporatnt;
+    @page {
+      size: A5 landscape;;
+      margin: 15px !important;
+    }
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        zoom: 0.5;
       }
-      @media print {
-        body {
-          -webkit-print-color-adjust: exact;
-        }
-        .break-page {
-          page-break-before: always;
-        }
       .rtl {
         direction: rtl;
         text-align: right;
       }
-
       .ltr {
         direction: ltr;
         text-align: left;
@@ -175,7 +175,7 @@ const SellingInvoiceRecycledGoldPreview = ({ item }: { item?: {} }) => {
         box-sizing: border-box;
       }
     }
-    `,
+  `,
   });
 
   return (
@@ -194,29 +194,24 @@ const SellingInvoiceRecycledGoldPreview = ({ item }: { item?: {} }) => {
           className={`${isRTL ? "rtl" : "ltr"} container_print`}
           ref={invoiceRefs}
         >
-          <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow">
-            <div className="mx-5 bill-shadow rounded-md p-6">
-              <InvoiceHeader invoiceHeaderData={invoiceHeaderData} />
-            </div>
+          <div className="print-header">
+            <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+          </div>
 
-            <div className="">
-              <InvoiceTableData
-                data={item?.items}
-                columns={Cols}
-                costDataAsProps={costDataAsProps}
-              ></InvoiceTableData>
-            </div>
+          <div className="print-content">
+            <InvoiceTableData
+              data={item?.items}
+              columns={Cols}
+              costDataAsProps={costDataAsProps}
+            ></InvoiceTableData>
+          </div>
 
-            <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-              <FinalPreviewBillPayment
-                responseSellingData={item}
-                paymentData={paymentData}
-              />
-            </div>
-
-            <div>
-              <InvoiceFooter />
-            </div>
+          <div className="print-footer">
+            <FinalPreviewBillPayment
+              responseSellingData={item}
+              paymentData={paymentData}
+            />
+            <InvoiceFooter />
           </div>
         </div>
       </div>

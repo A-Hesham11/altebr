@@ -2,7 +2,7 @@ import { t } from "i18next";
 import { useContext, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { authCtx } from "../../../context/auth-and-perm/auth";
-import { useIsRTL, useMutate } from "../../../hooks";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
 import { formatDate } from "../../../utils/date";
 import { mutateData } from "../../../utils/mutateData";
 import { Button } from "../../atoms";
@@ -12,22 +12,40 @@ import { numberContext } from "../../../context/settings/number-formatter";
 import { notify } from "../../../utils/toast";
 import { useReactToPrint } from "react-to-print";
 import { convertNumToArWord } from "../../../utils/number to arabic words/convertNumToArWord";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
   selectedItem: never[];
   paymentData: never[];
+  clientInfo: never[];
 };
 const DeliveryBondPreviewScreen = ({
   setStage,
   selectedItem,
   paymentData,
+  clientInfo,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData);
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();
+  const { invoice_logo } = GlobalDataContext();
+
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: selectedItem?.bond_date,
+    second_title: "client name",
+    second_value: selectedItem?.client_value,
+    third_title: "mobile number",
+    third_value: clientInfo?.phone,
+    bond_title: "bill no",
+    invoice_number: selectedItem?.id,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
+    bond_date: selectedItem?.bond_date,
+    client_id: selectedItem?.client_id,
+  };
 
   const taxRate = userData?.tax_rate / 100;
 
@@ -68,7 +86,6 @@ const DeliveryBondPreviewScreen = ({
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(totalFinalCost)
   );
-  console.log("🚀 ~ totalFinalCostIntoArabic:", totalFinalCostIntoArabic);
 
   // gather cost data to pass it to SellingFinalPreview as props
   const costDataAsProps = {
@@ -173,7 +190,6 @@ const DeliveryBondPreviewScreen = ({
     mutationFn: mutateData,
     onSuccess: (data) => {
       notify("success");
-      // navigate(`/selling/honesty/return-honest/${data.bond_id}`);
     },
   });
   const posHonestDataHandler = () => {
@@ -250,15 +266,13 @@ const DeliveryBondPreviewScreen = ({
     removeAfterPrint: true,
     pageStyle: `
       @page {
-        size: auto;
-        margin: 20px !imporatnt;
+        size: A5 landscape;;
+        margin: 5px !important;
       }
       @media print {
         body {
           -webkit-print-color-adjust: exact;
-        }
-        .break-page {
-          page-break-before: always;
+          zoom: 0.5;
         }
         .rtl {
           direction: rtl;
@@ -267,6 +281,11 @@ const DeliveryBondPreviewScreen = ({
         .ltr {
           direction: ltr;
           text-align: left;
+        }
+        .container_print {
+          width: 100%;
+          padding: 10px;
+          box-sizing: border-box;
         }
       }
     `,
@@ -304,6 +323,7 @@ const DeliveryBondPreviewScreen = ({
           isSuccess={isSuccess}
           clientData={selectedItem}
           costDataAsProps={costDataAsProps}
+          invoiceHeaderData={invoiceHeaderBasicData}
         />
       </div>
     </div>

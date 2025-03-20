@@ -9,7 +9,7 @@ import { useFetch } from "../../hooks/useFetch";
 import Cookies from "js-cookie";
 import { io } from "socket.io-client";
 
-const SOCKET_SERVER_URL = "https://backend.alexonsolutions.net";
+// const SOCKET_SERVER_URL = "https://backend.alexonsolutions.net";
 
 export const GlobalDataCtx = createContext<any>({
   gold_price: {},
@@ -20,29 +20,28 @@ export const GlobalDataContext = () => useContext(GlobalDataCtx);
 
 export const GlobalDataProvider = ({ children }: { children: ReactNode }) => {
   const [goldPriceToday, setGoldPriceToday] = useState(null);
-  console.log("🚀 ~ GlobalDataProvider ~ goldPriceToday:", goldPriceToday);
   const token = Cookies.get("token");
   const [invoiceInfo, setInvoiceInfo] = useState(null);
 
-  const handleBondItemsResponse = (data: any) => {
-    setGoldPriceToday(data.success ? data?.data : []);
-  };
+  // const handleBondItemsResponse = (data: any) => {
+  //   setGoldPriceToday(data.success ? data?.data : []);
+  // };
 
-  useEffect(() => {
-    const socket = io(SOCKET_SERVER_URL);
+  // useEffect(() => {
+  //   const socket = io(SOCKET_SERVER_URL);
 
-    socket.emit("getGoldPrice");
-    socket.on("getGoldPriceResponse", handleBondItemsResponse);
-  }, []);
+  //   socket.emit("getGoldPrice");
+  //   socket.on("getGoldPriceResponse", handleBondItemsResponse);
+  // }, []);
 
-  // const { data } = useFetch<any>({
-  //   endpoint: "/attachment/api/v1/goldPrice",
-  //   queryKey: ["GoldPriceApi"],
-  //   onSuccess: (data) => {
-  //     setGoldPriceToday(data);
-  //   },
-  //   refetchInterval: 30000,
-  // });
+  const { data } = useFetch<any>({
+    endpoint: "/attachment/api/v1/goldPrice",
+    queryKey: ["GoldPriceApi"],
+    onSuccess: (data) => {
+      setGoldPriceToday(data);
+    },
+    refetchInterval: 30000,
+  });
 
   const { data: invoiceInformation } = useFetch<any>({
     endpoint: `/companySettings/api/v1/InvoiceData`,

@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useContext, useMemo } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useMemo,
+  useRef,
+} from "react";
 import { notify } from "../../../../../utils/toast";
 import { t } from "i18next";
 import { Button } from "../../../../../components/atoms";
@@ -6,12 +12,14 @@ import { numberContext } from "../../../../../context/settings/number-formatter"
 import { authCtx } from "../../../../../context/auth-and-perm/auth";
 import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
-import { useMutate } from "../../../../../hooks";
+import { useFetch, useIsRTL, useMutate } from "../../../../../hooks";
 import { mutateData } from "../../../../../utils/mutateData";
 import ReserveSecondPageTable from "./ReserveSecondPageTable";
 import ReserveSecondPageFinalPreview from "./ReserveSecondPageFinalPreview";
 import { useFormikContext } from "formik";
-import { getDayAfter } from "../../../../../utils/date";
+import { formatDate, getDayAfter } from "../../../../../utils/date";
+import { GlobalDataContext } from "../../../../../context/settings/GlobalData";
+import { useReactToPrint } from "react-to-print";
 
 interface purchaseInvoicesSecondPage_TP {
   setStage?: Dispatch<SetStateAction<number>>;
@@ -35,6 +43,29 @@ const PurchaseInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
   const { values } = useFormikContext();
+  console.log("🚀 ~ values:", values);
+
+  const { invoice_logo } = GlobalDataContext();
+  const invoiceRefs = useRef([]);
+
+  const { data } = useFetch<any>({
+    endpoint: `/supplier/api/v1/supplier/${values?.supplier_id}`,
+    queryKey: [`clients`],
+  });
+
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: formatDate(values?.reserve_buying_date),
+    second_title: "supplier name",
+    second_value: values?.supplier_name,
+    third_title: "mobile number",
+    third_value: data?.phone,
+    bond_date: formatDate(values?.reserve_buying_date),
+    bond_title: "bill no",
+    invoice_number: Number(buyingInvoiceNumber) - 1,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "simplified tax invoice",
+  };
 
   // FORMULA TO CALC THE TOTAL COST OF BUYING INVOICE
   const totalNetWeight = buyingItemsData.reduce((acc: number, curr: any) => {
@@ -156,14 +187,46 @@ const PurchaseInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
     });
   };
 
+  const handlePrint = useReactToPrint({
+    content: () => invoiceRefs.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+        @page {
+          size: A5 landscape;;
+          margin: 15px !important;
+        }
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact;
+            zoom: 0.5;
+          }
+          .rtl {
+            direction: rtl;
+            text-align: right;
+          }
+          .ltr {
+            direction: ltr;
+            text-align: left;
+          }
+          .container_print {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+          }
+        }
+      `,
+  });
+
   return (
     <div>
-      <div className="flex items-center justify-between mx-8 mt-8">
+      <div className="flex items-center justify-between mt-8">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
           <Button
             className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
-            action={() => window.print()}
+            action={handlePrint}
           >
             {t("print")}
           </Button>
@@ -182,6 +245,7 @@ const PurchaseInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
         buyingItemsData={buyingItemsData}
         costDataAsProps={costDataAsProps}
         invoiceNumber={buyingInvoiceNumber}
+        invoiceHeaderBasicData={invoiceHeaderBasicData}
       />
     </div>
   );

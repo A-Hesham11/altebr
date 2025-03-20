@@ -47,7 +47,7 @@ const IdentitiesCheckedByBranch = ({
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "hwya",
-        header: () => <span>{t("الكود")}</span>,
+        header: () => <span>{t("hwya")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),

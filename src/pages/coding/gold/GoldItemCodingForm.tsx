@@ -43,6 +43,7 @@ type ItemCodingFormProps_TP = {
   setActiveBand: SetState_TP<GoldSanadBand_TP | undefined>;
   selectedSanad?: GoldSanad_TP;
   setEditWage?: any;
+  weightInputRef?: any;
 };
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -59,6 +60,7 @@ export const GoldItemCodingForm = ({
   selectedSanad,
   setActiveBand,
   setEditWage,
+  weightInputRef,
 }: ItemCodingFormProps_TP) => {
   console.log("🚀 ~ file: GoldItemCodingForm.tsx:63 ~ activeBand:", activeBand);
   /////////// VARIABLES
@@ -365,15 +367,6 @@ export const GoldItemCodingForm = ({
                 disabled: true,
               }),
           }}
-          // value={detailedWeight_total !== 0 && detailedWeight_total ? detailedWeight_total : undefined}
-          // onChange={(e) => setFieldValue('mezan_weight', e.target.value)}
-
-          // placeholder="الوزن"
-          // label="الوزن"
-          // id="weight"
-          // type="number"
-          // name="weight"
-          // disabled={selectedBandLeftWeight === 0}
           className={`${
             detailedWeight_total !== 0 && detailedWeight_total && "bg-gray-300"
           } ${values.weight > values.left_weight && "bg-red-100"}`}

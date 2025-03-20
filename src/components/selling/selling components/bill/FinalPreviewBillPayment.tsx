@@ -13,44 +13,17 @@ const FinalPreviewBillPayment = ({
   responseSellingData,
   notQRCode,
 }: {
-  paymentData: never[];
-  costDataAsProps: any;
-  responseSellingData: any;
-  notQRCode?: boolean;
+  paymentData?: never[];
+  costDataAsProps?: any;
+  responseSellingData?: any;
+  notQRCode?: any;
 }) => {
-  console.log("🚀 ~ paymentData:", paymentData)
+  console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ costDataAsProps:", costDataAsProps);
   const { formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
   const pathname = location.pathname;
-
-  // function getTLV(tagNum, tagValue) {
-  //   var tagNumBuf = Buffer.from([tagNum], "utf8");
-  //   var tagValueLengthBuf = Buffer.from([tagValue?.length], "utf8");
-  //   var tagValueBuf = Buffer.from(tagValue, "utf8");
-  //   var bufsArray = [tagNumBuf, tagValueLengthBuf, tagValueBuf];
-  //   return Buffer.concat(bufsArray);
-  // }
-
-  // var sellerName = getTLV("1", `${userData?.name}`);
-  // var vatRegTRN = getTLV(
-  //   "2",
-  //   `${companyData && companyData[0]?.taxRegisteration}`
-  // );
-  // var invoiceDate = getTLV("3", new Date().toUTCString());
-  // var totalInvoice = getTLV("4", `${costDataAsProps?.totalFinalCost}`);
-  // var invoiceVatTotal = getTLV("5", `${costDataAsProps?.totalItemsTaxes}`);
-
-  // var qrCodeBuf = Buffer.concat([
-  //   sellerName,
-  //   vatRegTRN,
-  //   invoiceDate,
-  //   totalInvoice,
-  //   invoiceVatTotal,
-  // ]);
-
-  // var qrCodeBase64 = qrCodeBuf.toString("base64");
 
   return (
     <div className="flex justify-between pe-8 items-center">
@@ -74,16 +47,13 @@ const FinalPreviewBillPayment = ({
           {paymentData?.map((card, index) => (
             <div
               key={index}
-              className="flex flex-col items-center max-w-[100px] text-center"
+              className="flex flex-col items-center text-center rounded-xl border-2 overflow-hidden border-[#7B7B7B17]"
             >
-              <div className="w-24 h-9">
-                <img
-                  src={card.cardImage}
-                  alt="cash"
-                  className="w-full h-full"
-                />
+              <div className="bg-white py-2 w-20 h-14 flex items-center justify-center">
+                <img src={card?.cardImage} alt="cash" className="w-16 h-12 object-cover" />
               </div>
-              <p className="mt-3">
+
+              <p className="bg-[#7B7B7B17] w-full py-1">
                 {card.add_commission_ratio === "yes"
                   ? formatReyal(
                       Number(
