@@ -28,7 +28,7 @@ const Payoff = () => {
           <DisabledDemo title="Sales Return Reports" />
         </div>
       ) : (
-        <div className="flex flex-col relative top-12 gap-y-2">
+        <div className="flex flex-col relative top-20 gap-y-2">
           <Link
             to="/selling/return-entry"
             className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
@@ -42,6 +42,13 @@ const Payoff = () => {
           >
             <FaCubes className="text-mainGreen" size={25} />
             <p className="text-mainGreen">{t("Sales Return Reports")}</p>
+          </Link>
+          <Link
+            to="/selling/payoff/taxReturn"
+            className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+          >
+            <FaCubes className="text-mainGreen" size={25} />
+            <p className="text-mainGreen">{t("tax return")}</p>
           </Link>
         </div>
       ),

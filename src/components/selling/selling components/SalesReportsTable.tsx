@@ -15,103 +15,16 @@ const SalesReportsTable = ({
   isLoading,
   isRefetching,
   isFetching,
+  colsHeader,
+  cols,
+  forTax,
 }: any) => {
   const { formatReyal, formatGram } = numberContext();
-  const columnsHeader = useMemo<any>(
-    () => [
-      {
-        accessorKey: "#",
-        header: () => <span>{t("")}</span>,
-        colSpan: 1,
-      },
-      {
-        accessorKey: "total_Sales",
-        header: () => <span>{t("Total Sales and Tax")}</span>,
-        colSpan: 2,
-      },
-      {
-        accessorKey: "detailed",
-        header: () => <span>{t("Detailed")}</span>,
-        colSpan: 2,
-      },
-      {
-        accessorKey: "gold",
-        header: () => <span>{t("Gold")}</span>,
-        colSpan: 4,
-      },
-      {
-        accessorKey: "non_Gold",
-        header: () => <span>{t("Non-Gold")}</span>,
-        colSpan: 2,
-      },
-    ],
-    []
-  );
-
-  const columns = useMemo<any>(
-    () => [
-      {
-        header: () => <span>{t("bill number")}</span>,
-        accessorKey: "bill_number",
-        cell: (info: any) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("Cash")}</span>,
-        accessorKey: "cash",
-        cell: (info: any) => formatReyal(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("The Bank")}</span>,
-        accessorKey: "bank",
-        cell: (info: any) => formatReyal(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("Sales Only")}</span>,
-        accessorKey: "sales_only",
-        cell: (info: any) => formatReyal(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("VAT")}</span>,
-        accessorKey: "vat",
-        cell: (info: any) => formatReyal(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("18")}</span>,
-        accessorKey: "gold_18",
-        cell: (info: any) => formatGram(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("21")}</span>,
-        accessorKey: "gold_21",
-        cell: (info: any) => formatGram(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("22")}</span>,
-        accessorKey: "gold_22",
-        cell: (info: any) => formatGram(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("24")}</span>,
-        accessorKey: "gold_24",
-        cell: (info: any) => formatGram(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("Diamond")}</span>,
-        accessorKey: "diamond",
-        cell: (info: any) => formatReyal(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("accessory")}</span>,
-        accessorKey: "accessory",
-        cell: (info: any) => formatReyal(Number(info.getValue())),
-      },
-    ],
-    []
-  );
+  let colspan;
 
   const tableHeader = useReactTable({
     data: [],
-    columns: columnsHeader,
+    columns: colsHeader,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -119,7 +32,7 @@ const SalesReportsTable = ({
 
   const table = useReactTable({
     data: dataSource ?? [],
-    columns,
+    columns: cols,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -130,41 +43,45 @@ const SalesReportsTable = ({
     },
   });
 
-  const totalCash = dataSource?.reduce((acc, curr) => {
+  const totalCash = dataSource?.reduce((acc: any, curr: any) => {
     return Number(acc) + Number(curr.cash);
   }, 0);
-  const totalBank = dataSource?.reduce((acc, curr) => {
+  const totalBank = dataSource?.reduce((acc: any, curr: any) => {
     return Number(acc) + Number(curr.bank);
   }, 0);
-  const totalSalesOnly = dataSource?.reduce((acc, curr) => {
+  const totalSalesOnly = dataSource?.reduce((acc: any, curr: any) => {
     return Number(acc) + Number(curr.sales_only);
   }, 0);
-  const totalVat = dataSource?.reduce((acc, curr) => {
+  const totalVat = dataSource?.reduce((acc: any, curr: any) => {
     return Number(acc) + Number(curr.vat);
   }, 0);
-  const totalGold18 = dataSource?.reduce((acc, curr) => {
+  const totalGold18 = dataSource?.reduce((acc: any, curr: any) => {
     return Number(acc) + Number(curr.gold_18);
   }, 0);
-  const totalGold21 = dataSource?.reduce((acc, curr) => {
+  const totalGold21 = dataSource?.reduce((acc: any, curr: any) => {
     return Number(acc) + Number(curr.gold_21);
   }, 0);
-  const totalGold22 = dataSource?.reduce((acc, curr) => {
+  const totalGold22 = dataSource?.reduce((acc: any, curr: any) => {
     return Number(acc) + Number(curr.gold_22);
   }, 0);
-  const totalGold24 = dataSource?.reduce((acc, curr) => {
+  const totalGold24 = dataSource?.reduce((acc: any, curr: any) => {
     return Number(acc) + Number(curr.gold_24);
   }, 0);
-  const totalDiamond = dataSource?.reduce((acc, curr) => {
+  const totalDiamond = dataSource?.reduce((acc: any, curr: any) => {
     return Number(acc) + Number(curr.diamond);
   }, 0);
-  const totalAccessory = dataSource?.reduce((acc, curr) => {
+  const totalAccessory = dataSource?.reduce((acc: any, curr: any) => {
     return Number(acc) + Number(curr.accessory);
   }, 0);
 
   const Totals = [
-    { id: crypto.randomUUID(), total: formatReyal(totalCash) },
-    { id: crypto.randomUUID(), total: formatReyal(totalBank) },
-    { id: crypto.randomUUID(), total: formatReyal(totalSalesOnly) },
+    ...(!forTax
+      ? [
+          { id: crypto.randomUUID(), total: formatReyal(totalCash) },
+          { id: crypto.randomUUID(), total: formatReyal(totalBank) },
+          { id: crypto.randomUUID(), total: formatReyal(totalSalesOnly) },
+        ]
+      : []),
     { id: crypto.randomUUID(), total: formatReyal(totalVat) },
     { id: crypto.randomUUID(), total: formatGram(totalGold18) },
     { id: crypto.randomUUID(), total: formatGram(totalGold21) },
@@ -186,15 +103,19 @@ const SalesReportsTable = ({
 
   const finalTotals = [
     { id: crypto.randomUUID(), total: "", colSpan: 1 },
-    {
-      id: crypto.randomUUID(),
-      total: formatReyal(Number(totalCash) + Number(totalBank)),
-      colSpan: 2,
-    },
+    ...(!forTax
+      ? [
+          {
+            id: crypto.randomUUID(),
+            total: formatReyal(Number(totalCash) + Number(totalBank)),
+            colSpan: 2,
+          },
+        ]
+      : []),
     {
       id: crypto.randomUUID(),
       total: t("24 Karat Converter"),
-      colSpan: 2,
+      colSpan: forTax ? 1 : 2,
       className: "text-end",
     },
     {
@@ -205,6 +126,24 @@ const SalesReportsTable = ({
     { id: crypto.randomUUID(), total: "", colSpan: 2 },
   ];
 
+  const getColSpan = (id: string): number => {
+    switch (id) {
+      case "#":
+        return 1;
+      case "detailed":
+        return forTax ? 1 : 2;
+
+      case "gold":
+        return 4;
+
+      case "non_Gold":
+        return 2;
+
+      default:
+        return 2;
+    }
+  };
+
   if (isLoading || isRefetching || isFetching)
     return <Loading mainTitle={`${t("loading statement of accounts")}`} />;
 
@@ -214,20 +153,22 @@ const SalesReportsTable = ({
         <thead>
           {tableHeader.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className={`!bg-mainGreen text-white font-semibold px-6 py-4 text-sm`}
-                  colSpan={header.column.columnDef.colSpan || 1}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
+              {headerGroup.headers.map((header) => {
+                return (
+                  <th
+                    key={header.id}
+                    className={`!bg-mainGreen text-white font-semibold px-6 py-4 text-sm`}
+                    colSpan={getColSpan(header.id)}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>
