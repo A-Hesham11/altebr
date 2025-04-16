@@ -203,6 +203,8 @@ import SalesReports from "../pages/selling/SalesReports";
 import SalesReturnReports from "../pages/selling/SalesReturnReports";
 import InventoryEntry from "../pages/selling/Inventory/InventoryEntry";
 import SalesReturnPageDemo from "../pages/salesReturnDemo/SalesReturnPageDemo";
+import SellingTaxReturn from "../pages/Report/SellingTaxReturn";
+import PayoffTaxReturn from "../pages/Report/PayoffTaxReturn";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -569,6 +571,11 @@ export const AllRoutesProvider = () => {
           <Route path="/selling/payoff" element={<Payoff />} />
           <Route path="/selling/continuity" element={<ContinuityPage />} />
           <Route path="/selling/reports/stocks" element={<Stocks />} />
+          <Route path="/selling/taxReturn" element={<SellingTaxReturn />} />
+          <Route
+            path="/selling/payoff/taxReturn"
+            element={<PayoffTaxReturn />}
+          />
           <Route path="/credits/edara" element={<EdaraStocks />} />
 
           <Route path="/credits/branch" element={<BranchStocks />} />

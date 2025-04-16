@@ -1696,5 +1696,7 @@
   "agency / beneficiary type": "نوع الجهة / المستفيد",
   "total items counts": "اجمالي عدد القطع",
   "add commission": "اضافة عمولة",
-  "total commission tax": "اجمالي ضريبة العمولة"
+  "total commission tax": "اجمالي ضريبة العمولة",
+  "tax return": "الاقرار الضريبي",
+  "loading Report": "جاري تحميل التقرير"
 }

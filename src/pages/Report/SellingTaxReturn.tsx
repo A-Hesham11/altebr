@@ -1,10 +1,10 @@
-import { useContext, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { authCtx } from "../../context/auth-and-perm/auth";
-import { t } from "i18next";
-import Report from "../Report/Report";
 import { numberContext } from "../../context/settings/number-formatter";
+import { t } from "i18next";
+import Report from "./Report";
 
-const SalesReports = () => {
+const SellingTaxReturn = () => {
   const { userData } = useContext(authCtx);
   const { formatReyal, formatGram } = numberContext();
 
@@ -14,11 +14,6 @@ const SalesReports = () => {
         accessorKey: "#",
         header: () => <span>{t("")}</span>,
         colSpan: 1,
-      },
-      {
-        accessorKey: "total_Sales",
-        header: () => <span>{t("Total Sales and Tax")}</span>,
-        colSpan: 2,
       },
       {
         accessorKey: "detailed",
@@ -45,21 +40,6 @@ const SalesReports = () => {
         header: () => <span>{t("bill number")}</span>,
         accessorKey: "bill_number",
         cell: (info: any) => info.getValue(),
-      },
-      {
-        header: () => <span>{t("Cash")}</span>,
-        accessorKey: "cash",
-        cell: (info: any) => formatReyal(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("The Bank")}</span>,
-        accessorKey: "bank",
-        cell: (info: any) => formatReyal(Number(info.getValue())),
-      },
-      {
-        header: () => <span>{t("Sales Only")}</span>,
-        accessorKey: "sales_only",
-        cell: (info: any) => formatReyal(Number(info.getValue())),
       },
       {
         header: () => <span>{t("VAT")}</span>,
@@ -102,12 +82,14 @@ const SalesReports = () => {
 
   return (
     <Report
-      endpoint={`/report/api/v1/sales/${userData?.branch_id}`}
-      endpointQueryKey={"sales-reports"}
+      endpoint={`/report/api/v1/vat/${userData?.branch_id}`} // ?is_tax={tax}
+      endpointQueryKey={"selling-tax-report"}
       columns={columns}
       columnsHeader={columnsHeader}
+      includeTaxSelect
+      forTax
     />
   );
 };
 
-export default SalesReports;
+export default SellingTaxReturn;

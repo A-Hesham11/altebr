@@ -76,13 +76,22 @@ const PaymentSellingPage = () => {
           <p className="text-mainGreen">{t("Sales Reports")}</p>
         </div>
       ) : (
-        <Link
-          to="/selling/salesReports"
-          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
-        >
-          <FaCubes className="text-mainGreen" size={25} />
-          <p className="text-mainGreen">{t("Sales Reports")}</p>
-        </Link>
+        <div className="flex flex-col relative top-12 gap-y-2">
+          <Link
+            to="/selling/salesReports"
+            className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+          >
+            <FaCubes className="text-mainGreen" size={25} />
+            <p className="text-mainGreen">{t("Sales Reports")}</p>
+          </Link>
+          <Link
+            to="/selling/taxReturn"
+            className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+          >
+            <FaCubes className="text-mainGreen" size={25} />
+            <p className="text-mainGreen">{t("tax return")}</p>
+          </Link>
+        </div>
       ),
     },
   ];
