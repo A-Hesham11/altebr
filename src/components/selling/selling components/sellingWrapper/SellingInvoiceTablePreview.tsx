@@ -23,6 +23,7 @@ import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 import cashImg from "../../../../assets/cash.png";
 import InvoiceTableData from "../InvoiceTableData";
 import InvoiceBasicHeader from "../../../Invoice/InvoiceBasicHeader";
+import { cn } from "tailwind-variants";
 
 type Entry_TP = {
   bian: string;
@@ -33,10 +34,12 @@ type Entry_TP = {
 };
 
 const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
   const { invoice_logo, gold_price } = GlobalDataContext();
+  console.log("🚀 ~ SellingInvoiceTablePreview ~ invoice_logo:", invoice_logo);
   const PriceGoldGram = {
     "18": gold_price?.price_gram_18k,
     "21": gold_price?.price_gram_21k,
@@ -345,9 +348,29 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
           ref={invoiceRefs}
         >
           {/* Header that will be repeated on every page */}
-          <div className="print-header">
+          <div
+            className={`print-header ${
+              invoice_logo?.is_include_header_footer === "1"
+                ? "opacity-1"
+                : "opacity-0 h-12 print:h-80"
+            }`}
+          >
             <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
           </div>
+
+          {invoice_logo?.is_include_header_footer !== "1" && (
+            <div className="flex items-center justify-between">
+              <p className="font-bold text-xl">
+                {t(invoiceHeaderBasicData?.bond_title)} :{" "}
+                <span>
+                  {Number(invoiceHeaderBasicData?.invoice_number) + 1}
+                </span>{" "}
+              </p>
+              <p className="text-2xl font-bold text-mainGreen">
+                {t(invoiceHeaderBasicData?.invoice_text)}
+              </p>
+            </div>
+          )}
 
           {/* Main content including the table */}
           <div className="print-content">
@@ -363,7 +386,9 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
             <FinalPreviewBillPayment
               responseSellingData={item}
               paymentData={paymentData}
+              employeeName={item?.employee_name}
             />
+
             <InvoiceFooter />
           </div>
         </div>

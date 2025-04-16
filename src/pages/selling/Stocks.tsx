@@ -18,7 +18,9 @@ const BranchStocks = () => {
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
   const { formatReyal } = numberContext();
-  const [accountId, setAccountId] = useState(0);
+  const [accountId, setAccountId] = useState<{ id: number; unit_id: number }>(
+    null
+  );
   const { userData } = useContext(authCtx);
 
   const filterInitialValues = {
@@ -40,9 +42,12 @@ const BranchStocks = () => {
     queryKey: ["credits-branch-data"],
     endpoint:
       search ===
-        `/branchAccount/api/v1/getAllAccountBranches/${accountId}/${userData?.branch_id}?` ||
-      search === ""
-        ? `/branchAccount/api/v1/getAllAccountBranches/${accountId}/${userData?.branch_id}`
+        `/branchAccount/api/v1/getAllAccountBranches/${accountId?.id || 0}/${
+          userData?.branch_id
+        }/${accountId?.unit_id || 0}?` || search === ""
+        ? `/branchAccount/api/v1/getAllAccountBranches/${accountId?.id || 0}/${
+            userData?.branch_id
+          }/${accountId?.unit_id || 0}`
         : `${search}`,
     pagination: true,
   });
@@ -60,6 +65,8 @@ const BranchStocks = () => {
       data?.map((account: any) => {
         return {
           id: account?.accountable_id,
+          selectedId: account?.id,
+          unit_id: account?.unit_id,
           label: (
             <p className="flex justify-between items-center">
               <span>{account?.accountable}</span>
@@ -72,14 +79,16 @@ const BranchStocks = () => {
               </span>
             </p>
           ),
-          value: account?.accountable,
+          value: account?.id,
         };
       }),
   });
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
-    let url = `/branchAccount/api/v1/getAllAccountBranches/${accountId}/${userData?.branch_id}?`;
+    let url = `/branchAccount/api/v1/getAllAccountBranches/${
+      accountId?.id || 0
+    }/${userData?.branch_id}/${accountId?.unit_id || 0}?`;
     let first = false;
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
@@ -239,7 +248,7 @@ const BranchStocks = () => {
                         value={values?.value}
                         onChange={(option: any) => {
                           setFieldValue("account_id", option!.id);
-                          setAccountId(option?.id);
+                          setAccountId(option);
                           resetForm();
                         }}
                         loading={accountNameDataSelectIsLoading}

@@ -2,10 +2,13 @@ import React, { useContext } from "react";
 import { useFetch } from "../../hooks";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { t } from "i18next";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
 
 const InvoiceFooter = () => {
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ InvoiceFooter ~ userData:", userData)
+  const { invoice_logo } = GlobalDataContext();
+  console.log("🚀 ~ InvoiceFooter ~ userData:", userData);
+  console.log("🚀 ~ InvoiceFooter ~ invoice_logo:", invoice_logo);
 
   const countryName = userData?.branch?.country?.name;
   const cityName = userData?.branch?.city?.name;
@@ -59,7 +62,13 @@ const InvoiceFooter = () => {
         </p>
       </div> */}
 
-      <div className="grid grid-cols-3 gap-y-2 px-8 py-3 bg-mainGreen text-white">
+      <div
+        className={`grid grid-cols-3 gap-y-2 px-8 py-3 bg-mainGreen text-white ${
+          invoice_logo?.is_include_header_footer === "1"
+            ? "opacity-1"
+            : "opacity-0"
+        }`}
+      >
         <p>
           <span className="font-semibold">{t("address")} :</span> {countryName}{" "}
           , {cityName} , {districtName}

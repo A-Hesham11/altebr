@@ -18,7 +18,7 @@ const ShowSellingInvoiceDemo = () => {
   // STATE
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ ShowSellingInvoiceDemo ~ dataSource:", dataSource)
+  console.log("🚀 ~ ShowSellingInvoiceDemo ~ dataSource:", dataSource);
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
@@ -40,7 +40,8 @@ const ShowSellingInvoiceDemo = () => {
   } = useFetch({
     queryKey: ["selling-invoice_demo"],
     endpoint:
-      search === `invoiceSales/api/v1/invoices_per_branch/${userData?.branch_id}` ||
+      search ===
+        `invoiceSales/api/v1/invoices_per_branch/${userData?.branch_id}` ||
       search === ""
         ? `invoiceSales/api/v1/invoices_per_branch/${userData?.branch_id}?page=${page}`
         : `${search}`,

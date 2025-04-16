@@ -97,6 +97,7 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
         karat_name: arr?.karat_name,
         model_number: arr?.model_number,
         weight: arr?.weight,
+        remaining_weight: arr?.remaining_weight,
         wage: arr?.wage,
         selling_price: arr?.selling_price,
         bond_id: arr?.bond_id,

@@ -12,11 +12,13 @@ const FinalPreviewBillPayment = ({
   costDataAsProps,
   responseSellingData,
   notQRCode,
+  employeeName,
 }: {
   paymentData?: never[];
   costDataAsProps?: any;
   responseSellingData?: any;
   notQRCode?: any;
+  employeeName?: string;
 }) => {
   console.log("🚀 ~ paymentData:", paymentData);
   console.log("🚀 ~ costDataAsProps:", costDataAsProps);
@@ -33,7 +35,7 @@ const FinalPreviewBillPayment = ({
             ? t("bond editor")
             : t("vendor name")}
         </span>
-        <p>{userData?.name}</p>
+        <p>{employeeName || userData?.name}</p>
       </div>
 
       {!notQRCode && (
@@ -50,7 +52,11 @@ const FinalPreviewBillPayment = ({
               className="flex flex-col items-center text-center rounded-xl border-2 overflow-hidden border-[#7B7B7B17]"
             >
               <div className="bg-white py-2 w-20 h-14 flex items-center justify-center">
-                <img src={card?.cardImage} alt="cash" className="w-16 h-12 object-cover" />
+                <img
+                  src={card?.cardImage}
+                  alt={card?.card}
+                  className="w-16 h-12 object-cover"
+                />
               </div>
 
               <p className="bg-[#7B7B7B17] w-full py-1">

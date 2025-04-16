@@ -208,7 +208,7 @@ const InvoiceTable = <T extends object>({
                   className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
                   colSpan={
                     costDataAsProps?.isBranchWasted === true
-                      ? columns?.length / 2
+                      ? columns?.length / 3
                       : columns?.length
                   }
                 >
@@ -243,7 +243,7 @@ const InvoiceTable = <T extends object>({
                 {costDataAsProps?.isBranchWasted === true && (
                   <td
                     className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                    colSpan={columns?.length}
+                    colSpan={columns?.length / 2}
                   >
                     <span className="font-semibold">
                       {" "}
@@ -267,6 +267,22 @@ const InvoiceTable = <T extends object>({
                     )}
                   </td>
                 )}
+
+                {/* <td
+                  colSpan={columns?.length / 2}
+                  className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
+                >
+                  <>
+                    <span className="font-semibold">
+                      {t("total items counts")}
+                    </span>
+                    :{" "}
+                    <span className="font-semibold">
+                      {" "}
+                      {costDataAsProps.totalItemsCount}
+                    </span>{" "}
+                  </>
+                </td> */}
               </tr>
             </tfoot>
           </table>

@@ -57,15 +57,29 @@ const WeightAdjustmentInBranch = ({
     setWeightItems(data.success ? data?.data : []);
   };
 
-  useEffect(() => {
-    socket.on("connect");
+  // useEffect(() => {
+  //   socket.on("connect");
 
+  //   socket.emit("getSelsal", BasicCompanyData);
+  //   socket.on("getSelsalResponse", handleWeightItemsResponse);
+
+  //   return () => {
+  //     socket.off("getSelsalResponse", handleWeightItemsResponse);
+  //     socket.disconnect();
+  //   };
+  // }, []);
+
+  useEffect(() => {
     socket.emit("getSelsal", BasicCompanyData);
-    socket.on("getSelsalResponse", handleWeightItemsResponse);
+
+    const handleResponse = (data) => {
+      handleWeightItemsResponse(data);
+    };
+
+    socket.on("getSelsalResponse", handleResponse);
 
     return () => {
-      socket.off("getSelsalResponse", handleWeightItemsResponse);
-      socket.disconnect();
+      socket.off("getSelsalResponse", handleResponse);
     };
   }, []);
 
@@ -160,7 +174,6 @@ const WeightAdjustmentInBranch = ({
 
               const currentWeight =
                 Number(totalCurrentWeight) + Number(weightNumber);
-              console.log("🚀 ~ currentWeight:", currentWeight);
 
               if (currentWeight > editWeight.weight) {
                 notify("info", `${t("The full weight has been added.")}`);
@@ -176,19 +189,20 @@ const WeightAdjustmentInBranch = ({
 
               socket.emit("selsalPieces", payload);
 
-              socket.on("selsalPiecesResponse", () => {
-                socket.emit("getSelsal", BasicCompanyData);
-                socket.on("getSelsalResponse", handleWeightItemsResponse);
-              });
+              // socket.on("selsalPiecesResponse", () => {
+              //   socket.emit("getSelsal", BasicCompanyData);
+              //   socket.on("getSelsalResponse", handleWeightItemsResponse);
+              // });
+              socket.emit("getSelsal", BasicCompanyData);
 
-              addItemToIdentity(
-                currenGroupNumber,
-                {
-                  ...editWeight,
-                  weight: Number(weightNumber),
-                },
-                true
-              );
+              const data = {
+                ...editWeight,
+                weight: Number(weightNumber),
+              };
+
+              console.log(data, currenGroupNumber, "🔥🔥🔥🔥");
+
+              addItemToIdentity(currenGroupNumber, data, true);
               setOpenWeightItem(false);
             }}
           >

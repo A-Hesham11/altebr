@@ -20,7 +20,6 @@ const ReturnItemsToEdaraTable = ({
   setMainData,
 }: any) => {
   console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
-  console.log("🚀 ~ dataSource:", dataSource);
   const location = useLocation();
   const { formatReyal, formatGram } = numberContext();
   const isContainCheckInputWeight = operationTypeSelect.some(
@@ -340,7 +339,7 @@ const ReturnItemsToEdaraTable = ({
       </div>
       <Table
         showNavigation
-        data={operationTypeSelect || []}
+        data={operationTypeSelect.reverse() || []}
         columns={
           location.pathname === "/coding-react" ? tableColumnWaste : tableColumn
         }

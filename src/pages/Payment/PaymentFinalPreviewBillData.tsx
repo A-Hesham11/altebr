@@ -14,6 +14,7 @@ const PaymentFinalPreviewBillData = ({
   invoiceNumber,
   invoiceData,
 }: any) => {
+  console.log("🚀 ~ clientData:", clientData);
   console.log("🚀 ~ isSupply:", isSupply);
   const {
     client_id,
@@ -50,7 +51,8 @@ const PaymentFinalPreviewBillData = ({
             path === "/selling/supplyReturn" ||
             path === "/selling/wasteReturn" ||
             path === "/wasteBonds" ||
-            path === "/selling/payoff/supply-payoff"
+            path === "/selling/payoff/supply-payoff" ||
+            path === "/selling/branch-identity"
               ? bond_date
               : formatDate(bond_date)}
           </span>{" "}

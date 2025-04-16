@@ -109,31 +109,35 @@ const InvoiceTableData = <T extends object>({
               <tr className="text-center border border-[#7B7B7B4D]">
                 {costDataAsProps.finalArabicData.map(
                   (item: any, index: number) => (
-                    <td
-                      key={index}
-                      className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen border border-[#7B7B7B4D]"
-                      colSpan={Math.ceil(
-                        columns.length / costDataAsProps.finalArabicData.length
-                      )}
-                    >
-                      {item.title && (
-                        <span className="font-semibold">{item.title} : </span>
-                      )}
-                      <span className="font-medium">
-                        {item.totalFinalCostIntoArabic}
-                      </span>{" "}
-                      {item.totalFinalCostIntoArabic && (
-                        <>
-                          <span className="font-semibold">{item.type}</span>{" "}
-                          {/* <span className="font-semibold">
+                    <>
+                      <td
+                        key={index}
+                        className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen border border-[#7B7B7B4D]"
+                        // colSpan={Math.ceil(
+                        //   columns.length /
+                        //     costDataAsProps.finalArabicData.length
+                        // )}
+                        colSpan={columns?.length / 2}
+                      >
+                        {item.title && (
+                          <span className="font-semibold">{item.title} : </span>
+                        )}
+                        <span className="font-medium">
+                          {item.totalFinalCostIntoArabic}
+                        </span>{" "}
+                        {item.totalFinalCostIntoArabic && (
+                          <>
+                            <span className="font-semibold">{item.type}</span>{" "}
+                            {/* <span className="font-semibold">
                             {t("and")} {item.decimalPart} {t("halalas")}
                           </span>{" "} */}
-                          <span className="font-semibold">
-                            {t("Only nothing else")}
-                          </span>
-                        </>
-                      )}
-                    </td>
+                            <span className="font-semibold">
+                              {t("Only nothing else")}
+                            </span>
+                          </>
+                        )}
+                      </td>
+                    </>
                   )
                 )}
               </tr>

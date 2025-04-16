@@ -1,5 +1,11 @@
 import { useFormikContext } from "formik";
-import React, { Dispatch, SetStateAction, useContext, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import PaymentProccessingToManagement, {
   Payment_TP,
 } from "../../Payment/PaymentProccessingToManagement";
@@ -19,6 +25,7 @@ import { FilesUpload } from "../../../components/molecules/files/FileUpload";
 import { Back } from "../../../utils/utils-components/Back";
 import { Button } from "../../../components/atoms";
 import { notify } from "../../../utils/toast";
+import PaymentProcessing from "../../../components/selling/selling components/data/PaymentProcessing";
 
 type TAddReceiptBondsFirstStep = {
   setStage: (value: number) => void;
@@ -27,14 +34,29 @@ type TAddReceiptBondsFirstStep = {
   files: any[];
   setFiles: Dispatch<SetStateAction<File>>;
   setPaymentData: (value: any[]) => void;
-  selectedCardId: number;
-  setSelectedCardId: any;
   setClientData: any;
   sellingItemsData: any[];
   setSellingItemsData: any;
   isTax: boolean;
-  setIsTax: Dispatch<SetStateAction<boolean>>;
 };
+
+const agencyAndBeneficiaryType = [
+  {
+    id: 1,
+    label: "branches",
+    value: "branches",
+  },
+  {
+    id: 2,
+    label: "suppliers",
+    value: "suppliers",
+  },
+  {
+    id: 3,
+    label: "partner",
+    value: "partner",
+  },
+];
 
 const AddReceiptBondsFirstStep = ({
   invoiceNumber,
@@ -42,26 +64,34 @@ const AddReceiptBondsFirstStep = ({
   setFiles,
   paymentData,
   setPaymentData,
-  selectedCardId,
-  setSelectedCardId,
   setClientData,
   sellingItemsData,
   setSellingItemsData,
   setStage,
   isTax,
-  setIsTax,
 }: TAddReceiptBondsFirstStep) => {
   const { setFieldValue, values } = useFormikContext<Payment_TP>();
-  const { userData } = useContext(authCtx);
-
-  const [open, setOpen] = useState(false);
-  const [model, setModel] = useState(false);
-  const [cardId, setCardId] = useState("");
-  const [selectedCardName, setSelectedCardName] = useState(null);
 
   const totalPaymentAmount = paymentData?.reduce((acc: any, item: any) => {
     return acc + +item.amount;
   }, 0);
+
+  const { data, isLoading, isFetching, isRefetching, refetch } = useFetch<any>({
+    endpoint: `/arrest/api/v1/getAllSuppliers?type=${values.type}`,
+    queryKey: ["agency_beneficiary"],
+    enabled: !!values.type,
+    select: (data) =>
+      data.map((item: any) => ({
+        id: item.id,
+        value: item.name,
+        label: item.name,
+      })),
+  });
+  console.log("🚀 ~ data:", data);
+
+  useEffect(() => {
+    refetch();
+  }, [values.type]);
 
   return (
     <div className="overflow-hidden">
@@ -106,12 +136,22 @@ const AddReceiptBondsFirstStep = ({
               </div>
 
               <Select
+                id="type"
+                label={`${t("agency / beneficiary type")}`}
+                name="type"
+                placeholder={`${t("agency / beneficiary type")}`}
+                loadingPlaceholder={`${t("loading")}`}
+                options={agencyAndBeneficiaryType}
+              />
+
+              <Select
                 id="agency_beneficiary"
                 label={`${t("agency / beneficiary")}`}
                 name="agency_beneficiary"
                 placeholder={`${t("agency / beneficiary")}`}
                 loadingPlaceholder={`${t("loading")}`}
-                options={[]}
+                options={data}
+                loading={isLoading || isFetching || isRefetching}
                 onChange={(e: any) => {}}
               />
 
@@ -124,7 +164,7 @@ const AddReceiptBondsFirstStep = ({
                 placeholder={`${formatDate(new Date())}`}
               />
 
-              <div>
+              {/* <div>
                 <Checkbox
                   name="is_tax"
                   id="is_tax"
@@ -145,7 +185,7 @@ const AddReceiptBondsFirstStep = ({
                     }
                   }}
                 />
-              </div>
+              </div> */}
             </div>
 
             <div className="grid md:grid-cols-2 items-end lg:grid-cols-4 gap-8">
@@ -163,7 +203,7 @@ const AddReceiptBondsFirstStep = ({
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <BaseInputField
                   placeholder={`${t("invoice number")}`}
                   id="invoice_number"
@@ -171,7 +211,7 @@ const AddReceiptBondsFirstStep = ({
                   label={`${t("invoice number")}`}
                   type="number"
                 />
-              </div>
+              </div> */}
 
               <div>
                 <BaseInputField
@@ -218,6 +258,7 @@ const AddReceiptBondsFirstStep = ({
             <div className="flex mt-6 items-end gap-6 w-full">
               <div className="w-full">
                 <TextAreaField
+                  label={`${t("description")}`}
                   placeholder={`${t("add description")}`}
                   id="description"
                   name="description"
@@ -230,23 +271,22 @@ const AddReceiptBondsFirstStep = ({
         </div>
 
         <div className="my-6">
-          <h2 className="mb-4 text-base font-bold">
-            {t("choose a method of payment")}
-          </h2>
-
-          {/* PAYMENT CARDS */}
-          <div>
-            <PaymentProccessingToManagement
-              paymentData={paymentData}
-              setPaymentData={setPaymentData}
-              sellingItemsData={sellingItemsData}
-              selectedCardId={selectedCardId}
-              setSelectedCardId={setSelectedCardId}
-              setCardId={setCardId}
-              cardId={cardId}
-              setSelectedCardName={setSelectedCardName}
-              selectedCardName={selectedCardName}
-            />
+          <div className="bg-lightGreen h-[100%] rounded-lg sales-shadow px-6 py-5">
+            {/* PAYMENT CARDS */}
+            <h2 className="mb-4 text-base font-bold">
+              {t("choose type card")}
+            </h2>
+            <div className="bg-flatWhite rounded-lg bill-shadow py-5 px-6 h-41 my-5">
+              <div>
+                <PaymentProcessing
+                  paymentData={paymentData}
+                  setPaymentData={setPaymentData}
+                  setSellingItemsData={setSellingItemsData}
+                  sellingItemsData={sellingItemsData}
+                  totalApproximateCost={values.receipt_price}
+                />
+              </div>
+            </div>
           </div>
         </div>
 

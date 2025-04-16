@@ -1,37 +1,23 @@
 import { t } from "i18next";
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Label } from "../../atoms";
 import { useIsRTL, useMutate } from "../../../hooks";
-import { numberFormatterCtx } from "../../../context/settings/number-formatter";
 import { notify } from "../../../utils/toast";
-import { authCtx } from "../../../context/auth-and-perm/auth";
-import {
-  BaseInputField,
-  DateInputField,
-  OuterFormLayout,
-} from "../../molecules";
+import { BaseInputField, Checkbox, OuterFormLayout } from "../../molecules";
 import { Form, Formik } from "formik";
-import { requiredTranslation } from "../systemEstablishment/partners/validation-and-types-partner";
 import * as Yup from "yup";
 import { FilesUpload } from "../../molecules/files/FileUpload";
 import { useQueryClient } from "@tanstack/react-query";
 import { mutateData } from "../../../utils/mutateData";
 import { Cards_Props_TP } from "../banks/ViewBanks";
-import { formatDate } from "../../../utils/date";
 
 type AddBankProps_TP = {
   title: string;
   value?: string;
   onAdd?: (value: string) => void;
   editData?: Cards_Props_TP;
-};
-
-type bankCardsProps_TP = {
-  title: string;
-  name: string;
-  files: any;
-  setFiles: any;
-  setShow?: boolean;
+  refetch: () => void;
+  setShow: (val: boolean) => void;
 };
 
 const AddInvoiceHeaderData = ({
@@ -39,88 +25,55 @@ const AddInvoiceHeaderData = ({
   refetch,
   setShow,
 }: AddBankProps_TP) => {
+  console.log("🚀 ~ editData:", editData);
   const isRTL = useIsRTL();
   const queryClient = useQueryClient();
-  const [files, setFiles] = useState([]);
-  const [QRFiles, setQRFiles] = useState([]);
-  console.log("🚀 ~ AddInvoiceHeaderData ~ files:", files);
+  const [files, setFiles] = useState<File[]>([]);
+  const [QRFiles, setQRFiles] = useState<File[]>([]);
 
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
     document.documentElement.lang = isRTL ? "ar" : "en";
   }, [isRTL]);
 
-  ///
-  /////////// FUNCTIONS
-  ///
-
-  const InvoiceValidatingSchema = () =>
-    Yup.object({
-      name: Yup.string(),
-    });
+  const InvoiceValidatingSchema = Yup.object({
+    InvoiceCompanyName: Yup.string().required(t("Required")),
+  });
 
   const initialValues = {
     InvoiceCompanyName: editData?.InvoiceCompanyName || "",
-    InvoiceCompanyLogo: editData?.InvoiceCompanyLogo || "",
-    QRCodeLogo: editData?.QRCodeLogo || "",
+    is_include_header_footer:
+      Number(editData?.is_include_header_footer) || false,
   };
 
-  const {
-    mutate,
-    isLoading: editLoading,
-    data,
-    isSuccess: isSuccessData,
-    reset,
-  } = useMutate({
+  const { mutate, isLoading: editLoading } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["InvoiceCompany"],
-    onSuccess: (data) => {
+    onSuccess: () => {
       notify("success");
       queryClient.refetchQueries(["InvoiceCompanyData"]);
       setShow(false);
       refetch();
     },
     onError: (error) => {
-      console.log(error);
+      console.error(error);
       notify("error");
     },
   });
 
-  function PostNewCard(values: bankCardsProps_TP) {
+  const handleSubmit = (values: typeof initialValues) => {
     const formData = new FormData();
+    formData.append("name", values.InvoiceCompanyName);
+    formData.append(
+      "is_include_header_footer",
+      values.is_include_header_footer ? 1 : 0
+    );
 
-    formData.append("key", "name");
-    formData.append("value", values?.InvoiceCompanyName || "");
-
-    if (files?.[0]) {
-      formData.append("key", "logo");
-      formData.append("value", files[0]);
-    }
-
-    if (QRFiles?.[0]) {
-      formData.append("key", "QR_Code");
-      formData.append("value", QRFiles[0]);
-    }
-    console.log("🚀 ~ PostCardEdit ~ formData:", formData);
-
-    mutate({
-      endpointName: "/companySettings/api/v1/updateInvoiceCompany",
-      values: formData,
-      method: "post",
-      dataType: "formData",
-    });
-  }
-
-  const PostCardEdit = (values: bankCardsProps_TP) => {
-    const formData = new FormData();
-
-    formData.append("name", values?.InvoiceCompanyName || "");
-
-    if (files?.[0]) {
+    if (files.length > 0) {
       formData.append("logo", files[0]);
     }
 
-    if (QRFiles?.[0]) {
+    if (QRFiles.length > 0) {
       formData.append("QR_Code", QRFiles[0]);
     }
 
@@ -131,57 +84,64 @@ const AddInvoiceHeaderData = ({
       dataType: "formData",
     });
   };
+
   return (
-    <>
-      <OuterFormLayout header={t("Add invoice data")}>
-        <Formik
-          validationSchema={() => InvoiceValidatingSchema()}
-          initialValues={initialValues}
-          onSubmit={(values, { resetForm }) => {
-            if (editData) {
-              PostCardEdit(values);
-            } else {
-              PostNewCard(values);
-            }
-          }}
-        >
-          {({ values, setFieldValue, resetForm }) => (
-            <Form>
-              <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
-                <div>
-                  <BaseInputField
-                    id="InvoiceCompanyName"
-                    name="InvoiceCompanyName"
-                    type="text"
-                    label={`${t("name")}`}
-                    placeholder={`${t("name")}`}
-                    onChange={(e) => {
-                      setFieldValue(
-                        "InvoiceCompanyName",
-                        values.InvoiceCompanyName
-                      );
-                    }}
-                  />
-                </div>
-                <div>
-                  <p className="pb-1">{t("invoice logo")}</p>
-                  <FilesUpload setFiles={setFiles} files={files} />
-                </div>
-                <div>
-                  <p className="pb-1">{t("barcode logo")}</p>
-                  <FilesUpload setFiles={setQRFiles} files={QRFiles} />
-                </div>
+    <OuterFormLayout header={t("Add invoice data")}>
+      <Formik
+        validationSchema={InvoiceValidatingSchema}
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+      >
+        {({ values, setFieldValue }) => (
+          <Form>
+            <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
+              <div>
+                <BaseInputField
+                  id="InvoiceCompanyName"
+                  name="InvoiceCompanyName"
+                  type="text"
+                  label={t("name")}
+                  placeholder={t("name")}
+                  value={values.InvoiceCompanyName}
+                  onChange={(e) =>
+                    setFieldValue("InvoiceCompanyName", e.target.value)
+                  }
+                />
               </div>
-              <div className="flex justify-end">
-                <Button type="submit" className="w-fit" loading={editLoading}>
-                  {t("save")}
-                </Button>
+              <div>
+                <p className="pb-1">{t("invoice logo")}</p>
+                <FilesUpload setFiles={setFiles} files={files} />
               </div>
-            </Form>
-          )}
-        </Formik>
-      </OuterFormLayout>
-    </>
+              <div>
+                <p className="pb-1">{t("barcode logo")}</p>
+                <FilesUpload setFiles={setQRFiles} files={QRFiles} />
+              </div>
+              <div>
+                <Checkbox
+                  name="is_include_header_footer"
+                  id="is_include_header_footer"
+                  label={t("include header and footer")}
+                  labelClassName="text-md cursor-pointer font-semibold"
+                  className="cursor-pointer w-5 h-5"
+                  checked={values.is_include_header_footer}
+                  onChange={() =>
+                    setFieldValue(
+                      "is_include_header_footer",
+                      !values.is_include_header_footer
+                    )
+                  }
+                />
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <Button type="submit" className="w-fit" loading={editLoading}>
+                {t("save")}
+              </Button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </OuterFormLayout>
   );
 };
 

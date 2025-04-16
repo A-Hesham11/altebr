@@ -108,15 +108,29 @@ export const CreateHonestSanad = ({
       color: "violet",
     },
   ];
-  
+
   const totalCommission = paymentData.reduce((acc, item) => {
-    return acc + item.commission_riyals;
+    return (
+      acc + (item.add_commission_ratio === "yes" ? item.commission_riyals : 0)
+    );
+  }, 0);
+
+  const totalTax = paymentData.reduce((acc, item) => {
+    return (
+      acc +
+      (item.add_commission_ratio === "yes"
+        ? item.commission_riyals * taxRate
+        : 0)
+    );
   }, 0);
 
   const totalPaid = paymentData.reduce((acc, item) => {
     return (
       acc +
-      (+item.amount + item.commission_riyals + item.commission_riyals * taxRate)
+      (+item.amount +
+        (item.add_commission_ratio === "yes"
+          ? item.commission_riyals + item.commission_riyals * taxRate
+          : 0))
     );
   }, 0);
 
@@ -131,6 +145,12 @@ export const CreateHonestSanad = ({
       id: 2,
       account: `${t("total commission")}`,
       value: totalCommission,
+      unit: "ر.س",
+    },
+    {
+      id: 3,
+      account: `${t("total commission tax")}`,
+      value: totalTax,
       unit: "ر.س",
     },
   ];

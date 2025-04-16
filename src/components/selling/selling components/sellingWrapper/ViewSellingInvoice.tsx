@@ -23,7 +23,7 @@ const ViewSellingInvoice = () => {
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
-  console.log("🚀 ~ ViewSellingInvoice ~ selectedItem:", selectedItem)
+  console.log("🚀 ~ ViewSellingInvoice ~ selectedItem:", selectedItem);
   const [search, setSearch] = useState("");
 
   const searchValues = {

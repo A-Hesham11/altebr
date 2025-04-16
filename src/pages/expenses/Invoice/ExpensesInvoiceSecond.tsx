@@ -251,19 +251,20 @@ const ExpensesInvoiceSecond = ({
       <div className="flex items-center print:hidden justify-between mx-8 mt-8">
         <h2 className="text-base font-bold">{t("final preview")}</h2>
         <div className="flex gap-3">
-          <Button
-            className="bg-mainOrange px-7 py-[6px]"
-            loading={isLoading}
-            action={posSellingDataHandler}
-          >
-            {t("save")}
-          </Button>
-          {isSuccess && (
+          {isSuccess ? (
             <Button
               className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
               action={handlePrint}
             >
               {t("print")}
+            </Button>
+          ) : (
+            <Button
+              className="bg-mainOrange px-7 py-[6px]"
+              loading={isLoading}
+              action={posSellingDataHandler}
+            >
+              {t("save")}
             </Button>
           )}
         </div>

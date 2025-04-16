@@ -13,6 +13,7 @@ export type Group_TP = {
   id: string;
   name: string;
 };
+
 interface InventoryItem {
   id: string;
   hwya: string;
@@ -43,10 +44,6 @@ const CreatingInventoryBond: React.FC = () => {
   );
   const [goldBrokenCashBanksFinalData, setGoldBrokenCashBanksFinalData] =
     useState({});
-
-  console.log("🚀 ~ availableItems:", availableItems);
-  console.log("🚀 ~ identitiesCheckedItems:", identitiesCheckedItems);
-  console.log("🚀 ~ unknownIdentities:", unknownIdentities);
 
   const { data: goldBrokenCashBanks } = useFetch({
     endpoint: `/inventory/api/v1/getAccount/${userData?.branch_id}`,

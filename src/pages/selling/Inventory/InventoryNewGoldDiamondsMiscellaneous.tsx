@@ -94,7 +94,6 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   SOCKET_SERVER_URL,
   socket,
 }) => {
-  console.log("🚀 ~ currenGroup:", currenGroup);
   const { id } = useParams<{ id: string }>();
   const { userData } = useContext(authCtx);
   const { formatReyal } = numberContext();
@@ -178,12 +177,14 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     socket.on("roomData", handleRoomData);
 
     socket.emit("getmissingPieces", BasicCompanyData);
+    // socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
     socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
 
     return () => {
       socket.off("getBondItemsResponse", handleBondItemsResponse);
       socket.off("roomData", handleRoomData);
-      socket.off("getmissingPieces", handleUnknownIdentitiesData);
+      // socket.off("getmissingPieces", handleUnknownIdentitiesData);
+      socket.off("getmissingPieceResponse", handleUnknownIdentitiesData);
       socket.disconnect();
     };
   }, []);
@@ -283,7 +284,6 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   };
 
   const handleCheckedItem = async (newItemId: string, newItem: Item) => {
-    console.log("🚀 ~ handleCheckedItem ~ newItem:", newItem);
     const group = identitiesCheckedItems.find(
       (identity) => identity?._id === newItemId
     );

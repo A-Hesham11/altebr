@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { FormikSharedConfig, useFormikContext } from "formik";
 import { useContext, useEffect, useState } from "react";
 import { authCtx } from "../../../../context/auth-and-perm/auth";

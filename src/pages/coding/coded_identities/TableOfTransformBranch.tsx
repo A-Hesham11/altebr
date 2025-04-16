@@ -43,6 +43,11 @@ const TableOfTransformBranch = ({
         header: () => <span>{t("weight")}</span>,
       },
       {
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "remaining_weight",
+        header: () => <span>{t("remaining weight")}</span>,
+      },
+      {
         cell: (info: any) => formatReyal(info.getValue()) || "-",
         accessorKey: "wage",
         header: () => <span>{t("wage geram/ryal")}</span>,
