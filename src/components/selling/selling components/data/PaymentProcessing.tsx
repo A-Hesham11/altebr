@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Form, Formik } from "formik";
 import { t } from "i18next";
 import React, { useContext, useEffect, useState } from "react";
@@ -10,6 +12,7 @@ import PaymentCard from "./PaymentCard";
 import PaymentProccessingTable from "./PaymentProccessingTable";
 import { numberContext } from "../../../../context/settings/number-formatter";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
+import { useLocation } from "react-router-dom";
 
 export type Payment_TP = {
   id: string;
@@ -46,23 +49,16 @@ const PaymentProcessing = ({
   totalApproximateCost,
   costRemainingHonest,
 }: Payment_TP) => {
-  console.log("🚀 ~ totalApproximateCost:", totalApproximateCost);
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
-  console.log("🚀 ~ costRemainingHonest:", costRemainingHonest);
-  console.log("🚀 ~ paymentData:", paymentData);
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [selectedCardId, setSelectedCardId] = useState(null);
-  console.log("🚀 ~ selectedCardId:", selectedCardId);
   const [editData, setEditData] = useState<Payment_TP>();
-  console.log("🚀 ~ editData:", editData);
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<any>({});
   const { userData } = useContext(authCtx);
-  const [selectedCardData, setSelectedCardData] = useState(null);
-  console.log("🚀 ~ selectCardedData:", selectedCardData);
   console.log("🚀 ~ userData:", userData);
-  console.log("🚀 ~ cardDiscountPercentage:", cardDiscountPercentage);
+  const { pathname } = useLocation();
+  const [selectedCardData, setSelectedCardData] = useState(null);
 
   const taxRate = userData?.tax_rate / 100;
   console.log("🚀 ~ taxRate:", taxRate);
@@ -117,6 +113,10 @@ const PaymentProcessing = ({
     ? Number(costRemainingHonest)
     : Number(totalApproximateCost) - +amountRemaining || 0;
 
+  const costRemainingFromPaying =
+    Number(totalApproximateCost) -
+    paymentData?.reduce((total, item) => total + item.cost_after_tax, 0);
+
   console.log("🚀 ~ costRemaining:", costRemaining);
 
   return (
@@ -125,7 +125,7 @@ const PaymentProcessing = ({
         initialValues={initialValues}
         validationSchema={() => validationSchema()}
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
-          console.log("🚀 ~ values:", values);
+          console.log("🚀 ~ values:", values?.add_commission_ratio);
           const commissionValue =
             cardDiscountPercentage?.max_discount_limit &&
             +values?.amount >= +cardDiscountPercentage?.max_discount_limit
@@ -136,6 +136,7 @@ const PaymentProcessing = ({
 
           const commissionRiyals = +commissionValue;
           const commissionTax = +commissionRiyals * taxRate;
+          console.log("🔥🔥🔥🔥🔥", +commissionRiyals, taxRate);
           if (selectedCardId) {
             if (editData) {
               const updatedPaymentData = paymentData.map((item) =>
@@ -218,7 +219,10 @@ const PaymentProcessing = ({
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
-          console.log("🚀 ~ PaymentProcessing ~ values:", values);
+          console.log(
+            "🚀 ~ PaymentProcessing ~ values:",
+            values?.add_commission_ratio
+          );
 
           const commissionValue =
             cardDiscountPercentage?.max_discount_limit &&
@@ -267,7 +271,9 @@ const PaymentProcessing = ({
                 <div className="relative">
                   <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
                     <span>{t("remaining cost")} : </span>{" "}
-                    {Number(costRemaining).toFixed(digits_count.reyal)}
+                    {pathname === "/addReceiptBonds"
+                      ? costRemainingFromPaying
+                      : Number(costRemaining).toFixed(digits_count.reyal)}
                   </p>
                   <BaseInputField
                     id="amount"

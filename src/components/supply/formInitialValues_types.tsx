@@ -63,7 +63,7 @@ export const goldValidatingSchema = Yup.object({
     }),
   api_gold_price: Yup.number()
     // .required(requiredTranslation)
-    .min(1, requiredTranslation),
+    .min(0, requiredTranslation),
   media: Yup.array().required().min(1, requiredTranslation),
   goods_media: Yup.array().when("twred_type", {
     is: "global",

@@ -40,7 +40,6 @@ export const SellingBranchIdentity = () => {
   ///
   const { userData } = useContext(authCtx);
   const [dataSource, setDataSource] = useState({});
-  console.log("🚀 ~ SellingBranchIdentity ~ dataSource:", dataSource);
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState<number>(1);
@@ -48,6 +47,8 @@ export const SellingBranchIdentity = () => {
   const [search, setSearch] = useState("");
   const [dataSourcePrint, setDataSourcePrint] = useState([]);
   const [printModal, setPrintModal] = useState(false);
+  const [printModalData, setPrintModalData] = useState({});
+  console.log("🚀 ~ SellingBranchIdentity ~ printModalData:", printModalData);
   const { gold_price } = GlobalDataContext();
 
   const isRTL = useIsRTL();
@@ -223,7 +224,7 @@ export const SellingBranchIdentity = () => {
   const total22 = (data && data?.data[0]?.allboxes.karat22) || 0;
   const total21 = (data && data?.data[0]?.allboxes.karat21) || 0;
   const total18 = (data && data?.data[0]?.allboxes.karat18) || 0;
-  const allItemsCount = (data && data?.data[0]?.allboxes.allcounts) || 0;
+  const allItemsCount = (data && data?.data[0]?.allboxes.accepted) || 0;
   const allGoldCount = (data && data?.data[0]?.allboxes.allGoldCount) || 0;
   const allDiamondCount =
     (data && data?.data[0]?.allboxes.allDiamondCount) || 0;
@@ -582,6 +583,7 @@ export const SellingBranchIdentity = () => {
             refetch={refetch}
             setPage={setPage}
             setPrintModal={setPrintModal}
+            setPrintModalData={setPrintModalData}
             printModal={printModal}
             setDataSourcePrint={setDataSourcePrint}
             setReturnItemsModel={setReturnItemsModel}
@@ -590,7 +592,10 @@ export const SellingBranchIdentity = () => {
       </Modal>
 
       <Modal isOpen={printModal} onClose={() => setPrintModal(false)}>
-        <RejectedItemsInvoicePrint item={dataSourcePrint} />
+        <RejectedItemsInvoicePrint
+          item={dataSourcePrint}
+          printModalData={printModalData}
+        />
       </Modal>
     </div>
   );

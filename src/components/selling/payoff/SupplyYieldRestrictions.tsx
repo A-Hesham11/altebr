@@ -57,7 +57,7 @@ export const SupplyYieldRestrictions = ({}) => {
     () => [
       {
         cell: (info) => info.getValue(),
-        accessorKey: "id",
+        accessorKey: "bond_number",
         header: () => <span>{t("bond number")}</span>,
       },
       {

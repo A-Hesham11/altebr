@@ -29,6 +29,7 @@ export const NewHonestForm = ({
   setPaymentData,
   setClientData,
 }: HonestProvisonsProps_TP) => {
+  console.log("🚀 ~ paymentData:", paymentData);
   /////////// VARIABLES
   ///
 
@@ -85,7 +86,11 @@ export const NewHonestForm = ({
   useEffect(() => {
     const amountSummation = paymentData.reduce((acc, curr) => {
       location.pathname === "/selling/honesty/new-honest"
-        ? (acc += +curr.amount + +curr.commission_tax + +curr.commission_riyals)
+        ? (acc +=
+            +curr.amount +
+            (curr.add_commission_ratio === "yes"
+              ? +curr.commission_tax + +curr.commission_riyals
+              : 0))
         : (acc +=
             +curr.cost_after_tax +
             +curr.commission_tax +

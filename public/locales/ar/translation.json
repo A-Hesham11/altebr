@@ -1692,5 +1692,9 @@
   "is there a tax": "هل يوجد ضريبة",
   "reason": "السبب",
   "net amount": "المبلغ الصافي",
-  "include header and footer": "تحتوي علي header & footer"
+  "include header and footer": "تحتوي علي header & footer",
+  "agency / beneficiary type": "نوع الجهة / المستفيد",
+  "total items counts": "اجمالي عدد القطع",
+  "add commission": "اضافة عمولة",
+  "total commission tax": "اجمالي ضريبة العمولة"
 }

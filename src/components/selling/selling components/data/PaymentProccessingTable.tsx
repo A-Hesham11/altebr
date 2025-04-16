@@ -43,7 +43,10 @@ const PaymentProccessingTable = ({
       {
         header: () => <span>{t("commission percentage")} </span>,
         accessorKey: "discount_percentage",
-        cell: (info) => `${info.row.original.discount_percentage} %` || "---",
+        cell: (info) =>
+          info.row.original.card_id !== "cash"
+            ? `${info.row.original.discount_percentage} %`
+            : "---",
       },
       {
         header: () => <span>{t("commission riyals")} </span>,
@@ -60,6 +63,14 @@ const PaymentProccessingTable = ({
           Number(info.row.original.commission_tax) > 1
             ? formatReyal(Number(info.row.original.commission_tax))
             : Number(info.row.original.commission_tax) || "---",
+      },
+      {
+        header: () => <span>{t("add commission")} </span>,
+        accessorKey: "add_commission",
+        cell: (info) =>
+          info.row.original.card_id !== "cash"
+            ? t(info.row.original.add_commission_ratio)
+            : "---",
       },
       {
         header: () => <span>{t("actions")}</span>,

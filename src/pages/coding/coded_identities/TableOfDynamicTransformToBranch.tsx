@@ -61,6 +61,17 @@ const TableOfDynamicTransformToBranch = ({
         header: () => <span>{t("weight")}</span>,
       },
       {
+        cell: (info: any) => {
+          return (
+            <div>
+              {info.getValue() ? formatGram(Number(info.getValue())) : "---"}
+            </div>
+          );
+        },
+        accessorKey: "remaining_weight",
+        header: () => <span>{t("remaining weight")}</span>,
+      },
+      {
         cell: (info: any) => formatReyal(info.getValue()) || "-",
         accessorKey: "wage",
         header: () => <span>{t("wage geram/ryal")}</span>,

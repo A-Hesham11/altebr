@@ -48,11 +48,23 @@ export const SellingFinalPreview = ({
             className={`${
               invoice_logo?.is_include_header_footer === "1"
                 ? "opacity-1"
-                : "opacity-0 h-12"
+                : "opacity-0 h-12 print:h-80"
             }`}
           >
             <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderData} />
           </div>
+
+          {invoice_logo?.is_include_header_footer !== "1" && (
+            <div className="flex items-center justify-between">
+              <p className="font-bold text-xl">
+                {t(invoiceHeaderData?.bond_title)} :{" "}
+                <span>{Number(invoiceHeaderData?.invoice_number) + 1}</span>{" "}
+              </p>
+              <p className="text-2xl font-bold text-mainGreen">
+                {t(invoiceHeaderData?.invoice_text)}
+              </p>
+            </div>
+          )}
 
           {ItemsTableContent}
 

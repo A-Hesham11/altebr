@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { t } from "i18next";
 import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import {
@@ -33,6 +35,7 @@ const ReturnItemsToEdaraModal = ({
   setOperationTypeSelect,
   setReturnItemsModel,
   setDataSourcePrint,
+  setPrintModalData,
   printModal,
   setPrintModal,
 }: any) => {
@@ -62,14 +65,10 @@ const ReturnItemsToEdaraModal = ({
   const isSearch =
     !!search && search.split("").map((item) => item)?.length >= 6;
 
-  const {
-    data,
-    isLoading,
-    isFetching,
-    isRefetching,
-  } = useFetch({
+  const { data, isLoading, isFetching, isRefetching } = useFetch({
     queryKey: ["return-edara", search],
     endpoint: `/branchManage/api/v1/all-accepted/${userData?.branch_id}?hwya[eq]=${search}`,
+
     onSuccess: (data) => {
       console.log("🚀 ~ data:", data);
       if (data?.data?.length === 0) {
@@ -115,6 +114,11 @@ const ReturnItemsToEdaraModal = ({
     mutationKey: ["thwel-api"],
     onSuccess: (data) => {
       queryClient.refetchQueries(["thwel-api"]);
+      setPrintModalData({
+        bondNumber: data?.bond?.bond_number,
+        bond_date: data?.bond?.date,
+        itemsCount: data?.bond?.items?.length,
+      });
       notify(
         "success",
         `${t(

@@ -17,25 +17,27 @@ const AddReceiptBonds = () => {
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const [selectedCardId, setSelectedCardId] = useState<number>(null);
+  console.log("🚀 ~ AddReceiptBonds ~ selectedCardId:", selectedCardId);
   const [isTax, setIsTax] = useState(false);
 
   const initialValues = {
     receipt_price: "",
-    tax: "",
-    invoice_number: invoiceNumber,
-    client_name: "",
-    beneficiary: "",
+    type: "",
+    agency_beneficiary: "",
     receipt_date: new Date(),
+    beneficiary: "",
     reason: "",
-    net_amount: "",
     description: "",
+    // tax: "",
+    // invoice_number: invoiceNumber,
+    // net_amount: "",
   };
 
   const validationSchema = Yup.object({
     receipt_price: Yup.string().required("Receipt price is required"),
-    invoice_number: Yup.string().required("Invoice number is required"),
-    client_name: Yup.string().required("Client name is required"),
-    beneficiary: Yup.string().required("Beneficiary is required"),
+    // invoice_number: Yup.string().required("Invoice number is required"),
+    beneficiary: Yup.string().required("beneficiary is required"),
+    agency_beneficiary: Yup.string().required("Beneficiary is required"),
     receipt_date: Yup.date().required("Receipt date is required"),
   });
 
@@ -57,7 +59,9 @@ const AddReceiptBonds = () => {
         {stage === 1 && (
           <AddReceiptBondsFirstStep
             paymentData={paymentData}
+            setPaymentData={setPaymentData}
             files={files}
+            setFiles={setFiles}
             invoiceNumber={invoiceNumber}
             setStage={setStage}
             sellingItemsData={sellingItemsData}

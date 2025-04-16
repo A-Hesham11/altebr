@@ -286,7 +286,9 @@ const RejectedItemsInvoice = ({ item }: any) => {
           <div className="mx-5 bill-shadow rounded-md p-6">
             <PaymentFinalPreviewBillData
               clientData={clientData}
-              invoiceNumber={item?.invoice_number || item?.id}
+              invoiceNumber={
+                item?.invoice_number || item?.bond_number || item?.id
+              }
               invoiceData={returnInvoiceToEdara}
             />
           </div>

@@ -16,7 +16,9 @@ const BranchStocks = () => {
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
   const { formatReyal } = numberContext();
-  const [accountId, setAccountId] = useState(0);
+  const [accountId, setAccountId] = useState<{ id: number; unit_id: number }>(
+    null
+  );
   const [branchId, setBranchId] = useState<string>(1);
 
   const filterInitialValues = {
@@ -37,9 +39,12 @@ const BranchStocks = () => {
     queryKey: ["credits-edara-data"],
     endpoint:
       search ===
-        `/branchAccount/api/v1/getAllAccountBranches/${accountId}/${branchId}?` ||
-      search === ""
-        ? `/branchAccount/api/v1/getAllAccountBranches/${accountId}/${branchId}`
+        `/branchAccount/api/v1/getAllAccountBranches/${
+          accountId?.id || 0
+        }/${branchId}/${accountId?.unit_id || 0}?` || search === ""
+        ? `/branchAccount/api/v1/getAllAccountBranches/${
+            accountId?.id || 0
+          }/${branchId}/${accountId?.unit_id || 0}`
         : `${search}`,
     pagination: true,
   });
@@ -56,6 +61,8 @@ const BranchStocks = () => {
     select: (data: any) =>
       data?.map((account: any) => {
         return {
+          selectId: account?.id,
+          unit_id: account?.unit_id,
           id: account?.accountable_id,
           label: (
             <p className="flex justify-between items-center">
@@ -69,7 +76,7 @@ const BranchStocks = () => {
               </span>
             </p>
           ),
-          value: account?.accountable,
+          value: account?.id,
         };
       }),
   });
@@ -92,7 +99,9 @@ const BranchStocks = () => {
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
-    let url = `/branchAccount/api/v1/getAllAccountBranches/${accountId}/${branchId}?`;
+    let url = `/branchAccount/api/v1/getAllAccountBranches/${
+      accountId?.id || 0
+    }/${branchId}/${accountId?.unit_id || 0}?`;
     let first = false;
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
@@ -240,6 +249,7 @@ const BranchStocks = () => {
           }}
         >
           {({ values, setFieldValue, resetForm }) => {
+            console.log("🚀 ~ BranchStocks ~ values:", values);
             return (
               <Form className="w-full">
                 <div className="flex w-full justify-between items-end gap-3">
@@ -269,7 +279,7 @@ const BranchStocks = () => {
                         value={values?.value}
                         onChange={(option: any) => {
                           setFieldValue("account_id", option!.id);
-                          setAccountId(option?.id);
+                          setAccountId(option);
                           resetForm();
                         }}
                         loading={accountNameDataSelectIsLoading}

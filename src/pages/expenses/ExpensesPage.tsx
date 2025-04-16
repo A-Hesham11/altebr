@@ -24,11 +24,11 @@ const ExpensesPage = () => {
 
   const [files, setFiles] = useState([]);
   const [subExpensesOption, setSubExpensesOption] = useState<any>("");
-  const [taxAdded, setTaxAdded] = useState<boolean>(null);
-  const [taxZero, setTaxZero] = useState<boolean>(null);
-  const [taxExempt, setTaxExempt] = useState<boolean>(null);
+  const [taxAdded, setTaxAdded] = useState<boolean | null>(null);
+  const [taxZero, setTaxZero] = useState<boolean | null>(null);
+  const [taxExempt, setTaxExempt] = useState<boolean | null>(null);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
-  const [selectedCardId, setSelectedCardId] = useState<number>(null);
+  const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
   const [taxType, setTaxType] = useState<any>(null);
 
   const initialValues: Selling_TP = {

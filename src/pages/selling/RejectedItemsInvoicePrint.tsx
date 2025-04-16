@@ -10,8 +10,9 @@ import InvoiceTable from "../../components/selling/selling components/InvoiceTab
 import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
 
-const RejectedItemsInvoicePrint = ({ item }: any) => {
+const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
   console.log("🚀 ~ RejectedItemsInvoicePrint ~ item:", item);
+  console.log(printModalData, "🔥🔥🔥");
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
@@ -20,9 +21,10 @@ const RejectedItemsInvoicePrint = ({ item }: any) => {
   const clientData = {
     client_id: item?.client_id,
     client_value: item?.client_name,
-    bond_date: item?.date,
+    bond_date: item?.date || printModalData?.bond_date,
     supplier_id: item?.supplier_id,
   };
+  console.log("🚀 ~ RejectedItemsInvoicePrint ~ clientData:", clientData);
 
   const Cols = useMemo<any>(
     () => [
@@ -222,6 +224,7 @@ const RejectedItemsInvoicePrint = ({ item }: any) => {
     // totalGoldAmountGram,
     isBranchWasted: item?.boxes2?.length !== 0 ? true : false,
     recipientSignature: true,
+    totalItemsCount: printModalData?.itemsCount,
   };
 
   const totalResult = {
@@ -259,7 +262,7 @@ const RejectedItemsInvoicePrint = ({ item }: any) => {
   });
 
   const returnInvoiceToEdara = {
-    bondNumber: 10,
+    bondNumber: printModalData?.bondNumber,
     invoiceName: isRTL ? "سند مردود" : "rerurn bond",
   };
 
@@ -278,7 +281,9 @@ const RejectedItemsInvoicePrint = ({ item }: any) => {
           <div className="mx-5 bill-shadow rounded-md p-6">
             <PaymentFinalPreviewBillData
               clientData={clientData}
-              invoiceNumber={item?.invoice_number || item?.id}
+              invoiceNumber={
+                item?.invoice_number || item?.id || printModalData.bondNumber
+              }
               invoiceData={returnInvoiceToEdara}
             />
           </div>
@@ -291,7 +296,7 @@ const RejectedItemsInvoicePrint = ({ item }: any) => {
             resultTable={
               item?.boxes2?.length !== 0 ? resultTableWasted : resultTable
             }
-          ></InvoiceTable>
+          />
 
           <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
             <FinalPreviewBillPayment
