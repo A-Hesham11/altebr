@@ -41,6 +41,7 @@ const DynamicTransformToBranch = ({
   const [search, setSearch] = useState("-");
   console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
+  console.log("🚀 ~ dataSource:", dataSource);
   const [successData, setSuccessData] = useState([]);
   const { gold_price } = GlobalDataContext();
 
@@ -55,6 +56,7 @@ const DynamicTransformToBranch = ({
   const operationTypeSelectWeight = dataSource.filter(
     (el: any) => el.check_input_weight !== 0
   );
+  console.log("🚀 ~ operationTypeSelectWeight:", operationTypeSelectWeight);
 
   const initialValues = {
     branch_id: "",
@@ -338,7 +340,7 @@ const DynamicTransformToBranch = ({
         setThwelIds((prev) => [...prev, `${operation.id}`]);
       }
     });
-  }, [dataSource?.length]);
+  }, [dataSource]);
 
   const {
     data: branchesOptions,
@@ -505,6 +507,8 @@ const DynamicTransformToBranch = ({
                   <TableOfDynamicTransformToBranch
                     operationTypeSelect={dataSource}
                     setOperationTypeSelect={setDataSource}
+                    setThwelIds={setThwelIds}
+                    thwelIds={thwelIds}
                     isLoading={isLoading}
                     isFetching={isFetching}
                     isRefetching={isRefetching}

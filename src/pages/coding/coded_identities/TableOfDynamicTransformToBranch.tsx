@@ -14,6 +14,8 @@ const TableOfDynamicTransformToBranch = ({
   isLoading,
   isFetching,
   isRefetching,
+  setThwelIds,
+  thwelIds,
 }) => {
   console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
   const { formatReyal, formatGram } = numberContext();
@@ -182,6 +184,10 @@ const TableOfDynamicTransformToBranch = ({
   const deletePieceHandler = (hwya: number) => {
     const filteredPieces = operationTypeSelect.filter((piece: any) => {
       return hwya !== piece?.hwya;
+    });
+
+    filteredPieces.map((operation: any) => {
+      setThwelIds((prev) => [`${operation.id}`]);
     });
 
     setOperationTypeSelect(filteredPieces);

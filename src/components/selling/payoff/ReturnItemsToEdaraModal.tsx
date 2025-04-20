@@ -330,6 +330,7 @@ const ReturnItemsToEdaraModal = ({
               mainData={mainData}
               operationTypeSelect={dataSource}
               setOperationTypeSelect={setDataSource}
+              setDataSourcePrint={setDataSourcePrint}
               successData={successData}
               isLoading={isLoading}
               isFetching={isFetching}
