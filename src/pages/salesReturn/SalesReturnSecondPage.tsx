@@ -22,33 +22,28 @@ const SalesReturnSecondPage = ({
   sellingItemsData,
   setStage,
   stage,
+  returnDemo,
 }: SellingSecondpage_TP) => {
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [selectedCardName, setSelectedCardName] = useState(null);
   const [cardId, setCardId] = useState("");
   const [isCheckedCommission, setIsCheckedCommission] = useState(false);
-  console.log("🚀 ~ isCheckedCommission:", isCheckedCommission);
   const { formatReyal, digits_count } = numberContext();
-  console.log("🚀 ~ digits_count:", digits_count)
-  console.log("🚀 ~ formatReyal:", formatReyal);
 
   const addCommissionRatio = paymentData.some(
     (item) => item.add_commission_ratio === true
   );
-  console.log("🚀 ~ addCommissionRatio:", addCommissionRatio);
 
   const totalPriceInvoice = sellingItemsData?.reduce(
     (total, item) => +total + +item.taklfa_after_tax,
     0
   );
+  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice);
 
   const commissionTaxOneItemTotal = sellingItemsData?.reduce(
     (total, item) => +total + +item.commissionTax_oneItem,
     0
   );
-  console.log("🚀 ~ commissionTaxOneItemTotal:", commissionTaxOneItemTotal);
-
-  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice);
 
   const amountRemaining = paymentData?.reduce(
     (total, item) => Number(total) + Number(item.amount),
@@ -60,7 +55,6 @@ const SalesReturnSecondPage = ({
     (total, item) => Number(total) + Number(item.commission_oneItem),
     0
   );
-  console.log("🚀 ~ totalCommissionOfoneItem:", totalCommissionOfoneItem);
 
   const totalCommissionTaxOfoneItem = sellingItemsData?.reduce(
     (total, item) => Number(total) + Number(item.commissionTax_oneItem),
@@ -71,19 +65,15 @@ const SalesReturnSecondPage = ({
     (total, item) => +total + +item.total,
     0
   );
-  console.log("🚀 ~ invoiceTotalOfOfSalesReturn:", invoiceTotalOfOfSalesReturn);
-
-  const xx =
-    Number(invoiceTotalOfOfSalesReturn) -
-    (!isCheckedCommission
-      ? Number(totalCommissionOfoneItem) + Number(totalCommissionTaxOfoneItem)
-      : 0);
 
   let CheckedCommission = !isCheckedCommission
     ? Number(totalCommissionOfoneItem) + Number(totalCommissionTaxOfoneItem)
     : 0;
 
-  const costRemaining = Number(invoiceTotalOfOfSalesReturn) - CheckedCommission - Number(amountRemaining);
+  const costRemaining =
+    Number(invoiceTotalOfOfSalesReturn) -
+    CheckedCommission -
+    Number(amountRemaining);
 
   useEffect(() => {
     setIsCheckedCommission(addCommissionRatio);
@@ -95,9 +85,16 @@ const SalesReturnSecondPage = ({
       return;
     }
 
-    if (costRemaining.toFixed(digits_count.reyal) != 0) {
-      notify("info", "برجاء دفع المبلغ بالكامل");
-      return;
+    if (!returnDemo) {
+      if (costRemaining.toFixed(digits_count.reyal) != 0) {
+        notify("info", "برجاء دفع المبلغ بالكامل");
+        return;
+      }
+    } else {
+      if (amountRemaining != totalPriceInvoice) {
+        notify("info", "برجاء دفع المبلغ بالكامل");
+        return;
+      }
     }
 
     setStage(3);

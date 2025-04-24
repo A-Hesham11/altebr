@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
 import { useContext, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useIsRTL, useMutate } from "../../hooks";
@@ -23,6 +23,7 @@ type CreateHonestSanadProps_TP = {
   invoiceNumber: any;
   selectedItemDetails: any;
   sellingItemsOfWeigth: any;
+  returnDemo: any;
   invoiceHeaderData: any;
 };
 const SalesReturnInvoiceData = ({
@@ -31,14 +32,15 @@ const SalesReturnInvoiceData = ({
   paymentData,
   clientData,
   invoiceNumber,
+  returnDemo,
   invoiceHeaderData,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData);
   const { formatGram, formatReyal } = numberContext();
   const [responseSellingData, SetResponseSellingData] = useState(null);
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
   const { userData } = useContext(authCtx);
+  const { pathname } = useLocation();
 
   const isCheckedCommission = paymentData.some(
     (item) => item.add_commission_ratio === true
@@ -70,19 +72,22 @@ const SalesReturnInvoiceData = ({
 
   const totalGold18 =
     sellingItemsData?.reduce((acc, curr) => {
-      return curr.karat_name === "18" ? acc + Number(curr.weight || 0) : acc;
+      return curr.karat_name == "18" ? acc + Number(curr.weight || 0) : acc;
     }, 0) || 0;
+
   const totalGold21 =
     sellingItemsData?.reduce((acc, curr) => {
-      return curr.karat_name === "21" ? acc + Number(curr.weight || 0) : acc;
+      return curr.karat_name == "21" ? acc + Number(curr.weight || 0) : acc;
     }, 0) || 0;
+
   const totalGold22 =
     sellingItemsData?.reduce((acc, curr) => {
-      return curr.karat_name === "22" ? acc + Number(curr.weight || 0) : acc;
+      return curr.karat_name == "22" ? acc + Number(curr.weight || 0) : acc;
     }, 0) || 0;
+
   const totalGold24 =
     sellingItemsData?.reduce((acc, curr) => {
-      return curr.karat_name === "24" ? acc + Number(curr.weight || 0) : acc;
+      return curr.karat_name == "24" ? acc + Number(curr.weight || 0) : acc;
     }, 0) || 0;
 
   const totalWeightOfSelsal = sellingItemsData?.reduce((acc, item) => {
@@ -93,6 +98,11 @@ const SalesReturnInvoiceData = ({
 
   const totalOfCost = sellingItemsData.reduce((acc, card) => {
     acc += +card.cost;
+    return acc;
+  }, 0);
+
+  const totalOfTaklfa = sellingItemsData.reduce((acc, card) => {
+    acc += +card.taklfa;
     return acc;
   }, 0);
 
@@ -109,10 +119,24 @@ const SalesReturnInvoiceData = ({
     ? totalItemsOfTaxes
     : totalItemsOfTaxes - totalCommissionRatioTax;
 
+  const totalVat = sellingItemsData.reduce((acc, card) => {
+    acc += +card.vat;
+    return acc;
+  }, 0);
+
+  const totalTaklfaAfterTax = sellingItemsData.reduce((acc, card) => {
+    acc += +card.taklfa_after_tax;
+    return acc;
+  }, 0);
+
   const totalFinalCost = Number(totalCost) + Number(totalItemsTaxes);
 
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(totalFinalCost)
+  );
+
+  const totalFinalTaklfaAfterTaxDemo = convertNumToArWord(
+    Math.round(totalTaklfaAfterTax)
   );
 
   // const costDataAsProps = {
@@ -129,13 +153,22 @@ const SalesReturnInvoiceData = ({
     totalItemsTaxes,
     totalFinalCost,
     totalCost,
-    finalArabicData: [
-      {
-        title: t("total"),
-        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
-        type: t("reyal"),
-      },
-    ],
+    finalArabicData:
+      pathname === "/selling/payoff/sales-returnDemo"
+        ? [
+            {
+              title: t("total"),
+              totalFinalCostIntoArabic: totalFinalTaklfaAfterTaxDemo,
+              type: t("reyal"),
+            },
+          ]
+        : [
+            {
+              title: t("total"),
+              totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+              type: t("reyal"),
+            },
+          ],
     resultTable: [
       {
         number: t("totals"),
@@ -144,9 +177,18 @@ const SalesReturnInvoiceData = ({
         totalGold21,
         totalGold22,
         totalGold24,
-        cost: formatReyal(Number(totalCost)),
-        vat: formatReyal(Number(totalItemsTaxes)),
-        total: formatReyal(Number(totalFinalCost)),
+        cost:
+          pathname === "/selling/payoff/sales-returnDemo"
+            ? formatReyal(Number(totalOfTaklfa))
+            : formatReyal(Number(totalCost)),
+        vat:
+          pathname === "/selling/payoff/sales-returnDemo"
+            ? formatReyal(Number(totalVat))
+            : formatReyal(Number(totalItemsTaxes)),
+        total:
+          pathname === "/selling/payoff/sales-returnDemo"
+            ? formatReyal(Number(totalTaklfaAfterTax))
+            : formatReyal(Number(totalFinalCost)),
       },
     ],
   };
@@ -179,7 +221,7 @@ const SalesReturnInvoiceData = ({
               : `${finalCategoriesNames} مع سلسال (${
                   info.row.original.selsal && finalKaratNamesOfSelsal
                 })`
-            : info.row.original.selsal.length === 0
+            : info.row.original.selsal?.length === 0
             ? info.getValue()
             : `${info.getValue()} مع سلسال (${
                 info.row.original.selsal && finalKaratNamesOfSelsal
@@ -280,10 +322,132 @@ const SalesReturnInvoiceData = ({
     []
   );
 
+  const demoCols = useMemo<ColumnDef<Selling_TP>[]>(
+    () => [
+      {
+        header: () => <span>{t("category")}</span>,
+        accessorKey: "classification_id",
+        cell: (info) =>
+          info.getValue() === 1
+            ? t("gold")
+            : info.getValue() === 2
+            ? t("diamond")
+            : info.getValue() === 3
+            ? t("accessories")
+            : "---",
+      },
+      {
+        header: () => <span>{t("classification")} </span>,
+        accessorKey: "category_name",
+        cell: (info) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("karat value")} </span>,
+        accessorKey: "karat_name",
+        cell: (info: any) => info.getValue() || "---",
+      },
+      {
+        header: () => <span>{t("Price per gram")} </span>,
+        accessorKey: "Price_gram",
+        cell: (info: any) => {
+          const taxRate = info.row.original.karat_name === "24" ? 1 : 1.15;
+          const totalCostFromRow =
+            Number(info.row.original.taklfa_after_tax) / Number(taxRate);
+
+          return formatReyal(
+            Number(totalCostFromRow) / Number(info.row.original.weight)
+          );
+        },
+      },
+      {
+        header: () => (
+          <span>{`${t("precious metal weight")} (${t("In grams")})`}</span>
+        ),
+        accessorKey: "weight",
+        cell: (info) => info.getValue() || `${t("no items")}`,
+      },
+      {
+        header: () => (
+          <span>
+            {`${t("The weight of the stones if it exceeds 5%")} (${t(
+              "in karat"
+            )})`}{" "}
+          </span>
+        ),
+        accessorKey: "stones_weight",
+        cell: (info) => {
+          const stoneWeigthByGram = Number(info.getValue()) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          return !!result ? info.getValue() : "---";
+        },
+      },
+      {
+        header: () => <span>{t("18")}</span>,
+        accessorKey: "gold_18",
+        cell: (info: any) =>
+          info.row.original.karat_name == "18"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
+      },
+      {
+        header: () => <span>{t("21")}</span>,
+        accessorKey: "gold_21",
+        cell: (info: any) =>
+          info.row.original.karat_name == "21"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
+      },
+      {
+        header: () => <span>{t("22")}</span>,
+        accessorKey: "gold_22",
+        cell: (info: any) =>
+          info.row.original.karat_name == "22"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
+      },
+      {
+        header: () => <span>{t("24")}</span>,
+        accessorKey: "gold_24",
+        cell: (info: any) =>
+          info.row.original.karat_name == "24"
+            ? formatGram(Number(info.row.original.weight))
+            : "---",
+      },
+      {
+        header: () => <span>{t("price before tax")} </span>,
+        accessorKey: "taklfa",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+      },
+      {
+        header: () => <span>{t("VAT")} </span>,
+        accessorKey: "VAT",
+        cell: (info: any) => {
+          return (
+            <div>
+              {formatReyal(
+                Number(info.row.original.taklfa_after_tax) -
+                  Number(info.row.original.taklfa)
+              )}
+            </div>
+          );
+        },
+      },
+      {
+        header: () => <span>{t("total")} </span>,
+        accessorKey: "taklfa_after_tax",
+        cell: (info: any) => formatReyal(Number(info.getValue())) || "---",
+      },
+    ],
+    []
+  );
+
   const SellingTableComp = () => (
     <InvoiceTableData
       data={sellingItemsData}
-      columns={Cols}
+      columns={
+        pathname === "/selling/payoff/sales-returnDemo" ? demoCols : Cols
+      }
       paymentData={paymentData}
       costDataAsProps={costDataAsProps}
     ></InvoiceTableData>
@@ -311,7 +475,6 @@ const SalesReturnInvoiceData = ({
       count: sellingItemsData.length,
     };
     const items = sellingItemsData.map((item) => {
-      console.log("🚀 ~ items ~ item:", item);
       const rowTaxEquation = Number(item.tax_rate) / 100 + 1;
 
       const weightOfSelsal = item.selsal?.reduce((acc, item) => {
@@ -382,14 +545,32 @@ const SalesReturnInvoiceData = ({
       amount: item.amount,
     }));
 
-    mutate({
-      endpointName: "/sellingReturn/api/v1/add_selling_return",
-      values: { invoice, items, card, paymentCard },
-    });
-    console.log(
-      "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
-      { invoice, items, card, paymentCard }
-    );
+    if (pathname === "/selling/payoff/sales-returnDemo") {
+      const invoiceDemo = {
+        base_invoice: sellingItemsData[0]?.invoice_id,
+        employee_id: userData?.id,
+        branch_id: userData?.branch_id,
+        client_id: clientData.client_id,
+        invoice_date: clientData.bond_date,
+        count: sellingItemsData.length,
+      };
+
+      mutate({
+        endpointName: "returnSale/api/v1/add_selling_return",
+        values: {
+          invoice: invoiceDemo,
+          paymentCard,
+          items: sellingItemsData.map((item: { id: number }) => ({
+            id: item.id,
+          })),
+        },
+      });
+    } else {
+      mutate({
+        endpointName: "/sellingReturn/api/v1/add_selling_return",
+        values: { invoice, items, card, paymentCard },
+      });
+    }
   };
 
   const handlePrint = useReactToPrint({

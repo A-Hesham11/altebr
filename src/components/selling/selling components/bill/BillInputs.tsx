@@ -2,20 +2,28 @@ import { CiCalendarDate } from "react-icons/ci";
 import { IoMdAdd } from "react-icons/io";
 import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { useFetch } from "../../../../hooks";
-import { DateInputField, Modal, Select } from "../../../molecules";
+import {
+  BaseInputField,
+  DateInputField,
+  Modal,
+  Select,
+} from "../../../molecules";
 import SellingClientForm from "../../SellingClientForm";
 import { formatDate } from "../../../../utils/date";
 import { Form, useFormikContext } from "formik";
 import { t } from "i18next";
 import { useContext, useState } from "react";
 import { RefetchErrorHandler } from "../../../molecules/RefetchErrorHandler";
+import { BaseInput } from "../../../atoms";
 
 const BillInputs = ({
   dateFieldName,
   suppliersData,
+  invoiceNumberReturnDemo,
 }: {
   dateFieldName?: string;
   suppliersData?: any;
+  invoiceNumberReturnDemo?: string;
 }) => {
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
@@ -38,7 +46,20 @@ const BillInputs = ({
     <div>
       <Form>
         <div className="flex items-center gap-12">
-          <div className="flex items-end gap-3 w-1/3 lg:w-1/4">
+          <div className="flex items-end gap-3 w-1/3">
+            <div>
+              {invoiceNumberReturnDemo && (
+                <BaseInput
+                  name={invoiceNumberReturnDemo}
+                  label={t("invoice number")}
+                  placeholder={t("invoice number")}
+                  type="text"
+                  onChange={(e) => {
+                    setFieldValue(invoiceNumberReturnDemo, e.target.value);
+                  }}
+                />
+              )}
+            </div>
             {suppliersData?.locationPath ? (
               <>
                 <Select
@@ -77,6 +98,14 @@ const BillInputs = ({
                   options={clientsNameOptions}
                   fieldKey="id"
                   loading={isLoading}
+                  {...(invoiceNumberReturnDemo && {
+                    value: {
+                      id: values.client_id,
+                      label: values.client_name,
+                      value: values.client_value,
+                    },
+                  })}
+                  isDisabled={invoiceNumberReturnDemo}
                   onChange={(option) => {
                     setFieldValue("client_name", option!.label);
                     setFieldValue("client_id", option!.id);

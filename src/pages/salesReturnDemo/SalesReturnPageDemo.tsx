@@ -30,6 +30,7 @@ const SalesReturnPageDemo = () => {
     invoice_number: invoiceNumber,
     invoice_logo: invoice_logo?.InvoiceCompanyLogo,
     invoice_text: "simplified tax invoice",
+    bond_title: "sales return",
   };
 
   const initialValues: Selling_TP = {
@@ -75,26 +76,6 @@ const SalesReturnPageDemo = () => {
     bond_date: new Date(),
   };
 
-  const validationSchema = () =>
-    Yup.object({
-      hwya: Yup.string(),
-      classification_id: Yup.string(),
-      category_id: Yup.string(),
-      remaining_id: Yup.string(),
-      weight: Yup.string(),
-      sel_weight: Yup.string(),
-      karat_id: Yup.string(),
-      cost: Yup.string(),
-      selling_price: Yup.string(),
-      taklfa: Yup.string(),
-      wage_total: Yup.string(),
-      wage: Yup.string(),
-
-      dateField: Yup.date().required("Date is required"),
-      client_id: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
-      client_value: Yup.string(),
-    });
-
   const { data } = useFetch<ClientData_TP>({
     endpoint: `/sellingReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}`,
     queryKey: [`return_invoices_data_${userData?.branch_id}`],
@@ -107,7 +88,7 @@ const SalesReturnPageDemo = () => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={Yup.object({})}
       onSubmit={(values) => {}}
     >
       <>
@@ -131,6 +112,7 @@ const SalesReturnPageDemo = () => {
           <SalesReturnSecondPage
             setStage={setStage}
             stage={stage}
+            returnDemo
             paymentData={paymentData}
             setPaymentData={setPaymentData}
             sellingItemsData={sellingItemsData}
@@ -143,6 +125,7 @@ const SalesReturnPageDemo = () => {
             paymentData={paymentData}
             clientData={clientData}
             setStage={setStage}
+            returnDemo
             selectedItemDetails={selectedItemDetails}
             sellingItemsOfWeigth={sellingItemsOfWeigth}
             invoiceHeaderData={invoiceHeaderData}

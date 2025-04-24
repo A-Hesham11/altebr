@@ -205,6 +205,7 @@ import InventoryEntry from "../pages/selling/Inventory/InventoryEntry";
 import SalesReturnPageDemo from "../pages/salesReturnDemo/SalesReturnPageDemo";
 import SellingTaxReturn from "../pages/Report/SellingTaxReturn";
 import PayoffTaxReturn from "../pages/Report/PayoffTaxReturn";
+import ViewSalesReturnInvoicesDemo from "../pages/salesReturnDemo/ViewSalesReturnInvoicesDemo";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -761,6 +762,10 @@ export const AllRoutesProvider = () => {
           <Route
             path="/selling/payoff/sales-returnDemo"
             element={<SalesReturnPageDemo />}
+          />
+          <Route
+            path="/selling/return-entry-demo"
+            element={<ViewSalesReturnInvoicesDemo />}
           />
 
           {/* BUYING START */}
