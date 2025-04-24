@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 const ReturnItemsToEdaraTable = ({
   operationTypeSelect,
   setOperationTypeSelect,
+  setDataSourcePrint,
   isLoading,
   isFetching,
   isRefetching,
@@ -315,6 +316,13 @@ const ReturnItemsToEdaraTable = ({
         item.id === id ? { ...item, ...updatedValues } : item
       )
     );
+
+    // OPTIMIZE:
+    setDataSourcePrint((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, ...updatedValues } : item
+      )
+    );
   };
 
   const deletePieceHandler = (hwya) => {
@@ -323,6 +331,11 @@ const ReturnItemsToEdaraTable = ({
     );
 
     setMainData((prevData) => prevData.filter((item) => item.hwya !== hwya));
+
+    // OPTIMIZE:
+    setDataSourcePrint((prevData) =>
+      prevData.filter((item) => item.hwya !== hwya)
+    );
   };
 
   if (isLoading || isFetching || isRefetching)

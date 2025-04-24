@@ -24,7 +24,14 @@ const Payoff = () => {
         : "/selling/payoff/sales-return",
       underCardInfo: isDisabled ? (
         <div className="flex flex-col relative top-12 gap-y-2">
-          <DisabledDemo title="Sales return restrictions" />
+          {/* <DisabledDemo title="Sales return restrictions" /> */}
+          <Link
+            to={"/selling/return-entry-demo"}
+            className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+          >
+            <FaCubes className="text-mainGreen" size={25} />
+            <p className="text-mainGreen">{t("Sales return invoices")}</p>
+          </Link>
           <DisabledDemo title="Sales Return Reports" />
         </div>
       ) : (
@@ -34,7 +41,7 @@ const Payoff = () => {
             className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
           >
             <FaCubes className="text-mainGreen" size={25} />
-            <p className="text-mainGreen">{t("Sales return restrictions")}</p>
+            <p className="text-mainGreen">{t("Sales return invoices")}</p>
           </Link>
           <Link
             to="/selling/payoff/salesReturnReports"

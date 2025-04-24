@@ -1,10 +1,9 @@
-import React, { useState } from "react";
 import { t } from "i18next";
 import SellingBoxes from "../../components/selling/selling components/data/SellingBoxes";
 import { Button } from "../../components/atoms";
 import { Back } from "../../utils/utils-components/Back";
 import { notify } from "../../utils/toast";
-import { Form, Formik, useFormikContext } from "formik";
+import { Form, useFormikContext } from "formik";
 import BillHeader from "../../components/selling/selling components/bill/BillHeader";
 import BillInputs from "../../components/selling/selling components/bill/BillInputs";
 import { ClientData_TP, Selling_TP } from "../selling/PaymentSellingPage";
@@ -19,10 +18,6 @@ type SellingFirstPage_TP = {
   clientData: ClientData_TP;
   setClientData: any;
   invoiceNumber: any;
-  selectedItemDetails: any;
-  setSelectedItemDetails: any;
-  sellingItemsOfWeigth: any;
-  setSellingItemsOfWeight: any;
 };
 const SalesReturnFirstPageDemo = ({
   invoiceNumber,
@@ -31,17 +26,10 @@ const SalesReturnFirstPageDemo = ({
   setSellingItemsData,
   dataSource,
   setDataSource,
-  selectedItemDetails,
-  setSelectedItemDetails,
   clientData,
   setClientData,
-  sellingItemsOfWeigth,
-  setSellingItemsOfWeight,
 }: SellingFirstPage_TP) => {
-  console.log("🚀 ~ clientData:", clientData);
-
   const { values } = useFormikContext();
-  console.log("🚀 ~ values:", values);
 
   return (
     <Form>
@@ -52,8 +40,12 @@ const SalesReturnFirstPageDemo = ({
             <div className="mb-8">
               <BillHeader invoiceNumber={invoiceNumber} />
             </div>
+
             <div>
-              <BillInputs dateFieldName="bond_date" />
+              <BillInputs
+                invoiceNumberReturnDemo="invoice_id"
+                dateFieldName="bond_date"
+              />
             </div>
           </div>
 
@@ -64,16 +56,12 @@ const SalesReturnFirstPageDemo = ({
             <>
               <SalesReturnTableInputDataDemo
                 dataSource={dataSource}
+                setClientData={setClientData}
                 setDataSource={setDataSource}
                 sellingItemsData={sellingItemsData}
                 setSellingItemsData={setSellingItemsData}
-                setClientData={setClientData}
-                selectedItemDetails={selectedItemDetails}
-                setSelectedItemDetails={setSelectedItemDetails}
-                sellingItemsOfWeigth={sellingItemsOfWeigth}
-                setSellingItemsOfWeight={setSellingItemsOfWeight}
               />
-              <div className="border-t-2 border-mainGray pt-12 py-5">
+              <div className="pt-12 py-5">
                 <h2 className="mb-4 text-base font-bold">{t("total bill")}</h2>
                 <SellingBoxes
                   dataSource={dataSource}

@@ -113,11 +113,11 @@ const InvoiceTableData = <T extends object>({
                       <td
                         key={index}
                         className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen border border-[#7B7B7B4D]"
-                        // colSpan={Math.ceil(
-                        //   columns.length /
-                        //     costDataAsProps.finalArabicData.length
-                        // )}
-                        colSpan={columns?.length / 2}
+                        colSpan={Math.ceil(
+                          columns.length /
+                            costDataAsProps.finalArabicData.length
+                        )}
+                        // colSpan={columns?.length / 2}
                       >
                         {item.title && (
                           <span className="font-semibold">{item.title} : </span>
