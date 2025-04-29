@@ -53,10 +53,10 @@ const SellingHomeCard = ({
   ];
 
   const handleNavigation = () => {
-    if (isActiveZakat) {
-      notify("info", "fhj");
-      return;
-    }
+    // if (isActiveZakat) {
+    //   notify("info", "fhj");
+    //   return;
+    // }
 
     if (!isDisabled || allowedRoutes.includes(route)) {
       navigate(route);
