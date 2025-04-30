@@ -169,10 +169,10 @@ const ReturnItemsToEdaraModal = ({
       };
     });
 
-    if (weightComparison?.some((item) => item.isOperationWeightLess === true)) {
-      notify("info", `${t("Weight is greater than the maximum limit")}`);
-      return;
-    }
+    // if (weightComparison?.some((item) => item.isOperationWeightLess === true)) {
+    //   notify("info", `${t("Weight is greater than the maximum limit")}`);
+    //   return;
+    // }
 
     PostNewValue({
       branch_id: userData?.branch_id,
