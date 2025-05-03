@@ -32,7 +32,6 @@ import { BoxesDataBase } from "../../atoms/card/BoxesDataBase";
 const ReturnItemsToEdaraModal = ({
   transformToBranchDynamicModal,
   refetch,
-  setOperationTypeSelect,
   setReturnItemsModel,
   setDataSourcePrint,
   setPrintModalData,
@@ -130,7 +129,6 @@ const ReturnItemsToEdaraModal = ({
       setMainData([]);
       setIsBranchWaste(false);
       setPrintModal(true);
-      setOperationTypeSelect([]);
     },
     onError: (error) => {
       notify("error", error.response.data.msg);
@@ -165,14 +163,15 @@ const ReturnItemsToEdaraModal = ({
       return {
         mainDataId: mainItem.id,
         operationTypeSelectWeightId: operationItem.id,
-        isOperationWeightLess: operationItem.weight > mainItem.weight,
+        isOperationWeightLess:
+          Number(operationItem.weight) > Number(mainItem.remaining_weight),
       };
     });
 
-    // if (weightComparison?.some((item) => item.isOperationWeightLess === true)) {
-    //   notify("info", `${t("Weight is greater than the maximum limit")}`);
-    //   return;
-    // }
+    if (weightComparison?.some((item) => item.isOperationWeightLess === true)) {
+      notify("info", `${t("Weight is greater than the maximum limit")}`);
+      return;
+    }
 
     PostNewValue({
       branch_id: userData?.branch_id,
@@ -190,8 +189,6 @@ const ReturnItemsToEdaraModal = ({
         };
       }),
     });
-
-    setOperationTypeSelect([]);
   };
 
   const total18 = dataSource

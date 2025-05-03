@@ -29,9 +29,6 @@ const InvoiceTable = <T extends object>({
   resultTable,
   totalResult,
 }: ReactTableProps<T>) => {
-  console.log("🚀 ~ costDataAsProps:", costDataAsProps);
-  console.log("🚀 ~ columns:", columns);
-
   const table = useReactTable({
     data,
     columns,
@@ -243,7 +240,11 @@ const InvoiceTable = <T extends object>({
                 {costDataAsProps?.isBranchWasted === true && (
                   <td
                     className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                    colSpan={columns?.length / 2}
+                    colSpan={
+                      pathname === "/selling/branch-identity"
+                        ? columns?.length
+                        : columns?.length / 2
+                    }
                   >
                     <span className="font-semibold">
                       {" "}
