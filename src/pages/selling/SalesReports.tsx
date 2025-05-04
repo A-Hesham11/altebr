@@ -16,6 +16,11 @@ const SalesReports = () => {
         colSpan: 1,
       },
       {
+        accessorKey: "classification_details",
+        header: () => <span>{t("classification details")}</span>,
+        colSpan: 3,
+      },
+      {
         accessorKey: "total_Sales",
         header: () => <span>{t("Total Sales and Tax")}</span>,
         colSpan: 2,
@@ -45,6 +50,21 @@ const SalesReports = () => {
         header: () => <span>{t("bill number")}</span>,
         accessorKey: "bill_number",
         cell: (info: any) => info.getValue(),
+      },
+      {
+        header: () => <span>{t("count")}</span>,
+        accessorKey: "type",
+        cell: (info: any) => info.getValue().count,
+      },
+      {
+        header: () => <span>{t("selling")}</span>,
+        accessorKey: "type",
+        cell: (info: any) => info.getValue().is_selling,
+      },
+      {
+        header: () => <span>{t("return")}</span>,
+        accessorKey: "type",
+        cell: (info: any) => info.getValue().is_return,
       },
       {
         header: () => <span>{t("Cash")}</span>,

@@ -57,6 +57,7 @@ const SortPiecesSecondScreen = ({
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
+  console.log("🚀 ~ selectAll:", selectAll);
   const [openAcceptModal, setOpenAcceptModal] = useState<boolean>(false);
   const [openRefusedModal, setOpenRefusedModal] = useState<boolean>(false);
   const [isItRefusedAllBtn, setIsItRefusedAllBtn] = useState<boolean>(false);
@@ -162,65 +163,86 @@ const SortPiecesSecondScreen = ({
     },
   });
 
-  const handleCheckboxChange = (event: any, selectedRow: any) => {
-    const checkboxId = event.target.id;
-    if (event.target.checked) {
-      setSelectedRows((prevSelectedItems: any) => [
-        ...prevSelectedItems,
-        selectedRow.row.original,
-      ]);
+  // const handleCheckboxChange = (event: any, selectedRow: any) => {
+  //   const checkboxId = event.target.id;
+  //   if (event.target.checked) {
+  //     setSelectedRows((prevSelectedItems: any) => [
+  //       ...prevSelectedItems,
+  //       selectedRow.row.original,
+  //     ]);
+  //   } else {
+  //     setSelectedRows((prevSelectedItems: any) =>
+  //       prevSelectedItems.filter((item: any) => item.id !== +checkboxId)
+  //     );
+  //   }
+  // };
+
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    selectedRow: any
+  ) => {
+    const isChecked = event.target.checked;
+    const rowId = selectedRow.row.original.id;
+
+    setSelectedRows((prevSelectedItems) => {
+      if (isChecked) {
+        return [...prevSelectedItems, selectedRow.row.original];
+      } else {
+        return prevSelectedItems.filter((item) => item.id !== rowId);
+      }
+    });
+  };
+
+  // Select all handler
+  const handleSelectAllChange = () => {
+    const filteredArray =
+      sortItems?.filter(
+        (item) =>
+          !disableSelectedCheckAfterSendById.includes(item.id) &&
+          item.item_status === "Waiting"
+      ) || [];
+
+    if (selectAll) {
+      setSelectedRows([]);
     } else {
-      setSelectedRows((prevSelectedItems: any) =>
-        prevSelectedItems.filter((item: any) => item.id !== +checkboxId)
-      );
+      setSelectedRows(filteredArray);
     }
+
+    setSelectAll(!selectAll);
+  };
+
+  const isRowSelected = (id: number) => {
+    return selectedRows.some((row) => row.id === id);
   };
 
   const Cols = useMemo<any>(
     () => [
       {
-        header: () => {
-          const filteredArray = sortItems?.filter(
-            (item) =>
-              !disableSelectedCheckAfterSendById.includes(item.id) &&
-              item.item_status === "Waiting"
-          );
-          return (
-            <input
-              type="checkbox"
-              className="border-mainGreen text-mainGreen rounded"
-              id={crypto.randomUUID()}
-              name="selectedItem"
-              onClick={() => {
-                const allCheckBoxes = document.querySelectorAll(
-                  'input[type="Checkbox"]'
-                );
-                allCheckBoxes.forEach((checkbox) => {
-                  checkbox.checked = !selectAll;
-                });
-                setSelectAll(!selectAll);
-                setSelectedRows(filteredArray);
-              }}
-            />
-          );
-        },
+        header: () => (
+          <input
+            type="checkbox"
+            className="border-mainGreen text-mainGreen rounded"
+            checked={selectAll}
+            onChange={handleSelectAllChange}
+          />
+        ),
         accessorKey: "action",
         cell: (info: any) => {
+          const rowId = info.row.original.id;
+          const disabled = disableSelectedCheckAfterSendById.includes(rowId);
+
           return (
             <div className="flex items-center justify-center gap-4">
               <input
                 type="checkbox"
                 className={`border-mainGreen text-mainGreen rounded ${
-                  disableSelectedCheckAfterSendById.includes(
-                    info.row.original.id
-                  ) && "bg-mainGreen"
+                  disabled && "bg-mainGreen"
                 }`}
-                id={info.row.original.id}
+                id={rowId}
                 name="selectedItem"
-                onClick={(event) => handleCheckboxChange(event, info)}
-                disabled={disableSelectedCheckAfterSendById.includes(
-                  info.row.original.id
-                )}
+                checked={isRowSelected(rowId) || selectAll}
+                onChange={(event) => handleCheckboxChange(event, info)}
+                disabled={disabled}
               />
             </div>
           );
@@ -299,7 +321,13 @@ const SortPiecesSecondScreen = ({
         header: () => <span>{t("details")}</span>,
       },
     ],
-    [sortItems, receivedSuccess, disableSelectedCheckAfterSendById]
+    [
+      sortItems,
+      receivedSuccess,
+      disableSelectedCheckAfterSendById,
+      selectAll,
+      selectedRows,
+    ]
   );
 
   useEffect(() => {

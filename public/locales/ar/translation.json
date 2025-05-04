@@ -1700,5 +1700,7 @@
   "tax return": "الاقرار الضريبي",
   "loading Report": "جاري تحميل التقرير",
   "Sales return invoices": "فواتير مردود المبيعات",
-  "Search by invoice number to get the data": "ابحث برقم الفاتورة للحصول على البيانات"
+  "Search by invoice number to get the data": "ابحث برقم الفاتورة للحصول على البيانات",
+  "classification details": "تفاصيل الصنف",
+  "selling": "البيع"
 }

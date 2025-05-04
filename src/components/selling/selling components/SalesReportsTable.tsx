@@ -9,6 +9,7 @@ import { t } from "i18next";
 import React, { useMemo } from "react";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { Loading } from "../../organisms/Loading";
+import { useLocation } from "react-router-dom";
 
 const SalesReportsTable = ({
   dataSource,
@@ -20,6 +21,7 @@ const SalesReportsTable = ({
   forTax,
 }: any) => {
   const { formatReyal, formatGram } = numberContext();
+  const { pathname } = useLocation();
   let colspan;
 
   const tableHeader = useReactTable({
@@ -75,6 +77,14 @@ const SalesReportsTable = ({
   }, 0);
 
   const Totals = [
+    ...(pathname === "/selling/salesReports"
+      ? [
+          { id: crypto.randomUUID(), total: "" },
+          { id: crypto.randomUUID(), total: "" },
+          { id: crypto.randomUUID(), total: "" },
+        ]
+      : []),
+
     ...(!forTax
       ? [
           { id: crypto.randomUUID(), total: formatReyal(totalCash) },
@@ -103,6 +113,9 @@ const SalesReportsTable = ({
 
   const finalTotals = [
     { id: crypto.randomUUID(), total: "", colSpan: 1 },
+    ...(pathname === "/selling/salesReports"
+      ? [{ id: crypto.randomUUID(), total: "", colSpan: 3 }]
+      : []),
     ...(!forTax
       ? [
           {
@@ -130,6 +143,8 @@ const SalesReportsTable = ({
     switch (id) {
       case "#":
         return 1;
+      case "classification_details":
+        return 3;
       case "detailed":
         return forTax ? 1 : 2;
 

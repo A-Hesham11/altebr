@@ -44,7 +44,7 @@ export const Table = <T extends object>({
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: data.length > 10 ? 100000 : 10,
+        pageSize: data?.length > 10 ? 100000 : 10,
       },
     },
   });

@@ -24,7 +24,6 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
     bond_date: item?.date || printModalData?.bond_date,
     supplier_id: item?.supplier_id,
   };
-  console.log("🚀 ~ RejectedItemsInvoicePrint ~ clientData:", clientData);
 
   const Cols = useMemo<any>(
     () => [
@@ -165,6 +164,11 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
     return acc;
   }, 0);
 
+  const totalWagesWasted = item?.reduce((acc, curr) => {
+    acc += +curr.weight * +curr.wage;
+    return acc;
+  }, 0);
+
   const totalDiamondValue = item?.reduce((acc, curr) => {
     acc += +curr.diamond_value;
     return acc;
@@ -213,8 +217,8 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
     {
       number: t("totals"),
       weight: totalWeight,
-      wage: totalWage,
-      totalWages: totalWages,
+      wage: formatReyal(totalWage),
+      totalWages: formatReyal(totalWagesWasted),
       totalPrice: totalSellingPrice,
     },
   ];

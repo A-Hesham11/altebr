@@ -183,7 +183,7 @@ export const LoginForm = () => {
         {/* <img src={loginGif} alt="" className="myVideo" /> */}
         <img src={loginPattern} alt="" className="myVideo" />
       </div>
-      <div className="content">
+      <div className="content !h-[88%] xl:!h-[80%] !p-0">
         {/* <img
           src={logo}
           className="m-auto h-20 w-20 object-contain"
@@ -320,7 +320,7 @@ export const LoginForm = () => {
               </Button>
 
               {gold_price && (
-                <div className="fixed left-1/2 -translate-x-1/2 bottom-12  flex gap-8">
+                <div className="fixed left-1/2 -translate-x-1/2 bottom-12 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 xl:gap-8">
                   <div className="flex items-center bg-[#295E57] p-2 rounded-lg text-white font-base text-xs">
                     <BsDatabase className="fill-white text-xl" />
                     <p className=" border-l  px-1 text-base">{t("karat 18")}</p>
