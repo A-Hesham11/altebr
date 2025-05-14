@@ -6,6 +6,9 @@ import FinalPreviewBuyingPayment from "./FinalPreviewBuyingPayment";
 import { useFetch } from "../../hooks";
 import { Button } from "../../components/atoms";
 import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
+import { GlobalDataContext } from "../../context/settings/GlobalData";
+import InvoiceBasicHeader from "../../components/Invoice/InvoiceBasicHeader";
+import { formatDate } from "../../utils/date";
 
 type Client_TP = {
   amount: number;
@@ -38,29 +41,44 @@ export const BuyingFinalPreview = ({
   odwyaTypeValue,
   setOdwyaTypeValue,
 }: SellingFinalPreviewProps_TP) => {
+  console.log("🚀 ~ clientData:", clientData);
+  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
+  const { invoice_logo, gold_price } = GlobalDataContext();
+  const invoiceHeaderBasicData = {
+    first_title: "bill date",
+    first_value: formatDate(clientData?.bond_date),
+    second_title: "client name",
+    second_value: clientData?.client_value,
+    bond_date: sellingItemsData?.invoice_date,
+    bond_title: "bill no",
+    invoice_number: Number(invoiceNumber?.length),
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "broken gold purchase invoice",
+  };
   return (
     <div className="relative h-full p-10 bg-flatWhite ">
       <div className="print-section">
-        <div className="bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
-          <div className="mx-6 bill-shadow rounded-md p-6">
-            <FinalPreviewBillData
-              clientData={clientData}
-              invoiceNumber={invoiceNumber}
-            />
-          </div>
-          {ItemsTableContent}
-          <div className="mx-6 bill-shadow rounded-md p-6 my-9">
-            <FinalPreviewBuyingPayment
-              paymentData={paymentData}
-              costDataAsProps={costDataAsProps}
-              sellingItemsData={sellingItemsData}
-              odwyaTypeValue={odwyaTypeValue}
-              setOdwyaTypeValue={setOdwyaTypeValue}
-            />
-          </div>
-          <div>
-            <InvoiceFooter />
-          </div>
+        <div
+          className={`print-header ${
+            invoice_logo?.is_include_header_footer === "1"
+              ? "opacity-1"
+              : "opacity-0 h-12 print:h-80"
+          }`}
+        >
+          <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+        </div>
+        {ItemsTableContent}
+        <div className="print-footer my-6">
+          <FinalPreviewBuyingPayment
+            paymentData={paymentData}
+            costDataAsProps={costDataAsProps}
+            sellingItemsData={sellingItemsData}
+            odwyaTypeValue={odwyaTypeValue}
+            setOdwyaTypeValue={setOdwyaTypeValue}
+          />
+        </div>
+        <div>
+          <InvoiceFooter />
         </div>
       </div>
       {/* {printContent && <div style={{ display: 'none' }}>{printContent}</div>}    */}

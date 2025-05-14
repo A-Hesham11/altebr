@@ -153,52 +153,52 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
           return !!result ? info.getValue() : "---";
         },
       },
+      {
+        header: () => <span>{`${t("total weight")}`} </span>,
+        accessorKey: "total_Weight",
+        cell: (info) => {
+          const stoneWeigthByGram =
+            Number(info.row.original?.stones_weight) / 5;
+          const weight = Number(info.row.original.weight) * 0.05;
+          const result = stoneWeigthByGram > weight;
+          const valueOfWeight =
+            Number(result ? info.row.original?.stones_weight : 0) +
+            Number(info.row.original?.weight);
+          return valueOfWeight || "---";
+        },
+      },
       // {
-      //   header: () => <span>{`${t("total weight")}`} </span>,
-      //   accessorKey: "total_Weight",
-      //   cell: (info) => {
-      //     const stoneWeigthByGram =
-      //       Number(info.row.original?.stones_weight) / 5;
-      //     const weight = Number(info.row.original.weight) * 0.05;
-      //     const result = stoneWeigthByGram > weight;
-      //     const valueOfWeight =
-      //       Number(result ? info.row.original?.stones_weight : 0) +
-      //       Number(info.row.original?.weight);
-      //     return valueOfWeight || "---";
-      //   },
+      //   header: () => <span>{t("18")}</span>,
+      //   accessorKey: "gold_18",
+      //   cell: (info: any) =>
+      //     info.row.original.karat_name === "18"
+      //       ? formatGram(Number(info.row.original.weight))
+      //       : "---",
       // },
-      {
-        header: () => <span>{t("18")}</span>,
-        accessorKey: "gold_18",
-        cell: (info: any) =>
-          info.row.original.karat_name === "18"
-            ? formatGram(Number(info.row.original.weight))
-            : "---",
-      },
-      {
-        header: () => <span>{t("21")}</span>,
-        accessorKey: "gold_21",
-        cell: (info: any) =>
-          info.row.original.karat_name === "21"
-            ? formatGram(Number(info.row.original.weight))
-            : "---",
-      },
-      {
-        header: () => <span>{t("22")}</span>,
-        accessorKey: "gold_22",
-        cell: (info: any) =>
-          info.row.original.karat_name === "22"
-            ? formatGram(Number(info.row.original.weight))
-            : "---",
-      },
-      {
-        header: () => <span>{t("24")}</span>,
-        accessorKey: "gold_24",
-        cell: (info: any) =>
-          info.row.original.karat_name === "24"
-            ? formatGram(Number(info.row.original.weight))
-            : "---",
-      },
+      // {
+      //   header: () => <span>{t("21")}</span>,
+      //   accessorKey: "gold_21",
+      //   cell: (info: any) =>
+      //     info.row.original.karat_name === "21"
+      //       ? formatGram(Number(info.row.original.weight))
+      //       : "---",
+      // },
+      // {
+      //   header: () => <span>{t("22")}</span>,
+      //   accessorKey: "gold_22",
+      //   cell: (info: any) =>
+      //     info.row.original.karat_name === "22"
+      //       ? formatGram(Number(info.row.original.weight))
+      //       : "---",
+      // },
+      // {
+      //   header: () => <span>{t("24")}</span>,
+      //   accessorKey: "gold_24",
+      //   cell: (info: any) =>
+      //     info.row.original.karat_name === "24"
+      //       ? formatGram(Number(info.row.original.weight))
+      //       : "---",
+      // },
       {
         header: () => <span>{t("price before tax")} </span>,
         accessorKey: "cost",
@@ -252,20 +252,40 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
 
   const totalGold18 =
     item?.items?.reduce((acc, curr) => {
-      return curr.karat_name === "18" ? acc + Number(curr.weight || 0) : acc;
+      return curr.karat_name == "18" ? acc + Number(curr.weight || 0) : acc;
     }, 0) || 0;
   const totalGold21 =
     item?.items?.reduce((acc, curr) => {
-      return curr.karat_name === "21" ? acc + Number(curr.weight || 0) : acc;
+      return curr.karat_name == "21" ? acc + Number(curr.weight || 0) : acc;
     }, 0) || 0;
   const totalGold22 =
     item?.items?.reduce((acc, curr) => {
-      return curr.karat_name === "22" ? acc + Number(curr.weight || 0) : acc;
+      return curr.karat_name == "22" ? acc + Number(curr.weight || 0) : acc;
     }, 0) || 0;
   const totalGold24 =
     item?.items?.reduce((acc, curr) => {
-      return curr.karat_name === "24" ? acc + Number(curr.weight || 0) : acc;
+      return curr.karat_name == "24" ? acc + Number(curr.weight || 0) : acc;
     }, 0) || 0;
+
+  const totalWeight18To24 = (totalGold18 * 18) / 24;
+  const totalWeight21To24 = (totalGold21 * 21) / 24;
+  const totalWeight22To24 = (totalGold22 * 22) / 24;
+
+  const totalKaratWeight = [
+    { title: "karat 18", weight: totalGold18 },
+    { title: "karat 21", weight: totalGold21 },
+    { title: "karat 22", weight: totalGold22 },
+    { title: "karat 24", weight: totalGold24 },
+  ];
+
+
+  const totalFinalWeightIntoArabic = convertNumToArWord(
+    Math.round(
+      Number(
+        totalWeight18To24 + totalWeight21To24 + totalWeight22To24 + totalGold24
+      )
+    )
+  );
 
   const costDataAsProps = {
     totalItemsTaxes,
@@ -277,6 +297,11 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
         totalFinalCostIntoArabic: totalFinalCostIntoArabic,
         type: t("reyal"),
       },
+      {
+        title: t("total weight converted to 24"),
+        totalFinalCostIntoArabic: totalFinalWeightIntoArabic,
+        type: t("gram"),
+      },
     ],
     resultTable: [
       {
@@ -286,17 +311,18 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
           totalStonesWeight != 0
             ? formatGram(Number(totalStonesWeight))
             : "---",
-        // totalWeight:
-        //   formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
-        totalGold18,
-        totalGold21,
-        totalGold22,
-        totalGold24,
+        totalWeight:
+          formatGram(Number(totalStonesWeight) + Number(totalWeight)) || "---",
+        // totalGold18,
+        // totalGold21,
+        // totalGold22,
+        // totalGold24,
         cost: formatReyal(Number(totalCost)),
         vat: formatReyal(Number(totalItemsTaxes)),
         total: formatReyal(Number(totalFinalCost)),
       },
     ],
+    totalKaratWeight: totalKaratWeight,
   };
 
   const handlePrint = useReactToPrint({

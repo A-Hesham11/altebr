@@ -10,6 +10,8 @@ import { Button } from "../../components/atoms";
 import { numberContext } from "../../context/settings/number-formatter";
 import BuyingInvoiceTable from "./BuyingInvoiceTable";
 import { BuyingFinalPreview } from "./BuyingFinalPreview";
+import InvoiceTableData from "../../components/selling/selling components/InvoiceTableData";
+import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -59,10 +61,67 @@ const BuyingInvoiceData = ({
     0
   );
 
+  const totalGold18 =
+    sellingItemsData?.reduce((acc, curr) => {
+      return curr.karat_name == "18" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+  const totalGold21 =
+    sellingItemsData?.reduce((acc, curr) => {
+      return curr.karat_name == "21" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+  const totalGold22 =
+    sellingItemsData?.reduce((acc, curr) => {
+      return curr.karat_name == "22" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+  const totalGold24 =
+    sellingItemsData?.reduce((acc, curr) => {
+      return curr.karat_name == "24" ? acc + Number(curr.weight || 0) : acc;
+    }, 0) || 0;
+
+  const totalWeight18To24 = (totalGold18 * 18) / 24;
+  const totalWeight21To24 = (totalGold21 * 21) / 24;
+  const totalWeight22To24 = (totalGold22 * 22) / 24;
+
+  const totalKaratWeight = [
+    { title: "karat 18", weight: totalGold18 },
+    { title: "karat 21", weight: totalGold21 },
+    { title: "karat 22", weight: totalGold22 },
+    { title: "karat 24", weight: totalGold24 },
+  ];
+
+  const totalFinalCostIntoArabic = convertNumToArWord(Math.round(totalCost));
+
+  const totalFinalWeightIntoArabic = convertNumToArWord(
+    Math.round(
+      Number(
+        totalWeight18To24 + totalWeight21To24 + totalWeight22To24 + totalGold24
+      )
+    )
+  );
+
   const costDataAsProps = {
     totalCost,
     totalValueAddedTax,
     totalValueAfterTax,
+    finalArabicData: [
+      {
+        title: t("total"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+      {
+        title: t("total weight converted to 24"),
+        totalFinalCostIntoArabic: totalFinalWeightIntoArabic,
+        type: t("gram"),
+      },
+    ],
+    resultTable: [
+      {
+        number: t("totals"),
+        cost: formatReyal(totalCost),
+      },
+    ],
+    totalKaratWeight: totalKaratWeight,
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -90,12 +149,14 @@ const BuyingInvoiceData = ({
       {
         header: () => <span>{t("price per gram")} </span>,
         accessorKey: "piece_per_gram",
-        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatGram(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("value")} </span>,
         accessorKey: "value",
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
     ],
     []
@@ -106,25 +167,27 @@ const BuyingInvoiceData = ({
       {
         header: () => <span>{t("value added tax")} </span>,
         accessorKey: "value_added_tax",
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       },
       {
         header: () => <span>{t("total value")} </span>,
         accessorKey: "total_value",
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       }
     );
   }
 
   const BuyingTableComp = () => (
-    <BuyingInvoiceTable
+    <InvoiceTableData
       data={sellingItemsData}
       columns={Cols}
       paymentData={paymentData}
       costDataAsProps={costDataAsProps}
-      odwyaTypeValue={odwyaTypeValue}
-      setOdwyaTypeValue={setOdwyaTypeValue}
-    ></BuyingInvoiceTable>
+      // odwyaTypeValue={odwyaTypeValue}
+      // setOdwyaTypeValue={setOdwyaTypeValue}
+    ></InvoiceTableData>
   );
 
   // api

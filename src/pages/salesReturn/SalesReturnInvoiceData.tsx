@@ -131,12 +131,31 @@ const SalesReturnInvoiceData = ({
 
   const totalFinalCost = Number(totalCost) + Number(totalItemsTaxes);
 
+  const totalWeight18To24 = (totalGold18 * 18) / 24;
+  const totalWeight21To24 = (totalGold21 * 21) / 24;
+  const totalWeight22To24 = (totalGold22 * 22) / 24;
+
+  const totalKaratWeight = [
+    { title: "karat 18", weight: totalGold18 },
+    { title: "karat 21", weight: totalGold21 },
+    { title: "karat 22", weight: totalGold22 },
+    { title: "karat 24", weight: totalGold24 },
+  ];
+
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(totalFinalCost)
   );
 
   const totalFinalTaklfaAfterTaxDemo = convertNumToArWord(
     Math.round(totalTaklfaAfterTax)
+  );
+
+  const totalFinalWeightIntoArabic = convertNumToArWord(
+    Math.round(
+      Number(
+        totalWeight18To24 + totalWeight21To24 + totalWeight22To24 + totalGold24
+      )
+    )
   );
 
   // const costDataAsProps = {
@@ -168,15 +187,20 @@ const SalesReturnInvoiceData = ({
               totalFinalCostIntoArabic: totalFinalCostIntoArabic,
               type: t("reyal"),
             },
+            {
+              title: t("total weight converted to 24"),
+              totalFinalCostIntoArabic: totalFinalWeightIntoArabic,
+              type: t("gram"),
+            },
           ],
     resultTable: [
       {
         number: t("totals"),
-        // weight: formatGram(Number(totalWeight) + Number(totalWeightOfSelsal)),
-        totalGold18,
-        totalGold21,
-        totalGold22,
-        totalGold24,
+        weight: formatGram(Number(totalWeight) + Number(totalWeightOfSelsal)),
+        // totalGold18,
+        // totalGold21,
+        // totalGold22,
+        // totalGold24,
         cost:
           pathname === "/selling/payoff/sales-returnDemo"
             ? formatReyal(Number(totalOfTaklfa))
@@ -191,6 +215,7 @@ const SalesReturnInvoiceData = ({
             : formatReyal(Number(totalFinalCost)),
       },
     ],
+    totalKaratWeight: totalKaratWeight,
   };
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
@@ -241,48 +266,48 @@ const SalesReturnInvoiceData = ({
             ? formatReyal(Number(info.getValue()))
             : formatGram(Number(info.row.original.karatmineral_name)),
       },
+      {
+        header: () => <span>{t("weight")}</span>,
+        accessorKey: "weight",
+        cell: (info) =>
+          formatGram(
+            Number(info.getValue()) +
+              (info.row.original.sel_weight &&
+                Number(info.row.original.sel_weight))
+          ) || `${t("no items")}`,
+      },
       // {
-      //   header: () => <span>{t("weight")}</span>,
-      //   accessorKey: "weight",
-      //   cell: (info) =>
-      //     formatGram(
-      //       Number(info.getValue()) +
-      //         (info.row.original.sel_weight &&
-      //           Number(info.row.original.sel_weight))
-      //     ) || `${t("no items")}`,
+      //   header: () => <span>{t("18")}</span>,
+      //   accessorKey: "gold_18",
+      //   cell: (info: any) =>
+      //     info.row.original.karat_name === "18"
+      //       ? formatGram(Number(info.row.original.weight))
+      //       : "---",
       // },
-      {
-        header: () => <span>{t("18")}</span>,
-        accessorKey: "gold_18",
-        cell: (info: any) =>
-          info.row.original.karat_name === "18"
-            ? formatGram(Number(info.row.original.weight))
-            : "---",
-      },
-      {
-        header: () => <span>{t("21")}</span>,
-        accessorKey: "gold_21",
-        cell: (info: any) =>
-          info.row.original.karat_name === "21"
-            ? formatGram(Number(info.row.original.weight))
-            : "---",
-      },
-      {
-        header: () => <span>{t("22")}</span>,
-        accessorKey: "gold_22",
-        cell: (info: any) =>
-          info.row.original.karat_name === "22"
-            ? formatGram(Number(info.row.original.weight))
-            : "---",
-      },
-      {
-        header: () => <span>{t("24")}</span>,
-        accessorKey: "gold_24",
-        cell: (info: any) =>
-          info.row.original.karat_name === "24"
-            ? formatGram(Number(info.row.original.weight))
-            : "---",
-      },
+      // {
+      //   header: () => <span>{t("21")}</span>,
+      //   accessorKey: "gold_21",
+      //   cell: (info: any) =>
+      //     info.row.original.karat_name === "21"
+      //       ? formatGram(Number(info.row.original.weight))
+      //       : "---",
+      // },
+      // {
+      //   header: () => <span>{t("22")}</span>,
+      //   accessorKey: "gold_22",
+      //   cell: (info: any) =>
+      //     info.row.original.karat_name === "22"
+      //       ? formatGram(Number(info.row.original.weight))
+      //       : "---",
+      // },
+      // {
+      //   header: () => <span>{t("24")}</span>,
+      //   accessorKey: "gold_24",
+      //   cell: (info: any) =>
+      //     info.row.original.karat_name === "24"
+      //       ? formatGram(Number(info.row.original.weight))
+      //       : "---",
+      // },
       {
         header: () => <span>{t("cost")} </span>,
         accessorKey: "cost",
