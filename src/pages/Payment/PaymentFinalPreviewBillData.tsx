@@ -30,7 +30,6 @@ const PaymentFinalPreviewBillData = ({
   const { invoice_logo } = GlobalDataContext();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
 
   const billNumber = invoiceNumber;
 

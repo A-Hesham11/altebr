@@ -25,6 +25,7 @@ const InvoiceTableData = <T extends object>({
   costDataAsProps,
   resultTable,
 }: ReactTableProps<T>) => {
+  console.log("🚀 ~ columns:", columns);
   const table = useReactTable({
     data,
     columns,
@@ -103,6 +104,34 @@ const InvoiceTableData = <T extends object>({
             )}
           </tbody>
 
+          {/* Result Row From Total Weight */}
+          <tbody>
+            {costDataAsProps?.totalKaratWeight?.length > 0 && (
+              <tr className="text-center">
+                {costDataAsProps?.totalKaratWeight?.map((item, index) => {
+                  const totalCols = columns?.length || 1;
+                  const karats = costDataAsProps?.totalKaratWeight?.length || 1;
+                  const remainder = totalCols % karats;
+                  const baseColSpan = Math.floor(totalCols / karats);
+                  const extra = index < remainder ? 1 : 0;
+                  const colSpan = baseColSpan + extra;
+                  return (
+                    <td
+                      key={item.title}
+                      colSpan={colSpan}
+                      className=" bg-[#F3F3F3] px-2 py-2 text-mainGreen border border-[#7B7B7B4D]"
+                    >
+                      <div className="flex items-center justify-center gap-x-1.5">
+                        <h2>{t(item.title)}</h2> :<p>{item?.weight}</p>{" "}
+                        <span>{t("gram")}</span>
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            )}
+          </tbody>
+
           {/* Table Footer */}
           {costDataAsProps?.finalArabicData && (
             <tfoot>
@@ -114,7 +143,7 @@ const InvoiceTableData = <T extends object>({
                         key={index}
                         className="bg-[#F3F3F3] px-2 py-2 font-medium text-mainGreen border border-[#7B7B7B4D]"
                         colSpan={Math.ceil(
-                          columns.length /
+                          columns?.length /
                             costDataAsProps.finalArabicData.length
                         )}
                         // colSpan={columns?.length / 2}

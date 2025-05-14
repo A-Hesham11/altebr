@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { useIsRTL } from "../../hooks";
 import { numberContext } from "../../context/settings/number-formatter";
 import { GlobalDataContext } from "../../context/settings/GlobalData";
@@ -9,6 +9,10 @@ import PaymentFinalPreviewBillData from "../Payment/PaymentFinalPreviewBillData"
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
+import { authCtx } from "../../context/auth-and-perm/auth";
+import InvoiceBasicHeader from "../../components/Invoice/InvoiceBasicHeader";
+import InvoiceTableData from "../../components/selling/selling components/InvoiceTableData";
+import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 
 const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
   console.log("🚀 ~ RejectedItemsInvoicePrint ~ item:", item);
@@ -17,6 +21,8 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
   const { invoice_logo } = GlobalDataContext();
+  const { userData } = useContext(authCtx);
+  console.log("🚀 ~ RejectedItemsInvoicePrint ~ userData:", userData);
 
   const clientData = {
     client_id: item?.client_id,
@@ -204,31 +210,90 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
   const resultTable = [
     {
       number: t("totals"),
-      weight: totalWeight,
-      wage: totalWage,
-      totalWages: totalWages,
-      diamondValue: totalDiamondValue,
-      diamondWeight: totalDiamondWeight,
-      stonesWeight: totalStonesWeight,
+      weight: formatGram(Number(totalWeight)),
+      wage: formatReyal(Number(totalWage)),
+      totalWages: formatReyal(Number(totalWages)),
+      diamondValue: formatReyal(Number(totalDiamondValue)),
+      diamondWeight: formatGram(Number(totalDiamondWeight)),
+      stonesWeight: formatGram(Number(totalStonesWeight)),
     },
   ];
 
   const resultTableWasted = [
     {
       number: t("totals"),
-      weight: totalWeight,
-      wage: formatReyal(totalWage),
-      totalWages: formatReyal(totalWagesWasted),
+      weight: formatGram(Number(totalWeight)),
+      wage: formatReyal(Number(totalWage)),
+      totalWages: formatReyal(Number(totalWagesWasted)),
       totalPrice: totalSellingPrice,
     },
   ];
 
+  // const costDataAsProps = {
+  //   // totalFinalCost,
+  //   // totalGoldAmountGram,
+  //   isBranchWasted: item?.boxes2?.length !== 0 ? true : false,
+  //   recipientSignature: true,
+  //   totalItemsCount: printModalData?.itemsCount,
+  // };
+
+  const totalWeightKarat18 = item
+    ?.filter((curr) => curr.karat_name == 18)
+    ?.reduce((acc, curr) => acc + +curr.weight, 0);
+
+  const totalWeightKarat21 = item
+    ?.filter((curr) => curr.karat_name == 21)
+    ?.reduce((acc, curr) => acc + +curr.weight, 0);
+
+  const totalWeightKarat22 = item
+    ?.filter((curr) => curr.karat_name == 22)
+    ?.reduce((acc, curr) => acc + +curr.weight, 0);
+
+  const totalWeightKarat24 = item
+    ?.filter((curr) => curr.karat_name == 24)
+    ?.reduce((acc, curr) => acc + +curr.weight, 0);
+
+  const totalWeight18To24 = (totalWeightKarat18 * 18) / 24;
+  const totalWeight21To24 = (totalWeightKarat21 * 21) / 24;
+  const totalWeight22To24 = (totalWeightKarat22 * 22) / 24;
+
+  const totalFinalCostIntoArabic = convertNumToArWord(
+    Math.round(Number(totalWages))
+  );
+
+  const totalFinalWeightIntoArabic = convertNumToArWord(
+    Math.round(
+      Number(
+        totalWeight18To24 +
+          totalWeight21To24 +
+          totalWeight22To24 +
+          totalWeightKarat24
+      )
+    )
+  );
+
+  const totalKaratWeight = [
+    { title: "karat 18", weight: totalWeightKarat18 },
+    { title: "karat 21", weight: totalWeightKarat21 },
+    { title: "karat 22", weight: totalWeightKarat22 },
+    { title: "karat 24", weight: totalWeightKarat24 },
+  ];
+
   const costDataAsProps = {
-    // totalFinalCost,
-    // totalGoldAmountGram,
-    isBranchWasted: item?.boxes2?.length !== 0 ? true : false,
-    recipientSignature: true,
-    totalItemsCount: printModalData?.itemsCount,
+    finalArabicData: [
+      {
+        title: t("total cash"),
+        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
+        type: t("reyal"),
+      },
+      {
+        title: t("total weight converted to 24"),
+        totalFinalCostIntoArabic: totalFinalWeightIntoArabic,
+        type: t("gram"),
+      },
+    ],
+    resultTable: item?.boxes2?.length !== 0 ? resultTableWasted : resultTable,
+    totalKaratWeight: totalKaratWeight,
   };
 
   const totalResult = {
@@ -265,9 +330,16 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
     `,
   });
 
-  const returnInvoiceToEdara = {
-    bondNumber: printModalData?.bondNumber,
-    invoiceName: isRTL ? "سند مردود" : "rerurn bond",
+  const invoiceHeaderBasicData = {
+    first_title: "branch number",
+    first_value: item?.invoice_number || item?.bond_number || item?.id,
+    second_title: "bond date",
+    second_value: clientData?.bond_date,
+    bond_date: item?.invoice_number || item?.bond_number || item?.id,
+    bond_title: "bond number",
+    invoice_number: userData?.branch_id,
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "supply bond",
   };
 
   return (
@@ -280,39 +352,36 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
           {t("print")}
         </Button>
       </div>
-      <div ref={contentRef} className={`${isRTL ? "rtl" : "ltr"}`}>
-        <div className="bg-white rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
-          <div className="mx-5 bill-shadow rounded-md p-6">
-            <PaymentFinalPreviewBillData
-              clientData={clientData}
-              invoiceNumber={
-                item?.invoice_number || item?.id || printModalData.bondNumber
-              }
-              invoiceData={returnInvoiceToEdara}
-            />
-          </div>
+      <div
+        ref={contentRef}
+        className={`${isRTL ? "rtl" : "ltr"} container_print`}
+      >
+        <div
+          className={`print-header ${
+            invoice_logo?.is_include_header_footer === "1"
+              ? "opacity-1"
+              : "opacity-0 h-12 print:h-80"
+          }`}
+        >
+          <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+        </div>
 
-          <InvoiceTable
-            data={item}
-            columns={item?.boxes2?.length !== 0 ? ColsWasted : Cols}
+        <InvoiceTableData
+          data={item}
+          columns={item?.boxes2?.length !== 0 ? ColsWasted : Cols}
+          costDataAsProps={costDataAsProps}
+        ></InvoiceTableData>
+
+        <div className="print-footer my-6">
+          <FinalPreviewBillPayment
+            responseSellingData={item}
+            notQRCode={true}
             costDataAsProps={costDataAsProps}
-            totalResult={totalResult}
-            resultTable={
-              item?.boxes2?.length !== 0 ? resultTableWasted : resultTable
-            }
           />
+        </div>
 
-          <div className="mx-5 bill-shadow rounded-md p-6 my-9 ">
-            <FinalPreviewBillPayment
-              responseSellingData={item}
-              notQRCode={true}
-              costDataAsProps={costDataAsProps}
-            />
-          </div>
-
-          <div>
-            <InvoiceFooter />
-          </div>
+        <div>
+          <InvoiceFooter />
         </div>
       </div>
     </div>
