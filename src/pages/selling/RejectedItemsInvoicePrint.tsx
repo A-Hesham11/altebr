@@ -9,14 +9,14 @@ import PaymentFinalPreviewBillData from "../Payment/PaymentFinalPreviewBillData"
 import InvoiceTable from "../../components/selling/selling components/InvoiceTable";
 import FinalPreviewBillPayment from "../../components/selling/selling components/bill/FinalPreviewBillPayment";
 import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
+import { useLocation } from "react-router-dom";
 
 const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
-  console.log("🚀 ~ RejectedItemsInvoicePrint ~ item:", item);
-  console.log(printModalData, "🔥🔥🔥");
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
   const { invoice_logo } = GlobalDataContext();
+  const { pathname } = useLocation();
 
   const clientData = {
     client_id: item?.client_id,
@@ -217,11 +217,13 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
     {
       number: t("totals"),
       weight: totalWeight,
-      wage: formatReyal(totalWage),
+      wage: "---",
       totalWages: formatReyal(totalWagesWasted),
       totalPrice: totalSellingPrice,
     },
   ];
+
+  console.log(totalWages, totalSellingPrice, "🔥🔥🔥");
 
   const costDataAsProps = {
     // totalFinalCost,
@@ -233,7 +235,10 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
 
   const totalResult = {
     totalSelling: totalsOfWeight,
-    totalWages: totalWages + totalSellingPrice,
+    totalWages:
+      pathname === "/selling/branch-identity"
+        ? totalWagesWasted + totalSellingPrice
+        : totalWages + totalSellingPrice,
   };
 
   const handlePrint = useReactToPrint({

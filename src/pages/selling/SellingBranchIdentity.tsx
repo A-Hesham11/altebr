@@ -359,6 +359,7 @@ export const SellingBranchIdentity = () => {
   ///
   if (isLoading || isRefetching)
     return <Loading mainTitle={t("loading items")} />;
+
   return (
     <div className="px-8 md:px-16">
       <div>
