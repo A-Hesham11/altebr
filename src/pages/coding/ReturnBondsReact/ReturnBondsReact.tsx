@@ -18,12 +18,11 @@ const ReturnBondsReact = ({ title }: CodedIdentitiesProps_TP) => {
   // FETCHING DATA FROM API
   const { data, isLoading, isFetching, isRefetching, refetch } = useFetch({
     queryKey: ["return-bond-react", page, search],
-    endpoint: 
-    search === `/identity/api/v1/rejectedthwelbonds?` ||
-    search === ""
-      ? `/identity/api/v1/rejectedthwelbonds?page=${page}`
-      : `${search}`,
-    
+    endpoint:
+      search === `/identity/api/v1/rejectedthwelbonds?` || search === ""
+        ? `/identity/api/v1/rejectedthwelbonds?page=${page}`
+        : `${search}`,
+
     pagination: true,
   });
 

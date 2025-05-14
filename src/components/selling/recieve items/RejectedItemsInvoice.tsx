@@ -144,10 +144,10 @@ const RejectedItemsInvoice = ({ item }: any) => {
       },
       {
         cell: (info: any) =>
-          item?.api_gold_price
-            ? formatReyal(Number(item?.api_gold_price))
+          item?.selling_price
+            ? formatReyal(Number(item?.selling_price))
             : "---",
-        accessorKey: "api_gold_price",
+        accessorKey: "selling_price",
         header: () => <span>{t("selling price")}</span>,
       },
     ],
@@ -204,11 +204,21 @@ const RejectedItemsInvoice = ({ item }: any) => {
     return acc;
   }, 0);
 
+  const totalSellingPrice = item.items?.reduce((acc, curr) => {
+    acc += +curr.selling_price;
+    return acc;
+  }, 0);
+
+  const totalDiamondStonesValue = item?.items?.reduce((acc, curr) => {
+    acc += +curr.selling_price;
+    return acc;
+  }, 0);
+
   const resultTable = [
     {
       number: t("totals"),
       weight: formatGram(Number(totalWeight)),
-      wage: formatReyal(Number(totalWage)),
+      wage: "---",
       totalWages: formatReyal(Number(totalWages)),
       diamondValue: formatReyal(Number(totalDiamondValue)),
       diamondWeight: formatGram(Number(totalDiamondWeight)),
@@ -222,14 +232,12 @@ const RejectedItemsInvoice = ({ item }: any) => {
       weight: formatGram(Number(totalWeight)),
       wage: formatReyal(Number(totalWage)),
       totalWages: formatReyal(Number(totalWages)),
-      totalPrice: formatReyal(
-        Number(item?.api_gold_price * item?.items?.length)
-      ),
+      totalPrice: formatReyal(Number(totalSellingPrice)),
     },
   ];
 
   const totalFinalCostIntoArabic = convertNumToArWord(
-    Math.round(Number(totalWages))
+    Math.round(Number(totalWages) + Number(totalSellingPrice))
   );
 
   const totalFinalWeightIntoArabic = convertNumToArWord(
@@ -253,7 +261,7 @@ const RejectedItemsInvoice = ({ item }: any) => {
   const costDataAsProps = {
     finalArabicData: [
       {
-        title: t("total cash"),
+        title: t("total value"),
         totalFinalCostIntoArabic: totalFinalCostIntoArabic,
         type: t("reyal"),
       },

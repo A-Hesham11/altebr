@@ -26,6 +26,11 @@ const TableOfReturnBonds = ({ dataSource, setPage, page, refetch }) => {
         header: () => <span>{t("bond number")}</span>,
       },
       {
+        cell: (info: any) => info.getValue() || "-",
+        accessorKey: "branch_bond_number",
+        header: () => <span>{t("bond number in branch")}</span>,
+      },
+      {
         cell: (info: any) => {
           if (info.getValue() == "normal") {
             return "توريد عادي";

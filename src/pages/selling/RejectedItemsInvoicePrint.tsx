@@ -13,16 +13,16 @@ import { authCtx } from "../../context/auth-and-perm/auth";
 import InvoiceBasicHeader from "../../components/Invoice/InvoiceBasicHeader";
 import InvoiceTableData from "../../components/selling/selling components/InvoiceTableData";
 import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
+import { useLocation } from "react-router-dom";
 
 const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
-  console.log("🚀 ~ RejectedItemsInvoicePrint ~ item:", item);
-  console.log(printModalData, "🔥🔥🔥");
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
   const { invoice_logo } = GlobalDataContext();
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ RejectedItemsInvoicePrint ~ userData:", userData);
+  const { pathname } = useLocation();
 
   const clientData = {
     client_id: item?.client_id,
@@ -225,6 +225,7 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
       weight: formatGram(Number(totalWeight)),
       wage: formatReyal(Number(totalWage)),
       totalWages: formatReyal(Number(totalWagesWasted)),
+
       totalPrice: totalSellingPrice,
     },
   ];
@@ -298,7 +299,10 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
 
   const totalResult = {
     totalSelling: totalsOfWeight,
-    totalWages: totalWages + totalSellingPrice,
+    totalWages:
+      pathname === "/selling/branch-identity"
+        ? totalWagesWasted + totalSellingPrice
+        : totalWages + totalSellingPrice,
   };
 
   const handlePrint = useReactToPrint({
