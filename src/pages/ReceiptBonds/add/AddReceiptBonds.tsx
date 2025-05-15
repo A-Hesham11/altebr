@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import { useFetch } from "../../../hooks";
 import { Formik } from "formik";
 import AddReceiptBondsFirstStep from "./AddReceiptBondsFirstStep";
+import AddReceiptBondsSecondStep from "./AddReceiptBondsSecondStep";
 
 const AddReceiptBonds = () => {
   // STATE
@@ -10,9 +11,7 @@ const AddReceiptBonds = () => {
   const [files, setFiles] = useState([]);
   const [invoiceNumber, setInvoiceNumber] = useState(null);
   const [paymentData, setPaymentData] = useState([]);
-  console.log("🚀 ~ ExpensesPage ~ invoiceNumber:", invoiceNumber);
-
-  const [dataSource, setDataSource] = useState();
+  console.log("🚀 ~ AddReceiptBonds ~ paymentData:", paymentData);
   const [clientData, setClientData] = useState();
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
@@ -28,14 +27,12 @@ const AddReceiptBonds = () => {
     beneficiary: "",
     reason: "",
     description: "",
-    // tax: "",
-    // invoice_number: invoiceNumber,
-    // net_amount: "",
+    invoice_number: "",
   };
 
   const validationSchema = Yup.object({
     receipt_price: Yup.string().required("Receipt price is required"),
-    // invoice_number: Yup.string().required("Invoice number is required"),
+    invoice_number: Yup.string().required("Invoice number is required"),
     beneficiary: Yup.string().required("beneficiary is required"),
     agency_beneficiary: Yup.string().required("Beneficiary is required"),
     receipt_date: Yup.date().required("Receipt date is required"),
@@ -76,7 +73,13 @@ const AddReceiptBonds = () => {
             setSelectedCardId={setSelectedCardId}
           />
         )}
-        {stage === 2 && <>test 2</>}
+        {stage === 2 && (
+          <AddReceiptBondsSecondStep
+            files={files}
+            paymentData={paymentData}
+            setStage={setStage}
+          />
+        )}
       </>
     </Formik>
   );

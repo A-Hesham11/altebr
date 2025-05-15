@@ -56,6 +56,7 @@ const PaymentProccessingToManagement = ({
   setCardId,
   cardId,
   selectedCardName,
+  salesReturnDemo,
   setSelectedCardName,
   isCheckedCommission,
   setIsCheckedCommission,
@@ -237,9 +238,10 @@ const PaymentProccessingToManagement = ({
                 };
 
                 if (
-                  +data?.value === 0 ||
-                  +values.amount > +data?.value ||
-                  +values.weight > +data?.value
+                  (+data?.value === 0 ||
+                    +values.amount > +data?.value ||
+                    +values.weight > +data?.value) &&
+                  !salesReturnDemo
                 ) {
                   notify(
                     "info",

@@ -105,7 +105,6 @@ const BillInputs = ({
                       value: values.client_value,
                     },
                   })}
-                  isDisabled={invoiceNumberReturnDemo}
                   onChange={(option) => {
                     setFieldValue("client_name", option!.label);
                     setFieldValue("client_id", option!.id);

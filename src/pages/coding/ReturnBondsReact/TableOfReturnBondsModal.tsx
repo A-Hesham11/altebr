@@ -10,6 +10,7 @@ import { notify } from "../../../utils/toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { mutateData } from "../../../utils/mutateData";
 import { FilesUpload } from "../../../components/molecules/files/FileUpload";
+import { toast } from "react-toastify";
 
 type TableRow_TP = {
   itemType: string;
@@ -343,6 +344,11 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
       ) : (
         <Button
           action={() => {
+            if (!files?.length) {
+              notify("info", t("please upload files"));
+              return;
+            }
+
             setTest(true);
             setConstraintID(item?.id);
             const itemsReceived = item?.items?.map((item) => {

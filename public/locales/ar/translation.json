@@ -1706,6 +1706,15 @@
   "bond number in branch": "رقم السند بالفرع",
   "manual entry": "القيود اليدوية",
   "entry number": "رقم القيد",
-  "saving the entry in the archive":"حفظ القيد في الارشيف",
-  "comments":"التعليقات"
+  "saving the entry in the archive": "حفظ القيد في الارشيف",
+  "comments": "التعليقات",
+  "please upload files": "برجاء ارفاق المرفق",
+  "receipt bond": "سند قبض",
+  "amount paid": "المبلغ المدفوع",
+  "received from the honorable": "استلمت من المكرم",
+  "amount and value": "مبلغ وقدرة",
+  "only": "فقط لا غير",
+  "this is about": "وذلك عن",
+  "signature of bond organizer": "توقيع منظم السند",
+  "signature": "توقيع"
 }
