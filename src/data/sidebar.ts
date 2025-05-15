@@ -485,6 +485,26 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: "manual entry",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "add",
+        link: "/addManualEntry",
+        icon: CiExport,
+      },
+      {
+        id: crypto.randomUUID(),
+        label: "view",
+        link: "/viewManualEntry",
+        icon: CiExport,
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: "support",
     icon: CiExport,
     items: [

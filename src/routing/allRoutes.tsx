@@ -206,6 +206,8 @@ import SalesReturnPageDemo from "../pages/salesReturnDemo/SalesReturnPageDemo";
 import SellingTaxReturn from "../pages/Report/SellingTaxReturn";
 import PayoffTaxReturn from "../pages/Report/PayoffTaxReturn";
 import ViewSalesReturnInvoicesDemo from "../pages/salesReturnDemo/ViewSalesReturnInvoicesDemo";
+import AddManualEntry from "../pages/manualEntry/AddManualEntry";
+import ViewManualEntry from "../pages/manualEntry/ViewManualEntry";
 import ViewReceiptBonds from "../pages/ReceiptBonds/view/ViewReceiptBonds";
 
 export const AllRoutesProvider = () => {
@@ -785,6 +787,8 @@ export const AllRoutesProvider = () => {
           <Route path="/buying/purchaseBonds" element={<PurchaseBonds />} />
           {/* RECEIPT BONDS */}
           <Route path="/addReceiptBonds" element={<AddReceiptBonds />} />
+          <Route path="/addManualEntry" element={<AddManualEntry />} />
+          <Route path="/ViewManualEntry" element={<ViewManualEntry />} />
           <Route path="/viewReceiptBonds" element={<ViewReceiptBonds />} />
           <Route
             path="/buying/weightAdjustmentBonds"
