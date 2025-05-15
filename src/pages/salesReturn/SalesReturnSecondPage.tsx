@@ -126,6 +126,7 @@ const SalesReturnSecondPage = ({
               setSelectedCardId={setSelectedCardId}
               setCardId={setCardId}
               cardId={cardId}
+              salesReturnDemo={returnDemo}
               setSelectedCardName={setSelectedCardName}
               selectedCardName={selectedCardName}
               isCheckedCommission={isCheckedCommission}

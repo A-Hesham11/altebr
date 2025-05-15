@@ -206,6 +206,7 @@ import SalesReturnPageDemo from "../pages/salesReturnDemo/SalesReturnPageDemo";
 import SellingTaxReturn from "../pages/Report/SellingTaxReturn";
 import PayoffTaxReturn from "../pages/Report/PayoffTaxReturn";
 import ViewSalesReturnInvoicesDemo from "../pages/salesReturnDemo/ViewSalesReturnInvoicesDemo";
+import ViewReceiptBonds from "../pages/ReceiptBonds/view/ViewReceiptBonds";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -784,6 +785,7 @@ export const AllRoutesProvider = () => {
           <Route path="/buying/purchaseBonds" element={<PurchaseBonds />} />
           {/* RECEIPT BONDS */}
           <Route path="/addReceiptBonds" element={<AddReceiptBonds />} />
+          <Route path="/viewReceiptBonds" element={<ViewReceiptBonds />} />
           <Route
             path="/buying/weightAdjustmentBonds"
             element={<WeightAdjustmentBonds />}
