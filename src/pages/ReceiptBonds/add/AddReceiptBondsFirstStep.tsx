@@ -1,20 +1,9 @@
 import { useFormikContext } from "formik";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import PaymentProccessingToManagement, {
-  Payment_TP,
-} from "../../Payment/PaymentProccessingToManagement";
-import { authCtx } from "../../../context/auth-and-perm/auth";
+import { useEffect } from "react";
 import { useFetch } from "../../../hooks";
 import { t } from "i18next";
 import {
   BaseInputField,
-  Checkbox,
   DateInputField,
   Select,
   TextAreaField,
@@ -29,11 +18,11 @@ import PaymentProcessing from "../../../components/selling/selling components/da
 
 type TAddReceiptBondsFirstStep = {
   setStage: (value: number) => void;
-  paymentData: any[];
+  paymentData: any;
   invoiceNumber: [] | null;
   files: any[];
-  setFiles: Dispatch<SetStateAction<File>>;
-  setPaymentData: (value: any[]) => void;
+  setFiles: any;
+  setPaymentData: any;
   setClientData: any;
   sellingItemsData: any[];
   setSellingItemsData: any;
@@ -70,7 +59,7 @@ const AddReceiptBondsFirstStep = ({
   setStage,
   isTax,
 }: TAddReceiptBondsFirstStep) => {
-  const { setFieldValue, values } = useFormikContext<Payment_TP>();
+  const { setFieldValue, values } = useFormikContext<any>();
 
   const totalPaymentAmount = paymentData?.reduce((acc: any, item: any) => {
     return acc + +item.amount;
@@ -78,8 +67,8 @@ const AddReceiptBondsFirstStep = ({
 
   const { data, isLoading, isFetching, isRefetching, refetch } = useFetch<any>({
     endpoint: `/arrest/api/v1/getAllSuppliers?type=${values.type}`,
-    queryKey: ["agency_beneficiary"],
-    enabled: !!values.type,
+    queryKey: ["agency_beneficiary", values.type],
+    enabled: false, // Don't auto-fetch
     select: (data) =>
       data.map((item: any) => ({
         id: item.id,
@@ -87,10 +76,11 @@ const AddReceiptBondsFirstStep = ({
         label: item.name,
       })),
   });
-  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
-    refetch();
+    if (values.type) {
+      refetch();
+    }
   }, [values.type]);
 
   return (
@@ -152,7 +142,9 @@ const AddReceiptBondsFirstStep = ({
                 loadingPlaceholder={`${t("loading")}`}
                 options={data}
                 loading={isLoading || isFetching || isRefetching}
-                onChange={(e: any) => {}}
+                onChange={(e: any) => {
+                  setFieldValue("agency_beneficiary", e.id);
+                }}
               />
 
               <DateInputField
@@ -203,22 +195,21 @@ const AddReceiptBondsFirstStep = ({
                 />
               </div>
 
-              {/* <div>
-                <BaseInputField
-                  placeholder={`${t("invoice number")}`}
-                  id="invoice_number"
-                  name="invoice_number"
-                  label={`${t("invoice number")}`}
-                  type="number"
-                />
-              </div> */}
-
               <div>
                 <BaseInputField
                   placeholder={`${t("reason")}`}
                   id="reason"
                   name="reason"
                   label={`${t("reason")}`}
+                  type="text"
+                />
+              </div>
+              <div>
+                <BaseInputField
+                  placeholder={`${t("invoice number")}`}
+                  id="invoice_number"
+                  name="invoice_number"
+                  label={`${t("invoice number")}`}
                   type="text"
                 />
               </div>

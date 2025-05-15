@@ -1703,5 +1703,14 @@
   "Search by invoice number to get the data": "ابحث برقم الفاتورة للحصول على البيانات",
   "classification details": "تفاصيل الصنف",
   "selling": "البيع",
-  "bond number in branch": "رقم السند بالفرع"
+  "bond number in branch": "رقم السند بالفرع",
+  "please upload files": "برجاء ارفاق المرفق",
+  "receipt bond": "سند قبض",
+  "amount paid": "المبلغ المدفوع",
+  "received from the honorable": "استلمت من المكرم",
+  "amount and value": "مبلغ وقدرة",
+  "only": "فقط لا غير",
+  "this is about": "وذلك عن",
+  "signature of bond organizer": "توقيع منظم السند",
+  "signature": "توقيع"
 }
