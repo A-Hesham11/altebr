@@ -199,7 +199,7 @@ export const SellingTableInputDataDemo = ({
                   setFieldValue("category_name", option!.value);
                   setFieldValue("category_id", option!.id);
                 }}
-                showItems={true}
+                showNotDefinedType={true}
               />
             </td>
             <td>
@@ -265,7 +265,7 @@ export const SellingTableInputDataDemo = ({
                 placeholder={`${t("selling price")}`}
                 id="taklfa"
                 name="taklfa"
-                type="text"
+                type="number"
                 required
                 className={`text-center`}
                 onChange={(e) => {
@@ -285,7 +285,7 @@ export const SellingTableInputDataDemo = ({
                 placeholder={`${t("selling price after tax")}`}
                 id="taklfa_after_tax"
                 name="taklfa_after_tax"
-                type="text"
+                type="number"
                 required
                 className={`text-center`}
                 onChange={(e) => {

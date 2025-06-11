@@ -303,10 +303,10 @@ const SellingInvoiceDataDemo = ({
         karat_name: item.karat_name,
         price_gram: Number(item.taklfa) / Number(item.weight),
         vat: Number(item.taklfa_after_tax) - Number(item.taklfa),
-        taklfa: item.taklfa,
-        taklfa_after_tax: item.taklfa_after_tax,
-        cost: item.taklfa,
-        total: item.taklfa_after_tax,
+        taklfa: Number(item.taklfa),
+        taklfa_after_tax: Number(item.taklfa_after_tax),
+        cost: Number(item.taklfa),
+        total: Number(item.taklfa_after_tax),
         tax_rate: item.karat_name === "24" ? 0 : 15,
       };
     });

@@ -104,17 +104,9 @@ export const SellingTableInputData = ({
 
   const { values, setFieldValue } = useFormikContext<any>();
   console.log("🚀 ~ values:", values);
+  console.log("🚀 ~ values:", typeof +"4,718");
 
-  // const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
-  //   queryKey: ["branch-all-accepted-selling"],
-  //   endpoint:
-  //     search === ""
-  //       ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}`
-  //       : `${search}`,
-  //   onSuccess: (data) => {
-  //     setDataSource(data);
-  //   },
-  // });
+  const test = values.ta;
 
   const isSearch = values.hwya.split("").map((item) => item)?.length >= 6;
   console.log("🚀 ~ isSearch:", isSearch);
@@ -124,6 +116,9 @@ export const SellingTableInputData = ({
     endpoint: `/branchManage/api/v1/all-accepted/${userData?.branch_id}?hwya[eq]=${values.hwya}`,
     onSuccess: (data) => {
       setDataSource(data);
+    },
+    onError: (error) => {
+      notify("info", error?.response.data.message);
     },
     enabled: isSearch,
   });
@@ -528,7 +523,7 @@ export const SellingTableInputData = ({
                 placeholder={`${t("cost")}`}
                 id="cost"
                 name="cost"
-                type="text"
+                type="number"
                 onChange={(e) => {
                   setFieldValue("cost", values.value.toFixed(2));
                 }}
@@ -543,7 +538,7 @@ export const SellingTableInputData = ({
                 placeholder={`${t("selling price")}`}
                 id="taklfa"
                 name="taklfa"
-                type="text"
+                type="number"
                 required
                 onChange={(e) => {
                   setFieldValue("taklfa", (+values?.taklfa).toFixed(2));
@@ -570,7 +565,7 @@ export const SellingTableInputData = ({
                 placeholder={`${t("selling price after tax")}`}
                 id="taklfa_after_tax"
                 name="taklfa_after_tax"
-                type="text"
+                type="number"
                 required
                 onChange={(e) => {
                   setFieldValue(

@@ -120,7 +120,7 @@ export const Table = <T extends object>({
 
         {/* Navigation */}
         {showNavigation ? (
-          <div className="mt-3 flex items-center justify-end gap-5 p-2">
+          <div className="mt-3 flex items-center justify-end gap-5 p-2 no-print">
             <div className="flex items-center gap-2 font-bold">
               {t("page")}
               <span className="text-mainGreen">

@@ -596,7 +596,7 @@ const SupplierPaymentProccessing = ({
           setStockDifferenceMain(0);
         }}
       >
-        {({ values, setFieldValue, resetForm }) => {
+        {({ values, setFieldValue, handleSubmit: innerHandleSubmit }) => {
           useEffect(() => {
             if (
               cardId === 10001 ||
@@ -699,7 +699,8 @@ const SupplierPaymentProccessing = ({
                   </>
                 )}
                 <Button
-                  type="submit"
+                  type="button"
+                  action={innerHandleSubmit}
                   className="animate_from_left animation_delay-11 hover:bg-orange-600 transition-all duration-300 bg-mainOrange h-10"
                 >
                   {t("Addition")}
@@ -709,7 +710,7 @@ const SupplierPaymentProccessing = ({
                 paymentData={paymentData}
                 setEditData={setEditData}
                 setPaymentData={setPaymentData}
-              /> 
+              />
             </Form>
           );
         }}
