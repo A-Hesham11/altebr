@@ -505,6 +505,20 @@ export const sideBarItems: MenuItem_TP[] = [
 
   {
     id: crypto.randomUUID(),
+    label: "reports",
+    icon: CiExport,
+    items: [
+      {
+        id: crypto.randomUUID(),
+        label: "tax return",
+        link: "/edara/taxReturn",
+        icon: CiExport,
+      },
+    ],
+  },
+
+  {
+    id: crypto.randomUUID(),
     label: "support",
     icon: CiExport,
     items: [
