@@ -36,6 +36,7 @@ export const DocumentForm = ({
   setEditableData,
   addDocPopup,
 }: DocumentFormProps_TP) => {
+  console.log("🚀 ~ editableData:", editableData)
   console.log("🚀 ~ addDocPopup:", addDocPopup)
   ///
   /////////// VARIABLES

@@ -142,13 +142,13 @@ const PaymentBoxes = ({
       id: 1,
       account: `${t("Total gold fraction converted to 24")}`,
       value: formatReyal(Number(paymentByGram)),
-      unit: "ر.س",
+      unit: t("gram"),
     },
     {
       id: 2,
       account: `${t("Caliber difference")}`,
       value: formatReyal(Number(karatDifference)),
-      unit: "ر.س",
+      unit: t("gram"),
     },
     {
       id: 3,
