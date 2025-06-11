@@ -209,6 +209,7 @@ import ViewSalesReturnInvoicesDemo from "../pages/salesReturnDemo/ViewSalesRetur
 import AddManualEntry from "../pages/manualEntry/AddManualEntry";
 import ViewManualEntry from "../pages/manualEntry/ViewManualEntry";
 import ViewReceiptBonds from "../pages/ReceiptBonds/view/ViewReceiptBonds";
+import EdaraTaxReturn from "../pages/Edara-TaxReturn/EdaraTaxReturn";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -228,6 +229,7 @@ export const AllRoutesProvider = () => {
           {/* CODING */}
           <Route path="/coding" element={<Coding title={t("coding")} />} />
           <Route path="/show-credits" element={<CreditsDetails />} />
+          <Route path="/edara/taxReturn" element={<EdaraTaxReturn />} />
           <Route
             path="/branch-bonds"
             element={<BranchBonds title={t("branch bonds")} />}
