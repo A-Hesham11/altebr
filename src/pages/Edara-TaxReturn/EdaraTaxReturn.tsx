@@ -20,22 +20,22 @@ import { formatDate } from "../../utils/date";
 const taxPeriodOptions = [
   {
     id: 1,
-    label: t("first quarter"),
+    label: `الربع الاول`,
     value: "1",
   },
   {
     id: 2,
-    label: t("second quarter"),
+    label: "الربع الثاني",
     value: "2",
   },
   {
     id: 3,
-    label: t("third quarter"),
+    label: "الربع الثالث",
     value: "3",
   },
   {
     id: 4,
-    label: t("fourth quarter"),
+    label: "الربع الرابع",
     value: "4",
   },
 ];
@@ -168,34 +168,13 @@ const EdaraTaxReturn = () => {
     queryKey: ["excel-data-vat"],
     endpoint:
       search === "" ? `/report/api/v1/vat/${userData?.branch_id}` : `${search}`,
-    select: (data: any) =>
-      data?.data?.map((arr: any) => ({
-        hwya: arr?.hwya,
-        classification_id: arr?.classification_id,
-        category_id: arr?.category_id,
-        karat_id: arr?.karat_id,
-        karatmineral_id: arr?.karatmineral_id,
-        karat_name: arr?.karat_name,
-        model_number: arr?.model_number,
-        weight: arr?.weight,
-        remaining_weight: arr?.remaining_weight,
-        wage: arr?.wage,
-        selling_price: arr?.selling_price,
-        bond_id: arr?.bond_id,
-        mineral_id: arr?.mineral_id,
-        country_id: arr?.country_id,
-        color_id: arr?.color_id,
-        size_unit_id: arr?.size_unit_id,
-        has_stones: arr?.has_stones,
-        mezan_type: arr?.mezan_type,
-        cost: arr?.cost,
-        mezan_weight: arr?.mezan_weight,
-        cost_item: arr?.cost_item,
-        ahgar_count: arr?.ahgar_count,
-        ahgar_weight: arr?.ahgar_weight,
-      })),
+    select: (data: any) => {
+      console.log(data);
+      return [...data?.selling, ...data?.buying]?.map(
+        ({ type, ...rest }) => rest
+      );
+    },
   });
-  console.log("🚀 ~ EdaraTaxReturn ~ dataExcel:", dataExcel);
 
   const getSearchResults = async (req: any) => {
     let uri = `/report/api/v1/vat/${userData?.branch_id}`;
@@ -321,7 +300,7 @@ const EdaraTaxReturn = () => {
           });
         }}
       >
-        {({ values, handleSubmit, setFieldValue }) => {
+        {({ handleSubmit, setFieldValue }) => {
           return (
             <form onSubmit={handleSubmit} className="space-y-14">
               <div className="grid grid-cols-4 gap-4">
