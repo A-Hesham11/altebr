@@ -118,7 +118,7 @@ export const SelectBranches = ({
         fieldKey="id"
         value={newValue}
         isDisabled={!branchesLoading && !!branchesErrorReason}
-        onChange={(option) => {
+        onChange={(option: any) => {
           setNewValue(option);
         }}
       />

@@ -40,7 +40,7 @@
   "Add another document": "أضف وثيقة أخرى",
   "Adding document": "اضافة وثيقة",
   "document name": "اسم الوثيقة",
-  "document number": "رقم الوثيقة",
+  "D": "رقم الوثيقة",
   "reminder days count": "عدد ايام التذكير",
   "media": "الوسائط",
   "metal karat": "عيارات المعدن",
@@ -535,8 +535,11 @@
   "widget not available": "القطعة غير متوفرة",
   "other stones weight": "وزن الاحجار الاخري",
   "gold bonds": "سندات الذهب",
+  "gold bond": "سند الذهب",
   "diamond bonds": "سندات الالماس",
+  "diamond bond": "سند الالماس",
   "accessory bonds": "سندات المتفرقات",
+  "accessory bond": "سند المتفرقات",
   "gold": "ذهب",
   "total gold weight": "اجمالي وزن الذهب",
   "total mineral weight": "اجمالي وزن المعدن",
@@ -1733,5 +1736,6 @@
   "second quarter": "الربع الثاني",
   "third quarter": "الربع الثالث",
   "fourth quarter": "الربع الرابع",
-  "excel": "اكسيل"
+  "excel": "اكسيل",
+  "signature": "توقيع"
 }

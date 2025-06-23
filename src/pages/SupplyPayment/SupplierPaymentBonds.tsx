@@ -20,6 +20,7 @@ import { BiSpreadsheet } from "react-icons/bi";
 import PaymentToManagementTable from "../Payment/PaymentToManagementTable";
 import SupplierBondTable from "./SupplierBondTable";
 import SupplierBondInvoice from "./SupplierBondInvoice";
+import { FilesPreviewOutFormik } from "../../components/molecules/files/FilesPreviewOutFormik";
 
 const SupplierPaymentBonds = () => {
   // STATE
@@ -52,11 +53,6 @@ const SupplierPaymentBonds = () => {
     pagination: true,
   });
 
-  console.log(
-    "🚀 ~ file: VeiwPaymentToManagement.tsx:34 ~ VeiwPaymentToManagement ~ invoiceData:",
-    supplierPaymentBonds
-  );
-
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
     () => [
@@ -74,6 +70,24 @@ const SupplierPaymentBonds = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "employee_name",
         header: () => <span>{t("employee name")}</span>,
+      },
+      {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.attachment?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.attachment}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
       },
       {
         cell: (info: any) => (
