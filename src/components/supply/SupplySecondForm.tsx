@@ -77,8 +77,6 @@ export const SupplySecondForm = ({
   editData,
   setEditData,
 }: GoldSupplySecondFormProps_TP) => {
-  console.log(editData.karatmineral_id);
-
   const [dirty, setDirty] = useState(false);
   const defaultValues: OTableDataTypes =
     supply == "gold"
@@ -356,8 +354,6 @@ export const SupplySecondForm = ({
             unit: "gram",
           },
         };
-
-  console.log("🚀 ~ boxes:", boxes);
 
   const boxesView = Object.values(boxes).map((box) => {
     return {

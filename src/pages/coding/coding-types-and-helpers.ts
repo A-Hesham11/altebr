@@ -160,7 +160,7 @@ export const codingDiamondSanad_schema = yup.object().shape({
   weight: yup
     .number()
     .required(requiredTranslation)
-    .min(1, weightValidate)
+    .min(0, weightValidate)
     .max(yup.ref("left_weight")),
   has_stones: yup.boolean(),
   category_id: yup.string().trim().required(requiredTranslation),

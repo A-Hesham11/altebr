@@ -25,7 +25,6 @@ const InvoiceTableData = <T extends object>({
   costDataAsProps,
   resultTable,
 }: ReactTableProps<T>) => {
-  console.log("🚀 ~ columns:", columns);
   const table = useReactTable({
     data,
     columns,

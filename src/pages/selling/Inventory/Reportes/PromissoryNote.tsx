@@ -19,15 +19,12 @@ const PromissoryNote = ({
   date,
   reportName,
 }: any) => {
-  console.log("🚀 ~ LostItemsReports ~ dataSource:", dataSource);
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
   const { state } = useLocation();
   const [selectedEmployees, setSelectedEmployees] = useState({});
-  console.log("🚀 ~ selectedEmployees:", selectedEmployees);
 
   const totals = [
     {
@@ -79,7 +76,6 @@ const PromissoryNote = ({
       }),
     onError: (err) => console.log(err),
   });
-  console.log("🚀 ~ employeesOptions:", employeesOptions);
 
   const data = [
     {

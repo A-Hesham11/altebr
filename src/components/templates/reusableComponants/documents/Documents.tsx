@@ -47,18 +47,15 @@ export const Documents = ({
   restData,
   setShow: setShowPopup,
   editableData,
-  setEditableData
+  setEditableData,
 }: DocumentsProps_TP) => {
   ///
   /////////// STATES
   ///
   const [addDocPopup, setAddDocPopup] = useState(false);
-  console.log("🚀 ~ addDocPopup:", addDocPopup);
   const [show, setShow] = useState(false);
-  console.log("🚀 ~ show:", show);
   const [docsData, setDocsData] = useState<allDocs_TP>();
   // const [editableData, setEditableData] = useState<allDocs_TP>();
-  console.log("🚀 ~ editableData:", editableData);
   const queryClient = useQueryClient();
 
   ///
@@ -105,8 +102,6 @@ export const Documents = ({
       method: "post",
     });
   }
-
-
 
   return (
     <>

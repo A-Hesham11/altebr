@@ -10,7 +10,6 @@ import PremiumImg from "../../../../assets/premium.svg";
 
 const BillHeader = ({ invoiceNumber, locationPath }: any) => {
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ BillHeader ~ userData:", userData)
   const { gold_price } = GlobalDataContext();
   const isDisabled = userData?.is_sellingInvoice === 1;
 
@@ -36,7 +35,9 @@ const BillHeader = ({ invoiceNumber, locationPath }: any) => {
       {isDisabled ? (
         <div className="flex items-center gap-x-2 premiumGoldprice px-5 py-1.5 rounded-xl">
           <img src={PremiumImg} alt="premium" />
-          <h2 className="text-white text-sm font-semibold">{t("daily gold price")}</h2>
+          <h2 className="text-white text-sm font-semibold">
+            {t("daily gold price")}
+          </h2>
         </div>
       ) : (
         <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">

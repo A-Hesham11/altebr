@@ -45,19 +45,15 @@ const SortPiecesSecondScreen = ({
   setSanadId,
   openModal,
 }: RecieveItemsSecondScreenProps_TP) => {
-  console.log("🚀 ~ RecieveItemsSecondScreen ~ selectedItem:", selectedItem);
   const isSanadOpened = selectedItem.bond_status !== 0;
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const [selectedRows, setSelectedRows] = useState<any>([]);
-  console.log("🚀 ~ selectedRows:", selectedRows);
   const [dataSource, setDataSource] = useState({});
   const [sortItems, setSortItems] = useState([]);
-  console.log("🚀 ~ sortItems:", sortItems);
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
-  console.log("🚀 ~ selectAll:", selectAll);
   const [openAcceptModal, setOpenAcceptModal] = useState<boolean>(false);
   const [openRefusedModal, setOpenRefusedModal] = useState<boolean>(false);
   const [isItRefusedAllBtn, setIsItRefusedAllBtn] = useState<boolean>(false);
@@ -604,7 +600,6 @@ const SortPiecesSecondScreen = ({
                   const isPart = sortItems?.every(
                     (sort) => sort.item_status === "Waiting"
                   );
-                  console.log("🚀 ~ item_status:", isPart);
 
                   const receivedAllFinalValue = {
                     isPart: isPart ? 1 : 0,
@@ -615,16 +610,11 @@ const SortPiecesSecondScreen = ({
                     api_gold_price: selectedItem?.api_gold_price,
                     type: selectedItem?.type,
                   };
-                  console.log(
-                    "🚀 ~ receivedAllFinalValue:",
-                    receivedAllFinalValue
-                  );
 
                   const isSelectedAllItems =
                     selectedRows?.length === dataSource?.length
                       ? receivedAllFinalValue
                       : receivedFinalValue;
-                  console.log("🚀 ~ isSelectedAllItems:", isSelectedAllItems);
 
                   mutateReceived({
                     endpointName: "branchManage/api/v1/accept-items",
@@ -681,7 +671,6 @@ const SortPiecesSecondScreen = ({
                         : false,
                     ...(isItRefusedAllBtn ? { media: files } : {}),
                   };
-                  // console.log("🚀 ~ rejectFinalValue:", rejectFinalValue)
 
                   // const isAllRejected =
                   //   selectedItem.items.length === selectedRows.length && isItRefusedAllBtn
@@ -712,7 +701,6 @@ const SortPiecesSecondScreen = ({
                   //   selectedRows?.length === dataSource?.length
                   //     ? receivedAllFinalValue
                   //     : receivedFinalValue;
-                  // console.log("🚀 ~ isSelectedAllItems:", isSelectedAllItems);
 
                   mutateReject({
                     endpointName: "branchManage/api/v1/reject-items",

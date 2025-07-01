@@ -89,7 +89,6 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
         };
       }),
   });
-  console.log("🚀 ~ levelThreeOption:", levelThreeOption);
 
   const supportArticleColumns = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
@@ -164,7 +163,6 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
 
   // LEVEL FOUR HANDLE ADD
   const postLevelFourHandler = (values: any) => {
-    console.log(levelThreeOption);
     const invoice = articlesData?.map((article: any) => {
       return {
         name_ar: article.name_ar,
@@ -177,7 +175,6 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
         media: article.media,
       };
     });
-    console.log("🚀 ~ invoice ~ invoice:", invoice);
 
     mutate({
       endpointName: "/support/api/v1/levelFourthSupport",
@@ -205,8 +202,6 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
         _method: "put",
       },
     });
-
-    console.log(invoice);
   };
 
   useEffect(() => {
@@ -227,7 +222,6 @@ const AddSupportArticle: React.FC<AddSupportArticle_TP> = ({ editData }) => {
       }}
     >
       {({ values, setFieldValue }) => {
-        console.log("🚀 ~ values:", values);
         return (
           <Form>
             <div

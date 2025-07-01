@@ -458,14 +458,11 @@ export const System = ({ title }: SystemProps_TP) => {
       title: t("Invoice data"),
       name: "invoice_image",
       addLabel: `${t("Add invoice data")}`,
-      addComponent: (
-        <AddInvoiceHeaderData title={`${t("Add invoice data")}`} />
-      ),
+      addComponent: <AddInvoiceHeaderData title={`${t("Add invoice data")}`} />,
       viewLabel: `${t("View invoice data")}`,
       viewHandler: () => navigate("/system/invoiceHeader"),
     },
   ];
-  console.log("🚀 ~ System ~ systemCards:", systemCards.length);
 
   const openPopup = (formName: FormNames_TP) =>
     setPopupIsOpen((prev) => ({ ...prev, [formName]: true }));

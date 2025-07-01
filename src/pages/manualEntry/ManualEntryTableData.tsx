@@ -191,23 +191,36 @@ const ManualEntryTableData = ({
       {
         header: () => <span>{t("gram")}</span>,
         accessorKey: "indebted_gram",
-        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        cell: (info) => {
+          return Number(info.getValue()) > 1
+            ? formatGram(Number(info.getValue()))
+            : Number(info.getValue()) || "---";
+        },
       },
       {
         header: () => <span>{t("reyal")} </span>,
         accessorKey: "indebted_reyal",
-        cell: (info) => formatGram(Number(info.getValue())) || "---",
+        cell: (info) =>
+          Number(info.getValue()) > 1
+            ? formatGram(Number(info.getValue()))
+            : Number(info.getValue()) || "---",
       },
       {
         header: () => <span>{t("gram")} </span>,
         accessorKey: "creditor_gram",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) =>
+          Number(info.getValue()) > 1
+            ? formatReyal(Number(info.getValue()))
+            : Number(info.getValue()) || "---",
       },
 
       {
         header: () => <span>{t("reyal")} </span>,
         accessorKey: "creditor_reyal",
-        cell: (info) => formatReyal(Number(info.getValue())) || "---",
+        cell: (info) =>
+          Number(info.getValue()) > 1
+            ? formatReyal(Number(info.getValue()))
+            : Number(info.getValue()) || "---",
       },
       // {
       //   header: () => <span>{t("description")} </span>,
@@ -275,10 +288,24 @@ const ManualEntryTableData = ({
 
   const totals = [
     { value: t("total"), colSpan: 1 },
-    { value: indebtedGram, colSpan: 1 },
-    { value: indebtedReyal, colSpan: 1 },
-    { value: creditorGram, colSpan: 1 },
-    { value: creditorReyal, colSpan: 1 },
+    {
+      value: indebtedGram > 1 ? formatGram(Number(indebtedGram)) : indebtedGram,
+      colSpan: 1,
+    },
+    {
+      value:
+        indebtedReyal > 1 ? formatGram(Number(indebtedReyal)) : indebtedReyal,
+      colSpan: 1,
+    },
+    {
+      value: creditorGram > 1 ? formatGram(Number(creditorGram)) : creditorGram,
+      colSpan: 1,
+    },
+    {
+      value:
+        creditorReyal > 1 ? formatGram(Number(creditorReyal)) : creditorReyal,
+      colSpan: 1,
+    },
     {
       value: "",
       colSpan: 3,
@@ -498,9 +525,6 @@ const ManualEntryTableData = ({
                         isEdit,
                         ...restValues
                       } = values;
-
-                      console.log("🚀 ~ restValues:", restValues);
-                      console.log("🚀 ~ restValues:", restValues);
 
                       const hasNegativeValue = Object.values(restValues).some(
                         (val) => val < 0

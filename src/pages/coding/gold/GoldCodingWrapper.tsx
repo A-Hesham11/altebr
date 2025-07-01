@@ -36,7 +36,6 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   ///
   const { sanadId } = useParams();
   // const [successData, setSuccessData] = useState();
-  // console.log("🚀 ~ GoldCodingWrapper ~ successData:", successData);
   const navigate = useNavigate();
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
@@ -45,7 +44,6 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
     GoldCodingSanad_initialValues_TP[]
   >(`addedPiecesLocal_${sanadId}`);
   const [openModal, setOpenModal] = useState(false);
-  console.log("🚀 ~ GoldCodingWrapper ~ openModal:", openModal);
   const [openFinishedModal, setOpenFinishedModal] = useState(false);
   ///
   /////////// CUSTOM HOOKS
@@ -92,7 +90,6 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
     }
 
     const [piece, ...remainingPieces] = pieces;
-    console.log("🚀 ~ sendPieces ~ piece:", piece);
 
     try {
       const result = await mutateAsync({
@@ -149,7 +146,6 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
 
   // start Print
   const [open, setOpen] = useState(false);
-  console.log("🚀 ~ GoldCodingWrapper ~ open:", open);
   const contentRef = useRef();
   const printItems = JSON.parse(localStorage.getItem("printItems") || "[]");
 

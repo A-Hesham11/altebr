@@ -87,7 +87,6 @@ export const SelectBankAccount = ({
   ///
   const [newValue, setNewValue] =
     useState<SingleValue<SelectOption_TP> | null>();
-  console.log("🚀 ~ newValue:", newValue);
 
   useEffect(() => {
     setAccountNumberId(newValue && newValue);

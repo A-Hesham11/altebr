@@ -49,7 +49,6 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
       value,
     };
   });
-  console.log("🚀 ~ allData ~ allData:", allData);
 
   const validationSchema = Yup.object().shape({
     ...allData.reduce((acc, item) => {
@@ -147,7 +146,6 @@ const InventoryBrokenGoldCashBox: React.FC<InventoryBrokenGoldCashBoxProps> = ({
           onSubmit={(value) => console.log("🚀 ~ value:", value)}
         >
           {({ values, touched, errors, setFieldValue }) => {
-            console.log("🚀 ~ values:", values);
             return (
               <Form>
                 <div className="bg-[#295E5608] p-8 rounded-2xl">

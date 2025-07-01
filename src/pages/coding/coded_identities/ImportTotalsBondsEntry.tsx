@@ -3,7 +3,6 @@ import { numberContext } from "../../../context/settings/number-formatter";
 import { t } from "i18next";
 
 const ImportTotalsBondsEntry = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ ImportTotalsBondsEntry ~ item:", item)
   const { formatGram, formatReyal } = numberContext();
 
   // FOR TABLE ACCOUNTING ENTRY

@@ -119,7 +119,9 @@ const TableEntry = ({
                           : "!bg-lightGreen !text-gray-900"
                       } `}
                     >
-                      {formatGram(restriction.debtor_gram)}
+                      {restriction.debtor_gram > 1
+                        ? formatGram(restriction.debtor_gram)
+                        : restriction.debtor_gram}
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
@@ -128,7 +130,9 @@ const TableEntry = ({
                           : "!bg-lightGreen !text-gray-900"
                       } `}
                     >
-                      {formatReyal(restriction.debtor_SRA)}
+                      {restriction.debtor_SRA > 1
+                        ? formatReyal(restriction.debtor_SRA)
+                        : restriction.debtor_SRA}
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
@@ -137,7 +141,9 @@ const TableEntry = ({
                           : "!bg-lightGreen !text-gray-900"
                       } `}
                     >
-                      {formatGram(restriction.creditor_gram)}
+                      {restriction.creditor_gram > 1
+                        ? formatGram(restriction.creditor_gram)
+                        : restriction.creditor_gram}
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
@@ -146,7 +152,9 @@ const TableEntry = ({
                           : "!bg-lightGreen !text-gray-900"
                       } `}
                     >
-                      {formatReyal(restriction.creditor_SRA)}
+                      {restriction.creditor_SRA > 1
+                        ? formatReyal(restriction.creditor_SRA)
+                        : restriction.creditor_SRA}
                     </td>
                   </tr>
                 </>

@@ -82,7 +82,6 @@ const AddExpensesPolicies = ({
       queryClient.refetchQueries(["mainExpenses"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });
@@ -127,9 +126,6 @@ const AddExpensesPolicies = ({
               PostNewCard({
                 ...values,
               });
-              console.log({
-                ...values,
-              });
             }
           }}
         >
@@ -163,11 +159,7 @@ const AddExpensesPolicies = ({
                 </div>
               </div>
               <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  className="w-fit"
-                  loading={editLoading}
-                >
+                <Button type="submit" className="w-fit" loading={editLoading}>
                   {t("save")}
                 </Button>
               </div>

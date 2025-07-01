@@ -88,7 +88,6 @@ const ImportStonesTotal: React.FC<ImportTotals_TP> = ({
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ imprtPieces:", imprtPieces);
   useEffect(() => {
     refetch();
   }, [page]);
@@ -395,8 +394,11 @@ const ImportStonesTotal: React.FC<ImportTotals_TP> = ({
       );
     },
     onError: (error) => {
-      console.log(error);
-      notify("error", error?.response?.data?.message === "error" && `${t("there are no new parts")}`);
+      notify(
+        "error",
+        error?.response?.data?.message === "error" &&
+          `${t("there are no new parts")}`
+      );
     },
   });
 
@@ -573,4 +575,3 @@ const ImportStonesTotal: React.FC<ImportTotals_TP> = ({
 };
 
 export default ImportStonesTotal;
-

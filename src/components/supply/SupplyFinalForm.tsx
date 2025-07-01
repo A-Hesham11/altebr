@@ -36,8 +36,6 @@ export const SupplyFinalForm = ({
   setFormValues,
   finalData,
 }: GoldSupplyFinalFormProps_TP) => {
-  console.log("🚀 ~ finalData:", finalData)
-  console.log("🚀 ~ formValues:", formValues);
   /////////// VARIABLES
   ///
   const { formatGram, formatReyal } = numberContext();
@@ -269,7 +267,6 @@ export const SupplyFinalForm = ({
         ? ["diamond_boxes_response"]
         : ["accessory_boxes_response"],
   });
-  console.log("🚀 ~ boxesResponse:", boxesResponse);
 
   const getMyKarat = (value: string) => {
     const myKarat = karatValues!.find((item) => item.karat === value);
@@ -289,7 +286,6 @@ export const SupplyFinalForm = ({
   const mapBox =
     supply == "gold"
       ? (item: any) => {
-          console.log("🚀 ~ mapBox ~ item:", item);
           switch (item.front_key) {
             case "gold_18":
               return {
@@ -438,8 +434,7 @@ export const SupplyFinalForm = ({
 
   function sendForm() {
     const boxes = boxesResponse.map(mapBox);
-    console.log("🚀 ~ sendForm ~ boxesResponse:", boxesResponse);
-    console.log("🚀 ~ sendForm ~ boxes:", boxes);
+
     const localBond =
       supply === "gold"
         ? {
@@ -648,7 +643,6 @@ export const SupplyFinalForm = ({
           ? [...formValues?.media, ...formValues?.goods_media]
           : formValues?.media,
     };
-    console.log("🚀 ~ sendForm ~ sendData:", sendData)
 
     mutate({
       endpointName:
@@ -674,7 +668,7 @@ export const SupplyFinalForm = ({
         />
       </OuterFormLayout>
       <div className="px-4">
-        <h1 className="text-2xl mb-5 mt-10">{`${t('bond total')}`}</h1>
+        <h1 className="text-2xl mb-5 mt-10">{`${t("bond total")}`}</h1>
         {boxesView && <BoxesView boxes={boxesView!} />}
         <h1 className="text-2xl mb-5 mt-10">{`${t("bond items")}`}</h1>
         <div className="flex flex-col gap-6 items-center">

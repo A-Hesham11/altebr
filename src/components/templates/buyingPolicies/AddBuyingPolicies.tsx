@@ -82,7 +82,6 @@ const AddBuyingPolicies = ({
       queryClient.refetchQueries(["allMaximum_Buying"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.errors?.msg);
     },
   });

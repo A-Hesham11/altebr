@@ -173,7 +173,7 @@ const Deposit = () => {
       cash: values?.cash,
       media: depositFiles,
     };
-    console.log("🚀 ~ handleSubmit ~ formatedValue:", formatedValue);
+    "🚀 ~ handleSubmit ~ formatedValue:", formatedValue;
 
     mutate({
       endpointName: "/aTM/api/v1/deposit",

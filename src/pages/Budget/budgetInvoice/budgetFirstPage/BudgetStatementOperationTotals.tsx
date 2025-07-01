@@ -33,10 +33,6 @@ const BudgetStatementOperationTotals: React.FC<
       }
     );
   });
-  console.log(
-    "🚀 ~ operationDataTotals ~ operationDataTotals:",
-    operationDataTotals
-  );
 
   const totalCardCommission = operationDataTotals.reduce(
     (acc, curr) => (acc += curr.card_commission),
@@ -47,7 +43,6 @@ const BudgetStatementOperationTotals: React.FC<
     (acc, curr) => (acc += curr.card_vat),
     0
   );
-  console.log("🚀 ~ operationDataTotals:", operationDataTotals);
 
   // const totalOfCardBalance = mainCardData?.reduce((acc, curr) => {
   //   let total = acc;

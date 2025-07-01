@@ -38,7 +38,6 @@ const SelectClassification = ({
       }));
     },
   });
-  console.log("🚀 ~ SelectClassification ~ classifications:", classifications);
 
   return (
     <Select

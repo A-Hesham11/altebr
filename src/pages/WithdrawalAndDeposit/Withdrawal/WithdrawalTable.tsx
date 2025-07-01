@@ -21,10 +21,8 @@ const WithdrawalTable: React.FC<WithdrawalTable_TP> = ({
   page,
   setPage,
 }) => {
-  console.log("🚀 ~ data:", data);
   const { formatGram, formatReyal } = numberContext();
   const [selectedItem, setSelectedItem] = useState(null);
-  console.log("🚀 ~ selectedItem:", selectedItem);
   const [openEntryModal, setOpenEntryModal] = useState(false);
   const isRTL = useIsRTL();
 

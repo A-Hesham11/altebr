@@ -18,7 +18,6 @@ import { useLocation } from "react-router-dom";
 import InvoiceBasicHeader from "../../Invoice/InvoiceBasicHeader";
 
 const RejectedItemsInvoice = ({ item }: any) => {
-  console.log("🚀 ~ RejectedItemsInvoice ~ item:", item);
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();

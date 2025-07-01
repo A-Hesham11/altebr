@@ -39,7 +39,6 @@ const AddSellingPolicies = ({ editData }: SellingPoliciesProps_TP) => {
   const [jobType, setJobType] = useState();
   const [minSellingType, setMinSellingType] = useState();
   //   const [positionEmployee, setPositionEmployee] = useState();
-  //   console.log("🚀 ~ positionEmployee:", positionEmployee);
 
   const queryClient = useQueryClient();
   const isRTL = useIsRTL();
@@ -120,12 +119,12 @@ const AddSellingPolicies = ({ editData }: SellingPoliciesProps_TP) => {
         value: item.name,
         label: item.name,
         id: item.id,
-        is_selling: item.is_selling
+        is_selling: item.is_selling,
       }));
     },
   });
-  
-  const filterJobTitle = jobTitle?.filter((item) => item.is_selling !== 0)
+
+  const filterJobTitle = jobTitle?.filter((item) => item.is_selling !== 0);
 
   useEffect(() => {
     const best = {
@@ -189,132 +188,131 @@ const AddSellingPolicies = ({ editData }: SellingPoliciesProps_TP) => {
           }}
         >
           {({ values, setFieldValue, resetForm }) => {
-            console.log("🚀 ~ AddSellingPolicies ~ values:", values)
-            
-            return(
-            <Form>
-              <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
-                <Select
-                  id="job_type"
-                  label={`${t("job title")}`}
-                  name="job_type"
-                  placeholder={`${t("job title")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={filterJobTitle}
-                  fieldKey="id"
-                  value={jobType}
-                  onChange={(option: any) => {
-                    setFieldValue("job_type", option!.id);
-                    setJobType(option);
-                  }}
-                />
-                <SelectBranches
-                  required
-                  name="branch_id"
-                  editData={{
-                    branch_id: editData?.branch_id,
-                    branch_name: editData?.branch_name,
-                  }}
-                />
-                <Select
-                  id="min_selling_type"
-                  label={`${t("minimum sale type")}`}
-                  name="min_selling_type"
-                  placeholder={`${t("minimum sale type")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={minSellingTypes}
-                  fieldKey="id"
-                  value={minSellingType}
-                  onChange={(option: any) => {
-                    setFieldValue("min_selling_type", option!.value);
-                    setFieldValue("min_selling_type_id", option!.id);
-                    setMinSellingType(option);
-                  }}
-                />
-                {values?.min_selling_type === "نقدي" ? (
-                  <div>
-                    <BaseInputField
-                      id="min_discount_cash"
-                      name="min_discount_cash"
-                      type="text"
-                      label={`${t(
-                        "Sales price difference from the international price"
-                      )} (${t("monetary")})`}
-                      placeholder={`${t(
-                        "Sales price difference from the international price"
-                      )}`}
-                      onChange={() => {
-                        setFieldValue(
-                          "min_discount_cash",
-                          values?.min_discount_cash
-                        );
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div className="relative">
-                    <BaseInputField
-                      id="min_discount_rate"
-                      type="text"
-                      name="min_discount_rate"
-                      label={`${t(
-                        "Sales price difference from the international price"
-                      )} (${t("rate")})`}
-                      placeholder={`${t(
-                        "Sales price difference from the international price"
-                      )}`}
-                      onChange={(e) => {
-                        setFieldValue(
-                          "min_discount_rate",
-                          values.min_discount_rate
-                        );
-                      }}
-                      className="relative"
-                    />
-                    <span className="absolute left-3 top-9 font-bold text-mainGreen">
-                      %
-                    </span>
-                  </div>
-                )}
-                <div>
-                  <BaseInputField
-                    id="return_days"
-                    name="return_days"
-                    type="text"
-                    label={`${t("number of days response")}`}
-                    placeholder={`${t("number of days response")}`}
-                    onChange={(e) => {
-                      setFieldValue("return_days", values?.return_days);
+            return (
+              <Form>
+                <div className="grid grid-cols-3 gap-x-6 gap-y-4 items-end mb-8">
+                  <Select
+                    id="job_type"
+                    label={`${t("job title")}`}
+                    name="job_type"
+                    placeholder={`${t("job title")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={filterJobTitle}
+                    fieldKey="id"
+                    value={jobType}
+                    onChange={(option: any) => {
+                      setFieldValue("job_type", option!.id);
+                      setJobType(option);
                     }}
                   />
-                </div>
-                <div>
-                  <RadioGroup name="sales_return">
-                    <span>
-                      {t("commission rate deduction for sales returns")}
-                    </span>
-                    <div className="flex gap-x-2">
-                      <RadioGroup.RadioButton
-                        id="yes"
-                        value="yes"
-                        label={`${t("yes")}`}
-                      />
-                      <RadioGroup.RadioButton
-                        id="no"
-                        value="no"
-                        label={`${t("no")}`}
+                  <SelectBranches
+                    required
+                    name="branch_id"
+                    editData={{
+                      branch_id: editData?.branch_id,
+                      branch_name: editData?.branch_name,
+                    }}
+                  />
+                  <Select
+                    id="min_selling_type"
+                    label={`${t("minimum sale type")}`}
+                    name="min_selling_type"
+                    placeholder={`${t("minimum sale type")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={minSellingTypes}
+                    fieldKey="id"
+                    value={minSellingType}
+                    onChange={(option: any) => {
+                      setFieldValue("min_selling_type", option!.value);
+                      setFieldValue("min_selling_type_id", option!.id);
+                      setMinSellingType(option);
+                    }}
+                  />
+                  {values?.min_selling_type === "نقدي" ? (
+                    <div>
+                      <BaseInputField
+                        id="min_discount_cash"
+                        name="min_discount_cash"
+                        type="text"
+                        label={`${t(
+                          "Sales price difference from the international price"
+                        )} (${t("monetary")})`}
+                        placeholder={`${t(
+                          "Sales price difference from the international price"
+                        )}`}
+                        onChange={() => {
+                          setFieldValue(
+                            "min_discount_cash",
+                            values?.min_discount_cash
+                          );
+                        }}
                       />
                     </div>
-                  </RadioGroup>
+                  ) : (
+                    <div className="relative">
+                      <BaseInputField
+                        id="min_discount_rate"
+                        type="text"
+                        name="min_discount_rate"
+                        label={`${t(
+                          "Sales price difference from the international price"
+                        )} (${t("rate")})`}
+                        placeholder={`${t(
+                          "Sales price difference from the international price"
+                        )}`}
+                        onChange={(e) => {
+                          setFieldValue(
+                            "min_discount_rate",
+                            values.min_discount_rate
+                          );
+                        }}
+                        className="relative"
+                      />
+                      <span className="absolute left-3 top-9 font-bold text-mainGreen">
+                        %
+                      </span>
+                    </div>
+                  )}
+                  <div>
+                    <BaseInputField
+                      id="return_days"
+                      name="return_days"
+                      type="text"
+                      label={`${t("number of days response")}`}
+                      placeholder={`${t("number of days response")}`}
+                      onChange={(e) => {
+                        setFieldValue("return_days", values?.return_days);
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <RadioGroup name="sales_return">
+                      <span>
+                        {t("commission rate deduction for sales returns")}
+                      </span>
+                      <div className="flex gap-x-2">
+                        <RadioGroup.RadioButton
+                          id="yes"
+                          value="yes"
+                          label={`${t("yes")}`}
+                        />
+                        <RadioGroup.RadioButton
+                          id="no"
+                          value="no"
+                          label={`${t("no")}`}
+                        />
+                      </div>
+                    </RadioGroup>
+                  </div>
                 </div>
-              </div>
-              <div className="flex justify-end">
-                <Button type="submit" className="w-fit" loading={editLoading}>
-                  {t("save")}
-                </Button>
-              </div>
-            </Form>
-          )}}
+                <div className="flex justify-end">
+                  <Button type="submit" className="w-fit" loading={editLoading}>
+                    {t("save")}
+                  </Button>
+                </div>
+              </Form>
+            );
+          }}
         </Formik>
       </OuterFormLayout>
     </>

@@ -97,7 +97,7 @@ const AddEmployeeBenefits = ({
           id: branch.id,
           value: branch.id || "",
           label: branch.name || "",
-          number: branch.number || ""
+          number: branch.number || "",
         };
       }),
     onError: (err) => console.log(err),
@@ -117,7 +117,6 @@ const AddEmployeeBenefits = ({
       queryClient.refetchQueries(["employeeBenefits"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });

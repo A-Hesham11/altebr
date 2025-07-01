@@ -22,12 +22,9 @@ import * as Yup from "yup";
 const DepositBank = () => {
   const [showOperationPopup, setShowOperationPopup] = useState(false);
   const [selectedBankData, setSelectedBankData] = useState(null);
-  console.log("🚀 ~ DepositBank ~ selectedBankData:", selectedBankData);
   const [page, setPage] = useState(1);
   const [selectedAccountData, setSelectedAccountData] = useState(null);
-  console.log("🚀 ~ DepositBank ~ selectedAccountData:", selectedAccountData);
   const [mainCardData, setMainCardData] = useState([]);
-  console.log("🚀 ~ DepositBank ~ mainCardData:", mainCardData);
   const [withdrawalFiles, setWithdrawalFiles] = useState([]);
   const { formatReyal } = numberContext();
   const { userData } = useContext(authCtx);

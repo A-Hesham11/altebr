@@ -249,7 +249,6 @@ const BranchStocks = () => {
           }}
         >
           {({ values, setFieldValue, resetForm }) => {
-            console.log("🚀 ~ BranchStocks ~ values:", values);
             return (
               <Form className="w-full">
                 <div className="flex w-full justify-between items-end gap-3">

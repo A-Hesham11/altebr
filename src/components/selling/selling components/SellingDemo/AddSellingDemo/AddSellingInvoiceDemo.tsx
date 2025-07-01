@@ -16,10 +16,8 @@ import SellingInvoiceDataDemo from "./SellingInvoiceDataDemo";
 
 const AddSellingInvoiceDemo = () => {
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
-  console.log("🚀 ~ AddSellingInvoice ~ dataSource:", dataSource);
   const [stage, setStage] = useState<number>(1);
   const [clientData, setClientData] = useState<ClientData_TP>();
-  console.log("🚀 ~ AddSellingInvoice ~ clientData:", clientData);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [sellingItemsOfWeigth, setSellingItemsOfWeight] = useState([]);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
@@ -27,7 +25,6 @@ const AddSellingInvoiceDemo = () => {
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const { invoice_logo } = GlobalDataContext();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ AddSellingInvoice ~ userData:", userData);
 
   const initialValues: Selling_TP = {
     classification_id: "",
@@ -78,7 +75,6 @@ const AddSellingInvoiceDemo = () => {
     endpoint: `branchManage/api/v1/clients/2`,
     queryKey: ["client_infio"],
   });
-  console.log("🚀 ~ AddSellingInvoiceDemo ~ clientInfo:", clientInfo);
 
   // const invoiceHeaderData = {
   //   client_id: clientData?.client_id,
@@ -103,10 +99,6 @@ const AddSellingInvoiceDemo = () => {
     bond_date: formatDate(clientData?.bond_date),
     client_id: clientData?.client_id,
   };
-  console.log(
-    "🚀 ~ AddSellingInvoiceDemo ~ invoiceHeaderBasicData:",
-    invoiceHeaderBasicData
-  );
 
   return (
     <Formik

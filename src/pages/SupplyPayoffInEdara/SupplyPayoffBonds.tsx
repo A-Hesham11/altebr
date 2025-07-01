@@ -29,7 +29,6 @@ const SupplyPayoffBonds = () => {
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [returnInvoiceModal, setOpenReturnInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
-  console.log("🚀 ~ SupplyPayoffBonds ~ selectedItem:", selectedItem);
   const [search, setSearch] = useState("");
   const { invoice_logo } = GlobalDataContext();
 

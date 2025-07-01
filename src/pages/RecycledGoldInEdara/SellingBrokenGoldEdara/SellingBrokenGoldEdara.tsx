@@ -13,15 +13,12 @@ import SellingSecondpage from "../../../components/selling/selling components/Se
 
 const SellingBrokenGoldEdara = () => {
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
-  console.log("🚀 ~ AddSellingInvoice ~ dataSource:", dataSource);
   const [stage, setStage] = useState<number>(1);
   const [clientData, setClientData] = useState<ClientData_TP>();
-  console.log("🚀 ~ AddSellingInvoice ~ clientData:", clientData);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [sellingItemsOfWeigth, setSellingItemsOfWeight] = useState([]);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [invoiceNumber, setInvoiceNumber] = useState([]);
-  console.log("🚀 ~ SellingBrokenGoldEdara ~ invoiceNumber:", invoiceNumber);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const { invoice_logo } = GlobalDataContext();
 
@@ -64,7 +61,6 @@ const SellingBrokenGoldEdara = () => {
     },
     pagination: true,
   });
-  console.log("🚀 ~ SellingBrokenGoldEdara ~ data:", data);
 
   const invoiceHeaderData = {
     client_id: clientData?.client_id,
@@ -92,10 +88,6 @@ const SellingBrokenGoldEdara = () => {
     client_id: clientData?.client_id,
     supplier_id: clientData?.supplier_id,
   };
-  console.log(
-    "🚀 ~ SellingBrokenGoldEdara ~ invoiceHeaderBasicData:",
-    invoiceHeaderBasicData
-  );
 
   return (
     <Formik

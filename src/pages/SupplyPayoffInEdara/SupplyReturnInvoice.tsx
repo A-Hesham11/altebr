@@ -31,7 +31,6 @@ const SupplyReturnInvoice = ({
   item?: {};
   invoiceHeaderBasicData?: {};
 }) => {
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();

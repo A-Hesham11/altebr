@@ -56,7 +56,6 @@ const AddWorkHours = ({ title, editData, setShow, refetch }: any) => {
       queryClient.refetchQueries(["work"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });
@@ -102,9 +101,6 @@ const AddWorkHours = ({ title, editData, setShow, refetch }: any) => {
               });
             } else {
               PostNewCard({
-                ...values,
-              });
-              console.log({
                 ...values,
               });
             }

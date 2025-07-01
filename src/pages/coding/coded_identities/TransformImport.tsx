@@ -75,12 +75,10 @@ const TransformImport = ({
       }),
     onError: (err) => console.log(err),
   });
-  console.log("🚀 ~ branchesOptions:", branchesOptions);
 
   const filterBranchesOptions = branchesOptions?.filter(
     (branch: any) => branch.id !== 1
   );
-  console.log("🚀 ~ filterBranchesOptions:", filterBranchesOptions);
 
   const {
     data: operationTypeSelect,
@@ -93,7 +91,6 @@ const TransformImport = ({
     queryKey: ["operation-import-data"],
     onError: (err) => console.log(err),
   });
-  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
 
   useEffect(() => {
     refetchOperationTypeSelect();
@@ -294,7 +291,6 @@ const TransformImport = ({
   const operationTypeSelectInclude = operationTypeSelect?.map(
     (operation: any) => operation.id
   );
-  console.log("🚀 ~ operationTypeSelectInclude:", operationTypeSelectInclude);
 
   // useEffect(() => {
   // const operationTypeSelectInclude = operationTypeSelect?.map(

@@ -62,6 +62,11 @@ const SupplierPaymentBonds = () => {
         header: () => <span>{t("invoice number")}</span>,
       },
       {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "bond_number",
+        header: () => <span>{t("bond number")}</span>,
+      },
+      {
         cell: (info: any) => info.getValue(),
         accessorKey: "date",
         header: () => <span>{t("date")}</span>,
@@ -77,9 +82,9 @@ const SupplierPaymentBonds = () => {
         cell: (info: any) => {
           return (
             <div className="w-[30%] m-auto">
-              {info?.row.original?.attachment?.length > 0 ? (
+              {info?.row.original?.images?.length > 0 ? (
                 <FilesPreviewOutFormik
-                  images={info?.row.original?.attachment}
+                  images={info?.row.original?.images}
                   preview
                 />
               ) : (

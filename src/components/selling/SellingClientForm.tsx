@@ -53,7 +53,6 @@ const SellingClientForm = () => {
       queryClient.refetchQueries(["all-client"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error");
     },
   });

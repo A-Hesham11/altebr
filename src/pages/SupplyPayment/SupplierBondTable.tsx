@@ -12,7 +12,6 @@ import {
 } from "@tanstack/react-table";
 
 const SupplierBondTable = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SupplierBondTable ~ item:", item);
   const { formatReyal, formatGram } = numberContext();
 
   const totalValueReyal = item?.items.reduce((acc, item) => {
@@ -121,7 +120,7 @@ const SupplierBondTable = ({ item }: { item?: {} }) => {
   return (
     <>
       <div className="mt-8">
-        <div className="my-8"> 
+        <div className="my-8">
           <h2 className="text-xl mb-5 font-bold">{t("accounting entry")}</h2>
           <table className="min-w-full text-center">
             <thead className="border-b bg-mainGreen">
@@ -180,9 +179,7 @@ const SupplierBondTable = ({ item }: { item?: {} }) => {
         </div>
         <div>
           <h2 className="text-xl mb-5 font-bold">{t("accounting entry")}</h2>
-          <div
-            className={`w-full flex flex-col gap-4`}
-          >
+          <div className={`w-full flex flex-col gap-4`}>
             <table className="min-w-full text-center">
               <thead className="border-b bg-mainGreen">
                 <tr>
@@ -205,7 +202,6 @@ const SupplierBondTable = ({ item }: { item?: {} }) => {
               </thead>
               <tbody>
                 {restrictions?.map((restriction, i) => {
-                  console.log("🚀 ~ {restrictions?.map ~ i:", i)
                   return (
                     <>
                       <tr key={i} className="border-b">

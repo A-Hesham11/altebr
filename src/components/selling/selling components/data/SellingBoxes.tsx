@@ -36,7 +36,6 @@ const SellingBoxes = ({ sellingItemsData }: any) => {
       +total + (Number(item.cost) + Number(item.wage) * Number(item.weight)),
     0
   );
-  console.log("🚀 ~ SellingBoxes ~ supplyPayOffTaklfa:", supplyPayOffTaklfa);
 
   const supplyPayOffTotalTaklfa = supplyPayOffTaklfa + invoiceTotalVat;
 

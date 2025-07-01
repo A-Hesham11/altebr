@@ -42,7 +42,6 @@
 // }: RecieveItemsFirstScreenProps_TP) => {
 //   const [selectedItem, setSelectedItem] = useState(null)
 //   const [stage, setStage] = useState(null)
-//   console.log("🚀 ~ selectedItem:", selectedItem)
 //   const isRTL = useIsRTL();
 //   const navigate = useNavigate();
 //   const { userData } = useContext(authCtx);
@@ -51,7 +50,6 @@
 //   const [page, setPage] = useState<number>(1);
 //   const [sortItems, setSortItems] = useState(localStorage.getItem("sortItems"));
 //   const dataSource = newData;
-//   console.log("🚀 ~ RecieveItemsFirstScreen ~ dataSource:", dataSource);
 //   const [search, setSearch] = useState("");
 //   const [openModal, setOpenModal] = useState(false);
 //   const [openMardodModal, setOpenMardodModal] = useState(false);
@@ -329,44 +327,42 @@
 
 // export default RecentBondsPage;
 
-import { useState } from "react"
-import { RecivedItemTP } from "../../../utils/selling"
-import { AcceptedItemsAccountingEntry } from "../../../components/selling/recieve items/AcceptedItemsAccountingEntry"
-import RecentItemsFirstScreen from "./RecentItemsFirstScreen"
-import RecentItemsSecondScreen from "./RecentItemsSecondScreen"
+import { useState } from "react";
+import { RecivedItemTP } from "../../../utils/selling";
+import { AcceptedItemsAccountingEntry } from "../../../components/selling/recieve items/AcceptedItemsAccountingEntry";
+import RecentItemsFirstScreen from "./RecentItemsFirstScreen";
+import RecentItemsSecondScreen from "./RecentItemsSecondScreen";
 
 const RecentBondsPage = () => {
-    // states
-    const [stage, setStage] = useState<number>(1)
-    const [sanadId, setSanadId] = useState<number>(0)
-    const [selectedItem, setSelectedItem] = useState<RecivedItemTP>({} as RecivedItemTP)
+  // states
+  const [stage, setStage] = useState<number>(1);
+  const [sanadId, setSanadId] = useState<number>(0);
+  const [selectedItem, setSelectedItem] = useState<RecivedItemTP>(
+    {} as RecivedItemTP
+  );
 
-    // conditional rendering
-    const recieveItemsSecondScreen: { [key: string]: any } = {
-        1: <RecentItemsFirstScreen
-            selectedItem={selectedItem}
-            setSelectedItem={setSelectedItem}
-            setStage={setStage}
-            setSanadId={setSanadId}
-            sanadId={sanadId}
-        />,
-        2: <RecentItemsSecondScreen
-            selectedItem={selectedItem}
-            setStage={setStage}
-            setSanadId={setSanadId}
-        />,
-        3: <AcceptedItemsAccountingEntry
-            sanadId={sanadId}
-            setStage={setStage}
-        />,
+  // conditional rendering
+  const recieveItemsSecondScreen: { [key: string]: any } = {
+    1: (
+      <RecentItemsFirstScreen
+        selectedItem={selectedItem}
+        setSelectedItem={setSelectedItem}
+        setStage={setStage}
+        setSanadId={setSanadId}
+        sanadId={sanadId}
+      />
+    ),
+    2: (
+      <RecentItemsSecondScreen
+        selectedItem={selectedItem}
+        setStage={setStage}
+        setSanadId={setSanadId}
+      />
+    ),
+    3: <AcceptedItemsAccountingEntry sanadId={sanadId} setStage={setStage} />,
+  };
 
-    }
+  return <>{recieveItemsSecondScreen[stage]}</>;
+};
 
-    return (
-        <>
-            {recieveItemsSecondScreen[stage]}
-        </>
-    )
-}
-
-export default RecentBondsPage
+export default RecentBondsPage;

@@ -41,7 +41,6 @@ const BankBudgetInEdaraHeader: React.FC<BudgetFirstPageHeader_TP> = ({
   setDateFrom,
   setDateTo,
 }) => {
-  console.log("🚀 ~ selectedBankData:", selectedBankData);
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const { values, setFieldValue } = useFormikContext();
@@ -66,7 +65,6 @@ const BankBudgetInEdaraHeader: React.FC<BudgetFirstPageHeader_TP> = ({
       });
     },
   });
-  console.log("🚀 ~ allBanksOption:", allBanksOption);
 
   useEffect(() => {
     if (allBanksOption?.length === 1) {
@@ -85,7 +83,6 @@ const BankBudgetInEdaraHeader: React.FC<BudgetFirstPageHeader_TP> = ({
     queryKey: ["accounts-option_Edara", selectedBankData?.id],
     select: (data) => {
       return data?.map((bank) => {
-        console.log("🚀 ~ returndata?.map ~ bank:", bank)
         return {
           id: bank?.id,
           label: bank?.main_account_number,
@@ -96,7 +93,6 @@ const BankBudgetInEdaraHeader: React.FC<BudgetFirstPageHeader_TP> = ({
     },
     enabled: !!selectedBankData?.id,
   });
-  console.log("🚀 ~ accountsOption:", accountsOption);
 
   useEffect(() => {
     if (accountsOption?.length === 1) {

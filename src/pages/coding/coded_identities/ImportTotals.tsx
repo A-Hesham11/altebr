@@ -88,7 +88,6 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ imprtPieces:", imprtPieces);
   useEffect(() => {
     refetch();
   }, [page]);
@@ -395,8 +394,11 @@ const ImportTotals: React.FC<ImportTotals_TP> = ({
       );
     },
     onError: (error) => {
-      console.log(error);
-      notify("error", error?.response?.data?.message === "error" && `${t("there are no new parts")}`);
+      notify(
+        "error",
+        error?.response?.data?.message === "error" &&
+          `${t("there are no new parts")}`
+      );
     },
   });
 
@@ -595,7 +597,6 @@ export default ImportTotals;
 // }
 
 // const ImportTotals: React.FC<ImportTotals_TP> = ({ totals, pieces }) => {
-//   console.log("🚀 ~ pieces:", pieces);
 //   // DATA FROM THE RESPONSE ON MUTATE (WITH KEY "get")
 //   const { formatReyal, formatGram } = numberContext();
 //   const [IdentitiesModal, setOpenIdentitiesModal] = useState(false);
@@ -603,9 +604,7 @@ export default ImportTotals;
 //   const [page, setPage] = useState(1);
 //   const isRTL = useIsRTL();
 //   const [selectedPieces, setSelectedPieces] = useState([]);
-//   console.log("🚀 ~ selectedPieces:", selectedPieces);
 //   const [editedExcelData, setEditedExcelData] = useState([]);
-//   console.log("🚀 ~ editedExcelData:", editedExcelData);
 
 //   const isChecked = (hwya: string) =>
 //     selectedPieces.some((item) => item.hwya === hwya);

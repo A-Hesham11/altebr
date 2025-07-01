@@ -21,9 +21,8 @@ const ViewInventoryBonds = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [openEntry, setOpenEntry] = useState<boolean>(false);
   const [entryItemData, setEntryItemData] = useState<any>([]);
-  console.log("🚀 ~ ViewInventoryBonds ~ entryItemData:", entryItemData)
   const [entryItemLostData, setEntryItemLostData] = useState<any>([]);
-  console.log("🚀 ~ ViewInventoryBonds ~ entryItemLostData:", entryItemLostData)
+
   const [page, setPage] = useState<number>(1);
   const [openRowId, setOpenRowId] = useState(null);
   const [editEmployees, setEditEmployees] = useState({});
@@ -187,7 +186,7 @@ const ViewInventoryBonds = () => {
                   <BiSpreadsheet
                     onClick={() => {
                       setEntryItemData(info.row.original);
-                      setEntryItemLostData(info.row.original)
+                      setEntryItemLostData(info.row.original);
                       setOpenEntry(true);
                     }}
                     size={23}

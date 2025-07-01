@@ -109,8 +109,6 @@ const PaymentProccessingToManagement = ({
     0
   );
 
-  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice);
-
   const totalCommissionOfoneItem = sellingItemsData?.reduce(
     (total, item) => Number(total) + Number(item.commission_oneItem),
     0
@@ -121,20 +119,16 @@ const PaymentProccessingToManagement = ({
       Number(total) + (Number(item.cost_after_tax) || Number(item.amount)),
     0
   );
-  console.log("🚀 ~ amountRemaining:", amountRemaining);
 
   const invoiceTotalOfSalesReturn = sellingItemsData.reduce(
     (total, item) => Number(total) + Number(item.total),
     0
   );
-  console.log("🚀 ~ invoiceTotalOfSalesReturn:", invoiceTotalOfSalesReturn);
 
   const amountIsPaid =
     isCheckedCommission === true
       ? invoiceTotalOfSalesReturn
       : Number(totalPriceInvoice);
-
-  console.log("🚀 ~ amountIsPaid:", amountIsPaid);
 
   const cashId =
     locationPath === "/selling/payoff/sales-return" ||
@@ -160,7 +154,6 @@ const PaymentProccessingToManagement = ({
     },
     enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
   });
-  console.log("🚀 ~ data:", data);
 
   const costRemaining =
     locationPath === "/selling/payoff/sales-return"
@@ -172,8 +165,6 @@ const PaymentProccessingToManagement = ({
       : locationPath === "/selling/reimbursement"
       ? data?.value
       : Number(totalPriceInvoice) - Number(amountRemaining);
-
-  console.log("🚀 ~ costRemaining:", costRemaining);
 
   useEffect(() => {
     if (cardId !== null && cardFrontKey !== null) {
@@ -197,7 +188,6 @@ const PaymentProccessingToManagement = ({
             : validationSchemaOfAmount()
         }
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
-          console.log("🚀 ~ values:", values);
           if (selectedCardId) {
             if (editData) {
               const updatedPaymentData = paymentData.map((item) =>
@@ -265,7 +255,6 @@ const PaymentProccessingToManagement = ({
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
-          console.log("🚀 ~ values:", values);
           useEffect(() => {
             if (
               cardId === 10001 ||

@@ -64,13 +64,11 @@ type Entry_TP = {
 };
 
 const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
-  console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   // const [endpointApi, setEndpointApi] = useState("");
   const [test, setTest] = useState(false);
   const [constraintID, setConstraintID] = useState("");
   const [files, setFiles] = useState([]);
-  console.log("🚀 ~ TableOfReturnBondsModal ~ files:", files);
 
   const isRTL = useIsRTL();
 
@@ -106,7 +104,6 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
       refetch();
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error.response.data.message);
     },
   });

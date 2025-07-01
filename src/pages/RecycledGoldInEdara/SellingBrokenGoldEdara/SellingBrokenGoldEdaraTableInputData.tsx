@@ -39,18 +39,13 @@ export const SellingBrokenGoldEdaraTableInputData = ({
   sellingItemsData,
   setSellingItemsData,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
 
   const { values, setFieldValue } = useFormikContext<any>();
-  console.log("🚀 ~ values:", values);
   const taxRate = values.karat_name === "24" ? 0 : userData?.tax_rate / 100;
-  console.log("🚀 ~ taxRate:", taxRate);
 
   const { gold_price } = GlobalDataContext();
-  console.log("🚀 ~ gold_price:", gold_price);
 
   const goldPriceFromKarat = {
     18: gold_price?.price_gram_18k,

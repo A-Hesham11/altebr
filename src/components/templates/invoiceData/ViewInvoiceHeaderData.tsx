@@ -49,7 +49,6 @@ const ViewInvoiceHeaderData = () => {
     view: false,
   });
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
-  console.log("🚀 ~ ViewInvoiceHeaderData ~ dataSource:", dataSource);
   const [editData, setEditData] = useState<Cards_Props_TP>();
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>();
   const [page, setPage] = useState<number>(1);
@@ -96,7 +95,6 @@ const ViewInvoiceHeaderData = () => {
         header: () => <span>{t("actions")}</span>,
         accessorKey: "action",
         cell: (info) => {
-          console.log("🚀 ~ ViewInvoiceHeaderData ~ info:", info.row.original);
           return (
             <div className="flex items-center justify-center gap-4">
               <EditIcon
@@ -134,9 +132,7 @@ const ViewInvoiceHeaderData = () => {
     queryKey: ["InvoiceHeader_Data"],
     pagination: true,
     onSuccess(data) {
-      console.log("🚀 ~ onSuccess ~ data:", data);
       const returnData = data?.data.reduce((acc, item) => {
-        console.log(item.key, item.value);
         acc[item.key] = item.value;
         return acc;
       }, {});

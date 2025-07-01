@@ -85,7 +85,6 @@ export const PhoneInput = ({
             {label}
           </Label>
           <BasePhoneInput
-            // ref={console.log("ref")}
             onBlur={handleBlur(name)}
             className={`${phoneInput({error: touched[name] && !!errors.phone,})} pr-0 ${disabled && "bg-[#f2f2f2]"}`}
             flags={flags}

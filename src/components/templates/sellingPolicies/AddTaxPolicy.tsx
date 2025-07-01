@@ -211,7 +211,6 @@ const AddTaxPolicy = ({ editData }: SellingPoliciesProps_TP) => {
       }),
     onError: (err) => console.log(err),
   });
-  console.log("🚀 ~ AddTaxPolicy ~ branchesOptions:", branchesOptions);
 
   return (
     <>
@@ -223,7 +222,6 @@ const AddTaxPolicy = ({ editData }: SellingPoliciesProps_TP) => {
             if (editData) {
               // PostCardEdit({...values , karat_id:editData?.karat_id, category_id:editData?.category_id})
               PostCardEdit(values);
-              // console.log("🚀 ~ file: AddTaxPolicy.tsx:241 ~ values:",{...values, karat_id:editData?.karat_id, category_id:editData?.category_id})
             } else {
               PostNewCard(values);
               // const items = addTaxes.map((item) => {

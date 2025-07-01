@@ -304,7 +304,6 @@ const ExpensesInvoice: React.FC<ExpensesInvoiceProps> = ({
             type="submit"
             loading={false}
             action={() => {
-              console.log("🚀 ~ values:", values);
               if (values.expense_price === "") {
                 notify("info", `${t("please enter expense price")}`);
                 return;

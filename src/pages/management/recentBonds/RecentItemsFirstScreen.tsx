@@ -40,17 +40,14 @@ const RecentItemsFirstScreen = ({
   setStage,
   setSanadId,
 }: RecieveItemsFirstScreenProps_TP) => {
-  console.log("🚀 ~ selectedItem:", selectedItem);
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const { userData } = useContext(authCtx);
   const [newData, setNewData] = useState([]);
-  console.log("🚀 ~ newData:", newData);
   const [sortsData, setSortsData] = useState([]);
   const [page, setPage] = useState<number>(1);
   const [sortItems, setSortItems] = useState(localStorage.getItem("sortItems"));
   const dataSource = newData;
-  console.log("🚀 ~ RecieveItemsFirstScreen ~ dataSource:", dataSource);
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [openMardodModal, setOpenMardodModal] = useState(false);

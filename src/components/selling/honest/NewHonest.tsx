@@ -36,7 +36,6 @@ export const NewHonest = () => {
   /////////// STATES
   ///
   const [sanadData, setSanadData] = useState({});
-  console.log("🚀 ~ NewHonest ~ sanaData:", sanadData);
   const [tableData, setTableData] = useState<any>([]);
   const [paymentData, setPaymentData] = useState([]);
   const [clientData, setClientData] = useState<string>({});

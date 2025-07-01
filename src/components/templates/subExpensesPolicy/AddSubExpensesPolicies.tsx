@@ -50,7 +50,6 @@ const AddSubExpensesPolicies = ({
   refetch: refetchTable,
   idInBranch,
 }: BuyingPoliciesProps_TP) => {
-  console.log("🚀 ~ idInBranch:", idInBranch);
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
@@ -90,7 +89,6 @@ const AddSubExpensesPolicies = ({
       queryClient.refetchQueries(["mainExpenses"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });
@@ -191,10 +189,6 @@ const AddSubExpensesPolicies = ({
               });
             } else {
               PostNewCard({
-                ...values,
-                branch_id: idInBranch ? idInBranch : branchId,
-              });
-              console.log({
                 ...values,
                 branch_id: idInBranch ? idInBranch : branchId,
               });

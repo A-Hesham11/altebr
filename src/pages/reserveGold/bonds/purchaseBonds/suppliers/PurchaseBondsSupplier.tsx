@@ -52,10 +52,6 @@ const PurchaseBondsSupplier = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log(
-    "🚀 ~ buyingBondsSupplier ~ buyingBondsSupplier:",
-    buyingBondsSupplier
-  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(

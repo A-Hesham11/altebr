@@ -99,7 +99,6 @@ export function AccessoriesTable({
       <Formik
         initialValues={defaultValues}
         onSubmit={(values, { resetForm, setFieldValue }) => {
-          console.log(values);
           const uniqueID = crypto.randomUUID(); // because i need the same id for both data of row and boxes
           // setData((prev) => [...Array.from(prev), { ...values, id: uniqueID }])
           setData((prev) =>

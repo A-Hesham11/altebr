@@ -33,8 +33,6 @@ const SupplyPayoffSecondPage = ({
   supplierId,
   mardodItemsId,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
-
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
@@ -62,11 +60,9 @@ const SupplyPayoffSecondPage = ({
   }, 0);
 
   const totalwages = sellingItemsData.reduce((acc, card) => {
-    console.log("🚀 ~ totalwages ~ card:", card);
     acc += +card.wage * +card.weight;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalwages ~ totalwages:", totalwages);
 
   const totalFinalCost =
     Number(totalCost) + Number(totalItemsTaxes) + Number(totalwages);

@@ -44,13 +44,10 @@ export const AdministrativeStructure = ({
 
   // states
   const [dataSource, setDataSource] = useState<PermissionGroup_TP[]>([]);
-  console.log("🚀 ~ dataSource:", dataSource);
   const [open, setOpen] = useState<boolean>(false);
   const [model, setModel] = useState(false);
   const [editData, setEditData] = useState<any>();
-  console.log("🚀 ~ editData:", editData)
   const [deleteData, setDeleteData] = useState<any>();
-  console.log("🚀 ~ deleteData:", deleteData);
 
   ///
   const AddAdministrative = (
@@ -73,8 +70,6 @@ export const AdministrativeStructure = ({
     },
     pagination: true,
   });
-
-  console.log("🚀 ~ data:", data ); 
 
   const { mutate, isLoading: isDeleting } = useMutate({
     mutationFn: mutateData,

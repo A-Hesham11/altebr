@@ -28,7 +28,6 @@ const WasteSupplyRejectedEntry = ({ boxes, currentBox }: any) => {
           : 0,
     })
   );
-  console.log("🚀 ~ WasteSupplyRejectedEntry ~ restrictions:", restrictions);
 
   // group by account
 
@@ -38,13 +37,7 @@ const WasteSupplyRejectedEntry = ({ boxes, currentBox }: any) => {
     return prev;
   }, [] as typeof restrictions);
 
-  console.log(
-    "🚀 ~ restrictionsWithoutTotals ~ restrictionsWithoutTotals:",
-    restrictionsWithoutTotals
-  );
-
   restrictions = restrictionsWithoutTotals;
-  console.log("🚀 ~ restrictions:", restrictions);
 
   let restrictionsTotals;
   if (restrictions && !!restrictions.length) {

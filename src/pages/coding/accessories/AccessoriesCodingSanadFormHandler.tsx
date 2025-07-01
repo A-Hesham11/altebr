@@ -1,54 +1,52 @@
 /////////// IMPORTS
 ///
-import { useFormikContext } from "formik"
-import { t } from "i18next"
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import { Button } from "../../../components/atoms"
-import { Header } from "../../../components/atoms/Header"
-import { BoxesDataBase } from "../../../components/atoms/card/BoxesDataBase"
-import { Accordion } from "../../../components/molecules"
-import NinjaTable from "../../../components/molecules/NinjaTable"
-import RadioGroup from "../../../components/molecules/RadioGroup"
-import { Column } from "../../../components/molecules/table/types"
-import { Loading } from "../../../components/organisms/Loading"
-import { useFetch, useLocalStorage } from "../../../hooks"
-import { CategoryMainData_TP, SetState_TP } from "../../../types"
-import {
-  prepareItemsToShowInCaseOfTa2m
-} from "../../../utils/helpers"
+import { useFormikContext } from "formik";
+import { t } from "i18next";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Button } from "../../../components/atoms";
+import { Header } from "../../../components/atoms/Header";
+import { BoxesDataBase } from "../../../components/atoms/card/BoxesDataBase";
+import { Accordion } from "../../../components/molecules";
+import NinjaTable from "../../../components/molecules/NinjaTable";
+import RadioGroup from "../../../components/molecules/RadioGroup";
+import { Column } from "../../../components/molecules/table/types";
+import { Loading } from "../../../components/organisms/Loading";
+import { useFetch, useLocalStorage } from "../../../hooks";
+import { CategoryMainData_TP, SetState_TP } from "../../../types";
+import { prepareItemsToShowInCaseOfTa2m } from "../../../utils/helpers";
 import {
   DiamondSanadBand_TP,
   GoldCodingSanad_initialValues_TP,
   GoldSanadBand_TP,
   GoldSanad_TP,
   SizePopup_TP,
-  diamondCodingStoneValues_TP
-} from "../coding-types-and-helpers"
-// import { AccessoriesItemCodingForm } from "./AccessoriesItemCodingForm" 
-import { AccessoriesItemCodingForm } from "./AccessoriesItemCodingForm" 
+  diamondCodingStoneValues_TP,
+} from "../coding-types-and-helpers";
+// import { AccessoriesItemCodingForm } from "./AccessoriesItemCodingForm"
+import { AccessoriesItemCodingForm } from "./AccessoriesItemCodingForm";
 // import { AddStone } from "../accessory/AddStone"
-import { AddStone } from "./AddStone" 
-import { numberContext } from "../../../context/settings/number-formatter"
+import { AddStone } from "./AddStone";
+import { numberContext } from "../../../context/settings/number-formatter";
 ///
 /////////// Types
 ///
 type AccessoryCodingSanadFormHandlerProps_TP = {
-  selectedSanad: GoldSanad_TP | undefined
-  setSelectedSanad: SetState_TP<GoldSanad_TP | undefined>
-  detailedWeight_total: number | undefined
-  setDetailedWeight_total: SetState_TP<number | undefined>
-  addedPieces: GoldCodingSanad_initialValues_TP[]
-  setAddedPieces: SetState_TP<GoldCodingSanad_initialValues_TP[]>
-  stones: diamondCodingStoneValues_TP[] | undefined
-  setStones: SetState_TP<diamondCodingStoneValues_TP[]>
-  sizes: SizePopup_TP[]
-  setSizes: SetState_TP<SizePopup_TP[]>
-  stage: number
-  setStage: SetState_TP<number>
-  activeBand: DiamondSanadBand_TP | undefined
-  setActiveBand: SetState_TP<DiamondSanadBand_TP | undefined>
-}
+  selectedSanad: GoldSanad_TP | undefined;
+  setSelectedSanad: SetState_TP<GoldSanad_TP | undefined>;
+  detailedWeight_total: number | undefined;
+  setDetailedWeight_total: SetState_TP<number | undefined>;
+  addedPieces: GoldCodingSanad_initialValues_TP[];
+  setAddedPieces: SetState_TP<GoldCodingSanad_initialValues_TP[]>;
+  stones: diamondCodingStoneValues_TP[] | undefined;
+  setStones: SetState_TP<diamondCodingStoneValues_TP[]>;
+  sizes: SizePopup_TP[];
+  setSizes: SetState_TP<SizePopup_TP[]>;
+  stage: number;
+  setStage: SetState_TP<number>;
+  activeBand: DiamondSanadBand_TP | undefined;
+  setActiveBand: SetState_TP<DiamondSanadBand_TP | undefined>;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -69,20 +67,19 @@ export const AccessoriesCodingSanadFormHandler = ({
   activeBand,
   setActiveBand,
 }: AccessoryCodingSanadFormHandlerProps_TP) => {
-  console.log("🚀 ~ file: AccessoriesCodingSanadFormHandler.tsx:71 ~ selectedSanad:", selectedSanad)
-  console.log("🚀 ~ file: AccessoriesCodingSanadFormHandler.tsx:71 ~ activeBand:", activeBand)
-  const itemsCount = addedPieces.filter(piece=> piece?.band_id === activeBand?.id)
+  const itemsCount = addedPieces.filter(
+    (piece) => piece?.band_id === activeBand?.id
+  );
   /////////// VARIABLES
   ///
-  
-  const { sanadId } = useParams()
+
+  const { sanadId } = useParams();
 
   const { formatGram, formatReyal } = numberContext();
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
-  useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
-  console.log("🚀 ~ file: AccessoriesCodingSanadFormHandler.tsx:78 ~ selectedSanadLocal:", selectedSanadLocal)
-    
+    useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
+
   const columns: Column[] = [
     {
       name: "category",
@@ -135,7 +132,7 @@ export const AccessoriesCodingSanadFormHandler = ({
       label: t("other stones weight"),
       Cell: (info) => formatGram(Number(info.value)) || "---",
     },
-    // { 
+    // {
     //   name: "accessory_number",
     //   label: t("accessory_number"),
     //   Cell: (info)=> info?.value?.toFixed(0)
@@ -149,45 +146,44 @@ export const AccessoriesCodingSanadFormHandler = ({
     //   name: "accessory_stone_weight",
     //   label: t("accessory_stone_weight"),
     // },
-  ]
+  ];
 
   // TOTALS
   const totalWeight = selectedSanad?.items
-  .map((item) => item?.goldWeight)
+    .map((item) => item?.goldWeight)
     ?.reduce((acc, curr) => {
-      return acc + curr
-    }, 0)
+      return acc + curr;
+    }, 0);
 
   const totalLeftWeight = selectedSanad?.items
     .map((item) => item?.leftWeight)
     ?.reduce((acc, curr) => {
-      return acc + curr
-    }, 0)
+      return acc + curr;
+    }, 0);
 
-    // const totalWeightAccessory = selectedSanad?.items
-    //   .map((item) => item?.Accessory_stone_weight)
-    //   ?.reduce((acc, curr) => {
-    //     return acc + curr
-    //   }, 0)
+  // const totalWeightAccessory = selectedSanad?.items
+  //   .map((item) => item?.Accessory_stone_weight)
+  //   ?.reduce((acc, curr) => {
+  //     return acc + curr
+  //   }, 0)
 
   const totalLeftWeightAccessory = selectedSanad?.items
     .map((item) => item?.leftWeightAccessory)
     ?.reduce((acc, curr) => {
-      return acc + curr
-    }, 0)
-    
-    const totalOtherStonesWeight = selectedSanad?.items
-      .map((item) => item?.other_stones_weight)
-      ?.reduce((acc, curr) => {
-        return acc + curr
-      }, 0)
+      return acc + curr;
+    }, 0);
+
+  const totalOtherStonesWeight = selectedSanad?.items
+    .map((item) => item?.other_stones_weight)
+    ?.reduce((acc, curr) => {
+      return acc + curr;
+    }, 0);
 
   const totalLeftOtherStonesWeight = selectedSanad?.items
     .map((item) => item?.leftWeightother)
     ?.reduce((acc, curr) => {
-      return acc + curr
-    }, 0)
-  
+      return acc + curr;
+    }, 0);
 
   const totals = [
     {
@@ -226,8 +222,7 @@ export const AccessoriesCodingSanadFormHandler = ({
       unit: t("gram"),
       value: totalLeftOtherStonesWeight,
     },
-    
-  ]
+  ];
 
   ///
   /////////// CUSTOM HOOKS
@@ -239,8 +234,7 @@ export const AccessoriesCodingSanadFormHandler = ({
     submitForm,
     isSubmitting,
     isValid,
-  } = useFormikContext<GoldCodingSanad_initialValues_TP>()
-
+  } = useFormikContext<GoldCodingSanad_initialValues_TP>();
 
   /* FETCH SANAD */
   const {
@@ -250,58 +244,57 @@ export const AccessoriesCodingSanadFormHandler = ({
   } = useFetch<GoldSanad_TP>({
     endpoint: `tarqimAccessory/api/v1/open-bonds/${sanadId}`,
     queryKey: [`AccessoryCodingSanads/${sanadId}`],
-   enabled: !!sanadId && !!!selectedSanadLocal,
+    enabled: !!sanadId && !!!selectedSanadLocal,
     onSuccess: (sanad) => {
-      setSelectedSanadLocal(sanad)
-      setSelectedSanad(sanad)
-      setFieldValue("bond_date", sanad.bond_date)
-      setFieldValue("karat_value", sanad.items[0].goldKarat)
+      setSelectedSanadLocal(sanad);
+      setSelectedSanad(sanad);
+      setFieldValue("bond_date", sanad.bond_date);
+      setFieldValue("karat_value", sanad.items[0].goldKarat);
     },
-  })
-  
+  });
+
   ///
   /////////// STATES
   ///
   const [itemsToShowInCaseOfTa2m, setItemsToShowInCaseOfTa2m] = useState<
     CategoryMainData_TP[]
-  >([])
+  >([]);
   ///
   /////////// SIDE EFFECTS
   ///
-  
 
   useEffect(() => {
     if (!!selectedSanad) {
-      setFieldValue("bond_id", selectedSanad.id)
-      setSelectedSanadLocal(selectedSanad)
-      setFieldValue("bond_date", selectedSanad.bond_date)
+      setFieldValue("bond_id", selectedSanad.id);
+      setSelectedSanadLocal(selectedSanad);
+      setFieldValue("bond_date", selectedSanad.bond_date);
     }
-  }, [selectedSanad])
-  
+  }, [selectedSanad]);
+
   ///-------------------
   useEffect(() => {
     if (!!activeBand) {
-      setFieldValue("left_weight", activeBand.leftWeight)
-      setFieldValue("band_id", activeBand.id)
-      setFieldValue("karat_value", activeBand.goldKarat)
-      setFieldValue("wage", activeBand.wage)
-      setFieldValue("init_wage", activeBand.wage)
-      setFieldValue("validateCostValue", activeBand?.leftCostItem)
+      setFieldValue("left_weight", activeBand.leftWeight);
+      setFieldValue("band_id", activeBand.id);
+      setFieldValue("karat_value", activeBand.goldKarat);
+      setFieldValue("wage", activeBand.wage);
+      setFieldValue("init_wage", activeBand.wage);
+      setFieldValue("validateCostValue", activeBand?.leftCostItem);
 
-      setStones([])
+      setStones([]);
 
-      setItemsToShowInCaseOfTa2m([])
-      setSizes([])
+      setItemsToShowInCaseOfTa2m([]);
+      setSizes([]);
     }
 
     if (!!activeBand && +activeBand.category?.id > 1) {
-      const items = prepareItemsToShowInCaseOfTa2m(activeBand.category, sizes)
-      items && setItemsToShowInCaseOfTa2m(items)
+      const items = prepareItemsToShowInCaseOfTa2m(activeBand.category, sizes);
+      items && setItemsToShowInCaseOfTa2m(items);
       // prepareItemsToShowInCaseOfTa2m
-      setFieldValue("category_id", activeBand.category.id)
+      setFieldValue("category_id", activeBand.category.id);
     } else if (!!activeBand && activeBand.category?.id == 1) {
-      setFieldValue("category_id", "")
-      setFieldValue("weightitems", [])
+      setFieldValue("category_id", "");
+      setFieldValue("weightitems", []);
     }
 
     // if has size
@@ -310,27 +303,27 @@ export const AccessoriesCodingSanadFormHandler = ({
       !!activeBand?.category?.has_size &&
       activeBand.category.type !== "multi"
     ) {
-      setFieldValue("sizeIsRequired", true)
+      setFieldValue("sizeIsRequired", true);
     } else {
-      setFieldValue("sizeIsRequired", false)
+      setFieldValue("sizeIsRequired", false);
     }
-  }, [activeBand, isSubmitting])
+  }, [activeBand, isSubmitting]);
 
   useEffect(() => {
     if (!!activeBand) {
-      setSizes([])
+      setSizes([]);
     }
-  }, [values.category_id])
+  }, [values.category_id]);
 
   useEffect(() => {
     if (activeBand?.category?.type === "multi") {
-      const items = prepareItemsToShowInCaseOfTa2m(activeBand?.category, sizes)
-      if (items) setItemsToShowInCaseOfTa2m(items)
+      const items = prepareItemsToShowInCaseOfTa2m(activeBand?.category, sizes);
+      if (items) setItemsToShowInCaseOfTa2m(items);
     }
-  }, [sizes])
+  }, [sizes]);
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
-  
+
   ///
   return (
     <>
@@ -367,15 +360,15 @@ export const AccessoriesCodingSanadFormHandler = ({
                 />
                 <h4>
                   {t("bond number")} {" / "}
-                  <span className="text-mainGreen">
-                      { selectedSanad.id}
-                  </span>
+                  <span className="text-mainGreen">{selectedSanad.id}</span>
                 </h4>
               </div>
               <ul className="grid grid-cols-5 gap-4">
                 {selectedSanad.boxes.map(({ account, id, unit, value }) => (
                   <BoxesDataBase key={id}>
-                    <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">{t(account)}</p>
+                    <p className="bg-mainGreen p-2 flex items-center justify-center h-[65%] rounded-t-xl">
+                      {t(account)}
+                    </p>
                     <p className="bg-white p-2 text-black h-[35%] rounded-b-xl">
                       {formatGram(Number(value))} {t(unit)}
                     </p>
@@ -384,7 +377,10 @@ export const AccessoriesCodingSanadFormHandler = ({
               </ul>
             </div>
             <div className=" flex flex-col gap-1">
-              <Header header={t("accessory supply voucher data")}  className="mb-1 text-lg " />
+              <Header
+                header={t("accessory supply voucher data")}
+                className="mb-1 text-lg "
+              />
               <div className="GlobalTable">
                 <NinjaTable<GoldSanadBand_TP>
                   data={selectedSanad.items}
@@ -405,7 +401,9 @@ export const AccessoriesCodingSanadFormHandler = ({
               {totals.map(({ name, key, unit, value }) => (
                 <BoxesDataBase variant="secondary" key={key}>
                   <div className="flex flex-col h-28">
-                    <p className="bg-mainOrange px-2 h-[65%] flex items-center justify-center rounded-t-xl">{name}</p>
+                    <p className="bg-mainOrange px-2 h-[65%] flex items-center justify-center rounded-t-xl">
+                      {name}
+                    </p>
                     <p className="bg-white py-2 h-[35%] text-black rounded-b-xl">
                       {formatGram(Number(value))} {t(unit)}
                     </p>
@@ -447,7 +445,12 @@ export const AccessoriesCodingSanadFormHandler = ({
 
               {/* الحجر */}
               {!!values.has_stones && values.left_weight ? (
-                <AddStone stones={stones} setStones={setStones} activeBand={activeBand} addedPieces={addedPieces} />
+                <AddStone
+                  stones={stones}
+                  setStones={setStones}
+                  activeBand={activeBand}
+                  addedPieces={addedPieces}
+                />
               ) : (
                 <div></div>
               )}
@@ -468,7 +471,7 @@ export const AccessoriesCodingSanadFormHandler = ({
             {totalLeftWeight !== 0 && (
               <Button
                 action={() => {
-                  submitForm()
+                  submitForm();
                 }}
               >
                 {t("save")}
@@ -483,5 +486,5 @@ export const AccessoriesCodingSanadFormHandler = ({
         <h2>لا يوجد بنود في السند</h2>
       )}
     </>
-  )
-}
+  );
+};

@@ -23,7 +23,6 @@ const ExpensesBondsPreview = ({
   item?: {};
   inEdara?: boolean;
 }) => {
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const { pathname } = location;
@@ -49,7 +48,6 @@ const ExpensesBondsPreview = ({
       expense_type_name: item?.child,
     },
   ];
-  console.log("🚀 ~ ExpensesData ~ ExpensesData:", ExpensesData);
 
   const clientData = {
     client_id: item?.client_id,
@@ -146,13 +144,11 @@ const ExpensesBondsPreview = ({
     acc = +curr.expense_price;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalCost ~ totalCost:", totalCost);
 
   const totalValueAfterTax = ExpensesData?.reduce((acc: number, curr: any) => {
     acc += +curr.expense_price_after_tax;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalValueAfterTax:", totalValueAfterTax);
 
   const costDataAsProps = {
     totalCost,

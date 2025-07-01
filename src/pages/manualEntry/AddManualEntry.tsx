@@ -34,9 +34,7 @@ type Entry = {
 
 const AddManualEntry = () => {
   const [dataSource, setDataSource] = useState<Entry[]>([]);
-  console.log("🚀 ~ AddManualEntry ~ dataSourse:", dataSource);
   const [editEntryBond, setEditEntryBond] = useState<any>(null);
-  console.log("🚀 ~ AddManualEntry ~ editEntryBond:", editEntryBond);
   const [steps, setSteps] = useState(1);
   const [files, setFiles] = useState([]);
   const [branchID, setBranchID] = useState<Number>(1);
@@ -48,7 +46,6 @@ const AddManualEntry = () => {
     endpoint: `/journalEntry/api/v1/nextBond`,
     queryKey: ["nextBond"],
   });
-  console.log("🚀 ~ AddManualEntry ~ nextBond:", nextBond);
 
   const indebtedGram = dataSource?.reduce((acc: number, curr: any) => {
     acc += +curr.indebted_gram;
@@ -90,7 +87,6 @@ const AddManualEntry = () => {
     endpoint: `/journalEntry/api/v1/entries/${location?.state?.id}`,
     queryKey: [`edit_entry`, location?.state?.id],
     onSuccess(data) {
-      console.log("🚀 ~ onSuccess ~ data:", data);
       setEditEntryBond(data);
       const entryData = data?.boxes?.map((box: any) => {
         const unit_id = allAccountOptions?.filter(
@@ -235,7 +231,6 @@ const AddManualEntry = () => {
   });
 
   const handleSubmit = (payload: any) => {
-    console.log("🚀 ~ handleSubmit ~ payload:", payload);
     if (isEntryRight) {
       notify("error", `${t("there is an error in the entry")}`);
       return;

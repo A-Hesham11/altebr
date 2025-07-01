@@ -18,7 +18,6 @@ const ExpensesPage = () => {
   const [clientData, setClientData] = useState<ClientData_TP>();
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [invoiceNumber, setInvoiceNumber] = useState([]);
-  console.log("🚀 ~ ExpensesPage ~ invoiceNumber:", invoiceNumber);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const [odwyaTypeValue, setOdwyaTypeValue] = useState();
 
@@ -68,7 +67,6 @@ const ExpensesPage = () => {
       setInvoiceNumber(data);
     },
   });
-  console.log("🚀 ~ ExpensesPage ~ expensesInvoice:", expensesInvoice);
 
   return (
     <Formik

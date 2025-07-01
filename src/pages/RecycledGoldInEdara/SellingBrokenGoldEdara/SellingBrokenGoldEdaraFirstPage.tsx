@@ -39,7 +39,6 @@ const SellingBrokenGoldEdaraFirstPage = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingFirstPage_TP) => {
-
   const { values } = useFormikContext();
 
   const {
@@ -76,8 +75,6 @@ const SellingBrokenGoldEdaraFirstPage = ({
     return acc;
   }, {});
 
-  console.log("🚀 ~ brokenGoldBoxes ~ brokenGoldBoxes:", brokenGoldBoxes);
-
   const weightOfKarat = {
     18: "18",
     21: "21",
@@ -100,8 +97,6 @@ const SellingBrokenGoldEdaraFirstPage = ({
 
     return acc;
   }, {});
-
-  console.log(brokenGoldItems);
 
   return (
     <Form>
