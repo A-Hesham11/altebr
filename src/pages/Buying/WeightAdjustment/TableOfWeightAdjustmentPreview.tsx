@@ -33,10 +33,6 @@ const TableOfWeightAdjustmentPreview = ({
   setWeightModal,
   setOperationTypeSelect,
 }: TableOfWeightAdjustmentPreview_TP) => {
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:29 ~ inputWeight:",
-    inputWeight
-  );
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
@@ -86,11 +82,6 @@ const TableOfWeightAdjustmentPreview = ({
       }
     });
   }, [weightDifference, totalEditedWeight, item]);
-
-  console.log(
-    "🚀 ~ file: TableOfWeightAdjustmentPreview.tsx:60 ~ finalValue ~ finalValue:",
-    finalValue
-  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -226,31 +217,6 @@ const TableOfWeightAdjustmentPreview = ({
           //     notify("error", t("enter value greater than zero"));
           //     return;
           //   }
-
-          //   console.log({
-          //     invoice: {
-          //       branch_id: userData?.branch_id,
-          //       invoice_date: formatDate(new Date()),
-          //       count: item?.length,
-          //       employee_id: item[0]?.employee_id,
-          //       invoice_number: listEditedInvoice?.length,
-          //     },
-          //     items: item.map((el, i) => {
-          //       if (inputValue !== totalEditedWeight) {
-          //         return {
-          //           id: el.id,
-          //           // weight: Number(inputWeight[i].value),
-          //           weight: +finalValue[i].toFixed(2),
-          //         };
-          //       } else {
-          //         return {
-          //           id: el.id,
-          //           // weight: Number(inputWeight[i].value),
-          //           weight: Number(inputWeight[i]?.value) || 0,
-          //         };
-          //       }
-          //     }),
-          //   });
 
           // PostNewValue({
           //     invoice: {

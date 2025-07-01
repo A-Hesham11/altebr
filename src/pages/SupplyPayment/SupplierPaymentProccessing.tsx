@@ -62,11 +62,9 @@
 //   supplierId,
 //   boxValues,
 // }: Payment_TP) => {
-//   console.log("🚀 ~ selectedCardId:", selectedCardId);
 //   const [card, setCard] = useState<string | undefined>("");
 //   const [cardImage, setCardImage] = useState<string | undefined>("");
 //   const [editData, setEditData] = useState<Payment_TP>();
-//   console.log("🚀 ~ editData:", editData);
 //   const [cardFrontKey, setCardFronKey] = useState<string>("");
 //   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
 //   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
@@ -93,7 +91,6 @@
 
 //   const cashId =
 //     locationPath === "/supplier-payment" && cardFrontKey === "cash";
-//   console.log("🚀 ~ cashId:", cashId);
 
 //   const { data, isLoading, failureReason, refetch, isSuccess } = useFetch({
 //     endpoint: `/sadadSupplier/api/v1/show/${cashId ? 10005 : cardId || 0}/${
@@ -105,7 +102,6 @@
 //     },
 //     enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
 //   });
-//   console.log("🚀 ~ data:", data);
 
 //   const initialValues = {
 //     id: editData?.id || "",
@@ -142,7 +138,6 @@
 //     locationPath === "/selling/payoff/sales-return"
 //       ? amountIsPaid - Number(amountRemaining)
 //       : Number(totalPriceInvoice) - Number(amountRemaining);
-//   console.log("🚀 ~ costRemaining:", costRemaining);
 
 //   //   const { data: stockDifference, refetch: stockDifferenceRefetch } = useFetch({
 //   //     endpoint: `/sadadSupplier/api/v1/show/${cashId ? 10005 : cardId || 0}/${
@@ -243,7 +238,6 @@
 //         }}
 //       >
 //         {({ values, setFieldValue, resetForm }) => {
-//           console.log("🚀 ~ values:", values);
 //           useEffect(() => {
 //             if (
 //               cardId === 10001 ||

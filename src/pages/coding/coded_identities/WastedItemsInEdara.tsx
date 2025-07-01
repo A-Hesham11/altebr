@@ -20,9 +20,7 @@ const WastedItemsInEdara = ({
   setReturnItemsModel,
 }: any) => {
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ dataSource:", dataSource);
   const [successData, setSuccessData] = useState([]);
   const { userData } = useContext(authCtx);
   const queryClient = useQueryClient();
@@ -50,7 +48,6 @@ const WastedItemsInEdara = ({
     queryKey: ["return-edara", search],
     endpoint: `/identity/api/v1/getWastingEdaraaPieces?hwya[eq]=${search}`,
     onSuccess: (data) => {
-      console.log("🚀 ~ data:", data);
       if (data?.data?.length === 0) {
         notify("info", `${t("piece doesn't exist")}`);
         return;
@@ -336,7 +333,6 @@ export default WastedItemsInEdara;
                 label={t("id code")}
                 type="text"
                 // onChange={(e) => {
-                //   console.log("🚀 ~ e:", values.search);
                 //   setSearch(values.search);
                 //   setFieldValue("search", values.search);
                 // }}

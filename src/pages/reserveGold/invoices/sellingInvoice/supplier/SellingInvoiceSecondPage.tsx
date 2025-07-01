@@ -200,8 +200,6 @@ const SellingInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
       };
     });
 
-    console.log({ invoice, items });
-
     mutate({
       endpointName: "/reserveGold/api/v1/reserve_selling_Invoice",
       values: { invoice, items },

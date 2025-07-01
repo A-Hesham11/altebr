@@ -32,7 +32,6 @@ type CodedIdentitiesProps_TP = {
 const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const navigate = useNavigate();
   const [activeClass, setActiveClass] = useState("هويات في الإدارة");
-  console.log("🚀 ~ CodedIdentities ~ activeClass:", activeClass);
   const [dataSource, setDataSource] = useState([]);
   const [page, setPage] = useState(1);
   const [importPageResponse, setImportPageResponse] = useState(1);
@@ -43,7 +42,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
   const [importStonesFiles, setImportStonesFiles] = useState<any>([]);
   const [importData, setImportData] = useState(null);
   const [importStonesData, setImportStonesData] = useState(null);
-  console.log("🚀 ~ CodedIdentities ~ importStonesData:", importStonesData);
   const queryClient = useQueryClient();
   const [fetchKey, setFetchKey] = useState(["edara-hwya"]);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
@@ -201,8 +199,6 @@ const CodedIdentities = ({ title }: CodedIdentitiesProps_TP) => {
     setFetchKey(["piece_by_weight"]);
     setFetchEndPoint(`identity/api/v1/ItemWeight`);
   };
-
-  console.log(page);
 
   // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {

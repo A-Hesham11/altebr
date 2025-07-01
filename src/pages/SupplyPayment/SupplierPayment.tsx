@@ -4,7 +4,7 @@ import PaymentBoxes from "../../components/selling/selling components/data/payme
 import PaymentProcessing, {
   Payment_TP,
 } from "../../components/selling/selling components/data/PaymentProcessing";
-import { Button } from "../../components/atoms";
+import { BaseInput, Button } from "../../components/atoms";
 import { useContext, useEffect, useState } from "react";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useFetch, useMutate } from "../../hooks";
@@ -13,6 +13,7 @@ import { numberContext } from "../../context/settings/number-formatter";
 import { useNavigate } from "react-router-dom";
 import SupplierPaymentProccessing from "./SupplierPaymentProccessing";
 import {
+  BaseInputField,
   InnerFormLayout,
   OuterFormLayout,
   Select,
@@ -35,9 +36,7 @@ const SupplierPayment = () => {
   const { formatGram, formatReyal } = numberContext();
   const [supplierId, setSupplierId] = useState(0);
   const [boxValues, setBoxValues] = useState();
-  console.log("🚀 ~ SupplierPayment ~ boxValues:", boxValues);
   const [images, setImages] = useState([]);
-  console.log("🚀 ~ SupplierPayment ~ images:", images);
 
   const { data, refetch: supplierGetCount } = useFetch({
     endpoint: `/sadadSupplier/api/v1/get-count/${supplierId ? supplierId : 0}`,
@@ -339,7 +338,6 @@ const SupplierPayment = () => {
   const boxesFinal = boxesResponse?.map(mapBox);
 
   const handleSeccessedData = (values) => {
-    console.log("🚀 ~ handleSeccessedData ~ values:", values);
     const postPaymentData: any = [];
     const postPaymentAllData: any = [];
 
@@ -383,12 +381,14 @@ const SupplierPayment = () => {
           bond_date: new Date()?.toISOString().slice(0, 10),
           employee_id: userData?.id,
           supplier_id: supplierId,
+          bond_number: values.bond_number,
         },
         items: postPaymentAllData,
         boxes: boxesFinal,
         media: values.media,
       },
       method: "post",
+      dataType: "formData",
     });
   };
 
@@ -410,9 +410,8 @@ const SupplierPayment = () => {
   return (
     <OuterFormLayout header={t("supplier payment")}>
       <Formik
-        initialValues={{ supplier_id: null }}
+        initialValues={{ supplier_id: null, bond_number: null }}
         onSubmit={(values: any) => {
-          console.log("🚀 ~ SupplierPayment ~ values:", values);
           handleSeccessedData(values);
           setBoxValues(values);
           setImages(values?.media);
@@ -423,20 +422,29 @@ const SupplierPayment = () => {
             title={`${t("Payment data from the supplier to management")}`}
           >
             <div className="col-span-4">
-              <div className="w-1/3">
-                <Select
-                  id="supplier_id"
-                  label={`${t("supplier name")}`}
-                  name="supplier_id"
-                  placeholder={`${t("supplier name")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={suppliers}
-                  fieldKey="id"
-                  loading={suppliersLoading}
-                  isDisabled={!suppliersLoading && !!suppliersErrorReason}
-                  onChange={(option: any) => {
-                    setSupplierId(option?.id);
-                  }}
+              <div className="grid grid-cols-3 gap-x-8">
+                <div>
+                  <Select
+                    id="supplier_id"
+                    label={`${t("supplier name")}`}
+                    name="supplier_id"
+                    placeholder={`${t("supplier name")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={suppliers}
+                    fieldKey="id"
+                    loading={suppliersLoading}
+                    isDisabled={!suppliersLoading && !!suppliersErrorReason}
+                    onChange={(option: any) => {
+                      setSupplierId(option?.id);
+                    }}
+                  />
+                </div>
+                <BaseInputField
+                  id="bond_number"
+                  label={`${t("bond number")}`}
+                  name="bond_number"
+                  type="number"
+                  placeholder={`${t("bond number")}`}
                 />
               </div>
               <ul className="flex justify-around py-1 w-full my-8">

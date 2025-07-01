@@ -1,27 +1,27 @@
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik } from "formik"
-import { t } from "i18next"
-import { useState } from "react"
-import * as Yup from "yup"
-import { BaseInputField } from "./molecules"
-import { useIsRTL, useMutate } from "../hooks"
-import { mutateData } from "../utils/mutateData"
-import { notify } from "../utils/toast"
-import { Button } from "./atoms"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
+import { t } from "i18next";
+import { useState } from "react";
+import * as Yup from "yup";
+import { BaseInputField } from "./molecules";
+import { useIsRTL, useMutate } from "../hooks";
+import { mutateData } from "../utils/mutateData";
+import { notify } from "../utils/toast";
+import { Button } from "./atoms";
 ///
 /////////// Types
 ///
 type CreateCountryProps_TP = {
-  value: string
-  onAdd: (value: string) => void
-}
+  value: string;
+  onAdd: (value: string) => void;
+};
 
 type InitialValues_TP = {
-  name_ar: string
-  name_en: string
-}
+  name_ar: string;
+  name_en: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -32,43 +32,39 @@ export const CreateCountry = ({ value, onAdd }: CreateCountryProps_TP) => {
   const initialValues: InitialValues_TP = {
     name_ar: "",
     name_en: "",
-  }
+  };
   const validationSchema = Yup.object({
     name_ar: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     name_en: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
-  })
+  });
 
   /////////// STATES
   ///
-  const [countries, setCountries] = useState(initialValues) ///
+  const [countries, setCountries] = useState(initialValues); ///
   /////////// CUSTOM HOOKS
   ///
-  const isRTL = useIsRTL()
+  const isRTL = useIsRTL();
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate, error: errorQuery } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      
-    
-        queryClient.setQueryData(["countries"], (old: any) => {
-          return [
-            ...(old || []),
-            {
-              id: crypto.randomUUID(),
-              name: isRTL ? data.name : data.name,
-            },
-            notify("success"),
-          ]
-        })
-      
+      queryClient.setQueryData(["countries"], (old: any) => {
+        return [
+          ...(old || []),
+          {
+            id: crypto.randomUUID(),
+            name: isRTL ? data.name : data.name,
+          },
+          notify("success"),
+        ];
+      });
     },
     onError: (error) => {
-      console.log("🚀 ~ file: CreateCountry.tsx:76 ~ error:", error)
-      return {}
-      notify("error")
+      return {};
+      notify("error");
     },
-  })
+  });
   /////////// SIDE EFFECTS
   ///
 
@@ -82,7 +78,7 @@ export const CreateCountry = ({ value, onAdd }: CreateCountryProps_TP) => {
         name_ar: values.name_ar,
         name_en: values.name_en,
       },
-    })
+    });
   }
   ///
   return (
@@ -90,9 +86,9 @@ export const CreateCountry = ({ value, onAdd }: CreateCountryProps_TP) => {
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          setCountries(values)
-          PostNewValue(values)
-          !errorQuery && onAdd(value)
+          setCountries(values);
+          PostNewValue(values);
+          !errorQuery && onAdd(value);
         }}
         validationSchema={validationSchema}
       >
@@ -124,5 +120,5 @@ export const CreateCountry = ({ value, onAdd }: CreateCountryProps_TP) => {
         </Form>
       </Formik>
     </div>
-  )
-}
+  );
+};

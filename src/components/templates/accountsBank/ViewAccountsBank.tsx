@@ -151,7 +151,6 @@ const ViewAccountsBank = () => {
         };
       },
     });
-  console.log("🚀 ~ ViewAccountsBank ~ data:", data);
 
   const queryClient = useQueryClient();
   const {

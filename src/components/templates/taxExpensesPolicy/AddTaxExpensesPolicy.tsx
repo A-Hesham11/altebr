@@ -55,7 +55,6 @@ const AddTaxExpensesPolicy = ({
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const [taxAdded, setTaxAdded] = useState<boolean>(false);
-  console.log("🚀 ~ taxAdded:", taxAdded);
   const [taxZero, setTaxZero] = useState<boolean>(false);
   const [taxExempt, setTaxExempt] = useState<boolean>(false);
   const dataSend = [];
@@ -100,7 +99,6 @@ const AddTaxExpensesPolicy = ({
       queryClient.refetchQueries(["taxExpensesPolicy"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });
@@ -248,7 +246,6 @@ const AddTaxExpensesPolicy = ({
                     />
                   </div>
                 )}
-
 
                 {!editData && (
                   <>

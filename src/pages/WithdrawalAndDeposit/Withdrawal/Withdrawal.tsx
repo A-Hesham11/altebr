@@ -23,12 +23,9 @@ import { ClientData_TP } from "../../selling/PaymentSellingPage";
 const Withdrawal = () => {
   const [showOperationPopup, setShowOperationPopup] = useState(false);
   const [selectedBankData, setSelectedBankData] = useState(null);
-  console.log("🚀 ~ Withdrawal ~ selectedBankData:", selectedBankData)
   const [page, setPage] = useState(1);
   const [selectedAccountData, setSelectedAccountData] = useState(null);
-  console.log("🚀 ~ Withdrawal ~ selectedAccountData:", selectedAccountData)
   const [mainCardData, setMainCardData] = useState([]);
-  console.log("🚀 ~ Withdrawal ~ mainCardData:", mainCardData)
   const [withdrawalFiles, setWithdrawalFiles] = useState([]);
   const { formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
@@ -64,7 +61,6 @@ const Withdrawal = () => {
       notify("info", error?.response?.data?.msg);
     },
   });
-  console.log("🚀 ~ Withdrawal ~ naqdya:", naqdya);
 
   const {
     data: allBanksOption,
@@ -112,7 +108,6 @@ const Withdrawal = () => {
       });
     },
   });
-    console.log("🚀 ~ Withdrawal ~ accountsOption:", accountsOption)
 
   useEffect(() => {
     if (accountsOption?.length === 1) {

@@ -20,8 +20,6 @@ const FinalPreviewBillPayment = ({
   notQRCode?: any;
   employeeName?: string;
 }) => {
-  console.log("🚀 ~ paymentData:", paymentData);
-  console.log("🚀 ~ costDataAsProps:", costDataAsProps);
   const { formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);

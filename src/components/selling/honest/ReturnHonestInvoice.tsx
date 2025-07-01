@@ -26,7 +26,6 @@ type Entry_TP = {
 };
 
 const ReturnHonestInvoice = ({ item }: { item?: any }) => {
-  console.log("🚀 ~ ReturnHonestInvoice ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();

@@ -20,7 +20,6 @@ const WeightAdjustmentInBranch = ({
   const filterWeightItemsByHwya = weightItems?.filter(
     (item) => item.hwya === editWeight.hwya
   );
-  console.log("🚀 ~ filterWeightItemsByHwya:", filterWeightItemsByHwya);
 
   const columns = useMemo<any>(
     () => [
@@ -87,7 +86,6 @@ const WeightAdjustmentInBranch = ({
     (acc, item) => Number(acc) + Number(parseFloat(item.weight || 0)),
     0
   );
-  console.log("🚀 ~ totalCurrentWeight:", totalCurrentWeight);
 
   const totalWeight = filterWeightItemsByHwya?.reduce(
     (acc, item) => acc + parseFloat(item.weight || 0),

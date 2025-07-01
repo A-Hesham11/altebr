@@ -1,41 +1,41 @@
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik } from "formik"
-import { t } from "i18next"
-import { Dispatch, SetStateAction } from "react"
-import * as Yup from "yup"
-import { useMutate } from "../../../../hooks"
-import { mutateData } from "../../../../utils/mutateData"
-import { notify } from "../../../../utils/toast"
-import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors"
-import { requiredTranslation } from "../partners/validation-and-types-partner"
-import { ViewKarats_TP } from "../view/Viewkarats"
-import { MineralsKaratsMainData } from "./MineralsKaratsMainData"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
+import { t } from "i18next";
+import { Dispatch, SetStateAction } from "react";
+import * as Yup from "yup";
+import { useMutate } from "../../../../hooks";
+import { mutateData } from "../../../../utils/mutateData";
+import { notify } from "../../../../utils/toast";
+import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors";
+import { requiredTranslation } from "../partners/validation-and-types-partner";
+import { ViewKarats_TP } from "../view/Viewkarats";
+import { MineralsKaratsMainData } from "./MineralsKaratsMainData";
 
 ///
 /////////// Types
 ///
 type AddMineralsKaratsProps_TP = {
-  value?: string
-  onAdd?: (value: string) => void
-  editData?: ViewKarats_TP
-  setDataSource?: Dispatch<SetStateAction<ViewKarats_TP[]>>
-  setShow?: Dispatch<SetStateAction<boolean>>
-  title?: string
-}
+  value?: string;
+  onAdd?: (value: string) => void;
+  editData?: ViewKarats_TP;
+  setDataSource?: Dispatch<SetStateAction<ViewKarats_TP[]>>;
+  setShow?: Dispatch<SetStateAction<boolean>>;
+  title?: string;
+};
 
 type InitialValues_TP = {
-  name: string
-  mineral_id: string
-  equivalent: string|number
-}
+  name: string;
+  mineral_id: string;
+  equivalent: string | number;
+};
 
-const karatsRateMax = () => `${t("karats rate max is 1")}`
+const karatsRateMax = () => `${t("karats rate max is 1")}`;
 const validationSchema = Yup.object({
   mineral_id: Yup.string().required(requiredTranslation),
   name: Yup.string().required(requiredTranslation),
-})
+});
 
 const AddMineralsKarats = ({
   value = "",
@@ -52,38 +52,38 @@ const AddMineralsKarats = ({
     mineral_id: editData ? editData.id : value!,
     name: editData ? editData.karatmineral : value!,
     equivalent: editData ? editData.value : "1",
-  }
+  };
   ///
   /////////// CUSTOM HOOKS
   ///
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate, isLoading, error, isSuccess, reset } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      queryClient.refetchQueries(["karatminerals"])
+      queryClient.refetchQueries(["karatminerals"]);
 
-      notify("success")
+      notify("success");
 
       if (value && onAdd) {
-        onAdd(value)
+        onAdd(value);
         queryClient.setQueryData(["karatminerals"], (old: any) => {
-          return [...(old || []), data]
-        })
+          return [...(old || []), data];
+        });
       }
       if (setDataSource && setShow && !editData && !error) {
         // setDataSource((prev: any) => [...prev, data])
-        queryClient.refetchQueries(["karatminerals"])
-        setShow(false)
+        queryClient.refetchQueries(["karatminerals"]);
+        setShow(false);
       }
       if (setDataSource && setShow && editData && !error) {
-        setShow(false)
-        queryClient.refetchQueries(["karatminerals"])
+        setShow(false);
+        queryClient.refetchQueries(["karatminerals"]);
         // setDataSource((prev: any) =>
         //   prev.map((p: ViewKarats_TP) => (p.id === data?.id ? data : p))
         // )
       }
     },
-  })
+  });
 
   ///
   /////////// FUNCTIONS | EVENTS | IF CASES
@@ -94,10 +94,10 @@ const AddMineralsKarats = ({
         ? `classification/api/v1/karatminerals/${editData.id}`
         : `classification/api/v1/karatminerals`,
       values: {
-       ...values,
+        ...values,
         ...(editData && { _method: "put" }),
       },
-    })
+    });
   }
 
   return (
@@ -105,9 +105,8 @@ const AddMineralsKarats = ({
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          console.log("values",values)
-          PostNewValue(values)
-        } }
+          PostNewValue(values);
+        }}
         validationSchema={validationSchema}
       >
         <Form className="w-full">
@@ -123,7 +122,7 @@ const AddMineralsKarats = ({
         </Form>
       </Formik>
     </div>
-  )
-}
+  );
+};
 
-export default AddMineralsKarats
+export default AddMineralsKarats;

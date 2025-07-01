@@ -20,7 +20,6 @@ export const MultiFilesPreview = ({
   formikFieldName,
   preview,
 }: FilesPreviewProps_TP) => {
-  console.log("🚀 ~ images:", images);
   const { setFieldValue, values } = useFormikContext<{ [key: string]: any }>();
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -54,7 +53,6 @@ export const MultiFilesPreview = ({
       type: "image",
     }));
   }, [images]);
-  console.log("🚀 ~ slides ~ slides:", slides);
 
   return (
     <>
@@ -109,7 +107,6 @@ export const MultiFilesPreview = ({
           plugins={[Fullscreen, Slideshow, Zoom, Thumbnails]}
           render={{
             slide: (slide) => {
-              console.log("🚀 ~ slide:", slide);
               if (!slide?.src) return null;
 
               return (

@@ -20,7 +20,6 @@ export const WasteSupplyRejectedEntryFirst = ({
   isInPopup,
   setStage,
 }: RejectedItemsAccountingEntryProps_TP) => {
-  console.log("🚀 ~ selectedItem:", selectedItem);
   /////////// VARIABLES
   ///
   const { formatGram, formatReyal } = numberContext();

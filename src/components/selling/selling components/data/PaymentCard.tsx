@@ -377,7 +377,6 @@ const PaymentCard = ({
       : locationPath === "/recycledGold/convert"
       ? RecycledGold
       : cardOfCash;
-  console.log("🚀 ~ cardCash:", cardCash);
 
   const bankscard =
     locationPath === "/selling/reimbursement" ||
@@ -394,7 +393,6 @@ const PaymentCard = ({
     : locationPath === "/selling/addInvoiceDemo"
     ? [...cardCash, ...cardDemo].reverse()
     : [...bankscard, ...bankAccountCards, ...cardCash].reverse();
-  console.log("🚀 ~ cardsData:", cardsData);
 
   const { userData } = useContext(authCtx);
 
@@ -408,7 +406,6 @@ const PaymentCard = ({
       const selectNewCard = cardsData?.filter(
         (item) => item?.front_key === frontKey
       );
-      console.log("🚀 ~ handleChooseCard ~ selectNewCard:", selectNewCard);
       setSelectedCardData?.(selectNewCard);
 
       const selectCradIDOrBankId = selectNewCard[0]?.bank_id
@@ -460,7 +457,6 @@ const PaymentCard = ({
   };
 
   const cardID = cardsData?.filter((item) => item.id === editData?.card_id);
-  console.log("🚀 ~ cardID:", cardID);
 
   useEffect(() => {
     if (editData) {

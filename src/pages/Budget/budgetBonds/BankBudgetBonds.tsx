@@ -36,7 +36,6 @@ const BankBudgetBonds = () => {
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [entryModal, setOpenEntryModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
-  console.log("🚀 ~ BankBudgetBonds ~ selectedItem:", selectedItem);
   const [search, setSearch] = useState("");
 
   const searchValues = {
@@ -61,7 +60,6 @@ const BankBudgetBonds = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ BankBudgetBonds ~ invoiceData:", invoiceData);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(

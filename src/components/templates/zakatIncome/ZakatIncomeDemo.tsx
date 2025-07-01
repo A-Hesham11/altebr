@@ -33,10 +33,6 @@ type ZakatIncomeDemo_Tp = {
 
 const ZakatIncomeDemo = () => {
   const [responseSellingData, setResponseSellingData] = useState<any>({});
-  console.log(
-    "🚀 ~ ZakatIncomeDemo ~ responseSellingData:",
-    responseSellingData
-  );
 
   const initialValues: ZakatIncomeDemo_Tp = {
     id: 1,

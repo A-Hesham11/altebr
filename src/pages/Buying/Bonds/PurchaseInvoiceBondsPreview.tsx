@@ -4,10 +4,6 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { numberContext } from "../../../context/settings/number-formatter";
 
 const PurchaseInvoiceBondsPreview = ({ item }: { item?: {} }) => {
-  console.log(
-    "🚀 ~ file: PurchaseInvoiceBondsPreview.tsx:7 ~ PurchaseInvoiceBondsPreview ~ item:",
-    item
-  );
   const { formatReyal } = numberContext();
 
   // COLUMNS FOR THE TABLE

@@ -16,10 +16,6 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
 
   // const budgetOperation = processBudgetData(selectedItem?.items);
   // const formattedBudgetOperation = Object.entries(selectedItem?.items);
-  // console.log(
-  //   "🚀 ~ InvoiceBudgetBonds ~ formattedBudgetOperation:",
-  //   formattedBudgetOperation
-  // );
 
   // const operationDataTotals = formattedBudgetOperation.map((budgets) => {
   //   return budgets[1].reduce(
@@ -38,10 +34,6 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
   //     }
   //   );
   // });
-  // console.log(
-  //   "🚀 ~ operationDataTotals ~ operationDataTotals:",
-  //   operationDataTotals
-  // );
 
   // const operationDataTable = selectedItem?.items?.reduce(
   //   (acc, curr) => {

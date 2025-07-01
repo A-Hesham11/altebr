@@ -99,7 +99,6 @@ const InvoiceTable = <T extends object>({
         : totalFinalCost
     )
   );
-  console.log("🚀 ~ totalFinalCostIntoArabic:", totalFinalCostIntoArabic);
 
   // const hasSelsal =
   //   locationPath === "/selling/payoff/sales-return" && totalWeightOfSelsal

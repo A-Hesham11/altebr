@@ -51,7 +51,6 @@ export const SellingTableInputDataDemo = ({
   const { formatGram, formatReyal } = numberContext();
 
   const { values, setFieldValue } = useFormikContext<any>();
-  console.log("🚀 ~ values:", values);
   const taxRate = values.karat_name === "24" ? 1 : 1.15;
 
   const { data: karatValues } = useFetch<KaratValues_TP[]>({
@@ -235,7 +234,6 @@ export const SellingTableInputDataDemo = ({
                 noMb={true}
                 placement="top"
                 onChange={(option) => {
-                  console.log("🚀 ~ option:", option);
                   setFieldValue("karat_name", option!.value);
                 }}
               />

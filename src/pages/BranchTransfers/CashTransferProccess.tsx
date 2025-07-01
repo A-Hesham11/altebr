@@ -26,10 +26,7 @@ const CashTransferProccess = ({ refetch, setOpen }: any) => {
   const [newValue, setNewValue] =
     useState<SingleValue<SelectOption_TP> | null>();
   const [selectedAccountData, setSelectedAccountData] = useState(null);
-  console.log(
-    "🚀 ~ CashTransferProccess ~ selectedAccountData:",
-    selectedAccountData
-  );
+
   const { userData } = useContext(authCtx);
   const { formatReyal } = numberContext();
 
@@ -116,10 +113,6 @@ const CashTransferProccess = ({ refetch, setOpen }: any) => {
 
   const amountOfAccountNumber =
     accountsDetailsData?.base?.debtor - accountsDetailsData?.base?.creditor;
-  console.log(
-    "🚀 ~ CashTransferProccess ~ amountOfAccountNumber:",
-    amountOfAccountNumber
-  );
 
   const { data: balances } = useFetch({
     queryKey: ["Balances_inEdara"],
@@ -138,7 +131,6 @@ const CashTransferProccess = ({ refetch, setOpen }: any) => {
   );
 
   const amountNaqdya = +naqdya?.[0]?.debtor - +naqdya?.[0]?.creditor;
-  console.log("🚀 ~ CashTransferProccess ~ amountNaqdya:", amountNaqdya);
 
   return (
     <div>
@@ -192,7 +184,6 @@ const CashTransferProccess = ({ refetch, setOpen }: any) => {
         }}
       >
         {({ values, setFieldValue }) => {
-          console.log("🚀 ~ CashTransferProccess ~ values:", values);
           return (
             <Form>
               <h2 className="text-xl font-semibold mb-8">

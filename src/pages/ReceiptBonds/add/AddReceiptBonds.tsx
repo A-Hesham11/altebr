@@ -11,12 +11,10 @@ const AddReceiptBonds = () => {
   const [files, setFiles] = useState([]);
   const [invoiceNumber, setInvoiceNumber] = useState(null);
   const [paymentData, setPaymentData] = useState([]);
-  console.log("🚀 ~ AddReceiptBonds ~ paymentData:", paymentData);
   const [clientData, setClientData] = useState();
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const [selectedCardId, setSelectedCardId] = useState<number>(null);
-  console.log("🚀 ~ AddReceiptBonds ~ selectedCardId:", selectedCardId);
   const [isTax, setIsTax] = useState(false);
 
   const initialValues = {

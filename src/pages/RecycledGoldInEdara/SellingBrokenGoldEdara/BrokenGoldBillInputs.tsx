@@ -41,7 +41,6 @@ const BrokenGoldBillInputs = ({ dateFieldName }: { dateFieldName: string }) => {
     onSuccess(data) {},
     select: (suppliers) =>
       suppliers.map((supplier) => {
-        console.log("🚀 ~ suppliers.map ~ supplier:", supplier);
         return {
           //@ts-ignore
           id: supplier.id,

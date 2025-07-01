@@ -99,7 +99,6 @@ const AddCommision = ({ title, editData, setShow, refetch }: any) => {
       queryClient.refetchQueries(["commission"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });
@@ -148,9 +147,6 @@ const AddCommision = ({ title, editData, setShow, refetch }: any) => {
               });
             } else {
               PostNewCard({
-                ...values,
-              });
-              console.log({
                 ...values,
               });
             }

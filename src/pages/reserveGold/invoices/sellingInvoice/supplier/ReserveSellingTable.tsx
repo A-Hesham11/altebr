@@ -29,7 +29,6 @@ interface ReserveSellingTable_TP {
 
 const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
   const { setSellingItemsData, sellingItemsData, goldPrice } = props;
-  console.log("🚀 ~ goldPrice:", goldPrice)
   const { formatGram, formatReyal } = numberContext();
   const { values, setFieldValue } = useFormikContext();
   const { userData } = useContext(authCtx);
@@ -120,7 +119,6 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
     queryKey: ["tax"],
     endpoint: `/selling/api/v1/tax-include/${userData?.branch_id}`,
   });
-  console.log("🚀 ~ taxes:", taxes);
 
   return (
     <>

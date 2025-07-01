@@ -50,7 +50,6 @@ const SupplyPayoffFirstPage = ({
   mardodItemsId,
   setMardodItemsId,
 }: SellingFirstPage_TP) => {
-  console.log("🚀 ~ supplierId:", supplierId);
   const { values } = useFormikContext();
 
   const { formatGram, formatReyal } = numberContext();

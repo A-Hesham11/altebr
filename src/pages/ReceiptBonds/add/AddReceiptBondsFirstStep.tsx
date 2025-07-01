@@ -287,7 +287,6 @@ const AddReceiptBondsFirstStep = ({
             type="submit"
             loading={false}
             action={() => {
-              console.log("🚀 ~ values:", values);
               if (values.receipt_price === "") {
                 notify("info", `${t("please enter receipt price")}`);
                 return;

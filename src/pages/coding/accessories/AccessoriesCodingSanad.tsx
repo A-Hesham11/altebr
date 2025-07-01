@@ -276,7 +276,6 @@ export const CodingSanad = ({
             }}
           >
             {({ values, setFieldValue, submitForm, errors }) => {
-              console.log("🚀 ~ values:", values);
               return (
                 <>
                   <AccessoriesCodingSanadFormHandler

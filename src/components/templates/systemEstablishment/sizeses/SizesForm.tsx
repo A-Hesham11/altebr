@@ -1,33 +1,33 @@
 /////////// IMPORTS
 ///
 //import classes from './SizesForm.module.css'
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik } from "formik"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { SingleValue } from "react-select"
-import * as Yup from "yup"
-import { useFetch, useMutate } from "../../../../hooks"
-import { SelectOption_TP } from "../../../../types"
-import { mutateData } from "../../../../utils/mutateData"
-import { notify } from "../../../../utils/toast"
-import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors"
-import { SizeFormMainData } from "./SizeFormMainData"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { SingleValue } from "react-select";
+import * as Yup from "yup";
+import { useFetch, useMutate } from "../../../../hooks";
+import { SelectOption_TP } from "../../../../types";
+import { mutateData } from "../../../../utils/mutateData";
+import { notify } from "../../../../utils/toast";
+import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors";
+import { SizeFormMainData } from "./SizeFormMainData";
 /////////// Types
 ///
 type sizesTypes_TP = {
-  category_name: string
-  id: string
-  start: number
-  end: number
-  increase: number
-  type: string
-  units: [{ id: string; size_id: string; value: string }]
-}
-type categories_TP = {}
+  category_name: string;
+  id: string;
+  start: number;
+  end: number;
+  increase: number;
+  type: string;
+  units: [{ id: string; size_id: string; value: string }];
+};
+type categories_TP = {};
 type TypesMutate_TP = {
-  name: string
-  id: string
-}
+  name: string;
+  id: string;
+};
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -119,11 +119,11 @@ type TypesMutate_TP = {
 //   )
 // }
 type SizeForm_TP = {
-  showCategories?: boolean
-  setModel?: Dispatch<SetStateAction<boolean>>
-  editData?: any
-  title?: string
-}
+  showCategories?: boolean;
+  setModel?: Dispatch<SetStateAction<boolean>>;
+  editData?: any;
+  title?: string;
+};
 
 export const SizesForm = ({
   showCategories,
@@ -152,7 +152,7 @@ export const SizesForm = ({
           .required("برجاء ملئ هذا الحقل")
           .typeError("لا يمكن ان يكون الحقل فارغ")
       : Yup.string(),
-  })
+  });
 
   const initialValues = {
     // sizeType: "",
@@ -160,22 +160,22 @@ export const SizesForm = ({
     end: editData?.end || "",
     increase: editData?.increase || "",
     type: editData?.type || "",
-  }
+  };
   ///
   /////////// CUSTOM HOOKS
   ///
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const categoriesOptionsApi = [
     { id: 1, value: "1", label: "سلسله" },
     { id: 4, value: "2", label: "خاتم" },
-  ]
+  ];
   ///
   /////////// STATES
   ///
-  const [categoryID, setCategoryID] = useState({ id: "", category_name: "" })
+  const [categoryID, setCategoryID] = useState({ id: "", category_name: "" });
   const [newValue, setNewValue] =
-    useState<SingleValue<SelectOption_TP> | null>()
+    useState<SingleValue<SelectOption_TP> | null>();
   ///
   /////////// SIDE EFFECTS
   ///
@@ -199,7 +199,7 @@ export const SizesForm = ({
     //     value: category.category_name,
     //     label: category.category_name,
     //   })),
-  })
+  });
   const { data: sizeTypes, isLoading: loadingSizeType } = useFetch<
     SelectOption_TP[],
     sizesTypes_TP[]
@@ -212,10 +212,10 @@ export const SizesForm = ({
         id: type.id,
         value: type.type,
         label: type.type,
-      }))
+      }));
     },
     enabled: !!categoryID?.id,
-  })
+  });
 
   const {
     mutate: sizesMutate,
@@ -228,36 +228,35 @@ export const SizesForm = ({
     onSuccess: (data) => {
       // queryClient.setQueriesData(["sizes"], (old) => [...old, data])
       // if (setModel) {
-        queryClient.refetchQueries(["sizes"])
+      queryClient.refetchQueries(["sizes"]);
       // }
-      notify("success")
+      notify("success");
     },
     onError: (err) => {
-      console.log(err)
-      notify("error")
+      notify("error");
     },
-  })
-  
+  });
+
   useEffect(() => {
     if (sizeTypes) {
-      setNewValue(null)
+      setNewValue(null);
     }
-  }, [JSON.stringify(sizeTypes)])
+  }, [JSON.stringify(sizeTypes)]);
 
   const handleSubmit = (values: any) => {
     sizesMutate({
-      endpointName: editData  
+      endpointName: editData
         ? `/size/api/v1/sizes/${editData.id}`
         : "/size/api/v1/sizes",
       values: {
         type: !showCategories ? values.type : values.sizeType,
-        start:  values.start,
+        start: values.start,
         end: values.end,
         increase: values.increase,
       },
       method: editData ? "put" : "post",
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -285,5 +284,5 @@ export const SizesForm = ({
         </Form>
       </Formik>
     </>
-  )
-}
+  );
+};

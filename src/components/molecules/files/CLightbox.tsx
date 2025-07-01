@@ -36,10 +36,7 @@ export const CLightbox = ({
     id: image.id,
     src: image.preview,
   }));
-  console.log(
-    "🚀 ~ consteditedImages:SlideImageWithId_TP[]=images.map ~ editedImages:",
-    editedImages
-  );
+
   ///
   /////////// CUSTOM HOOKS
   ///

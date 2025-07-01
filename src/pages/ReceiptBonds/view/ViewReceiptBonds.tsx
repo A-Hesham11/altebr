@@ -29,7 +29,6 @@ const ViewReceiptBonds = () => {
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [entryModal, setOpenEntryModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
-  console.log("🚀 ~ BankBudgetBondsInEdara ~ selectedItem:", selectedItem);
   const [search, setSearch] = useState("");
 
   const searchValues = {

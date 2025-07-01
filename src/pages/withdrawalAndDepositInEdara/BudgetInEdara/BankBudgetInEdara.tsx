@@ -14,16 +14,10 @@ const BankBudgetInEdara = () => {
   const [stage, setStage] = useState<number>(1);
   const [budgetFiles, setBudgetFiles] = useState<File[]>([]);
   const [selectedBankData, setSelectedBankData] = useState(null);
-  console.log("🚀 ~ BankBudgetInEdara ~ selectedBankData:", selectedBankData);
   const [selectedAccountData, setSelectedAccountData] = useState(null);
-  console.log(
-    "🚀 ~ BankBudgetInEdara ~ selectedAccountData:",
-    selectedAccountData
-  );
+
   const [mainCardData, setMainCardData] = useState([]);
-  console.log("🚀 ~ BankBudgetInEdara ~ mainCardData:", mainCardData);
   const [operationCardData, setOperationCardData] = useState([]);
-  console.log("🚀 ~ BankBudgetInEdara ~ operationCardData:", operationCardData);
   const { userData } = useContext(authCtx);
   const [showPrint, setShowPrint] = useState(false);
   const [operationData, setOperationData] = useState(null);
@@ -32,15 +26,9 @@ const BankBudgetInEdara = () => {
     .flat();
 
   const budgetOperation = processBudgetData(mainCardData.cards);
-  console.log("🚀 ~ BankBudgetInEdara ~ budgetOperation:", budgetOperation);
   const formattedBudgetOperation = Object.entries(budgetOperation);
-  console.log(
-    "🚀 ~ BankBudgetInEdara ~ formattedBudgetOperation:",
-    formattedBudgetOperation
-  );
 
   const operationDataTotals = formattedBudgetOperation.map((budgets) => {
-    console.log("🚀 ~ operationDataTotals ~ budgets:", budgets);
     return budgets[1].reduce(
       (acc, curr) => {
         return {
@@ -50,7 +38,7 @@ const BankBudgetInEdara = () => {
             acc.card_commission + Number(curr.card_commission) || 0,
           card_vat: acc.card_vat + Number(curr.card_vat) || 0,
           total_balance: acc.total_balance + curr.value || 0,
-          operation_number: budgets[1].length, 
+          operation_number: budgets[1].length,
         };
       },
       {
@@ -60,10 +48,6 @@ const BankBudgetInEdara = () => {
       }
     );
   });
-  console.log(
-    "🚀 ~ operationDataTotals ~ operationDataTotals:",
-    operationDataTotals
-  );
 
   const totalCardCommission = operationDataTotals.reduce(
     (acc, curr) => (acc += curr.card_commission),
@@ -94,7 +78,6 @@ const BankBudgetInEdara = () => {
     queryKey: ["budget-bonds-invoice"],
     endpoint: `/budget/api/v1/budgetBond/${userData?.branch_id}`,
   });
-  console.log("🚀 ~ invoiceData:", invoiceData);
 
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
@@ -106,11 +89,9 @@ const BankBudgetInEdara = () => {
 
   const handleSubmit = (values: any) => {
     const formatedCardData = mainCardData?.cards?.map((card) => {
-      console.log("🚀 ~ formatedCardData ~ card:", card)
       const frontKeyValue = operationDataTotals.find(
         (el) => el.accountable === card.accountable
       )?.total_balance;
-      console.log("🚀 ~ formatedCardData ~ frontKeyValue:", frontKeyValue);
 
       return {
         [card.front_id]: frontKeyValue,
@@ -125,10 +106,6 @@ const BankBudgetInEdara = () => {
 
       return acc;
     }, {});
-    console.log(
-      "🚀 ~ transformedObject ~ transformedObject:",
-      transformedObject
-    );
 
     const bankFrontKeyValues = formatedCardData?.map((values) => {
       return Object.values(values).map((val) => val);
@@ -161,7 +138,6 @@ const BankBudgetInEdara = () => {
         };
       }),
     };
-    console.log("🚀 ~ handleSubmit ~ formatedValue:", formatedValue);
 
     mutate({
       endpointName: "/budget/api/v1/handel",

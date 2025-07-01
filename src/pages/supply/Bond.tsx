@@ -87,8 +87,7 @@ export const Bond = ({ title }: BondProps_TP) => {
   const { formatGram, formatReyal } = numberContext();
   const [images, setImages] = useState<CImageFile_TP[]>([]);
   const [files, setFiles] = useState<CImageFile_TP[]>([]);
-  console.log("🚀 ~ Bond ~ files:", files);
-  console.log("🚀 ~ Bond ~ images:", images);
+
   const location = useLocation();
   const path = location.pathname;
   const bondRefs = useRef([]);
@@ -247,7 +246,6 @@ export const Bond = ({ title }: BondProps_TP) => {
           },
   });
 
-  console.log("🚀 ~ Bond ~ contract:", contract);
   const cols1 =
     path == `/gold-bonds/${bondID}`
       ? useMemo<ColumnDef<TableRow_TP>[]>(

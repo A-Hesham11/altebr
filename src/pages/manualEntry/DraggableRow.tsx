@@ -25,7 +25,6 @@ const DraggableRow = ({
   values,
   setFieldValue,
 }: any) => {
-  console.log("🚀 ~ values:", values);
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.item_id,
   });
@@ -63,7 +62,7 @@ const DraggableRow = ({
       );
       return;
     }
-    setFieldValue("isEdit", true)
+    setFieldValue("isEdit", true);
     const {
       entry_type,
       branch_id,

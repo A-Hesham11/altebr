@@ -50,7 +50,6 @@ export const SupplierMainData = ({
   /////
   const { setFieldValue, values, resetForm } =
     useFormikContext<FormikSharedConfig>();
-  console.log("🚀 ~ values:", values);
   ///
   /////////// CUSTOM HOOKS
   ///

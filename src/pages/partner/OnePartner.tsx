@@ -1,45 +1,45 @@
 /////////// IMPORTS
 ///
-import { t } from "i18next"
-import { Helmet } from "react-helmet-async"
-import { useNavigate, useParams } from "react-router-dom"
-import blankPerson from "../../assets/blank-person-image.png"
-import { Button } from "../../components/atoms"
+import { t } from "i18next";
+import { Helmet } from "react-helmet-async";
+import { useNavigate, useParams } from "react-router-dom";
+import blankPerson from "../../assets/blank-person-image.png";
+import { Button } from "../../components/atoms";
 import {
   InnerFormLayout,
   Modal,
   OuterFormLayout,
-} from "../../components/molecules"
-import { TextLine } from "../../components/templates/employee/TextLine"
-import { useFetch } from "../../hooks"
-import { Employee_TP } from "../employees/employees-types"
-import { Loading } from "../../components/organisms/Loading"
-import { useEffect, useState } from "react"
-import { useQueryClient } from "@tanstack/react-query"
-import { Query_TP } from "../coding/gold/AddStone"
-import { SelectOption_TP } from "../../types"
-import { formatDate } from "../../utils/date"
-import { FilesPreviewOutFormik } from "../../components/molecules/files/FilesPreviewOutFormik"
+} from "../../components/molecules";
+import { TextLine } from "../../components/templates/employee/TextLine";
+import { useFetch } from "../../hooks";
+import { Employee_TP } from "../employees/employees-types";
+import { Loading } from "../../components/organisms/Loading";
+import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Query_TP } from "../coding/gold/AddStone";
+import { SelectOption_TP } from "../../types";
+import { formatDate } from "../../utils/date";
+import { FilesPreviewOutFormik } from "../../components/molecules/files/FilesPreviewOutFormik";
 import {
   BsCalendarDate,
   BsFillPersonFill,
   BsFillPersonVcardFill as BsFillPersonCardFill,
   BsMailbox,
-} from "react-icons/bs"
-import { AiFillPhone, AiOutlineFieldNumber } from "react-icons/ai"
-import { TbHomeHand } from "react-icons/tb"
-import { BiBuildingHouse, BiStreetView } from "react-icons/bi"
-import { FaCity, FaHome } from "react-icons/fa"
-import { GrDocument, GrDocumentTest, GrDocumentText } from "react-icons/gr"
-import { MdEditDocument, MdEmail, MdQueryBuilder } from "react-icons/md"
-import { HiOutlineDocumentDuplicate } from "react-icons/hi2"
-import { HiOutlineDocumentText } from "react-icons/hi2"
+} from "react-icons/bs";
+import { AiFillPhone, AiOutlineFieldNumber } from "react-icons/ai";
+import { TbHomeHand } from "react-icons/tb";
+import { BiBuildingHouse, BiStreetView } from "react-icons/bi";
+import { FaCity, FaHome } from "react-icons/fa";
+import { GrDocument, GrDocumentTest, GrDocumentText } from "react-icons/gr";
+import { MdEditDocument, MdEmail, MdQueryBuilder } from "react-icons/md";
+import { HiOutlineDocumentDuplicate } from "react-icons/hi2";
+import { HiOutlineDocumentText } from "react-icons/hi2";
 ///
 /////////// Types
 ///
 type OnePartnerProps_TP = {
-  title?: string
-}
+  title?: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -47,10 +47,10 @@ type OnePartnerProps_TP = {
 export const OnePartner = ({ title }: OnePartnerProps_TP) => {
   /////////// VARIABLES
   ///
-  const { partnerID } = useParams()
-  const [documentOpen, setDocumentOpen] = useState(false)
+  const { partnerID } = useParams();
+  const [documentOpen, setDocumentOpen] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -62,8 +62,7 @@ export const OnePartner = ({ title }: OnePartnerProps_TP) => {
   } = useFetch<any>({
     endpoint: `partner/api/v1/partners/${partnerID}`,
     queryKey: ["partners", partnerID!],
-  })
-    console.log("🚀 ~ OnePartner ~ partner:", partner)
+  });
 
   /////////// STATES
   ///
@@ -528,5 +527,5 @@ export const OnePartner = ({ title }: OnePartnerProps_TP) => {
         )}
       </OuterFormLayout>
     </>
-  )
-}
+  );
+};

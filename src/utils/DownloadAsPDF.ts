@@ -5,9 +5,7 @@ export const DownloadAsPDF = async (currentElement: any, fileName: string) => {
   const element = currentElement;
   const pdf = new jsPDF("p", "mm", "a4");
   const pdfWidth = pdf.internal.pageSize.getWidth();
-  console.log("🚀 ~ DownloadAsPDF ~ pdfWidth:", pdfWidth)
   const pdfHeight = pdf.internal.pageSize.getHeight();
-  console.log("🚀 ~ DownloadAsPDF ~ pdfHeight:", pdfHeight)
   let yOffset = 0;
 
   const canvas = await html2canvas(element, { scale: 2 });
@@ -16,7 +14,6 @@ export const DownloadAsPDF = async (currentElement: any, fileName: string) => {
   const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
   const totalPages = Math.ceil(imgHeight / pdfHeight);
-  console.log("🚀 ~ DownloadAsPDF ~ totalPages:", totalPages)
 
   for (let page = 0; page < totalPages; page++) {
     if (page > 0) {

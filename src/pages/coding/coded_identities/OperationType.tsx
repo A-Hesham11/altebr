@@ -51,10 +51,8 @@ const OperationType = ({
   const [bondDataPrint, setBondDataPrint] = useState(null);
   const [WastedItemsInEdaraModel, setWastedItemsInEdaraModel] = useState(false);
   const [thwelPrint, setThwelPrint] = useState(false);
-  console.log("🚀 ~ thwelPrint: val", thwelPrint);
 
   const [printData, setPrintData] = useState([]);
-  console.log("🚀 ~ printData:", printData);
 
   // ==================================================================
   const contentRef = useRef();

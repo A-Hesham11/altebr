@@ -78,7 +78,6 @@ const EdaraExpensesFilter = ({
       <Formik
         initialValues={searchValues}
         onSubmit={(values: TSearchValues) => {
-          console.log("🚀 ~ values:", values);
           getSearchResults({
             ...values,
             expense_to_date: values.expense_to_date

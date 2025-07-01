@@ -48,7 +48,6 @@ const ViewSellingPolicies = () => {
   const [editData, setEditData] = useState<Cards_Props_TP>();
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>();
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
-  console.log("🚀 ~ ViewSellingPolicies ~ dataSource:", dataSource);
   const [page, setPage] = useState<number>(1);
   const { userData } = useContext(authCtx);
 

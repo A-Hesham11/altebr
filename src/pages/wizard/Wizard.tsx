@@ -8,7 +8,6 @@ import { AddEmployee } from "../../components/templates/employee/AddEmployee";
 const Wizard = () => {
   const isRTL = useIsRTL();
   const [stage, setStage] = useState<number>(0);
-  console.log("🚀 ~ Wizard ~ stage:", stage);
 
   //   <AddEmployee
   //   title={`${editEmployeeData ? t("edit employee") : t("add employee")}`}
@@ -21,7 +20,6 @@ const Wizard = () => {
     { title: "add branch", desc: "add branch" },
     { title: "add", desc: "add" },
   ];
-  console.log("🚀 ~ Wizard ~ steps:", steps?.length);
 
   return (
     <>

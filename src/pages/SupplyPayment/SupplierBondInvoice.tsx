@@ -21,7 +21,6 @@ import { GlobalDataContext } from "../../context/settings/GlobalData";
 import InvoiceBasicHeader from "../../components/Invoice/InvoiceBasicHeader";
 
 const SupplierBondInvoice = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SupplierBondInvoice ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();

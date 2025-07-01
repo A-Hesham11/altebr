@@ -169,7 +169,6 @@ const EdaraTaxReturn = () => {
     endpoint:
       search === "" ? `/report/api/v1/vat/${userData?.branch_id}` : `${search}`,
     select: (data: any) => {
-      console.log(data);
       return [...data?.selling, ...data?.buying]?.map(
         ({ type, ...rest }) => rest
       );

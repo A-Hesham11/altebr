@@ -25,7 +25,6 @@ const SubCategorySection: React.FC<Props> = ({
   desc,
   LevelThird,
 }) => {
-  console.log("🚀 ~ id:", id);
   const [subIsOpen, setSubIsOpen] = useState(false);
   const isRTL = useIsRTL();
 

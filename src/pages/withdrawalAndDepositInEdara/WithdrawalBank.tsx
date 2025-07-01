@@ -57,7 +57,6 @@ const WithdrawalBank = () => {
     queryKey: ["all-withdrawal-data-InEdara"],
     pagination: true,
   });
-  console.log("🚀 ~ WithdrawalBank ~ withdrawalData:", withdrawalData);
 
   const { data: balances } = useFetch({
     queryKey: ["Balances_inEdara"],
@@ -84,7 +83,6 @@ const WithdrawalBank = () => {
     endpoint: `/selling/api/v1/banks`,
     queryKey: ["all-banks-option"],
     select: (data) => {
-      console.log("🚀 ~ WithdrawalBank ~ data:", data);
       return data?.map((bank) => {
         return {
           id: bank?.id,

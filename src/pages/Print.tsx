@@ -11,15 +11,10 @@ import { FiPrinter } from "react-icons/fi";
 const Print = () => {
   // const tarqimGold = JSON.parse(localStorage.getItem("tarqimGold"));
   const [printItems, setPrintItems] = useState();
-  console.log("🚀 ~ Print ~ printItems:", printItems);
   const [singlePrint, setSinglePrint] = useState(null);
   const [multiPrint, setMultiPrint] = useState(null);
-  console.log("🚀 ~ Print ~ multiPrint:", multiPrint)
-  console.log("🚀 ~ Print ~ singlePrint:", singlePrint);
   const [currentIndex, setCurrentIndex] = useState(0);
-  console.log("🚀 ~ Print ~ currentIndex:", currentIndex)
   const [isPrinting, setIsPrinting] = useState(false);
-  console.log("🚀 ~ Print ~ isPrinting:", isPrinting);
 
   const { data, isLoading, isFetching, isRefetching, refetch } = useFetch({
     queryKey: ["print-items"],
@@ -29,7 +24,6 @@ const Print = () => {
     },
     pagination: true,
   });
-  console.log("🚀 ~ Print ~ printItems:", printItems);
 
   const handlePrint = () => {
     setCurrentIndex(0);
@@ -52,15 +46,13 @@ const Print = () => {
             return prevIndex;
           }
         });
-        setMultiPrint(printItems?.[currentIndex])
+        setMultiPrint(printItems?.[currentIndex]);
         // window.print();
       }, 5000);
     }
 
     return () => clearInterval(intervalId);
   }, [isPrinting, printItems?.length, currentIndex]);
-
-  // console.log("🚀 ~ Print ~ tarqimGold:", printItems?.[currentIndex]);
 
   // const handleSinglePrint = () => {
 
@@ -92,7 +84,6 @@ const Print = () => {
         header: () => <span>{t("print")}</span>,
         accessorKey: "print",
         cell: (info: any) => {
-          // console.log("🚀 ~ Print ~ info.row.original:", info.row.original)
           return (
             <FiPrinter
               size={25}

@@ -45,10 +45,6 @@ const BankBudget = () => {
       }
     );
   });
-  console.log(
-    "🚀 ~ operationDataTotals ~ operationDataTotals:",
-    operationDataTotals
-  );
 
   const totalCardCommission = operationDataTotals.reduce(
     (acc, curr) => (acc += curr.card_commission),
@@ -84,7 +80,6 @@ const BankBudget = () => {
     queryKey: ["budget-bonds-invoice"],
     endpoint: `/budget/api/v1/budgetBond/${userData?.branch_id}`,
   });
-  console.log("🚀 ~ invoiceData:", invoiceData);
 
   const { mutate, isLoading } = useMutate({
     mutationFn: mutateData,
@@ -144,7 +139,6 @@ const BankBudget = () => {
         };
       }),
     };
-    console.log("🚀 ~ handleSubmit ~ formatedValue:", formatedValue);
 
     mutate({
       endpointName: "/budget/api/v1/create",

@@ -15,10 +15,8 @@ import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 
 const AddSellingInvoice = () => {
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
-  console.log("🚀 ~ AddSellingInvoice ~ dataSource:", dataSource);
   const [stage, setStage] = useState<number>(1);
   const [clientData, setClientData] = useState<ClientData_TP>();
-  console.log("🚀 ~ AddSellingInvoice ~ clientData:", clientData);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [sellingItemsOfWeigth, setSellingItemsOfWeight] = useState([]);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
@@ -26,7 +24,6 @@ const AddSellingInvoice = () => {
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const { invoice_logo } = GlobalDataContext();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ AddSellingInvoice ~ userData:", userData);
 
   const initialValues: Selling_TP = {
     item_id: "",

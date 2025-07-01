@@ -97,11 +97,10 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
           navigate("/");
 
           refetch();
-          PermissionsRefetch()
+          PermissionsRefetch();
         }
       },
       onError: (err) => {
-        console.log(`AuthCtxProvider ~ err:`, err);
         notify("error");
       },
     });
@@ -127,9 +126,10 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
   });
 
   // Get updated user permissions
-  const { isFetching: isLoadingUpdatedUserPermissions, refetch:PermissionsRefetch  } = useFetch<
-    Permission_TP[]
-  >({
+  const {
+    isFetching: isLoadingUpdatedUserPermissions,
+    refetch: PermissionsRefetch,
+  } = useFetch<Permission_TP[]>({
     endpoint: "/employee/api/employee/permissions",
     queryKey: ["userPermissions"],
     onSuccess: (data) => {

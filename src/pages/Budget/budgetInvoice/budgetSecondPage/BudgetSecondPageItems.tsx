@@ -31,7 +31,6 @@ const BudgetSecondPageItems: React.FC<BudgetSecondPageItems_TP> = ({
   secondData,
   costDataAsProps,
 }) => {
-  console.log("🚀 ~ firstData:", firstData);
   const { formatGram, formatReyal } = numberContext();
 
   // CUSTOM CONFIGURE FOR TABLE

@@ -45,8 +45,6 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
   unknownIdentities,
   goldBrokenCashBanksFinalData,
 }: any) => {
-  console.log("🚀 ~ availableItems:", availableItems);
-  console.log("🚀 ~ numberItemsInBranch:", numberItemsInBranch);
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();

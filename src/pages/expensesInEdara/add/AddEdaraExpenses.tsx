@@ -15,7 +15,6 @@ const AddEdaraExpenses = () => {
   const [clientData, setClientData] = useState();
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [invoiceNumber, setInvoiceNumber] = useState(null);
-  console.log("🚀 ~ ExpensesPage ~ invoiceNumber:", invoiceNumber);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const [odwyaTypeValue, setOdwyaTypeValue] = useState();
 
@@ -25,7 +24,6 @@ const AddEdaraExpenses = () => {
   const [taxZero, setTaxZero] = useState<boolean>(null);
   const [taxExempt, setTaxExempt] = useState<boolean>(null);
   const [paymentData, setPaymentData] = useState([]);
-  console.log("🚀 ~ AddEdaraExpenses ~ paymentData:", paymentData);
   const [selectedCardId, setSelectedCardId] = useState<number>(null);
   const [taxType, setTaxType] = useState<any>(null);
 
@@ -67,7 +65,6 @@ const AddEdaraExpenses = () => {
       setInvoiceNumber(data);
     },
   });
-  console.log("🚀 ~ ExpensesPage ~ expensesInvoice:", expensesInvoice);
 
   return (
     <Formik

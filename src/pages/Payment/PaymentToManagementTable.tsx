@@ -14,7 +14,6 @@ import { Button } from "../../components/atoms";
 import TableEntry from "../../components/templates/reusableComponants/tantable/TableEntry";
 
 const PaymentToManagementTable = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ PaymentToManagementTable ~ item:", item);
   const { formatReyal, formatGram } = numberContext();
 
   const totalValueReyal = item?.items.reduce((acc, item) => {

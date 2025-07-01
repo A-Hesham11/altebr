@@ -189,7 +189,6 @@ function MissingPieces() {
       refetch();
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });

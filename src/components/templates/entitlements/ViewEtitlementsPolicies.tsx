@@ -115,7 +115,6 @@ const ViewEtitlementsPolicies = () => {
       };
     },
   });
-  console.log("🚀 ~ ViewSubExpensesPolicies ~ data:", data);
 
   const queryClient = useQueryClient();
   const {

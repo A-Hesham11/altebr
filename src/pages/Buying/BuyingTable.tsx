@@ -95,7 +95,6 @@ export const BuyingTable = ({
       value: "يوجد",
     },
   ];
-  console.log("🚀 ~ stonesOption:", stonesOption);
 
   // COLUMN FOR TABLES
   const buyingColumns = useMemo<ColumnDef<Selling_TP>[]>(

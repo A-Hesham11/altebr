@@ -28,14 +28,10 @@ import { Employee_TP } from "../employees/employees-types";
 
 const ViewManualEntry = () => {
   const [dataSource, setDataSource] = useState<any>([]);
-  console.log("🚀 ~ ViewManualEntry ~ dataSource:", dataSource);
   const [page, setPage] = useState(1);
-  console.log("🚀 ~ ViewManualEntry ~ page:", page);
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ ViewManualEntry ~ search:", search);
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
-  console.log("🚀 ~ ViewManualEntry ~ selectedItem:", selectedItem);
   const isRTL = useIsRTL();
   const contentRef = useRef<React.LegacyRef<HTMLDivElement>>();
   const navigate = useNavigate();
@@ -68,8 +64,6 @@ const ViewManualEntry = () => {
       },
       pagination: true,
     });
-
-  console.log("🚀 ~ ViewManualEntry ~ data:", data);
 
   const {
     data: employees,
@@ -222,11 +216,9 @@ const ViewManualEntry = () => {
   const getSearchResults = async (req: any) => {
     let uri = `/journalEntry/api/v1/entries`;
     let first = true;
-    console.log("🚀 ~ getSearchResults ~ first:", first);
     Object.keys(req).forEach((key) => {
       if (req[key] !== "") {
         if (first) {
-          console.log("🚀 ~ Object.keys ~ first:", first);
           uri += `?${key}[eq]=${req[key]}`;
           first = false;
         } else {

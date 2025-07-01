@@ -46,7 +46,6 @@ const SortPiecesFirstScreen = ({
   const [page, setPage] = useState<number>(1);
 
   const dataSource = sortsData;
-  console.log("🚀 ~ RecieveItemsFirstScreen ~ dataSource:", dataSource);
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [openMardodModal, setOpenMardodModal] = useState(false);
@@ -62,7 +61,6 @@ const SortPiecesFirstScreen = ({
   //     setNewData(data.data);
   //   },
   // });
-  // console.log("🚀 ~ RecieveItemsFirstScreen ~ data:", data);
 
   const {
     data: sortData,
@@ -81,7 +79,6 @@ const SortPiecesFirstScreen = ({
       setSortsData(data.data);
     },
   });
-  console.log("🚀 ~ RecieveItemsFirstScreen ~ sortData:", sortData);
 
   const goldCols = useMemo<any>(
     () => [
