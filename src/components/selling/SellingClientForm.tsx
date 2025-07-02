@@ -28,12 +28,7 @@ const SellingClientForm = () => {
   const employeeValidatingSchema = () =>
     Yup.object({
       name: Yup.string().required("Name is required"),
-      phone: Yup.string()
-        .trim()
-        .required(requiredTranslation)
-        .test("isValidateNumber", "رقم غير صحيح", function (value: string) {
-          return isValidPhoneNumber(value || "");
-        }),
+      phone: Yup.string().trim(),
       identity: Yup.string().trim(),
     });
 
