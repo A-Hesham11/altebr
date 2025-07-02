@@ -1,10 +1,8 @@
 import { t } from "i18next";
 import { notify } from "../../utils/toast";
 import PaymentBoxes from "../../components/selling/selling components/data/paymentBoxs";
-import PaymentProcessing, {
-  Payment_TP,
-} from "../../components/selling/selling components/data/PaymentProcessing";
-import { BaseInput, Button } from "../../components/atoms";
+import { Payment_TP } from "../../components/selling/selling components/data/PaymentProcessing";
+import { Button } from "../../components/atoms";
 import { useContext, useEffect, useState } from "react";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { useFetch, useMutate } from "../../hooks";
@@ -27,7 +25,6 @@ import { DropMultiFile } from "../../components/molecules/files/DropMultiFile";
 const SupplierPayment = () => {
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [sellingItemsData] = useState([]);
-  const [stage, setStage] = useState<number>(1);
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [selectedCardName, setSelectedCardName] = useState(null);
   const [cardId, setCardId] = useState("");
@@ -52,11 +49,6 @@ const SupplierPayment = () => {
     onSuccess(data) {
       return data.data;
     },
-  });
-
-  const { data: goldPrice } = useFetch<ClientData_TP>({
-    endpoint: `/buyingUsedGold/api/v1/get-gold-price`,
-    queryKey: ["get-gold-price-sadad"],
   });
 
   const {
@@ -127,7 +119,7 @@ const SupplierPayment = () => {
     (item) => item.frontkey === "discount"
   );
 
-  const card = paymentData.reduce((acc, curr) => {
+  const card = paymentData?.reduce((acc, curr) => {
     acc[curr.frontkey] = Number(curr.amount);
     return acc;
   }, {});

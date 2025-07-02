@@ -381,6 +381,9 @@ const PaymentCard = ({
   const bankscard =
     locationPath === "/selling/reimbursement" ||
     locationPath === "/expenses/expensesInvoice" ||
+    locationPath === "/edara/addExpenses" ||
+    locationPath === "/supplier-payment" ||
+    locationPath === "/addReceiptBonds" ||
     locationPath === "/selling/payoff/sales-return" ||
     locationPath === "/recycledGold/convert"
       ? ""
@@ -448,7 +451,10 @@ const PaymentCard = ({
             selectNewCard[0]?.front_key ||
             "cash"
         );
-      } else if (locationPath === "/expenses/expensesInvoice") {
+      } else if (
+        locationPath === "/expenses/expensesInvoice" ||
+        locationPath === "/edara/addExpenses"
+      ) {
         setExchangeFrontKey?.(selectNewCard[0]?.exchange_front_key || "cash");
       } else {
         setCardFrontKeyAccept?.(selectNewCard[0]?.front_key_accept || "cash");
