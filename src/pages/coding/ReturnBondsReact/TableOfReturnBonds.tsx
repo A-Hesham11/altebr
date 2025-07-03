@@ -8,6 +8,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { Modal } from "../../../components/molecules";
 import { numberContext } from "../../../context/settings/number-formatter";
 import TableOfBranchBondsModal from "./TableOfReturnBondsModal";
+import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
 
 const TableOfReturnBonds = ({ dataSource, setPage, page, refetch }) => {
   const { formatReyal, formatGram } = numberContext();
@@ -85,6 +86,24 @@ const TableOfReturnBonds = ({ dataSource, setPage, page, refetch }) => {
         cell: (info: any) => info.getValue() || "-",
         accessorKey: "status",
         header: () => <span>{t("bond status")}</span>,
+      },
+      {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.attachment?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.attachment}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
       },
       {
         cell: (info: any) => (

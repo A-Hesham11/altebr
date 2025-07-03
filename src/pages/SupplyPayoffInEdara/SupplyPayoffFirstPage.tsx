@@ -13,6 +13,7 @@ import { CError_TP, SelectOption_TP } from "../../types";
 import { Supplier_TP } from "../../components/templates/systemEstablishment/supplier/supplier-types";
 import { numberContext } from "../../context/settings/number-formatter";
 import { mutateData } from "../../utils/mutateData";
+import { DropMultiFile } from "../../components/molecules/files/DropMultiFile";
 
 type SellingFirstPage_TP = {
   sellingItemsData: Selling_TP;
@@ -51,6 +52,7 @@ const SupplyPayoffFirstPage = ({
   setMardodItemsId,
 }: SellingFirstPage_TP) => {
   const { values } = useFormikContext();
+  console.log("🚀 ~ values:", values)
 
   const { formatGram, formatReyal } = numberContext();
 
@@ -159,6 +161,10 @@ const SupplyPayoffFirstPage = ({
                 dateFieldName="bond_date"
                 suppliersData={suppliersData}
               />
+            </div>
+            <div className="col-span-4 mt-4">
+              <h2>{t("attachment")}</h2>
+              <DropMultiFile name="media" />
             </div>
             <ul className="flex justify-around py-1 w-full mt-8 mb-2">
               {paymentDataToManagement.map(({ name, key, unit, value }) => (

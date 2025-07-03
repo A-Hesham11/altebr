@@ -12,6 +12,7 @@ import { BsEye } from "react-icons/bs";
 import { Loading } from "../../../components/organisms/Loading";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { BiSpreadsheet } from "react-icons/bi";
+import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
 
 const ViewBondsFromBranchs = () => {
   const isRTL = useIsRTL();
@@ -59,6 +60,24 @@ const ViewBondsFromBranchs = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "employee_name",
         header: () => <span>{t("employee name")}</span>,
+      },
+      {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.attachment?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.attachment}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
       },
       {
         cell: (info: any) => (

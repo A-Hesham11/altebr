@@ -81,6 +81,24 @@ const ViewReceiptBonds = () => {
         header: () => <span>{t("amount")}</span>,
       },
       {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.attachment?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.attachment}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
+      },
+      {
         cell: (info: any) => (
           <div className="flex items-center gap-4 justify-center">
             <BsEye
@@ -103,23 +121,6 @@ const ViewReceiptBonds = () => {
         ),
         accessorKey: "details",
         header: () => <span>{t("details")}</span>,
-      },
-      {
-        cell: (info: any) => {
-          return (
-            <>
-              <div className="flex items-center gap-4 justify-center">
-                <FilesPreviewOutFormik
-                  images={info.row.original.images || []}
-                  preview
-                  pdfs={[]}
-                />
-              </div>
-            </>
-          );
-        },
-        accessorKey: "attachment",
-        header: () => <span>{t("attachment")}</span>,
       },
     ],
     []
