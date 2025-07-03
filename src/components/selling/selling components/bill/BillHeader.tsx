@@ -9,6 +9,7 @@ import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 import PremiumImg from "../../../../assets/premium.svg";
 
 const BillHeader = ({ invoiceNumber, locationPath }: any) => {
+  console.log("🚀 ~ BillHeader ~ invoiceNumber:", invoiceNumber)
   const { userData } = useContext(authCtx);
   const { gold_price } = GlobalDataContext();
   const isDisabled = userData?.is_sellingInvoice === 1;

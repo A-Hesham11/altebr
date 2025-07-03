@@ -278,9 +278,11 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
 
       {/* BOND DETAILS */}
       <div className="my-16">
-        <div className="w-64 mr-auto">
-          <FilesUpload setFiles={setFiles} files={files} />
-        </div>
+        {item?.is_accept !== 1 && (
+          <div className="w-64 mr-auto">
+            <FilesUpload setFiles={setFiles} files={files} />
+          </div>
+        )}
         <div className="flex items-center justify-between mb-4 mt-8">
           <h2 className="text-xl font-bold text-slate-700">
             {t("view bond details")}

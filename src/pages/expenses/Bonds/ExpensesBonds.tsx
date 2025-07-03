@@ -19,6 +19,7 @@ import { Back } from "../../../utils/utils-components/Back";
 import ExpensesBondsPreview from "./ExpensesBondsPreview";
 import ExpensesBondsEntry from "./ExpensesBondsEntry";
 import { BiSpreadsheet } from "react-icons/bi";
+import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
 
 const ExpensesBonds = () => {
   // STATE
@@ -89,6 +90,24 @@ const ExpensesBonds = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "description",
         header: () => <span>{t("description")}</span>,
+      },
+      {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.images?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.images}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
       },
       {
         cell: (info: any) => (

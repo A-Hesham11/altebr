@@ -161,6 +161,7 @@ export const SupplyPayoffTableInputData = ({
       client_name,
       supplier_id,
       supplier_name,
+      media,
       ...restValues
     } = values;
     Object.keys(restValues).map((key) => {
@@ -207,6 +208,7 @@ export const SupplyPayoffTableInputData = ({
       client_name,
       supplier_id,
       supplier_name,
+      media,
       ...restValues
     } = values;
     Object.keys(restValues).forEach((key) => {

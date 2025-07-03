@@ -64,7 +64,8 @@ const SupplyPayoff = () => {
     bond_date: new Date(),
     supplier_id: "",
     supplier_name: "",
-    cost_item:[],
+    cost_item: [],
+    media: [],
   };
 
   const validationSchema = () =>
@@ -91,7 +92,8 @@ const SupplyPayoff = () => {
     endpoint: `/supplyReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}`,
     queryKey: [`supply_payoff_invoices_${userData?.branch_id}`],
     onSuccess(data) {
-      setInvoiceNumber(data);
+      console.log("🚀 ~ onSuccess ~ data:", data);
+      setInvoiceNumber(data.data.length);
     },
     pagination: true,
   });

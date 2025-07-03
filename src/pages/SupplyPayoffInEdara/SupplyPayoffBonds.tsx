@@ -19,6 +19,7 @@ import SupplyPayoffInvoiceTablePreview from "./SupplyPayoffInvoiceTablePreview";
 import { BiSpreadsheet } from "react-icons/bi";
 import SupplyReturnInvoice from "./SupplyReturnInvoice";
 import { GlobalDataContext } from "../../context/settings/GlobalData";
+import { FilesPreviewOutFormik } from "../../components/molecules/files/FilesPreviewOutFormik";
 
 const SupplyPayoffBonds = () => {
   // STATE
@@ -91,6 +92,24 @@ const SupplyPayoffBonds = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "employee_id",
         header: () => <span>{t("employee name")}</span>,
+      },
+      {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.attachment?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.attachment}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
       },
       {
         cell: (info: any) => (
