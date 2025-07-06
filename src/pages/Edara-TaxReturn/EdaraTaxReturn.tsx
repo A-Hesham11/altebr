@@ -61,6 +61,7 @@ const EdaraTaxReturn = () => {
   const [netTotal, setNetTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [netTax, setNetTax] = useState(0);
+  const [branchId, setBranchId] = useState<string>(1);
 
   const initialValue = {
     tax_period: "",
@@ -93,7 +94,7 @@ const EdaraTaxReturn = () => {
       },
       {
         cell: (info: any) =>
-          info.getValue() || formatReyal(info.getValue()) || "---",
+          info.getValue() > 0 ? formatReyal(info.getValue()) : "---",
         accessorKey: "إجمالي المبلغ",
         header: () => <span>{t("إجمالي المبلغ")}</span>,
       },
@@ -104,7 +105,7 @@ const EdaraTaxReturn = () => {
       },
       {
         cell: (info: any) =>
-          info.getValue() || formatReyal(info.getValue()) || "---",
+          info.getValue() > 0 ? formatReyal(info.getValue()) : "---",
         accessorKey: "الضريبة المحسوبة",
         header: () => <span>{t("الضريبة المحسوبة")}</span>,
       },
@@ -126,7 +127,7 @@ const EdaraTaxReturn = () => {
       },
       {
         cell: (info: any) =>
-          info.getValue() || formatReyal(info.getValue()) || "---",
+          info.getValue() > 0 ? formatReyal(info.getValue()) : "---",
         accessorKey: "إجمالي المبلغ",
         header: () => <span>{t("إجمالي المبلغ")}</span>,
       },
@@ -137,7 +138,7 @@ const EdaraTaxReturn = () => {
       },
       {
         cell: (info: any) =>
-          info.getValue() || formatReyal(info.getValue()) || "---",
+          info.getValue() > 0 ? formatReyal(info.getValue()) : "---",
         accessorKey: "الضريبة المحسوبة",
         header: () => <span>{t("الضريبة المحسوبة")}</span>,
       },
@@ -146,8 +147,7 @@ const EdaraTaxReturn = () => {
   );
 
   const { data, isLoading, isRefetching, isFetching, refetch } = useFetch({
-    endpoint:
-      search === "" ? `/report/api/v1/vat/${userData?.branch_id}` : `${search}`,
+    endpoint: search === "" ? `/report/api/v1/vat/${branchId}` : `${search}`,
     queryKey: ["get-edara-tax-return"],
     onSuccess: (data: any) => {
       const lastNetSellingTotal =
@@ -166,14 +166,33 @@ const EdaraTaxReturn = () => {
 
   const { data: dataExcel, refetch: dataExcelRefetch } = useFetch({
     queryKey: ["excel-data-vat"],
-    endpoint:
-      search === "" ? `/report/api/v1/vat/${userData?.branch_id}` : `${search}`,
+    endpoint: search === "" ? `/report/api/v1/vat/${branchId}` : `${search}`,
     select: (data: any) => {
       console.log(data);
       return [...data?.selling, ...data?.buying]?.map(
         ({ type, ...rest }) => rest
       );
     },
+  });
+
+  const {
+    data: branchesOptions,
+    isLoading: branchesLoading,
+    refetch: refetchBranches,
+    failureReason: branchesErrorReason,
+  } = useFetch({
+    endpoint: "branch/api/v1/branches?per_page=10000",
+    queryKey: ["branches"],
+    select: (branches: any) =>
+      branches.map((branch: any) => {
+        return {
+          id: branch.id,
+          value: branch.id || "",
+          label: branch.name || "",
+          number: branch.number || "",
+        };
+      }),
+    onError: (err) => console.log(err),
   });
 
   const getSearchResults = async (req: any) => {
@@ -285,6 +304,13 @@ const EdaraTaxReturn = () => {
     dataExcelRefetch();
   }, [search]);
 
+  useEffect(() => {
+    if (branchId) {
+      refetch();
+      dataExcelRefetch();
+    }
+  }, [branchId]);
+
   if (isLoading || isRefetching || isFetching)
     return <Loading mainTitle={t("loading")} />;
 
@@ -303,7 +329,7 @@ const EdaraTaxReturn = () => {
         {({ handleSubmit, setFieldValue }) => {
           return (
             <form onSubmit={handleSubmit} className="space-y-14">
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-5 gap-4">
                 <div>
                   <Select
                     id="tax_period"
@@ -314,6 +340,29 @@ const EdaraTaxReturn = () => {
                     options={taxPeriodOptions}
                   />
                 </div>
+
+                <Select
+                  id="branch_id"
+                  label={`${t("branches")}`}
+                  name="branch_id"
+                  placeholder={`${t("branches")}`}
+                  loadingPlaceholder={`${t("loading")}`}
+                  options={branchesOptions}
+                  formatOptionLabel={(option) => (
+                    <div className="flex justify-between">
+                      <span>{option.label}</span>
+                      {option.number && (
+                        <p>
+                          {t("Branch")} - <span>{option.number}</span>
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  isLoading={branchesLoading}
+                  onChange={(e) => {
+                    setBranchId(e.id);
+                  }}
+                />
 
                 <div>
                   <DateInputField
