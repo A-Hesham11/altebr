@@ -41,7 +41,6 @@ const ImportTotalsBonds = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ importBonds:", importBonds);
 
   useEffect(() => {
     refetch();

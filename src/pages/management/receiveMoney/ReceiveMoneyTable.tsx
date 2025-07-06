@@ -34,16 +34,11 @@ const ReceiveMoneyTable = ({
 }: {
   item?: {};
 }) => {
-  console.log("🚀 ~ item:", item);
-
   const { formatReyal, formatGram } = numberContext();
   const [files, setFiles] = useState([]);
-  console.log("🚀 ~ files:", files);
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
   const [selectedBankData, setSelectedBankData] = useState("");
   const [selectedAccountData, setSelectedAccountData] = useState("");
-  console.log("🚀 ~ selectedAccountData:", selectedAccountData);
 
   const isRTL = useIsRTL();
 
@@ -51,7 +46,6 @@ const ReceiveMoneyTable = ({
   //   endpoint: `/aTM/api/v1/getAccountBankBranches/${userData?.branch_id}`,
   //   queryKey: ["accountBanksbranch_transform"],
   //   select: (data) => {
-  //     console.log("🚀 ~ data:", data);
   //     return data?.map((item) => ({
   //       id: item.front_key_tahwel_delivered,
   //       value: item.front_key_tahwel_delivered,
@@ -61,7 +55,6 @@ const ReceiveMoneyTable = ({
   //     }));
   //   },
   // });
-  // console.log("🚀 ~ accountBanks:", accountBanks);
 
   const {
     data: allBanksOption,
@@ -82,7 +75,6 @@ const ReceiveMoneyTable = ({
       });
     },
   });
-  console.log("🚀 ~ allBanksOption:", allBanksOption);
 
   useEffect(() => {
     if (allBanksOption?.length === 1) {
@@ -111,7 +103,6 @@ const ReceiveMoneyTable = ({
     },
     enabled: !!selectedBankData?.id,
   });
-  console.log("🚀 ~ accountsOption:", accountsOption);
 
   const queryClient = useQueryClient();
   const {

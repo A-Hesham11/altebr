@@ -150,7 +150,6 @@ export const AddClients = ({
       setShow(false);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });

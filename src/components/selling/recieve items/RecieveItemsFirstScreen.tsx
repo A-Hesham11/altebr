@@ -49,9 +49,7 @@ const RecieveItemsFirstScreen = ({
   const [page, setPage] = useState<number>(1);
   // const [sortItems, setSortItems] = useState(false)
   const [sortItems, setSortItems] = useState(localStorage.getItem("sortItems"));
-  console.log("🚀 ~ RecieveItemsFirstScreen ~ sortItems:", sortItems);
   const dataSource = Boolean(sortItems) == true ? sortsData : newData;
-  console.log("🚀 ~ RecieveItemsFirstScreen ~ dataSource:", dataSource);
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [openMardodModal, setOpenMardodModal] = useState(false);
@@ -67,7 +65,6 @@ const RecieveItemsFirstScreen = ({
       setNewData(data.data);
     },
   });
-  console.log("🚀 ~ RecieveItemsFirstScreen ~ data:", data);
 
   useEffect(() => {
     localStorage.setItem("sortItems", sortItems);
@@ -92,7 +89,6 @@ const RecieveItemsFirstScreen = ({
     },
     // enabled: false
   });
-  console.log("🚀 ~ RecieveItemsFirstScreen ~ sortData:", sortData);
 
   const goldCols = useMemo<any>(
     () => [

@@ -79,7 +79,6 @@ const SellingHome = () => {
       queryClient.refetchQueries(["all-Audience"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error");
     },
   });
@@ -92,7 +91,6 @@ const SellingHome = () => {
       queryClient.refetchQueries(["all-departure"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error");
     },
   });

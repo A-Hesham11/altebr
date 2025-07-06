@@ -1,20 +1,21 @@
-import * as React from 'react'
-import { css, cx } from '@emotion/css'
-import type { ReactNode } from 'react'
+import * as React from "react";
+import { css, cx } from "@emotion/css";
+import type { ReactNode } from "react";
 
 export interface TreeNodeProps {
-  label: React.ReactNode
-  className?: string
-  children?: ReactNode
+  label: React.ReactNode;
+  numericSystem: React.ReactNode;
+  className?: string;
+  children?: ReactNode;
 }
 
 const verticalLine = css`
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   height: 20px;
   box-sizing: border-box;
-`
+`;
 const childrenContainer = css`
   display: flex;
   padding-inline-start: 0;
@@ -25,10 +26,9 @@ const childrenContainer = css`
     ${verticalLine};
     left: calc(50% - 1px / 2);
     width: 0;
-    border-left: 2px solid
-      #295E56;
+    border-left: 2px solid #295e56;
   }
-`
+`;
 const node = css`
   flex: auto;
   text-align: center;
@@ -37,7 +37,7 @@ const node = css`
   min-width: max-content;
   list-style-type: none;
   padding: 20px 5px 0px 5px;
-`
+`;
 
 const nodeLines = css`
   ::before,
@@ -45,13 +45,11 @@ const nodeLines = css`
     ${verticalLine};
     right: 50%;
     width: 50%;
-    border-top: 2px solid
-      #295E56;
+    border-top: 2px solid #295e56;
   }
   ::after {
     left: 50%;
-    border-left: 2px solid
-      #295E56;
+    border-left: 2px solid #295e56;
   }
   :only-of-type {
     padding: 0;
@@ -70,33 +68,40 @@ const nodeLines = css`
   }
   :last-of-type {
     ::before {
-      border-right: 2px solid
-        #295E56;
+      border-right: 2px solid #295e56;
       border-radius: 0 5px 0 0;
     }
     ::after {
       border: 0 none;
     }
   }
-`
+`;
 
 const nodeSpan = css`
-  background: #295E56;
-  color: #FFF;
+  background: #295e56;
+  color: #fff;
   display: inline-block;
   padding: 10px;
   border-radius: 10px;
-`
+`;
 
-function TreeNode({ children, label, className }: TreeNodeProps) {
+function TreeNode({
+  children,
+  label,
+  numericSystem,
+  className,
+}: TreeNodeProps) {
   return (
     <li className={cx(node, nodeLines, className)}>
-      <span className={nodeSpan}>{label}</span>
+      <span className={nodeSpan}>
+        {label} (<span>{numericSystem}</span>)
+      </span>
+
       {React.Children.count(children) > 0 && (
         <ul className={childrenContainer}>{children}</ul>
       )}
     </li>
-  )
+  );
 }
 
-export default TreeNode
+export default TreeNode;

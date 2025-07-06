@@ -25,12 +25,6 @@ const ExpenseFinalInvoiceTable = <T extends object>({
   setOdwyaTypeValue,
   odwyaTypeValue,
 }: ReactTableProps<T>) => {
-  console.log("🚀 ~ columns:", columns);
-  console.log("🚀 ~ data:", data);
-  console.log(
-    "🚀 ~ file: ExpenseFinalInvoiceTable.tsx:28 ~ costDataAsProps:",
-    costDataAsProps
-  );
   const { formatGram, formatReyal } = numberContext();
 
   // CUSTOM CONFIGURE FOR TABLE

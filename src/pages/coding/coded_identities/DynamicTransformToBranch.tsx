@@ -37,11 +37,8 @@ const DynamicTransformToBranch = ({
   const [inputWeight, setInputWeight] = useState([]);
   const [rowWage, setRowWage] = useState(null);
   const [thwelIds, setThwelIds] = useState([]);
-  console.log("🚀 ~ thwelIds:", thwelIds);
   const [search, setSearch] = useState("-");
-  console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ dataSource:", dataSource);
   const [successData, setSuccessData] = useState([]);
   const { gold_price } = GlobalDataContext();
 
@@ -56,7 +53,6 @@ const DynamicTransformToBranch = ({
   const operationTypeSelectWeight = dataSource.filter(
     (el: any) => el.check_input_weight !== 0
   );
-  console.log("🚀 ~ operationTypeSelectWeight:", operationTypeSelectWeight);
 
   const initialValues = {
     branch_id: "",
@@ -129,8 +125,6 @@ const DynamicTransformToBranch = ({
       setDataSource((prev) => [...prev, successData?.[0]]);
     }
   }, [successData, search]);
-
-  // console.log(data?.data?.length);
 
   // useEffect(() => {
 
@@ -367,7 +361,6 @@ const DynamicTransformToBranch = ({
   );
 
   const handleSubmit = (values: any) => {
-    console.log("🚀 ~ handleSubmit ~ values:", values);
     const inputWeightItem = inputWeight?.every((item) => item.value !== "");
 
     if (inputWeight?.length !== operationTypeSelectWeight?.length) {
@@ -422,7 +415,6 @@ const DynamicTransformToBranch = ({
       onSubmit={(values) => {}}
     >
       {({ values }) => {
-        console.log("🚀 ~ values:", values);
         return (
           <Form>
             <div className="flex flex-col gap-10 mt-6">

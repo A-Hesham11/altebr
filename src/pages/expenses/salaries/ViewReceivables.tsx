@@ -22,9 +22,7 @@ import { Header } from "../../../components/atoms/Header";
 import { numberContext } from "../../../context/settings/number-formatter";
 
 const ViewReceivables = ({ employeeData }) => {
-console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
-
-  const {  formatReyal } = numberContext();
+  const { formatReyal } = numberContext();
   const [open, setOpen] = useState<boolean>(false);
   const [model, setModel] = useState(false);
   const [action, setAction] = useState({
@@ -158,10 +156,8 @@ console.log("🚀 ~ ViewReceivables ~ employeeData:", employeeData)
         </div>
 
         {/* {isFetching && <Loading mainTitle={t("employee benefits policies")} />} */}
-        {
-        employeeData?.empEntitlement?.length ? (
-          <Table data={employeeData?.empEntitlement} columns={columns}>
-          </Table>
+        {employeeData?.empEntitlement?.length ? (
+          <Table data={employeeData?.empEntitlement} columns={columns}></Table>
         ) : (
           !dataSource.length && (
             <div className="flex justify-center items-center mt-32">

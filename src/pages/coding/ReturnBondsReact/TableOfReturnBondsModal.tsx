@@ -64,13 +64,11 @@ type Entry_TP = {
 };
 
 const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
-  console.log("🚀 ~ TableOfReturnBondsModal ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   // const [endpointApi, setEndpointApi] = useState("");
   const [test, setTest] = useState(false);
   const [constraintID, setConstraintID] = useState("");
   const [files, setFiles] = useState([]);
-  console.log("🚀 ~ TableOfReturnBondsModal ~ files:", files);
 
   const isRTL = useIsRTL();
 
@@ -106,7 +104,6 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
       refetch();
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error.response.data.message);
     },
   });
@@ -281,9 +278,11 @@ const TableOfReturnBondsModal = ({ item, refetch }: { item?: {} }) => {
 
       {/* BOND DETAILS */}
       <div className="my-16">
-        <div className="w-64 mr-auto">
-          <FilesUpload setFiles={setFiles} files={files} />
-        </div>
+        {item?.is_accept !== 1 && (
+          <div className="w-64 mr-auto">
+            <FilesUpload setFiles={setFiles} files={files} />
+          </div>
+        )}
         <div className="flex items-center justify-between mb-4 mt-8">
           <h2 className="text-xl font-bold text-slate-700">
             {t("view bond details")}

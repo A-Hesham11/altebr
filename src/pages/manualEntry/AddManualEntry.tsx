@@ -1,31 +1,19 @@
 import { t } from "i18next";
-import { BaseInput, Button } from "../../components/atoms";
 import { Form, Formik } from "formik";
-import {
-  BaseInputField,
-  DateInputField,
-  Select,
-  TextAreaField,
-} from "../../components/molecules";
-import { CiCalendarDate } from "react-icons/ci";
-import { formatDate } from "../../utils/date";
-import RadioGroup from "../../components/molecules/RadioGroup";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { useMemo, useState } from "react";
-import { numberContext } from "../../context/settings/number-formatter";
-import { DeleteIcon, EditIcon } from "../../components/atoms/icons";
-import { IoMdAdd } from "react-icons/io";
-import { useFetch } from "../../hooks";
+import { useContext, useEffect, useState } from "react";
+import { authCtx } from "../../context/auth-and-perm/auth";
+import { useFetch, useMutate } from "../../hooks";
+import { notify } from "../../utils/toast";
+import { mutateData } from "../../utils/mutateData";
+import { useLocation, useNavigate } from "react-router-dom";
+import ManualEntryMainData from "./ManualEntryMainData";
+import ManualEntryTableData from "./ManualEntryTableData";
+import { Loading } from "../../components/organisms/Loading";
+import { Button } from "../../components/atoms";
+import * as Yup from "yup";
 
 type Entry = {
-  entry_number: null;
+  bond_number: null;
   date: Date;
   description: string;
   entry_archive: string;
@@ -37,10 +25,27 @@ type Entry = {
   creditor_reyal: string;
 };
 
+// const validationSchema = Yup.object().shape({
+//   bond_number: Yup.number()
+//     .typeError("Document number must be a number")
+//     .min(0, "Document number cannot be less than 0")
+//     .required("Document number is required"),
+// });
+
 const AddManualEntry = () => {
   const [dataSource, setDataSource] = useState<Entry[]>([]);
-  console.log("🚀 ~ AddManualEntry ~ dataSourse:", dataSource);
-  const { formatGram, formatReyal } = numberContext();
+  const [editEntryBond, setEditEntryBond] = useState<any>(null);
+  const [steps, setSteps] = useState(1);
+  const [files, setFiles] = useState([]);
+  const [branchID, setBranchID] = useState<Number>(1);
+  const { userData } = useContext(authCtx);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { data: nextBond, isFetching: isFetchingNextBomd } = useFetch<any[]>({
+    endpoint: `/journalEntry/api/v1/nextBond`,
+    queryKey: ["nextBond"],
+  });
 
   const indebtedGram = dataSource?.reduce((acc: number, curr: any) => {
     acc += +curr.indebted_gram;
@@ -62,11 +67,13 @@ const AddManualEntry = () => {
     return acc;
   }, 0);
 
-  const { data: allAccounts } = useFetch<any[]>({
-    endpoint: "/journalEntry/api/v1/allAccounts",
-    queryKey: ["manual_entry_accounts"],
-  });
-  console.log("🚀 ~ AddManualEntry ~ allAccounts:", allAccounts);
+  const { data: allAccounts, isFetching: isFetchingAccounts } = useFetch<any[]>(
+    {
+      endpoint: `/journalEntry/api/v1/allAccounts/${branchID}`,
+      queryKey: ["manual_entry_accounts", branchID],
+      enabled: !!branchID,
+    }
+  );
 
   const allAccountOptions = allAccounts?.map((account) => ({
     id: account.id,
@@ -76,421 +83,245 @@ const AddManualEntry = () => {
     type: account.type,
   }));
 
-  console.log("🚀 ~ allAccountOptions ~ allAccountOptions:", allAccountOptions);
+  const { data, isFetching } = useFetch<any>({
+    endpoint: `/journalEntry/api/v1/entries/${location?.state?.id}`,
+    queryKey: [`edit_entry`, location?.state?.id],
+    onSuccess(data) {
+      setEditEntryBond(data);
+      const entryData = data?.boxes?.map((box: any) => {
+        const unit_id = allAccountOptions?.filter(
+          (account) => account.value === box.numeric_system
+        )?.[0]?.unit_id;
+
+        return {
+          account_id: box.accountable_id,
+          item_id: box.numeric_system,
+          account_name: box.account,
+          comments: box.text,
+          creditor_gram:
+            box.computational_movement === "creditor" && box.unit === 2
+              ? box.value
+              : "",
+          creditor_reyal:
+            box.computational_movement === "creditor" && box.unit === 1
+              ? box.value
+              : "",
+          indebted_gram:
+            box.computational_movement === "debtor" && box.unit === 2
+              ? box.value
+              : "",
+          indebted_reyal:
+            box.computational_movement === "debtor" && box.unit === 1
+              ? box.value
+              : "",
+          type: box.type,
+          unit_id,
+        };
+      });
+
+      const sameCollection = entryData?.reduce((prev, curr) => {
+        const index = prev.findIndex(
+          (item) => item.account_name === curr.account_name
+        );
+        if (index === -1) {
+          prev.push(curr);
+        } else {
+          prev[index].indebted_gram += curr.indebted_gram;
+          prev[index].indebted_reyal += curr.indebted_reyal;
+          prev[index].creditor_gram += curr.creditor_gram;
+          prev[index].creditor_reyal += curr.creditor_reyal;
+        }
+        return prev;
+      }, [] as typeof dataSource);
+
+      setDataSource(sameCollection);
+    },
+    enabled: !!location?.state?.id && allAccountOptions?.length > 0,
+  });
 
   const initialValues = {
-    entry_number: null,
-    date: new Date(),
-    description: "",
-    entry_archive: "",
-    id: "",
+    item_id: editEntryBond ? editEntryBond?.id : null,
+    branch_id: editEntryBond ? editEntryBond?.branch_id : null,
+    branch_name: editEntryBond ? editEntryBond?.branch : null,
+    bond_number: editEntryBond ? editEntryBond?.bond_number : null,
+    date: editEntryBond?.date ? new Date(editEntryBond?.date) : new Date(),
+    operation_date: editEntryBond?.operation_date
+      ? new Date(editEntryBond?.operation_date)
+      : new Date(),
+    media:
+      editEntryBond?.attachment?.length > 0
+        ? editEntryBond?.attachment?.map((image: any) => ({
+            id: image.id,
+            preview: image?.preview,
+            path: image?.preview,
+            type: "image",
+          }))
+        : [],
+    entry_type: editEntryBond ? editEntryBond?.entry_type : "daily",
+    description: editEntryBond ? editEntryBond?.comments : "",
+    entry_archive: editEntryBond ? editEntryBond?.entry_archive : 0,
+    account_id: null,
     account_name: "",
-    unit_id: "",
-    type: "",
     indebted_gram: "",
     creditor_gram: "",
     indebted_reyal: "",
     creditor_reyal: "",
+    // comments: "",
+    type: "",
+    unit_id: "",
+    isEdit: false,
   };
 
-  const Cols = useMemo<ColumnDef<any>[]>(
-    () => [
-      {
-        header: () => <span>{t("account name")}</span>,
-        accessorKey: "account_name",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
-        header: () => <span>{t("indebted")}</span>,
-        accessorKey: "indebted_gram",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
-        header: () => <span>{t("creditor")} </span>,
-        accessorKey: "creditor_gram",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
-        header: () => <span>{t("indebted")} </span>,
-        accessorKey: "indebted_reyal",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
-        header: () => <span>{t("creditor")} </span>,
-        accessorKey: "creditor_reyal",
-        cell: (info) => info.getValue() || "---",
-      },
-      {
-        header: () => <span>{t("comments")} </span>,
-        accessorKey: "comments",
-        cell: (info) => info.getValue() || "---",
-      },
-    ],
-    []
-  );
+  const isEntryRight =
+    indebtedGram != creditorGram || indebtedReyal != creditorReyal;
 
-  const table = useReactTable({
-    data: dataSource ?? [],
-    columns: Cols,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 100,
-      },
+  const {
+    mutate,
+    error: errorQuery,
+    isLoading,
+  } = useMutate<any>({
+    mutationFn: mutateData,
+    onSuccess: async (data) => {
+      await notify("success");
+      navigate("/viewManualEntry");
+    },
+    onError: (error) => {
+      notify("error");
     },
   });
 
-  const totals = [
-    { value: "total" },
-    { value: indebtedGram },
-    { value: creditorGram },
-    { value: indebtedReyal },
-    { value: creditorReyal },
-    { value: "" },
-  ];
+  const accounts = dataSource?.flatMap((data: any) => {
+    const common = {
+      id: data?.account_id,
+      type: data?.type,
+      comment: data?.comments || "---",
+    };
 
-  const ColsHead = useMemo<ColumnDef<any>[]>(
-    () => [
-      {
-        header: () => <span>{t("description")}</span>,
-        accessorKey: "description",
-        cell: (info) => info.getValue() || "---",
-        meta: { colSpan: 1 },
-      },
-      {
-        header: () => <span>{t("gram")}</span>,
-        accessorKey: "gram",
-        cell: (info) => info.getValue() || "---",
-        meta: { colSpan: 2 },
-      },
-      {
-        header: () => <span>{t("reyal")}</span>,
-        accessorKey: "reyal",
-        cell: (info) => info.getValue() || "---",
-        meta: { colSpan: 2 },
-      },
-      {
-        header: () => <span>{t("")}</span>,
-        accessorKey: "empty",
-        cell: (info) => info.getValue() || "---",
-        meta: { colSpan: 1 },
-      },
-    ],
-    []
-  );
-  const tableHead = useReactTable({
-    data: [],
-    columns: ColsHead,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    if (data?.unit_id === 3) {
+      return [
+        {
+          ...common,
+          value: Number(data?.indebted_gram || data?.creditor_gram),
+          unit_id: 2,
+          movement: data?.indebted_gram ? "debtor" : "creditor",
+        },
+        {
+          ...common,
+          value: Number(data?.indebted_reyal || data?.creditor_reyal),
+          unit_id: 1,
+          movement: data?.indebted_reyal ? "debtor" : "creditor",
+        },
+      ];
+    }
+
+    return {
+      ...common,
+      unit_id: data?.unit_id,
+      movement:
+        data.indebted_gram !== "" || data.indebted_reyal !== ""
+          ? "debtor"
+          : "creditor",
+      value: Number(
+        data?.indebted_gram ||
+          data?.creditor_gram ||
+          data?.indebted_reyal ||
+          data?.creditor_reyal
+      ),
+    };
   });
 
-  const handleDeleteRow = (itemId) => {
-    dataSource?.findIndex((item) => {
-      return item.item_id == itemId;
-    });
+  const handleSubmit = (payload: any) => {
+    if (isEntryRight) {
+      notify("error", `${t("there is an error in the entry")}`);
+      return;
+    }
 
-    const newData = dataSource?.filter((item) => {
-      return item.item_id !== itemId;
-    });
+    const onlyFiles = payload.media.filter((item) => item instanceof File);
 
-    setDataSource(newData);
+    const filterMedia = editEntryBond?.attachment.filter(
+      (item) => !payload.media.some((ref) => ref.id === item.id)
+    );
+
+    const finalOldMedia = filterMedia?.map((item) => item.id);
+
+    mutate({
+      endpointName: !!editEntryBond?.id
+        ? `/journalEntry/api/v1/journal-entries/${editEntryBond?.id}`
+        : "/journalEntry/api/v1/journal-entries",
+      values: {
+        bond_number: payload.bond_number,
+        branch_id: payload.branch_id,
+        entry_type: payload.entry_type,
+        is_archive: Number(payload.entry_archive) || 0,
+        date: payload.date,
+        operation_date: payload.operation_date,
+        employee_id: userData?.id,
+        comments: payload.description,
+        media: onlyFiles,
+        oldFiles: finalOldMedia,
+        accounts,
+      },
+      dataType: "formData",
+    });
   };
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [steps]);
+
+  if (isFetching) return <Loading mainTitle="" />;
+
   return (
-    <div className="overflow-hidden">
-      <div className="relative h-full">
-        <h2 className="mb-4 text-2xl font-bold">{t("manual entry")}</h2>
+    <div className="">
+      <div className="">
+        <div className="flex items-center justify-between mb-4 ">
+          <h2 className="text-2xl font-bold">{t("manual entry")}</h2>
+          {steps === 2 && (
+            <Button
+              action={() => {
+                setSteps((prev) => prev - 1);
+              }}
+              bordered
+            >
+              {t("back")}
+            </Button>
+          )}
+        </div>
 
         <Formik
           initialValues={initialValues}
+          // validationSchema={validationSchema}
           onSubmit={(data) => {
-            console.log("🚀 ~ AddManualEntry ~ data:", data);
+            handleSubmit(data);
           }}
+          enableReinitialize={!!editEntryBond?.id}
         >
-          {({ values, setFieldValue, resetForm }) => {
-            console.log("🚀 ~ AddManualEntry ~ values:", values);
+          <Form className="">
+            {steps === 1 && (
+              <ManualEntryMainData
+                setSteps={setSteps}
+                editEntryBond={editEntryBond}
+                dataSource={dataSource}
+                setBranchID={setBranchID}
+                nextBond={nextBond?.nextBond}
+              />
+            )}
 
-            const isUnitTypeOne = Number(values.unit_id) === 1;
-            const isUnitTypeTwo = Number(values.unit_id) === 2;
-
-            const shouldDisable = {
-              indebted_gram:
-                isUnitTypeOne ||
-                values.creditor_gram !== "" ||
-                values.creditor_reyal !== "",
-              creditor_gram:
-                isUnitTypeOne ||
-                values.indebted_gram !== "" ||
-                values.indebted_reyal !== "",
-              indebted_reyal:
-                isUnitTypeTwo ||
-                values.creditor_reyal !== "" ||
-                values.creditor_gram !== "",
-              creditor_reyal:
-                isUnitTypeTwo ||
-                values.indebted_reyal !== "" ||
-                values.indebted_gram !== "",
-            };
-
-            const getInputClass = (disabled: boolean) =>
-              `${disabled ? "bg-mainDisabled" : ""} text-center`;
-
-            return (
-              <Form>
-                <div>
-                  <div className="flex items-center justify-between gap-x-5 mb-5">
-                    <div>
-                      <BaseInputField
-                        id="entry_number"
-                        name="entry_number"
-                        label={`${t("entry number")}`}
-                        placeholder={`${t("entry number")}`}
-                        type="number"
-                      />
-                    </div>
-                    <div>
-                      <DateInputField
-                        label={`${t("date")}`}
-                        name="date"
-                        minDate={new Date()}
-                        icon={<CiCalendarDate />}
-                        required
-                        labelProps={{ className: "mb-2" }}
-                        placeholder={`${formatDate(new Date())}`}
-                      />
-                    </div>
-                    <div>
-                      <RadioGroup name="entry_archive">
-                        <div className="flex gap-x-2">
-                          <label>{t("saving the entry in the archive")}</label>
-                          <RadioGroup.RadioButton
-                            value="yes"
-                            label={`${t("yes")}`}
-                            id="yes"
-                          />
-                          <RadioGroup.RadioButton
-                            value="no"
-                            label={`${t("no")}`}
-                            id="no"
-                          />
-                        </div>
-                      </RadioGroup>
-                    </div>
-                  </div>
-                  <div>
-                    <TextAreaField
-                      label={`${t("description")}`}
-                      placeholder={`${t("add description")}`}
-                      id="description"
-                      name="description"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <table className="mt-8 min-w-[815px] lg:w-full">
-                  <thead className="bg-mainGreen text-white">
-                    {tableHead.getHeaderGroups().map((headerGroup) => (
-                      <tr key={headerGroup.id} className="py-2 px-2 w-full">
-                        {headerGroup.headers.map((header) => (
-                          <th
-                            key={header.id}
-                            colSpan={header.column.columnDef.meta?.colSpan || 1}
-                            className="py-4 px-2 text-sm font-semibold text-white border"
-                          >
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                          </th>
-                        ))}
-                      </tr>
-                    ))}
-                  </thead>
-                  <thead className="bg-[#295E5633] text-mainGreen">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                      <tr key={headerGroup.id} className="py-2 px-2 w-full">
-                        {headerGroup.headers.map((header) => (
-                          <th
-                            key={header.id}
-                            className="py-2.5 px-2 font-semibold text-mainGreen border w-[16.6%]"
-                          >
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                          </th>
-                        ))}
-                      </tr>
-                    ))}
-                  </thead>
-                  <tbody>
-                    <tr className="border-b text-center table-shadow last:shadow-0">
-                      <td>
-                        <Select
-                          id="account_name"
-                          name="account_name"
-                          placeholder={`${t("account name")}`}
-                          loadingPlaceholder={`${t("loading")}`}
-                          options={allAccountOptions}
-                          onChange={(option) => {
-                            setFieldValue("id", option?.id);
-                            setFieldValue("account_name", option?.label);
-                            setFieldValue("type", option?.type);
-                            setFieldValue("unit_id", option?.unit_id);
-                          }}
-                        />
-                      </td>
-                      <td>
-                        <BaseInputField
-                          placeholder={`${t("indebted")}`}
-                          id="indebted_gram"
-                          name="indebted_gram"
-                          type="text"
-                          disabled={shouldDisable.indebted_gram}
-                          className={getInputClass(shouldDisable.indebted_gram)}
-                        />
-                      </td>
-                      <td className="border-l-2 border-l-flatWhite">
-                        <BaseInputField
-                          placeholder={`${t("creditor")}`}
-                          id="creditor_gram"
-                          name="creditor_gram"
-                          type="text"
-                          disabled={shouldDisable.creditor_gram}
-                          className={getInputClass(shouldDisable.creditor_gram)}
-                        />
-                      </td>
-                      <td>
-                        <BaseInputField
-                          placeholder={`${t("indebted")}`}
-                          id="indebted_reyal"
-                          name="indebted_reyal"
-                          type="text"
-                          disabled={shouldDisable.indebted_reyal}
-                          className={getInputClass(
-                            shouldDisable.indebted_reyal
-                          )}
-                        />
-                      </td>
-                      <td>
-                        <BaseInputField
-                          placeholder={`${t("creditor")}`}
-                          id="creditor_reyal"
-                          name="creditor_reyal"
-                          type="text"
-                          disabled={shouldDisable.creditor_reyal}
-                          className={getInputClass(
-                            shouldDisable.creditor_reyal
-                          )}
-                        />
-                      </td>
-                      <td>
-                        <BaseInputField
-                          placeholder={`${t("comments")}`}
-                          id="comments"
-                          name="comments"
-                          type="text"
-                          className={`text-center`}
-                        />
-                      </td>
-                      <td className="bg-lightGreen border border-[#C4C4C4] flex items-center">
-                        <Button
-                          action={() => {
-                            const {
-                              entry_number,
-                              date,
-                              description,
-                              entry_archive,
-                              ...restValues
-                            } = values;
-
-                            setDataSource((prev) => [values, ...prev]);
-
-                            Object.keys(restValues).forEach((key) => {
-                              setFieldValue(key, "");
-                            });
-                          }}
-                          className="bg-transparent px-2 m-auto"
-                        >
-                          <IoMdAdd className="fill-mainGreen w-6 h-6" />
-                        </Button>
-                      </td>
-                    </tr>
-                    {table.getRowModel().rows.map((row) => {
-                      return (
-                        <tr key={row.id} className="text-center">
-                          {row.getVisibleCells().map((cell, i) => (
-                            <td
-                              className="px-2 py-2 bg-lightGreen bg-[#295E5608] gap-x-2 items-center border border-[#C4C4C4]"
-                              key={cell.id}
-                            >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                            </td>
-                          ))}
-                          <td className="bg-lightGreen p-0 border border-[#C4C4C4]">
-                            <div className="flex items-center ">
-                              <Button
-                                action={() => {
-                                  handleDeleteRow(row?.original?.item_id);
-                                }}
-                                className="bg-transparent px-2"
-                              >
-                                <EditIcon
-                                  size={16}
-                                  className="fill-mainGreen w-6 h-6 mb-[2px]"
-                                />
-                              </Button>
-                              <Button
-                                action={() => {
-                                  handleDeleteRow(row?.original?.item_id);
-                                }}
-                                className="bg-transparent px-2 "
-                              >
-                                <DeleteIcon className="fill-[#C75C5C] w-6 h-6" />
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-
-                  {dataSource?.length > 0 && (
-                    <tfoot className="text-center">
-                      <tr className=" text-mainGreen text-center border-[1px] border-[#7B7B7B4D]">
-                        {totals?.map((total, index) => (
-                          <td
-                            key={index}
-                            className="bg-[#295E5633] px-2 py-2 font-bold text-mainGreen gap-x-2 items-center border-[1px] border-[#7B7B7B4D]"
-                          >
-                            {t(total.value)}
-                          </td>
-                        ))}
-                      </tr>
-                    </tfoot>
-                  )}
-                </table>
-
-                <div className="flex gap-3 justify-end mt-12 pb-8">
-                  <Button type="submit" loading={false} action={() => {}}>
-                    {t("confirm")}
-                  </Button>
-                </div>
-              </Form>
-            );
-          }}
+            {steps === 2 && (
+              <ManualEntryTableData
+                dataSource={dataSource}
+                setDataSource={setDataSource}
+                isLoading={isLoading}
+                setBranchID={setBranchID}
+                allAccountOptions={allAccountOptions}
+                isFetchingAccounts={isFetchingAccounts}
+                editEntryBond={editEntryBond}
+              />
+            )}
+          </Form>
         </Formik>
       </div>
     </div>

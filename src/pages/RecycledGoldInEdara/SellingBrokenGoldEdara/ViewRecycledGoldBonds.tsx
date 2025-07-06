@@ -54,7 +54,6 @@ const ViewRecycledGoldBonds = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ ViewRecycledGoldBonds ~ invoiceData:", invoiceData);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(

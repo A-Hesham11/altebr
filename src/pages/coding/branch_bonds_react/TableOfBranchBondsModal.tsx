@@ -58,11 +58,6 @@ type Entry_TP = {
 };
 
 const TableOfBranchBondsModal = ({ item }: { item?: {} }) => {
-  console.log(
-    "🚀 ~ file: TableOfBranchBondsModal.tsx:60 ~ TableOfBranchBondsModal ~ item:",
-    item
-  );
-
   const { formatGram, formatReyal } = numberContext();
 
   const isRTL = useIsRTL();

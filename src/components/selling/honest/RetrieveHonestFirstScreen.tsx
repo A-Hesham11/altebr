@@ -43,7 +43,6 @@ export const RetrieveHonestFirstScreen = ({
   const navigate = useNavigate();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
 
   const searchValues = {
     id: "",

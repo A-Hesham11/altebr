@@ -13,14 +13,8 @@ const HonestFinalScreenPayment: React.FC<HonestFinalScreenPayment_TP> = ({
   items,
   paymentData,
 }) => {
-  console.log("🚀 ~ sanadData:", paymentData);
   const { formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
-
-  const totalValueOfItems = items?.reduce((acc, curr) => {
-    return +acc + +curr.cost;
-  }, 0);
 
   return (
     <div className="flex justify-between px-8">

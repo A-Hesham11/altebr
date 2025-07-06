@@ -1,44 +1,44 @@
 ///
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik } from "formik"
-import { t } from "i18next"
-import * as Yup from "yup"
-import { useIsRTL, useMutate } from "../../../../hooks"
-import { mutateData } from "../../../../utils/mutateData"
-import { notify } from "../../../../utils/toast"
-import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors"
-import { Button } from "../../../atoms"
-import { BaseInputField } from "../../../molecules"
-import { Dispatch, SetStateAction } from "react"
-import { ViewColors_TP } from "../view/ViewColors"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
+import { t } from "i18next";
+import * as Yup from "yup";
+import { useIsRTL, useMutate } from "../../../../hooks";
+import { mutateData } from "../../../../utils/mutateData";
+import { notify } from "../../../../utils/toast";
+import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors";
+import { Button } from "../../../atoms";
+import { BaseInputField } from "../../../molecules";
+import { Dispatch, SetStateAction } from "react";
+import { ViewColors_TP } from "../view/ViewColors";
 
 ///
 /////////// Types
 ///
 type ColorsProps_TP = {
-  value?: string
-  onAdd?: (value: string) => void
-  editData?: ViewColors_TP
-  setDataSource?: Dispatch<SetStateAction<ViewColors_TP[]>>
-  setShow?: Dispatch<SetStateAction<boolean>>
-  title?:string
-}
+  value?: string;
+  onAdd?: (value: string) => void;
+  editData?: ViewColors_TP;
+  setDataSource?: Dispatch<SetStateAction<ViewColors_TP[]>>;
+  setShow?: Dispatch<SetStateAction<boolean>>;
+  title?: string;
+};
 
 type InitialValues_TP = {
-  [x: string]: string
-}
+  [x: string]: string;
+};
 
 ///
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
-const requiredTranslation = () => `${t("required")}`
+const requiredTranslation = () => `${t("required")}`;
 const validatingSchema = Yup.object({
   name_en: Yup.string().trim().required(requiredTranslation),
   name_ar: Yup.string().trim().required(requiredTranslation),
-})
+});
 
 const StonesColors = ({
   value,
@@ -51,14 +51,14 @@ const StonesColors = ({
   ///
   /////////// CUSTOM HOOKS
   ///
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
-  const isRTL = useIsRTL()
+  const isRTL = useIsRTL();
 
   const initialValues: InitialValues_TP = {
     name_ar: editData ? editData.name : !isRTL ? value! : "",
     name_en: editData ? "" : !isRTL ? value! : "",
-  }
+  };
 
   const {
     mutate,
@@ -67,29 +67,28 @@ const StonesColors = ({
   } = useMutate<ViewColors_TP>({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      notify("success")
+      notify("success");
       queryClient.setQueryData(["colors"], (old: any) => {
-        return [...(old || []), { name: data?.name }]
-      })
+        return [...(old || []), { name: data?.name }];
+      });
       if (value && onAdd) {
-        onAdd(value)
+        onAdd(value);
       }
       if (setDataSource && setShow && !editData && !errorQuery) {
-        setDataSource((prev: any) => [...prev, data])
-        setShow(false)
+        setDataSource((prev: any) => [...prev, data]);
+        setShow(false);
       }
       if (setDataSource && setShow && editData && !errorQuery) {
-        setShow(false)
+        setShow(false);
         setDataSource((prev: any) =>
           prev.map((p: ViewColors_TP) => (p.id === data?.id ? data : p))
-        )
+        );
       }
     },
     onError: (error) => {
-      console.log(error)
-      notify("error")
+      notify("error");
     },
-  })
+  });
   ///
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
@@ -104,8 +103,8 @@ const StonesColors = ({
         ...(editData && { _method: "put" }),
       },
       method: "post",
-    })
-  }
+    });
+  };
 
   return (
     <Formik
@@ -141,7 +140,7 @@ const StonesColors = ({
         </HandleBackErrors>
       </Form>
     </Formik>
-  )
-}
+  );
+};
 
-export default StonesColors
+export default StonesColors;

@@ -30,10 +30,8 @@ const ViewSupport = () => {
     view: false,
   });
   const [editData, setEditData] = useState<Cards_Props_TP>();
-  console.log("🚀 ~ ViewSupport ~ editData:", editData);
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>();
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
-  console.log("🚀 ~ ViewSupport ~ dataSource:", dataSource);
   const [levelDataEndPoint, setLevelDataEndPoint] = useState(
     "/support/api/v1/catSupport"
   );

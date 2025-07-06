@@ -51,7 +51,6 @@ export const SellingTableInputDataDemo = ({
   const { formatGram, formatReyal } = numberContext();
 
   const { values, setFieldValue } = useFormikContext<any>();
-  console.log("🚀 ~ values:", values);
   const taxRate = values.karat_name === "24" ? 1 : 1.15;
 
   const { data: karatValues } = useFetch<KaratValues_TP[]>({
@@ -199,7 +198,7 @@ export const SellingTableInputDataDemo = ({
                   setFieldValue("category_name", option!.value);
                   setFieldValue("category_id", option!.id);
                 }}
-                showItems={true}
+                showNotDefinedType={true}
               />
             </td>
             <td>
@@ -235,7 +234,6 @@ export const SellingTableInputDataDemo = ({
                 noMb={true}
                 placement="top"
                 onChange={(option) => {
-                  console.log("🚀 ~ option:", option);
                   setFieldValue("karat_name", option!.value);
                 }}
               />
@@ -265,7 +263,7 @@ export const SellingTableInputDataDemo = ({
                 placeholder={`${t("selling price")}`}
                 id="taklfa"
                 name="taklfa"
-                type="text"
+                type="number"
                 required
                 className={`text-center`}
                 onChange={(e) => {
@@ -285,7 +283,7 @@ export const SellingTableInputDataDemo = ({
                 placeholder={`${t("selling price after tax")}`}
                 id="taklfa_after_tax"
                 name="taklfa_after_tax"
-                type="text"
+                type="number"
                 required
                 className={`text-center`}
                 onChange={(e) => {

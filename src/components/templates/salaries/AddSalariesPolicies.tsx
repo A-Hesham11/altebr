@@ -19,7 +19,6 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }: any) => {
   const isRTL = useIsRTL();
   const [branchId, setBranchId] = useState<string>(0);
   const [shifts, setShifts] = useState<SelectOption_TP[]>([]);
-  console.log("🚀 ~ AddSalariesPolicies ~ shifts:", shifts);
 
   // const []
 
@@ -62,7 +61,6 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }: any) => {
       }),
     onError: (err) => console.log(err),
   });
-  console.log("🚀 ~ AddSalariesPolicies ~ employeesOptions:", employeesOptions);
 
   const {
     data: shiftData,
@@ -84,7 +82,6 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }: any) => {
     },
     onError: (err) => console.log(err),
   });
-  console.log("🚀 ~ AddSalariesPolicies ~ shiftData:", shiftData);
 
   useEffect(() => {
     if (branchId) {
@@ -128,7 +125,6 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }: any) => {
       queryClient.refetchQueries(["salary"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });
@@ -193,10 +189,6 @@ const AddSalariesPolicies = ({ title, editData, setShow, refetch }: any) => {
               });
             } else {
               PostNewCard({
-                ...values,
-                workingshifts: shifts?.map((shift) => ({ id: shift.id })),
-              });
-              console.log({
                 ...values,
                 workingshifts: shifts?.map((shift) => ({ id: shift.id })),
               });

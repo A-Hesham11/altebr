@@ -21,7 +21,6 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
   const { formatGram, formatReyal } = numberContext();
   const { invoice_logo } = GlobalDataContext();
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ RejectedItemsInvoicePrint ~ userData:", userData);
   const { pathname } = useLocation();
 
   const clientData = {
@@ -198,14 +197,12 @@ const RejectedItemsInvoicePrint = ({ item, printModalData }: any) => {
   const filteredGolds = item?.filter(
     (item) => item?.classification_name === "دهب"
   );
-  console.log("🚀 ~ RejectedItemsInvoicePrint ~ filteredGolds:", filteredGolds);
 
   const totalsOfWeight = item?.reduce((acc, curr) => {
     acc += (+curr.karat_name / 24) * +curr.weight;
 
     return acc;
   }, 0);
-  console.log("🚀 ~ totalsOfWeight ~ totalsOfWeight:", totalsOfWeight);
 
   const resultTable = [
     {

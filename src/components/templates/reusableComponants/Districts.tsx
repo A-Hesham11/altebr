@@ -3,57 +3,57 @@
 //import classes from './Districts.module.css'
 ///
 /////////// Types
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik, FormikValues, useFormikContext } from "formik"
-import { t } from "i18next"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { SingleValue } from "react-select"
-import * as Yup from "yup"
-import { useFetch, useMutate } from "../../../hooks"
-import { SelectOption_TP } from "../../../types"
-import { requiredTranslation } from "../../../utils/helpers"
-import { mutateData } from "../../../utils/mutateData"
-import { notify } from "../../../utils/toast"
-import { HandleBackErrors } from "../../../utils/utils-components/HandleBackErrors"
-import { Button } from "../../atoms"
-import { BaseInputField, Select } from "../../molecules"
-import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik, FormikValues, useFormikContext } from "formik";
+import { t } from "i18next";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { SingleValue } from "react-select";
+import * as Yup from "yup";
+import { useFetch, useMutate } from "../../../hooks";
+import { SelectOption_TP } from "../../../types";
+import { requiredTranslation } from "../../../utils/helpers";
+import { mutateData } from "../../../utils/mutateData";
+import { notify } from "../../../utils/toast";
+import { HandleBackErrors } from "../../../utils/utils-components/HandleBackErrors";
+import { Button } from "../../atoms";
+import { BaseInputField, Select } from "../../molecules";
+import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler";
 
 ///
 type Districts_TP = {
-  city: SingleValue<SelectOption_TP>
-  setDistrictId: Dispatch<SetStateAction<SingleValue<SelectOption_TP>>>
-  distractName?: string
-  label?: string
-  marketName?: string
+  city: SingleValue<SelectOption_TP>;
+  setDistrictId: Dispatch<SetStateAction<SingleValue<SelectOption_TP>>>;
+  distractName?: string;
+  label?: string;
+  marketName?: string;
 
-  fieldKey?: "id" | "value" | undefined
+  fieldKey?: "id" | "value" | undefined;
   editData?: {
-    [key: string]: any
-  }
-  isSuccessPost?: boolean
-  resetSelect?: () => void
-}
+    [key: string]: any;
+  };
+  isSuccessPost?: boolean;
+  resetSelect?: () => void;
+};
 type districtsMutate_TP = {
-  name: string
-  id: string
-  city_id: string
-  city_name: string
-  country_name: string
-}
+  name: string;
+  id: string;
+  city_id: string;
+  city_name: string;
+  country_name: string;
+};
 type District_TP = {
   districts: {
-    id: string
-    name: string
-    city_id: string
-    city_name: string
-    country_name: string
-  }[]
-}
+    id: string;
+    name: string;
+    city_id: string;
+    city_name: string;
+    country_name: string;
+  }[];
+};
 const validationSchema = Yup.object({
   name_ar: Yup.string().trim().required(requiredTranslation),
   name_en: Yup.string().trim().required(requiredTranslation),
-})
+});
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 const NewDistrictOptionComponent = ({
@@ -62,24 +62,23 @@ const NewDistrictOptionComponent = ({
   cityId,
   city_name,
 }: {
-  value: string
-  onAdd: (value: string) => void
-  cityId: string
-  city_name: string
+  value: string;
+  onAdd: (value: string) => void;
+  cityId: string;
+  city_name: string;
 }) => {
   const initialValues = {
     name_ar: value,
     name_en: "",
     city_id: cityId,
-  }
-  const queryClient = useQueryClient()
+  };
+  const queryClient = useQueryClient();
   const { mutate, error, isLoading } = useMutate<districtsMutate_TP>({
     mutationFn: mutateData,
     onSuccess: (data) => {
       queryClient.setQueryData([`districts/${cityId}`], (old: any) => {
-        console.log("first", old)
         if (old && !old.districts) {
-          old.districts = []
+          old.districts = [];
         }
         return {
           ...(old || {
@@ -96,14 +95,14 @@ const NewDistrictOptionComponent = ({
               country_name: data?.country_name,
             },
           ],
-        }
-      })
+        };
+      });
 
       //change type
-      notify("success")
-      onAdd(value)
+      notify("success");
+      onAdd(value);
     },
-  })
+  });
   const handleSubmit = (values: FormikValues) => {
     mutate({
       endpointName: "/governorate/api/v1/districts",
@@ -112,15 +111,15 @@ const NewDistrictOptionComponent = ({
         name_en: values.name_en,
         city_id: cityId,
       },
-    })
-  }
-  
+    });
+  };
+
   return (
     <div className="flex items-center justify-between gap-2">
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          handleSubmit(values)
+          handleSubmit(values);
         }}
         validationSchema={validationSchema}
       >
@@ -157,8 +156,8 @@ const NewDistrictOptionComponent = ({
         </HandleBackErrors>
       </Formik>
     </div>
-  )
-}
+  );
+};
 
 ///
 export const Districts = ({
@@ -182,8 +181,8 @@ export const Districts = ({
   /////////// STATES
   ///
   const [newValue, setNewValue] =
-    useState<SingleValue<SelectOption_TP> | null>()
-  const { setFieldValue, values } = useFormikContext()
+    useState<SingleValue<SelectOption_TP> | null>();
+  const { setFieldValue, values } = useFormikContext();
 
   ///
   /////////// SIDE EFFECTS
@@ -199,8 +198,8 @@ export const Districts = ({
         editData?.nationalAddress?.district.name ||
         editData?.district_name ||
         "اختر المدينه اولا ",
-    })
-  }, [])
+    });
+  }, []);
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
@@ -220,7 +219,7 @@ export const Districts = ({
         label: district.name,
       })),
     enabled: editData ? true : !!city?.id,
-  })
+  });
 
   //change value
   useEffect(() => {
@@ -229,16 +228,16 @@ export const Districts = ({
         id: "",
         value: "",
         label: "اختر الحي ",
-      })
+      });
       setDistrictId({
         id: "",
         label: "",
         value: "",
         name: "",
-      })
-      setFieldValue(distractName, null)
+      });
+      setFieldValue(distractName, null);
     }
-  }, [JSON.stringify(districts)])
+  }, [JSON.stringify(districts)]);
 
   useEffect(() => {
     if (!editData) {
@@ -246,11 +245,11 @@ export const Districts = ({
         id: "",
         value: "",
         label: "اختر المدينة اولا",
-      })
+      });
 
-      if (resetSelect) resetSelect()
+      if (resetSelect) resetSelect();
     }
-  }, [isSuccessPost])
+  }, [isSuccessPost]);
 
   return (
     <div className="flex flex-col gap-1 justify-center">
@@ -281,13 +280,13 @@ export const Districts = ({
         //@ts-ignore
         onChange={(option: SingleValue<SelectOption_TP>) => {
           if (distractName && editData) {
-            setFieldValue(distractName, option?.id)
-            setFieldValue("district_value", option!.value)
+            setFieldValue(distractName, option?.id);
+            setFieldValue("district_value", option!.value);
           }
 
           // if (marketName && editData) setFieldValue(marketName, editData?.market_id)
-          setDistrictId(option)
-          setNewValue(option)
+          setDistrictId(option);
+          setNewValue(option);
         }}
         creatable={true}
         CreateComponent={({ value, onAdd }) => {
@@ -296,7 +295,7 @@ export const Districts = ({
             city_name: city?.name as string,
             value,
             onAdd,
-          })
+          });
         }}
         fieldKey={fieldKey}
         // {...{...(values?.district_value && { value:{
@@ -310,5 +309,5 @@ export const Districts = ({
         refetch={refetch}
       />
     </div>
-  )
-}
+  );
+};

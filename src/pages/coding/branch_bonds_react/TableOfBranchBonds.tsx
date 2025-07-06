@@ -24,7 +24,6 @@ import InvoiceBasicHeader from "../../../components/Invoice/InvoiceBasicHeader";
 import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
-  console.log("🚀 ~ TableOfBranchBonds ~ dataSource:", dataSource);
   const { formatReyal, formatGram } = numberContext();
   const invoiceRefs = useRef([]);
 
@@ -34,13 +33,9 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [IdentitiesPrintModal, setOpenIdentitiesPrintModal] = useState(false);
   const [selectedPrintItem, setSelectedPrintItem] = useState<any>({});
-  console.log(
-    "🚀 ~ TableOfBranchBonds ~ selectedPrintItem:",
-    selectedPrintItem
-  );
+
   const { invoice_logo } = GlobalDataContext();
   const [printItems, setPrintItems] = useState([]);
-  console.log("🚀 ~ TableOfBranchBonds ~ printItems:", printItems);
   const { userData } = useContext(authCtx);
 
   // const clientData = {
@@ -191,7 +186,6 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
       count_items: gold18?.length || 0,
     }
   );
-  console.log(printGold18);
 
   /////// GOLD 21
   const gold21 = selectedPrintItem?.items?.filter(
@@ -244,8 +238,6 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
       count_items: gold22?.length || 0,
     }
   );
-
-  console.log([printGold22]);
 
   /////// GOLD 24
   const gold24 = selectedPrintItem?.items?.filter(
@@ -333,14 +325,9 @@ const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
     printDiamond,
     printMotafreqat,
   ];
-  console.log("🚀 ~ TableOfBranchBonds ~ filteredItem:", filteredItem);
 
   const filteredItemWithoutEmpty = filteredItem?.filter(
     (item) => item?.count_items !== 0
-  );
-  console.log(
-    "🚀 ~ TableOfBranchBonds ~ filteredItemWithoutEmpty:",
-    filteredItemWithoutEmpty
   );
 
   //////////////////////////////TOTALS

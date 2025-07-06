@@ -208,7 +208,6 @@ export const CreateHonestSanad = ({
   //     }
   //     return acc;
   //   }, 0);
-  // console.log("🚀 ~ totalActualItemsCost:", totalActualItemsCost);
 
   // const costRemainingHonest = (
   //   Number(totalActualItemsCost) -
@@ -552,11 +551,9 @@ export const CreateHonestSanad = ({
         (Number(totalPaidCostFromClient) + Number(selectedItem?.amount))
       ).toFixed(digits_count.reyal)
     );
-    console.log("🚀 ~ handleSaveItems ~ remainingCost:", remainingCost);
     const allItemsStatus = selectedItem.items
       .filter((item) => item.return_status === "not_returned")
       .every((item) => item.status === "ready");
-    console.log("🚀 ~ handleSaveItems ~ allItemsStatus:", allItemsStatus);
     if (paymentData.length === 0 && remainingCost !== 0) {
       notify("info", `${t("add payment method first")}`);
       return;

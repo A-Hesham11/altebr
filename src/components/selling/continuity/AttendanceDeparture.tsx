@@ -37,10 +37,6 @@ const AttendanceDeparture = () => {
     endpoint: `/banchSalary/api/v1/presences`,
     pagination: true,
   });
-  console.log(
-    "🚀 ~ AttendanceDeparture ~ AttendanceDeparture:",
-    AttendanceDeparture
-  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -115,8 +111,6 @@ const AttendanceDeparture = () => {
       },
       {
         cell: (info: any) => {
-          console.log("🚀 ~ AttendanceDeparture ~ info:", info.row.original)
-          
           const decimalHours = info.getValue();
 
           const formattedTime = convertDecimalToTime(decimalHours);
@@ -179,12 +173,14 @@ const AttendanceDeparture = () => {
 
   function convertDecimalToTime(decimalHours) {
     const totalSeconds = Math.round(decimalHours * 3600);
-  
+
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-  
-    const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+    const formattedTime = `${String(hours).padStart(2, "0")}:${String(
+      minutes
+    ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
     return formattedTime;
   }
 

@@ -49,7 +49,6 @@ const ViewSalesReturnInvoicesDemo = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ ViewSellingInvoice ~ invoiceData:", invoiceData);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(

@@ -38,7 +38,6 @@ export const AllRetrieveHonestBonds = () => {
   ///
   const [dataSource, setDataSource] = useState<any>([]);
   const [selectedItem, setSelectedItem] = useState<any>({});
-  console.log("🚀 ~ AllRetrieveHonestBonds ~ selectedItem:", selectedItem)
   const [restrictModal, setOpenRestrictModal] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [page, setPage] = useState(1);

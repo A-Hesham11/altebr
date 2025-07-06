@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { t } from "i18next";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useParams } from "react-router-dom";
 import { Loading } from "../../components/organisms/Loading";
@@ -11,6 +11,9 @@ import { useFetch, useIsRTL } from "../../hooks";
 import { FilesPreview } from "../../components/molecules/files/FilesPreview";
 import { FilesPreviewOutFormik } from "../../components/molecules/files/FilesPreviewOutFormik";
 import { CImageFile_TP } from "../../types";
+import { Back } from "../../utils/utils-components/Back";
+import { Button } from "../../components/atoms";
+import { useReactToPrint } from "react-to-print";
 
 type BondProps_TP = {
   title: string;
@@ -84,10 +87,10 @@ export const Bond = ({ title }: BondProps_TP) => {
   const { formatGram, formatReyal } = numberContext();
   const [images, setImages] = useState<CImageFile_TP[]>([]);
   const [files, setFiles] = useState<CImageFile_TP[]>([]);
-  console.log("🚀 ~ Bond ~ files:", files);
-  console.log("🚀 ~ Bond ~ images:", images);
+
   const location = useLocation();
   const path = location.pathname;
+  const bondRefs = useRef([]);
 
   const isRTL = useIsRTL();
 
@@ -243,7 +246,6 @@ export const Bond = ({ title }: BondProps_TP) => {
           },
   });
 
-  console.log("🚀 ~ Bond ~ contract:", contract);
   const cols1 =
     path == `/gold-bonds/${bondID}`
       ? useMemo<ColumnDef<TableRow_TP>[]>(
@@ -535,46 +537,112 @@ export const Bond = ({ title }: BondProps_TP) => {
 
   if (restrictionsTotals) restrictions?.push(restrictionsTotals!);
 
+  const handlePrint = useReactToPrint({
+    content: () => bondRefs.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+      @page {
+        size: A5 landscape;
+        margin: 15px !important;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+          zoom: 0.5;
+        }
+        .rtl {
+          direction: rtl;
+          text-align: right;
+        }
+        .ltr {
+          direction: ltr;
+          text-align: left;
+        }
+        .container_print {
+          width: 100%;
+          padding: 10px;
+          box-sizing: border-box;
+        }
+        .no-print, .rt-table-pagination {
+          display: none !important;
+        }
+        table {
+          page-break-inside: auto;
+        }
+        tr {
+          page-break-inside: avoid;
+          page-break-after: auto;
+        }
+      }
+    `,
+  });
+
   return (
-    <>
+    <div className={`${isRTL ? "rtl" : "ltr"} container_print`} ref={bondRefs}>
       <Helmet>
         <title>{title}</title>
       </Helmet>
+
       {isError && (
         <h2 className="text-mainRed">{failureReason?.response.data.message}</h2>
       )}
+
       {(isLoading || isFetching) && <Loading mainTitle={t("bond total")} />}
-      {!(isLoading || isFetching) && isSuccess && !!contract?.boxes?.length && (
-        <BondTotals boxesData={contract?.boxes} />
-      )}
-      {isSuccess && !!!contract?.boxes?.length && !isLoading && !isFetching && (
-        <h2 className="text-center">{t("no items")}</h2>
-      )}
-      {!(isLoading || isFetching) && isSuccess && !!contract?.items?.length && (
-        <div className="my-9">
-          {!!images?.length ||
-            (!!files?.length && (
-              <div className="mb-6 flex gap-4 justify-end">
-                {files.length > 0 && (
-                  <FilesPreviewOutFormik preview pdfs={files || []} />
-                )}
-                {images.length > 0 && (
-                  <FilesPreviewOutFormik images={images || []} preview />
-                )}
-              </div>
-            ))}
-          <Table data={contract.items} showNavigation columns={cols1} />
-        </div>
-      )}
-      {isSuccess && !!!contract?.items?.length && !isLoading && !isFetching && (
-        <h2 className="text-center">{t("no bonds")}</h2>
-      )}
-      {!(isLoading || isFetching) && isSuccess && !!restrictions?.length && (
+
+      {!(isLoading || isFetching) && isSuccess && (
         <>
-          <h2 className="text-xl mb-5 font-bold">{t("accounting entry")}</h2>
-          <Table data={restrictions} footered showNavigation columns={cols2} />
+          {contract?.boxes?.length > 0 ? (
+            <>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold">
+                  {title ? title : t("bond total")}
+                </h2>
+                <div className="flex gap-x-4 no-print">
+                  <Button action={handlePrint}>{t("print")}</Button>
+                  <Back />
+                </div>
+              </div>
+              <BondTotals boxesData={contract.boxes} />
+            </>
+          ) : (
+            <h2 className="text-center">{t("no items")}</h2>
+          )}
+
+          {contract?.items?.length > 0 ? (
+            <div className="my-9 ">
+              {(images?.length > 0 || files?.length > 0) && (
+                <div className="mb-6 flex gap-4 justify-end no-print">
+                  {files?.length > 0 && (
+                    <FilesPreviewOutFormik preview pdfs={files} />
+                  )}
+                  {images?.length > 0 && (
+                    <FilesPreviewOutFormik images={images} preview />
+                  )}
+                </div>
+              )}
+              <Table data={contract.items} showNavigation columns={cols1} />
+            </div>
+          ) : (
+            <h2 className="text-center no-print">{t("no bonds")}</h2>
+          )}
+
+          {!!restrictions?.length && (
+            <>
+              <h2 className="text-xl mb-5 font-bold">
+                {t("accounting entry")}
+              </h2>
+              <Table
+                data={restrictions}
+                footered
+                showNavigation
+                columns={cols2}
+              />
+            </>
+          )}
         </>
       )}
-    </>
+    </div>
   );
 };

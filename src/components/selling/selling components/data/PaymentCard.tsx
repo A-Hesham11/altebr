@@ -377,11 +377,13 @@ const PaymentCard = ({
       : locationPath === "/recycledGold/convert"
       ? RecycledGold
       : cardOfCash;
-  console.log("🚀 ~ cardCash:", cardCash);
 
   const bankscard =
     locationPath === "/selling/reimbursement" ||
     locationPath === "/expenses/expensesInvoice" ||
+    locationPath === "/edara/addExpenses" ||
+    locationPath === "/supplier-payment" ||
+    locationPath === "/addReceiptBonds" ||
     locationPath === "/selling/payoff/sales-return" ||
     locationPath === "/recycledGold/convert"
       ? ""
@@ -394,7 +396,6 @@ const PaymentCard = ({
     : locationPath === "/selling/addInvoiceDemo"
     ? [...cardCash, ...cardDemo].reverse()
     : [...bankscard, ...bankAccountCards, ...cardCash].reverse();
-  console.log("🚀 ~ cardsData:", cardsData);
 
   const { userData } = useContext(authCtx);
 
@@ -408,7 +409,6 @@ const PaymentCard = ({
       const selectNewCard = cardsData?.filter(
         (item) => item?.front_key === frontKey
       );
-      console.log("🚀 ~ handleChooseCard ~ selectNewCard:", selectNewCard);
       setSelectedCardData?.(selectNewCard);
 
       const selectCradIDOrBankId = selectNewCard[0]?.bank_id
@@ -451,7 +451,10 @@ const PaymentCard = ({
             selectNewCard[0]?.front_key ||
             "cash"
         );
-      } else if (locationPath === "/expenses/expensesInvoice") {
+      } else if (
+        locationPath === "/expenses/expensesInvoice" ||
+        locationPath === "/edara/addExpenses"
+      ) {
         setExchangeFrontKey?.(selectNewCard[0]?.exchange_front_key || "cash");
       } else {
         setCardFrontKeyAccept?.(selectNewCard[0]?.front_key_accept || "cash");
@@ -460,7 +463,6 @@ const PaymentCard = ({
   };
 
   const cardID = cardsData?.filter((item) => item.id === editData?.card_id);
-  console.log("🚀 ~ cardID:", cardID);
 
   useEffect(() => {
     if (editData) {

@@ -3,8 +3,6 @@ import React, { useMemo } from "react";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 
 const ShowDetailsItemOfInventory = ({ itemDetails }: any) => {
-  console.log("🚀 ~ ShowDetailsItemOfInventory ~ itemDetails:", itemDetails);
-
   const columns = useMemo<any>(
     () => [
       {

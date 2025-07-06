@@ -18,7 +18,6 @@ const PaymentProccessingTableToSalesReturn = ({
   setEditData,
   setPaymentData,
 }) => {
-  console.log("🚀 ~ paymentData:", paymentData)
   const [editingRowId, setEditingRowId] = useState<string | undefined>(null);
   const { formatGram, formatReyal } = numberContext();
 

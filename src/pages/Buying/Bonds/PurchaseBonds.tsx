@@ -49,7 +49,6 @@ const PurchaseBonds = () => {
         : `${search}`,
     pagination: true,
   });
-    console.log("🚀 ~ file: PurchaseBonds.tsx:52 ~ PurchaseBonds ~ invoiceData:", invoiceData)
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -66,7 +65,9 @@ const PurchaseBonds = () => {
       },
       {
         cell: (info: any) => {
-          return info.row.original.client_name || info.row.original.supplier_name
+          return (
+            info.row.original.client_name || info.row.original.supplier_name
+          );
         },
         accessorKey: "client_name",
         header: () => <span>{t("client name")}</span>,
@@ -141,7 +142,7 @@ const PurchaseBonds = () => {
 
   return (
     <div className="p-16">
-      <h2 className='mb-8 text-base font-bold'>{t("purchase bonds")}</h2>
+      <h2 className="mb-8 text-base font-bold">{t("purchase bonds")}</h2>
       <div className="mb-8 flex flex-col items-center gap-6 lg:flex-row lg:items-end lg:justify-between">
         {/* 1) FORM */}
         <Formik

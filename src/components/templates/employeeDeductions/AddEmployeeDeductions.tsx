@@ -129,7 +129,6 @@ const AddEmployeeDeductions = ({
       queryClient.refetchQueries(["employeeDeductions"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });
@@ -283,9 +282,6 @@ const AddEmployeeDeductions = ({
                         }
                       } else {
                         PostNewCard({
-                          ...values,
-                        });
-                        console.log({
                           ...values,
                         });
                       }

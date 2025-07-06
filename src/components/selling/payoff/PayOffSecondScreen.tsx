@@ -39,7 +39,6 @@ export const PayOffSecondScreen = ({
   selectedItem,
   setSanadId,
 }: PayOffSecondScreen_TP) => {
-  console.log("🚀 ~ selectedItem:", selectedItem)
   /////////// VARIABLES
   ///
   const [openModal, setOpenModal] = useState(false);
@@ -54,14 +53,11 @@ export const PayOffSecondScreen = ({
   /////////// CUSTOM HOOKS
   ///
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ PayOffSecondScreen ~ dataSource:", dataSource);
   const [selectedRows, setSelectedRows] = useState<any>([]);
-  console.log("🚀 ~ selectedRows:", selectedRows)
   const [
     disableSelectedCheckAfterSendById,
     setDisableSelectedCheckAfterSendById,
   ] = useState([]);
-  console.log("🚀 ~ disableSelectedCheckAfterSendById:", disableSelectedCheckAfterSendById)
 
   const [selectAll, setSelectAll] = useState(false);
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
@@ -259,10 +255,13 @@ export const PayOffSecondScreen = ({
   const allcounts = dataSource && dataSource?.length;
   // const total24 = dataSource && dataSource[0]?.allboxes.karat24
   const allOgour =
+    dataSource && dataSource?.reduce((total, item) => +total + +item.wage, 0);
+  const diamondStone =
     dataSource &&
-    dataSource?.reduce((total, item) => +total + +item.wage, 0);
-  const diamondStone = dataSource && dataSource?.reduce((total, item) => +total + +item.diamond_weight, 0);
-  const otherStone = dataSource && dataSource?.reduce((total, item) => +total + +item.stones_weight, 0);
+    dataSource?.reduce((total, item) => +total + +item.diamond_weight, 0);
+  const otherStone =
+    dataSource &&
+    dataSource?.reduce((total, item) => +total + +item.stones_weight, 0);
 
   const totals = [
     {
@@ -472,9 +471,10 @@ export const PayOffSecondScreen = ({
                   items: selectedRows?.map((item) => item.hwya),
                 };
                 mutateRetrieve({
-                  endpointName: "branchManage/api/v1/change-status-after-mardod",
-                  values: retrieveFinalValue
-                })
+                  endpointName:
+                    "branchManage/api/v1/change-status-after-mardod",
+                  values: retrieveFinalValue,
+                });
               }}
               loading={retrieveIsLoading}
             >
@@ -489,4 +489,3 @@ export const PayOffSecondScreen = ({
     </>
   );
 };
-

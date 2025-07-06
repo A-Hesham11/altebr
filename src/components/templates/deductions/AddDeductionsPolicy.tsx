@@ -58,7 +58,6 @@ const AddDeductionsPolicy = ({ title, editData, setShow, refetch }: any) => {
       queryClient.refetchQueries(["deductions"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });
@@ -101,9 +100,6 @@ const AddDeductionsPolicy = ({ title, editData, setShow, refetch }: any) => {
               });
             } else {
               PostNewCard({
-                ...values,
-              });
-              console.log({
                 ...values,
               });
             }

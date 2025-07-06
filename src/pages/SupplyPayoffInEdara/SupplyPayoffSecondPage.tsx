@@ -12,6 +12,7 @@ import SupplyPayoffInvoiceTable from "./SupplyPayoffInvoiceTable";
 import { SupplyPayoffFinalPreview } from "./SupplyPayoffFinalPreview";
 import { notify } from "../../utils/toast";
 import { useReactToPrint } from "react-to-print";
+import { useFormikContext } from "formik";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -33,9 +34,9 @@ const SupplyPayoffSecondPage = ({
   supplierId,
   mardodItemsId,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
-
   const { formatGram, formatReyal } = numberContext();
+  const { values } = useFormikContext();
+  console.log("🚀 ~ values:", values);
 
   const { userData } = useContext(authCtx);
 
@@ -62,11 +63,9 @@ const SupplyPayoffSecondPage = ({
   }, 0);
 
   const totalwages = sellingItemsData.reduce((acc, card) => {
-    console.log("🚀 ~ totalwages ~ card:", card);
     acc += +card.wage * +card.weight;
     return acc;
   }, 0);
-  console.log("🚀 ~ totalwages ~ totalwages:", totalwages);
 
   const totalFinalCost =
     Number(totalCost) + Number(totalItemsTaxes) + Number(totalwages);
@@ -167,6 +166,7 @@ const SupplyPayoffSecondPage = ({
         vat: userData?.tax_rate,
         employee_id: userData?.id,
         invoice_date: sellingItemsData[0]?.bond_date,
+        media: values?.media,
         items: sellingItemsData?.map((item) => ({
           id: item?.id,
           hwya: item.hwya,

@@ -37,14 +37,9 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
   invoiceData,
   setOperationData,
 }) => {
-  console.log("🚀 ~ mainCardData:", mainCardData);
   const { userData } = useContext(authCtx);
   const { values } = useFormikContext();
-  console.log("🚀 ~ values:", values);
-  console.log(
-    "🚀 ~ values:",
-    values?.from && formatDate(getDayAfter(values.from))
-  );
+
   const isBoxesHaveData = mainCardData?.map((data) => data?.boxes).flat();
 
   const formDate = values?.from ? formatDate(getDayAfter(values?.from)) : 0;
@@ -67,7 +62,6 @@ const BudgetFirstPage: React.FC<BudgetFirstPage_TP> = ({
       setMainCardData(data);
     },
   });
-  console.log("🚀 ~ accountsDetailsData:", accountsDetailsData);
 
   useEffect(() => {
     accountsDetailsDataRefetch();

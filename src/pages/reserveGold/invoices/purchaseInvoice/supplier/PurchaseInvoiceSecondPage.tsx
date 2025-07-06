@@ -43,7 +43,6 @@ const PurchaseInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
   const { values } = useFormikContext();
-  console.log("🚀 ~ values:", values);
 
   const { invoice_logo } = GlobalDataContext();
   const invoiceRefs = useRef([]);
@@ -178,8 +177,6 @@ const PurchaseInvoiceSecondPage: React.FC<purchaseInvoicesSecondPage_TP> = (
         cost_after_tax: item.total_value,
       };
     });
-
-    console.log({ invoice, items });
 
     mutate({
       endpointName: "/reserveGold/api/v1/reserve_buying_Invoice",

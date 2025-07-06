@@ -25,7 +25,6 @@ const SellingInvoiceSupplier: React.FC<SellingInvoiceSupplier_TP> = (props) => {
     22: gold_price?.price_gram_22k,
     24: gold_price?.price_gram_24k,
   };
-  console.log("🚀 ~ goldPrice:", goldPrice);
 
   const initialValues = {
     supplier_value: "",

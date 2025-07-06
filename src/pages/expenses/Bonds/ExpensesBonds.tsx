@@ -19,6 +19,7 @@ import { Back } from "../../../utils/utils-components/Back";
 import ExpensesBondsPreview from "./ExpensesBondsPreview";
 import ExpensesBondsEntry from "./ExpensesBondsEntry";
 import { BiSpreadsheet } from "react-icons/bi";
+import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
 
 const ExpensesBonds = () => {
   // STATE
@@ -30,7 +31,6 @@ const ExpensesBonds = () => {
   const [openEntryModal, setOpenEntryModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ ExpensesBonds ~ search:", search);
 
   const searchValues = {
     expence_bond_number: "",
@@ -56,10 +56,6 @@ const ExpensesBonds = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log(
-    "🚀 ~ file: PurchaseBonds.tsx:52 ~ PurchaseBonds ~ expenseData:",
-    expenseData
-  );
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -94,6 +90,24 @@ const ExpensesBonds = () => {
         cell: (info: any) => info.getValue(),
         accessorKey: "description",
         header: () => <span>{t("description")}</span>,
+      },
+      {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.images?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.images}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
       },
       {
         cell: (info: any) => (
@@ -197,11 +211,6 @@ const ExpensesBonds = () => {
     let url = `/expenses/api/v1/expense-invoices/${userData?.branch_id}?`;
     let first = false;
     Object.keys(req).forEach((key) => {
-      console.log("🚀 ~ file: ExpensesBonds.tsx:144 ~ Object.keys ~ key:", key);
-      console.log(
-        "🚀 ~ file: ExpensesBonds.tsx:137 ~ Object.keys ~ key:",
-        req[key]
-      );
       if (req[key] !== "") {
         if (first) {
           // url += `?${key}[eq]=${req[key]}`;
@@ -258,10 +267,6 @@ const ExpensesBonds = () => {
         value: subExpenses?.id,
       })),
   });
-  console.log(
-    "🚀 ~ file: ExpensesBonds.tsx:157 ~ ExpensesBonds ~ subExpenses:",
-    subExpenses
-  );
 
   // LOADING ....
   if (isLoading || isRefetching || isFetching)

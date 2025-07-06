@@ -112,7 +112,6 @@ export const CreateBranch = ({
 
   const [docsFormValues, setDocsFormValues] =
     useState<allDocs_TP[]>(incomingData);
-  console.log("🚀 ~ docsFormValues:", docsFormValues);
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -120,7 +119,6 @@ export const CreateBranch = ({
   const { mutate, error, isLoading, isSuccess, reset } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      console.log("in success");
       notify("success");
       queryClient.refetchQueries(["AllBranches"]);
       queryClient.setQueryData(["branches"], (oldData) => [
@@ -170,7 +168,6 @@ export const CreateBranch = ({
               zip_code: values.zip_code,
             },
           };
-          console.log("🚀 ~ editedValues:", editedValues);
 
           if (!!editData) {
             let { document, ...editedValuesWithoutDocument } = editedValues;

@@ -1,45 +1,45 @@
 /////////// IMPORTS
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik, FormikValues } from "formik"
-import { t } from "i18next"
-import { Dispatch, SetStateAction } from "react"
-import * as Yup from "yup"
-import { useIsRTL, useMutate } from "../../../../hooks"
-import { requiredTranslation } from "../../../../utils/helpers"
-import { mutateData } from "../../../../utils/mutateData"
-import { notify } from "../../../../utils/toast"
-import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors"
-import { Button } from "../../../atoms"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik, FormikValues } from "formik";
+import { t } from "i18next";
+import { Dispatch, SetStateAction } from "react";
+import * as Yup from "yup";
+import { useIsRTL, useMutate } from "../../../../hooks";
+import { requiredTranslation } from "../../../../utils/helpers";
+import { mutateData } from "../../../../utils/mutateData";
+import { notify } from "../../../../utils/toast";
+import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors";
+import { Button } from "../../../atoms";
 import {
   BaseInputField,
   InnerFormLayout,
   OuterFormLayout,
-} from "../../../molecules"
-import { Country_city_distract_markets } from "../../reusableComponants/Country_city_distract_markets"
-import { ViewMarkets_TP } from "../view/ViewMarkets"
-import { MarketMainData } from "./MarketMainData"
+} from "../../../molecules";
+import { Country_city_distract_markets } from "../../reusableComponants/Country_city_distract_markets";
+import { ViewMarkets_TP } from "../view/ViewMarkets";
+import { MarketMainData } from "./MarketMainData";
 
 //import classes from './Markets.module.css'
 ///
 /////////// Types
 ///
 type MarketType = {
-  country_name: string
-  city_name: string
-  name_en: string
-  name_ar: string
-  id: string
-  country_id: string
-  city_id: string
-  district_id: string
-}
+  country_name: string;
+  city_name: string;
+  name_en: string;
+  name_ar: string;
+  id: string;
+  country_id: string;
+  city_id: string;
+  district_id: string;
+};
 type AddMarketProps_TP = {
-  setDataSource?: Dispatch<SetStateAction<ViewMarkets_TP[]>>
-  editData?: ViewMarkets_TP
-  setEditData?: any
-  setShow?: Dispatch<SetStateAction<boolean>>
-  title?: string
-}
+  setDataSource?: Dispatch<SetStateAction<ViewMarkets_TP[]>>;
+  editData?: ViewMarkets_TP;
+  setEditData?: any;
+  setShow?: Dispatch<SetStateAction<boolean>>;
+  title?: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -49,7 +49,7 @@ const ValidatingSchema = Yup.object({
   district_id: Yup.string().trim().required(requiredTranslation),
   name_ar: Yup.string().trim().required(requiredTranslation),
   name_en: Yup.string().trim().required(requiredTranslation),
-})
+});
 ///
 export const AddMarket = ({
   editData,
@@ -60,7 +60,7 @@ export const AddMarket = ({
 }: AddMarketProps_TP) => {
   /////////// VARIABLES
   ///
-  const isRTL = useIsRTL()
+  const isRTL = useIsRTL();
 
   const initialValues = {
     name_ar: editData ? editData?.name_ar : "",
@@ -68,7 +68,7 @@ export const AddMarket = ({
     country_id: editData ? editData?.country_name : "",
     city_id: editData ? editData?.city_name : "",
     district_id: editData ? editData?.district_id : "",
-  }
+  };
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -83,11 +83,11 @@ export const AddMarket = ({
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate, error, isLoading, isSuccess, reset } = useMutate<MarketType>({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      notify("success")
+      notify("success");
       if (data) {
         queryClient.setQueryData(["markets"], (old: any) => {
           return [
@@ -99,29 +99,27 @@ export const AddMarket = ({
               city_name: data.city_name,
               district_id: data.district_id,
             },
-          ]
-        })
+          ];
+        });
       }
       if (setDataSource && setShow && !editData && !error) {
         // setDataSource((prev: any) => [...prev, data])
-        queryClient.refetchQueries(["AllMarkets"])
-        setShow(false)
+        queryClient.refetchQueries(["AllMarkets"]);
+        setShow(false);
       }
       if (setDataSource && setShow && editData && !error) {
-        setShow(false)
-        queryClient.refetchQueries(["AllMarkets"])
+        setShow(false);
+        queryClient.refetchQueries(["AllMarkets"]);
         // setDataSource((prev: any) =>
         //   prev.map((p: ViewMarkets_TP) => (p.id === data?.id ? data : p))
         // )
       }
     },
     onError: (error) => {
-      console.log("error", error)
-      notify("error")
+      notify("error");
     },
-  })
+  });
   const handleSubmit = (values: FormikValues) => {
-
     mutate({
       endpointName: editData
         ? `governorate/api/v1/markets/${editData?.id}`
@@ -135,8 +133,8 @@ export const AddMarket = ({
         ...(editData && { _method: "put" }),
       },
       method: "post",
-    })
-  }
+    });
+  };
   ///
   return (
     <>
@@ -144,7 +142,7 @@ export const AddMarket = ({
         initialValues={initialValues}
         validationSchema={ValidatingSchema}
         onSubmit={(values) => {
-          handleSubmit(values)
+          handleSubmit(values);
         }}
       >
         <Form>
@@ -161,5 +159,5 @@ export const AddMarket = ({
         </Form>
       </Formik>
     </>
-  )
-}
+  );
+};

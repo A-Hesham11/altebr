@@ -25,7 +25,6 @@ const AddInvoiceHeaderData = ({
   refetch,
   setShow,
 }: AddBankProps_TP) => {
-  console.log("🚀 ~ editData:", editData);
   const isRTL = useIsRTL();
   const queryClient = useQueryClient();
   const [files, setFiles] = useState<File[]>([]);
@@ -56,7 +55,6 @@ const AddInvoiceHeaderData = ({
       refetch();
     },
     onError: (error) => {
-      console.error(error);
       notify("error");
     },
   });

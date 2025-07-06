@@ -42,12 +42,10 @@ const RecieveItemsSecondScreen = ({
   setSanadId,
   openModal,
 }: RecieveItemsSecondScreenProps_TP) => {
-  console.log("🚀 ~ RecieveItemsSecondScreen ~ selectedItem:", selectedItem);
   const isSanadOpened = selectedItem.bond_status !== 0;
   const { userData } = useContext(authCtx);
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [dataSource, setDataSource] = useState({});
-  console.log("🚀 ~ RecieveItemsSecondScreen ~ dataSource:", dataSource);
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
@@ -646,4 +644,3 @@ const RecieveItemsSecondScreen = ({
 };
 
 export default RecieveItemsSecondScreen;
-

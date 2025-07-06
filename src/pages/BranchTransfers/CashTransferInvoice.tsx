@@ -12,7 +12,6 @@ import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
 import { convertNumToArWord } from "../../utils/number to arabic words/convertNumToArWord";
 
 const CashTransferInvoice = ({ item, gold_price, invoice_logo }: any) => {
-  console.log("🚀 ~ CashTransferInvoice ~ item:", item);
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();

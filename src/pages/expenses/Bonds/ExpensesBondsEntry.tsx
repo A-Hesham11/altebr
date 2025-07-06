@@ -5,7 +5,6 @@ import { numberContext } from "../../../context/settings/number-formatter";
 import { Table } from "../../../components/templates/reusableComponants/tantable/Table";
 
 const ExpensesBondsEntry = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ ExpensesBondsEntry ~ item:", item)
   const { formatGram, formatReyal } = numberContext();
 
   const cols2 = useMemo<ColumnDef<any>[]>(
@@ -15,14 +14,14 @@ const ExpensesBondsEntry = ({ item }: { item?: {} }) => {
         cell: (info) => info.renderValue() || "-",
         accessorKey: "bian",
       },
-    //   {
-    //     header: `${t("gram (debtor)")}`,
-    //     cell: (info) =>
-    //       info.renderValue() !== 0
-    //         ? formatGram(Number(info.renderValue()))
-    //         : "---",
-    //     accessorKey: "debtor_gram",
-    //   },
+      //   {
+      //     header: `${t("gram (debtor)")}`,
+      //     cell: (info) =>
+      //       info.renderValue() !== 0
+      //         ? formatGram(Number(info.renderValue()))
+      //         : "---",
+      //     accessorKey: "debtor_gram",
+      //   },
       {
         header: `${t("reyal (debtor)")}`,
         cell: (info) =>
@@ -31,14 +30,14 @@ const ExpensesBondsEntry = ({ item }: { item?: {} }) => {
             : "---",
         accessorKey: "debtor_SRA",
       },
-    //   {
-    //     header: `${t("gram (creditor)")}`,
-    //     cell: (info) =>
-    //       info.renderValue() !== 0
-    //         ? formatGram(Number(info.renderValue()))
-    //         : "---",
-    //     accessorKey: "creditor_gram",
-    //   },
+      //   {
+      //     header: `${t("gram (creditor)")}`,
+      //     cell: (info) =>
+      //       info.renderValue() !== 0
+      //         ? formatGram(Number(info.renderValue()))
+      //         : "---",
+      //     accessorKey: "creditor_gram",
+      //   },
       {
         header: `${t("reyal (creditor)")}`,
         cell: (info) =>

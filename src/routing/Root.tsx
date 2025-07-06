@@ -81,7 +81,6 @@ export const Root = () => {
 // export const Root = () => {
 //   const { isLoggedIn, isLoadingUpdatedUserData, userData } =
 //     useContext(authCtx);
-//   console.log("🚀 ~ Root ~ userData:", userData);
 //   const navigate = useNavigate();
 //   const location = useLocation();
 

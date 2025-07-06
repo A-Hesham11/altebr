@@ -14,8 +14,6 @@ const PaymentFinalPreviewBillData = ({
   invoiceNumber,
   invoiceData,
 }: any) => {
-  console.log("🚀 ~ clientData:", clientData);
-  console.log("🚀 ~ isSupply:", isSupply);
   const {
     client_id,
     client_value,

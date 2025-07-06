@@ -31,10 +31,6 @@ const BuyingInvoiceData = ({
   odwyaTypeValue,
   setOdwyaTypeValue,
 }: CreateHonestSanadProps_TP) => {
-  console.log(
-    "🚀 ~ file: BuyingInvoiceData.tsx:32 ~ sellingItemsData:",
-    sellingItemsData
-  );
   const { formatGram, formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
   const navigate = useNavigate();
@@ -253,8 +249,6 @@ const BuyingInvoiceData = ({
         };
       }
     });
-
-    console.log({ invoice, items });
 
     mutate({
       endpointName: "/buyingUsedGold/api/v1/add_buying_Invoice",

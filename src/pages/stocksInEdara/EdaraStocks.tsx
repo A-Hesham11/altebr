@@ -234,7 +234,6 @@ const EdaraStocks = () => {
                           (option) => option.id === accountId
                         )}
                         onChange={(option: any) => {
-                          console.log("🚀 ~ EdaraStocks ~ option:", option);
                           setFieldValue("account_id", option.id);
                           setAccountId(option?.id);
                           resetForm();

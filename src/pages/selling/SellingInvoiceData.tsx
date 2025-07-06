@@ -540,11 +540,6 @@ const SellingInvoiceData = ({
       endpointName: "/selling/api/v1/add_Invoice",
       values: { invoice, items, card, paymentCommission, paymentCard },
     });
-
-    console.log(
-      "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
-      { invoice, items, card, paymentCommission, paymentCard }
-    );
   };
 
   const handlePrint = useReactToPrint({

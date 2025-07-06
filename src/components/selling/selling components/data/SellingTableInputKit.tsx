@@ -45,8 +45,6 @@ const SellingTableInputKit = ({
         header: () => "#",
         accessorKey: "action",
         cell: (info: any) => {
-          console.log("🚀 ~ info:", info.row.index);
-
           return (
             <div className="flex items-center justify-center gap-4">
               <input
@@ -225,7 +223,6 @@ const SellingTableInputKit = ({
               },
               0
             );
-            console.log("🚀 ~ clacSelectedWeight:", clacSelectedWeight)
 
             const clacSelectedCost = selectedItemDetails.reduce((acc, item) => {
               acc += Number(item.selling_price);
@@ -284,7 +281,10 @@ const SellingTableInputKit = ({
               filterStatusOfKit.length !== selectedItemDetails.length &&
               Number(values.weight) === Number(clacSelectedWeight)
             ) {
-              notify("info", `${t("The weight must be distributed among the pieces")}`);
+              notify(
+                "info",
+                `${t("The weight must be distributed among the pieces")}`
+              );
             } else if (
               filterStatusOfKit.length === 1 &&
               Number(values.weight) !== Number(selectedItemDetails[0]?.weight)

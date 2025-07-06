@@ -65,7 +65,6 @@ const BudgetFirstPageHeader: React.FC<BudgetFirstPageHeader_TP> = ({
       });
     },
   });
-  console.log("🚀 ~ allBanksOption:", allBanksOption);
 
   useEffect(() => {
     if (allBanksOption?.length === 1) {

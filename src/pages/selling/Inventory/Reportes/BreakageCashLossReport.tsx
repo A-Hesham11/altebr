@@ -11,7 +11,6 @@ import { numberContext } from "../../../../context/settings/number-formatter";
 import { convertNumToArWord } from "../../../../utils/number to arabic words/convertNumToArWord";
 
 const BreakageCashLossReport = ({ dataSource, reportNumber, date }: any) => {
-  console.log("🚀 ~ LostItemsReports ~ dataSource:", dataSource);
   const { userData } = useContext(authCtx);
   const contentRef = useRef();
   const isRTL = useIsRTL();

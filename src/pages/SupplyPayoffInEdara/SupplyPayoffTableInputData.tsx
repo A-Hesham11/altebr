@@ -50,8 +50,6 @@ export const SupplyPayoffTableInputData = ({
   setSellingItemsOfWeight,
   supplierId,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
-  console.log("🚀 ~ dataSource:", dataSource);
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [isCategoryDisabled, setIsCategoryDisabled] = useState(false);
@@ -59,10 +57,8 @@ export const SupplyPayoffTableInputData = ({
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData)
 
   const { values, setFieldValue } = useFormikContext<any>();
-  console.log("🚀 ~ values:", values);
 
   const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
     queryKey: ["branch-all-return-selling"],
@@ -156,9 +152,6 @@ export const SupplyPayoffTableInputData = ({
       Number(dataSource[0]?.weight);
 
   const goldVat = goldTaklfa * taxRateOfKarat24;
-  console.log("🚀 ~ goldVat:", goldVat)
-
-
 
   useEffect(() => {
     const {
@@ -168,6 +161,7 @@ export const SupplyPayoffTableInputData = ({
       client_name,
       supplier_id,
       supplier_name,
+      media,
       ...restValues
     } = values;
     Object.keys(restValues).map((key) => {
@@ -214,6 +208,7 @@ export const SupplyPayoffTableInputData = ({
       client_name,
       supplier_id,
       supplier_name,
+      media,
       ...restValues
     } = values;
     Object.keys(restValues).forEach((key) => {
@@ -530,5 +525,3 @@ export const SupplyPayoffTableInputData = ({
     </Form>
   );
 };
-
-

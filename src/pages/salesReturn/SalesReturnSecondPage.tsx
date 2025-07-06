@@ -38,7 +38,6 @@ const SalesReturnSecondPage = ({
     (total, item) => +total + +item.taklfa_after_tax,
     0
   );
-  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice);
 
   const commissionTaxOneItemTotal = sellingItemsData?.reduce(
     (total, item) => +total + +item.commissionTax_oneItem,
@@ -49,7 +48,6 @@ const SalesReturnSecondPage = ({
     (total, item) => Number(total) + Number(item.amount),
     0
   );
-  console.log("🚀 ~ amountRemaining:", amountRemaining);
 
   const totalCommissionOfoneItem = sellingItemsData?.reduce(
     (total, item) => Number(total) + Number(item.commission_oneItem),

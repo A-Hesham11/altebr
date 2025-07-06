@@ -36,7 +36,6 @@ export const DocumentForm = ({
   setEditableData,
   addDocPopup,
 }: DocumentFormProps_TP) => {
-  console.log("🚀 ~ addDocPopup:", addDocPopup)
   ///
   /////////// VARIABLES
   ///
@@ -116,7 +115,6 @@ export const DocumentForm = ({
   } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      console.log("in success");
       notify("success");
       queryClient.refetchQueries(["AllBranches"]);
     },
@@ -129,7 +127,6 @@ export const DocumentForm = ({
   });
 
   // const updateDocumentData = docsFormValues?.filter((item) => item.id === editableData?.id)
-  // console.log("🚀 ~ updateDocumentData:", updateDocumentData);
 
   // const handleDocument = () => {
 
@@ -139,7 +136,6 @@ export const DocumentForm = ({
     <Formik
       initialValues={initialValues}
       onSubmit={(values) => {
-        console.log("🚀 ~ values:", values);
         if (!!editableData?.id) {
           mutateUpdate({
             endpointName: `branch/api/v1/update-item/${editableData?.id}`,

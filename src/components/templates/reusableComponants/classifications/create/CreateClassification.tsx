@@ -1,41 +1,41 @@
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik } from "formik"
-import { t } from "i18next"
-import { Dispatch, SetStateAction } from "react"
-import * as Yup from "yup"
-import { useIsRTL, useMutate } from "../../../../../hooks"
-import { mutateData } from "../../../../../utils/mutateData"
-import { notify } from "../../../../../utils/toast"
-import { HandleBackErrors } from "../../../../../utils/utils-components/HandleBackErrors"
-import { Button } from "../../../../atoms"
-import { BaseInputField } from "../../../../molecules/formik-fields/BaseInputField"
-import { ViewClassifications_TP } from "../../../systemEstablishment/view/ViewClassifications"
-import { InnerFormLayout, OuterFormLayout } from "../../../../molecules"
-import { ClassificationMainData } from "../../../systemEstablishment/ClassificationMainData"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
+import { t } from "i18next";
+import { Dispatch, SetStateAction } from "react";
+import * as Yup from "yup";
+import { useIsRTL, useMutate } from "../../../../../hooks";
+import { mutateData } from "../../../../../utils/mutateData";
+import { notify } from "../../../../../utils/toast";
+import { HandleBackErrors } from "../../../../../utils/utils-components/HandleBackErrors";
+import { Button } from "../../../../atoms";
+import { BaseInputField } from "../../../../molecules/formik-fields/BaseInputField";
+import { ViewClassifications_TP } from "../../../systemEstablishment/view/ViewClassifications";
+import { InnerFormLayout, OuterFormLayout } from "../../../../molecules";
+import { ClassificationMainData } from "../../../systemEstablishment/ClassificationMainData";
 
 ///
 /////////// Types
 ///
 type CreateClassificationProps_TP = {
-  value?: string
-  onAdd?: (value: string) => void
-  editData?: ViewClassifications_TP
-  setDataSource?: Dispatch<SetStateAction<ViewClassifications_TP[]>>
-  setShow?: Dispatch<SetStateAction<boolean>>
-  title?:string
-}
+  value?: string;
+  onAdd?: (value: string) => void;
+  editData?: ViewClassifications_TP;
+  setDataSource?: Dispatch<SetStateAction<ViewClassifications_TP[]>>;
+  setShow?: Dispatch<SetStateAction<boolean>>;
+  title?: string;
+};
 
 type InitialValues_TP = {
-  [x: string]: string
-}
+  [x: string]: string;
+};
 
-const requiredTranslation = () => `${t("required")}`
+const requiredTranslation = () => `${t("required")}`;
 const validationSchema = Yup.object({
   name_en: Yup.string().trim().required(requiredTranslation),
   name_ar: Yup.string().trim().required(requiredTranslation),
-})
+});
 
 export const CreateClassification = ({
   value = "",
@@ -48,35 +48,35 @@ export const CreateClassification = ({
   ///
   /////////// HELPER VARIABLES & FUNCTIONS
   ///
-  const isRTL = useIsRTL()
+  const isRTL = useIsRTL();
   const initialValues: InitialValues_TP = {
     name_en: editData ? editData.name_en : !isRTL ? value! : "",
     name_ar: editData ? editData.name_ar : isRTL ? value! : "",
-  }
+  };
   ///
   /////////// CUSTOM HOOKS
   ///
-  const queryClient = useQueryClient()
-  const { mutate, isLoading, error, isSuccess , reset } =
+  const queryClient = useQueryClient();
+  const { mutate, isLoading, error, isSuccess, reset } =
     useMutate<ViewClassifications_TP>({
       mutationFn: mutateData,
       onSuccess: (data) => {
-        notify("success")
+        notify("success");
         if (value && onAdd) {
-          onAdd(value)
+          onAdd(value);
           // queryClient.setQueryData(["classifications"], (old: any) => {
           //   return [...old, data]
           // })
-          queryClient.refetchQueries(["AllClassifications"])
+          queryClient.refetchQueries(["AllClassifications"]);
         }
         if (setDataSource && setShow && !editData && !error) {
           // setDataSource((prev: any) => [...prev, data])
-          queryClient.refetchQueries(["AllClassifications"])
-          setShow(false)
+          queryClient.refetchQueries(["AllClassifications"]);
+          setShow(false);
         }
         if (setDataSource && setShow && editData && !error) {
-          setShow(false)
-          queryClient.refetchQueries(["AllClassifications"])
+          setShow(false);
+          queryClient.refetchQueries(["AllClassifications"]);
           // setDataSource((prev: any) =>
           //   prev.map((p: ViewClassifications_TP) =>
           //     p.id === data?.id ? data : p
@@ -85,10 +85,9 @@ export const CreateClassification = ({
         }
       },
       onError: (error) => {
-        console.log(error)
-        notify("error")
+        notify("error");
       },
-    })
+    });
 
   ///
   /////////// FUNCTIONS | EVENTS | IF CASES
@@ -104,7 +103,7 @@ export const CreateClassification = ({
         ...(editData && { _method: "put" }),
       },
       method: "post",
-    })
+    });
   }
 
   return (
@@ -127,5 +126,5 @@ export const CreateClassification = ({
         </Form>
       </Formik>
     </div>
-  )
-}
+  );
+};

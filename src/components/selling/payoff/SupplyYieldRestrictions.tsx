@@ -31,13 +31,11 @@ export const SupplyYieldRestrictions = ({}) => {
   const navigate = useNavigate();
   const { userData } = useContext(authCtx);
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ SupplyYieldRestrictions ~ dataSource:", dataSource);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const [openInvoiceModal, setOpenInvoiceModal] = useState(false);
   const [restrictModal, setOpenRestrictModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(0);
-  console.log("🚀 ~ SupplyYieldRestrictions ~ selectedItem:", selectedItem);
   const [stage, setStage] = useState(1);
   const { formatReyal, formatGram } = numberContext();
 

@@ -49,7 +49,6 @@ const ViewBankCardsData = () => {
   const [editData, setEditData] = useState<Cards_Props_TP>();
   const [deleteData, setDeleteData] = useState<Cards_Props_TP>();
   const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
-  console.log("🚀 ~ ViewBankCardsData ~ dataSource:", dataSource);
   const [page, setPage] = useState<number>(1);
   const { formatReyal, formatGram } = numberContext();
 
@@ -85,7 +84,6 @@ const ViewBankCardsData = () => {
         accessorKey: "max_discount_limit",
         cell: (info: any) => {
           const value = info.getValue();
-          console.log("🚀 ~ ViewBankCardsData ~ info:", info);
 
           return value && info.row?.original?.card?.is_minimum === "1"
             ? formatReyal(Number(value))

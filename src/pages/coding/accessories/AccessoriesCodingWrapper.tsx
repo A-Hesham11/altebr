@@ -176,7 +176,6 @@ export const AccessoriesCodingWrapper = ({
 
   // start Print
   const [open, setOpen] = useState(false);
-  console.log("🚀 ~ GoldCodingWrapper ~ open:", open);
   const contentRef = useRef();
   const printItems = JSON.parse(localStorage.getItem("printItems") || "[]");
 

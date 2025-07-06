@@ -1,7 +1,7 @@
 //@ts-noCheck
-import React from "react"
+import React from "react";
 
-import { useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query";
 import {
   createColumnHelper,
   ExpandedState,
@@ -10,63 +10,62 @@ import {
   getExpandedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  useReactTable
-} from "@tanstack/react-table"
-import { t } from "i18next"
-import { useEffect, useMemo, useState } from "react"
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md"
-import { useParams } from "react-router-dom"
-import { Button, Spinner } from "../../components/atoms"
-import { DeleteIcon, ViewIcon } from "../../components/atoms/icons"
-import { Modal } from "../../components/molecules"
-import { useFetch, useIsRTL, useLocalStorage } from "../../hooks"
+  useReactTable,
+} from "@tanstack/react-table";
+import { t } from "i18next";
+import { useEffect, useMemo, useState } from "react";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { useParams } from "react-router-dom";
+import { Button, Spinner } from "../../components/atoms";
+import { DeleteIcon, ViewIcon } from "../../components/atoms/icons";
+import { Modal } from "../../components/molecules";
+import { useFetch, useIsRTL, useLocalStorage } from "../../hooks";
 import {
   GoldCodingSanad_initialValues_TP,
-  GoldSanad_TP
-} from "../coding/coding-types-and-helpers"
-import { DiamondSelectedDetailedWeight } from "./AccessoriesSelectedDetailedWeight"
-import { DiamondSubTables } from "./AccessoriesSubTables"
-import { numberContext } from "../../context/settings/number-formatter"
+  GoldSanad_TP,
+} from "../coding/coding-types-and-helpers";
+import { DiamondSelectedDetailedWeight } from "./AccessoriesSelectedDetailedWeight";
+import { DiamondSubTables } from "./AccessoriesSubTables";
+import { numberContext } from "../../context/settings/number-formatter";
 
 // types
 type Categories_TP = {
-  has_selsal: string
-  has_size: string
-  id: string
-  name: string
-  name_ar: string
-  name_en: string
-  selling_type: string
-  type: string
-}
+  has_selsal: string;
+  has_size: string;
+  id: string;
+  name: string;
+  name_ar: string;
+  name_en: string;
+  selling_type: string;
+  type: string;
+};
 export function AccessoriesExapndableTable({
   addedPieces,
   setAddedPieces,
   showDetails,
   setSelectedSanad,
-  selectedSanad
+  selectedSanad,
 }: {
-  showDetails?: boolean
-  addedPieces: GoldCodingSanad_initialValues_TP[]
-  setAddedPieces?: SetState_TP<GoldCodingSanad_initialValues_TP[]>
-  setSelectedSanad?: SetState_TP<GoldSanad_TP | undefined>
-  selectedSanad?:GoldSanad_TP
+  showDetails?: boolean;
+  addedPieces: GoldCodingSanad_initialValues_TP[];
+  setAddedPieces?: SetState_TP<GoldCodingSanad_initialValues_TP[]>;
+  setSelectedSanad?: SetState_TP<GoldSanad_TP | undefined>;
+  selectedSanad?: GoldSanad_TP;
 }) {
-  console.log("🚀 ~ file: DiamondExapndableTable.tsx:54 ~ addedPieces:", addedPieces)
-  const { sanadId } = useParams()
+  const { sanadId } = useParams();
 
   const { formatGram, formatReyal } = numberContext();
 
   const [addedPiecesLocal, setAddedPiecesLocal] = useLocalStorage<
     GoldCodingSanad_initialValues_TP[]
-  >(`addedPiecesLocal_${sanadId}`)
+  >(`addedPiecesLocal_${sanadId}`);
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
-  useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
+    useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
   // variables
-  let count = 0
+  let count = 0;
 
-  const columnHelper = createColumnHelper<any>()
+  const columnHelper = createColumnHelper<any>();
   const modifiedData = addedPieces.map((item) => ({
     ...item,
     classification: "متفرقات",
@@ -74,21 +73,19 @@ export function AccessoriesExapndableTable({
     karat_id: crypto.randomUUID().slice(0, 2),
     index: ++count,
     sizes: item?.sizes || [],
-  }))
+  }));
 
   //states
-  const [data, setData] = useState(modifiedData)
-  console.log(data);
-  
+  const [data, setData] = useState(modifiedData);
 
-  const [expanded, setExpanded] = React.useState<ExpandedState>({})
-  const [modalOpen, setModalOpen] = useState(false)
-  const [detailedWeightModalOpen, seDetailedWeightModalOpen] = useState(false)
+  const [expanded, setExpanded] = React.useState<ExpandedState>({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [detailedWeightModalOpen, seDetailedWeightModalOpen] = useState(false);
   const [subTableData, setSubTableData] = useState<{
-    index: string
-    data: typeof data
-  }>()
-  const [queryData, setQueryData] = useState<any[] | undefined>()
+    index: string;
+    data: typeof data;
+  }>();
+  const [queryData, setQueryData] = useState<any[] | undefined>();
 
   const columns = useMemo<any>(
     () => [
@@ -106,15 +103,18 @@ export function AccessoriesExapndableTable({
       }),
       columnHelper.accessor("weight", {
         header: `${t("weight")}`,
-        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatGram(Number(info.getValue())) : "---",
       }),
       columnHelper.accessor("mezan_weight", {
         header: `الوزن الفعلي`,
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       }),
       columnHelper.accessor("cost_item", {
         header: `${t("value")}`,
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       }),
       ...(showDetails
         ? [
@@ -128,8 +128,8 @@ export function AccessoriesExapndableTable({
                       setSubTableData({
                         index: info.row.original.index,
                         data: modifiedData,
-                      })
-                      setModalOpen(true)
+                      });
+                      setModalOpen(true);
                     }}
                     className="text-mainGreen"
                   />
@@ -138,30 +138,43 @@ export function AccessoriesExapndableTable({
                       size={23}
                       action={() => {
                         const row: GoldCodingSanad_initialValues_TP =
-                        info.row.original
-                        const selectedBandStones = addedPieces.filter(item=> item?.band_id === row?.band_id)
-                        const selectedItemFromSanad = selectedSanad.items.find(sanadItem=> addedPieces.find(item=>item.id == sanadItem?.band_id))
-                        const diamond_stone_weight = selectedItemFromSanad?.diamond_stone_weight
-                        const other_stones_weight = selectedItemFromSanad?.other_stones_weight
-                        const diamondStonesSum = selectedBandStones[0]?.stones?.filter(stone=>stone.stone_id == 70).reduce((acc,curr)=>{
-                          if( +acc <= +diamond_stone_weight)
-                          return acc + +curr.diamondWeight
-                      },0)
-                        const otherStonesSum = selectedBandStones[0]?.stones?.filter(stone=>stone.stone_id !== 70).reduce((acc,curr)=>{
-                           if( +acc <= +other_stones_weight)
-                          return acc + +curr.weight
-                        },0)
+                          info.row.original;
+                        const selectedBandStones = addedPieces.filter(
+                          (item) => item?.band_id === row?.band_id
+                        );
+                        const selectedItemFromSanad = selectedSanad.items.find(
+                          (sanadItem) =>
+                            addedPieces.find(
+                              (item) => item.id == sanadItem?.band_id
+                            )
+                        );
+                        const diamond_stone_weight =
+                          selectedItemFromSanad?.diamond_stone_weight;
+                        const other_stones_weight =
+                          selectedItemFromSanad?.other_stones_weight;
+                        const diamondStonesSum = selectedBandStones[0]?.stones
+                          ?.filter((stone) => stone.stone_id == 70)
+                          .reduce((acc, curr) => {
+                            if (+acc <= +diamond_stone_weight)
+                              return acc + +curr.diamondWeight;
+                          }, 0);
+                        const otherStonesSum = selectedBandStones[0]?.stones
+                          ?.filter((stone) => stone.stone_id !== 70)
+                          .reduce((acc, curr) => {
+                            if (+acc <= +other_stones_weight)
+                              return acc + +curr.weight;
+                          }, 0);
 
-                        const thisId = row.front_key
+                        const thisId = row.front_key;
                         setData((curr) =>
                           curr.filter((piece) => piece.front_key !== thisId)
-                        )
+                        );
                         setAddedPieces((curr) =>
                           curr.filter((piece) => piece.front_key !== thisId)
-                        )
+                        );
                         setAddedPiecesLocal((curr) =>
                           curr.filter((piece) => piece.front_key !== thisId)
-                        )
+                        );
                         setSelectedSanadLocal((curr) => ({
                           ...curr,
                           items: curr.items.map((band) => {
@@ -170,15 +183,16 @@ export function AccessoriesExapndableTable({
                                 ...band,
                                 leftWeight:
                                   +band.leftWeight + +row.mezan_weight,
-                                  leftCostItem: +band.leftCostItem + +row.cost_item,
-                                  // leftWeightother:  +band.leftWeightother + otherStonesSum || 0,
-                                  // leftWeightDiamond:  +band.leftWeightDiamond + diamondStonesSum || 0
-                              }
+                                leftCostItem:
+                                  +band.leftCostItem + +row.cost_item,
+                                // leftWeightother:  +band.leftWeightother + otherStonesSum || 0,
+                                // leftWeightDiamond:  +band.leftWeightDiamond + diamondStonesSum || 0
+                              };
                             } else {
-                              return band
+                              return band;
                             }
                           }),
-                        }))
+                        }));
 
                         setSelectedSanad((curr) => ({
                           ...curr,
@@ -188,15 +202,16 @@ export function AccessoriesExapndableTable({
                                 ...band,
                                 leftWeight:
                                   +band.leftWeight + +row.mezan_weight,
-                                  leftCostItem: +band.leftCostItem + +row.cost_item,
-                                  // leftWeightother:  +band.leftWeightother + otherStonesSum || 0,
-                                  // leftWeightDiamond:  +band.leftWeightDiamond + diamondStonesSum || 0
-                              }
+                                leftCostItem:
+                                  +band.leftCostItem + +row.cost_item,
+                                // leftWeightother:  +band.leftWeightother + otherStonesSum || 0,
+                                // leftWeightDiamond:  +band.leftWeightDiamond + diamondStonesSum || 0
+                              };
                             } else {
-                              return band
+                              return band;
                             }
                           }),
-                        }))
+                        }));
                       }}
                     />
                   )}
@@ -207,7 +222,7 @@ export function AccessoriesExapndableTable({
         : []),
     ],
     []
-  )
+  );
   const table = useReactTable({
     data,
     columns,
@@ -219,34 +234,32 @@ export function AccessoriesExapndableTable({
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-  })
+  });
 
   // custom hooks
-  const isRTL = useIsRTL()
+  const isRTL = useIsRTL();
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const { data: allCategories, isLoading: categoryLoading } = useFetch({
     endpoint: "/classification/api/v1/categories?type=all",
     queryKey: ["categoriesx"],
-  })
-  console.log(allCategories);
-  
+  });
 
   useEffect(() => {
     if (queryClient) {
-      const categories = allCategories
+      const categories = allCategories;
       const allQueries = modifiedData?.map((item) => {
         const finaleItem = {
           category: categories?.find(
             (category) => category.id == item.category_id
           )?.name,
-        }
-        return finaleItem
-      })
-      setQueryData(allQueries)
+        };
+        return finaleItem;
+      });
+      setQueryData(allQueries);
     }
-  }, [queryClient, allCategories])
+  }, [queryClient, allCategories]);
 
   useEffect(() => {
     if (queryData) {
@@ -257,16 +270,16 @@ export function AccessoriesExapndableTable({
           actions: true,
           detailed_weight: true,
         }))
-      )
+      );
     }
-  }, [queryData])
+  }, [queryData]);
 
   return (
     <div className="flex flex-col justify-center items-center w-full">
       <h2 className="font-bold text-2xl">{t("final review")}</h2>
       <h3>
         <span>الهويات المرقمه من سند رقم # </span>
-        <span className="text-orange-500">{ addedPieces[0].bond_id }</span>
+        <span className="text-orange-500">{addedPieces[0].bond_id}</span>
       </h3>
       <div className="w-full">
         <table className="mt-2 border-mainGreen shadow-lg mb-2 w-full">
@@ -289,7 +302,7 @@ export function AccessoriesExapndableTable({
                         </div>
                       )}
                     </th>
-                  )
+                  );
                 })}
               </tr>
             ))}
@@ -321,10 +334,10 @@ export function AccessoriesExapndableTable({
                           "---"
                         )}
                       </td>
-                    )
+                    );
                   })}
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
@@ -378,10 +391,13 @@ export function AccessoriesExapndableTable({
         onClose={() => seDetailedWeightModalOpen(false)}
         title={t("detailed weight")}
       >
-        <DiamondSelectedDetailedWeight SelectedDetailedWeight subTableData={subTableData} />
+        <DiamondSelectedDetailedWeight
+          SelectedDetailedWeight
+          subTableData={subTableData}
+        />
       </Modal>
     </div>
-  )
+  );
 }
 
 // ----------------   filtration section -------------------------

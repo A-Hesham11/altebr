@@ -25,7 +25,6 @@ type Entry_TP = {
 };
 
 const SellingInvoiceRecycledGoldPreview = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SellingInvoiceRecycledGoldPreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();

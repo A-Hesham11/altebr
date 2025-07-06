@@ -1,39 +1,43 @@
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik, FormikValues } from "formik"
-import { t } from "i18next"
-import { Dispatch, SetStateAction } from "react"
-import { Helmet } from "react-helmet-async"
-import { Button } from "../../components/atoms"
-import { OuterFormLayout } from "../../components/molecules"
-import { Loading } from "../../components/organisms/Loading"
-import { PermissionForm } from "../../components/templates/administrativeStructure/PermissionForm"
-import { useFetch, useMutate } from "../../hooks"
-import { mutateData } from "../../utils/mutateData"
-import { notify } from "../../utils/toast"
-import { HandleBackErrors } from "../../utils/utils-components/HandleBackErrors"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik, FormikValues } from "formik";
+import { t } from "i18next";
+import { Dispatch, SetStateAction } from "react";
+import { Helmet } from "react-helmet-async";
+import { Button } from "../../components/atoms";
+import { OuterFormLayout } from "../../components/molecules";
+import { Loading } from "../../components/organisms/Loading";
+import { PermissionForm } from "../../components/templates/administrativeStructure/PermissionForm";
+import { useFetch, useMutate } from "../../hooks";
+import { mutateData } from "../../utils/mutateData";
+import { notify } from "../../utils/toast";
+import { HandleBackErrors } from "../../utils/utils-components/HandleBackErrors";
 import {
   PermissionGroup_TP,
   Permission_TP,
-  addAdministrativeSchema
-} from "./types-and-schemas"
+  addAdministrativeSchema,
+} from "./types-and-schemas";
 ///
 /////////// Types
 ///
 type AddAdministrativeStructureProps_TP = {
-  title: string
-  value?: string
-  onAdd?: (value: string) => void
-  editData?: PermissionGroup_TP
-  setOpen?:Dispatch<SetStateAction<boolean>>
-}
+  title: string;
+  value?: string;
+  onAdd?: (value: string) => void;
+  editData?: PermissionGroup_TP;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
 ///
 export const AddAdministrativeStructure = ({
-  title, value, onAdd, editData , setOpen
+  title,
+  value,
+  onAdd,
+  editData,
+  setOpen,
 }: AddAdministrativeStructureProps_TP) => {
   /////////// VARIABLES
   ///
@@ -44,7 +48,7 @@ export const AddAdministrativeStructure = ({
   let asyncInitValues: { [key: string]: string } = {
     name: editData?.name || "",
     is_selling: editData?.is_selling || false,
-  }
+  };
 
   const {
     data: permissions,
@@ -56,16 +60,14 @@ export const AddAdministrativeStructure = ({
   } = useFetch<PermissionGroup_TP[]>({
     queryKey: ["roles"],
     endpoint: "administrative/api/v1/permissions/withgrouping",
-  })
-    console.log("🚀 ~ permissions:", permissions)
-
+  });
 
   permissions?.map((permissionsGroup) =>
     permissionsGroup.permissions?.map(
       (perm) => (asyncInitValues[perm.id as keyof Permission_TP] = "")
     )
-  )
-  const queryClient = useQueryClient()
+  );
+  const queryClient = useQueryClient();
   const {
     mutate,
     isLoading: isMutating,
@@ -73,12 +75,11 @@ export const AddAdministrativeStructure = ({
   } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      notify('success')
-      queryClient.refetchQueries(['allRoles'])
-      if(!!setOpen)
-      setOpen(false)
+      notify("success");
+      queryClient.refetchQueries(["allRoles"]);
+      if (!!setOpen) setOpen(false);
     },
-  })
+  });
 
   ///
   /////////// STATES
@@ -91,16 +92,27 @@ export const AddAdministrativeStructure = ({
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   const addAdminStructureHandler = (values: FormikValues) => {
-    const idsValues = Object.entries(values).map(([key, _]) => {
-      if (values[key] === true) { return key }
-    }).filter(item => !!item).filter(item=> !isNaN(item))
+    const idsValues = Object.entries(values)
+      .map(([key, _]) => {
+        if (values[key] === true) {
+          return key;
+        }
+      })
+      .filter((item) => !!item)
+      .filter((item) => !isNaN(item));
 
     mutate({
-      endpointName: !!editData?.id ? `/administrative/api/v1/roles/${editData.id}` : "/administrative/api/v1/roles",
-      values: { name: values.name, is_selling: values.is_selling, permissions: idsValues },
-      method: !!editData?.id ? "put" : 'post'
-    })
-  }
+      endpointName: !!editData?.id
+        ? `/administrative/api/v1/roles/${editData.id}`
+        : "/administrative/api/v1/roles",
+      values: {
+        name: values.name,
+        is_selling: values.is_selling,
+        permissions: idsValues,
+      },
+      method: !!editData?.id ? "put" : "post",
+    });
+  };
   ///
   return (
     <div>
@@ -133,7 +145,10 @@ export const AddAdministrativeStructure = ({
                     }
                     header={title}
                   >
-                    <PermissionForm permissions={permissions} editData={editData}/>
+                    <PermissionForm
+                      permissions={permissions}
+                      editData={editData}
+                    />
                   </OuterFormLayout>
                 </Form>
               </HandleBackErrors>
@@ -142,5 +157,5 @@ export const AddAdministrativeStructure = ({
         </>
       )}
     </div>
-  )
-}
+  );
+};

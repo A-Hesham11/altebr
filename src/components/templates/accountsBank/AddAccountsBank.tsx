@@ -89,7 +89,6 @@ const AddAccountsBank = ({ title, editData }: AddBankProps_TP) => {
       queryClient.refetchQueries(["all-banksAccounts"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error");
     },
   });
@@ -194,13 +193,13 @@ const AddAccountsBank = ({ title, editData }: AddBankProps_TP) => {
                     city_name: editData?.city_name,
                   }}
                 /> */}
-                  <Country_city_distract_markets
-                    cityName="city_id"
-                    countryName="country_id"
-                    editData={editData}
-                    // isSuccessPost={!editData && isSuccessPost}
-                    // resetSelect={!editData && restData}
-                  />
+                <Country_city_distract_markets
+                  cityName="city_id"
+                  countryName="country_id"
+                  editData={editData}
+                  // isSuccessPost={!editData && isSuccessPost}
+                  // resetSelect={!editData && restData}
+                />
                 <div>
                   <Select
                     id="purpose"

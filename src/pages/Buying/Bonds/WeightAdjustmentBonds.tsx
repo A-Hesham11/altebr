@@ -22,7 +22,6 @@ const WeightAdjustmentBonds = () => {
   // STATE
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ file: WeightAdjustmentBonds.tsx:25 ~ WeightAdjustmentBonds ~ dataSource:", dataSource)
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);

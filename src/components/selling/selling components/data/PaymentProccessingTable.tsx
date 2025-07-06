@@ -18,8 +18,6 @@ const PaymentProccessingTable = ({
   setEditData,
   setPaymentData,
 }) => {
-  console.log("🚀 ~ PaymentProccessingTable ~ paymentData:", paymentData);
-
   const [editingRowId, setEditingRowId] = useState<string | undefined>(null);
 
   const { setFieldValue } = useFormikContext<FormikSharedConfig>();
@@ -76,7 +74,6 @@ const PaymentProccessingTable = ({
         header: () => <span>{t("actions")}</span>,
         accessorKey: "actions_id",
         cell: (info) => {
-          console.log("🚀 ~ info:", info.row.original);
           return (
             <span className="flex items-center justify-center gap-3">
               <EditIcon

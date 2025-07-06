@@ -122,20 +122,15 @@ const validationSchema = Yup.object({
 ///
 export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ System ~ userData:", userData);
 
   // const permissions = userData?.roles[0]?.permissions?.filter(
   //   (permission) => permission.group === "branches"
   // );
-  // console.log("🚀 ~ ViewCompanyDetails ~ permissions:", permissions);
-
 
   // const store = permissions?.filter((item) => item.routes.includes("store"));
-  // console.log("🚀 ~ ViewBranches ~ store:", store)
 
   // // Show Details Of Items
   // const show = permissions?.filter((item) => item.routes.includes("show"));
-  // console.log("🚀 ~ ViewBranches ~ show:", show);
 
   // const update = permissions?.filter((item) => item.routes.includes("update"));
   /////////// VARIABLES
@@ -181,19 +176,19 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
           return (
             <div className="flex items-center justify-center gap-4">
               {/* {update.length !== 0 && ( */}
-                <EditIcon
-                  action={() => {
-                    setOpen((prev) => !prev);
-                    setEditData(info.row.original);
-                    setAction({
-                      edit: true,
-                      delete: false,
-                      view: false,
-                    });
-                    setModel(false);
-                  }}
-                  className="fill-mainGreen w-6 h-6 mb-[2px]"
-                />
+              <EditIcon
+                action={() => {
+                  setOpen((prev) => !prev);
+                  setEditData(info.row.original);
+                  setAction({
+                    edit: true,
+                    delete: false,
+                    view: false,
+                  });
+                  setModel(false);
+                }}
+                className="fill-mainGreen w-6 h-6 mb-[2px]"
+              />
               {/* )} */}
               <SvgDelete
                 action={() => {
@@ -209,21 +204,21 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
                 stroke="#ef4444"
               />
               {/* {show.length !== 0 && ( */}
-                <ViewIcon
-                  action={() => {
-                    navigate(`${info.row.original.id}`);
-                    setViewSingleBranch(info.row.original);
-                    setOpen((prev) => !prev);
-                    setAction({
-                      view: true,
-                      delete: false,
-                      edit: false,
-                    });
-                    setModel(false);
-                  }}
-                  size={23}
-                  className="text-mainGreen"
-                />
+              <ViewIcon
+                action={() => {
+                  navigate(`${info.row.original.id}`);
+                  setViewSingleBranch(info.row.original);
+                  setOpen((prev) => !prev);
+                  setAction({
+                    view: true,
+                    delete: false,
+                    edit: false,
+                  });
+                  setModel(false);
+                }}
+                size={23}
+                className="text-mainGreen"
+              />
               {/* )} */}
             </div>
           );
@@ -346,19 +341,19 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
         </Formik>
         <div className="flex">
           {/* {store.length !== 0 ? ( */}
-            <AddButton
-              action={() => {
-                setEditData(undefined);
-                setModel(true);
-                setOpen(true);
-                setAction({
-                  edit: false,
-                  delete: false,
-                  view: false,
-                });
-              }}
-              addLabel={`${t("add")}`}
-            />
+          <AddButton
+            action={() => {
+              setEditData(undefined);
+              setModel(true);
+              setOpen(true);
+              setAction({
+                edit: false,
+                delete: false,
+                view: false,
+              });
+            }}
+            addLabel={`${t("add")}`}
+          />
           {/* ) : ""} */}
           <div className="ms-2">
             <Back />

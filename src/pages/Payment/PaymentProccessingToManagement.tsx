@@ -109,8 +109,6 @@ const PaymentProccessingToManagement = ({
     0
   );
 
-  console.log("🚀 ~ totalPriceInvoice:", totalPriceInvoice);
-
   const totalCommissionOfoneItem = sellingItemsData?.reduce(
     (total, item) => Number(total) + Number(item.commission_oneItem),
     0
@@ -121,25 +119,22 @@ const PaymentProccessingToManagement = ({
       Number(total) + (Number(item.cost_after_tax) || Number(item.amount)),
     0
   );
-  console.log("🚀 ~ amountRemaining:", amountRemaining);
 
   const invoiceTotalOfSalesReturn = sellingItemsData.reduce(
     (total, item) => Number(total) + Number(item.total),
     0
   );
-  console.log("🚀 ~ invoiceTotalOfSalesReturn:", invoiceTotalOfSalesReturn);
 
   const amountIsPaid =
     isCheckedCommission === true
       ? invoiceTotalOfSalesReturn
       : Number(totalPriceInvoice);
 
-  console.log("🚀 ~ amountIsPaid:", amountIsPaid);
-
   const cashId =
-    locationPath === "/selling/payoff/sales-return" ||
-    locationPath === "/edara/addExpenses" ||
-    (locationPath === "/expenses/expensesInvoice" && cardFrontKey === "cash"); // BUG:
+    (locationPath === "/selling/payoff/sales-return" ||
+      locationPath === "/expenses/expensesInvoice" ||
+      locationPath === "/edara/addExpenses") &&
+    cardFrontKey === "cash"; // BUG:
 
   // https://api-alexon.altebr.com/edaraaExpense/api/v1/trigger/eoR5_rjOy_hisham_0016161600_16_45
 
@@ -160,20 +155,16 @@ const PaymentProccessingToManagement = ({
     },
     enabled: !!cardId && !!userData?.branch_id && !!cardFrontKey,
   });
-  console.log("🚀 ~ data:", data);
 
   const costRemaining =
     locationPath === "/selling/payoff/sales-return"
       ? amountIsPaid - Number(amountRemaining)
-      : locationPath === "/expenses/expensesInvoice"
-      ? Number(expensePrice) - Number(amountRemaining)
-      : locationPath === "/edara/addExpenses" // BUG:
+      : locationPath === "/expenses/expensesInvoice" ||
+        locationPath === "/edara/addExpenses"
       ? Number(expensePrice) - Number(amountRemaining)
       : locationPath === "/selling/reimbursement"
       ? data?.value
       : Number(totalPriceInvoice) - Number(amountRemaining);
-
-  console.log("🚀 ~ costRemaining:", costRemaining);
 
   useEffect(() => {
     if (cardId !== null && cardFrontKey !== null) {
@@ -197,7 +188,6 @@ const PaymentProccessingToManagement = ({
             : validationSchemaOfAmount()
         }
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
-          console.log("🚀 ~ values:", values);
           if (selectedCardId) {
             if (editData) {
               const updatedPaymentData = paymentData.map((item) =>
@@ -265,7 +255,6 @@ const PaymentProccessingToManagement = ({
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
-          console.log("🚀 ~ values:", values);
           useEffect(() => {
             if (
               cardId === 10001 ||
@@ -367,14 +356,14 @@ const PaymentProccessingToManagement = ({
                   </div>
                 ) : (
                   <div className="relative">
-                    {locationPath === "/selling/payoff/sales-return" ||
+                    {(locationPath === "/selling/payoff/sales-return" ||
                       locationPath === "/expenses/expensesInvoice" ||
-                      (locationPath === "/edara/addExpenses" && (
-                        <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
-                          <span>{t("remaining cost")} : </span>{" "}
-                          {formatReyal(Number(costRemaining))}
-                        </p>
-                      ))}
+                      locationPath === "/edara/addExpenses") && (
+                      <p className="absolute left-0 top-1 text-sm font-bold text-mainGreen">
+                        <span>{t("remaining cost")} : </span>{" "}
+                        {formatReyal(Number(costRemaining))}
+                      </p>
+                    )}
                     <BaseInputField
                       id="amount"
                       name="amount"

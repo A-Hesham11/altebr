@@ -82,7 +82,6 @@
 //         : `${search}`,
 //     pagination: true,
 //   });
-//   console.log("🚀 ~ ViewSellingInvoice ~ invoiceData:", invoiceData);
 
 //   const clientData = {
 //     bond_date: invoiceData?.data[0]?.bond_date,

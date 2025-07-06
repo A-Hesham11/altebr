@@ -56,12 +56,10 @@ const PaymentProcessing = ({
   const [cardFrontKey, setCardFronKey] = useState<string>("");
   const [cardDiscountPercentage, setCardDiscountPercentage] = useState<any>({});
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
   const { pathname } = useLocation();
   const [selectedCardData, setSelectedCardData] = useState(null);
 
   const taxRate = userData?.tax_rate / 100;
-  console.log("🚀 ~ taxRate:", taxRate);
 
   const [frontKeyAccept, setCardFrontKeyAccept] = useState<string>("");
   const [frontKeySadad, setCardFrontKeySadad] = useState<string>("");
@@ -117,15 +115,12 @@ const PaymentProcessing = ({
     Number(totalApproximateCost) -
     paymentData?.reduce((total, item) => total + item.cost_after_tax, 0);
 
-  console.log("🚀 ~ costRemaining:", costRemaining);
-
   return (
     <>
       <Formik
         initialValues={initialValues}
         validationSchema={() => validationSchema()}
         onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
-          console.log("🚀 ~ values:", values?.add_commission_ratio);
           const commissionValue =
             cardDiscountPercentage?.max_discount_limit &&
             +values?.amount >= +cardDiscountPercentage?.max_discount_limit
@@ -136,7 +131,6 @@ const PaymentProcessing = ({
 
           const commissionRiyals = +commissionValue;
           const commissionTax = +commissionRiyals * taxRate;
-          console.log("🔥🔥🔥🔥🔥", +commissionRiyals, taxRate);
           if (selectedCardId) {
             if (editData) {
               const updatedPaymentData = paymentData.map((item) =>
@@ -219,11 +213,6 @@ const PaymentProcessing = ({
         }}
       >
         {({ values, setFieldValue, resetForm }) => {
-          console.log(
-            "🚀 ~ PaymentProcessing ~ values:",
-            values?.add_commission_ratio
-          );
-
           const commissionValue =
             cardDiscountPercentage?.max_discount_limit &&
             Number(values?.amount) >=
@@ -235,14 +224,11 @@ const PaymentProcessing = ({
                 (Number(values.discount_percentage) / 100);
 
           const commissionRiyals = Number(commissionValue);
-          console.log("🚀 ~ commissionRiyals:", commissionRiyals);
           const commissionTax = Number(commissionRiyals) * Number(taxRate);
-          console.log("🚀 ~ commissionTax:", commissionTax);
           const cost_after_commission =
             Number(values.cost_after_tax) +
             Number(commissionRiyals) +
             Number(commissionTax);
-          console.log("🚀 ~ cost_after_commission:", cost_after_commission);
 
           return (
             <Form>

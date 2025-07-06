@@ -36,7 +36,6 @@ const VeiwPaymentToManagement = () => {
   const [invoiceViewModal, setOpenInvoiceViewModal] = useState(false);
   const [selectedViewItem, setSelectedViewItem] = useState<any>({});
   const location = useLocation();
-  console.log("🚀 ~ VeiwPaymentToManagement ~ location:", location);
 
   const [search, setSearch] = useState("");
 
@@ -60,8 +59,8 @@ const VeiwPaymentToManagement = () => {
     pagination: true,
   });
 
-  const locationID = location?.state !== null && Number(location?.state?.id) + 1
-  console.log("🚀 ~ VeiwPaymentToManagement ~ locationID:", locationID)
+  const locationID =
+    location?.state !== null && Number(location?.state?.id) + 1;
 
   const selectedPayment =
     dataSource?.length &&

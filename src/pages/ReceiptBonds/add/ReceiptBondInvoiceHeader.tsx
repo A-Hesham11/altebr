@@ -12,7 +12,6 @@ type TFormikValues = {
 
 const ReceiptBondInvoiceHeader = () => {
   const { values } = useFormikContext<TFormikValues>();
-  console.log("🚀 ~ ReceiptBondInvoiceHeader ~ values:", values);
   const { invoice_logo } = GlobalDataContext();
   const { userData } = useContext<any>(authCtx);
 

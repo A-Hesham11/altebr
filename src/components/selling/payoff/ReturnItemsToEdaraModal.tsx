@@ -40,21 +40,15 @@ const ReturnItemsToEdaraModal = ({
 }: any) => {
   const [goldPriceToday, setGoldPriceToday] = useState("");
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ search:", search);
   const [dataSource, setDataSource] = useState([]);
 
-  console.log("🚀 ~ dataSource:", dataSource);
   const [successData, setSuccessData] = useState([]);
-  console.log("🚀 ~ successData:", successData);
   const { userData } = useContext(authCtx);
   const queryClient = useQueryClient();
   const [mainData, setMainData] = useState([]);
-  console.log("🚀 ~ mainData:", mainData);
   const [steps, setSteps] = useState(1);
   const [isBranchWaste, setIsBranchWaste] = useState(false);
-  console.log("🚀 ~ isBranchWaste:", isBranchWaste);
   const { gold_price } = GlobalDataContext();
-  console.log("🚀 ~ gold_price:", gold_price);
   const { values, resetForm, setFieldValue } = useFormikContext<any>();
 
   const operationTypeSelectWeight = dataSource?.filter(
@@ -69,7 +63,6 @@ const ReturnItemsToEdaraModal = ({
     endpoint: `/branchManage/api/v1/all-accepted/${userData?.branch_id}?hwya[eq]=${search}`,
 
     onSuccess: (data) => {
-      console.log("🚀 ~ data:", data);
       if (data?.data?.length === 0) {
         notify("info", `${t("piece doesn't exist")}`);
         return;

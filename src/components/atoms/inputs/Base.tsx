@@ -1,19 +1,19 @@
-import React, { forwardRef } from "react"
-import { tv, type VariantProps } from "tailwind-variants"
+import React, { forwardRef } from "react";
+import { tv, type VariantProps } from "tailwind-variants";
 
-type BaseInputVariants_TP = VariantProps<typeof baseInput>
+type BaseInputVariants_TP = VariantProps<typeof baseInput>;
 
 export interface BaseInputProps_TP
-extends React.InputHTMLAttributes<HTMLInputElement> {
-className?: string
-autocomplete?: string
-error?: boolean
-label?: string
-ref?: any
-icon?:React.ReactNode
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  className?: string;
+  autocomplete?: string;
+  error?: boolean;
+  label?: string;
+  ref?: any;
+  icon?: React.ReactNode;
 }
 
-const GeneralInputClass: string = "form-input px-4 py-[.30rem] w-full shadows"
+const GeneralInputClass: string = "form-input px-4 py-[.30rem] w-full shadows";
 
 const baseInput = tv({
   base: `rounded-md border-2 border-transparent focus:!border-2 focus:!border-mainGreen`,
@@ -41,17 +41,13 @@ const baseInput = tv({
       color: GeneralInputClass,
     },
   },
-})
-
+});
 
 export const BaseInput = forwardRef(
   ({ error, ...props }: BaseInputProps_TP & BaseInputVariants_TP, ref: any) => {
-
     return (
       <>
-        {props.label && (
-          <p className="mb-1">{props.label}</p>
-        )}
+        {props.label && <p className="mb-1">{props.label}</p>}
         <input
           {...props}
           type={props.type || "text"}
@@ -69,7 +65,6 @@ export const BaseInput = forwardRef(
           ref={ref}
         />
       </>
-    )
+    );
   }
-)
-
+);

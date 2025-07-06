@@ -101,7 +101,6 @@ const Payoff = () => {
     //   ),
     // },
   ];
-  console.log("🚀 ~ Payoff ~ data:", data);
   return (
     <>
       <div className="flex md:gap-8 gap-4 management h-screen justify-center items-center relative">

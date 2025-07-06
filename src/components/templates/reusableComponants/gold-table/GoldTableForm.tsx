@@ -57,7 +57,6 @@ export const GoldTableForm = ({
   setEditRow,
   setEditData,
 }: OTableFormProps_TP) => {
-  console.log("🚀 ~ categoriesOptions:", categoriesOptions);
   const { formatGram, formatReyal } = numberContext();
   let { enableReinitialize, resetForm, values, setFieldValue, submitForm } =
     useFormikContext<any>();

@@ -12,16 +12,13 @@ const BudgetStatementTable: React.FC<BudgetStatementTable_TP> = ({
   mainCardData,
   setOperationCardData,
 }) => {
-  console.log("🚀 ~ mainCardData:", mainCardData);
   const { formatGram, formatReyal } = numberContext();
   const [sortedData, setSortedData] = useState([]);
-  console.log("🚀 ~ sortedData:", sortedData);
 
   const mainCardDataBoxes = mainCardData
     ?.map((cardData) => cardData.boxes)
     .flat();
 
-  console.log("🚀 ~ mainCardDataBoxes:", mainCardDataBoxes);
   const tableColumn = useMemo<any>(
     () => [
       {

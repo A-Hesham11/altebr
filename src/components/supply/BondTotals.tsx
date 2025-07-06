@@ -10,26 +10,15 @@ import { Back } from "../../utils/utils-components/Back";
 type BondTotalsProps_TP = {
   boxesData: Box_TP[];
   balance?: boolean;
-  title?: string;
 };
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 ///
-export const BondTotals = ({
-  boxesData,
-  balance,
-  title,
-}: BondTotalsProps_TP) => {
+export const BondTotals = ({ boxesData, balance }: BondTotalsProps_TP) => {
   const { formatGram, formatReyal } = numberContext();
 
   return (
     <div className="flex flex-col gap-5 py-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">{title ? t(`${title}`) : t('bond total')}</h2>
-        <div>
-          <Back />
-        </div>
-      </div>
       <ul
         className={
           balance

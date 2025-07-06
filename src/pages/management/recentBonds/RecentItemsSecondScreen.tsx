@@ -40,7 +40,6 @@ const RecentItemsSecondScreen = ({
   openModal,
 }: RecieveItemsSecondScreenProps_TP) => {
   const isSanadOpened = selectedItem.bond_status !== 0;
-  console.log("🚀 ~ isSanadOpened:", isSanadOpened);
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
   const [selectedRows, setSelectedRows] = useState<any>([]);
@@ -76,12 +75,9 @@ const RecentItemsSecondScreen = ({
     queryKey: ["get-item-bonds"],
     pagination: true,
     onSuccess(data) {
-      console.log("🚀 ~ onSuccess ~ data:", data);
       setNewSelectData(data.data.items);
     },
   });
-
-  console.log("🚀 ~ data:", data);
 
   const {
     isLoading: receivedLoading,

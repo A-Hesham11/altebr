@@ -52,9 +52,7 @@ export const SellingTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ search:", search);
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
   const [kitDetails, setKitDetails] = useState([]);
@@ -67,7 +65,6 @@ export const SellingTableInputData = ({
   const [editSellingTaklfaAfterTax, setEditSellingTaklfaAfterTax] =
     useState<number>();
   const { gold_price } = GlobalDataContext();
-  console.log("🚀 ~ gold_price:", gold_price);
 
   const goldPriceFromKarat = {
     18: gold_price?.price_gram_18k,
@@ -103,27 +100,17 @@ export const SellingTableInputData = ({
     priceWithSellingPolicy * TaxRateOfBranch + priceWithSellingPolicy;
 
   const { values, setFieldValue } = useFormikContext<any>();
-  console.log("🚀 ~ values:", values);
-
-  // const { refetch, isSuccess, isFetching, isRefetching } = useFetch({
-  //   queryKey: ["branch-all-accepted-selling"],
-  //   endpoint:
-  //     search === ""
-  //       ? `/branchManage/api/v1/all-accepted/${userData?.branch_id}`
-  //       : `${search}`,
-  //   onSuccess: (data) => {
-  //     setDataSource(data);
-  //   },
-  // });
 
   const isSearch = values.hwya.split("").map((item) => item)?.length >= 6;
-  console.log("🚀 ~ isSearch:", isSearch);
 
   const { refetch, isSuccess, isFetching, isRefetching, isLoading } = useFetch({
     queryKey: ["branch-all-accepted-selling", values.hwya],
     endpoint: `/branchManage/api/v1/all-accepted/${userData?.branch_id}?hwya[eq]=${values.hwya}`,
     onSuccess: (data) => {
       setDataSource(data);
+    },
+    onError: (error) => {
+      notify("info", error?.response.data.message);
     },
     enabled: isSearch,
   });
@@ -277,38 +264,9 @@ export const SellingTableInputData = ({
     setFieldValue("taklfa_after_tax", "");
   };
 
-  // const getSearchResults = async (hwya: any) => {
-  //   console.log("🚀 ~ getSearchResults ~ hwya:", hwya)
-  //   let uri = `branchManage/api/v1/all-accepted/${userData?.branch_id}`;
-  //   let first = false;
-  //   Object.keys(hwya).forEach((key) => {
-  //     if (hwya[key] !== "") {
-  //       if (first) {
-  //         uri += `&${key}[eq]=${hwya[key]}`;
-  //         first = false;
-  //       } else {
-  //         uri += `?${key}[eq]=${hwya[key]}`;
-  //       }
-  //     }
-  //   });
-  //   setSearch(uri);
-  // };
-
   useEffect(() => {
     setDataSource([]);
   }, [!isSearch]);
-
-  // useEffect(() => {
-  //   refetch();
-  // }, [search]);
-
-  // useEffect(() => {
-  //   if (page == 1) {
-  //     refetch();
-  //   } else {
-  //     setPage(1);
-  //   }
-  // }, [search]);
 
   useEffect(() => {
     setEditSellingTaklfa(+values?.taklfa);
@@ -365,7 +323,6 @@ export const SellingTableInputData = ({
                 type="text"
                 onChange={(e) => {
                   setFieldValue("hwya", e.target.value);
-                  // getSearchResults({ hwya: e.target.value });
 
                   handleInputChange(e);
                 }}
@@ -410,7 +367,6 @@ export const SellingTableInputData = ({
                   setFieldValue("category_name", option!.value);
                 }}
                 showItems={true}
-                // disabled={!String(values.item_id).startsWith('0000')}
                 disabled={!isCategoryDisabled}
               />
             </td>
@@ -528,7 +484,7 @@ export const SellingTableInputData = ({
                 placeholder={`${t("cost")}`}
                 id="cost"
                 name="cost"
-                type="text"
+                type="number"
                 onChange={(e) => {
                   setFieldValue("cost", values.value.toFixed(2));
                 }}
@@ -543,7 +499,7 @@ export const SellingTableInputData = ({
                 placeholder={`${t("selling price")}`}
                 id="taklfa"
                 name="taklfa"
-                type="text"
+                type="number"
                 required
                 onChange={(e) => {
                   setFieldValue("taklfa", (+values?.taklfa).toFixed(2));
@@ -570,7 +526,7 @@ export const SellingTableInputData = ({
                 placeholder={`${t("selling price after tax")}`}
                 id="taklfa_after_tax"
                 name="taklfa_after_tax"
-                type="text"
+                type="number"
                 required
                 onChange={(e) => {
                   setFieldValue(

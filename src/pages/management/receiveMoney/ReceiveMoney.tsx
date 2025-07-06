@@ -23,9 +23,7 @@ const ReceiveMoney = () => {
   // STATE
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ ReceiveMoney ~ dataSource:", dataSource);
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ PaymentBonds ~ userData:", userData);
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});

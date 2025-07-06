@@ -62,7 +62,6 @@ const ExpensesInvoiceSecond = ({
     },
     0
   );
-  console.log("🚀 ~ totalValueAddedTax:", totalValueAddedTax);
 
   const totalValueAfterTax = sellingItemsData?.reduce(
     (acc: number, curr: any) => {
@@ -71,7 +70,6 @@ const ExpensesInvoiceSecond = ({
     },
     0
   );
-  console.log("🚀 ~ totalValueAfterTax:", totalValueAfterTax);
 
   const costDataAsProps = {
     totalCost,
@@ -139,9 +137,7 @@ const ExpensesInvoiceSecond = ({
   const { mutate, isLoading, isSuccess } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      console.log("🚀 ~ data:", data);
       SetResponseSellingData(data);
-      console.log("🚀 ~ data:", data);
       notify("success", `${t("success add expense invoice")}`);
       resetForm();
       setFiles([]);
@@ -183,34 +179,45 @@ const ExpensesInvoiceSecond = ({
       };
     }
 
-    let card;
+    // let card;
 
-    if (isInEdara) {
-      card = paymentData.reduce((acc, curr) => {
-        acc[curr.frontKeyExpenseEdaraa] = Number(curr.amount);
-        return acc;
-      }, {});
-    } else {
-      card = paymentData.reduce((acc, curr) => {
-        acc[curr.exchangeFrontKey] = Number(curr.amount);
-        return acc;
-      }, {});
-    }
-    console.log("🚀 ~ card ~ paymentData:", paymentData);
-    console.log("🚀 ~ card ~ carddd:", card);
+    // if (isInEdara) {
+    //   card = paymentData.reduce((acc, curr) => {
+    //     acc[curr.frontKeyExpenseEdaraa] = Number(curr.amount);
+    //     return acc;
+    //   }, {});
+    // } else {
+    //   card = paymentData.reduce((acc, curr) => {
+    //     acc[curr.exchangeFrontKey] = Number(curr.amount);
+    //     return acc;
+    //   }, {});
+    // }
 
-    const paymentCard = paymentData?.map((item) => ({
-      card_id: item.frontkey === "cash" ? "cash" : item.paymentCardId,
-      bank_id: item.paymentBankId,
-      amount: item.cost_after_tax,
-    }));
+    // const paymentCard = paymentData?.map((item) => ({
+    //   card_id: item.frontkey === "cash" ? "cash" : item.paymentCardId,
+    //   bank_id: item.paymentBankId,
+    //   amount: item.cost_after_tax,
+    // }));
+
+    const payments = paymentData?.map((item: any) => {
+      return {
+        type: item?.paymentCardId
+          ? "card"
+          : item?.paymentBankId
+          ? "bank"
+          : "cash",
+        type_id: item.paymentCardId || item.paymentBankId || "cash",
+        type_amount: item.amount,
+        bank_account_id: item.id || "cash",
+      };
+    });
 
     mutate({
       endpointName:
         pathname === "/edara/addExpenses"
           ? "/edaraaExpense/api/v1/edaraaExpense-invoices"
           : "/expenses/api/v1/add-expense-invoice",
-      values: { ...invoice, media: files, card, paymentCard },
+      values: { ...invoice, media: files, payments },
       dataType: "formData",
     });
   };

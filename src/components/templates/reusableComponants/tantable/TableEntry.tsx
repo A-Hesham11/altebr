@@ -1,7 +1,13 @@
 import { t } from "i18next";
 import { numberContext } from "../../../../context/settings/number-formatter";
 
-const TableEntry = ({ item }: { item?: {} }) => {
+const TableEntry = ({
+  item,
+  isSameCollection,
+}: {
+  item?: {};
+  isSameCollection?: boolean;
+}) => {
   const { formatGram, formatReyal } = numberContext();
 
   // FOR TABLE ACCOUNTING ENTRY
@@ -29,21 +35,27 @@ const TableEntry = ({ item }: { item?: {} }) => {
 
   // group by account
 
-  const restrictionsWithoutTotals = restrictions?.reduce((prev, curr) => {
-    // const index = prev.findIndex((item) => item.bian === curr.bian);
-    // if (index === -1) {
-    //     prev.push(curr);
-    // } else {
-    //     prev[index].debtor_gram += curr.debtor_gram;
-    //     prev[index].debtor_SRA += curr.debtor_SRA;
-    //     prev[index].creditor_gram += curr.creditor_gram;
-    //     prev[index].creditor_SRA += curr.creditor_SRA;
-    // }
-
-    prev.push(curr);
-
+  const sameCollection = restrictions?.reduce((prev, curr) => {
+    const index = prev.findIndex((item) => item.bian === curr.bian);
+    if (index === -1) {
+      prev.push(curr);
+    } else {
+      prev[index].debtor_gram += curr.debtor_gram;
+      prev[index].debtor_SRA += curr.debtor_SRA;
+      prev[index].creditor_gram += curr.creditor_gram;
+      prev[index].creditor_SRA += curr.creditor_SRA;
+    }
     return prev;
   }, [] as typeof restrictions);
+
+  const differentCollection = restrictions?.reduce((prev, curr) => {
+    prev.push(curr);
+    return prev;
+  }, [] as typeof restrictions);
+
+  const restrictionsWithoutTotals = isSameCollection
+    ? sameCollection
+    : differentCollection;
 
   restrictions = restrictionsWithoutTotals;
 
@@ -59,7 +71,6 @@ const TableEntry = ({ item }: { item?: {} }) => {
   }
 
   if (restrictionsTotals) restrictions?.push(restrictionsTotals!);
-
   return (
     <div className="mt-8">
       <h2 className="text-xl mb-5 font-bold">{t("accounting entry")}</h2>
@@ -94,7 +105,7 @@ const TableEntry = ({ item }: { item?: {} }) => {
                   <tr key={i} className="border-b">
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == restrictions.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
@@ -103,39 +114,47 @@ const TableEntry = ({ item }: { item?: {} }) => {
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == restrictions.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
                     >
-                      {formatGram(restriction.debtor_gram)}
+                      {restriction.debtor_gram > 1
+                        ? formatGram(restriction.debtor_gram)
+                        : restriction.debtor_gram}
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == restrictions.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
                     >
-                      {formatReyal(restriction.debtor_SRA)}
+                      {restriction.debtor_SRA > 1
+                        ? formatReyal(restriction.debtor_SRA)
+                        : restriction.debtor_SRA}
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == restrictions.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
                     >
-                      {formatGram(restriction.creditor_gram)}
+                      {restriction.creditor_gram > 1
+                        ? formatGram(restriction.creditor_gram)
+                        : restriction.creditor_gram}
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                        i == item.boxes.length - 0
+                        i == restrictions.length - 1
                           ? "!bg-mainGreen !text-white"
                           : "!bg-lightGreen !text-gray-900"
                       } `}
                     >
-                      {formatReyal(restriction.creditor_SRA)}
+                      {restriction.creditor_SRA > 1
+                        ? formatReyal(restriction.creditor_SRA)
+                        : restriction.creditor_SRA}
                     </td>
                   </tr>
                 </>

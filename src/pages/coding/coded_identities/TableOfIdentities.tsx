@@ -24,7 +24,6 @@ const TableOfIdentities = ({
   isRefetching,
   activeClass,
 }: any) => {
-  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
   // STATE
   const isRTL = useIsRTL();
   const { formatReyal, formatGram } = numberContext();

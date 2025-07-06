@@ -49,7 +49,6 @@ export const EmployeeMainData = ({
   setModalOpen,
   modalOpen,
 }: EmployeeMainDataProps_TP) => {
-  console.log("🚀 ~ editEmployeeData:", editEmployeeData);
   /////////// VARIABLES
   /////
 

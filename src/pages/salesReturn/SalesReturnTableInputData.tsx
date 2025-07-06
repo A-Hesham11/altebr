@@ -50,8 +50,6 @@ export const SalesReturnTableInputData = ({
   sellingItemsOfWeigth,
   setSellingItemsOfWeight,
 }: SellingTableInputData_TP) => {
-  console.log("🚀 ~ dataSource:", dataSource);
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const [search, setSearch] = useState("");
   const [openDetails, setOpenDetails] = useState<boolean>(false);
   const [openSelsal, setOpenSelsal] = useState<boolean>(false);
@@ -59,10 +57,8 @@ export const SalesReturnTableInputData = ({
   const [page, setPage] = useState<number>(1);
   const { formatGram, formatReyal } = numberContext();
   const [editSellingTaklfa, setEditSellingTaklfa] = useState<number>();
-  console.log("🚀 ~ editSellingTaklfa:", editSellingTaklfa);
 
   const { userData } = useContext(authCtx);
-  console.log("🚀 ~ userData:", userData);
 
   const priceWithCommissionRate =
     dataSource &&

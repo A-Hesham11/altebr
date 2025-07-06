@@ -59,7 +59,6 @@ const NewMarketOptionComponent = ({
   districtId: string;
   district_name: string;
 }) => {
-  console.log("🚀 ~ districtId:", districtId);
   const initialValues = {
     name_ar: value,
     name_en: "",
@@ -70,7 +69,6 @@ const NewMarketOptionComponent = ({
     mutationFn: mutateData,
     onSuccess: (data) => {
       queryClient.setQueryData([`market/${districtId}`], (old: any) => {
-        console.log("data", data);
         if (old && !old.markets) {
           old.markets = [];
         }
@@ -159,7 +157,6 @@ export const Markets = ({
   label = "market",
   editData,
 }: Markets_TP) => {
-  console.log("🚀 ~ district:", district);
   /////////// VARIABLES
   ///
 
@@ -246,7 +243,6 @@ export const Markets = ({
         value={newValue}
         modalTitle={`${t("add market")}`}
         onChange={(option: any) => {
-          console.log(option);
           setNewValue(option);
         }}
         fieldKey={fieldKey}

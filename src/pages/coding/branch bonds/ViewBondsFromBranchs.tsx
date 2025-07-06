@@ -12,6 +12,7 @@ import { BsEye } from "react-icons/bs";
 import { Loading } from "../../../components/organisms/Loading";
 import { numberContext } from "../../../context/settings/number-formatter";
 import { BiSpreadsheet } from "react-icons/bi";
+import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
 
 const ViewBondsFromBranchs = () => {
   const isRTL = useIsRTL();
@@ -61,6 +62,24 @@ const ViewBondsFromBranchs = () => {
         header: () => <span>{t("employee name")}</span>,
       },
       {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.attachment?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.attachment}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
+      },
+      {
         cell: (info: any) => (
           <BiSpreadsheet
             onClick={() => {
@@ -95,22 +114,24 @@ const ViewBondsFromBranchs = () => {
         <div className="bg-flatWhite rounded-lg bill-shadow  py-5 px-6 h-41 my-5">
           <h2 className="mb-8 text-base font-bold">{t("total bonds")}</h2>
           <ul className="flex justify-around py-1 w-full mb-2">
-            {bankAccountFromBranch?.map(({ name, key, unit_id, value }) => { 
-              console.log(unit_id);
-              
-              return(
-              <li
-                className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12"
-                key={key}
-              >
-                <p className="bg-mainGreen  p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
-                  {name}
-                </p>
-                <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
-                  {(t(unit_id) == "جرام" || "gram" ) ? formatGram(Number(value)) :  formatReyal(Number(value))} {t(unit_id)}
-                </p>
-              </li>
-            )})}
+            {bankAccountFromBranch?.map(({ name, key, unit_id, value }) => {
+              return (
+                <li
+                  className="flex flex-col justify-end h-28 rounded-xl text-center font-bold text-white shadow-md bg-transparent w-4/12"
+                  key={key}
+                >
+                  <p className="bg-mainGreen  p-2 flex items-center justify-center h-[65%] rounded-t-xl text-white">
+                    {name}
+                  </p>
+                  <p className="bg-white px-2 py-2 text-black h-[35%] rounded-b-xl">
+                    {t(unit_id) == "جرام" || "gram"
+                      ? formatGram(Number(value))
+                      : formatReyal(Number(value))}{" "}
+                    {t(unit_id)}
+                  </p>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

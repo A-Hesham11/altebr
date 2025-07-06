@@ -31,8 +31,6 @@ const PaymentBondsTable = ({
 }: {
   item?: {};
 }) => {
-  console.log("🚀 ~ item:", item);
-
   const { formatReyal, formatGram } = numberContext();
   const [files, setFiles] = useState([]);
 
@@ -55,7 +53,6 @@ const PaymentBondsTable = ({
   }, 0);
 
   const isBank = item.boxes?.some((box) => box.is_bank === 1);
-  console.log("🚀 ~ isBank:", isBank);
 
   const {
     data: branchesOptions,
@@ -67,12 +64,10 @@ const PaymentBondsTable = ({
     endpoint: "branch/api/v1/branches?per_page=10000",
     queryKey: ["all-branches"],
   });
-  console.log("🚀 ~ branchesOptions:", branchesOptions);
 
   const branchesWithoutEdara = branchesOptions?.filter(
     (branch) => branch.id == item?.branch_id
   );
-  console.log("🚀 ~ branchesWithoutEdara:", branchesWithoutEdara);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(
@@ -109,7 +104,6 @@ const PaymentBondsTable = ({
   var originalString = "Hzn9_FOwN_albaraka_bank_01068978585_41_1";
   var parts = originalString.split("_");
   var desiredPart = parts.slice(0, -1).join("_"); // Join all parts except the last one
-  console.log("🚀 ~ desiredPart:", desiredPart);
 
   const { data: accountBanks } = useFetch<Cards_Props_TP[]>({
     endpoint: `/selling/api/v1/get_bank_accounts_edrea`,
@@ -124,7 +118,6 @@ const PaymentBondsTable = ({
       }));
     },
   });
-  console.log("🚀 ~ accountBanks:", accountBanks);
 
   const queryClient = useQueryClient();
   const {

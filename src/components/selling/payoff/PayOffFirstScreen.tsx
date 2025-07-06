@@ -39,7 +39,6 @@ export const PayOffFirstScreen = ({
   const navigate = useNavigate();
   const { userData } = useContext(authCtx);
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ dataSource:", dataSource);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);

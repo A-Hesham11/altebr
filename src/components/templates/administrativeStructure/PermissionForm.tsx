@@ -32,7 +32,6 @@ export const PermissionForm = ({
   /////////// CUSTOM HOOKS
   ///
   const { setFieldValue, values } = useFormikContext();
-  console.log("🚀 ~ values:", values);
   ///
   /////////// STATES
   ///

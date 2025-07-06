@@ -19,8 +19,6 @@ const ThweelBondsPrint = ({
   setThwelPrint,
   bondDataPrint,
 }) => {
-  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
-  console.log("🚀 ~ thwelPrint:", thwelPrint);
   const { formatReyal, formatGram } = numberContext();
 
   // STATE
@@ -193,7 +191,6 @@ const ThweelBondsPrint = ({
     printDiamond,
     printMotafreqat,
   ];
-  console.log("🚀 ~ TableOfBranchBonds ~ filteredItem:", filteredItem);
 
   const filteredItemWithoutEmpty = filteredItem?.filter(
     (item) => item?.count_items !== 0

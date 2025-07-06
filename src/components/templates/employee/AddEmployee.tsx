@@ -1,30 +1,28 @@
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik } from "formik"
-import { t } from "i18next"
-import { useEffect, useState } from "react"
-import { Helmet } from "react-helmet-async"
-import { isValidPhoneNumber } from "react-phone-number-input"
-import * as Yup from "yup"
-import { EmployeeMainData } from ".."
-import { useMutate } from "../../../hooks"
-import { formatDate, getDayBefore } from "../../../utils/date"
-import { requiredTranslation } from "../../../utils/helpers"
-import { mutateData } from "../../../utils/mutateData"
-import { notify } from "../../../utils/toast"
-import { HandleBackErrors } from "../../../utils/utils-components/HandleBackErrors"
-import {
-  allDocs_TP
-} from "../reusableComponants/documents/Documents" 
-import { Email_TP, InitialValues_TP } from "./validation-and-types"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
+import { t } from "i18next";
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import * as Yup from "yup";
+import { EmployeeMainData } from "..";
+import { useMutate } from "../../../hooks";
+import { formatDate, getDayBefore } from "../../../utils/date";
+import { requiredTranslation } from "../../../utils/helpers";
+import { mutateData } from "../../../utils/mutateData";
+import { notify } from "../../../utils/toast";
+import { HandleBackErrors } from "../../../utils/utils-components/HandleBackErrors";
+import { allDocs_TP } from "../reusableComponants/documents/Documents";
+import { Email_TP, InitialValues_TP } from "./validation-and-types";
 ///
 /////////// Types
 ///
 type AddEmployeeProps_TP = {
-  title: string
-  editEmployeeData?: InitialValues_TP | undefined
-}
+  title: string;
+  editEmployeeData?: InitialValues_TP | undefined;
+};
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -48,7 +46,7 @@ export const AddEmployee = ({
             .trim()
             .required(requiredTranslation)
             .test("isValidateNumber", "رقم غير صحيح", function (value: string) {
-              return isValidPhoneNumber(value || "")
+              return isValidPhoneNumber(value || "");
             })
         : Yup.string().trim(),
       phone: !!!editEmployeeData
@@ -78,7 +76,7 @@ export const AddEmployee = ({
         .required(requiredTranslation)
         .min(1, "can not be empty"),
       zip_code: Yup.string().trim().required(requiredTranslation),
-    })
+    });
 
   //@ts-ignore
   const incomingData = !!editEmployeeData
@@ -88,16 +86,16 @@ export const AddEmployee = ({
         files: item?.files || [],
         id: item.id,
       }))
-    : []
+    : [];
 
   /////////// VARIABLES
   ///
   /////////// STATES
   ///
-    const [modalOpen, setModalOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false);
 
   const [docsFormValues, setDocsFormValues] =
-    useState<allDocs_TP[]>(incomingData)
+    useState<allDocs_TP[]>(incomingData);
 
   const initialValues: InitialValues_TP = {
     // employee main data initial values
@@ -144,24 +142,27 @@ export const AddEmployee = ({
     sub_number: editEmployeeData?.nationalAddress?.sub_number || "",
     zip_code: editEmployeeData?.nationalAddress?.zip_code || "",
     address: editEmployeeData?.nationalAddress?.address || "",
-  }
+  };
 
-  
   ///
   /////////// CUSTOM HOOKS
   ///
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate, isLoading, error, isSuccess, reset } = useMutate({
     mutationFn: mutateData,
     onSuccess: () => {
-      notify("success")
-      queryClient.refetchQueries([ "employees" ])
+      notify("success");
+      queryClient.refetchQueries(["employees"]);
     },
     onError: (error: any) => {
-      console.log("🚀 ~ Employees ~ error:", error)
-      notify("error", error.request.status == "503" ? (`${t("you do not have access")}`) : error?.response?.data?.message);
+      notify(
+        "error",
+        error.request.status == "503"
+          ? `${t("you do not have access")}`
+          : error?.response?.data?.message
+      );
     },
-  })
+  });
   ///
 
   /////////// SIDE EFFECTS
@@ -182,7 +183,7 @@ export const AddEmployee = ({
         onSubmit={(values) => {
           let editedValues = {
             ...values,
-            address:values.address_out,
+            address: values.address_out,
             image: values.image[0],
             national_image: values.national_image[0],
             is_active: values.is_active === "No" ? 0 : 1,
@@ -198,44 +199,43 @@ export const AddEmployee = ({
               building_number: values.building_number,
               street_number: values.street_number,
             },
-          }
+          };
           if (!!editEmployeeData) {
-            let { document, ...editedValuesWithoutDocument } = editedValues
+            let { document, ...editedValuesWithoutDocument } = editedValues;
             if (docsFormValues.length > editEmployeeData.document.length)
               editedValues = {
                 ...editedValues,
                 document: editedValues.document.slice(
                   editEmployeeData.document.length
                 ),
-              }
+              };
             if (docsFormValues.length === editEmployeeData.document.length)
-              editedValues = editedValuesWithoutDocument
+              editedValues = editedValuesWithoutDocument;
             if (
               JSON.stringify(values.national_image[0].path) ===
               JSON.stringify(editEmployeeData.national_image)
             )
-              delete editedValues.national_image
+              delete editedValues.national_image;
 
             if (
               JSON.stringify(values.image[0].path) ===
               JSON.stringify(editEmployeeData.img)
             )
-              delete editedValues.image
+              delete editedValues.image;
 
-            if (values.password === "") delete editedValues.password
+            if (values.password === "") delete editedValues.password;
             mutate({
               endpointName: `employee/api/v1/employees/${editEmployeeData.id}`,
               values: editedValues,
               dataType: "formData",
               editWithFormData: true,
-            
-            })
+            });
           } else {
             mutate({
               endpointName: "employee/api/v1/employees",
               values: editedValues,
               dataType: "formData",
-            })
+            });
           }
         }}
         validationSchema={() => employeeValidatingSchema()}
@@ -257,5 +257,5 @@ export const AddEmployee = ({
         </HandleBackErrors>
       </Formik>
     </>
-  )
-}
+  );
+};

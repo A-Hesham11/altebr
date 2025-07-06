@@ -4,46 +4,46 @@
 ///
 /////////// Types
 
-import { useQueryClient } from "@tanstack/react-query"
-import { ColumnDef } from "@tanstack/react-table"
-import { Form, Formik } from "formik"
-import { t } from "i18next"
-import { useEffect, useMemo, useState } from "react"
-import { BiSearchAlt } from "react-icons/bi"
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md"
-import * as Yup from "yup"
-import { useFetch, useIsRTL, useMutate } from "../../../../../hooks"
-import { mutateData } from "../../../../../utils/mutateData"
-import { notify } from "../../../../../utils/toast"
-import { Back } from "../../../../../utils/utils-components/Back"
-import { Button } from "../../../../atoms"
-import { Header } from "../../../../atoms/Header"
-import { EditIcon } from "../../../../atoms/icons"
-import { SvgDelete } from "../../../../atoms/icons/SvgDelete"
-import { BaseInputField, Modal } from "../../../../molecules"
-import { AddButton } from "../../../../molecules/AddButton"
-import { Loading } from "../../../../organisms/Loading"
-import { Table } from "../../../reusableComponants/tantable/Table"
-import AddMineralsKarats from "../../minerals karats/AddMaineralsKarat"
+import { useQueryClient } from "@tanstack/react-query";
+import { ColumnDef } from "@tanstack/react-table";
+import { Form, Formik } from "formik";
+import { t } from "i18next";
+import { useEffect, useMemo, useState } from "react";
+import { BiSearchAlt } from "react-icons/bi";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import * as Yup from "yup";
+import { useFetch, useIsRTL, useMutate } from "../../../../../hooks";
+import { mutateData } from "../../../../../utils/mutateData";
+import { notify } from "../../../../../utils/toast";
+import { Back } from "../../../../../utils/utils-components/Back";
+import { Button } from "../../../../atoms";
+import { Header } from "../../../../atoms/Header";
+import { EditIcon } from "../../../../atoms/icons";
+import { SvgDelete } from "../../../../atoms/icons/SvgDelete";
+import { BaseInputField, Modal } from "../../../../molecules";
+import { AddButton } from "../../../../molecules/AddButton";
+import { Loading } from "../../../../organisms/Loading";
+import { Table } from "../../../reusableComponants/tantable/Table";
+import AddMineralsKarats from "../../minerals karats/AddMaineralsKarat";
 
 ///
 export type ViewMineralsKarats_TP = {
-  id: string
-  name: string
-  karatmineral: string
-}
+  id: string;
+  name: string;
+  karatmineral: string;
+};
 
 type Search_TP = {
-  search: string
-}
+  search: string;
+};
 
 const initialValues: Search_TP = {
   search: "",
-}
+};
 
 const validationSchema = Yup.object({
   search: Yup.string().trim(),
-})
+});
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -52,14 +52,14 @@ const validationSchema = Yup.object({
 export const ViewMineralsKarats = () => {
   /////////// CUSTOM HOOKS
   ///
-  const isRTL = useIsRTL()
-  const [open, setOpen] = useState(false)
-  const [model, setModel] = useState(false)
-  const [editData, setEditData] = useState<ViewMineralsKarats_TP>()
-  const [deleteData, setDeleteData] = useState<ViewMineralsKarats_TP>()
-  const [dataSource, setDataSource] = useState<ViewMineralsKarats_TP[]>([])
-  const [search, setSearch] = useState("")
-  const [page, setPage] = useState<number>(1)
+  const isRTL = useIsRTL();
+  const [open, setOpen] = useState(false);
+  const [model, setModel] = useState(false);
+  const [editData, setEditData] = useState<ViewMineralsKarats_TP>();
+  const [deleteData, setDeleteData] = useState<ViewMineralsKarats_TP>();
+  const [dataSource, setDataSource] = useState<ViewMineralsKarats_TP[]>([]);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState<number>(1);
   const columns = useMemo<ColumnDef<ViewMineralsKarats_TP>[]>(
     () => [
       {
@@ -90,46 +90,44 @@ export const ViewMineralsKarats = () => {
             <div className="flex items-center justify-center gap-4">
               <EditIcon
                 action={() => {
-                  setOpen((prev) => !prev)
-                  setEditData(info.row.original)
-                  setModel(true)
+                  setOpen((prev) => !prev);
+                  setEditData(info.row.original);
+                  setModel(true);
                 }}
               />
               <SvgDelete
                 action={() => {
-                  setOpen((prev) => !prev)
-                  setDeleteData(info.row.original)
-                  setModel(false)
+                  setOpen((prev) => !prev);
+                  setDeleteData(info.row.original);
+                  setModel(false);
                 }}
                 stroke="#ef4444"
               />
             </div>
-          )
+          );
         },
       },
     ],
     []
-  )
-  let count = 1
+  );
+  let count = 1;
   const {
     data: karats,
     isLoading,
     isError,
     error,
     refetch,
-    isRefetching, 
+    isRefetching,
     isSuccess,
   } = useFetch<ViewMineralsKarats_TP[]>({
     endpoint:
       search === ""
         ? `classification/api/v1/karatminerals?page=${page}`
-        : `classification/api/v1/karatminerals?page=${page}&${
-         "name"
-        }[lk]=${search}`,
+        : `classification/api/v1/karatminerals?page=${page}&${"name"}[lk]=${search}`,
     queryKey: [`karatminerals`],
     pagination: true,
     onSuccess(data) {
-      setDataSource(data.data)
+      setDataSource(data.data);
     },
     select(data) {
       return {
@@ -138,13 +136,11 @@ export const ViewMineralsKarats = () => {
           ...item,
           index: i + 1,
         })),
-      }
+      };
     },
-  })
-  console.log("🚀 ~ file: ViewMineralsKarats.tsx:116 ~ ViewMineralsKarats ~ karats:", karats)
+  });
 
-
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const {
     mutate,
     error: mutateError,
@@ -155,17 +151,17 @@ export const ViewMineralsKarats = () => {
       // setDataSource((prev: ViewMineralsKarats_TP[]) =>
       //   prev.filter((p) => p.id !== deleteData?.id)
       // )
-      queryClient.refetchQueries(["karatminerals"])
-      setOpen(false)
-      notify("success")
+      queryClient.refetchQueries(["karatminerals"]);
+      setOpen(false);
+      notify("success");
     },
-  })
+  });
   const handleSubmit = () => {
     mutate({
       endpointName: `/classification/api/v1/karatminerals/${deleteData?.id}`,
       method: "delete",
-    })
-  }
+    });
+  };
   /////////// VARIABLES
   ///
 
@@ -179,16 +175,16 @@ export const ViewMineralsKarats = () => {
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
   useEffect(() => {
-    refetch()
-  }, [page])
+    refetch();
+  }, [page]);
 
   useEffect(() => {
     if (page == 1) {
-      refetch()
+      refetch();
     } else {
-      setPage(1)
+      setPage(1);
     }
-  }, [search])
+  }, [search]);
   ///
   return (
     <>
@@ -199,7 +195,7 @@ export const ViewMineralsKarats = () => {
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            setSearch(values.search)
+            setSearch(values.search);
           }}
           validationSchema={validationSchema}
         >
@@ -221,9 +217,9 @@ export const ViewMineralsKarats = () => {
         <div className="flex">
           <AddButton
             action={() => {
-              setEditData(undefined)
-              setModel(true)
-              setOpen(true)
+              setEditData(undefined);
+              setModel(true);
+              setOpen(true);
             }}
             addLabel={`${t("add")}`}
           />
@@ -298,7 +294,7 @@ export const ViewMineralsKarats = () => {
         <Modal
           isOpen={open}
           onClose={() => {
-            setOpen(false)
+            setOpen(false);
           }}
         >
           {model ? (
@@ -326,5 +322,5 @@ export const ViewMineralsKarats = () => {
         </Modal>
       </div>
     </>
-  )
-}
+  );
+};

@@ -51,11 +51,11 @@ export const DropFile = ({ name }: DropFileProps_TP) => {
   // update files and images states
   useEffect(() => {
     const imageFiles: CImageFile_TP[] = values[name];
-    const images = imageFiles.filter((file) => pdfOrImage(file) === "image");
+    const images = imageFiles?.filter((file) => pdfOrImage(file) === "image");
     setImages(images);
 
     const pdfFiles: CFile_TP[] = values[name];
-    const pdfs = pdfFiles.filter((file) => pdfOrImage(file) === "pdf");
+    const pdfs = pdfFiles?.filter((file) => pdfOrImage(file) === "pdf");
     setPdfs(pdfs);
   }, [values[name]]);
 

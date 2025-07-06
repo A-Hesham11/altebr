@@ -40,7 +40,7 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
   const [addEmployeeModal, setAddEmployeeModal] = useState<boolean>(false);
   const [importFiles, setImportFiles] = useState<any>([]);
   const queryClient = useQueryClient();
-  const [permissionError, setPermissionError] = useState()
+  const [permissionError, setPermissionError] = useState();
 
   ///
   /////////// CUSTOM HOOKS
@@ -53,9 +53,10 @@ export const Employees = ({ title }: EmployeesProps_TP) => {
   } = useFetch<Employee_TP[]>({
     endpoint: "employee/api/v1/employees?per_page=10000",
     queryKey: ["employees"],
-    onError: (err) => {setPermissionError(err)},
+    onError: (err) => {
+      setPermissionError(err);
+    },
   });
-  console.log("🚀 ~ Employees ~ employees:", employees);
 
   const { data: employeesExcel } = useFetch<Employee_TP[]>({
     endpoint: "employee/api/v1/employees?per_page=10000",

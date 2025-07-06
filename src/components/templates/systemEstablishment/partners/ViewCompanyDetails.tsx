@@ -127,11 +127,6 @@ export const ViewCompanyDetails = () => {
     ? companyDetails
     : [];
 
-  console.log(
-    "🚀 ~ ViewCompanyDetails ~ companyDetailsData:",
-    companyDetailsData
-  );
-
   ///
   /////////// STATES
   ///

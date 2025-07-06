@@ -253,10 +253,6 @@ const DeliveryBondPreviewScreen = ({
       endpointName: "branchSafety/api/v1/create-receive",
       values: { bond, items, card, paymentCommission },
     });
-    console.log(
-      "🚀 ~ posHonestDataHandler ~ values: { bond, items, card, paymentCommission }:",
-      { bond, items, card, paymentCommission }
-    );
   };
 
   const handlePrint = useReactToPrint({

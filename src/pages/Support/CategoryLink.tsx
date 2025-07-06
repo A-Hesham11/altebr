@@ -15,7 +15,6 @@ const CategoryLink = () => {
   const supportIdParam = useParams().supportId;
   const navigate = useNavigate();
   const [supportCategoryData, setSupportCategoryData] = useState(null);
-  console.log("🚀 ~ CategoryLink ~ supportCategoryData:", supportCategoryData);
   const isRTL = useIsRTL();
 
   // useEffect(() => {

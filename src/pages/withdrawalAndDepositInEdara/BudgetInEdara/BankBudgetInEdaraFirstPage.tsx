@@ -38,13 +38,10 @@ const BankBudgetInEdaraFirstPage: React.FC<BudgetFirstPage_TP> = ({
   invoiceData,
   setOperationData,
 }) => {
-  console.log("🚀 ~ mainCardData:", mainCardData);
   const { userData } = useContext(authCtx);
   const { values } = useFormikContext();
-  console.log("🚀 ~ values:", values);
   const isBoxesHaveData = mainCardData?.map((data) => data?.boxes).flat();
   const test = formatDate(values?.from);
-  console.log("🚀 ~ test:", test);
 
   const {
     data: accountsDetailsData,
@@ -60,11 +57,9 @@ const BankBudgetInEdaraFirstPage: React.FC<BudgetFirstPage_TP> = ({
     }&to=${values?.to ? formatDate(getDayAfter(new Date(values?.to))) : 0}`,
     queryKey: ["accounts-details-data_edara"],
     onSuccess: (data: any) => {
-      console.log("🚀 ~ data:", data);
       setMainCardData(data);
     },
   });
-  console.log("🚀 ~ accountsDetailsData:", accountsDetailsData);
 
   useEffect(() => {
     accountsDetailsDataRefetch();

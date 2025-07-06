@@ -41,8 +41,6 @@ export const BuyingFinalPreview = ({
   odwyaTypeValue,
   setOdwyaTypeValue,
 }: SellingFinalPreviewProps_TP) => {
-  console.log("🚀 ~ clientData:", clientData);
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
   const { invoice_logo, gold_price } = GlobalDataContext();
   const invoiceHeaderBasicData = {
     first_title: "bill date",

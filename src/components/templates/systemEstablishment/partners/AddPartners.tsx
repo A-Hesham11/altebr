@@ -1,32 +1,32 @@
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik } from "formik"
-import { t } from "i18next"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import * as Yup from "yup"
-import { useFetch, useMutate } from "../../../../hooks"
-import { formatDate } from "../../../../utils/date"
-import { mutateData } from "../../../../utils/mutateData"
-import { notify } from "../../../../utils/toast"
-import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors"
-import { Loading } from "../../../organisms/Loading"
-import { PartnerMainData } from "./PartnerMainData"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
+import { t } from "i18next";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import { useFetch, useMutate } from "../../../../hooks";
+import { formatDate } from "../../../../utils/date";
+import { mutateData } from "../../../../utils/mutateData";
+import { notify } from "../../../../utils/toast";
+import { HandleBackErrors } from "../../../../utils/utils-components/HandleBackErrors";
+import { Loading } from "../../../organisms/Loading";
+import { PartnerMainData } from "./PartnerMainData";
 
 import {
   InitialValues_TP,
   requiredTranslation,
-} from "./validation-and-types-partner"
-import { isValidPhoneNumber } from "react-phone-number-input"
+} from "./validation-and-types-partner";
+import { isValidPhoneNumber } from "react-phone-number-input";
 ///
 /////////// Types
 ///
 type AddPartners_props = {
-  title: string
-  dataSource?: any
-  editData?: any
-}
+  title: string;
+  dataSource?: any;
+  editData?: any;
+};
 
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
@@ -76,7 +76,7 @@ export const AddPartners = ({
     sub_number: editData?.nationalAddress?.sub_number || "",
     zip_code: editData?.nationalAddress?.zip_code || "",
     address: editData?.nationalAddress?.address || "",
-  }
+  };
 
   const partnerValidatingSchema = () =>
     Yup.object({
@@ -88,7 +88,7 @@ export const AddPartners = ({
             .trim()
             .required(requiredTranslation)
             .test("isValidateNumber", "رقم غير صحيح", function (value: string) {
-              return isValidPhoneNumber(value || "")
+              return isValidPhoneNumber(value || "");
             })
         : Yup.string().trim(),
       end_date: Yup.date().required(requiredTranslation),
@@ -105,7 +105,7 @@ export const AddPartners = ({
       sub_number: Yup.string().trim().required(requiredTranslation),
       zip_code: Yup.string().trim().required(requiredTranslation),
       //  national_image: Yup.string().trim().required(requiredTranslation),
-    })
+    });
 
   ///
   /////////// CUSTOM HOOKS
@@ -117,12 +117,12 @@ export const AddPartners = ({
         files: item?.files || [],
         id: item.id,
       }))
-    : []
+    : [];
   ///
   /////////// STATES
   ///
   const [docsFormValues, setDocsFormValues] =
-    useState<InitialValues_TP[]>(incomingData)
+    useState<InitialValues_TP[]>(incomingData);
 
   const {
     data: checkOperations,
@@ -132,9 +132,9 @@ export const AddPartners = ({
   } = useFetch<{ status: string }>({
     endpoint: "partner/api/v1/check",
     queryKey: ["checkSupplier"],
-  })
+  });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   ///
   /////////// SIDE EFFECTS
@@ -148,15 +148,12 @@ export const AddPartners = ({
   } = useMutate({
     mutationFn: mutateData,
     onSuccess: () => {
-      queryClient.refetchQueries(["partner"])
-      notify("success")
+      queryClient.refetchQueries(["partner"]);
+      notify("success");
     },
-    onError: (error) => {
-      console.log(error)
-    },
-  })
+  });
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   if (checkOperationsLoading)
     return (
@@ -164,7 +161,7 @@ export const AddPartners = ({
         mainTitle={`${t("loading")}`}
         subTitle={`${t("checking accounts operations")}`}
       />
-    )
+    );
 
   if (!checkOperations?.status)
     return (
@@ -178,7 +175,7 @@ export const AddPartners = ({
           )}
         </h2>
       </div>
-    )
+    );
   ///
   return (
     <>
@@ -210,34 +207,34 @@ export const AddPartners = ({
               zip_code: values.zip_code,
             },
             document: docsFormValues,
-          }
+          };
 
           if (!!editData) {
-            let { document, ...editedValuesWithoutDocument } = editedValues
+            let { document, ...editedValuesWithoutDocument } = editedValues;
             if (docsFormValues.length > editData.document.length)
               editedValues = {
                 ...editedValues,
                 document: editedValues.document.slice(editData.document.length),
-              }
+              };
             if (docsFormValues.length === editData.document.length)
-              editedValues = editedValuesWithoutDocument
+              editedValues = editedValuesWithoutDocument;
             if (
               JSON.stringify(values.national_image[0].path) ===
               JSON.stringify(editData.national_image)
             )
-              delete editedValues.national_image
+              delete editedValues.national_image;
             mutate({
               endpointName: `partner/api/v1/partners/${editData.id}`,
               values: editedValues,
               dataType: "formData",
               editWithFormData: true,
-            })
+            });
           } else {
             mutate({
               endpointName: "partner/api/v1/partners",
               values: editedValues,
               dataType: "formData",
-            })
+            });
           }
         }}
       >
@@ -256,5 +253,5 @@ export const AddPartners = ({
         </HandleBackErrors>
       </Formik>
     </>
-  )
-}
+  );
+};

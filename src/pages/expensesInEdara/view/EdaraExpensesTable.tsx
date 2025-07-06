@@ -14,6 +14,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useIsRTL } from "../../../hooks";
 import Loader from "./Loader";
 import { Loading } from "../../../components/organisms/Loading";
+import { FilesPreviewOutFormik } from "../../../components/molecules/files/FilesPreviewOutFormik";
 
 type TEdaraExpensesTableProps = {
   dataSource: any;
@@ -69,6 +70,24 @@ const EdaraExpensesTable: React.FC<TEdaraExpensesTableProps> = ({
         cell: (info: any) => info.getValue(),
         accessorKey: "description",
         header: () => <span>{t("description")}</span>,
+      },
+      {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.attachment?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.attachment}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
       },
       {
         cell: (info: any) => (

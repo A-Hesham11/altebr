@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 
 const PaymentToManagement = () => {
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
-  console.log("🚀 ~ PaymentToManagement ~ paymentData:", paymentData);
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [stage, setStage] = useState<number>(1);
   const [selectedCardId, setSelectedCardId] = useState(null);
@@ -44,7 +43,6 @@ const PaymentToManagement = () => {
   const { mutate: mutatePaymentsData, isLoading } = useMutate({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      console.log("🚀 ~ PaymentToManagement ~ data:", data);
       notify("success");
       navigate(`/selling/viewPayment`, {
         state: {

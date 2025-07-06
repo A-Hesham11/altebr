@@ -322,7 +322,6 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     endpoint: `/inventory/api/v1/getItembyhwya/${userData?.branch_id}?hwya[lk]=${search}`,
     enabled: Boolean(search),
     onSuccess: (data) => {
-      console.log("🚀 ~ data:", data);
       if (!data?.data) return;
 
       const { weightitems, category_selling_type } = data?.data;
@@ -663,7 +662,6 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //   endpoint: `/inventory/api/v1/next-group/${userData?.branch_id}/${id}`,
 //   queryKey: ["next-group"],
 // });
-// console.log("🚀 ~ nextGroup:", nextGroups);
 
 // ---------------------------------------------------------------------------------
 // NEW
@@ -1522,8 +1520,6 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //   // }, []);
 
 //   const addItemToIdentity = (id: number, newItem: Item, isChecked: boolean) => {
-//     console.log("🚀 ~ addItemToIdentity ~ id:", id);
-//     console.log("🚀 ~ addItemToIdentity ~ newItem:", newItem);
 //     const groupExists = identitiesCheckedItems.some(
 //       (identity) => identity?.["_id"] == id
 //     );
@@ -1536,7 +1532,6 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //       const group = identitiesCheckedItems.find(
 //         (identity) => identity?.["_id"] == id
 //       );
-//       console.log("🚀 ~ addItemToIdentity ~ group:", group);
 
 //       const itemAlreadyExists = group?.items.some(
 //         (item) => item.itemId == newItem.item_id
@@ -2025,7 +2020,6 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 // //     numbers?.[Number(nextGroup?.group_num - 1)]
 // //   )}/${id}`
 // // );
-// // console.log("🚀 ~ handleSuccess ~ response:", response);
 
 // // if (response.status === 200) {
 // //   console.log("API Response:", response.data);

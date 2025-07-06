@@ -1,7 +1,7 @@
 //@ts-noCheck
-import React from "react"
+import React from "react";
 
-import { useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query";
 import {
   createColumnHelper,
   ExpandedState,
@@ -10,62 +10,62 @@ import {
   getExpandedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  useReactTable
-} from "@tanstack/react-table"
-import { t } from "i18next"
-import { useEffect, useMemo, useState } from "react"
-import { GiSightDisabled } from "react-icons/gi"
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md"
-import { useParams } from "react-router-dom"
-import { Button, Spinner } from "../../components/atoms"
-import { DeleteIcon, ViewIcon } from "../../components/atoms/icons"
-import { Modal } from "../../components/molecules"
-import { useFetch, useIsRTL, useLocalStorage } from "../../hooks"
-import { notify } from "../../utils/toast"
+  useReactTable,
+} from "@tanstack/react-table";
+import { t } from "i18next";
+import { useEffect, useMemo, useState } from "react";
+import { GiSightDisabled } from "react-icons/gi";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { useParams } from "react-router-dom";
+import { Button, Spinner } from "../../components/atoms";
+import { DeleteIcon, ViewIcon } from "../../components/atoms/icons";
+import { Modal } from "../../components/molecules";
+import { useFetch, useIsRTL, useLocalStorage } from "../../hooks";
+import { notify } from "../../utils/toast";
 import {
   GoldCodingSanad_initialValues_TP,
-  GoldSanad_TP
-} from "../coding/coding-types-and-helpers"
-import { SelectedDetailedWeight } from "./SelectedDetailedWeight"
-import { SubTables } from "./SubTables"
-import { numberContext } from "../../context/settings/number-formatter"
+  GoldSanad_TP,
+} from "../coding/coding-types-and-helpers";
+import { SelectedDetailedWeight } from "./SelectedDetailedWeight";
+import { SubTables } from "./SubTables";
+import { numberContext } from "../../context/settings/number-formatter";
 
 // types
 type Categories_TP = {
-  has_selsal: string
-  has_size: string
-  id: string
-  name: string
-  name_ar: string
-  name_en: string
-  selling_type: string
-  type: string
-}
+  has_selsal: string;
+  has_size: string;
+  id: string;
+  name: string;
+  name_ar: string;
+  name_en: string;
+  selling_type: string;
+  type: string;
+};
 export function ExpandableTable({
   addedPieces,
   setAddedPieces,
   showDetails,
   setSelectedSanad,
 }: {
-  showDetails?: boolean
-  addedPieces: GoldCodingSanad_initialValues_TP[]
-  setAddedPieces?: SetState_TP<GoldCodingSanad_initialValues_TP[]>
-  setSelectedSanad?: SetState_TP<GoldSanad_TP | undefined>
+  showDetails?: boolean;
+  addedPieces: GoldCodingSanad_initialValues_TP[];
+  setAddedPieces?: SetState_TP<GoldCodingSanad_initialValues_TP[]>;
+  setSelectedSanad?: SetState_TP<GoldSanad_TP | undefined>;
 }) {
-  const { sanadId } = useParams()
+  const { sanadId } = useParams();
 
   const { formatGram, formatReyal } = numberContext();
 
   const [addedPiecesLocal, setAddedPiecesLocal] = useLocalStorage<
     GoldCodingSanad_initialValues_TP[]
-  >(`addedPiecesLocal_${sanadId}`)
+  >(`addedPiecesLocal_${sanadId}`);
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
-    useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`)
+    useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
   // variables
-  let count = 0
+  let count = 0;
 
-  const columnHelper = createColumnHelper<any>()
+  const columnHelper = createColumnHelper<any>();
   const modifiedData = addedPieces.map((item) => ({
     ...item,
     classification: "ذهب",
@@ -73,20 +73,19 @@ export function ExpandableTable({
     karat_id: crypto.randomUUID().slice(0, 2),
     index: ++count,
     sizes: item?.sizes || [],
-  }))
+  }));
 
   //states
-  const [data, setData] = useState(modifiedData)
-  console.log("🚀 ~ data:", data)
+  const [data, setData] = useState(modifiedData);
 
-  const [expanded, setExpanded] = React.useState<ExpandedState>({})
-  const [modalOpen, setModalOpen] = useState(false)
-  const [detailedWeightModalOpen, seDetailedWeightModalOpen] = useState(false)
+  const [expanded, setExpanded] = React.useState<ExpandedState>({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [detailedWeightModalOpen, seDetailedWeightModalOpen] = useState(false);
   const [subTableData, setSubTableData] = useState<{
-    index: string
-    data: typeof data
-  }>()
-  const [queryData, setQueryData] = useState<any[] | undefined>()
+    index: string;
+    data: typeof data;
+  }>();
+  const [queryData, setQueryData] = useState<any[] | undefined>();
 
   const columns = useMemo<any>(
     () => [
@@ -107,121 +106,127 @@ export function ExpandableTable({
       }),
       columnHelper.accessor("weight", {
         header: `${t("weight")}`,
-        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatGram(Number(info.getValue())) : "---",
       }),
       columnHelper.accessor("mezan_weight", {
         header: `الوزن الفعلي`,
-        cell: (info) => info.getValue() ? formatGram(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatGram(Number(info.getValue())) : "---",
       }),
       columnHelper.accessor("wage", {
         header: `${t("wage")}`,
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       }),
       columnHelper.accessor("value", {
         header: `${t("value")}`,
-        cell: (info) => info.getValue() ? formatReyal(Number(info.getValue())) : "---",
+        cell: (info) =>
+          info.getValue() ? formatReyal(Number(info.getValue())) : "---",
       }),
       ...(showDetails
         ? [
-          columnHelper.accessor("actions", {
-            header: `${t("actions")}`,
-            cell: (info) => (
-              <div className="flex justify-center gap-3">
-                <ViewIcon
-                  size={23}
-                  action={() => {
-                    setSubTableData({
-                      index: info.row.original.index,
-                      data: modifiedData,
-                    })
-                    setModalOpen(true)
-                  }}
-                  className="text-mainGreen"
-                />
-                {setAddedPieces && (
-                  <DeleteIcon
+            columnHelper.accessor("actions", {
+              header: `${t("actions")}`,
+              cell: (info) => (
+                <div className="flex justify-center gap-3">
+                  <ViewIcon
                     size={23}
                     action={() => {
-                      const row: GoldCodingSanad_initialValues_TP =
-                        info.row.original
-                      const thisId = row.front_key
-                      setData((curr) =>
-                        curr.filter((piece) => piece.front_key !== thisId)
-                      )
-                      setAddedPieces((curr) =>
-                        curr.filter((piece) => piece.front_key !== thisId)
-                      )
-                      setAddedPiecesLocal((curr) =>
-                        curr.filter((piece) => piece.front_key !== thisId)
-                      )
-                      setSelectedSanadLocal((curr) => ({
-                        ...curr,
-                        items: curr.items.map((band) => {
-                          if (band.id === row.band_id) {
-                            return {
-                              ...band,
-                              leftWeight:
-                                +band.leftWeight + +row.mezan_weight,
-                            }
-                          } else {
-                            return band
-                          }
-                        }),
-                      }))
-
-                      setSelectedSanad((curr) => ({
-                        ...curr,
-                        items: curr.items.map((band) => {
-                          if (band.id === row.band_id) {
-                            return {
-                              ...band,
-                              leftWeight:
-                                +band.leftWeight + +row.mezan_weight,
-                            }
-                          } else {
-                            return band
-                          }
-                        }),
-                      }))
+                      setSubTableData({
+                        index: info.row.original.index,
+                        data: modifiedData,
+                      });
+                      setModalOpen(true);
                     }}
+                    className="text-mainGreen"
                   />
-                )}
-              </div>
-            ),
-          }),
-        ]
+                  {setAddedPieces && (
+                    <DeleteIcon
+                      size={23}
+                      action={() => {
+                        const row: GoldCodingSanad_initialValues_TP =
+                          info.row.original;
+                        const thisId = row.front_key;
+                        setData((curr) =>
+                          curr.filter((piece) => piece.front_key !== thisId)
+                        );
+                        setAddedPieces((curr) =>
+                          curr.filter((piece) => piece.front_key !== thisId)
+                        );
+                        setAddedPiecesLocal((curr) =>
+                          curr.filter((piece) => piece.front_key !== thisId)
+                        );
+                        setSelectedSanadLocal((curr) => ({
+                          ...curr,
+                          items: curr.items.map((band) => {
+                            if (band.id === row.band_id) {
+                              return {
+                                ...band,
+                                leftWeight:
+                                  +band.leftWeight + +row.mezan_weight,
+                              };
+                            } else {
+                              return band;
+                            }
+                          }),
+                        }));
+
+                        setSelectedSanad((curr) => ({
+                          ...curr,
+                          items: curr.items.map((band) => {
+                            if (band.id === row.band_id) {
+                              return {
+                                ...band,
+                                leftWeight:
+                                  +band.leftWeight + +row.mezan_weight,
+                              };
+                            } else {
+                              return band;
+                            }
+                          }),
+                        }));
+                      }}
+                    />
+                  )}
+                </div>
+              ),
+            }),
+          ]
         : []),
 
       columnHelper.accessor("detailed_weight", {
         header: `${t("detailed weight")}`,
         cell: (info) => {
-          return info.row.original?.weightitems ? <ViewIcon
-            size={23}
-            action={() => {
-              setSubTableData({
-                index: info.row.original.index,
-                data: modifiedData,
-              })
-              seDetailedWeightModalOpen(true)
-            }}
-            className="text-mainGreen flex mx-auto"
-          />
-            :
+          return info.row.original?.weightitems ? (
+            <ViewIcon
+              size={23}
+              action={() => {
+                setSubTableData({
+                  index: info.row.original.index,
+                  data: modifiedData,
+                });
+                seDetailedWeightModalOpen(true);
+              }}
+              className="text-mainGreen flex mx-auto"
+            />
+          ) : (
             <GiSightDisabled
               size={23}
               onClick={() => {
-                notify('info', 'لا يوجد اوزان تفصيليه')
+                notify("info", "لا يوجد اوزان تفصيليه");
               }}
               className="text-black flex mx-auto cursor-auto"
             />
-        }
+          );
+        },
       }),
       columnHelper.accessor("status", {
         header: `الحالة`,
       }),
     ],
     []
-  )
+  );
   const table = useReactTable({
     data,
     columns,
@@ -233,32 +238,32 @@ export function ExpandableTable({
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-  })
+  });
 
   // custom hooks
-  const isRTL = useIsRTL()
+  const isRTL = useIsRTL();
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const { data: allCategories, isLoading: categoryLoading } = useFetch({
     endpoint: "/classification/api/v1/categories?type=all",
-    queryKey: ['categoriesx'],
-  })
+    queryKey: ["categoriesx"],
+  });
 
   useEffect(() => {
     if (queryClient) {
-      const categories = allCategories
+      const categories = allCategories;
       const allQueries = modifiedData?.map((item) => {
         const finaleItem = {
           category: categories?.find(
             (category) => category.id == item.category_id
-          )?.name
-        }
-        return finaleItem
-      })
-      setQueryData(allQueries)
+          )?.name,
+        };
+        return finaleItem;
+      });
+      setQueryData(allQueries);
     }
-  }, [queryClient, allCategories])
+  }, [queryClient, allCategories]);
 
   useEffect(() => {
     if (queryData) {
@@ -267,19 +272,18 @@ export function ExpandableTable({
           ...item,
           category: queryData[index]?.category,
           actions: true,
-          detailed_weight: true
+          detailed_weight: true,
         }))
-      )
+      );
     }
-  }, [queryData])
-
+  }, [queryData]);
 
   return (
     <div className="flex flex-col justify-center items-center w-full">
       <h2 className="font-bold text-2xl">{t("final review")}</h2>
       <h3>
         <span>الهويات المرقمه من سند رقم # </span>
-        <span className="text-orange-500">{ addedPieces[0].bond_id }</span>
+        <span className="text-orange-500">{addedPieces[0].bond_id}</span>
       </h3>
       <div className="w-full">
         <table className="mt-2 border-mainGreen shadow-lg mb-2 w-full">
@@ -302,7 +306,7 @@ export function ExpandableTable({
                         </div>
                       )}
                     </th>
-                  )
+                  );
                 })}
               </tr>
             ))}
@@ -318,32 +322,37 @@ export function ExpandableTable({
                     return (
                       <td
                         key={cell.id}
-                        className={`border-l-[#b9b7b7]-500 border  ${!!!cell.getContext().getValue() &&
+                        className={`border-l-[#b9b7b7]-500 border  ${
+                          !!!cell.getContext().getValue() &&
                           "bg-gray-300 cursor-not-allowed"
-                          }`}
+                        }`}
                       >
-                        {!!cell.getContext().getValue()
-                          ? flexRender(
+                        {!!cell.getContext().getValue() ? (
+                          flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
                           )
-                          : categoryLoading ? <Spinner /> : "---"}
+                        ) : categoryLoading ? (
+                          <Spinner />
+                        ) : (
+                          "---"
+                        )}
                       </td>
-                    )
+                    );
                   })}
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
         <div className="h-2" />
         <div className="mt-3 flex items-center justify-end gap-5 p-2">
           <div className="flex items-center gap-2 font-bold">
-            {t('page')}
+            {t("page")}
             <span className=" text-mainGreen">
               {table.getState().pagination.pageIndex + 1}
             </span>
-            {t('from')}
+            {t("from")}
             <span className=" text-mainGreen">{table.getPageCount()} </span>
           </div>
           <div className="flex items-center gap-2 ">
@@ -352,29 +361,44 @@ export function ExpandableTable({
               action={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              {isRTL ? <MdKeyboardArrowRight className="h-4 w-4 fill-white" /> : <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />}
+              {isRTL ? (
+                <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+              ) : (
+                <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+              )}
             </Button>
             <Button
               className=" rounded bg-mainGreen p-[.18rem] "
               action={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              {isRTL ? <MdKeyboardArrowLeft className="h-4 w-4 fill-white" /> : <MdKeyboardArrowRight className="h-4 w-4 fill-white" />}
+              {isRTL ? (
+                <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+              ) : (
+                <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+              )}
             </Button>
           </div>
         </div>
-        <div>
-        </div>
+        <div></div>
       </div>
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <SubTables subTableData={subTableData} addedPieces={addedPieces} categoryLoading={categoryLoading} />
+        <SubTables
+          subTableData={subTableData}
+          addedPieces={addedPieces}
+          categoryLoading={categoryLoading}
+        />
       </Modal>
-      <Modal isOpen={detailedWeightModalOpen} onClose={() => seDetailedWeightModalOpen(false)} title={t('detailed weight')}>
+      <Modal
+        isOpen={detailedWeightModalOpen}
+        onClose={() => seDetailedWeightModalOpen(false)}
+        title={t("detailed weight")}
+      >
         <SelectedDetailedWeight subTableData={subTableData} />
       </Modal>
     </div>
-  )
+  );
 }
 
 // ----------------   filtration section -------------------------

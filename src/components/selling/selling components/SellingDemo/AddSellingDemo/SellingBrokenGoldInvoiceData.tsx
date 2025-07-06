@@ -33,9 +33,6 @@ const SellingBrokenGoldInvoiceData = ({
   paymentData,
   invoiceHeaderData,
 }: CreateHonestSanadProps_TP) => {
-  console.log("🚀 ~ sellingItemsData:", sellingItemsData);
-  console.log("🚀 ~ paymentData:", paymentData);
-  console.log("🚀 ~ invoiceHeaderData:", invoiceHeaderData);
   const { formatGram, formatReyal } = numberContext();
   const contentRef = useRef();
 
@@ -80,10 +77,8 @@ const SellingBrokenGoldInvoiceData = ({
   }, 0);
 
   const ratioForOneItem = totalCommissionRatio / sellingItemsData.length;
-  console.log("🚀 ~ ratioForOneItem:", ratioForOneItem);
 
   const ratioForOneItemTaxes = totalCommissionTaxes / sellingItemsData.length;
-  console.log("🚀 ~ ratioForOneItemTaxes:", ratioForOneItemTaxes);
 
   const totalFinalCost = (
     Number(totalCostAfterTax) +
@@ -333,11 +328,6 @@ const SellingBrokenGoldInvoiceData = ({
       endpointName: "/oldGold/api/v1/add_Invoice",
       values: { invoice, items, payments },
     });
-
-    console.log(
-      "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
-      { invoice, items, payments }
-    );
   };
 
   const handlePrint = useReactToPrint({

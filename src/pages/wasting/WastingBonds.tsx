@@ -23,13 +23,11 @@ const WastingBonds = () => {
   const { formatReyal, formatGram } = numberContext();
   const { userData } = useContext(authCtx);
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ dataSource:", dataSource);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const [openInvoiceModal, setOpenInvoiceModal] = useState(false);
   const [restrictModal, setOpenRestrictModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(0);
-  console.log("🚀 ~ WasteSupplyReturnEntry ~ selectedItem:", selectedItem);
   const [stage, setStage] = useState(1);
   const { data, isSuccess, refetch, isRefetching, isLoading } = useFetch({
     endpoint:

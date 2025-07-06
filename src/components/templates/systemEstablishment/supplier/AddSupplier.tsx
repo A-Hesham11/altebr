@@ -44,7 +44,6 @@ const AddSupplier = ({
   setDataSource,
   setShow,
 }: AddSupplierProps_TP) => {
-  console.log("🚀 ~ editData:", editData);
   /////////// VARIABLES
 
   const [supplierType, setSupplierType] = useState("");
@@ -248,9 +247,6 @@ const AddSupplier = ({
       queryClient.refetchQueries(["suppliers"]);
       notify("success");
     },
-    onError: (error) => {
-      console.log(error);
-    },
   });
   ///
   /////////// STATES
@@ -302,8 +298,6 @@ const AddSupplier = ({
               : values.wages_tax
               ? "wages"
               : "no";
-
-          console.log("🚀 ~ tax:", tax);
 
           const is_mediator = values.is_mediator ? 1 : 0;
           let editedValues = {

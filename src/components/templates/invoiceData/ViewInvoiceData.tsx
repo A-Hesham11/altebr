@@ -1,63 +1,58 @@
-import { ColumnDef } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
-import { useFetch, useIsRTL, useMutate } from '../../../hooks'
-import { useNavigate } from 'react-router-dom'
-import { CImageFile_TP } from '../../../types'
-import { notify } from '../../../utils/toast'
-import { mutateData } from '../../../utils/mutateData'
-import { useQueryClient } from '@tanstack/react-query'
-import { Helmet } from 'react-helmet-async'
-import { Table } from '../reusableComponants/tantable/Table'
-import { t } from 'i18next'
-import { Button } from '../../atoms'
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
-import { EditIcon, ViewIcon, ViewSvgIcon } from '../../atoms/icons'
-import { SvgDelete } from '../../atoms/icons/SvgDelete'
-import { AddButton } from '../../molecules/AddButton'
-import { Back } from '../../../utils/utils-components/Back'
-import { Modal } from '../../molecules'
-import { Header } from '../../atoms/Header'
-import { Loading } from '../../organisms/Loading'
-import { CLightbox } from '../../molecules/files/CLightbox'
-import { FilesUpload } from '../../molecules/files/FileUpload'
-import { FilesPreviewOutFormik } from '../../molecules/files/FilesPreviewOutFormik'
-import AddInvoiceData from './AddInvoiceData'
+import { ColumnDef } from "@tanstack/react-table";
+import { useEffect, useMemo, useState } from "react";
+import { useFetch, useIsRTL, useMutate } from "../../../hooks";
+import { useNavigate } from "react-router-dom";
+import { CImageFile_TP } from "../../../types";
+import { notify } from "../../../utils/toast";
+import { mutateData } from "../../../utils/mutateData";
+import { useQueryClient } from "@tanstack/react-query";
+import { Helmet } from "react-helmet-async";
+import { Table } from "../reusableComponants/tantable/Table";
+import { t } from "i18next";
+import { Button } from "../../atoms";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { EditIcon, ViewIcon, ViewSvgIcon } from "../../atoms/icons";
+import { SvgDelete } from "../../atoms/icons/SvgDelete";
+import { AddButton } from "../../molecules/AddButton";
+import { Back } from "../../../utils/utils-components/Back";
+import { Modal } from "../../molecules";
+import { Header } from "../../atoms/Header";
+import { Loading } from "../../organisms/Loading";
+import { CLightbox } from "../../molecules/files/CLightbox";
+import { FilesUpload } from "../../molecules/files/FileUpload";
+import { FilesPreviewOutFormik } from "../../molecules/files/FilesPreviewOutFormik";
+import AddInvoiceData from "./AddInvoiceData";
 
 export type Cards_Props_TP = {
-  title:string
-  main_address: any
-  id: string
-  address: string
-  fax: string
-  market_number: string
-  name_ar: string
-  name_en: string
+  title: string;
+  main_address: any;
+  id: string;
+  address: string;
+  fax: string;
+  market_number: string;
+  name_ar: string;
+  name_en: string;
 
-  number: string
-  phone: string
-  files: CImageFile_TP[]
-
-
-}
+  number: string;
+  phone: string;
+  files: CImageFile_TP[];
+};
 
 const ViewInvoiceData = () => {
-
-  const isRTL = useIsRTL()
-  const navigate = useNavigate()
-  const [open, setOpen] = useState<boolean>(false)
-  const [model, setModel] = useState(false)
+  const isRTL = useIsRTL();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState<boolean>(false);
+  const [model, setModel] = useState(false);
   const [action, setAction] = useState({
     edit: false,
     delete: false,
     view: false,
-  })
-  const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([])
-  console.log("🚀 ~ ViewInvoiceData ~ dataSource:", dataSource)
-  const [editData, setEditData] = useState<Cards_Props_TP>()
-  const [deleteData, setDeleteData] = useState<Cards_Props_TP>()
-  const [page, setPage] = useState<number>(1)
+  });
+  const [dataSource, setDataSource] = useState<Cards_Props_TP[]>([]);
+  const [editData, setEditData] = useState<Cards_Props_TP>();
+  const [deleteData, setDeleteData] = useState<Cards_Props_TP>();
+  const [page, setPage] = useState<number>(1);
   const [files, setFiles] = useState([]);
-
 
   const columns = useMemo<ColumnDef<Cards_Props_TP>[]>(
     () => [
@@ -90,45 +85,53 @@ const ViewInvoiceData = () => {
             <div className="flex items-center justify-center gap-4">
               <EditIcon
                 action={() => {
-                  setOpen((prev) => !prev)
-                  setEditData(info.row.original)
+                  setOpen((prev) => !prev);
+                  setEditData(info.row.original);
                   setAction({
                     edit: true,
                     delete: false,
                     view: false,
-                  })
-                  setModel(false)
+                  });
+                  setModel(false);
                 }}
-                className='fill-mainGreen'
+                className="fill-mainGreen"
               />
               <SvgDelete
                 action={() => {
-                  setOpen((prev) => !prev)
-                  setDeleteData(info.row.original)
+                  setOpen((prev) => !prev);
+                  setDeleteData(info.row.original);
                   setAction({
                     delete: true,
                     view: false,
                     edit: false,
-                  })
-                  setModel(false)
+                  });
+                  setModel(false);
                 }}
                 stroke="#ef4444"
               />
             </div>
-          )
+          );
         },
       },
     ],
     []
-  )
+  );
 
-  const { data, isSuccess, isLoading, isError, error, isRefetching, refetch, isFetching } =
-  useFetch<Cards_Props_TP[]>({
-    endpoint:`/selling/api/v1/congratulations`,
+  const {
+    data,
+    isSuccess,
+    isLoading,
+    isError,
+    error,
+    isRefetching,
+    refetch,
+    isFetching,
+  } = useFetch<Cards_Props_TP[]>({
+    endpoint: `/selling/api/v1/congratulations`,
     queryKey: ["congratulatory_sentence"],
     pagination: true,
     onSuccess(data) {
-      setDataSource(data?.data)
+      setDataSource(data?.data);
     },
     select: (data) => {
       return {
@@ -137,11 +140,11 @@ const ViewInvoiceData = () => {
           ...branches,
           index: i + 1,
         })),
-      }
+      };
     },
-  })
+  });
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const {
     mutate,
     error: mutateError,
@@ -149,93 +152,94 @@ const ViewInvoiceData = () => {
   } = useMutate<Cards_Props_TP>({
     mutationFn: mutateData,
     onSuccess: () => {
-      queryClient.refetchQueries(["congratulatory_sentence"])
-      setOpen(false)
-      notify("success")
+      queryClient.refetchQueries(["congratulatory_sentence"]);
+      setOpen(false);
+      notify("success");
     },
-  })
+  });
 
   const handleDelete = () => {
     mutate({
       endpointName: `/selling/api/v1/delete_sentence/${deleteData?.id}`,
       method: "delete",
-    })
-  }
+    });
+  };
 
   return (
     <div>
-      <div className='flex justify-between items-center mb-8'>
-        <p className='font-semibold text-lg'>{t("view sentence congratulatory")}</p>
+      <div className="flex justify-between items-center mb-8">
+        <p className="font-semibold text-lg">
+          {t("view sentence congratulatory")}
+        </p>
         <div className="flex gap-2">
-            <AddButton
-              action={() => {
-                setEditData(undefined)
-                setModel(true)
-                setOpen(true)
-                setAction({
-                  edit: false,
-                  delete: false,
-                  view: false,
-                })
-              }}
-              addLabel={`${t("add")}`}
-            />
-            <div className="ms-2">
-              <Back />
-            </div>
+          <AddButton
+            action={() => {
+              setEditData(undefined);
+              setModel(true);
+              setOpen(true);
+              setAction({
+                edit: false,
+                delete: false,
+                view: false,
+              });
+            }}
+            addLabel={`${t("add")}`}
+          />
+          <div className="ms-2">
+            <Back />
+          </div>
         </div>
       </div>
-      {isFetching && (<Loading mainTitle={t("congratulatory")} />)}
+      {isFetching && <Loading mainTitle={t("congratulatory")} />}
 
-      {isSuccess &&
+      {isSuccess && !isLoading && !isRefetching && dataSource.length ? (
+        <Table data={dataSource} columns={columns}>
+          <div className="mt-3 flex items-center justify-end gap-5 p-2">
+            <div className="flex items-center gap-2 font-bold">
+              {t("page")}
+              <span className=" text-mainGreen">{data.current_page}</span>
+              {t("from")}
+              <span className=" text-mainGreen">{data.pages}</span>
+            </div>
+            <div className="flex items-center gap-2 ">
+              <Button
+                className=" rounded bg-mainGreen p-[.12rem] "
+                action={() => setPage((prev) => prev - 1)}
+                disabled={page == 1}
+              >
+                {isRTL ? (
+                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                ) : (
+                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                )}
+              </Button>
+              <Button
+                className=" rounded bg-mainGreen p-[.18rem]  "
+                action={() => setPage((prev) => prev + 1)}
+                disabled={page == data.pages}
+              >
+                {isRTL ? (
+                  <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
+                ) : (
+                  <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
+                )}
+              </Button>
+            </div>
+          </div>
+        </Table>
+      ) : (
         !isLoading &&
         !isRefetching &&
-        dataSource.length ? (
-          <Table data={dataSource} columns={columns}>
-            <div className="mt-3 flex items-center justify-end gap-5 p-2">
-              <div className="flex items-center gap-2 font-bold">
-                {t("page")}
-                <span className=" text-mainGreen">{data.current_page}</span>
-                {t("from")}
-                <span className=" text-mainGreen">{data.pages}</span>
-              </div>
-              <div className="flex items-center gap-2 ">
-                <Button
-                  className=" rounded bg-mainGreen p-[.12rem] "
-                  action={() => setPage((prev) => prev - 1)}
-                  disabled={page == 1}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-                <Button
-                  className=" rounded bg-mainGreen p-[.18rem]  "
-                  action={() => setPage((prev) => prev + 1)}
-                  disabled={page == data.pages}
-                >
-                  {isRTL ? (
-                    <MdKeyboardArrowLeft className="h-4 w-4 fill-white" />
-                  ) : (
-                    <MdKeyboardArrowRight className="h-4 w-4 fill-white" />
-                  )}
-                </Button>
-              </div>
-            </div>
-          </Table>
+        !dataSource.length && (
+          <div className="flex justify-center items-center mt-32">
+            <p className="text-lg font-bold">
+              {t("there are no congratulations available yet")}
+            </p>
+          </div>
         )
-        : !isLoading &&
-          !isRefetching &&
-          !dataSource.length && (
-            <div className='flex justify-center items-center mt-32'>
-              <p className='text-lg font-bold'>{t("there are no congratulations available yet")}</p>
-            </div>
-        )
-      }
+      )}
 
-        {/* {!isLoading &&
+      {/* {!isLoading &&
           !isRefetching &&
           !dataSource?.length && (
             <div>
@@ -288,7 +292,7 @@ const ViewInvoiceData = () => {
         )}
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default ViewInvoiceData
+export default ViewInvoiceData;

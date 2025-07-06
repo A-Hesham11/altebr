@@ -29,7 +29,6 @@ const WasteSupplyReturn = () => {
   const [thwelIds, setThwelIds] = useState([]);
   const [search, setSearch] = useState("-");
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ WasteSupplyReturn ~ dataSource:", dataSource);
   const [successData, setSuccessData] = useState([]);
   const { userData } = useContext(authCtx);
   const queryClient = useQueryClient();
@@ -159,7 +158,6 @@ const WasteSupplyReturn = () => {
   }, []);
 
   const handleSubmit = (values: any) => {
-    console.log("🚀 ~ handleSubmit ~ values:", values);
     const weightComparison = mainData.map((mainItem, index) => {
       const operationItem = operationTypeSelectWeight[index];
 
@@ -211,7 +209,6 @@ const WasteSupplyReturn = () => {
       onSubmit={(values) => {}}
     >
       {({ values, resetForm, setFieldValue }) => {
-        console.log("🚀 ~ values:", values);
         return (
           <Form>
             <div className="flex flex-col gap-10 mt-6 p-8">
@@ -349,7 +346,9 @@ const WasteSupplyReturn = () => {
                   )}
                 </>
               ) : (
-                <p className="w-full text-center mt-12 text-2xl">{t("ID code must be entered")}</p>
+                <p className="w-full text-center mt-12 text-2xl">
+                  {t("ID code must be entered")}
+                </p>
               )}
             </div>
           </Form>

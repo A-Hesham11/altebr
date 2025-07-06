@@ -11,10 +11,8 @@ interface BudgetStatementOperationTable_TP {
 const BudgetStatementOperationTable: React.FC<
   BudgetStatementOperationTable_TP
 > = ({ mainCardData }) => {
-  console.log("🚀 ~ mainCardData:", mainCardData);
   const { formatGram, formatReyal } = numberContext();
   const isBoxesHaveData = mainCardData?.some((data) => data?.boxes.length > 0);
-  console.log("🚀 ~ isBoxesHaveData:", isBoxesHaveData);
 
   const budgetOperation = processBudgetData(mainCardData);
   const formattedBudgetOperation = Object.entries(budgetOperation);
@@ -38,15 +36,10 @@ const BudgetStatementOperationTable: React.FC<
       }
     );
   });
-  console.log(
-    "🚀 ~ operationDataTable ~ operationDataTable:",
-    operationDataTable
-  );
 
   const filterOperationDataTable = operationDataTable.filter(
     (operation) => operation.total_balance !== 0
   );
-  console.log("🚀 ~ filterOperationDataTable:", filterOperationDataTable);
 
   const tableColumn = useMemo<any>(
     () => [

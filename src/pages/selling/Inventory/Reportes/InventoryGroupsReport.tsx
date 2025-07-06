@@ -9,7 +9,6 @@ import { useIsRTL } from "../../../../hooks";
 import { useReactToPrint } from "react-to-print";
 
 const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
-  console.log("🚀 ~ InventoryGroupsReport ~ dataSource:", dataSource);
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { userData } = useContext(authCtx);

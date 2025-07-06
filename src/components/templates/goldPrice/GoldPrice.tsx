@@ -66,7 +66,6 @@ const GoldPrice = ({ title }: BuyingPoliciesProps_TP) => {
       queryClient.refetchQueries(["all_gold_price"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error");
     },
   });

@@ -1,33 +1,33 @@
 /////////// IMPORTS
 ///
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik } from "formik"
-import { Dispatch, SetStateAction } from "react"
-import * as Yup from "yup"
-import { useIsRTL, useMutate } from "../../hooks"
-import { mutateData } from "../../utils/mutateData"
-import { notify } from "../../utils/toast"
-import { HandleBackErrors } from "../../utils/utils-components/HandleBackErrors"
-import { NationalitiesMainData } from "./systemEstablishment/NationalitiesMainData"
-import { ViewNationalities_TP } from "./systemEstablishment/view/ViewNationalities"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik } from "formik";
+import { Dispatch, SetStateAction } from "react";
+import * as Yup from "yup";
+import { useIsRTL, useMutate } from "../../hooks";
+import { mutateData } from "../../utils/mutateData";
+import { notify } from "../../utils/toast";
+import { HandleBackErrors } from "../../utils/utils-components/HandleBackErrors";
+import { NationalitiesMainData } from "./systemEstablishment/NationalitiesMainData";
+import { ViewNationalities_TP } from "./systemEstablishment/view/ViewNationalities";
 
 ///
 /////////// Types
 ///
 type CreateNationalitiesProps_TP = {
-  value?: string
-  onAdd?: (value: string) => void
-  editData?: ViewNationalities_TP
-  setDataSource?: Dispatch<SetStateAction<ViewNationalities_TP[]>>
-  setShow?: Dispatch<SetStateAction<boolean>>
-  title?: string
-  add?: any
-}
+  value?: string;
+  onAdd?: (value: string) => void;
+  editData?: ViewNationalities_TP;
+  setDataSource?: Dispatch<SetStateAction<ViewNationalities_TP[]>>;
+  setShow?: Dispatch<SetStateAction<boolean>>;
+  title?: string;
+  add?: any;
+};
 
 type InitialValues_TP = {
-  name_ar: string
-  name_en: string
-}
+  name_ar: string;
+  name_en: string;
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
@@ -43,57 +43,56 @@ export const CreateNationalities = ({
   /////////// VARIABLES
   ///
 
-  const isRTL = useIsRTL()
+  const isRTL = useIsRTL();
   const initialValues: InitialValues_TP = {
     name_en: editData ? editData.name_en : !isRTL ? value! : "",
     name_ar: editData ? editData.name_ar : isRTL ? value! : "",
-  }
+  };
   const validationSchema = Yup.object({
     name_ar: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
     name_en: Yup.string().trim().required("برجاء ملئ هذا الحقل"),
-  })
+  });
 
   /////////// STATES
   ///
   ///
   /////////// CUSTOM HOOKS
   ///
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const {
     mutate,
     error: errorQuery,
     isLoading,
     isSuccess,
-    reset
+    reset,
   } = useMutate<ViewNationalities_TP>({
     mutationFn: mutateData,
     onSuccess: (data) => {
-      notify("success")
+      notify("success");
       queryClient.setQueryData(["nationalities"], (old: any) => {
-        return [...(old || []), data]
-      })
+        return [...(old || []), data];
+      });
       if (value && onAdd) {
-        onAdd(value)
+        onAdd(value);
       }
       if (setDataSource && setShow && !editData && !errorQuery) {
         // setDataSource((prev: any) => [...prev, data])
-        queryClient.refetchQueries(["AllNationalities"])
+        queryClient.refetchQueries(["AllNationalities"]);
         // setShow(false)
       }
       if (setDataSource && setShow && editData && !errorQuery) {
         // setShow(false)
-        queryClient.refetchQueries(["AllNationalities"])
+        queryClient.refetchQueries(["AllNationalities"]);
         // setDataSource((prev: any) =>
         //   prev.map((p: ViewNationalities_TP) => (p.id === data?.id ? data : p))
         // )
       }
     },
     onError: (error) => {
-      console.log(error)
-      notify("error")
+      notify("error");
     },
-  })
+  });
   /////////// SIDE EFFECTS
   ///
 
@@ -111,7 +110,7 @@ export const CreateNationalities = ({
         ...(editData && { _method: "put" }),
       },
       method: "post",
-    })
+    });
   }
   ///
   return (
@@ -119,7 +118,7 @@ export const CreateNationalities = ({
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          PostNewValue(values)
+          PostNewValue(values);
         }}
         validationSchema={validationSchema}
       >
@@ -136,5 +135,5 @@ export const CreateNationalities = ({
         </HandleBackErrors>
       </Formik>
     </div>
-  )
-}
+  );
+};

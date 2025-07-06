@@ -36,7 +36,6 @@ const ExpensesCards: React.FC<ExpensesCardsProps> = ({
   editData,
   setEditData,
 }) => {
-  console.log("🚀 ~ card:", card);
   const [dataSource, setDataSource] = useState<Payment_TP[]>([]);
   const [bankAccountCards, setBankAccountCards] = useState<Payment_TP[]>([]);
   const [slidesToShow, setSlidesToShow] = useState(2);
@@ -140,7 +139,6 @@ const ExpensesCards: React.FC<ExpensesCardsProps> = ({
       const selectNewCard = bankAccountCards.filter(
         (item) => item.front_key === frontKey
       );
-      console.log("🚀 ~ handleChooseCard ~ selectNewCard:", selectNewCard);
       const selectCradIDOrBankId = selectNewCard[0]?.id;
 
       setSelectedCardId(selectCradIDOrBankId);
@@ -151,7 +149,6 @@ const ExpensesCards: React.FC<ExpensesCardsProps> = ({
   const cardID = bankAccountCards?.filter(
     (item) => item.id === editData?.selectedCardId
   );
-  console.log("🚀 ~ cardID:", cardID);
 
   useEffect(() => {
     if (editData) {

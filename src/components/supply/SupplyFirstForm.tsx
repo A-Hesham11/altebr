@@ -175,11 +175,6 @@ export const SupplyFirstForm = ({
           goods_media: formValues?.goods_media || [],
         };
 
-  console.log(
-    "🚀 ~ file: SupplyFirstForm.tsx:140 ~ FirstFormInitValues:",
-    FirstFormInitValues
-  );
-
   /////////// SIDE EFFECTS
   ///
 
@@ -188,11 +183,6 @@ export const SupplyFirstForm = ({
   const handleSubmit = (values: FirstFormInitValues_TP) => {
     setStage((prev) => prev + 1);
     if (supply === "gold") {
-      console.log(
-        "🚀 ~ file: SupplyFirstForm.tsx:194 ~ handleSubmit ~ values:",
-        values
-      );
-
       values.twred_type === "global"
         ? setFormValues(values)
         : setFormValues({
@@ -231,8 +221,6 @@ export const SupplyFirstForm = ({
     <>
       <Formik
         onSubmit={(values) => {
-          console.log("🚀 ~ file: SupplyFirstForm.tsx:235 ~ values:", values);
-
           handleSubmit(values);
         }}
         initialValues={FirstFormInitValues}
@@ -241,8 +229,6 @@ export const SupplyFirstForm = ({
         }
       >
         {({ values, setFieldValue }) => {
-          console.log("🚀 ~ file: SupplyFirstForm.tsx:490 ~ values:", values);
-
           return (
             <Form>
               {/* <HandleBackErrors errors={}> */}

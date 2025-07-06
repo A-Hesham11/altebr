@@ -57,8 +57,6 @@ const PieceDetails = ({
       return { ...item, ...item.detailsItem[0] };
     }) || [];
 
-  console.log("🚀 ~ peiceDetails ~ peiceDetails:", peiceDetails);
-
   const initialValues: ItemInformation_TP[] = {
     hwya: peiceDetails[0]?.hwya || "",
     item_id: peiceDetails[0]?.item_id || "",

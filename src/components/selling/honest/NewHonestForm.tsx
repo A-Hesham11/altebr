@@ -29,7 +29,6 @@ export const NewHonestForm = ({
   setPaymentData,
   setClientData,
 }: HonestProvisonsProps_TP) => {
-  console.log("🚀 ~ paymentData:", paymentData);
   /////////// VARIABLES
   ///
 
@@ -37,7 +36,6 @@ export const NewHonestForm = ({
   /////////// CUSTOM HOOKS
   ///
   const { submitForm, setFieldValue, values } = useFormikContext();
-  console.log("🚀 ~ values:", values);
   const { formatGram, formatReyal } = numberContext();
 
   const { userData } = useContext(authCtx);

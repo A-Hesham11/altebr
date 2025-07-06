@@ -74,7 +74,6 @@ export const GoldCodingSanadFormHandler = ({
   const [editWage, setEditWage] = useState("");
   const { formatGram, formatReyal } = numberContext();
   const weightInputRef = useRef(null);
-  console.log("🚀 ~ weightInputRef:", weightInputRef);
 
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);

@@ -55,7 +55,6 @@ export const BranchMainData = ({
   /////////// CUSTOM HOOKS
   ///
   const { values, setFieldValue, resetForm } = useFormikContext();
-  console.log("🚀 ~ values:", values);
   const [editableData, setEditableData] = useState<allDocs_TP>();
   ///
   /////////// STATES

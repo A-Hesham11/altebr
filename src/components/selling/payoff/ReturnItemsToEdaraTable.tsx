@@ -20,7 +20,6 @@ const ReturnItemsToEdaraTable = ({
   mainData,
   setMainData,
 }: any) => {
-  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
   const location = useLocation();
   const { formatReyal, formatGram } = numberContext();
   const isContainCheckInputWeight = operationTypeSelect.some(
@@ -67,7 +66,6 @@ const ReturnItemsToEdaraTable = ({
                   onSubmit={(values) => {}}
                 >
                   {({ values, setFieldValue }) => {
-                    console.log("🚀 ~ values:", values);
                     useEffect(() => {
                       updateData(info.row.original.id, {
                         weight: values.weight,
@@ -212,12 +210,9 @@ const ReturnItemsToEdaraTable = ({
       },
       {
         cell: (info: any) => {
-          console.log("🚀 ~ info:", info.row.index);
           const filterItem = mainData?.filter(
             (item) => item.id === info.row.original.id
           );
-          console.log("🚀 ~ filterItem:", filterItem);
-          console.log("🚀 ~ filterItem:", filterItem?.[info.row.index]);
           return (
             <div>
               {info.row.original.category_selling_type === "all" ? (
@@ -227,7 +222,6 @@ const ReturnItemsToEdaraTable = ({
                   onSubmit={(values) => {}}
                 >
                   {({ values, setFieldValue }) => {
-                    console.log("🚀 ~ values:", values);
                     return (
                       <Form>
                         <BaseInput

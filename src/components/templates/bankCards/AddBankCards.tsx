@@ -87,7 +87,6 @@ const AddBankCards = ({ title, editData }: AddBankProps_TP) => {
       queryClient.refetchQueries(["AllCards"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error.response.data.message);
     },
   });
@@ -99,7 +98,7 @@ const AddBankCards = ({ title, editData }: AddBankProps_TP) => {
         name_ar: values?.name_ar,
         name_en: values?.name_en,
         media: values?.media,
-        is_minimum: values?.is_minimum
+        is_minimum: values?.is_minimum,
       },
       method: "post",
       dataType: "formData",
@@ -113,7 +112,7 @@ const AddBankCards = ({ title, editData }: AddBankProps_TP) => {
         name_ar: values?.name_ar,
         name_en: values?.name_en,
         media: values?.media,
-        is_minimum: values?.is_minimum
+        is_minimum: values?.is_minimum,
       },
       method: "post",
       dataType: "formData",
@@ -131,7 +130,6 @@ const AddBankCards = ({ title, editData }: AddBankProps_TP) => {
               if (!files.length) {
                 delete values.media;
                 PostCardEdit(values);
-
               } else {
                 PostCardEdit({ ...values, media: files });
               }
@@ -176,21 +174,31 @@ const AddBankCards = ({ title, editData }: AddBankProps_TP) => {
                 </div>
                 <div>
                   <RadioGroup name="is_minimum">
-                    <span>
-                      {t("Add the maximum  card limit")}
-                    </span>
+                    <span>{t("Add the maximum  card limit")}</span>
                     <div className="flex gap-x-2">
                       <RadioGroup.RadioButton
                         id="yes"
                         value="1"
                         label={`${t("yes")}`}
-                        isChecked={ editData ? ( editData?.is_minimum == 0 ? false : true) : ""}
+                        isChecked={
+                          editData
+                            ? editData?.is_minimum == 0
+                              ? false
+                              : true
+                            : ""
+                        }
                       />
                       <RadioGroup.RadioButton
                         id="no"
                         value="0"
                         label={`${t("no")}`}
-                        isChecked={ editData ? ( editData?.is_minimum != 0 ? false : true) : ""}
+                        isChecked={
+                          editData
+                            ? editData?.is_minimum != 0
+                              ? false
+                              : true
+                            : ""
+                        }
                       />
                     </div>
                   </RadioGroup>

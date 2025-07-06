@@ -27,7 +27,6 @@ const CashTransferEntry = ({ boxes, currentBox }: any) => {
   }, [] as typeof restrictions);
 
   restrictions = restrictionsWithoutTotals;
-  console.log("🚀 ~ restrictions:", restrictions);
 
   let restrictionsTotals;
   if (restrictions && !!restrictions.length) {

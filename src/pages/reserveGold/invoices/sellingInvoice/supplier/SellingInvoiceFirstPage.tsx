@@ -31,7 +31,6 @@ const SellingInvoiceFirstPage: React.FC<purchaseInvoicesFirstPage_TP> = (
   const navigate = useNavigate();
   const { formatReyal, formatGram } = numberContext();
   const { values } = useFormikContext();
-  console.log("🚀 ~ values:", values);
 
   // FORMULA FOR RESULT
   const totalValues = sellingItemsData.reduce(

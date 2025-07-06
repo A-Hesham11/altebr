@@ -46,10 +46,8 @@ export const SellingBranchIdentity = () => {
   // const [searchPage, setSearchPage] = useState<number>(1);
   const [search, setSearch] = useState("");
   const [dataSourcePrint, setDataSourcePrint] = useState([]);
-  console.log("🚀 ~ SellingBranchIdentity ~ dataSourcePrint:", dataSourcePrint);
   const [printModal, setPrintModal] = useState(false);
   const [printModalData, setPrintModalData] = useState({});
-  console.log("🚀 ~ SellingBranchIdentity ~ printModalData:", printModalData);
   const { gold_price } = GlobalDataContext();
 
   const isRTL = useIsRTL();
@@ -199,7 +197,6 @@ export const SellingBranchIdentity = () => {
       setDataSource(data.data);
     },
   });
-  console.log("🚀 ~ SellingBranchIdentity ~ data:", data);
 
   const queryClient = useQueryClient();
   const {
@@ -216,7 +213,6 @@ export const SellingBranchIdentity = () => {
       refetch();
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });

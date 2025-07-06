@@ -18,7 +18,6 @@ const ShowSellingInvoiceDemo = () => {
   // STATE
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
-  console.log("🚀 ~ ShowSellingInvoiceDemo ~ dataSource:", dataSource);
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
@@ -47,7 +46,6 @@ const ShowSellingInvoiceDemo = () => {
         : `${search}`,
     pagination: true,
   });
-  console.log("🚀 ~ ViewSellingInvoice ~ invoiceData:", invoiceData);
 
   // COLUMNS FOR THE TABLE
   const tableColumn = useMemo<any>(

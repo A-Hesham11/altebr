@@ -189,7 +189,6 @@ const AddSupport: React.FC<AddSupport_TP> = ({
       dataType: "formData",
     });
 
-    console.log({ ...invoice, media: filesLevelOne });
     setFilesLevelOne([]);
   };
 
@@ -208,7 +207,6 @@ const AddSupport: React.FC<AddSupport_TP> = ({
       dataType: "formData",
     });
 
-    console.log({ ...invoice, media: filesLevelTwo });
     setFilesLevelTwo([]);
   };
 
@@ -226,8 +224,6 @@ const AddSupport: React.FC<AddSupport_TP> = ({
       values: { ...invoice },
       dataType: "formData",
     });
-
-    console.log({ ...invoice });
   };
 
   // LEVEL ONE HANDLE EDIT
@@ -433,9 +429,6 @@ const AddSupport: React.FC<AddSupport_TP> = ({
                     // options={clientsNameOptions}
                     fieldKey="id"
                     // loading={isLoading}
-                    onChange={(option) => {
-                      console.log(option);
-                    }}
                   />
                   <button
                     type="button"
@@ -766,13 +759,7 @@ const AddSupport: React.FC<AddSupport_TP> = ({
                   </div>
                 </div>
                 <div className="flex items-center justify-end mt-8">
-                  <Button
-                    type="button"
-                    className=""
-                    action={() => {
-                      // console.log(values.values);
-                    }}
-                  >
+                  <Button type="button" className="">
                     {title || t("add")}
                   </Button>
                 </div>
@@ -804,7 +791,6 @@ export default AddSupport;
 // import { useQueryClient } from "@tanstack/react-query";
 
 // const AddSupport = ({ editData, refetch, setShow, isSub, activeBtn }) => {
-//   console.log("🚀 ~ AddSupport ~ editData:", editData);
 //   const [activeAdd, setActiveAdd] = useState(activeBtn || 1);
 //   const [hasChildCheck, setHasChildCheck] = useState(false);
 //   const [files, setFiles] = useState([]);
@@ -857,7 +843,6 @@ export default AddSupport;
 //         };
 //       }),
 //   });
-//   console.log("🚀 ~ AddSupport ~ forkedOption:", forkedOption);
 
 //   const {
 //     mutate,
@@ -923,7 +908,6 @@ export default AddSupport;
 //       dataType: "formData",
 //     });
 
-//     console.log({ ...invoice, image: files[0] });
 //   };
 
 //   useEffect(() => {
@@ -1098,9 +1082,6 @@ export default AddSupport;
 //               <Button
 //                 type="submit"
 //                 className=""
-//                 action={() => {
-//                   // console.log(values.values);
-//                 }}
 //               >
 //                 {t("save")}
 //               </Button>

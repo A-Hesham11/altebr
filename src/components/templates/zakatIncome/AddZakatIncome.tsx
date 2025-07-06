@@ -51,7 +51,6 @@ const AddZakatIncome = ({
     null
   );
   const isActiveZakat = localStorage.getItem("isActiveZakat");
-  console.log("🚀 ~ isActiveZakat:", isActiveZakat);
 
   const isRTL = useIsRTL();
 
@@ -216,11 +215,9 @@ const AddZakatIncome = ({
         <Formik
           initialValues={initialValues}
           onSubmit={(values, { resetForm }) => {
-            console.log("🚀 ~ values:", values);
             const hasEmptyFields = Object.values(values).some(
               (value) => !value
             );
-            console.log("🚀 ~ hasEmptyFields:", hasEmptyFields);
             if (hasEmptyFields) {
               notify("info", `${t("Please fill out the missing fields")}`);
               return;

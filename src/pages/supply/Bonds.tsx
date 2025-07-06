@@ -12,6 +12,7 @@ import { Loading } from "../../components/organisms/Loading";
 import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import { numberContext } from "../../context/settings/number-formatter";
 import { useFetch, useIsRTL } from "../../hooks";
+import { FilesPreviewOutFormik } from "../../components/molecules/files/FilesPreviewOutFormik";
 
 type BondsProps_TP = {
   title: string;
@@ -79,8 +80,6 @@ export const Bonds = ({ title }: BondsProps_TP) => {
       },
     });
 
-  console.log("🚀 ~ Bonds ~ data:", data);
-
   const diamondCols = useMemo<ColumnDef<Bond_TP>[]>(
     () => [
       {
@@ -124,13 +123,31 @@ export const Bonds = ({ title }: BondsProps_TP) => {
         cell: (info) => info.getValue(),
       },
       {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.images?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.images}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
+      },
+      {
         header: () => <span>{t("view")}</span>,
         accessorKey: "action",
         cell: (info) => {
           return (
             <div className="flex items-center justify-center gap-4">
               <ViewIcon
-                size={15}
+                className="w-5 h-5"
                 action={() => {
                   navigate(`/diamond-bonds/${info.row.original.id}`);
                 }}
@@ -186,13 +203,31 @@ export const Bonds = ({ title }: BondsProps_TP) => {
         cell: (info) => info.getValue(),
       },
       {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.images?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.images}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
+      },
+      {
         header: () => <span>{t("view")}</span>,
         accessorKey: "action",
         cell: (info) => {
           return (
             <div className="flex items-center justify-center gap-4">
               <ViewIcon
-                size={15}
+                className="w-5 h-5"
                 action={() => {
                   navigate(`/accessory-bonds/${info.row.original.id}`);
                 }}
@@ -253,13 +288,31 @@ export const Bonds = ({ title }: BondsProps_TP) => {
         cell: (info) => info.getValue(),
       },
       {
+        header: () => <span>{t("attachments")} </span>,
+        accessorKey: "media",
+        cell: (info: any) => {
+          return (
+            <div className="w-[30%] m-auto">
+              {info?.row.original?.images?.length > 0 ? (
+                <FilesPreviewOutFormik
+                  images={info?.row.original?.images}
+                  preview
+                />
+              ) : (
+                "---"
+              )}
+            </div>
+          );
+        },
+      },
+      {
         header: () => <span>{t("view")}</span>,
         accessorKey: "action",
         cell: (info) => {
           return (
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-4 w-6 h-6">
               <ViewIcon
-                size={15}
+                className="w-5 h-5"
                 action={() => {
                   navigate(`/gold-bonds/${info.row.original.id}`);
                 }}

@@ -11,9 +11,7 @@ import { useReactToPrint } from "react-to-print";
 
 const PrintingNumberIdentities = () => {
   const [printItems, setPrintItems] = useState();
-  console.log("🚀 ~ PrintingNumberIdentities ~ printItems:", printItems);
   const [singlePrint, setSinglePrint] = useState(null);
-  console.log("🚀 ~ PrintingNumberIdentities ~ singlePrint:", singlePrint);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPrinting, setIsPrinting] = useState(false);
   const [confirmedPrint, setConfirmedPrint] = useState("");
@@ -218,8 +216,8 @@ const PrintingNumberIdentities = () => {
                   <Button
                     type="button"
                     action={() => {
-                      setConfirmedPrint(singlePrint?.id)
-                      localStorage.removeItem("printItems")
+                      setConfirmedPrint(singlePrint?.id);
+                      localStorage.removeItem("printItems");
                     }}
                     loading={
                       !!isLoadingConfirm ||
@@ -236,17 +234,13 @@ const PrintingNumberIdentities = () => {
         </div>
       )}
 
-        <div
-          className="print-page"
-          ref={contentRef}
-          style={{ direction: "ltr" }}
-        >
-          {printItems?.map((item) => (
-            <div className="break-page">
-              <PrintPage item={item} />
-            </div>
-          ))}
-        </div>
+      <div className="print-page" ref={contentRef} style={{ direction: "ltr" }}>
+        {printItems?.map((item) => (
+          <div className="break-page">
+            <PrintPage item={item} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -17,7 +17,6 @@ const TableOfDynamicTransformToBranch = ({
   setThwelIds,
   thwelIds,
 }) => {
-  console.log("🚀 ~ operationTypeSelect:", operationTypeSelect);
   const { formatReyal, formatGram } = numberContext();
   const isContainCheckInputWeight = operationTypeSelect.some(
     (el) => el.check_input_weight === 1

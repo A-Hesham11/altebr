@@ -303,10 +303,10 @@ const SellingInvoiceDataDemo = ({
         karat_name: item.karat_name,
         price_gram: Number(item.taklfa) / Number(item.weight),
         vat: Number(item.taklfa_after_tax) - Number(item.taklfa),
-        taklfa: item.taklfa,
-        taklfa_after_tax: item.taklfa_after_tax,
-        cost: item.taklfa,
-        total: item.taklfa_after_tax,
+        taklfa: Number(item.taklfa),
+        taklfa_after_tax: Number(item.taklfa_after_tax),
+        cost: Number(item.taklfa),
+        total: Number(item.taklfa_after_tax),
         tax_rate: item.karat_name === "24" ? 0 : 15,
       };
     });
@@ -349,11 +349,6 @@ const SellingInvoiceDataDemo = ({
       endpointName: "/invoiceSales/api/v1/add_Invoice",
       values: { invoice, items, card, paymentCard },
     });
-
-    console.log(
-      "🚀 ~ file: SellingInvoiceData.tsx:227 ~ posSellingDataHandler ~ { invoice, items, card }:",
-      { invoice, items, card, paymentCard }
-    );
   };
 
   const handlePrint = useReactToPrint({

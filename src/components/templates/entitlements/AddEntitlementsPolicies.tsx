@@ -12,7 +12,12 @@ import { SelectBranches } from "../reusableComponants/branches/SelectBranches";
 import { t } from "i18next";
 import { Button } from "../../atoms";
 
-const AddEntitlementsPolicies = ({ title, editData, setShow, refetch }: any) => {
+const AddEntitlementsPolicies = ({
+  title,
+  editData,
+  setShow,
+  refetch,
+}: any) => {
   const queryClient = useQueryClient();
   const { userData } = useContext(authCtx);
   const isRTL = useIsRTL();
@@ -59,7 +64,6 @@ const AddEntitlementsPolicies = ({ title, editData, setShow, refetch }: any) => 
       queryClient.refetchQueries(["entitlements"]);
     },
     onError: (error) => {
-      console.log(error);
       notify("error", error?.response?.data?.message);
     },
   });
@@ -101,10 +105,7 @@ const AddEntitlementsPolicies = ({ title, editData, setShow, refetch }: any) => 
                 ...values,
               });
             } else {
-                PostNewCard({
-                  ...values,
-                });
-              console.log({
+              PostNewCard({
                 ...values,
               });
             }
@@ -142,11 +143,7 @@ const AddEntitlementsPolicies = ({ title, editData, setShow, refetch }: any) => 
                 />
               </div>
               <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  className="w-fit"
-                  loading={editLoading}
-                >
+                <Button type="submit" className="w-fit" loading={editLoading}>
                   {t("save")}
                 </Button>
               </div>

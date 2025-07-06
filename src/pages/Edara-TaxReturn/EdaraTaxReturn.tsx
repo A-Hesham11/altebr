@@ -168,7 +168,6 @@ const EdaraTaxReturn = () => {
     queryKey: ["excel-data-vat"],
     endpoint: search === "" ? `/report/api/v1/vat/${branchId}` : `${search}`,
     select: (data: any) => {
-      console.log(data);
       return [...data?.selling, ...data?.buying]?.map(
         ({ type, ...rest }) => rest
       );

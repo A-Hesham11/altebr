@@ -27,15 +27,11 @@ type Entry_TP = {
 };
 
 const SellingInvoiceTablePreviewDemo = ({ item }: { item?: {} }) => {
-  console.log("🚀 ~ SellingInvoiceTablePreview ~ item:", item);
   const { formatGram, formatReyal } = numberContext();
   const invoiceRefs = useRef([]);
   const isRTL = useIsRTL();
   const { invoice_logo, gold_price } = GlobalDataContext();
-  console.log(
-    "🚀 ~ SellingInvoiceTablePreviewDemo ~ invoice_logo:",
-    invoice_logo
-  );
+
   const PriceGoldGram = {
     "18": gold_price?.price_gram_18k,
     "21": gold_price?.price_gram_21k,
@@ -74,7 +70,6 @@ const SellingInvoiceTablePreviewDemo = ({ item }: { item?: {} }) => {
         : item.image,
     cost_after_tax: item.amount,
   }));
-  console.log("🚀 ~ paymentData ~ paymentData:", paymentData);
 
   const Cols = useMemo<ColumnDef<Selling_TP>[]>(
     () => [
