@@ -329,17 +329,6 @@ const EdaraTaxReturn = () => {
           return (
             <form onSubmit={handleSubmit} className="space-y-14">
               <div className="grid grid-cols-5 gap-4">
-                <div>
-                  <Select
-                    id="tax_period"
-                    label={`${t("tax period")}`}
-                    name="tax_period"
-                    placeholder={`${t("choose tax period")}`}
-                    loadingPlaceholder={`${t("loading")}`}
-                    options={taxPeriodOptions}
-                  />
-                </div>
-
                 <Select
                   id="branch_id"
                   label={`${t("branches")}`}
@@ -362,6 +351,17 @@ const EdaraTaxReturn = () => {
                     setBranchId(e.id);
                   }}
                 />
+
+                <div>
+                  <Select
+                    id="tax_period"
+                    label={`${t("tax period")}`}
+                    name="tax_period"
+                    placeholder={`${t("choose tax period")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={taxPeriodOptions}
+                  />
+                </div>
 
                 <div>
                   <DateInputField
