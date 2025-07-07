@@ -269,8 +269,6 @@ export const ViewBranches = ({ title }: ViewBranches_Props_TP) => {
       },
     });
 
-  console.log("🚀 ~ ViewBranches ~ data:", data);
-
   useEffect(() => {
     refetch();
   }, [page]);

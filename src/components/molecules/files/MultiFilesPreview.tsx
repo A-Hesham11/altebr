@@ -107,7 +107,6 @@ export const MultiFilesPreview = ({
           plugins={[Fullscreen, Slideshow, Zoom, Thumbnails]}
           render={{
             slide: (slide) => {
-              console.log("🚀 ~ slide:", slide);
               if (!slide?.src) return null;
 
               return (

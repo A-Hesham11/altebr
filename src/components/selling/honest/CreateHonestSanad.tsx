@@ -200,7 +200,6 @@ export const CreateHonestSanad = ({
   // const totalActualItemsCost = selectedItem.items
   //   .filter((item) => item.return_status !== "returned")
   //   .reduce((acc, curr) => {
-  //     console.log("🚀 ~ .reduce ~ curr:", curr);
   //     if (curr.id == costValue.id) {
   //       acc += +curr.cost;
   //     } else {

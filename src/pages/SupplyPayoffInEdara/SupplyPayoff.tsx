@@ -92,7 +92,6 @@ const SupplyPayoff = () => {
     endpoint: `/supplyReturn/api/v1/getAllReturnInvoice/${userData?.branch_id}`,
     queryKey: [`supply_payoff_invoices_${userData?.branch_id}`],
     onSuccess(data) {
-      console.log("🚀 ~ onSuccess ~ data:", data);
       setInvoiceNumber(data.data.length);
     },
     pagination: true,

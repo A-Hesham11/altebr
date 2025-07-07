@@ -36,7 +36,6 @@ const SupplyPayoffSecondPage = ({
 }: CreateHonestSanadProps_TP) => {
   const { formatGram, formatReyal } = numberContext();
   const { values } = useFormikContext();
-  console.log("🚀 ~ values:", values);
 
   const { userData } = useContext(authCtx);
 
