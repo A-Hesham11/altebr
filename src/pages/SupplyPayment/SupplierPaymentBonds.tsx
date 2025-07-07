@@ -77,6 +77,11 @@ const SupplierPaymentBonds = () => {
         header: () => <span>{t("employee name")}</span>,
       },
       {
+        cell: (info: any) => info.getValue(),
+        accessorKey: "supplier_name",
+        header: () => <span>{t("supplier name")}</span>,
+      },
+      {
         header: () => <span>{t("attachments")} </span>,
         accessorKey: "media",
         cell: (info: any) => {
