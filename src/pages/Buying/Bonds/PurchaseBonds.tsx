@@ -16,6 +16,8 @@ import { Table } from "../../../components/templates/reusableComponants/tantable
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import PurchaseInvoiceBondsPreview from "./PurchaseInvoiceBondsPreview";
 import { Loading } from "../../../components/organisms/Loading";
+import PurchaseEntryBondsPreview from "./PurchaseEntryBondsPreview";
+import { BiSpreadsheet } from "react-icons/bi";
 
 const PurchaseBonds = () => {
   // STATE
@@ -24,6 +26,7 @@ const PurchaseBonds = () => {
   const { userData } = useContext(authCtx);
   const [page, setPage] = useState(1);
   const [invoiceModal, setOpenInvoiceModal] = useState(false);
+  const [openEntryModal, setOpenEntryModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>({});
   const [search, setSearch] = useState("");
 
@@ -84,14 +87,24 @@ const PurchaseBonds = () => {
       },
       {
         cell: (info: any) => (
-          <BsEye
-            onClick={() => {
-              setOpenInvoiceModal(true);
-              setSelectedItem(info.row.original);
-            }}
-            size={23}
-            className="text-mainGreen mx-auto cursor-pointer"
-          />
+          <div className="flex items-center justify-center gap-5">
+            <BsEye
+              onClick={() => {
+                setOpenInvoiceModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+            <BiSpreadsheet
+              onClick={() => {
+                setOpenEntryModal(true);
+                setSelectedItem(info.row.original);
+              }}
+              size={23}
+              className="text-mainGreen cursor-pointer"
+            />
+          </div>
         ),
         accessorKey: "details",
         header: () => <span>{t("details")}</span>,
@@ -241,6 +254,10 @@ const PurchaseBonds = () => {
       {/* 3) MODAL */}
       <Modal isOpen={invoiceModal} onClose={() => setOpenInvoiceModal(false)}>
         <PurchaseInvoiceBondsPreview item={selectedItem} />
+      </Modal>
+
+      <Modal isOpen={openEntryModal} onClose={() => setOpenEntryModal(false)}>
+        <PurchaseEntryBondsPreview item={selectedItem} />
       </Modal>
     </div>
   );
