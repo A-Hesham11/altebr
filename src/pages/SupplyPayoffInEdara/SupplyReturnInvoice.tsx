@@ -15,6 +15,7 @@ import SupplyPayoffInvoiceTable from "./SupplyPayoffInvoiceTable";
 import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
 import InvoiceTableData from "../../components/selling/selling components/InvoiceTableData";
 import InvoiceBasicHeader from "../../components/Invoice/InvoiceBasicHeader";
+import { convertGoldWeightTo24K } from "../../utils/convertGoldWeightTo24";
 
 type Entry_TP = {
   bian: string;

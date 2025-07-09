@@ -13,6 +13,7 @@ import { SupplyPayoffFinalPreview } from "./SupplyPayoffFinalPreview";
 import { notify } from "../../utils/toast";
 import { useReactToPrint } from "react-to-print";
 import { useFormikContext } from "formik";
+import { convertGoldWeightTo24K } from "../../utils/convertGoldWeightTo24";
 
 type CreateHonestSanadProps_TP = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -34,7 +35,7 @@ const SupplyPayoffSecondPage = ({
   supplierId,
   mardodItemsId,
 }: CreateHonestSanadProps_TP) => {
-  const { formatGram, formatReyal } = numberContext();
+  const { formatReyal } = numberContext();
   const { values } = useFormikContext();
 
   const { userData } = useContext(authCtx);
