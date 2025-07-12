@@ -15,7 +15,8 @@ import { authCtx } from "../../context/auth-and-perm/auth";
 import { Loading } from "../../components/organisms/Loading";
 import { useReactToPrint } from "react-to-print";
 import { ExportToExcel } from "../../components/ExportToFile";
-import { formatDate } from "../../utils/date";
+import { formatDate, getDayAfter } from "../../utils/date";
+import EdaraTaxReturnTable from "./EdaraTaxReturnTable";
 
 const taxPeriodOptions = [
   {
@@ -310,9 +311,6 @@ const EdaraTaxReturn = () => {
     }
   }, [branchId]);
 
-  if (isLoading || isRefetching || isFetching)
-    return <Loading mainTitle={t("loading")} />;
-
   return (
     <div className="space-y-8">
       <Formik
@@ -320,8 +318,10 @@ const EdaraTaxReturn = () => {
         onSubmit={(values: any) => {
           getSearchResults({
             ...values,
-            from: values.from ? formatDate(values.from) : "",
-            to: values.to ? formatDate(values.to) : "",
+            from: values.from
+              ? formatDate(getDayAfter(new Date(values.from)))
+              : "",
+            to: values.to ? formatDate(getDayAfter(new Date(values.to))) : "",
           });
         }}
       >
@@ -429,34 +429,16 @@ const EdaraTaxReturn = () => {
           </Button>
         </div>
 
-        {/* selling table */}
-        {data && data?.selling?.length > 0 && (
-          <div className="pt-6">
-            <p className=" bg-slate-300 font-bold text-center p-2">
-              {t("selling")}
-            </p>
-            <Table columns={sellingCols} data={data?.selling || []} />
-          </div>
-        )}
-
-        {/* buying table */}
-        {data && data?.buying?.length > 0 && (
-          <div className="pt-6">
-            <p className=" bg-slate-300 font-bold text-center p-2">
-              {t("purchase")}
-            </p>
-            <Table columns={buyingCols} data={data?.buying || []} />
-          </div>
-        )}
-
-        {/* net */}
-        <p className="bg-mainOrange/40 p-2 flex justify-between">
-          <span className="font-bold mx-4">{t("net")}</span>
-          <span className="font-bold text-center mr-32">
-            {formatReyal(netTotal)}
-          </span>
-          <span className="font-bold mx-4 ml-32">{formatReyal(netTax)}</span>
-        </p>
+        <EdaraTaxReturnTable
+          isLoading={isLoading}
+          data={data}
+          buyingCols={buyingCols}
+          sellingCols={sellingCols}
+          netTotal={netTotal}
+          netTax={netTax}
+          isFetching={isFetching}
+          isRefetching={isRefetching}
+        />
       </div>
     </div>
   );
