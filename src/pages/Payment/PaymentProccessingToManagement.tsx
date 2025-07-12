@@ -187,68 +187,74 @@ const PaymentProccessingToManagement = ({
             ? validationSchemaOfWeight()
             : validationSchemaOfAmount()
         }
-        onSubmit={(values, { setFieldValue, resetForm, submitForm }) => {
-          if (selectedCardId) {
-            if (editData) {
-              const updatedPaymentData = paymentData.map((item) =>
-                item.id === editData.id
-                  ? {
-                      ...values,
-                      id: editData.id,
-                      card: editData?.card,
-                      card_id: editData?.card_id,
-                    }
-                  : item
-              );
-              setPaymentData(updatedPaymentData);
-            } else {
-              const isItemExistInPaymentData = !!paymentData.find(
-                (item) => item.card_id == selectedCardId
-              );
-              if (!isItemExistInPaymentData || !paymentData.length) {
-                const newItem = {
-                  ...values,
-                  id: cardId,
-                  card: card,
-                  paymentCardId: !!selectedCardData?.[0].iban
-                    ? null
-                    : selectedCardData?.[0]?.card_id,
-                  paymentBankId: !!selectedCardData?.[0].iban
-                    ? selectedCardData?.[0]?.bank_id
-                    : null,
-                  card_id: selectedCardId,
-                  cardImage: cardImage,
-                  frontkey: cardFrontKey,
-                  frontKeyExpenseEdaraa: cardFrontKeyExpenseEdaraa,
-                  frontKeyAccept: frontKeyAccept,
-                  frontKeySadad: frontKeySadad,
-                  sellingFrontKey: sellingFrontKey,
-                  salesReturnFrontKey: salesReturnFrontKey,
-                  exchangeFrontKey: exchangeFrontKey,
-                };
-
-                if (
-                  (+data?.value === 0 ||
-                    +values.amount > +data?.value ||
-                    +values.weight > +data?.value) &&
-                  !salesReturnDemo
-                ) {
-                  notify(
-                    "info",
-                    `${t("value is greater than the value in box")}`
-                  );
-                  return;
-                }
-                setPaymentData((prevData) => [newItem, ...prevData]);
-                setSelectedCardId(null);
-                setCardFronKey("");
-              } else {
-                notify("info", `${t("the card has been added before")}`);
-              }
-            }
-          } else {
+        onSubmit={(values, { resetForm }) => {
+          if (!selectedCardId) {
             notify("info", `${t("you must choose card first")}`);
+            return;
           }
+
+          const isEditing = !!editData;
+
+          if (isEditing) {
+            const updatedList = paymentData.map((item) =>
+              item.id === editData.id
+                ? {
+                    ...values,
+                    expenses_id: editData?.expenses_id,
+                    id: editData.id,
+                    card: editData.card,
+                    card_id: editData.card_id,
+                  }
+                : item
+            );
+
+            setPaymentData(updatedList);
+          } else {
+            const alreadyExists = paymentData.some(
+              (item) => item.card_id === selectedCardId
+            );
+
+            if (alreadyExists) {
+              notify("info", `${t("the card has been added before")}`);
+              return;
+            }
+
+            const selected = selectedCardData?.[0];
+
+            const newPayment = {
+              ...values,
+              id: cardId,
+              expenses_id: selected?.id,
+              card,
+              paymentCardId: selected?.iban ? null : selected?.card_id,
+              paymentBankId: selected?.iban ? selected?.bank_id : null,
+              card_id: selectedCardId,
+              cardImage,
+              frontkey: cardFrontKey,
+              frontKeyExpenseEdaraa: cardFrontKeyExpenseEdaraa,
+              frontKeyAccept,
+              frontKeySadad,
+              sellingFrontKey,
+              salesReturnFrontKey,
+              exchangeFrontKey,
+            };
+
+            const isOverValue =
+              (+data?.value === 0 ||
+                +values.amount > +data?.value ||
+                +values.weight > +data?.value) &&
+              !salesReturnDemo;
+
+            if (isOverValue) {
+              notify("info", `${t("value is greater than the value in box")}`);
+              return;
+            }
+
+            setPaymentData((prev) => [newPayment, ...prev]);
+            setSelectedCardId(null);
+            setCardFronKey("");
+          }
+
           setEditData(undefined);
           resetForm();
           setCard("");

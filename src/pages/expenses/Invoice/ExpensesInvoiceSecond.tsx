@@ -208,7 +208,7 @@ const ExpensesInvoiceSecond = ({
           : "cash",
         type_id: item.paymentCardId || item.paymentBankId || "cash",
         type_amount: item.amount,
-        bank_account_id: item.id || "cash",
+        bank_account_id: item.frontkey === "cash" ? item.expenses_id : "cash",
       };
     });
 
