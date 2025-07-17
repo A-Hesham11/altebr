@@ -15,6 +15,15 @@ const Reports = () => {
       title_ar: "كشف الحسابات",
       title_en: "stocks",
       route: "/selling/reports/stocks",
+      underCardInfo: (
+        <Link
+          to="/tax-reports"
+          className="flex gap-3 justify-center items-center rounded-lg p-2 bg-mainGray"
+        >
+          <FaCubes className="text-mainGreen" size={25} />
+          <p className="text-mainGreen">{t("tax reports")}</p>
+        </Link>
+      ),
     },
     {
       icon: receiveitem,
@@ -43,6 +52,7 @@ const Reports = () => {
               title={isRTL ? item.title_ar : item.title_en}
               route={item.route}
               key={crypto.randomUUID()}
+              underCardInfo={item.underCardInfo}
             />
           </div>
         ))}
