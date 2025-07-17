@@ -194,7 +194,7 @@ export const GoldCodingSanadFormHandler = ({
   } = useFetch<GoldSanad_TP>({
     endpoint: `tarqimGold/api/v1/open-bonds/${sanadId}`,
     queryKey: ["goldCodingSanads", sanadId!],
-    enabled: !!sanadId && !!!selectedSanadLocal,
+    enabled: !!sanadId,
     onSuccess: (sanad) => {
       setSelectedSanadLocal(sanad);
       setSelectedSanad(sanad);

@@ -60,6 +60,7 @@ export const GoldTableForm = ({
   const { formatGram, formatReyal } = numberContext();
   let { enableReinitialize, resetForm, values, setFieldValue, submitForm } =
     useFormikContext<any>();
+  console.log("🚀 ~ values:", values);
   useEffect(() => {
     if (
       values.wage !== "" ||
@@ -175,6 +176,7 @@ export const GoldTableForm = ({
   }
 
   function editRowHandler(row: OTableDataTypes, id: string) {
+    console.log("🚀 ~ editRowHandler ~ row:", row);
     setEditData(row);
   }
   //side effects
@@ -252,7 +254,7 @@ export const GoldTableForm = ({
                         values.category_value ||
                         editData.category_value ||
                         t("categories"),
-                      id: values.category_id || values.category_id,
+                      id: values.category_id || editData.category_id,
                     }}
                     onChange={(option: any) => {
                       setFieldValue("category_id", option!.id);
@@ -332,6 +334,7 @@ export const GoldTableForm = ({
                   <SelectCategory
                     name="category_id"
                     onChange={(option) => {
+                      setFieldValue("category_id", option!.id);
                       setFieldValue("category_value", option!.value);
                     }}
                     noMb={true}
@@ -526,8 +529,12 @@ export const GoldTableForm = ({
                               stock: values.stock || editData.stock,
                               weight: values.weight || editData.weight,
                               wage: values.wage || editData.wage,
+                              karat_id: values.karat_id || editData.karat_id,
                               karat_value:
                                 values.karat_value || editData.karat_value,
+                              category_id:
+                                values.category_id ||
+                                editData.category_id,
                               category_value:
                                 values.category_value ||
                                 editData.category_value,

@@ -193,8 +193,8 @@ const ReserveSellingTable: React.FC<ReserveSellingTable_TP> = (props) => {
                 id="piece_per_gram"
                 name="piece_per_gram"
                 type="text"
-                className="bg-mainDisabled text-center"
-                disabled
+                className="text-center"
+                // disabled
               />
             </td>
             <td>

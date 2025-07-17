@@ -24,6 +24,7 @@ import InvoiceBasicHeader from "../../../components/Invoice/InvoiceBasicHeader";
 import { GlobalDataContext } from "../../../context/settings/GlobalData";
 
 const TableOfBranchBonds = ({ dataSource, setPage, page }) => {
+  console.log("🚀 ~ TableOfBranchBonds ~ dataSource:", dataSource);
   const { formatReyal, formatGram } = numberContext();
   const invoiceRefs = useRef([]);
 

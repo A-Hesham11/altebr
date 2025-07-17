@@ -80,7 +80,7 @@ const PaymentBondsTable = ({
       {
         cell: (info: any) =>
           info.getValue() ? formatReyal(Number(info.getValue())) : "---",
-        accessorKey: "amount",
+        accessorKey: "value_reyal",
         header: () => <span>{t("amount")}</span>,
       },
       {
