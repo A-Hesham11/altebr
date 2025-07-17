@@ -52,6 +52,40 @@ const BranchStocks = () => {
     pagination: true,
   });
 
+  // const {
+  //   data: accountsNameDataSelect,
+  //   isLoading: accountNameDataSelectIsLoading,
+  //   isFetching: accountNameDataSelectIsFetching,
+  //   isRefetching: accountNameDataSelectIsRefetching,
+  //   refetch: accountsNameRefetch,
+  // } = useFetch({
+  //   queryKey: ["accounts-name-data-single-branch"],
+  //   endpoint: `/branchAccount/api/v1/getAccountBranches/${userData?.branch_id}?per_page=10000`,
+  //   select: (data: any) =>
+  //     data?.map((account: any) => {
+  //       return {
+  //         id: account?.accountable_id,
+  //         selectedId: account?.id,
+  //         unit_id: account?.unit_id,
+  //         label: (
+  //           <p className="flex justify-between items-center">
+  //             <span>{account?.accountable}</span>
+  //             <span
+  //               className={`text-[9px] text-white p-[5px] rounded-lg ${
+  //                 account?.unit_id === 2 ? "bg-mainGreen" : "bg-mainOrange"
+  //               } `}
+  //             >
+  //               {account?.unit}
+  //             </span>
+  //           </p>
+  //         ),
+  //         value: account?.id,
+  //       };
+  //     }),
+  // });
+
+  // SEARCH FUNCTIONALITY
+
   const {
     data: accountsNameDataSelect,
     isLoading: accountNameDataSelectIsLoading,
@@ -61,30 +95,18 @@ const BranchStocks = () => {
   } = useFetch({
     queryKey: ["accounts-name-data-single-branch"],
     endpoint: `/branchAccount/api/v1/getAccountBranches/${userData?.branch_id}?per_page=10000`,
+    enabled: !!userData?.branch_id, // ensure branch_id is ready
     select: (data: any) =>
-      data?.map((account: any) => {
-        return {
-          id: account?.accountable_id,
-          selectedId: account?.id,
-          unit_id: account?.unit_id,
-          label: (
-            <p className="flex justify-between items-center">
-              <span>{account?.accountable}</span>
-              <span
-                className={`text-[9px] text-white p-[5px] rounded-lg ${
-                  account?.unit_id === 2 ? "bg-mainGreen" : "bg-mainOrange"
-                } `}
-              >
-                {account?.unit}
-              </span>
-            </p>
-          ),
-          value: account?.id,
-        };
-      }),
+      data?.map((account: any) => ({
+        id: account?.accountable_id, // the value to save
+        selectedId: account?.id, // backend reference
+        unit_id: account?.unit_id,
+        value: account?.id,
+        unit: account?.unit,
+        labelText: account?.accountable, // used for filtering
+      })),
   });
 
-  // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
     let url = `/branchAccount/api/v1/getAllAccountBranches/${
       accountId?.id || 0
@@ -240,6 +262,45 @@ const BranchStocks = () => {
                     <div className="w-80">
                       <Select
                         id="account name"
+                        name="account_id"
+                        label={t("account name")}
+                        placeholder={t("account name")}
+                        loadingPlaceholder={t("loading")}
+                        options={accountsNameDataSelect}
+                        isSearchable
+                        isLoading={accountNameDataSelectIsLoading}
+                        isDisabled={
+                          accountNameDataSelectIsLoading ||
+                          accountNameDataSelectIsFetching ||
+                          accountNameDataSelectIsRefetching
+                        }
+                        value={accountsNameDataSelect?.find(
+                          (opt: any) => opt.id === values.account_id
+                        )}
+                        onChange={(option: any) => {
+                          setFieldValue("account_id", option?.id);
+                          setAccountId(option); // holds full selected object
+                          resetForm();
+                        }}
+                        getOptionLabel={(e: any) => e.labelText} // filters by text
+                        formatOptionLabel={(e: any) => (
+                          <p className="flex justify-between items-center">
+                            <span>{e.labelText}</span>
+                            <span
+                              className={`text-[9px] text-white p-[5px] rounded-lg ${
+                                e.unit_id === 2
+                                  ? "bg-mainGreen"
+                                  : "bg-mainOrange"
+                              }`}
+                            >
+                              {e.unit}
+                            </span>
+                          </p>
+                        )}
+                      />
+
+                      {/* <Select
+                        id="account name"
                         label={`${t("account name")}`}
                         name="account_id"
                         placeholder={`${t("account name")}`}
@@ -257,7 +318,7 @@ const BranchStocks = () => {
                           accountNameDataSelectIsFetching ||
                           accountNameDataSelectIsRefetching
                         }
-                      />
+                      /> */}
                     </div>
                     <div className="">
                       <DateInputField

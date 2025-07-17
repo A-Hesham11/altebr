@@ -35,11 +35,13 @@ export const GoldCodingSanadPicker = () => {
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const [activeBond, setActiveBond] = useState<GoldSanad_TP | undefined>();
+  console.log("🚀 ~ GoldCodingSanadPicker ~ activeBond:", activeBond)
   const [search, setSearch] = useState("");
   const [isOpenBond, setIsOpenBond] = useState(false);
   const [isClosedBond, setIsClosedBond] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [dataSource, setDataSource] = useState<GoldSanad_TP[]>([]);
+  console.log("🚀 ~ GoldCodingSanadPicker ~ dataSource:", dataSource)
   const { formatGram, formatReyal } = numberContext();
 
   const searchValues: SearchValues_TP = {

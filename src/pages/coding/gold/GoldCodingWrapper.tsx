@@ -39,10 +39,16 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
   const navigate = useNavigate();
   const [selectedSanadLocal, setSelectedSanadLocal] =
     useLocalStorage<GoldSanad_TP>(`selectedSanadLocal_${sanadId}`);
+  console.log(
+    "🚀 ~ GoldCodingWrapper ~ selectedSanadLocal:",
+    selectedSanadLocal
+  );
 
   const [addedPiecesLocal, setAddedPiecesLocal] = useLocalStorage<
     GoldCodingSanad_initialValues_TP[]
   >(`addedPiecesLocal_${sanadId}`);
+  console.log("🚀 ~ GoldCodingWrapper ~ addedPiecesLocal:", addedPiecesLocal);
+
   const [openModal, setOpenModal] = useState(false);
   const [openFinishedModal, setOpenFinishedModal] = useState(false);
   ///
@@ -106,6 +112,8 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
           curr.filter((p) => p.front_key !== result.front_key)
         );
 
+        setSelectedSanadLocal(null);
+
         const savedPieces = JSON.parse(
           localStorage.getItem("printItems") || "[]"
         );
@@ -119,7 +127,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
       setAddedPieces((curr) =>
         curr.map((p) =>
           p.front_key === piece.front_key
-            ? { ...p, status: error.response.data.message }
+            ? { ...p, status: error?.response?.data?.message }
             : p
         )
       );
@@ -127,7 +135,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
       setAddedPiecesLocal((curr) =>
         curr.map((p) =>
           p.front_key === piece.front_key
-            ? { ...p, status: error.response.data.message }
+            ? { ...p, status: error?.response?.data?.message }
             : p
         )
       );
@@ -279,6 +287,7 @@ export const GoldCodingWrapper = ({ title }: GoldCodingWrapperProps_TP) => {
                   setOpen(false);
                   localStorage.removeItem("printItems");
                   setOpenModal(false);
+                  navigate(`/coding/gold/`)
                 }}
               >
                 {t("Later")}

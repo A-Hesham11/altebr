@@ -35,51 +35,81 @@ const ViewBondsFromBranchs = () => {
   const { data: acceptedBonds, isFetching: isFetchingAcceptedBonds } = useFetch<
     SelectOption_TP[]
   >({
-    endpoint: `/sdad/api/v1/accpet-bond/${branch_id}`,
-    queryKey: ["accepted-Bonds"],
+    endpoint: `/sdad/api/v1/accpet-bond/${branch_id}?page=${page}`,
+    queryKey: ["accepted-Bonds", page],
   });
 
-  const tableColumn = useMemo<any>(
-    () => [
+  const formattedData = useMemo(() => {
+    return acceptedBonds?.map((entry) => {
+      const boxValues: Record<string, string> = {};
+
+      entry.boxes?.forEach((box: any) => {
+        boxValues[box.account] = `${box.value} ${box.unit_id}`;
+      });
+
+      return {
+        ...entry,
+        ...boxValues,
+      };
+    });
+  }, [acceptedBonds]);
+
+  // 2. Extract unique box account names
+  const allBoxAccounts = useMemo(() => {
+    const allAccounts = acceptedBonds?.flatMap(
+      (entry) => entry.boxes?.map((box: any) => box.account) || []
+    );
+    return [...new Set(allAccounts)];
+  }, [acceptedBonds]);
+
+  // 3. Build the column structure
+  const tableColumn = useMemo(() => {
+    const staticColumns = [
       {
-        cell: (info: any) => info.getValue(),
         accessorKey: "invoice_number",
         header: () => <span>{t("invoice number")}</span>,
+        cell: (info: any) => info.getValue(),
       },
       {
-        cell: (info: any) => info.getValue(),
         accessorKey: "branch_name",
         header: () => <span>{t("branch")}</span>,
+        cell: (info: any) => info.getValue(),
       },
       {
-        cell: (info: any) => info.getValue(),
         accessorKey: "payment_date",
         header: () => <span>{t("date")}</span>,
+        cell: (info: any) => info.getValue(),
       },
       {
-        cell: (info: any) => info.getValue(),
         accessorKey: "employee_name",
         header: () => <span>{t("employee name")}</span>,
+        cell: (info: any) => info.getValue(),
       },
+    ];
+
+    const dynamicBoxColumns = allBoxAccounts.map((account) => ({
+      accessorKey: account,
+      header: () => <span>{account}</span>,
+      cell: (info: any) => info.row.original?.[account] || "---",
+    }));
+
+    const trailingColumns = [
       {
-        header: () => <span>{t("attachments")} </span>,
         accessorKey: "media",
-        cell: (info: any) => {
-          return (
-            <div className="w-[30%] m-auto">
-              {info?.row.original?.attachment?.length > 0 ? (
-                <FilesPreviewOutFormik
-                  images={info?.row.original?.attachment}
-                  preview
-                />
-              ) : (
-                "---"
-              )}
-            </div>
-          );
-        },
+        header: () => <span>{t("attachments")}</span>,
+        cell: (info: any) =>
+          info?.row.original?.attachment?.length > 0 ? (
+            <FilesPreviewOutFormik
+              images={info?.row.original?.attachment}
+              preview
+            />
+          ) : (
+            "---"
+          ),
       },
       {
+        accessorKey: "details",
+        header: () => <span>{t("details")}</span>,
         cell: (info: any) => (
           <BiSpreadsheet
             onClick={() => {
@@ -90,12 +120,11 @@ const ViewBondsFromBranchs = () => {
             className="text-mainGreen mx-auto cursor-pointer"
           />
         ),
-        accessorKey: "details",
-        header: () => <span>{t("details")}</span>,
       },
-    ],
-    []
-  );
+    ];
+
+    return [...staticColumns, ...dynamicBoxColumns, ...trailingColumns];
+  }, [acceptedBonds, allBoxAccounts]);
 
   const bankAccountFromBranch = bankAccounts?.filter(
     (account) => account.branch_id == branch_id
@@ -137,7 +166,7 @@ const ViewBondsFromBranchs = () => {
       </div>
 
       <div className="mt-12">
-        <Table data={acceptedBonds || []} columns={tableColumn}>
+        <Table data={formattedData || []} columns={tableColumn}>
           <div className="mt-3 flex items-center justify-end gap-5 p-2">
             <div className="flex items-center gap-2 font-bold">
               {t("page")}

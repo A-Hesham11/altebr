@@ -10,6 +10,7 @@ import { Button } from "../../components/atoms";
 import { TableComponent } from "./TableComponent";
 import { ExportToExcel } from "../../components/ExportToFile";
 import { SelectOption_TP } from "../../types";
+import { Loading } from "../../components/organisms/Loading";
 
 const BranchStocks = () => {
   const [search, setSearch] = useState("");
@@ -36,7 +37,7 @@ const BranchStocks = () => {
     isRefetching,
     refetch,
   } = useFetch({
-    queryKey: ["credits-edara-data"],
+    queryKey: ["credits-branch-data"],
     endpoint:
       search ===
         `/branchAccount/api/v1/getAllAccountBranches/${
@@ -49,6 +50,38 @@ const BranchStocks = () => {
     pagination: true,
   });
 
+  // const {
+  //   data: accountsNameDataSelect,
+  //   isLoading: accountNameDataSelectIsLoading,
+  //   isFetching: accountNameDataSelectIsFetching,
+  //   isRefetching: accountNameDataSelectIsRefetching,
+  //   refetch: accountsNameRefetch,
+  // } = useFetch({
+  //   queryKey: ["accounts-name-data-branch"],
+  //   endpoint: `/branchAccount/api/v1/getAccountBranches/${branchId}?per_page=10000`,
+  //   select: (data: any) =>
+  //     data?.map((account: any) => {
+  //       return {
+  //         selectId: account?.id,
+  //         unit_id: account?.unit_id,
+  //         id: account?.accountable_id,
+  //         label: (
+  //           <p className="flex justify-between items-center">
+  //             <span>{account?.accountable}</span>
+  //             <span
+  //               className={`text-[9px] text-white p-[5px] rounded-lg ${
+  //                 account?.unit_id === 2 ? "bg-mainGreen" : "bg-mainOrange"
+  //               } `}
+  //             >
+  //               {account?.unit}
+  //             </span>
+  //           </p>
+  //         ),
+  //         value: account?.id,
+  //       };
+  //     }),
+  // });
+
   const {
     data: accountsNameDataSelect,
     isLoading: accountNameDataSelectIsLoading,
@@ -59,26 +92,14 @@ const BranchStocks = () => {
     queryKey: ["accounts-name-data-branch"],
     endpoint: `/branchAccount/api/v1/getAccountBranches/${branchId}?per_page=10000`,
     select: (data: any) =>
-      data?.map((account: any) => {
-        return {
-          selectId: account?.id,
-          unit_id: account?.unit_id,
-          id: account?.accountable_id,
-          label: (
-            <p className="flex justify-between items-center">
-              <span>{account?.accountable}</span>
-              <span
-                className={`text-[9px] text-white p-[5px] rounded-lg ${
-                  account?.unit_id === 2 ? "bg-mainGreen" : "bg-mainOrange"
-                } `}
-              >
-                {account?.unit}
-              </span>
-            </p>
-          ),
-          value: account?.id,
-        };
-      }),
+      data?.map((account: any) => ({
+        selectId: account?.id,
+        unit_id: account?.unit_id,
+        id: account?.accountable_id,
+        value: account?.id,
+        labelText: account?.accountable, // used for searching
+        unit: account?.unit,
+      })),
   });
 
   const { data: branchesOptions, isLoading: branchesLoading } = useFetch<
@@ -270,6 +291,45 @@ const BranchStocks = () => {
                     <div className="w-80">
                       <Select
                         id="account name"
+                        name="account_id"
+                        placeholder={t("account name")}
+                        label={t("account name")}
+                        loadingPlaceholder={t("loading")}
+                        options={accountsNameDataSelect}
+                        isSearchable
+                        isLoading={accountNameDataSelectIsLoading}
+                        isDisabled={
+                          accountNameDataSelectIsLoading ||
+                          accountNameDataSelectIsFetching ||
+                          accountNameDataSelectIsRefetching ||
+                          branchesLoading
+                        }
+                        value={accountsNameDataSelect?.find(
+                          (opt: any) => opt.id === values.account_id
+                        )}
+                        onChange={(option: any) => {
+                          setFieldValue("account_id", option?.id);
+                          setAccountId(option);
+                          resetForm();
+                        }}
+                        getOptionLabel={(e: any) => e.labelText}
+                        formatOptionLabel={(e: any) => (
+                          <p className="flex justify-between items-center">
+                            <span>{e.labelText}</span>
+                            <span
+                              className={`text-[9px] text-white p-[5px] rounded-lg ${
+                                e.unit_id === 2
+                                  ? "bg-mainGreen"
+                                  : "bg-mainOrange"
+                              }`}
+                            >
+                              {e.unit}
+                            </span>
+                          </p>
+                        )}
+                      />
+                      {/* <Select
+                        id="account name"
                         label={`${t("account name")}`}
                         name="account_id"
                         placeholder={`${t("account name")}`}
@@ -288,7 +348,7 @@ const BranchStocks = () => {
                           accountNameDataSelectIsRefetching ||
                           branchesLoading
                         }
-                      />
+                      /> */}
                     </div>
                     <div className="">
                       <DateInputField
@@ -331,7 +391,9 @@ const BranchStocks = () => {
                 </div>
 
                 <div className="mt-14">
-                  {edaraCredit?.data?.boxes?.length > 0 ? (
+                  {isLoading || isFetching || isRefetching ? (
+                    <Loading mainTitle="loading" />
+                  ) : edaraCredit?.data?.boxes?.length > 0 ? (
                     <>
                       <div className="mb-6">
                         <h2 className="text-center text-mainGreen flex justify-between">
