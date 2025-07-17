@@ -53,7 +53,7 @@ const checkBoxesOptions = [
   { id: 0, name: "all", value: "all" },
 ];
 
-const EdaraTaxReturn = () => {
+const EdaraTaxReturn = ({ inBranch }: { inBranch?: boolean }) => {
   const { formatReyal } = numberContext();
   const { userData } = useContext(authCtx);
   const contentRef = useRef(null);
@@ -62,7 +62,9 @@ const EdaraTaxReturn = () => {
   const [netTotal, setNetTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [netTax, setNetTax] = useState(0);
-  const [branchId, setBranchId] = useState<string>(1);
+  const [branchId, setBranchId] = useState<string | number>(
+    inBranch ? userData.branch_id : 1
+  );
 
   const initialValue = {
     tax_period: "",
@@ -196,7 +198,7 @@ const EdaraTaxReturn = () => {
   });
 
   const getSearchResults = async (req: any) => {
-    let uri = `/report/api/v1/vat/${userData?.branch_id}`;
+    let uri = `/report/api/v1/vat/${branchId}`;
     const params = new URLSearchParams();
 
     // Handle checkbox values first
@@ -312,7 +314,7 @@ const EdaraTaxReturn = () => {
   }, [branchId]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-10">
       <Formik
         initialValues={initialValue}
         onSubmit={(values: any) => {
@@ -329,28 +331,30 @@ const EdaraTaxReturn = () => {
           return (
             <form onSubmit={handleSubmit} className="space-y-14">
               <div className="grid grid-cols-5 gap-4">
-                <Select
-                  id="branch_id"
-                  label={`${t("branches")}`}
-                  name="branch_id"
-                  placeholder={`${t("branches")}`}
-                  loadingPlaceholder={`${t("loading")}`}
-                  options={branchesOptions}
-                  formatOptionLabel={(option) => (
-                    <div className="flex justify-between">
-                      <span>{option.label}</span>
-                      {option.number && (
-                        <p>
-                          {t("Branch")} - <span>{option.number}</span>
-                        </p>
-                      )}
-                    </div>
-                  )}
-                  isLoading={branchesLoading}
-                  onChange={(e) => {
-                    setBranchId(e.id);
-                  }}
-                />
+                {!inBranch && (
+                  <Select
+                    id="branch_id"
+                    label={`${t("branches")}`}
+                    name="branch_id"
+                    placeholder={`${t("branches")}`}
+                    loadingPlaceholder={`${t("loading")}`}
+                    options={branchesOptions}
+                    formatOptionLabel={(option) => (
+                      <div className="flex justify-between">
+                        <span>{option.label}</span>
+                        {option.number && (
+                          <p>
+                            {t("Branch")} - <span>{option.number}</span>
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    isLoading={branchesLoading}
+                    onChange={(e) => {
+                      setBranchId(e.id);
+                    }}
+                  />
+                )}
 
                 <div>
                   <Select

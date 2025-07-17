@@ -700,6 +700,7 @@ export const AllRoutesProvider = () => {
             element={<SellingRestrictionsInvoice />}
           />
           <Route path="/selling/salesReports" element={<SalesReports />} />
+          <Route path="/tax-reports" element={<EdaraTaxReturn inBranch />} />
 
           <Route
             path="/selling/return-entry"
