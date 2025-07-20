@@ -198,8 +198,6 @@ const WeightAdjustmentInBranch = ({
                 weight: Number(weightNumber),
               };
 
-              console.log(data, currenGroupNumber, "🔥🔥🔥🔥");
-
               addItemToIdentity(currenGroupNumber, data, true);
               setOpenWeightItem(false);
             }}

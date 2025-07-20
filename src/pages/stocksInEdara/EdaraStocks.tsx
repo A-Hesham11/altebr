@@ -13,10 +13,12 @@ import { ExportToExcel } from "../../components/ExportToFile";
 
 const EdaraStocks = () => {
   const [search, setSearch] = useState("");
+  console.log("🚀 ~ EdaraStocks ~ search:", search);
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
   const { formatGram, formatReyal } = numberContext();
   const [accountId, setAccountId] = useState(0);
+  console.log("🚀 ~ EdaraStocks ~ accountId:", accountId);
 
   const filterInitialValues = {
     account_id: "",
@@ -40,7 +42,39 @@ const EdaraStocks = () => {
         ? `/branchAccount/api/v1/getAllAccountEdara/${accountId}`
         : `${search}`,
     pagination: true,
+    enabled: !!search && accountId !== 0,
   });
+
+  // const {
+  //   data: accountsNameDataSelect,
+  //   isLoading: accountNameDataSelectIsLoading,
+  //   isFetching: accountNameDataSelectIsFetching,
+  //   isRefetching: accountNameDataSelectIsRefetching,
+  // } = useFetch({
+  //   queryKey: ["accounts-name-data"],
+  //   endpoint: "/branchAccount/api/v1/getAccountEdara?per_page=10000",
+  //   select: (data: any) =>
+  //     data?.map((account: any) => {
+  //       return {
+  //         id: account?.id,
+  //         label: (
+  //           <p className="flex justify-between items-center">
+  //             <span>{account?.accountable}</span>
+  //             <span
+  //               className={`text-[9px] text-white p-[5px] rounded-lg ${
+  //                 account?.unit_id === 2 ? "bg-mainGreen" : "bg-mainOrange"
+  //               } `}
+  //             >
+  //               {account?.unit}
+  //             </span>
+  //           </p>
+  //         ),
+  //         value: account?.id,
+  //       };
+  //     }),
+  // });
+
+  // SEARCH FUNCTIONALITY
 
   const {
     data: accountsNameDataSelect,
@@ -51,27 +85,15 @@ const EdaraStocks = () => {
     queryKey: ["accounts-name-data"],
     endpoint: "/branchAccount/api/v1/getAccountEdara?per_page=10000",
     select: (data: any) =>
-      data?.map((account: any) => {
-        return {
-          id: account?.id,
-          label: (
-            <p className="flex justify-between items-center">
-              <span>{account?.accountable}</span>
-              <span
-                className={`text-[9px] text-white p-[5px] rounded-lg ${
-                  account?.unit_id === 2 ? "bg-mainGreen" : "bg-mainOrange"
-                } `}
-              >
-                {account?.unit}
-              </span>
-            </p>
-          ),
-          value: account?.id,
-        };
-      }),
+      data?.map((account: any) => ({
+        id: account?.id,
+        value: account?.id,
+        labelText: account?.accountable, // used for search filtering
+        unit: account?.unit,
+        unit_id: account?.unit_id,
+      })),
   });
 
-  // SEARCH FUNCTIONALITY
   const getSearchResults = async (req: any) => {
     let url = `/branchAccount/api/v1/getAllAccountEdara/${accountId}?`;
     let first = false;
@@ -223,7 +245,7 @@ const EdaraStocks = () => {
                 <div className="flex w-full justify-between items-end gap-3">
                   <div className="flex items-end gap-3 w-full">
                     <div className="w-80">
-                      <Select
+                      {/* <Select
                         id="account name"
                         label={`${t("account name")}`}
                         name="account_id"
@@ -244,6 +266,44 @@ const EdaraStocks = () => {
                           accountNameDataSelectIsFetching ||
                           accountNameDataSelectIsRefetching
                         }
+                      /> */}
+
+                      <Select
+                        id="account name"
+                        name="account_id"
+                        placeholder={t("account name")}
+                        loadingPlaceholder={t("loading")}
+                        isSearchable
+                        options={accountsNameDataSelect}
+                        value={accountsNameDataSelect?.find(
+                          (option) => option.id === accountId
+                        )}
+                        onChange={(option: any) => {
+                          setFieldValue("account_id", option.id);
+                          setAccountId(option?.id);
+                          resetForm();
+                        }}
+                        isLoading={accountNameDataSelectIsLoading}
+                        isDisabled={
+                          accountNameDataSelectIsLoading ||
+                          accountNameDataSelectIsFetching ||
+                          accountNameDataSelectIsRefetching
+                        }
+                        getOptionLabel={(e: any) => e.labelText}
+                        formatOptionLabel={(e: any) => (
+                          <p className="flex justify-between items-center">
+                            <span>{e.labelText}</span>
+                            <span
+                              className={`text-[9px] text-white p-[5px] rounded-lg ${
+                                e.unit_id === 2
+                                  ? "bg-mainGreen"
+                                  : "bg-mainOrange"
+                              }`}
+                            >
+                              {e.unit}
+                            </span>
+                          </p>
+                        )}
                       />
                     </div>
                     <div className="">
@@ -287,21 +347,15 @@ const EdaraStocks = () => {
                 </div>
 
                 <div className="mt-14">
-                  {edaraCredit?.data?.boxes?.length > 0 ? (
+                  {isLoading || isFetching || isRefetching ? (
+                    <Loading mainTitle="loading" />
+                  ) : edaraCredit?.data?.boxes?.length > 0 ? (
                     <>
                       <div className="mb-6">
                         <h2 className="text-center text-mainGreen flex justify-between">
                           <p className="text-2xl font-bold flex items-center gap-2">
-                            <span>
-                              {edaraCredit?.data?.accountable &&
-                                edaraCredit?.data?.accountable}
-                            </span>
-                            <span>
-                              (
-                              {edaraCredit?.data?.unit &&
-                                edaraCredit?.data?.unit}
-                              )
-                            </span>
+                            <span>{edaraCredit?.data?.accountable}</span>
+                            <span>({edaraCredit?.data?.unit})</span>
                           </p>
                           <p className="text-base font-bold flex items-center gap-2">
                             {dataSource?.length === 1 ? (
@@ -315,24 +369,22 @@ const EdaraStocks = () => {
                                 <span className="-my-1">
                                   {dataSource[0]?.date}
                                 </span>
-                                <span> {t("to")} </span>
+                                <span>{t("to")}</span>
                                 <span className="-my-1">
                                   {dataSource[dataSource?.length - 1]?.date}
                                 </span>
                               </>
-                            ) : (
-                              ""
-                            )}
+                            ) : null}
                           </p>
                           <p className="text-sm flex items-center gap-2 font-bold bg-mainGreen text-white py-2 px-4 rounded-md">
                             <span>{t("account number")}</span>
                             <span className="-my-1">
-                              {edaraCredit?.data?.numeric_system &&
-                                edaraCredit?.data?.numeric_system}
+                              {edaraCredit?.data?.numeric_system}
                             </span>
                           </p>
                         </h2>
                       </div>
+
                       <TableComponent
                         isInitialLoading={isInitialLoading}
                         isLoading={isLoading}

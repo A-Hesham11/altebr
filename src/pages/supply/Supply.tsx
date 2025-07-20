@@ -51,11 +51,13 @@ export const Supply = ({ title }: GoldSupplyProps_TP) => {
   const [supplierTaxDiamond, setSupplierTaxDiamond] =
     useState<supplierTax_TP>("no");
   const [finalData, setFinalData] = useState<FinalData_TP>();
+  console.log("🚀 ~ Supply ~ finalData:", finalData)
   const [data, setData] = useState<OTableDataTypes[]>([]);
   const [boxValues, setBoxValues] = useState<OTableDataTypes[]>([]);
   const [editData, setEditData] = useState<OTableDataTypes>(
     {} as OTableDataTypes
   );
+  console.log("🚀 ~ Supply ~ editData:", editData)
   const [supply, setSupply] = useState<Supply_TP>();
   const [boxesView, setBoxesView] = useState<Box_TP[] | undefined>();
   const [goldPriceToday, setGoldPriceToday] = useState("");
@@ -185,7 +187,7 @@ export const Supply = ({ title }: GoldSupplyProps_TP) => {
           key={supply}
           setBoxesView={setBoxesView}
           supply={supply}
-          formValues={formValues}
+          formValues={formValues} 
           setStage={setStage}
           setFormValues={setFormValues}
           setFinalData={setFinalData}

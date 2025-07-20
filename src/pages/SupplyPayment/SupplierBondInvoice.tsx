@@ -36,13 +36,13 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
   const invoiceHeaderBasicData = {
     first_title: "bill date",
     first_value: item?.date,
-    second_title: "employee name",
-    second_value: item?.employee_name,
+    second_title: "supplier name",
+    second_value: item?.supplier_name,
     bond_date: item?.date,
-    bond_title: "bill no",
+    bond_title: "bond number",
     invoice_number: Number(item?.id) - 1,
     invoice_logo: invoice_logo?.InvoiceCompanyLogo,
-    invoice_text: "simplified tax invoice",
+    invoice_text: "Tax invoice for supplier payment",
   };
 
   const totalFinalCost = item?.items?.reduce((acc, curr) => {
@@ -50,13 +50,34 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
     return acc;
   }, 0);
 
-  const totalGoldAmountGram = item?.items?.reduce((acc, curr) => {
-    acc += +curr.value_gram;
-    return acc;
+  const karatMap = {
+    10001: 18,
+    10002: 21,
+    10003: 22,
+    10004: 24,
+  };
+
+  const totalGoldKarat24 = item?.items.reduce((acc, curr) => {
+    const karat = karatMap[curr.card_id];
+    if (!karat) return acc;
+
+    const valueGram = +curr.value_gram || 0;
+    const convertedTo24 = valueGram * (karat / 24);
+
+    return acc + convertedTo24;
   }, 0);
+
+  // const totalGoldAmountGram = item?.items?.reduce((acc, curr) => {
+  //   acc += +curr.value_gram;
+  //   return acc;
+  // }, 0);
 
   const totalFinalCostIntoArabic = convertNumToArWord(
     Math.round(totalFinalCost)
+  );
+
+  const totalFinalWeightIntoArabic = convertNumToArWord(
+    Math.round(totalGoldKarat24)
   );
 
   const costDataAsProps = {
@@ -70,15 +91,15 @@ const SupplierBondInvoice = ({ item }: { item?: {} }) => {
         type: t("reyal"),
       },
       {
-        totalFinalCostIntoArabic: totalFinalCostIntoArabic,
-        type: t("reyal"),
+        totalFinalCostIntoArabic: totalFinalWeightIntoArabic,
+        type: t("gram"),
       },
     ],
     resultTable: [
       {
         number: t("totals"),
         cost: totalFinalCost,
-        weight: totalGoldAmountGram,
+        weight: totalGoldKarat24,
       },
     ],
   };
