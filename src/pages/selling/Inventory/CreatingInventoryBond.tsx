@@ -36,6 +36,7 @@ const CreatingInventoryBond: React.FC = () => {
     JSON.parse(localStorage.getItem("currentGroup") || "null")
   );
   const [availableItems, setAvailableItems] = useState<InventoryItem[]>([]);
+  console.log("🚀 ~ availableItems:", availableItems)
   const [identitiesCheckedItems, setIdentitiesCheckedItems] = useState<
     InventoryItem[]
   >([]);

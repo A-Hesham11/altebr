@@ -116,6 +116,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     inventoryId: id,
     companyKey: isGetTenantFromUrl,
   };
+  console.log("🚀 ~ BasicCompanyData:", BasicCompanyData)
 
   const totalidentitiesCheckedItems = identitiesCheckedItems?.reduce(
     (sum, group) => sum + (group.items?.length || 0),
@@ -154,6 +155,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   }, [identitiesCheckedItems?.length]);
 
   const handleBondItemsResponse = (data: any) => {
+    console.log("🚀 ~ handleBondItemsResponse ~ data:", data)
     setAvailableItems(data.success ? data?.data?.items : []);
   };
 
