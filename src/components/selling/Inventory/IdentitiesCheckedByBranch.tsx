@@ -136,11 +136,8 @@ const IdentitiesCheckedByBranch = ({
                     );
 
                     return (
-                      <Fragment key={group.id}>
-                        <tr
-                          key={`group-${group.id}`}
-                          className="border-t border-[#db7f2857] bg-[#E8E8E2] w-full text-sm"
-                        >
+                      <Fragment key={`group-${group._id}`}>
+                        <tr className="border-t border-[#db7f2857] bg-[#E8E8E2] w-full text-sm">
                           <td
                             colSpan={columns.length / 2}
                             className="text-start font-bold p-3"
