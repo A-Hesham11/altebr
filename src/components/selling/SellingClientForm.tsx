@@ -48,7 +48,11 @@ const SellingClientForm = () => {
       queryClient.refetchQueries(["all-client"]);
     },
     onError: (error) => {
-      notify("error");
+      console.log(
+        "🚀 ~ SellingClientForm ~ error:",
+        error?.response?.data?.message
+      );
+      notify("error", error?.response?.data?.message);
     },
   });
   function PostNewValue(values: ClientData_TP) {

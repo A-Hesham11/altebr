@@ -7,12 +7,10 @@ import {
 } from "../../components/molecules";
 import { t } from "i18next";
 import { Button } from "../../components/atoms";
-import { Table } from "../../components/templates/reusableComponants/tantable/Table";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { numberContext } from "../../context/settings/number-formatter";
 import { useFetch, useIsRTL } from "../../hooks";
 import { authCtx } from "../../context/auth-and-perm/auth";
-import { Loading } from "../../components/organisms/Loading";
 import { useReactToPrint } from "react-to-print";
 import { ExportToExcel } from "../../components/ExportToFile";
 import { formatDate, getDayAfter } from "../../utils/date";
@@ -42,14 +40,18 @@ const taxPeriodOptions = [
 ];
 
 const checkBoxesOptions = [
-  { id: 1, name: "selling", value: "selling" },
+  { id: 1, name: "vat taxable sales 15%", value: "selling" },
   { id: 2, name: "return selling", value: "return_selling" },
   { id: 3, name: "selling zero", value: "selling_zero" },
   { id: 4, name: "return selling zero", value: "return_selling_zero" },
-  { id: 5, name: "buying", value: "buying" },
+  { id: 5, name: "vat taxable buying 15%", value: "buying" },
   { id: 6, name: "return buying", value: "return_buying" },
   { id: 7, name: "buying zero", value: "buying_zero" },
   { id: 8, name: "return buying zero", value: "return_buying_zero" },
+  { id: 9, name: "exempt purchases", value: "exempt_purchases" },
+  { id: 10, name: "return exempt purchases", value: "return_exempt_purchases" },
+  { id: 11, name: "selling", value: "total_selling" },
+  { id: 12, name: "buying", value: "total_buying" },
   { id: 0, name: "all", value: "all" },
 ];
 
@@ -66,6 +68,9 @@ const EdaraTaxReturn = ({ inBranch }: { inBranch?: boolean }) => {
     inBranch ? userData.branch_id : 1
   );
 
+  const [minDate, setMinDate] = useState<any>(null);
+  const [maxDate, setMaxDate] = useState<any>(null);
+
   const initialValue = {
     tax_period: "",
     months: "",
@@ -81,6 +86,10 @@ const EdaraTaxReturn = ({ inBranch }: { inBranch?: boolean }) => {
     return_buying: false,
     buying_zero: false,
     return_buying_zero: false,
+    exempt_purchases: false,
+    return_exempt_purchases: false,
+    total_selling: false,
+    total_buying: false,
   };
 
   const sellingCols = useMemo<any>(
@@ -214,6 +223,10 @@ const EdaraTaxReturn = ({ inBranch }: { inBranch?: boolean }) => {
       delete req.return_buying;
       delete req.buying_zero;
       delete req.return_buying_zero;
+      delete req.exempt_purchases;
+      delete req.return_exempt_purchases;
+      delete req.total_selling;
+      delete req.total_buying;
     } else {
       // Only include other checkboxes if they're true
       const checkboxKeys = [
@@ -225,6 +238,10 @@ const EdaraTaxReturn = ({ inBranch }: { inBranch?: boolean }) => {
         "return_buying",
         "buying_zero",
         "return_buying_zero",
+        "exempt_purchases",
+        "return_exempt_purchases",
+        "total_selling",
+        "total_buying",
       ];
 
       checkboxKeys.forEach((key) => {
@@ -318,16 +335,54 @@ const EdaraTaxReturn = ({ inBranch }: { inBranch?: boolean }) => {
       <Formik
         initialValues={initialValue}
         onSubmit={(values: any) => {
+          let toDate;
+
+          if (values.to) {
+            toDate = formatDate(getDayAfter(new Date(values.to)));
+          }
+
+          if (values.from && !values.to) {
+            toDate = formatDate(new Date());
+          }
+
           getSearchResults({
             ...values,
             from: values.from
               ? formatDate(getDayAfter(new Date(values.from)))
               : "",
-            to: values.to ? formatDate(getDayAfter(new Date(values.to))) : "",
+            to: toDate,
           });
         }}
       >
-        {({ handleSubmit, setFieldValue }) => {
+        {({ handleSubmit, setFieldValue, values }) => {
+          useEffect(() => {
+            const year = values.year;
+            const taxPeriod = values.tax_period;
+
+            if (!year || !taxPeriod) {
+              setMinDate(null);
+              setMaxDate(null);
+              return;
+            }
+
+            const periods: any = {
+              "1": { start: `${year}-01-01`, end: `${year}-03-31` },
+              "2": { start: `${year}-04-01`, end: `${year}-06-30` },
+              "3": { start: `${year}-07-01`, end: `${year}-09-30` },
+              "4": { start: `${year}-10-01`, end: `${year}-12-31` },
+            };
+
+            const period = periods[taxPeriod];
+
+            if (period) {
+              setMinDate(new Date(period.start));
+              setMaxDate(new Date(period.end));
+            } else {
+              setMinDate(null);
+              setMaxDate(null);
+            }
+          }, [values.tax_period, values.year]);
+
           return (
             <form onSubmit={handleSubmit} className="space-y-14">
               <div className="grid grid-cols-5 gap-4">
@@ -370,17 +425,21 @@ const EdaraTaxReturn = ({ inBranch }: { inBranch?: boolean }) => {
                 <div>
                   <DateInputField
                     label={`${t("from")}`}
-                    placeholder={`${t("from")}`}
+                    placeholder={minDate ? formatDate(minDate) : `${t("from")}`}
                     labelProps={{ className: "mb-1" }}
                     name="from"
+                    minDate={minDate}
+                    maxDate={maxDate}
                   />
                 </div>
                 <div>
                   <DateInputField
                     label={`${t("to")}`}
-                    placeholder={`${t("to")}`}
+                    placeholder={maxDate ? formatDate(maxDate) : `${t("to")}`}
                     labelProps={{ className: "mb-1" }}
                     name="to"
+                    minDate={minDate}
+                    maxDate={maxDate}
                   />
                 </div>
 
@@ -395,11 +454,11 @@ const EdaraTaxReturn = ({ inBranch }: { inBranch?: boolean }) => {
               <div className="grid grid-cols-5 gap-6">
                 {checkBoxesOptions.map((option) => (
                   <Checkbox
-                    labelClassName="text-base"
                     key={option.id}
                     name={option.value}
                     label={`${t(option.name)}`}
                     id={option.value}
+                    labelClassName="text-sm"
                     onChange={(e) => {
                       setFieldValue(option.value, e.target.checked);
                     }}
