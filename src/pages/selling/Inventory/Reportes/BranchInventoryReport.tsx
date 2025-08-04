@@ -17,6 +17,33 @@ const BranchInventoryReport = ({ dataSource, date, reportNumber }: any) => {
   const { formatGram, formatReyal } = numberContext();
   const { state } = useLocation();
 
+  const listItems = [
+    {
+      drop_id: "d",
+      title: t("Branch Inventory Report"),
+      report_name: t("Branch Inventory Report"),
+    },
+    {
+      drop_id: "e",
+      title: t("Minutes of delivery of custody"),
+      report_name: "Custody Handover Report",
+    },
+    {
+      drop_id: "f",
+      title: t("Minutes of receipt of the trust"),
+      report_name: "Custody Receipt Report",
+    },
+    {
+      drop_id: "g",
+      title: t("Inventory report"),
+      report_name: "Branch inventory report",
+    },
+  ];
+
+  const listItemFilter = listItems.filter(
+    (item) => item.drop_id === state.reportID
+  );
+
   const BanksData = Object.entries({ ...dataSource?.banks }).map(
     ([bankName, value]) => ({
       title: bankName,
@@ -293,7 +320,7 @@ const BranchInventoryReport = ({ dataSource, date, reportNumber }: any) => {
           <div className="flex justify-center flex-col items-center">
             <img src={Logo} alt="logo" className="mx-auto" />
             <h2 className="text-lg font-semibold">
-              {t("Lost and Found Report")}
+              {t(listItemFilter?.[0]?.report_name)}
             </h2>
           </div>
           <div className="flex justify-end">
@@ -330,6 +357,39 @@ const BranchInventoryReport = ({ dataSource, date, reportNumber }: any) => {
           <div className="bg-white mt-8 p-12 rounded-xl text-[17.3px] text-center">
             <span>
               {t("I, the undersigned")} /{" "}
+              <span className="font-semibold">
+                ...............................................
+              </span>{" "}
+              , {t("nationality")} /{" "}
+              <span className="font-semibold">
+                ......................................
+              </span>{" "}
+              , {t("ID No. :")}{" "}
+              <span className="font-semibold">
+                ...........................................
+              </span>{" "}
+              , {t("issued by")} / ...................................
+              <p className="mt-2.5">
+                {t("I acknowledge the existence of the details shown above on")}{" "}
+                /{" "}
+                <span className="font-semibold">
+                  .................................
+                </span>{" "}
+                ,
+                <span>
+                  {t(
+                    "With all its details in cash and gold, and I am responsible for it"
+                  )}
+                </span>
+              </p>
+            </span>
+          </div>
+        )}
+
+        {/* {["g"].includes(state?.reportID) && (
+          <div className="bg-white mt-8 p-12 rounded-xl text-[17.3px] text-center">
+            <span>
+              {t("I, the undersigned")} /{" "}
               <span className="font-semibold">{userData?.name}</span> ,{" "}
               {t("nationality")} /{" "}
               <span className="font-semibold">
@@ -345,9 +405,32 @@ const BranchInventoryReport = ({ dataSource, date, reportNumber }: any) => {
               )}
             </p>
           </div>
+        )} */}
+
+        {["f"].includes(state?.reportID) && (
+          <div className="flex items-center justify-between mt-8 mb-4">
+            <div className="text-center">
+              <h2 className="font-medium">
+                {t(
+                  "Names and signatures of the members of the inventory committee"
+                )}
+              </h2>
+              <p className="text-xl mt-1.5">
+                .................................................
+              </p>
+            </div>
+            <div className="text-center">
+              <h2 className="font-medium">
+                {t("Name and signature of the Muslim covenant")}
+              </h2>
+              <p className="text-xl mt-1.5">
+                .................................................
+              </p>
+            </div>
+          </div>
         )}
 
-        {["e", "f", "g"].includes(state?.reportID) && (
+        {["e", "g"].includes(state?.reportID) && (
           <div className="flex items-center justify-between mt-8 mb-4">
             <div className="text-center">
               <h2 className="font-medium">

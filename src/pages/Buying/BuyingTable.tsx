@@ -43,6 +43,7 @@ export const BuyingTable = ({
 }: SellingTableInputData_TP) => {
   const { formatGram, formatReyal } = numberContext();
   const { values, setFieldValue } = useFormikContext();
+  console.log("🚀 ~ values:", values);
   const { userData } = useContext(authCtx);
   const [data, setData] = useState("");
   const isDisabled = userData?.is_sellingInvoice === 1;
@@ -268,6 +269,57 @@ export const BuyingTable = ({
                 type="text"
                 required
                 className={`text-center`}
+                onChange={(e) => {
+                  const karat = Number(values?.karat_name);
+
+                  if (!!karat) {
+                    const totalValues =
+                      +goldPrice[karat].toFixed(2) * Number(e.target.value);
+                    const priceWithCommissionRate =
+                      +totalValues -
+                      +totalValues * (+maxingUser?.max_buy * 0.01);
+                    const priceWithCommissionCash =
+                      +totalValues - +maxingUser?.max_buy;
+                    const priceWithSellingPolicy =
+                      maxingUser?.max_buy_type === "نسبة"
+                        ? priceWithCommissionRate
+                        : priceWithCommissionCash;
+
+                    setFieldValue("value", +priceWithSellingPolicy);
+
+                    const foundedTax = taxes?.find((item) => {
+                      return (
+                        (item.karat_name === "" &&
+                          item.karat_name !== karat &&
+                          item.category_id === null &&
+                          item.category_id !== values?.category_id) ||
+                        (item.karat_name !== "" &&
+                          item.karat_name === karat &&
+                          item.category_id !== null &&
+                          item.category_id === values?.category_id) ||
+                        (item.karat_name === "" &&
+                          item.karat_name !== karat &&
+                          item.category_id !== null &&
+                          item.category_id === values?.category_id) ||
+                        (item.karat_name !== "" &&
+                          item.karat_name === karat &&
+                          item.category_id === null &&
+                          item.category_id !== values?.category_id)
+                      );
+                    });
+
+                    setFieldValue(
+                      "value_added_tax",
+                      +priceWithSellingPolicy * +foundedTax?.tax_rate * 0.01
+                    );
+
+                    setFieldValue(
+                      "total_value",
+                      +priceWithSellingPolicy * +foundedTax?.tax_rate * 0.01 +
+                        +priceWithSellingPolicy
+                    );
+                  }
+                }}
               />
             </td>
             <td className="border-l-2 border-l-flatWhite w-36">

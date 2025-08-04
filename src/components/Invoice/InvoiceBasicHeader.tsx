@@ -48,6 +48,15 @@ const InvoiceBasicHeader = ({ invoiceHeaderData }: any) => {
             </span>{" "}
           </p>
         )}
+
+        {invoiceHeaderData?.fourth_title && (
+          <p className="font-semibold">
+            {t(invoiceHeaderData?.fourth_title)} :{" "}
+            <span className="font-medium">
+              {invoiceHeaderData?.fourth_value}
+            </span>{" "}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -216,21 +216,38 @@ const BranchStocks = () => {
         accessorKey: "movement_credit",
         header: () => <span>{t("creditor movement")}</span>,
       },
+      // {
+      //   cell: (info: any) =>
+      //     Number(info.getValue()) > 0
+      //       ? formatReyal(Number(info.getValue()).toFixed(2))
+      //       : "---",
+      //   accessorKey: "balance_debtor",
+      //   header: () => <span>{t("debtor balance")}</span>,
+      // },
+      // {
+      //   cell: (info: any) =>
+      //     Number(info.getValue()) > 0
+      //       ? `(${formatReyal(Number(info.getValue()).toFixed(2))})`
+      //       : "---",
+      //   accessorKey: "balance_credit",
+      //   header: () => <span>{t("creditor balance")}</span>,
+      // },
       {
-        cell: (info: any) =>
-          Number(info.getValue()) > 0
-            ? formatReyal(Number(info.getValue()).toFixed(2))
-            : "---",
-        accessorKey: "balance_debtor",
-        header: () => <span>{t("debtor balance")}</span>,
-      },
-      {
-        cell: (info: any) =>
-          Number(info.getValue()) > 0
-            ? `(${formatReyal(Number(info.getValue()).toFixed(2))})`
-            : "---",
-        accessorKey: "balance_credit",
-        header: () => <span>{t("creditor balance")}</span>,
+        accessorKey: "balance_combined",
+        header: () => <span>{t("balance")}</span>,
+        cell: (info: any) => {
+          const row = info.row.original;
+          const debtor = Number(row.balance_debtor);
+          const creditor = Number(row.balance_credit);
+
+          if (debtor > 0) {
+            return formatReyal(debtor);
+          } else if (creditor > 0) {
+            return `(${formatReyal(creditor)})`;
+          } else {
+            return "---";
+          }
+        },
       },
     ],
     []
@@ -252,6 +269,10 @@ const BranchStocks = () => {
       unit: data?.unit_id,
     };
   });
+
+  const sortedDataSource = useMemo(() => {
+    return [...dataSource].sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [dataSource]);
 
   return (
     <div>
@@ -443,7 +464,7 @@ const BranchStocks = () => {
                         isLoading={isLoading}
                         isRefetching={isRefetching}
                         isFetching={isFetching}
-                        data={dataSource || []}
+                        data={sortedDataSource || []}
                         columns={tableColumn}
                       />
                     </>

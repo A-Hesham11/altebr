@@ -1754,6 +1754,14 @@
   "vat taxable sales 15%": "مبيعات خاضعه لضريبة 15 %",
   "vat taxable buying 15%": "مشتريات خاضعه لضريبة 15 %",
   "exempt purchases": "مشتريات خصومة",
-  "return exempt purchases": "مردود مشتريات خصومة"
-  "Tax invoice for supplier payment": "فاتورة ضربيه الي سداد المورد"
+  "return exempt purchases": "مردود مشتريات خصومة",
+  "Tax invoice for supplier payment": "فاتورة ضربيه الي سداد المورد",
+  "budget bond": "سند موازنة",
+  "I acknowledge the existence of the details shown above on": "أقر بوجود التفاصيل الموضحة أعلاه بتاريخ",
+  "With all its details in cash and gold, and I am responsible for it": "بكل تفاصيلها نقداً وذهباً، ومسؤوليتي عنها",
+  "Name and signature of the Muslim covenant": "اسم وتوقيع مسلم العهدة",
+  "I promise to pay by this promissory note": "اتعهد بأن أدفع بموجب هذا السند لأمر",
+  "Amount": "مبلغاً وقدره",
+  "on the date": " بتاريخ ",
+  "The bearer of this bond is exempt from protest.": "حامل هذا السند يعفى من الاحتجاج"
 }

@@ -192,7 +192,7 @@ const BreakageCashLossReport = ({ dataSource, reportNumber, date }: any) => {
           <div className="flex justify-center flex-col items-center">
             <img src={Logo} alt="logo" className="mx-auto" />
             <h2 className="text-lg font-semibold">
-              {t("Lost and Found Report")}
+              {t("Breakage and Cash Loss Report")}
             </h2>
           </div>
           <div className="flex justify-end">

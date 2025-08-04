@@ -48,10 +48,10 @@ const checkBoxesOptions = [
   { id: 6, name: "return buying", value: "return_buying" },
   { id: 7, name: "buying zero", value: "buying_zero" },
   { id: 8, name: "return buying zero", value: "return_buying_zero" },
-  { id: 9, name: "exempt purchases", value: "exempt_purchases" },
-  { id: 10, name: "return exempt purchases", value: "return_exempt_purchases" },
-  { id: 11, name: "selling", value: "total_selling" },
-  { id: 12, name: "buying", value: "total_buying" },
+  // { id: 9, name: "exempt purchases", value: "exempt_purchases" },
+  // { id: 10, name: "return exempt purchases", value: "return_exempt_purchases" },
+  // { id: 11, name: "selling", value: "total_selling" },
+  // { id: 12, name: "buying", value: "total_buying" },
   { id: 0, name: "all", value: "all" },
 ];
 

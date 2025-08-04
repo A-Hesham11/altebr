@@ -20,6 +20,7 @@ import ShowDetailsItemOfInventory from "./ShowDetailsItemOfInventory";
 import WeightAdjustmentInBranch from "../../../components/selling/Inventory/WeightAdjustmentInBranch";
 import InventoryKitInBranch from "../../../components/selling/Inventory/InventoryKitInBranch";
 import { Group_TP } from "./CreatingInventoryBond";
+import { Loading } from "../../../components/organisms/Loading";
 
 const playBeep = (frequency: number) => {
   const context = new (window.AudioContext || window.webkitAudioContext)();
@@ -108,6 +109,12 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   const [editWeight, setEditWeight] = useState({});
   const [activeTableId, setActiveTableId] = useState<string | null>(null);
   const [nextGroup, setNextGroup] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
+  // const [responsesReceived, setResponsesReceived] = useState({
+  //   bondItems: false,
+  //   roomData: false,
+  //   missingPieces: false,
+  // });
 
   const numbers = ConvertNumberToWordGroup();
 
@@ -116,7 +123,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     inventoryId: id,
     companyKey: isGetTenantFromUrl,
   };
-  console.log("🚀 ~ BasicCompanyData:", BasicCompanyData)
+  console.log("🚀 ~ BasicCompanyData:", BasicCompanyData);
 
   const totalidentitiesCheckedItems = identitiesCheckedItems?.reduce(
     (sum, group) => sum + (group.items?.length || 0),
@@ -154,42 +161,89 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     setNextGroup(identitiesCheckedItems?.length);
   }, [identitiesCheckedItems?.length]);
 
+  // useEffect(() => {
+  //   const allReceived = Object.values(responsesReceived).every(Boolean);
+  //   if (allReceived) setLoading(false);
+  // }, [responsesReceived]);
+
   const handleBondItemsResponse = (data: any) => {
-    console.log("🚀 ~ handleBondItemsResponse ~ data:", data)
+    console.log("🚀 ~ handleBondItemsResponse ~ data:", data);
     setAvailableItems(data.success ? data?.data?.items : []);
+    setLoading(false);
   };
 
   const handleRoomData = (data: any) => {
+    console.log("🚀 ~ handleRoomData ~ data:", data);
     setIdentitiesCheckedItems(data.success ? data?.data : []);
   };
 
   const handleUnknownIdentitiesData = (data: any) => {
+    console.log("🚀 ~ handleUnknownIdentitiesData ~ data:", data);
     setUnknownIdentities(data.success ? data?.data : []);
   };
 
   useEffect(() => {
-    socket.on("connect");
+    const setupListeners = () => {
+      socket
+        .off("getBondItemsResponse")
+        .on("getBondItemsResponse", handleBondItemsResponse);
+      socket.off("roomData").on("roomData", handleRoomData);
+      socket
+        .off("getmissingPieceResponse")
+        .on("getmissingPieceResponse", handleUnknownIdentitiesData);
+    };
 
-    socket.emit("joinBranch", BasicCompanyData);
+    const emitRequests = () => {
+      socket.emit("joinBranch", BasicCompanyData);
+      socket.emit("getBondItems", BasicCompanyData);
+      socket.emit("getRooms", BasicCompanyData);
+      socket.emit("getmissingPieces", BasicCompanyData);
+    };
 
-    socket.emit("getBondItems", BasicCompanyData);
-    socket.on("getBondItemsResponse", handleBondItemsResponse);
+    if (socket.connected) {
+      setupListeners();
+      emitRequests();
+    } else {
+      socket.once("connect", () => {
+        setupListeners();
+        emitRequests();
+      });
 
-    socket.emit("getRooms", BasicCompanyData);
-    socket.on("roomData", handleRoomData);
-
-    socket.emit("getmissingPieces", BasicCompanyData);
-    // socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
-    socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
+      socket.connect();
+    }
 
     return () => {
       socket.off("getBondItemsResponse", handleBondItemsResponse);
       socket.off("roomData", handleRoomData);
-      // socket.off("getmissingPieces", handleUnknownIdentitiesData);
       socket.off("getmissingPieceResponse", handleUnknownIdentitiesData);
+      socket.off("connect");
       socket.disconnect();
     };
   }, []);
+
+  // useEffect(() => {
+  //   socket.on("connect");
+
+  //   socket.emit("joinBranch", BasicCompanyData);
+
+  //   socket.emit("getBondItems", BasicCompanyData);
+  //   socket.on("getBondItemsResponse", handleBondItemsResponse);
+
+  //   socket.emit("getRooms", BasicCompanyData);
+  //   socket.on("roomData", handleRoomData);
+
+  //   socket.emit("getmissingPieces", BasicCompanyData);
+  //   // socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
+  //   socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
+
+  //   return () => {
+  //     socket.off("getBondItemsResponse", handleBondItemsResponse);
+  //     socket.off("roomData", handleRoomData);
+  //     // socket.off("getmissingPieces", handleUnknownIdentitiesData);
+  //     socket.off("getmissingPieceResponse", handleUnknownIdentitiesData);
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
   const addItemToIdentity = (id: string, newItem: Item, isChecked: boolean) => {
     const isGroupExists = identitiesCheckedItems.some(
@@ -479,6 +533,8 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     });
   };
   // End Of The Inventory Process For Employees
+
+  if (loading) return <Loading mainTitle="Inventory" />;
 
   return (
     <div className="px-10 py-8">

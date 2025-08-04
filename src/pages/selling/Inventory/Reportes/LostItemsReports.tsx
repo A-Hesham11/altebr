@@ -289,6 +289,29 @@ const LostItemsReports = ({ dataSource, reportNumber, date }: any) => {
           </p>
         </div> */}
 
+        <div className="bg-white mt-8 p-12 rounded-xl text-[17.3px] text-center">
+          <span>
+            {t("I, the undersigned")} /{" "}
+            <span className="font-semibold">
+              ...............................................
+            </span>{" "}
+            , {t("nationality")} /{" "}
+            <span className="font-semibold">
+              ...................................
+            </span>{" "}
+            , {t("ID No. :")}{" "}
+            <span className="font-semibold">
+              .......................................
+            </span>{" "}
+            , {t("issued by")} / ...............................
+          </span>
+          <p className="mt-2.5">
+            {t(
+              "I acknowledge that I have lost the items shown in full details, cash and gold, and that I am fully responsible for them as they were in my custody and under my responsibility."
+            )}
+          </p>
+        </div>
+
         <div className="flex items-center justify-between mt-8 mb-4">
           <div className="text-center">
             <h2 className="text-[17px] font-medium">
