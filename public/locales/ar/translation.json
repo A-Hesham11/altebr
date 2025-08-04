@@ -1754,6 +1754,11 @@
   "vat taxable sales 15%": "مبيعات خاضعه لضريبة 15 %",
   "vat taxable buying 15%": "مشتريات خاضعه لضريبة 15 %",
   "exempt purchases": "مشتريات خصومة",
-  "return exempt purchases": "مردود مشتريات خصومة"
-  "Tax invoice for supplier payment": "فاتورة ضربيه الي سداد المورد"
+  "return exempt purchases": "مردود مشتريات خصومة",
+  "Tax invoice for supplier payment": "فاتورة ضربيه الي سداد المورد",
+  "expand all": "عرض كافة الحسابات",
+  "collapse all": "اخفاء كافة الحسابات",
+  "accounts count": "عدد الحسابات",
+  "loading expand all": "جاري عرض كافة الحسابات",
+  "no results for": "لا يوجد نتائج ل"
 }
