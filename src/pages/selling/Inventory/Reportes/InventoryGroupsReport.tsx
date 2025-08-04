@@ -26,7 +26,7 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
       value: dataSource?.reduce((acc, curr) => {
         return +acc + Number(curr.weight_to_24);
       }, 0),
-      unit: t("weight"),
+      unit: t("gram"),
     },
   ];
 
@@ -125,7 +125,7 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
           <div className="flex justify-center flex-col items-center">
             <img src={Logo} alt="logo" className="mx-auto" />
             <h2 className="text-lg font-semibold">
-              {t("Lost and Found Report")}
+              {t("Inventory groups")}
             </h2>
           </div>
           <div className="flex justify-end">
@@ -146,7 +146,7 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
               <div className="bg-[#295E560D] border border-mainGreen p-2.5 text-mainGreen rounded-b-xl">
                 <p>
                   <span className="font-semibold">{item.value ?? 0}</span>{" "}
-                  {t("item")}
+                  {item.unit}
                 </p>
               </div>
             </li>

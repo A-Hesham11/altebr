@@ -131,21 +131,29 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
 
   const handleSuccessInventoryData = () => {
     notify("success");
-    ["currenGroup", "weightItems"].forEach((key) =>
+    ["currentGroup", "weightItems"].forEach((key) =>
       localStorage.removeItem(key)
     );
     navigate("/selling/inventory/view");
   };
 
-  const handlePostInventoryData = () => {
-    const formatItems = (items: any) =>
-      items?.map(({ branch_id, branchId, companyKey, ...rest }) => ({
+  const chunkArray = (arr: any[], size: number) => {
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += size) {
+      chunks.push(arr.slice(i, i + size));
+    }
+    return chunks;
+  };
+
+  const handlePostInventoryData = async () => {
+    const formatItems = (items: any[]) =>
+      items.map(({ branch_id, branchId, companyKey, ...rest }) => ({
         inventory_id: id,
         branch_id: userData?.branch_id,
         branch_exist_id: branch_id,
-        item_id: rest.item_id ? rest.item_id : rest.itemId,
+        item_id: rest.item_id || rest.itemId,
         value:
-          rest.classification_id == 1
+          rest.classification_id === 1
             ? Number(rest.wage) * Number(rest.weight)
             : rest.diamond_value,
         ...rest,
@@ -153,34 +161,117 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
 
     const formattedAvailableItems = formatItems(availableItems);
     const lostItems = formatItems(unknownIdentities);
-    const combinedLostItems = [...lostItems, ...formattedAvailableItems];
+    const combinedItems = [...lostItems, ...formattedAvailableItems];
 
-    const { cash, gold_18, gold_21, gold_22, gold_24, ...rest } =
+    const chunks = chunkArray(combinedItems, 200);
+
+    const { cash, gold_18, gold_21, gold_22, gold_24, ...banks } =
       goldBrokenCashBanksFinalData;
 
-    const goldAndCash = {
-      inventory_id: id,
-      branch_id: userData?.branch_id,
-      cash,
-      gold_18,
-      gold_21,
-      gold_22,
-      gold_24,
-    };
+    for (let i = 0; i < chunks.length; i++) {
+      const isLast = i === chunks.length - 1;
 
-    mutateInventoryData({
-      endpointName: `/inventory/api/v1/missinginventories`,
-      values: {
-        branch_id: userData?.branch_id,
-        employee_id: userData?.id,
-        type_employe: false,
-        inventory_id: id,
-        lostItems: combinedLostItems,
-        goldAndCash,
-        banks: rest,
-      },
-    });
+      mutateInventoryData({
+        endpointName: `/inventory/api/v1/missinginventories`,
+        values: {
+          lostItems: chunks[i],
+          inventory_id: id,
+          branch_id: userData?.branch_id,
+          employee_id: userData?.id,
+          is_last_chunk: isLast,
+          goldAndCash: {
+            inventory_id: id,
+            branch_id: userData?.branch_id,
+            cash,
+            gold_18,
+            gold_21,
+            gold_22,
+            gold_24,
+          },
+          banks,
+          type_employe: false,
+          // ...(isLast && {
+          //   goldAndCash: {
+          //     inventory_id: id,
+          //     branch_id: userData?.branch_id,
+          //     cash,
+          //     gold_18,
+          //     gold_21,
+          //     gold_22,
+          //     gold_24,
+          //   },
+          //   banks,
+          //   type_employe: false,
+          // }),
+        },
+      });
+      // console.log("🚀 ~ handlePostInventoryData ~ values", {
+      //   lostItems: chunks[i],
+      //   inventory_id: id,
+      //   branch_id: userData?.branch_id,
+      //   employee_id: userData?.id,
+      //   is_last_chunk: isLast,
+      //   ...(isLast && {
+      //     goldAndCash: {
+      //       inventory_id: id,
+      //       branch_id: userData?.branch_id,
+      //       cash,
+      //       gold_18,
+      //       gold_21,
+      //       gold_22,
+      //       gold_24,
+      //     },
+      //     banks,
+      //     type_employe: false,
+      //   }),
+      // });
+    }
   };
+
+  // const handlePostInventoryData = () => {
+  //   const formatItems = (items: any) =>
+  //     items?.map(({ branch_id, branchId, companyKey, ...rest }) => ({
+  //       inventory_id: id,
+  //       branch_id: userData?.branch_id,
+  //       branch_exist_id: branch_id,
+  //       item_id: rest.item_id ? rest.item_id : rest.itemId,
+  //       value:
+  //         rest.classification_id == 1
+  //           ? Number(rest.wage) * Number(rest.weight)
+  //           : rest.diamond_value,
+  //       ...rest,
+  //     }));
+
+  //   const formattedAvailableItems = formatItems(availableItems);
+  //   const lostItems = formatItems(unknownIdentities);
+  //   const combinedLostItems = [...lostItems, ...formattedAvailableItems];
+
+  //   const { cash, gold_18, gold_21, gold_22, gold_24, ...rest } =
+  //     goldBrokenCashBanksFinalData;
+
+  //   const goldAndCash = {
+  //     inventory_id: id,
+  //     branch_id: userData?.branch_id,
+  //     cash,
+  //     gold_18,
+  //     gold_21,
+  //     gold_22,
+  //     gold_24,
+  //   };
+
+  //   mutateInventoryData({
+  //     endpointName: `/inventory/api/v1/missinginventories`,
+  //     values: {
+  //       branch_id: userData?.branch_id,
+  //       employee_id: userData?.id,
+  //       type_employe: false,
+  //       inventory_id: id,
+  //       lostItems: combinedLostItems,
+  //       goldAndCash,
+  //       banks: rest,
+  //     },
+  //   });
+  // };
 
   const { mutate: mutateInventoryData, isLoading: isLoadingInventoryData } =
     useMutate({

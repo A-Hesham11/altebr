@@ -11,7 +11,7 @@ import { useFetch, useIsRTL } from "../../../hooks";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Loading } from "../../../components/organisms/Loading";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiSpreadsheet } from "react-icons/bi";
 import InventoryEntry from "./InventoryEntry";
 import TableEntry from "../../../components/templates/reusableComponants/tantable/TableEntry";
@@ -154,13 +154,9 @@ const ViewInventoryBonds = () => {
             >
               {statusBond === 0 ? (
                 <>
-                  <ViewIcon
-                    size={19}
-                    className="text-mainGreen"
-                    action={() => {
-                      navigate(`/selling/inventory/create/${rowId}`);
-                    }}
-                  />
+                  <Link to={`/selling/inventory/create/${rowId}`}>
+                    <ViewIcon size={19} className="text-mainGreen" />
+                  </Link>
                   {userData?.role_id === 3 && (
                     <EditIcon
                       size={19}

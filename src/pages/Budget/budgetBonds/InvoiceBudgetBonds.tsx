@@ -7,12 +7,16 @@ import BudgetSecondScreenHeader from "../budgetInvoice/budgetSecondPage/BudgetSe
 import { DownloadAsPDF } from "../../../utils/DownloadAsPDF";
 import { Button } from "../../../components/atoms";
 import InvoiceFooter from "../../../components/Invoice/InvoiceFooter";
+import { useReactToPrint } from "react-to-print";
+import { GlobalDataContext } from "../../../context/settings/GlobalData";
+import InvoiceBasicHeader from "../../../components/Invoice/InvoiceBasicHeader";
 
 const InvoiceBudgetBonds = ({ selectedItem }) => {
   const contentRef = useRef();
   const { formatGram, formatReyal } = numberContext();
   const mainDataBoxes = selectedItem?.items;
   const isRTL = useIsRTL();
+  const { invoice_logo, gold_price } = GlobalDataContext();
 
   // const budgetOperation = processBudgetData(selectedItem?.items);
   // const formattedBudgetOperation = Object.entries(selectedItem?.items);
@@ -162,15 +166,83 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
     []
   );
 
+  const invoiceHeaderBasicData = {
+    first_title: "bond date",
+    first_value: clientData?.bond_date,
+    second_title: "bank name",
+    second_value: clientData?.bank_name,
+    third_title: "account number",
+    third_value: clientData?.account_number,
+    fourth_title: "transfer cash",
+    fourth_value: `${formatReyal(clientData?.account_balance)} ${t("reyal")}`,
+    bond_date: selectedItem?.invoice_date,
+    bond_title: "budget bond number",
+    invoice_number: Number(clientData?.bond_number),
+    invoice_logo: invoice_logo?.InvoiceCompanyLogo,
+    invoice_text: "budget bond",
+  };
+
+  const handlePrint = useReactToPrint({
+    content: () => contentRef.current,
+    onBeforePrint: () => console.log("before printing..."),
+    onAfterPrint: () => console.log("after printing..."),
+    removeAfterPrint: true,
+    pageStyle: `
+        @page {
+          size: A5 landscape;;
+          margin: 15px !important;
+        }
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact;
+            zoom: 0.5;
+          }
+          .rtl {
+            direction: rtl;
+            text-align: right;
+          }
+          .ltr {
+            direction: ltr;
+            text-align: left;
+          }
+          .container_print {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+          }
+        }
+      `,
+  });
+
   return (
     <div className="overflow-hidden p-10 h-full">
+      <div className="flex justify-end w-full">
+        <Button
+          className="bg-lightWhite text-mainGreen px-7 py-[6px] border-2 border-mainGreen"
+          action={handlePrint}
+        >
+          {t("print")}
+        </Button>
+      </div>
       <div className="py-10">
-        <div className="print-section space-y-12 bg-white  rounded-lg sales-shadow py-5 border-2 border-dashed border-[#C7C7C7] table-shadow ">
+        <div
+          ref={contentRef}
+          className={`${
+            isRTL ? "rtl" : "ltr"
+          } container_print budgetPrint page-break`}
+        >
           <div
-            ref={contentRef}
-            className={`${isRTL ? "rtl" : "ltr"} budgetPrint page-break`}
+            className={`print-header ${
+              invoice_logo?.is_include_header_footer === "1"
+                ? "opacity-1"
+                : "opacity-0 h-12 print:h-80"
+            }`}
           >
-            <BudgetSecondScreenHeader clientData={clientData} />
+            <InvoiceBasicHeader invoiceHeaderData={invoiceHeaderBasicData} />
+          </div>
+          {/* <BudgetSecondScreenHeader clientData={clientData} /> */}
+
+          <div className="print-content mt-4">
             <BudgetSecondPageItems
               firstData={mainDataBoxes || []}
               secondData={[]}
@@ -179,9 +251,7 @@ const InvoiceBudgetBonds = ({ selectedItem }) => {
               costDataAsProps={costDataAsProps}
             />
 
-            <div>
-              <InvoiceFooter />
-            </div>
+            <InvoiceFooter />
           </div>
         </div>
         <div className="flex items-center justify-end gap-x-4 mr-auto mt-8">

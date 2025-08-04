@@ -4,10 +4,10 @@ import { authCtx } from "../../../context/auth-and-perm/auth";
 import InventoryNewGoldDiamondsMiscellaneous from "./InventoryNewGoldDiamondsMiscellaneous";
 import InventoryBrokenGoldCashBox from "./InventoryBrokenGoldCashBox";
 import CompleteInventoryProcess from "./CompleteInventoryProcess";
-import { io } from "socket.io-client";
+import { socket, SOCKET_SERVER_URL } from "../../../utils/socket";
 
-const SOCKET_SERVER_URL = "https://backend.alexonsolutions.net";
-const socket = io(SOCKET_SERVER_URL);
+// const SOCKET_SERVER_URL = "https://backend.alexonsolutions.net";
+// const socket = io(SOCKET_SERVER_URL);
 
 export type Group_TP = {
   id: string;
@@ -35,11 +35,15 @@ const CreatingInventoryBond: React.FC = () => {
   const [currenGroup, setCurrenGroup] = useState<Group_TP | null>(() =>
     JSON.parse(localStorage.getItem("currentGroup") || "null")
   );
+  console.log("🚀 ~ currentGroup:", currenGroup);
+
   const [availableItems, setAvailableItems] = useState<InventoryItem[]>([]);
-  console.log("🚀 ~ availableItems:", availableItems)
+  console.log("🚀 ~ availableItems:", availableItems);
   const [identitiesCheckedItems, setIdentitiesCheckedItems] = useState<
     InventoryItem[]
   >([]);
+  console.log("🚀 ~ identitiesCheckedItems:", identitiesCheckedItems);
+
   const [unknownIdentities, setUnknownIdentities] = useState<InventoryItem[]>(
     []
   );

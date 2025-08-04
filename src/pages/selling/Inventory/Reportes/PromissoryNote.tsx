@@ -20,62 +20,79 @@ const PromissoryNote = ({
   reportName,
 }: any) => {
   const { userData } = useContext(authCtx);
+  console.log("🚀 ~ PromissoryNote ~ userData:", userData);
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { formatGram, formatReyal } = numberContext();
   const { state } = useLocation();
   const [selectedEmployees, setSelectedEmployees] = useState({});
 
+  // const totals = [
+  //   {
+  //     title: t("Gold value"),
+  //     value: formatReyal(dataSource?.assets.cash),
+  //     unit: t("reyal"),
+  //   },
+  //   {
+  //     title: t("diamond value"),
+  //     value: formatReyal(dataSource?.assets.diamond_value),
+  //     unit: t("reyal"),
+  //   },
+  //   {
+  //     title: t("accessory value"),
+  //     value: formatReyal(dataSource?.assets.accessory_value),
+  //     unit: t("reyal"),
+  //   },
+  //   {
+  //     title: t("total wages"),
+  //     value: formatReyal(dataSource?.assets.wages),
+  //     unit: t("reyal"),
+  //   },
+  //   {
+  //     title: t("The value of scrap gold"),
+  //     value: formatReyal(dataSource?.assets.total_weightNewGold_24),
+  //     unit: t("reyal"),
+  //   },
+  //   {
+  //     title: t("Total cash"),
+  //     value: formatReyal(dataSource?.assets.totalCash),
+  //     unit: t("reyal"),
+  //   },
+  // ];
+
   const totals = [
-    {
-      title: t("Gold value"),
-      value: formatReyal(dataSource?.assets.cash),
-      unit: t("reyal"),
-    },
-    {
-      title: t("diamond value"),
-      value: formatReyal(dataSource?.assets.diamond_value),
-      unit: t("reyal"),
-    },
-    {
-      title: t("accessory value"),
-      value: formatReyal(dataSource?.assets.accessory_value),
-      unit: t("reyal"),
-    },
-    {
-      title: t("total wages"),
-      value: formatReyal(dataSource?.assets.wages),
-      unit: t("reyal"),
-    },
-    {
-      title: t("The value of scrap gold"),
-      value: formatReyal(dataSource?.assets.total_weightNewGold_24),
-      unit: t("gram"),
-    },
-    {
-      title: t("Total cash"),
-      value: formatReyal(dataSource?.assets.totalCash),
-      unit: t("reyal"),
-    },
+    dataSource?.assets.cash,
+    dataSource?.assets.diamond_value,
+    dataSource?.assets.accessory_value,
+    dataSource?.assets.wages,
+    dataSource?.assets.total_weightNewGold_24,
+    dataSource?.assets.totalCash,
   ];
 
-  const {
-    data: employeesOptions,
-    isLoading: employeeLoading,
-    refetch: refetchEmployees,
-  } = useFetch<SelectOption_TP[]>({
-    endpoint: `/employeeSalary/api/v1/employee-per-branch/${userData?.branch_id}?per_page=10000`,
-    queryKey: ["employees_Inventory"],
-    select: (employees) =>
-      employees.map((employee) => {
-        return {
-          id: employee.id,
-          value: employee.id || "",
-          label: employee.name || "",
-        };
-      }),
-    onError: (err) => console.log(err),
-  });
+  const totalAmount = totals.reduce((sum, val) => {
+    const num = Number(val);
+    return sum + (isNaN(num) ? 0 : num);
+  }, 0);
+  console.log("🚀 ~ PromissoryNote ~ totalAmount:", totalAmount);
+
+  // const totalAmount = Number(dataSource?.assets.cash);
+  // const {
+  //   data: employeesOptions,
+  //   isLoading: employeeLoading,
+  //   refetch: refetchEmployees,
+  // } = useFetch<SelectOption_TP[]>({
+  //   endpoint: `/employeeSalary/api/v1/employee-per-branch/${userData?.branch_id}?per_page=10000`,
+  //   queryKey: ["employees_Inventory"],
+  //   select: (employees) =>
+  //     employees.map((employee) => {
+  //       return {
+  //         id: employee.id,
+  //         value: employee.id || "",
+  //         label: employee.name || "",
+  //       };
+  //     }),
+  //   onError: (err) => console.log(err),
+  // });
 
   const data = [
     {
@@ -144,12 +161,12 @@ const PromissoryNote = ({
     removeAfterPrint: true,
     pageStyle: `
       @page {
-        size: auto;
         margin: 20px !imporatnt;
       }
       @media print {
         body {
           -webkit-print-color-adjust: exact;
+          zoom: 0.8;
         }
         .break-page {
           page-break-before: always;
@@ -195,9 +212,7 @@ const PromissoryNote = ({
           </div>
           <div className="flex justify-center flex-col items-center">
             <img src={Logo} alt="logo" className="mx-auto" />
-            <h2 className="text-lg font-semibold">
-              {t("Lost and Found Report")}
-            </h2>
+            <h2 className="text-lg font-semibold">{t("Promissory note")}</h2>
           </div>
           <div className="flex justify-end">
             <p>
@@ -206,7 +221,71 @@ const PromissoryNote = ({
           </div>
         </div>
 
-        <div className="no-print">
+        <div className="bg-white mt-8 p-12 rounded-xl text-lg text-start">
+          <span>
+            <p>
+              {t("I promise to pay by this promissory note")} /{" "}
+              <span className="font-semibold">{userData?.branch_name}</span>
+            </p>
+            <div className="flex items-center gap-x-28 my-4">
+              <p>
+                {t("Amount")} / {"  "}
+                <span className="font-semibold">
+                  {formatReyal(totalAmount)} {t("reyal")}
+                </span>
+                {"  "}
+              </p>
+              <p className="font-semibold">
+                {convertNumToArWord(Math.round(totalAmount))} {t("reyal")}{" "}
+                {t("only")}
+              </p>
+            </div>
+            <div>
+              {t("Commercial Registration Number")} /{" "}
+              <span className="font-semibold">
+                {userData?.branch?.zatca_fax_number}
+              </span>{" "}
+              , {t("And its address")}{" "}
+              <span className="font-semibold">{userData?.address}</span>,{" "}
+              {t("on the date")}{" "}
+              <span className="font-semibold">
+                .................................
+              </span>
+            </div>
+            <p className="mt-4 font- font-semibold">
+              {t("The bearer of this bond is exempt from protest.")}
+            </p>
+          </span>
+
+          <p className="mt-6">
+            {t("I hereby commit under this document to the following:")}
+          </p>
+
+          <ul className="text-start mt-5 space-y-3 list-disc">
+            <li>
+              {t(
+                "That I have received all the amounts mentioned above in full and in accordance with what was delivered to me."
+              )}
+            </li>
+            <li>
+              {t(
+                "That I bear all legal and financial responsibilities associated with possessing these amounts as of the date of receipt."
+              )}
+            </li>
+            <li>
+              {t(
+                "That I commit to using or handling these amounts in accordance with the company's instructions, without any breach or violation."
+              )}
+            </li>
+            <li>
+              {t(
+                "That I commit to utilizing or handling these amounts in accordance with the company's instructions, without any breach or violation."
+              )}
+            </li>
+          </ul>
+        </div>
+
+        {/* <div className="no-print">
           <h2 className="font-semibold">{t("Totals")}</h2>
           <ul className="grid grid-cols-4 gap-x-8  gap-y-6 my-6">
             {totals?.map((item, index) => (
@@ -223,13 +302,13 @@ const PromissoryNote = ({
               </li>
             ))}
           </ul>
-        </div>
+        </div> */}
 
-        <div className="print-only my-5">
+        {/* <div className="print-only my-5">
           <Table data={data} columns={columns} />
-        </div>
+        </div> */}
 
-        <div className="bg-white mt-8 p-12 rounded-xl text-[17.3px] no-print">
+        {/* <div className="bg-white mt-8 p-12 rounded-xl text-[17.3px] no-print">
           <Formik initialValues={{ employees: "" }} onSubmit={() => {}}>
             <Form>
               <div className="w-1/3">
@@ -252,13 +331,15 @@ const PromissoryNote = ({
               </div>
             </Form>
           </Formik>
-        </div>
+        </div> */}
 
-        <div className="bg-white mt-8 p-12 rounded-xl text-[17.3px] text-center">
+        {/* <div className="bg-white mt-8 p-12 rounded-xl text-[17.3px] text-center">
           <span>
             {t("I hereby acknowledge")} /{" "}
-            <span className="font-semibold">{selectedEmployees?.label}</span> ,{" "}
-            {t("That I have received on behalf of the company")} /{" "}
+            <span className="font-semibold">
+              ...............................................
+            </span>{" "}
+            , {t("That I have received on behalf of the company")} /{" "}
             <span className="font-semibold">{userData?.branch_name}</span> ,{" "}
             {t("Commercial Registration Number")}{" "}
             <span className="font-semibold">
@@ -294,51 +375,51 @@ const PromissoryNote = ({
               )}
             </li>
           </ul>
-        </div>
+        </div> */}
 
-        <div className="bg-white mt-8 p-11 rounded-xl  flex items-center justify-between  mb-4">
-          <div className="text-start">
+        <div className="bg-white mt-8 p-11 rounded-xl gap-x-20 flex items-center justify-between  mb-4">
+          <div className="text-start w-full">
             <h2 className="font-semibold">{t("Recipient")}</h2>
             <ul className="bg-[#F8F9FB] rounded-xl ps-5 py-5 mt-4 pe-24">
               <li>
                 {t("name")} /{" "}
                 <span className="text-xl mt-1.5">
-                  ............................
+                  ..............................................................................
                 </span>
               </li>
               <li className="my-3.5">
                 {t("Id number")} /{" "}
                 <span className="text-xl mt-1.5">
-                  ............................
+                  ......................................................................
                 </span>
               </li>
               <li>
                 {t("Signature")} /{" "}
                 <span className="text-xl mt-1.5">
-                  ............................
+                  ............................................................................
                 </span>
               </li>
             </ul>
           </div>
-          <div className="text-start">
+          <div className="text-start w-full">
             <h2 className="font-semibold">{t("Company Representative")}</h2>
             <ul className="bg-[#F8F9FB] rounded-xl ps-5 py-5 mt-4 pe-24">
               <li>
                 {t("name")} /{" "}
                 <span className="text-xl mt-1.5">
-                  ............................
+                  ...............................................................................
                 </span>
               </li>
               <li className="my-3.5">
                 {t("Id number")} / {t("commercial register")} /
                 <span className="text-xl mt-1.5">
-                  ............................
+                  ..............................................
                 </span>
               </li>
               <li>
                 {t("Signature")} /{" "}
                 <span className="text-xl mt-1.5">
-                  ............................
+                  ..............................................................................
                 </span>
               </li>
             </ul>

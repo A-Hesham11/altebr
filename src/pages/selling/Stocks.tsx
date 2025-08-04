@@ -12,11 +12,13 @@ import { ExportToExcel } from "../../components/ExportToFile";
 import { TableComponent } from "../stocksInEdara/TableComponent";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { Back } from "../../utils/utils-components/Back";
+import { Loading } from "../../components/organisms/Loading";
 
 const BranchStocks = () => {
   const [search, setSearch] = useState("");
   const isRTL = useIsRTL();
   const [dataSource, setDataSource] = useState([]);
+  console.log("🚀 ~ BranchStocks ~ dataSource:", dataSource);
   const { formatReyal } = numberContext();
   const [accountId, setAccountId] = useState<{ id: number; unit_id: number }>(
     null
@@ -198,21 +200,38 @@ const BranchStocks = () => {
         accessorKey: "movement_credit",
         header: () => <span>{t("creditor movement")}</span>,
       },
+      // {
+      //   cell: (info: any) =>
+      //     Number(info.getValue()) > 0
+      //       ? formatReyal(Number(info.getValue()).toFixed(2))
+      //       : "---",
+      //   accessorKey: "balance_debtor",
+      //   header: () => <span>{t("debtor balance")}</span>,
+      // },
+      // {
+      //   cell: (info: any) =>
+      //     Number(info.getValue()) > 0
+      //       ? `(${formatReyal(Number(info.getValue()).toFixed(2))})`
+      //       : "---",
+      //   accessorKey: "balance_credit",
+      //   header: () => <span>{t("creditor balance")}</span>,
+      // },
       {
-        cell: (info: any) =>
-          Number(info.getValue()) > 0
-            ? formatReyal(Number(info.getValue()).toFixed(2))
-            : "---",
-        accessorKey: "balance_debtor",
-        header: () => <span>{t("debtor balance")}</span>,
-      },
-      {
-        cell: (info: any) =>
-          Number(info.getValue()) > 0
-            ? `(${formatReyal(Number(info.getValue()).toFixed(2))})`
-            : "---",
-        accessorKey: "balance_credit",
-        header: () => <span>{t("creditor balance")}</span>,
+        accessorKey: "balance_combined",
+        header: () => <span>{t("balance")}</span>,
+        cell: (info: any) => {
+          const row = info.row.original;
+          const debtor = Number(row.balance_debtor);
+          const creditor = Number(row.balance_credit);
+
+          if (debtor > 0) {
+            return formatReyal(debtor);
+          } else if (creditor > 0) {
+            return `(${formatReyal(creditor)})`;
+          } else {
+            return "---";
+          }
+        },
       },
     ],
     []
@@ -234,6 +253,11 @@ const BranchStocks = () => {
       unit: data?.unit_id,
     };
   });
+
+  const sortedDataSource = useMemo(() => {
+    return [...dataSource].sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [dataSource]);
+  console.log("🚀 ~ sortedDataSource ~ sortedDataSource:", sortedDataSource);
 
   return (
     <div className="py-6 px-16">
@@ -361,7 +385,9 @@ const BranchStocks = () => {
                 </div>
 
                 <div className="mt-14">
-                  {edaraCredit?.data?.boxes?.length > 0 ? (
+                  {isLoading || isFetching || isRefetching ? (
+                    <Loading mainTitle="loading" />
+                  ) : edaraCredit?.data?.boxes?.length > 0 ? (
                     <>
                       <div className="mb-6">
                         <h2 className="text-center text-mainGreen flex justify-between">
@@ -411,7 +437,7 @@ const BranchStocks = () => {
                         isLoading={isLoading}
                         isRefetching={isRefetching}
                         isFetching={isFetching}
-                        data={dataSource || []}
+                        data={sortedDataSource || []}
                         columns={tableColumn}
                       />
                     </>
