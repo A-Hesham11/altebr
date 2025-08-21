@@ -5,6 +5,7 @@ import InventoryNewGoldDiamondsMiscellaneous from "./InventoryNewGoldDiamondsMis
 import InventoryBrokenGoldCashBox from "./InventoryBrokenGoldCashBox";
 import CompleteInventoryProcess from "./CompleteInventoryProcess";
 import { socket, SOCKET_SERVER_URL } from "../../../utils/socket";
+import { t } from "i18next";
 
 // const SOCKET_SERVER_URL = "https://backend.alexonsolutions.net";
 // const socket = io(SOCKET_SERVER_URL);
@@ -64,6 +65,7 @@ const CreatingInventoryBond: React.FC = () => {
   const isGetTenantFromUrl =
     getTenantFromUrl === null ? "alexon" : getTenantFromUrl;
 
+  // if (availableItems?.length < 1) return <Loading mainTitle="loading" />;
   const renderStep = () => {
     switch (steps) {
       case 1:
@@ -113,7 +115,25 @@ const CreatingInventoryBond: React.FC = () => {
     }
   };
 
-  return <div>{renderStep()}</div>;
+  return (
+    <div className="relative">
+      <div>{renderStep()}</div>
+
+      {availableItems?.length < 1 && (
+        <div
+          className={`fixed inset-0 z-[1000] flex items-center justify-center transition-opacity duration-300 `}
+        >
+          <div className="absolute inset-0 bg-black bg-opacity-45" />
+          <div className="relative mx-4 w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-xl">
+            <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-600" />
+            <p className="text-lg font-semibold text-slate-800">
+              {t("Please wait a moment while we fetch all items")}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default CreatingInventoryBond;

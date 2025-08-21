@@ -9,6 +9,7 @@ import InvoiceFooter from "../../components/Invoice/InvoiceFooter";
 import { GlobalDataContext } from "../../context/settings/GlobalData";
 import InvoiceBasicHeader from "../../components/Invoice/InvoiceBasicHeader";
 import { formatDate } from "../../utils/date";
+import { useLocation } from "react-router-dom";
 
 type Client_TP = {
   amount: number;
@@ -42,6 +43,7 @@ export const BuyingFinalPreview = ({
   setOdwyaTypeValue,
 }: SellingFinalPreviewProps_TP) => {
   const { invoice_logo, gold_price } = GlobalDataContext();
+  const location = useLocation();
   const invoiceHeaderBasicData = {
     first_title: "bill date",
     first_value: formatDate(clientData?.bond_date),
@@ -49,7 +51,10 @@ export const BuyingFinalPreview = ({
     second_value: clientData?.client_value,
     bond_date: sellingItemsData?.invoice_date,
     bond_title: "bill no",
-    invoice_number: Number(invoiceNumber?.length),
+    invoice_number:
+      location.pathname === "/buying/purchaseBonds"
+        ? invoiceNumber - 1
+        : Number(invoiceNumber?.length),
     invoice_logo: invoice_logo?.InvoiceCompanyLogo,
     invoice_text: "broken gold purchase invoice",
   };

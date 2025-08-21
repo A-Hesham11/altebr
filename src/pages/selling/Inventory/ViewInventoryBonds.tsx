@@ -18,6 +18,7 @@ import TableEntry from "../../../components/templates/reusableComponants/tantabl
 
 const ViewInventoryBonds = () => {
   const [dataSource, setDataSource] = useState([]);
+  console.log("🚀 ~ ViewInventoryBonds ~ dataSource:", dataSource)
   const [open, setOpen] = useState<boolean>(false);
   const [openEntry, setOpenEntry] = useState<boolean>(false);
   const [entryItemData, setEntryItemData] = useState<any>([]);

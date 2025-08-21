@@ -1,7 +1,7 @@
 import { Form, Formik } from "formik";
 import { t } from "i18next";
 import { useContext, useEffect, useState } from "react";
-import { Button } from "../../../components/atoms";
+import { Button, Spinner } from "../../../components/atoms";
 import { AddIcon } from "../../../components/atoms/icons";
 import { BaseInputField, Modal } from "../../../components/molecules";
 import { BoxesDataBase } from "../../../components/atoms/card/BoxesDataBase";
@@ -95,9 +95,15 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   SOCKET_SERVER_URL,
   socket,
 }) => {
+  console.log("🚀 ~ InventoryNewGoldDiamondsMiscellaneous ~ socket:", socket);
+  console.log(
+    "🚀 ~ InventoryNewGoldDiamondsMiscellaneous ~ identitiesCheckedItems:",
+    identitiesCheckedItems
+  );
   const { id } = useParams<{ id: string }>();
   const { userData } = useContext(authCtx);
   const { formatReyal } = numberContext();
+  const [isInputBusy, setIsInputBusy] = useState(false);
 
   const navigate = useNavigate();
   const [search, setSearch] = useState<string>("");
@@ -167,19 +173,18 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   // }, [responsesReceived]);
 
   const handleBondItemsResponse = (data: any) => {
-    console.log("🚀 ~ handleBondItemsResponse ~ data:", data);
     setAvailableItems(data.success ? data?.data?.items : []);
     setLoading(false);
   };
 
   const handleRoomData = (data: any) => {
-    console.log("🚀 ~ handleRoomData ~ data:", data);
     setIdentitiesCheckedItems(data.success ? data?.data : []);
+    setIsInputBusy(false);
   };
 
   const handleUnknownIdentitiesData = (data: any) => {
-    console.log("🚀 ~ handleUnknownIdentitiesData ~ data:", data);
     setUnknownIdentities(data.success ? data?.data : []);
+    setIsInputBusy(false);
   };
 
   useEffect(() => {
@@ -265,6 +270,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   const handleAddPieceToRoom = (item: any) => {
     if (!currenGroup?.id) {
       notify("info", `${t("Missing room ID")}`);
+      setIsInputBusy(false);
       return;
     }
 
@@ -290,6 +296,8 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
 
       socket.emit("getRooms", BasicCompanyData);
       socket.on("roomData", handleRoomData);
+
+      setIsInputBusy(false);
     });
 
     return () => {
@@ -329,12 +337,77 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
 
       socket.emit("getmissingPieces", BasicCompanyData);
       socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
+      setIsInputBusy(false);
     });
 
     return () => {
       socket.off("getBondItemsResponse", handleBondItemsResponse);
       socket.off("roomData", handleRoomData);
       socket.off("getmissingPieces", handleUnknownIdentitiesData);
+      socket.disconnect();
+    };
+  };
+
+  const handleDeleteRoom = (roomId: string) => {
+    if (!roomId) return;
+
+    setIsInputBusy(true);
+
+    const payload = {
+      branchId: BasicCompanyData.branchId,
+      inventoryId: BasicCompanyData.inventoryId,
+      companyKey: BasicCompanyData.companyKey,
+      roomId,
+    };
+    console.log("🚀 ~ handleDeleteRoom ~ payload:", payload);
+
+    socket.emit("deleteRoomData", payload);
+    socket.on("deleteRoom", handleRoomData);
+
+    socket.emit("getBondItems", BasicCompanyData);
+    socket.on("getBondItemsResponse", handleBondItemsResponse);
+
+    socket.emit("getRooms", BasicCompanyData);
+    socket.on("roomData", handleRoomData);
+
+    setIsInputBusy(false);
+
+    return () => {
+      socket.off("deleteRoom", handleRoomData);
+      socket.off("getBondItemsResponse", handleBondItemsResponse);
+      socket.off("roomData", handleRoomData);
+      socket.disconnect();
+    };
+  };
+
+  const handleDeleteItemFromRoom = (pieceId: string, roomId: string) => {
+    if (!roomId) return;
+
+    setIsInputBusy(true);
+
+    const payload = {
+      branchId: BasicCompanyData.branchId,
+      inventoryId: BasicCompanyData.inventoryId,
+      companyKey: BasicCompanyData.companyKey,
+      roomId,
+      pieceId,
+    };
+
+    socket.emit("deletePieceResponse", payload);
+    socket.on("deletePieceFromRoom", handleRoomData);
+
+    socket.emit("getBondItems", BasicCompanyData);
+    socket.on("getBondItemsResponse", handleBondItemsResponse);
+
+    socket.emit("getRooms", BasicCompanyData);
+    socket.on("roomData", handleRoomData);
+
+    setIsInputBusy(false);
+
+    return () => {
+      socket.off("deletePieceFromRoom", handleRoomData);
+      socket.off("getBondItemsResponse", handleBondItemsResponse);
+      socket.off("roomData", handleRoomData);
       socket.disconnect();
     };
   };
@@ -397,6 +470,9 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       }
 
       setSearch("");
+    },
+    onError: () => {
+      setIsInputBusy(false); // allow retry on failure
     },
   });
 
@@ -534,7 +610,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   };
   // End Of The Inventory Process For Employees
 
-  if (loading) return <Loading mainTitle="Inventory" />;
+  // if (loading) return <Loading mainTitle="Inventory" />;
 
   return (
     <div className="px-10 py-8">
@@ -559,7 +635,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
               <span>{t("Create a group")}</span>
             </Button>
 
-            <div className="flex gap-2 items-center justify-center rounded-md  p-1">
+            {/* <div className="flex gap-2 items-center justify-center rounded-md  p-1">
               <BaseInputField
                 id="search"
                 name="search"
@@ -571,6 +647,41 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
                 placeholder={`${t("id code")}`}
                 className="placeholder-slate-400  w-80 !shadow-transparent focus:border-transparent"
               />
+            </div> */}
+
+            <div className="relative flex gap-2 items-center justify-center rounded-md p-1">
+              <BaseInputField
+                id="search"
+                name="search"
+                autoFocus
+                label={`${t("id code")}`}
+                type="text"
+                value={search}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setSearch(v);
+                  setIsInputBusy(Boolean(v.trim()));
+                }}
+                placeholder={
+                  isInputBusy ? `${t("loading")} ...` : `${t("id code")}`
+                }
+                disabled={
+                  isInputBusy || isLoadingMutate || isLoadingInventoryData
+                }
+                className={`py-1.5
+                  ${
+                    (isInputBusy ||
+                      isLoadingMutate ||
+                      isLoadingInventoryData) &&
+                    "bg-mainDisabled ps-12"
+                  }
+                  `}
+              />
+              {isInputBusy && (
+                <div className="absolute right-3.5 top-[3.2rem] -translate-y-1/2">
+                  <Spinner size="medium" className="" />
+                </div>
+              )}
             </div>
 
             {!!currenGroup?.groupName && (
@@ -609,7 +720,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
                 SOCKET_SERVER_URL={SOCKET_SERVER_URL}
               />
             </div>
-            <div className="w-[30%]">
+            <div className="w-[35%]">
               <IdentitiesCheckedByBranch
                 identitiesCheckedItems={identitiesCheckedItems}
                 setIdentitiesCheckedItems={setIdentitiesCheckedItems}
@@ -619,6 +730,8 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
                 setSelectedItem={setSelectedItem}
                 activeTableId={activeTableId}
                 setActiveTableId={setActiveTableId}
+                handleDeleteRoom={handleDeleteRoom}
+                handleDeleteItemFromRoom={handleDeleteItemFromRoom}
               />
             </div>
             <div className="w-[30%]">

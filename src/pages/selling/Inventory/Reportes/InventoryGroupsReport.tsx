@@ -9,6 +9,7 @@ import { useIsRTL } from "../../../../hooks";
 import { useReactToPrint } from "react-to-print";
 
 const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
+  console.log("🚀 ~ InventoryGroupsReport ~ dataSource:", dataSource)
   const contentRef = useRef();
   const isRTL = useIsRTL();
   const { userData } = useContext(authCtx);
@@ -18,7 +19,7 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
       title: t("Total Quantity"),
       value: dataSource?.reduce((acc, curr) => {
         return +acc + Number(curr.items_number);
-      }, 0),
+      }, 0), 
       unit: t("item"),
     },
     {
@@ -61,6 +62,26 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
         cell: (info: any) => info.getValue() || "---",
         accessorKey: "end_time",
         header: () => <span>{t("End Time")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "weights.k_18",
+        header: () => <span>{t("18")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "weights.k_21",
+        header: () => <span>{t("21")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "weights.k_22",
+        header: () => <span>{t("22")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() || "---",
+        accessorKey: "weights.k_24",
+        header: () => <span>{t("24")}</span>,
       },
     ],
     []
@@ -124,9 +145,7 @@ const InventoryGroupsReport = ({ dataSource, reportNumber, date }: any) => {
           </div>
           <div className="flex justify-center flex-col items-center">
             <img src={Logo} alt="logo" className="mx-auto" />
-            <h2 className="text-lg font-semibold">
-              {t("Inventory groups")}
-            </h2>
+            <h2 className="text-lg font-semibold">{t("Inventory groups")}</h2>
           </div>
           <div className="flex justify-end">
             <p>

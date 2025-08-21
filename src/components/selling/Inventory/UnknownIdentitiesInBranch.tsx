@@ -36,12 +36,17 @@ const UnknownIdentitiesInBranch = ({
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "hwya",
-        header: () => <span>{t("hwya")}</span>,
+        header: () => <span>{t("Hwya")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "classification_name",
         header: () => <span>{t("category")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() ?? "---",
+        accessorKey: "karat_name",
+        header: () => <span>{t("karat")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
@@ -104,7 +109,7 @@ const UnknownIdentitiesInBranch = ({
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className={`${"!bg-[#218A7A33] text-[#218A7A] font-semibold"} text-start px-4 py-4 text-sm`}
+                      className={`${"!bg-[#218A7A33] text-[#218A7A] font-semibold"} text-center w-[5%] py-4 text-sm`}
                     >
                       {header.isPlaceholder
                         ? null
@@ -120,7 +125,7 @@ const UnknownIdentitiesInBranch = ({
           </table>
 
           <div className="max-h-[455px] h-[455px] overflow-y-scroll">
-            <table className="min-w-full text-start">
+            <table className="min-w-full text-center">
               <tbody>
                 {table.getRowModel().rows.map((row, i) => {
                   return (
@@ -137,7 +142,7 @@ const UnknownIdentitiesInBranch = ({
                     >
                       {row.getVisibleCells().map((cell) => (
                         <td
-                          className={`whitespace-nowrap px-3 py-3 text-sm font-light cursor-pointer ${
+                          className={`whitespace-nowrap w-[5%] py-3.5 text-sm font-light cursor-pointer ${
                             selectedRow === i && !!unknownTableRef
                               ? "bg-[#295E5608]"
                               : "bg-[#FAFAFA]"

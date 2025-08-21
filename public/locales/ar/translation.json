@@ -1393,6 +1393,7 @@
   "budget deduction process": "عملية خصم الموازنة",
   "commission tax deduction process": "عملية خصم ضريبة العمولة",
   "hwya": "رقم الهوية",
+  "Hwya": "الهوية",
   "printing numbered identities": "طباعة الهويات المرقمة",
   "print all identities": "طباعة جميع الهويات",
   "printing process": "عملية الطباعة",
@@ -1768,5 +1769,6 @@
   "collapse all": "اخفاء كافة الحسابات",
   "accounts count": "عدد الحسابات",
   "loading expand all": "جاري عرض كافة الحسابات",
-  "no results for": "لا يوجد نتائج ل"
+  "no results for": "لا يوجد نتائج ل",
+  "Please wait a moment while we fetch all items": "يرجى الانتظار قليلًا حتى يكتمل جلب جميع القطع"
 }
