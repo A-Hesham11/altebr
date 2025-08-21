@@ -15,8 +15,10 @@ const InventoryReportes = () => {
   const { userData } = useContext(authCtx);
   const { state } = useLocation();
 
-  const isActiveReport = ["d", "e", "f", "g", "h"].includes(state?.reportID)
+  const isActiveReport = ["d", "e", "f", "g"].includes(state?.reportID)
     ? "c"
+    : state?.reportID === "h"
+    ? "d"
     : state?.reportID;
 
   const { data, isLoading, isFetching, isRefetching, refetch } = useFetch<

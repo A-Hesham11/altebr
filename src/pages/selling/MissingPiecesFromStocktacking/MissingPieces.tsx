@@ -36,6 +36,7 @@ function MissingPieces() {
   const [rowSelection, setRowSelection] = useState<{ [key: string]: boolean }>(
     {}
   );
+
   const [state, dispatch] = useReducer(
     missingPiecesReducer,
     MissingPiecesInitialState

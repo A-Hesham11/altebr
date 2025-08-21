@@ -190,41 +190,8 @@ const CompleteInventoryProcess: React.FC<CompleteInventoryProcessProps> = ({
           },
           banks,
           type_employe: false,
-          // ...(isLast && {
-          //   goldAndCash: {
-          //     inventory_id: id,
-          //     branch_id: userData?.branch_id,
-          //     cash,
-          //     gold_18,
-          //     gold_21,
-          //     gold_22,
-          //     gold_24,
-          //   },
-          //   banks,
-          //   type_employe: false,
-          // }),
         },
       });
-      // console.log("🚀 ~ handlePostInventoryData ~ values", {
-      //   lostItems: chunks[i],
-      //   inventory_id: id,
-      //   branch_id: userData?.branch_id,
-      //   employee_id: userData?.id,
-      //   is_last_chunk: isLast,
-      //   ...(isLast && {
-      //     goldAndCash: {
-      //       inventory_id: id,
-      //       branch_id: userData?.branch_id,
-      //       cash,
-      //       gold_18,
-      //       gold_21,
-      //       gold_22,
-      //       gold_24,
-      //     },
-      //     banks,
-      //     type_employe: false,
-      //   }),
-      // });
     }
   };
 

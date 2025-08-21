@@ -25,6 +25,7 @@ const AvailableItemsInBranch = ({
   activeTableId,
   setActiveTableId,
 }: any) => {
+  console.log("🚀 ~ AvailableItemsInBranch ~ availableItems:", availableItems);
   const availabletableCRef = useRef<HTMLDivElement>(null);
   const { id } = useParams<{ id: string }>();
   const [page, setPage] = useState<number>(1);
@@ -75,12 +76,17 @@ const AvailableItemsInBranch = ({
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "hwya",
-        header: () => <span>{t("hwya")}</span>,
+        header: () => <span>{t("Hwya")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
         accessorKey: "classification_name",
         header: () => <span>{t("category")}</span>,
+      },
+      {
+        cell: (info: any) => info.getValue() ?? "---",
+        accessorKey: "karat_name",
+        header: () => <span>{t("karat")}</span>,
       },
       {
         cell: (info: any) => info.getValue(),
@@ -142,7 +148,8 @@ const AvailableItemsInBranch = ({
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
-                        className={`${"!bg-[#295E5633] text-mainGreen font-semibold"} text-start px-4 py-4 text-sm`}
+                        className={`${"!bg-[#295E5633] text-mainGreen font-semibold"} text-center py-4 text-sm `}
+                        colSpan={1}
                       >
                         {header.isPlaceholder
                           ? null
@@ -167,7 +174,7 @@ const AvailableItemsInBranch = ({
               }
               height={455}
             >
-              <table className="min-w-full text-start">
+              <table className="min-w-full text-center">
                 <tbody>
                   {table.getRowModel().rows.map((row, i) => (
                     <tr
@@ -181,8 +188,9 @@ const AvailableItemsInBranch = ({
                     >
                       {row.getVisibleCells().map((cell) => (
                         <td
-                          className={`whitespace-nowrap px-3 py-3 text-sm font-light !text-gray-900 w-fit`}
+                          className={`whitespace-nowrap  py-3.5 text-sm font-light !text-gray-900 w-[6%]`}
                           key={cell.id}
+                          colSpan={1}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,

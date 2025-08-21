@@ -19,6 +19,8 @@ const PromissoryNote = ({
   date,
   reportName,
 }: any) => {
+  console.log("🚀 ~ PromissoryNote ~ reportNumber:", reportNumber);
+  console.log("🚀 ~ PromissoryNote ~ dataSource:", dataSource);
   const { userData } = useContext(authCtx);
   console.log("🚀 ~ PromissoryNote ~ userData:", userData);
   const contentRef = useRef();
@@ -60,13 +62,17 @@ const PromissoryNote = ({
   //   },
   // ];
 
+const totalBanks = Object.values(dataSource?.banks ?? {}).reduce(
+  (sum, val) => sum + (Number(val) || 0),
+  0
+);
   const totals = [
-    dataSource?.assets.cash,
-    dataSource?.assets.diamond_value,
-    dataSource?.assets.accessory_value,
-    dataSource?.assets.wages,
-    dataSource?.assets.total_weightNewGold_24,
-    dataSource?.assets.totalCash,
+    dataSource?.new_value_gold,
+    dataSource?.old_value_gold,
+    dataSource?.wages,
+    dataSource?.cashing?.assets_cash,
+    dataSource?.cashing?.missing_cash,
+    totalBanks,
   ];
 
   const totalAmount = totals.reduce((sum, val) => {
@@ -94,65 +100,65 @@ const PromissoryNote = ({
   //   onError: (err) => console.log(err),
   // });
 
-  const data = [
-    {
-      name: t("Gold value"),
-      amount: formatGram(dataSource?.assets.cash),
-      amountAR: convertNumToArWord(Math.round(dataSource?.assets.cash)),
-    },
-    {
-      name: t("diamond value"),
-      amount: formatGram(dataSource?.assets.diamond_value),
-      amountAR: convertNumToArWord(
-        Math.round(dataSource?.assets.diamond_value)
-      ),
-    },
-    {
-      name: t("accessory value"),
-      amount: formatGram(dataSource?.assets.accessory_value),
-      amountAR: convertNumToArWord(
-        Math.round(dataSource?.assets.accessory_value)
-      ),
-    },
-    {
-      name: t("total wages"),
-      amount: formatGram(dataSource?.assets.wages),
-      amountAR: convertNumToArWord(Math.round(dataSource?.assets.wages)),
-    },
-    {
-      name: t("The value of scrap gold"),
-      amount: formatGram(dataSource?.assets.total_weightNewGold_24),
-      amountAR: convertNumToArWord(
-        Math.round(dataSource?.assets.total_weightNewGold_24)
-      ),
-    },
-    {
-      name: t("Total cash"),
-      amount: formatGram(dataSource?.assets.totalCash),
-      amountAR: convertNumToArWord(Math.round(dataSource?.assets.totalCash)),
-    },
-  ];
+  // const data = [
+  //   {
+  //     name: t("Gold value"),
+  //     amount: formatGram(dataSource?.assets.cash),
+  //     amountAR: convertNumToArWord(Math.round(dataSource?.assets.cash)),
+  //   },
+  //   {
+  //     name: t("diamond value"),
+  //     amount: formatGram(dataSource?.assets.diamond_value),
+  //     amountAR: convertNumToArWord(
+  //       Math.round(dataSource?.assets.diamond_value)
+  //     ),
+  //   },
+  //   {
+  //     name: t("accessory value"),
+  //     amount: formatGram(dataSource?.assets.accessory_value),
+  //     amountAR: convertNumToArWord(
+  //       Math.round(dataSource?.assets.accessory_value)
+  //     ),
+  //   },
+  //   {
+  //     name: t("total wages"),
+  //     amount: formatGram(dataSource?.assets.wages),
+  //     amountAR: convertNumToArWord(Math.round(dataSource?.assets.wages)),
+  //   },
+  //   {
+  //     name: t("The value of scrap gold"),
+  //     amount: formatGram(dataSource?.assets.total_weightNewGold_24),
+  //     amountAR: convertNumToArWord(
+  //       Math.round(dataSource?.assets.total_weightNewGold_24)
+  //     ),
+  //   },
+  //   {
+  //     name: t("Total cash"),
+  //     amount: formatGram(dataSource?.assets.totalCash),
+  //     amountAR: convertNumToArWord(Math.round(dataSource?.assets.totalCash)),
+  //   },
+  // ];
 
-  const columns = useMemo<any>(
-    () => [
-      {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "name",
-        header: () => <span>{t("name")}</span>,
-      },
-      {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "amount",
-        header: () => <span>{t("amount")}</span>,
-      },
-      {
-        cell: (info: any) => info.getValue(),
-        accessorKey: "amountAR",
-        header: () => <span>{t("amount in words")}</span>,
-      },
-    ],
-    []
-  );
+  // const columns = useMemo<any>(
+  //   () => [
+  //     {
+  //       cell: (info: any) => info.getValue(),
+  //       accessorKey: "name",
+  //       header: () => <span>{t("name")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => info.getValue(),
+  //       accessorKey: "amount",
+  //       header: () => <span>{t("amount")}</span>,
+  //     },
+  //     {
+  //       cell: (info: any) => info.getValue(),
+  //       accessorKey: "amountAR",
+  //       header: () => <span>{t("amount in words")}</span>,
+  //     },
+  //   ],
+  //   []
+  // );
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
@@ -225,7 +231,9 @@ const PromissoryNote = ({
           <span>
             <p>
               {t("I promise to pay by this promissory note")} /{" "}
-              <span className="font-semibold">{userData?.branch_name}</span>
+              <span className="font-semibold">
+                {userData?.branch?.company.name}
+              </span>
             </p>
             <div className="flex items-center gap-x-28 my-4">
               <p>

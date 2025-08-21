@@ -25,6 +25,7 @@ const BranchBalancesPage = () => {
     queryKey: ["Balances"],
     endpoint: `/branchAccount/api/v1/BranchTrigger/${userData?.branch_id}?per_page=10000`,
   });
+    console.log("🚀 ~ BranchBalancesPage ~ balances:", balances)
 
   const balancesCash = balances?.filter(
     (card) => card.numeric_system == "1301" || card.numeric_system == "1203"
@@ -39,6 +40,7 @@ const BranchBalancesPage = () => {
       card.numeric_system == "120201" ||
       card.numeric_system == "120202"
   );
+  console.log("🚀 ~ BranchBalancesPage ~ balancesGold:", balancesGold)
 
   const balancesBrokenGold = balances?.filter(
     (card) =>
@@ -58,8 +60,8 @@ const BranchBalancesPage = () => {
 
   const isRTL = useIsRTL();
 
-    if (isLoading || isRefetching || isFetching)
-      return <Loading mainTitle={t("balances")} />;
+  if (isLoading || isRefetching || isFetching)
+    return <Loading mainTitle={t("balances")} />;
 
   return (
     <div className="selling min-h-screen pb-8 px-16">
@@ -104,7 +106,7 @@ const BranchBalancesPage = () => {
                   <div>
                     <p className="mb-3">{card.accountable}</p>
                     <p>
-                      {formatReyal(Number(card.debtor - card.creditor))}{" "}
+                      {formatReyal(Number(card.debtor - card.creditor)) ?? 0}{" "}
                       <span>{card.unit}</span>
                     </p>
                   </div>
@@ -130,7 +132,7 @@ const BranchBalancesPage = () => {
                 <div>
                   <p className="mb-3">{card.accountable}</p>
                   <p>
-                    {formatReyal(Number(card.debtor - card.creditor))}{" "}
+                    {formatReyal(Number(card.debtor - card.creditor)) ?? 0}{" "}
                     <span>{card.unit}</span>
                   </p>
                 </div>
@@ -150,7 +152,7 @@ const BranchBalancesPage = () => {
                 <div>
                   <p className="mb-3">{card.accountable}</p>
                   <p>
-                    {formatReyal(Number(card.debtor - card.creditor))}{" "}
+                    {formatReyal(Number(card.debtor - card.creditor)) ?? 0}{" "}
                     <span>{card.unit}</span>
                   </p>
                 </div>
@@ -176,7 +178,7 @@ const BranchBalancesPage = () => {
                 <div>
                   <p className="mb-3">{card.accountable}</p>
                   <p>
-                    {formatReyal(Number(card.debtor - card.creditor))}{" "}
+                    {formatReyal(Number(card.debtor - card.creditor)) ?? 0}{" "}
                     <span>{card.unit}</span>
                   </p>
                 </div>

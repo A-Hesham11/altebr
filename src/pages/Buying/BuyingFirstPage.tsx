@@ -133,6 +133,7 @@ const BuyingFirstPage = ({
       })),
     onError: (err) => console.log(err),
   });
+  console.log("🚀 ~ BuyingFirstPage ~ clientsAndSuppliers:", clientsAndSuppliers)
 
   const odwyaFind = clientsAndSuppliers?.find(
     (item: any) => item?.id === values?.client_id

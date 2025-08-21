@@ -28,11 +28,11 @@ function IndeterminateCheckbox({
 }: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
   const ref = useRef<HTMLInputElement>(null!);
 
-  // useEffect(() => {
-  //   if (typeof indeterminate === "boolean") {
-  //     ref.current.indeterminate = !rest.checked && indeterminate;
-  //   }
-  // }, [ref, indeterminate]);
+  useEffect(() => {
+    if (typeof indeterminate === "boolean") {
+      ref.current.indeterminate = !rest.checked && indeterminate;
+    }
+  }, [ref, indeterminate]);
 
   return (
     <input
@@ -82,7 +82,7 @@ function SelectionTable({
           <IndeterminateCheckbox
             {...{
               checked: table.getIsAllRowsSelected(),
-              // indeterminate: table.getIsSomeRowsSelected(),
+              indeterminate: table.getIsSomeRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
           />
