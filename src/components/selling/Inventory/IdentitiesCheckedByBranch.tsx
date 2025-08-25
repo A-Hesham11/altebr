@@ -10,6 +10,8 @@ import {
 import { GiWeight } from "react-icons/gi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { numberContext } from "../../../context/settings/number-formatter";
+import { Spinner } from "@/components/atoms";
+import { Group_TP } from "@/pages/selling/Inventory/CreatingInventoryBond";
 
 type Item = {
   _id?: string;
@@ -31,7 +33,7 @@ type Group = {
 
 type Props = {
   identitiesCheckedItems: Group[] | undefined;
-  currenGroup?: { id?: string };
+  currenGroup?: Group_TP;
   setOpenWeightItem: (v: boolean) => void;
   setEditWeight: (item: Item & { details_weight?: boolean }) => void;
   setSelectedItem?: (item: Item | null) => void;
@@ -39,6 +41,8 @@ type Props = {
   setActiveTableId: (id: string) => void;
   handleDeleteRoom: (groupId: string) => void;
   handleDeleteItemFromRoom: (pieceId?: string, roomId?: string) => void;
+  deletingRoomIds: any;
+  deletingPieceIds: any;
 };
 
 const IdentitiesCheckedByBranch: React.FC<Props> = ({
@@ -51,6 +55,8 @@ const IdentitiesCheckedByBranch: React.FC<Props> = ({
   setActiveTableId,
   handleDeleteRoom,
   handleDeleteItemFromRoom,
+  deletingRoomIds,
+  deletingPieceIds,
 }) => {
   const identitiesTableRef = useRef<HTMLDivElement>(null);
   const { formatGram } = numberContext();
@@ -173,12 +179,18 @@ const IdentitiesCheckedByBranch: React.FC<Props> = ({
                           className="text-end font-bold px-3 text-mainOrange"
                           colSpan={2}
                         >
-                          {gIndex === 0 && (
-                            <div
-                              onClick={() => handleDeleteRoom(group._id)}
-                              className="text-mainRed hover:scale-110 duration-300 cursor-pointer"
-                            >
-                              <RiDeleteBin5Line size={20} />
+                          {deletingRoomIds.has(group._id) ? (
+                            <Spinner size="small" />
+                          ) : (
+                            <div>
+                              {gIndex === 0 && (
+                                <div
+                                  onClick={() => handleDeleteRoom(group._id)}
+                                  className="text-mainRed hover:scale-110 duration-300 cursor-pointer"
+                                >
+                                  <RiDeleteBin5Line size={20} />
+                                </div>
+                              )}
                             </div>
                           )}
                         </td>
@@ -218,17 +230,23 @@ const IdentitiesCheckedByBranch: React.FC<Props> = ({
                                   </div>
                                 ) : key === "action" ? (
                                   <div className="">
-                                    {gIndex === 0 && (
-                                      <div
-                                        onClick={() =>
-                                          handleDeleteItemFromRoom(
-                                            item._id,
-                                            item.roomId
-                                          )
-                                        }
-                                        className="text-mainRed mx-auto w-fit hover:scale-110 duration-300"
-                                      >
-                                        <RiDeleteBin5Line size={20} />
+                                    {deletingPieceIds.has(item._id) ? (
+                                      <Spinner size="small" />
+                                    ) : (
+                                      <div>
+                                        {gIndex === 0 && (
+                                          <div
+                                            onClick={() =>
+                                              handleDeleteItemFromRoom(
+                                                item._id,
+                                                item.roomId
+                                              )
+                                            }
+                                            className="text-mainRed mx-auto w-fit hover:scale-110 duration-300"
+                                          >
+                                            <RiDeleteBin5Line size={20} />
+                                          </div>
+                                        )}
                                       </div>
                                     )}
                                   </div>

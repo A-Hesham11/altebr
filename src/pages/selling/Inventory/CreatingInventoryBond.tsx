@@ -12,7 +12,8 @@ import { t } from "i18next";
 
 export type Group_TP = {
   id: string;
-  name: string;
+  number: number;
+  groupName: string;
 };
 
 interface InventoryItem {

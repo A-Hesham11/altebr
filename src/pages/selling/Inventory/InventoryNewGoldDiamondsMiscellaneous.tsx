@@ -1,6 +1,13 @@
 import { Form, Formik } from "formik";
 import { t } from "i18next";
-import { useContext, useEffect, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Button, Spinner } from "../../../components/atoms";
 import { AddIcon } from "../../../components/atoms/icons";
 import { BaseInputField, Modal } from "../../../components/molecules";
@@ -20,29 +27,43 @@ import ShowDetailsItemOfInventory from "./ShowDetailsItemOfInventory";
 import WeightAdjustmentInBranch from "../../../components/selling/Inventory/WeightAdjustmentInBranch";
 import InventoryKitInBranch from "../../../components/selling/Inventory/InventoryKitInBranch";
 import { Group_TP } from "./CreatingInventoryBond";
-import { Loading } from "../../../components/organisms/Loading";
 
-const playBeep = (frequency: number) => {
-  const context = new (window.AudioContext || window.webkitAudioContext)();
-  const oscillator = context.createOscillator();
-  oscillator.type = "sine";
-  oscillator.frequency.setValueAtTime(frequency, context.currentTime);
-  oscillator.connect(context.destination);
-  oscillator.start();
-  oscillator.stop(context.currentTime + 0.2);
+type SocketLike = {
+  connected: boolean;
+  connect: () => void;
+  disconnect: () => void;
+  emit: (event: string, payload?: any) => void;
+  on: (event: string, cb: (...args: any[]) => void) => SocketLike;
+  off: (event: string, cb?: (...args: any[]) => void) => SocketLike;
+  once?: (event: string, cb: (...args: any[]) => void) => SocketLike;
 };
 
 interface Totals {
   name: string;
-  key: string;
   unit: string;
   value: number;
+  id: string;
 }
 
 interface Item {
   id: string;
   weight?: number;
   is_exist?: number;
+  hwya?: string;
+  category_selling_type?: "all" | "part";
+  classification_id?: number;
+  karat_name?: string;
+  karatmineral_name?: string;
+  classification_name?: string;
+  category_id?: number;
+  category_name?: string;
+  diamond_value?: number;
+  karat_id?: number;
+  mineral_id?: number;
+  Iban?: string;
+  wage?: number;
+  item_id?: string;
+  weightitems?: { status: number; category_id: number; weight: number }[];
   [key: string]: any;
 }
 
@@ -53,7 +74,7 @@ type ResponseData = {
 
 type SuccessParams = {
   data?: ResponseData;
-  dataNode?: ResponseData;
+  dataNode?: { _id?: string; groupName?: string };
 };
 
 interface InventoryNewGoldDiamondsMiscellaneousProps {
@@ -72,8 +93,10 @@ interface InventoryNewGoldDiamondsMiscellaneousProps {
   setNumberItemsInBranch: (value: number) => void;
   isGetTenantFromUrl?: string;
   SOCKET_SERVER_URL?: string;
-  socket?: any;
+  socket?: SocketLike;
 }
+
+type PendingKind = "known" | "missing";
 
 const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   InventoryNewGoldDiamondsMiscellaneousProps
@@ -95,110 +118,245 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
   SOCKET_SERVER_URL,
   socket,
 }) => {
-  console.log("🚀 ~ InventoryNewGoldDiamondsMiscellaneous ~ socket:", socket);
-  console.log(
-    "🚀 ~ InventoryNewGoldDiamondsMiscellaneous ~ identitiesCheckedItems:",
-    identitiesCheckedItems
-  );
   const { id } = useParams<{ id: string }>();
   const { userData } = useContext(authCtx);
   const { formatReyal } = numberContext();
+  const navigate = useNavigate();
+
+  // ui state
   const [isInputBusy, setIsInputBusy] = useState(false);
 
-  const navigate = useNavigate();
   const [search, setSearch] = useState<string>("");
   const [openDetailsItem, setOpenDetailsItem] = useState(false);
-  const [unknownItemDetails, setUnknownItemDetails] = useState<any>({});
   const [openWeightItem, setOpenWeightItem] = useState(false);
   const [openKitItems, setOpenKitItems] = useState(false);
-  const [kitItemsData, setKitItemsData] = useState([]);
-  const [editWeight, setEditWeight] = useState({});
+  const [kitItemsData, setKitItemsData] = useState<any[]>([]);
+  const [editWeight, setEditWeight] = useState<any>({});
   const [activeTableId, setActiveTableId] = useState<string | null>(null);
   const [nextGroup, setNextGroup] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
-  // const [responsesReceived, setResponsesReceived] = useState({
-  //   bondItems: false,
-  //   roomData: false,
-  //   missingPieces: false,
-  // });
+  const [deletingPieceIds, setDeletingPieceIds] = useState<Set<string>>(
+    new Set()
+  );
+  const [deletingRoomIds, setDeletingRoomIds] = useState<Set<string>>(
+    new Set()
+  );
+
+  // pending add guard
+  const [pendingAdd, setPendingAdd] = useState<{
+    hwya: string;
+    opsLeft: number;
+    kind: PendingKind;
+  } | null>(null);
 
   const numbers = ConvertNumberToWordGroup();
 
-  const BasicCompanyData = {
-    branchId: userData?.branch_id,
-    inventoryId: id,
-    companyKey: isGetTenantFromUrl,
-  };
-  console.log("🚀 ~ BasicCompanyData:", BasicCompanyData);
+  // audio
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const playBeep = useCallback((frequency: number) => {
+    try {
+      if (!audioCtxRef.current) {
+        const Ctx =
+          (window as any).AudioContext || (window as any).webkitAudioContext;
+        audioCtxRef.current = new Ctx();
+      }
+      const ctx = audioCtxRef.current!;
+      const osc = ctx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+      osc.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.2);
+    } catch {
+      // ignore
+    }
+  }, []);
 
-  const totalidentitiesCheckedItems = identitiesCheckedItems?.reduce(
-    (sum, group) => sum + (group.items?.length || 0),
-    0
+  // company data
+  const BasicCompanyData = useMemo(
+    () => ({
+      branchId: userData?.branch_id,
+      inventoryId: id,
+      companyKey: isGetTenantFromUrl,
+    }),
+    [userData?.branch_id, id, isGetTenantFromUrl]
   );
 
-  const totals: Totals[] = [
-    {
-      name: t("Number of items in the branch"),
-      key: crypto.randomUUID(),
-      unit: "item",
-      value: availableItems?.length,
-    },
-    {
-      name: t("Number of items inspected"),
-      key: crypto.randomUUID(),
-      unit: "item",
-      value: totalidentitiesCheckedItems,
-    },
-    {
-      name: t("Uninspected items"),
-      key: crypto.randomUUID(),
-      unit: "item",
-      value: availableItems?.length - totalidentitiesCheckedItems,
-    },
-    {
-      name: t("Unidentified items"),
-      key: crypto.randomUUID(),
-      unit: "item",
-      value: unknownIdentities?.length,
-    },
-  ];
+  // derived counts
+  const totalIdentitiesChecked = useMemo(
+    () =>
+      identitiesCheckedItems?.reduce(
+        (sum: number, group: any) => sum + (group.items?.length || 0),
+        0
+      ),
+    [identitiesCheckedItems]
+  );
+
+  const totals: Totals[] = useMemo(
+    () => [
+      {
+        id: "branch-items",
+        name: t("Number of items in the branch"),
+        unit: "item",
+        value: availableItems?.length || 0,
+      },
+      {
+        id: "inspected-items",
+        name: t("Number of items inspected"),
+        unit: "item",
+        value: totalIdentitiesChecked || 0,
+      },
+      {
+        id: "uninspected-items",
+        name: t("Uninspected items"),
+        unit: "item",
+        value: Math.max(
+          (availableItems?.length || 0) - (totalIdentitiesChecked || 0),
+          0
+        ),
+      },
+      {
+        id: "unidentified-items",
+        name: t("Unidentified items"),
+        unit: "item",
+        value: unknownIdentities?.length || 0,
+      },
+    ],
+    [availableItems?.length, totalIdentitiesChecked, unknownIdentities?.length]
+  );
 
   useEffect(() => {
-    setNextGroup(identitiesCheckedItems?.length);
+    setNextGroup(identitiesCheckedItems?.length || 0);
   }, [identitiesCheckedItems?.length]);
 
-  // useEffect(() => {
-  //   const allReceived = Object.values(responsesReceived).every(Boolean);
-  //   if (allReceived) setLoading(false);
-  // }, [responsesReceived]);
+  // socket handlers
+  const handleBondItemsResponse = useCallback(
+    (data: any) => {
+      const items = data?.success ? data?.data?.items || [] : [];
+      setAvailableItems(items);
 
-  const handleBondItemsResponse = (data: any) => {
-    setAvailableItems(data.success ? data?.data?.items : []);
-    setLoading(false);
-  };
+      if (pendingAdd?.hwya) {
+        const stillAvailable = items.some(
+          (it: any) => it.hwya === pendingAdd.hwya
+        );
+        if (!stillAvailable) {
+          setPendingAdd((prev) =>
+            prev ? { ...prev, opsLeft: prev.opsLeft - 1 } : prev
+          );
+        }
+      }
+    },
+    [setAvailableItems, pendingAdd]
+  );
 
-  const handleRoomData = (data: any) => {
-    setIdentitiesCheckedItems(data.success ? data?.data : []);
-    setIsInputBusy(false);
-  };
+  const handleRoomData = useCallback(
+    (data: any) => {
+      const rooms = data?.success ? data?.data || [] : data;
+      setIdentitiesCheckedItems(rooms);
 
-  const handleUnknownIdentitiesData = (data: any) => {
-    setUnknownIdentities(data.success ? data?.data : []);
-    setIsInputBusy(false);
-  };
+      if (pendingAdd?.hwya) {
+        const foundInAnyRoom = Array.isArray(rooms)
+          ? rooms.some((g: any) =>
+              g?.items?.some((it: any) => it.hwya === pendingAdd.hwya)
+            )
+          : false;
 
+        if (foundInAnyRoom) {
+          setPendingAdd((prev) =>
+            prev ? { ...prev, opsLeft: prev.opsLeft - 1 } : prev
+          );
+        }
+      }
+    },
+    [setIdentitiesCheckedItems, pendingAdd]
+  );
+
+  const handleUnknownIdentitiesData = useCallback(
+    (data: any) => {
+      const list = data?.success ? data?.data || [] : [];
+      setUnknownIdentities(list);
+
+      if (pendingAdd?.kind === "missing" && pendingAdd?.hwya) {
+        const stillUnknown = list.some(
+          (it: any) => it.hwya === pendingAdd.hwya
+        );
+        if (!stillUnknown) {
+          setPendingAdd((prev) =>
+            prev ? { ...prev, opsLeft: prev.opsLeft - 1 } : prev
+          );
+        }
+      }
+    },
+    [setUnknownIdentities, pendingAdd]
+  );
+
+  // complete pending add when both confirmations land
   useEffect(() => {
-    const setupListeners = () => {
+    if (pendingAdd && pendingAdd.opsLeft <= 0) {
+      setIsInputBusy(false);
+      setPendingAdd(null);
+      setSearch("");
+    }
+  }, [pendingAdd]);
+
+  // socket lifecycle
+  useEffect(() => {
+    if (!socket || !BasicCompanyData.branchId || !BasicCompanyData.inventoryId)
+      return;
+
+    const attachAll = () => {
       socket
-        .off("getBondItemsResponse")
+        .off("getBondItemsResponse", handleBondItemsResponse)
         .on("getBondItemsResponse", handleBondItemsResponse);
-      socket.off("roomData").on("roomData", handleRoomData);
+      socket.off("roomData", handleRoomData).on("roomData", handleRoomData);
       socket
-        .off("getmissingPieceResponse")
+        .off("getmissingPieceResponse", handleUnknownIdentitiesData)
         .on("getmissingPieceResponse", handleUnknownIdentitiesData);
+
+      const addPieceCb = () => {
+        socket.emit("getBondItems", BasicCompanyData);
+        socket.emit("getRooms", BasicCompanyData);
+      };
+      const missingPieceCb = () => {
+        socket.emit("getBondItems", BasicCompanyData);
+        socket.emit("getRooms", BasicCompanyData);
+        socket.emit("getmissingPieces", BasicCompanyData);
+      };
+      const deletePieceCb = (payload?: { pieceId?: string }) => {
+        socket.emit("getBondItems", BasicCompanyData);
+        socket.emit("getRooms", BasicCompanyData);
+        socket.emit("getmissingPieces", BasicCompanyData);
+        setDeletingPieceIds((prev) => {
+          const next = new Set(prev);
+          if (payload?.pieceId) next.delete(payload.pieceId);
+          return next;
+        });
+      };
+      const deleteRoomCb = (payload?: { roomId?: string }) => {
+        handleRoomData(payload);
+        socket.emit("getBondItems", BasicCompanyData);
+        socket.emit("getmissingPieces", BasicCompanyData);
+        setDeletingRoomIds((prev) => {
+          const next = new Set(prev);
+          if (payload?.roomId) next.delete(payload.roomId);
+          return next;
+        });
+      };
+
+      socket
+        .off("addPieceToRoomResponse", addPieceCb)
+        .on("addPieceToRoomResponse", addPieceCb);
+      socket
+        .off("missingPieceResponse", missingPieceCb)
+        .on("missingPieceResponse", missingPieceCb);
+      socket
+        .off("deletePieceResponse", deletePieceCb)
+        .on("deletePieceResponse", deletePieceCb);
+      socket
+        .off("deleteRoomData", deleteRoomCb)
+        .on("deleteRoomData", deleteRoomCb);
     };
 
-    const emitRequests = () => {
+    const emitInitial = () => {
       socket.emit("joinBranch", BasicCompanyData);
       socket.emit("getBondItems", BasicCompanyData);
       socket.emit("getRooms", BasicCompanyData);
@@ -206,282 +364,264 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     };
 
     if (socket.connected) {
-      setupListeners();
-      emitRequests();
-    } else {
+      attachAll();
+      emitInitial();
+    } else if (socket.once) {
       socket.once("connect", () => {
-        setupListeners();
-        emitRequests();
+        attachAll();
+        emitInitial();
       });
-
       socket.connect();
+    } else {
+      socket.connect();
+      attachAll();
+      emitInitial();
     }
 
     return () => {
+      if (!socket) return;
       socket.off("getBondItemsResponse", handleBondItemsResponse);
       socket.off("roomData", handleRoomData);
       socket.off("getmissingPieceResponse", handleUnknownIdentitiesData);
+      socket.off("addPieceToRoomResponse");
+      socket.off("missingPieceResponse");
+      socket.off("deletePieceResponse");
+      socket.off("deleteRoomData");
       socket.off("connect");
       socket.disconnect();
     };
-  }, []);
+  }, [
+    socket,
+    BasicCompanyData,
+    handleBondItemsResponse,
+    handleRoomData,
+    handleUnknownIdentitiesData,
+  ]);
 
-  // useEffect(() => {
-  //   socket.on("connect");
+  // actions
+  const handleAddPieceToRoom = useCallback(
+    (item: any) => {
+      if (!currenGroup?.id || !socket) {
+        notify("info", `${t("Missing room ID")}`);
+        setIsInputBusy(false);
+        return;
+      }
 
-  //   socket.emit("joinBranch", BasicCompanyData);
+      const payload = {
+        roomId: currenGroup.id,
+        isWeight: item.category_selling_type === "all" ? 1 : 0,
+        karat_name:
+          item.classification_id === 1
+            ? item.karat_name
+            : item.karatmineral_name,
+        classification_name: item.classification_name,
+        category_id: item.category_id,
+        category_name: item.category_name,
+        weight: item.weight,
+        hwya: item.hwya,
+        itemId: item.id,
+        diamond_value: item.diamond_value,
+      };
 
-  //   socket.emit("getBondItems", BasicCompanyData);
-  //   socket.on("getBondItemsResponse", handleBondItemsResponse);
+      socket.emit("addPieceToRoom", payload);
+    },
+    [currenGroup?.id, socket]
+  );
 
-  //   socket.emit("getRooms", BasicCompanyData);
-  //   socket.on("roomData", handleRoomData);
+  const handleAddMissingPieces = useCallback(
+    (item: any) => {
+      if (!socket) return;
 
-  //   socket.emit("getmissingPieces", BasicCompanyData);
-  //   // socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
-  //   socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
+      const payload = {
+        ...BasicCompanyData,
+        karat_id: item.karat_id,
+        mineral_id: item.mineral_id,
+        karat_name:
+          item.classification_id === 1
+            ? item.karat_name
+            : item.karatmineral_name,
+        classification_id: item.classification_id,
+        classification_name: item.classification_name,
+        category_id: item.category_id,
+        category_name: item.category_name,
+        weight: item.weight,
+        hwya: item.hwya,
+        itemId: item.id,
+        Iban: item.Iban,
+        wage: item.wage,
+        diamond_value: item.diamond_value,
+      };
 
-  //   return () => {
-  //     socket.off("getBondItemsResponse", handleBondItemsResponse);
-  //     socket.off("roomData", handleRoomData);
-  //     // socket.off("getmissingPieces", handleUnknownIdentitiesData);
-  //     socket.off("getmissingPieceResponse", handleUnknownIdentitiesData);
-  //     socket.disconnect();
-  //   };
-  // }, []);
+      socket.emit("missingPieces", payload);
+    },
+    [socket, BasicCompanyData]
+  );
 
-  const addItemToIdentity = (id: string, newItem: Item, isChecked: boolean) => {
-    const isGroupExists = identitiesCheckedItems.some(
-      (identity) => identity?._id === id
-    );
+  const handleDeleteRoom = useCallback(
+    (roomId: string) => {
+      if (!socket || !roomId) return;
+      setIsInputBusy(true);
+      setDeletingRoomIds((prev) => new Set(prev).add(roomId));
 
-    if (!isGroupExists) {
-      notify("info", `${t("A group must be created first.")}`);
-      return;
-    }
+      socket.emit("deleteRoom", {
+        branchId: BasicCompanyData.branchId,
+        inventoryId: BasicCompanyData.inventoryId,
+        companyKey: BasicCompanyData.companyKey,
+        roomId,
+      });
 
-    if (newItem?.is_exist && isChecked) {
-      handleCheckedItem(id, newItem);
-    } else {
-      handleUnknownItem(newItem);
-    }
-  };
+      localStorage.removeItem("currentGroup");
+    },
+    [socket, BasicCompanyData]
+  );
 
-  const handleAddPieceToRoom = (item: any) => {
-    if (!currenGroup?.id) {
-      notify("info", `${t("Missing room ID")}`);
-      setIsInputBusy(false);
-      return;
-    }
+  const handleDeleteItemFromRoom = useCallback(
+    (pieceId: string, roomId: string) => {
+      if (!socket || !roomId || !pieceId) return;
+      setIsInputBusy(true);
+      setDeletingPieceIds((prev) => new Set(prev).add(pieceId));
 
-    const payload = {
-      roomId: currenGroup?.id,
-      isWeight: item.category_selling_type === "all" ? 1 : 0,
-      karat_name:
-        item.classification_id === 1 ? item.karat_name : item.karatmineral_name,
-      classification_name: item.classification_name,
-      category_id: item.category_id,
-      category_name: item.category_name,
-      weight: item.weight,
-      hwya: item.hwya,
-      itemId: item.id,
-      diamond_value: item.diamond_value,
-    };
+      socket.emit("deletePieceFromRoom", {
+        branchId: BasicCompanyData.branchId,
+        inventoryId: BasicCompanyData.inventoryId,
+        companyKey: BasicCompanyData.companyKey,
+        roomId,
+        pieceId,
+      });
+    },
+    [socket, BasicCompanyData]
+  );
 
-    socket.emit("addPieceToRoom", payload);
+  const { mutate: mutateItemIdentity } = useMutate({
+    mutationFn: mutateData,
+    onSuccess: () => playBeep(200),
+  });
 
-    socket.on("addPieceToRoomResponse", () => {
-      socket.emit("getBondItems", BasicCompanyData);
-      socket.on("getBondItemsResponse", handleBondItemsResponse);
+  const handleItemIdentity = useCallback(
+    (data: Item) => {
+      const kitItems =
+        data?.weightitems?.map((it: any) => ({
+          category_id: it.category_id,
+          weight: it.weight,
+        })) || null;
 
-      socket.emit("getRooms", BasicCompanyData);
-      socket.on("roomData", handleRoomData);
+      mutateItemIdentity({
+        endpointName: `/inventory/api/v1/group-item`,
+        values: {
+          item_id: data?.item_id,
+          group_id: currenGroup?.number,
+          weight: Number(data?.weight),
+          kitItems,
+        },
+      });
+    },
+    [mutateItemIdentity, currenGroup?.number]
+  );
 
-      setIsInputBusy(false);
-    });
+  const handleCheckedItem = useCallback(
+    (newItemId: string, newItem: Item) => {
+      const group = identitiesCheckedItems.find(
+        (g: any) => g?._id === newItemId
+      );
+      const already = group?.items?.some((it: any) => it.hwya === newItem.hwya);
 
-    return () => {
-      socket.off("getBondItemsResponse", handleBondItemsResponse);
-      socket.off("roomData", handleRoomData);
-      socket.disconnect();
-    };
-  };
+      if (already && newItem?.category_selling_type === "part") {
+        notify("info", `${t("This item is already added")}`);
+        setSearch("");
+        setIsInputBusy(false);
+        return;
+      }
 
-  const handleAddMissingPieces = (item: any) => {
-    const payload = {
-      ...BasicCompanyData,
-      karat_id: item.karat_id,
-      mineral_id: item.mineral_id,
-      karat_name:
-        item.classification_id === 1 ? item.karat_name : item.karatmineral_name,
-      classification_id: item.classification_id,
-      classification_name: item.classification_name,
-      category_id: item.category_id,
-      category_name: item.category_name,
-      weight: item.weight,
-      hwya: item.hwya,
-      itemId: item.id,
-      Iban: item.Iban,
-      wage: item.wage,
-      diamond_value: item.diamond_value,
-    };
+      if (newItem?.hwya) {
+        setIsInputBusy(true);
+        setPendingAdd({ hwya: newItem.hwya, opsLeft: 2 });
+      }
 
-    socket.emit("missingPieces", payload);
+      handleItemIdentity(newItem);
+      handleAddPieceToRoom(newItem);
+    },
+    [identitiesCheckedItems, handleAddPieceToRoom, handleItemIdentity]
+  );
 
-    socket.on("missingPieceResponse", () => {
-      socket.emit("getBondItems", BasicCompanyData);
-      socket.on("getBondItemsResponse", handleBondItemsResponse);
+  const handleUnknownItem = useCallback(
+    (newItem: Item) => {
+      const already = unknownIdentities.some(
+        (it: any) => it.hwya === newItem.hwya
+      );
+      if (already) {
+        notify("info", `${t("This item is already added to unknown items.")}`);
+        setSearch("");
+        setIsInputBusy(false);
+        return;
+      }
+      handleAddMissingPieces(newItem);
+      playBeep(1000);
+    },
+    [unknownIdentities, handleAddMissingPieces, playBeep]
+  );
 
-      socket.emit("getRooms", BasicCompanyData);
-      socket.on("roomData", handleRoomData);
+  const addItemToIdentity = useCallback(
+    (groupId: string, newItem: Item, isChecked: boolean) => {
+      const exists = identitiesCheckedItems.some(
+        (g: any) => g?._id === groupId
+      );
+      if (!exists) {
+        notify("info", `${t("A group must be created first.")}`);
+        return;
+      }
+      if (newItem?.is_exist && isChecked) {
+        handleCheckedItem(groupId, newItem);
+      } else {
+        handleUnknownItem(newItem);
+      }
+    },
+    [identitiesCheckedItems, handleCheckedItem, handleUnknownItem]
+  );
 
-      socket.emit("getmissingPieces", BasicCompanyData);
-      socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
-      setIsInputBusy(false);
-    });
-
-    return () => {
-      socket.off("getBondItemsResponse", handleBondItemsResponse);
-      socket.off("roomData", handleRoomData);
-      socket.off("getmissingPieces", handleUnknownIdentitiesData);
-      socket.disconnect();
-    };
-  };
-
-  const handleDeleteRoom = (roomId: string) => {
-    if (!roomId) return;
-
-    setIsInputBusy(true);
-
-    const payload = {
-      branchId: BasicCompanyData.branchId,
-      inventoryId: BasicCompanyData.inventoryId,
-      companyKey: BasicCompanyData.companyKey,
-      roomId,
-    };
-    console.log("🚀 ~ handleDeleteRoom ~ payload:", payload);
-
-    socket.emit("deleteRoomData", payload);
-    socket.on("deleteRoom", handleRoomData);
-
-    socket.emit("getBondItems", BasicCompanyData);
-    socket.on("getBondItemsResponse", handleBondItemsResponse);
-
-    socket.emit("getRooms", BasicCompanyData);
-    socket.on("roomData", handleRoomData);
-
-    setIsInputBusy(false);
-
-    return () => {
-      socket.off("deleteRoom", handleRoomData);
-      socket.off("getBondItemsResponse", handleBondItemsResponse);
-      socket.off("roomData", handleRoomData);
-      socket.disconnect();
-    };
-  };
-
-  const handleDeleteItemFromRoom = (pieceId: string, roomId: string) => {
-    if (!roomId) return;
-
-    setIsInputBusy(true);
-
-    const payload = {
-      branchId: BasicCompanyData.branchId,
-      inventoryId: BasicCompanyData.inventoryId,
-      companyKey: BasicCompanyData.companyKey,
-      roomId,
-      pieceId,
-    };
-
-    socket.emit("deletePieceResponse", payload);
-    socket.on("deletePieceFromRoom", handleRoomData);
-
-    socket.emit("getBondItems", BasicCompanyData);
-    socket.on("getBondItemsResponse", handleBondItemsResponse);
-
-    socket.emit("getRooms", BasicCompanyData);
-    socket.on("roomData", handleRoomData);
-
-    setIsInputBusy(false);
-
-    return () => {
-      socket.off("deletePieceFromRoom", handleRoomData);
-      socket.off("getBondItemsResponse", handleBondItemsResponse);
-      socket.off("roomData", handleRoomData);
-      socket.disconnect();
-    };
-  };
-
-  const handleCheckedItem = async (newItemId: string, newItem: Item) => {
-    const group = identitiesCheckedItems.find(
-      (identity) => identity?._id === newItemId
-    );
-
-    const isItemAlreadyInGroup = group.items.some(
-      (item: any) => item.hwya === newItem.hwya
-    );
-
-    if (isItemAlreadyInGroup && newItem?.category_selling_type === "part") {
-      notify("info", `${t("This item is already added")}`);
-      return;
-    }
-
-    handleItemIdentity(newItem);
-
-    handleAddPieceToRoom(newItem);
-  };
-
-  const handleUnknownItem = (newItem: Item) => {
-    const isItemAlreadyInunknown = unknownIdentities.some(
-      (item: any) => item.hwya === newItem.hwya
-    );
-    if (isItemAlreadyInunknown) {
-      notify("info", `${t("This item is already added to unknown items.")}`);
-      return;
-    }
-
-    handleAddMissingPieces(newItem);
-
-    playBeep(1000);
-  };
-
-  const { data } = useFetch({
+  // search
+  useFetch({
     queryKey: ["branch-all-accepted-items", search],
     pagination: true,
     endpoint: `/inventory/api/v1/getItembyhwya/${userData?.branch_id}?hwya[lk]=${search}`,
     enabled: Boolean(search),
-    onSuccess: (data) => {
-      if (!data?.data) return;
-
-      const { weightitems, category_selling_type } = data?.data;
+    onSuccess: (resp) => {
+      if (!resp?.data) return;
+      const item: Item = resp.data;
+      const { weightitems, category_selling_type } = item;
       const isKit = Boolean(
-        weightitems?.length && weightitems.some((item) => item.status === 1)
+        weightitems?.length && weightitems.some((i: any) => i.status === 1)
       );
 
-      setSelectedItem(data?.data);
+      setSelectedItem(item);
 
       if (category_selling_type === "all") {
-        setEditWeight(data.data);
+        setEditWeight(item);
         setOpenWeightItem(true);
+        setIsInputBusy(false);
       } else if (isKit) {
         setOpenKitItems(true);
+        setIsInputBusy(false);
       } else {
-        addItemToIdentity(currenGroup?.id, data.data, true);
+        if (currenGroup?.id) {
+          addItemToIdentity(currenGroup.id, item, true);
+        } else {
+          notify("info", `${t("A group must be created first.")}`);
+          setIsInputBusy(false);
+        }
       }
 
-      setSearch("");
+      // setSearch("");
     },
     onError: () => {
-      setIsInputBusy(false); // allow retry on failure
+      setIsInputBusy(false);
     },
   });
 
+  // group creation
   const { mutateAsync, isLoading: isLoadingMutate } = useMutate({
     mutationFn: mutateData,
     onSuccess: () => {
-      socket.emit("getRooms", BasicCompanyData);
-      socket.on("roomData", handleRoomData);
-
+      if (socket) socket.emit("getRooms", BasicCompanyData);
       notify("success", `${t("The group has been created successfully.")}`);
     },
   });
@@ -490,73 +630,43 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
     mutationFn: mutateData,
   });
 
-  const handleSuccess = ({ data, dataNode }: SuccessParams): void => {
-    const currentGroup = {
-      number: data?.id,
-      id: dataNode?.["_id"],
-      groupName: dataNode?.groupName,
-    };
-    localStorage.setItem("currentGroup", JSON.stringify(currentGroup));
+  const handleSuccess = useCallback(
+    ({ data, dataNode }: SuccessParams) => {
+      const currentGroup = {
+        number: data?.id,
+        id: dataNode?._id || "",
+        groupName: dataNode?.groupName || data?.group_name || "",
+      };
+      localStorage.setItem("currentGroup", JSON.stringify(currentGroup));
 
-    const storedValue = localStorage.getItem("currentGroup");
-    if (storedValue) {
-      setCurrenGroup(JSON.parse(storedValue));
-    }
+      const stored = localStorage.getItem("currentGroup");
+      if (stored) setCurrenGroup(JSON.parse(stored));
 
-    setIdentitiesCheckedItems((prev) => {
-      const updatedItems = [
+      setIdentitiesCheckedItems((prev: any[]) => [
         ...prev,
         {
-          id: currentGroup?.id,
-          _id: currentGroup?.id,
-          groupName: data?.group_name || "",
+          id: currentGroup.id,
+          _id: currentGroup.id,
+          groupName: currentGroup.groupName,
           totalItems: 0,
           totalWeight: 0,
           items: [],
         },
-      ];
-
-      return updatedItems;
-    });
-
-    // refetchNextGroup();
-  };
-
-  const { mutate: mutateItemIdentity } = useMutate({
-    mutationFn: mutateData,
-    onSuccess: () => {
-      playBeep(200);
+      ]);
     },
-  });
+    [setCurrenGroup, setIdentitiesCheckedItems]
+  );
 
-  const handleItemIdentity = async (data) => {
-    const kitItems = data?.weightitems?.map((item) => ({
-      category_id: item.category_id,
-      weight: item.weight,
-    }));
-
-    mutateItemIdentity({
-      endpointName: `/inventory/api/v1/group-item`,
-      values: {
-        item_id: data?.item_id,
-        group_id: currenGroup?.number,
-        weight: Number(data?.weight),
-        kitItems: data?.weightitems?.length ? kitItems : null,
-      },
-    });
-  };
-
-  const handleCreateGroups = async () => {
-    const groupHasEmptyItems = identitiesCheckedItems.some(
-      (identity) => identity.items?.length === 0
+  const handleCreateGroups = useCallback(async () => {
+    const hasEmpty = identitiesCheckedItems.some(
+      (g: any) => g.items?.length === 0
     );
-
-    if (groupHasEmptyItems) {
+    if (hasEmpty) {
       notify("info", `${t("Group already created")}`);
       return;
     }
 
-    const [response1, response2] = await Promise.all([
+    const [res1, res2] = await Promise.all([
       mutateAsync({
         endpointName: `/inventory/api/v1/inventorygroups`,
         values: {
@@ -579,17 +689,30 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       }),
     ]);
 
-    handleSuccess({ data: response1, dataNode: response2 });
-  };
+    handleSuccess({ data: res1, dataNode: res2 });
+    if (socket) socket.emit("getRooms", BasicCompanyData);
+  }, [
+    identitiesCheckedItems,
+    mutateAsync,
+    mutateGroupToNodeAsync,
+    id,
+    numbers,
+    nextGroup,
+    userData?.id,
+    userData?.branch_id,
+    isGetTenantFromUrl,
+    SOCKET_SERVER_URL,
+    handleSuccess,
+    socket,
+    BasicCompanyData,
+  ]);
 
-  // Start Of The Inventory Process For Employees
-  const handleSuccessInventoryData = () => {
-    ["currenGroup", "weightItems"].forEach((key) =>
-      localStorage.removeItem(key)
-    );
+  // finish inventory
+  const handleSuccessInventoryData = useCallback(() => {
+    ["currenGroup", "weightItems"].forEach((k) => localStorage.removeItem(k));
     notify("success", `${t("The inventory process has been completed.")}`);
     navigate("/selling/inventory/view");
-  };
+  }, [navigate]);
 
   const { mutate: mutateInventoryData, isLoading: isLoadingInventoryData } =
     useMutate({
@@ -597,7 +720,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
       onSuccess: handleSuccessInventoryData,
     });
 
-  const handlePostInventoryData = () => {
+  const handlePostInventoryData = useCallback(() => {
     mutateInventoryData({
       endpointName: `/inventory/api/v1/finishedInventories`,
       values: {
@@ -607,10 +730,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
         inventory_id: id,
       },
     });
-  };
-  // End Of The Inventory Process For Employees
-
-  // if (loading) return <Loading mainTitle="Inventory" />;
+  }, [mutateInventoryData, userData?.branch_id, userData?.id, id]);
 
   return (
     <div className="px-10 py-8">
@@ -620,34 +740,19 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
           {t("Inventory of new gold, diamonds and miscellaneous")}
         </p>
       </div>
-      <Formik initialValues={{ search: "" }} onSubmit={(values) => {}}>
+
+      <Formik initialValues={{ search: "" }} onSubmit={() => {}}>
         <Form>
           <div className="flex items-end gap-x-8">
             <Button
               bordered
               className="flex items-center gap-x-2"
               loading={isLoadingMutate}
-              action={() => {
-                handleCreateGroups();
-              }}
+              action={handleCreateGroups}
             >
               <AddIcon size={22} />
               <span>{t("Create a group")}</span>
             </Button>
-
-            {/* <div className="flex gap-2 items-center justify-center rounded-md  p-1">
-              <BaseInputField
-                id="search"
-                name="search"
-                autoFocus
-                label={`${t("id code")}`}
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder={`${t("id code")}`}
-                className="placeholder-slate-400  w-80 !shadow-transparent focus:border-transparent"
-              />
-            </div> */}
 
             <div className="relative flex gap-2 items-center justify-center rounded-md p-1">
               <BaseInputField
@@ -663,23 +768,25 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
                   setIsInputBusy(Boolean(v.trim()));
                 }}
                 placeholder={
-                  isInputBusy ? `${t("loading")} ...` : `${t("id code")}`
+                  !!search && isInputBusy
+                    ? `${t("loading")} ...`
+                    : `${t("id code")}`
                 }
                 disabled={
-                  isInputBusy || isLoadingMutate || isLoadingInventoryData
+                  (!!search && isInputBusy) ||
+                  isLoadingMutate ||
+                  isLoadingInventoryData
                 }
-                className={`py-1.5
-                  ${
-                    (isInputBusy ||
-                      isLoadingMutate ||
-                      isLoadingInventoryData) &&
-                    "bg-mainDisabled ps-12"
-                  }
-                  `}
+                className={`py-1.5 ${
+                  ((!!search && isInputBusy) ||
+                    isLoadingMutate ||
+                    isLoadingInventoryData) &&
+                  "bg-mainDisabled"
+                }`}
               />
-              {isInputBusy && (
-                <div className="absolute right-3.5 top-[3.2rem] -translate-y-1/2">
-                  <Spinner size="medium" className="" />
+              {!!search && isInputBusy && (
+                <div className="absolute left-3.5 top-[3.2rem] -translate-y-1/2">
+                  <Spinner size="medium" />
                 </div>
               )}
             </div>
@@ -694,7 +801,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
           </div>
 
           <ul className="grid grid-cols-4 gap-6 mb-5 my-5">
-            {totals.map(({ name, key, unit, value }) => (
+            {totals.map(({ name, id: key, unit, value }) => (
               <BoxesDataBase variant="secondary" key={key}>
                 <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl">
                   {name}
@@ -732,6 +839,8 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
                 setActiveTableId={setActiveTableId}
                 handleDeleteRoom={handleDeleteRoom}
                 handleDeleteItemFromRoom={handleDeleteItemFromRoom}
+                deletingRoomIds={deletingRoomIds}
+                deletingPieceIds={deletingPieceIds}
               />
             </div>
             <div className="w-[30%]">
@@ -739,7 +848,7 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
                 unknownIdentities={unknownIdentities}
                 setUnknownIdentities={setUnknownIdentities}
                 setOpenDetailsItem={setOpenDetailsItem}
-                setUnknownItemDetails={setUnknownItemDetails}
+                setUnknownItemDetails={() => {}}
                 setSelectedItem={setSelectedItem}
                 activeTableId={activeTableId}
                 setActiveTableId={setActiveTableId}
@@ -755,7 +864,6 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
         </Form>
       </Formik>
 
-      {/* Edit Weight Item */}
       <Modal
         onClose={() => setOpenWeightItem(false)}
         isOpen={openWeightItem}
@@ -772,7 +880,6 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
         />
       </Modal>
 
-      {/* kit Items */}
       <Modal
         onClose={() => setOpenKitItems(false)}
         isOpen={openKitItems}
@@ -789,7 +896,6 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
         />
       </Modal>
 
-      {/* Show Details Item */}
       <Modal
         isOpen={openDetailsItem}
         onClose={() => {
@@ -797,20 +903,14 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
         }}
       >
         <ShowDetailsItemOfInventory
-          itemDetails={!!selectedItem ? [selectedItem] : []}
+          itemDetails={selectedItem ? [selectedItem] : []}
         />
       </Modal>
 
       <div>
         {userData?.role_id === 3 ? (
           <div className="flex justify-end mt-5">
-            <Button
-              action={() => {
-                setSteps(2);
-              }}
-            >
-              {t("next")}
-            </Button>
+            <Button action={() => setSteps(2)}>{t("next")}</Button>
           </div>
         ) : (
           <div className="flex justify-end mt-5">
@@ -829,18 +929,17 @@ const InventoryNewGoldDiamondsMiscellaneous: React.FC<
 
 export default InventoryNewGoldDiamondsMiscellaneous;
 
-// const { data: nextGroups, refetch: refetchNextGroup } = useFetch({
-//   endpoint: `/inventory/api/v1/next-group/${userData?.branch_id}/${id}`,
-//   queryKey: ["next-group"],
-// });
-
-// ---------------------------------------------------------------------------------
-// NEW
-
 // import { Form, Formik } from "formik";
 // import { t } from "i18next";
-// import { useCallback, useContext, useEffect, useState } from "react";
-// import { Button } from "../../../components/atoms";
+// import {
+//   useCallback,
+//   useContext,
+//   useEffect,
+//   useMemo,
+//   useRef,
+//   useState,
+// } from "react";
+// import { Button, Spinner } from "../../../components/atoms";
 // import { AddIcon } from "../../../components/atoms/icons";
 // import { BaseInputField, Modal } from "../../../components/molecules";
 // import { BoxesDataBase } from "../../../components/atoms/card/BoxesDataBase";
@@ -853,37 +952,59 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 // import { useFetch, useMutate } from "../../../hooks";
 // import { notify } from "../../../utils/toast";
 // import { authCtx } from "../../../context/auth-and-perm/auth";
-// import { json, useNavigate, useParams } from "react-router-dom";
+// import { useNavigate, useParams } from "react-router-dom";
 // import { mutateData } from "../../../utils/mutateData";
 // import ShowDetailsItemOfInventory from "./ShowDetailsItemOfInventory";
 // import WeightAdjustmentInBranch from "../../../components/selling/Inventory/WeightAdjustmentInBranch";
 // import InventoryKitInBranch from "../../../components/selling/Inventory/InventoryKitInBranch";
-// import { io } from "socket.io-client";
 // import { Group_TP } from "./CreatingInventoryBond";
 
-// const playBeep = (frequency: number) => {
-//   const context = new (window.AudioContext || window.webkitAudioContext)();
-//   const oscillator = context.createOscillator();
-//   oscillator.type = "sine";
-//   oscillator.frequency.setValueAtTime(frequency, context.currentTime);
-//   oscillator.connect(context.destination);
-//   oscillator.start();
-//   oscillator.stop(context.currentTime + 0.2);
+// type SocketLike = {
+//   connected: boolean;
+//   connect: () => void;
+//   disconnect: () => void;
+//   emit: (event: string, payload?: any) => void;
+//   on: (event: string, cb: (...args: any[]) => void) => SocketLike;
+//   off: (event: string, cb?: (...args: any[]) => void) => SocketLike;
+//   once?: (event: string, cb: (...args: any[]) => void) => SocketLike;
 // };
 
 // interface Totals {
 //   name: string;
-//   key: string;
 //   unit: string;
 //   value: number;
+//   id: string;
 // }
 
 // interface Item {
 //   id: string;
 //   weight?: number;
 //   is_exist?: number;
+//   hwya?: string;
+//   category_selling_type?: "all" | "part";
+//   classification_id?: number;
+//   karat_name?: string;
+//   karatmineral_name?: string;
+//   classification_name?: string;
+//   category_id?: number;
+//   category_name?: string;
+//   diamond_value?: number;
+//   karat_id?: number;
+//   mineral_id?: number;
+//   Iban?: string;
+//   wage?: number;
 //   [key: string]: any;
 // }
+
+// type ResponseData = {
+//   id: string;
+//   group_name?: string;
+// };
+
+// type SuccessParams = {
+//   data?: ResponseData;
+//   dataNode?: { _id?: string; groupName?: string };
+// };
 
 // interface InventoryNewGoldDiamondsMiscellaneousProps {
 //   currenGroup: Group_TP | null;
@@ -899,21 +1020,10 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //   setUnknownIdentities: (items: any[]) => void;
 //   numberItemsInBranch: number;
 //   setNumberItemsInBranch: (value: number) => void;
-
 //   isGetTenantFromUrl?: string;
 //   SOCKET_SERVER_URL?: string;
-//   socket?: any;
+//   socket?: SocketLike;
 // }
-
-// type ResponseData = {
-//   id: string;
-//   group_name?: string;
-// };
-
-// type SuccessParams = {
-//   data?: ResponseData;
-//   dataNode?: ResponseData;
-// };
 
 // const InventoryNewGoldDiamondsMiscellaneous: React.FC<
 //   InventoryNewGoldDiamondsMiscellaneousProps
@@ -935,999 +1045,513 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //   SOCKET_SERVER_URL,
 //   socket,
 // }) => {
-//   const [search, setSearch] = useState<string>("");
-//   const numbers = ConvertNumberToWordGroup();
-//   const { formatReyal } = numberContext();
-//   const { userData } = useContext(authCtx);
 //   const { id } = useParams<{ id: string }>();
+//   const { userData } = useContext(authCtx);
+//   const { formatReyal } = numberContext();
 //   const navigate = useNavigate();
+
+//   // ui state
+//   const [isInputBusy, setIsInputBusy] = useState(false);
+//   const [search, setSearch] = useState<string>("");
 //   const [openDetailsItem, setOpenDetailsItem] = useState(false);
-//   const [unknownItemDetails, setUnknownItemDetails] = useState<any>({});
 //   const [openWeightItem, setOpenWeightItem] = useState(false);
 //   const [openKitItems, setOpenKitItems] = useState(false);
-//   const [kitItemsData, setKitItemsData] = useState([]);
-//   const [editWeight, setEditWeight] = useState({});
+//   const [kitItemsData, setKitItemsData] = useState<any[]>([]);
+//   const [editWeight, setEditWeight] = useState<any>({});
 //   const [activeTableId, setActiveTableId] = useState<string | null>(null);
-
-//   const BasicCompanyData = {
-//     branchId: userData?.branch_id,
-//     inventoryId: id,
-//     companyKey: isGetTenantFromUrl,
-//   };
-
-//   const totalidentitiesCheckedItems = identitiesCheckedItems?.reduce(
-//     (sum, group) => sum + (group.items?.length || 0),
-//     0
+//   const [nextGroup, setNextGroup] = useState<number>(0);
+//   const [deletingPieceIds, setDeletingPieceIds] = useState<Set<string>>(
+//     new Set()
+//   );
+//   const [deletingRoomIds, setDeletingRoomIds] = useState<Set<string>>(
+//     new Set()
 //   );
 
-//   const totals: Totals[] = [
-//     {
-//       name: t("Number of items in the branch"),
-//       key: crypto.randomUUID(),
-//       unit: "item",
-//       value: availableItems?.length,
-//     },
-//     {
-//       name: t("Number of items inspected"),
-//       key: crypto.randomUUID(),
-//       unit: "item",
-//       value: totalidentitiesCheckedItems,
-//     },
-//     {
-//       name: t("Uninspected items"),
-//       key: crypto.randomUUID(),
-//       unit: "item",
-//       value: availableItems?.length - totalidentitiesCheckedItems,
-//     },
-//     {
-//       name: t("Unidentified items"),
-//       key: crypto.randomUUID(),
-//       unit: "item",
-//       value: unknownIdentities?.length,
-//     },
-//   ];
+//   const numbers = ConvertNumberToWordGroup();
 
-//   const addItemToIdentity = (id: number, newItem: Item, isChecked: boolean) => {
-//     const isGroupExists = identitiesCheckedItems.some(
-//       (identity) => identity?._id === id
-//     );
-//     if (!isGroupExists) {
-//       notify("info", `${t("A group must be created first.")}`);
-//       return;
+//   // Stable AudioContext
+//   const audioCtxRef = useRef<AudioContext | null>(null);
+//   const playBeep = useCallback((frequency: number) => {
+//     try {
+//       if (!audioCtxRef.current) {
+//         const Ctx =
+//           (window as any).AudioContext || (window as any).webkitAudioContext;
+//         audioCtxRef.current = new Ctx();
+//       }
+//       const ctx = audioCtxRef.current!;
+//       const osc = ctx.createOscillator();
+//       osc.type = "sine";
+//       osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+//       osc.connect(ctx.destination);
+//       osc.start();
+//       osc.stop(ctx.currentTime + 0.2);
+//     } catch {
+//       // ignore
 //     }
-
-//     if (newItem?.is_exist && isChecked) {
-//       handleCheckedItem(id, newItem);
-//     } else {
-//       handleUnknownItem(newItem);
-//     }
-//   };
-
-//   const handleBondItemsResponse = (data: any) => {
-//     setAvailableItems(data.success ? data?.data?.items : []);
-//   };
-
-//   const handleRoomData = (data: any) => {
-//     setIdentitiesCheckedItems(data.success ? data?.data : []);
-//   };
-
-//   const handleUnknownIdentitiesData = (data: any) => {
-//     setUnknownIdentities(data.success ? data?.data : []);
-//   };
-
-//   const handleAddPieceToRoom = (item: any) => {
-//     if (!currenGroup?.id) {
-//       notify("info", `${t("Missing room ID")}`);
-//       return;
-//     }
-
-//     const payload = {
-//       roomId: currenGroup?.id,
-//       isWeight: item.category_selling_type === "all" ? 1 : 0,
-//       karat_name:
-//         item.classification_id === 1 ? item.karat_name : item.karatmineral_name,
-//       diamond_value: item.diamond_value,
-//       classification_name: item.classification_name,
-//       category_name: item.category_name,
-//       weight: item.weight,
-//       hwya: item.hwya,
-//       itemId: item.id,
-//     };
-
-//     socket.emit("addPieceToRoom", payload);
-
-//     socket.on("addPieceToRoomResponse", () => {
-//       socket.emit("getBondItems", BasicCompanyData);
-
-//       socket.on("getBondItemsResponse", handleBondItemsResponse);
-
-//       socket.emit("getRooms", BasicCompanyData);
-
-//       socket.on("roomData", handleRoomData);
-//     });
-//   };
-
-//   const handleAddMissingPieces = (item: any) => {
-//     const payload = {
-//       ...BasicCompanyData,
-//       karat_name:
-//         item.classification_id === 1 ? item.karat_name : item.karatmineral_name,
-//       diamond_value: item.diamond_value,
-//       classification_name: item.classification_name,
-//       category_name: item.category_name,
-//       weight: item.weight,
-//       hwya: item.hwya,
-//       itemId: item.id,
-//     };
-
-//     socket.emit("missingPieces", payload);
-
-//     socket.on("missingPieceResponse", () => {
-//       socket.emit("getBondItems", BasicCompanyData);
-
-//       socket.on("getBondItemsResponse", handleBondItemsResponse);
-
-//       socket.emit("getRooms", BasicCompanyData);
-
-//       socket.on("roomData", handleRoomData);
-
-//       socket.emit("getmissingPieces", BasicCompanyData);
-
-//       socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
-//     });
-//   };
-
-//   // Handle checked items
-//   const handleCheckedItem = async (newItemId: number, newItem: Item) => {
-//     const group = identitiesCheckedItems.find(
-//       (identity) => identity?._id === newItemId
-//     );
-//     const isItemAlreadyInGroup = group.items.some(
-//       (item: any) => item.itemId === newItem.item_id
-//     );
-
-//     if (!group) return;
-
-//     if (isItemAlreadyInGroup) {
-//       notify("info", `${t("This item is already added")}`);
-//       return;
-//     }
-
-//     // const updatedIdentities = identitiesCheckedItems.map((identity) =>
-//     //   identity._id === newItemId
-//     //     ? {
-//     //         ...identity,
-//     //         items: getUpdatedItems(identity.items, newItem),
-//     //         totalItems: identity.items.length + 1,
-//     //         totalWeight: identity.items.reduce(
-//     //           (sum: number, item: Item) => sum + Number(item.weight),
-//     //           Number(newItem.weight)
-//     //         ),
-//     //       }
-//     //     : identity
-//     // );
-
-//     handleItemIdentity(newItem);
-
-//     handleAddPieceToRoom(newItem);
-//   };
-
-//   // Get updated items list
-//   // const getUpdatedItems = (items: Item[], newItem: Item) => {
-//   //   return items.some((item) => item.id === newItem.id)
-//   //     ? items.map((item) =>
-//   //         item.id === newItem.id
-//   //           ? { ...item, weight: Number(newItem.weight), kitItems: newItem }
-//   //           : item
-//   //       )
-//   //     : [...items, { ...newItem, status: "Checked" }];
-//   // };
-
-//   // Handle unknown items
-//   const handleUnknownItem = (newItem: Item) => {
-//     if (unknownIdentities.some((item) => item.id === newItem.id)) {
-//       notify("info", `${t("This item is already added to unknown items.")}`);
-//       return;
-//     }
-
-//     // const updatedUnknowns = [
-//     //   { ...newItem, status: "Unknown" },
-//     //   ...unknownIdentities,
-//     // ];
-//     // setUnknownIdentities(updatedUnknowns);
-//     // localStorage.setItem("unknownIdentities", JSON.stringify(updatedUnknowns));
-
-//     handleAddMissingPieces(newItem);
-
-//     playBeep(1000);
-//   };
-
-//   useEffect(() => {
-//     socket.on("connect");
-
-//     socket.emit("getBondItems", BasicCompanyData);
-
-//     socket.on("getBondItemsResponse", handleBondItemsResponse);
-
-//     socket.emit("getRooms", BasicCompanyData);
-
-//     socket.on("roomData", handleRoomData);
-
-//     socket.emit("getmissingPieces", BasicCompanyData);
-
-//     socket.on("getmissingPieceResponse", handleUnknownIdentitiesData);
-
-//     return () => {
-//       socket.off("getBondItemsResponse", handleBondItemsResponse);
-//       socket.off("roomData", handleRoomData);
-//       socket.off("getmissingPieces", handleUnknownIdentitiesData);
-//     };
 //   }, []);
 
-//   const { data } = useFetch({
-//     queryKey: ["branch-all-accepted-items", search],
-//     pagination: true,
-//     endpoint: `/inventory/api/v1/getItembyhwya/${userData?.branch_id}?hwya[lk]=${search}`,
-//     onSuccess: (data) => {
-//       setSelectedItem(data?.data);
-//       const isKit =
-//         data?.data?.weightitems?.length &&
-//         data?.data?.weightitems?.some((item) => item.status === 1);
+//   // Stable company data
+//   const BasicCompanyData = useMemo(
+//     () => ({
+//       branchId: userData?.branch_id,
+//       inventoryId: id,
+//       companyKey: isGetTenantFromUrl,
+//     }),
+//     [userData?.branch_id, id, isGetTenantFromUrl]
+//   );
 
-//       if (data?.data?.category_selling_type === "all") {
-//         setEditWeight(data?.data);
-//         setOpenWeightItem(true);
-//       } else if (isKit) {
-//         setOpenKitItems(true);
-//       } else {
-//         addItemToIdentity(currenGroup?.id, data?.data, true);
+//   // Derived counts
+//   const totalIdentitiesChecked = useMemo(
+//     () =>
+//       identitiesCheckedItems?.reduce(
+//         (sum: number, group: any) => sum + (group.items?.length || 0),
+//         0
+//       ),
+//     [identitiesCheckedItems]
+//   );
+
+//   const totals: Totals[] = useMemo(
+//     () => [
+//       {
+//         id: "branch-items",
+//         name: t("Number of items in the branch"),
+//         unit: "item",
+//         value: availableItems?.length || 0,
+//       },
+//       {
+//         id: "inspected-items",
+//         name: t("Number of items inspected"),
+//         unit: "item",
+//         value: totalIdentitiesChecked || 0,
+//       },
+//       {
+//         id: "uninspected-items",
+//         name: t("Uninspected items"),
+//         unit: "item",
+//         value: Math.max(
+//           (availableItems?.length || 0) - (totalIdentitiesChecked || 0),
+//           0
+//         ),
+//       },
+//       {
+//         id: "unidentified-items",
+//         name: t("Unidentified items"),
+//         unit: "item",
+//         value: unknownIdentities?.length || 0,
+//       },
+//     ],
+//     [availableItems?.length, totalIdentitiesChecked, unknownIdentities?.length]
+//   );
+
+//   useEffect(() => {
+//     setNextGroup(identitiesCheckedItems?.length || 0);
+//   }, [identitiesCheckedItems?.length]);
+
+//   // Stable socket handlers
+//   const handleBondItemsResponse = useCallback(
+//     (data: any) => {
+//       setAvailableItems(data?.success ? data?.data?.items || [] : []);
+//       setIsInputBusy(false);
+//     },
+//     [setAvailableItems]
+//   );
+
+//   const handleRoomData = useCallback(
+//     (data: any) => {
+//       setIdentitiesCheckedItems(data?.success ? data?.data || [] : []);
+//       setIsInputBusy(false);
+//     },
+//     [setIdentitiesCheckedItems]
+//   );
+
+//   const handleUnknownIdentitiesData = useCallback(
+//     (data: any) => {
+//       setUnknownIdentities(data?.success ? data?.data || [] : []);
+//       setIsInputBusy(false);
+//     },
+//     [setUnknownIdentities]
+//   );
+
+//   // One-time socket lifecycle
+//   useEffect(() => {
+//     if (!socket || !BasicCompanyData.branchId || !BasicCompanyData.inventoryId)
+//       return;
+
+//     const attachAll = () => {
+//       socket
+//         .off("getBondItemsResponse", handleBondItemsResponse)
+//         .on("getBondItemsResponse", handleBondItemsResponse);
+
+//       socket.off("roomData", handleRoomData).on("roomData", handleRoomData);
+
+//       socket
+//         .off("getmissingPieceResponse", handleUnknownIdentitiesData)
+//         .on("getmissingPieceResponse", handleUnknownIdentitiesData);
+
+//       // optional one-offs that update same stores
+//       const addPieceCb = () => {
+//         socket.emit("getBondItems", BasicCompanyData);
+//         socket.emit("getRooms", BasicCompanyData);
+//         setIsInputBusy(false);
+//       };
+//       const missingPieceCb = () => {
+//         socket.emit("getBondItems", BasicCompanyData);
+//         socket.emit("getRooms", BasicCompanyData);
+//         socket.emit("getmissingPieces", BasicCompanyData);
+//         setIsInputBusy(false);
+//       };
+
+//       const deletePieceCb = (payload?: { pieceId?: string }) => {
+//         socket.emit("getBondItems", BasicCompanyData);
+//         socket.emit("getRooms", BasicCompanyData);
+//         socket.emit("getmissingPieces", BasicCompanyData);
+//         setDeletingPieceIds((prev) => {
+//           const next = new Set(prev);
+//           if (payload?.pieceId) next.delete(payload.pieceId);
+//           return next;
+//         });
+//         setIsInputBusy(false);
+//       };
+
+//       const deleteRoomCb = (payload?: { roomId?: string }) => {
+//         handleRoomData(payload); // keep existing behavior
+//         socket.emit("getBondItems", BasicCompanyData);
+//         socket.emit("getmissingPieces", BasicCompanyData);
+//         setDeletingRoomIds((prev) => {
+//           const next = new Set(prev);
+//           if (payload?.roomId) next.delete(payload.roomId);
+//           return next;
+//         });
+//         setIsInputBusy(false);
+//       };
+
+//       // const deletePieceCb = () => {
+//       //   socket.emit("getBondItems", BasicCompanyData);
+//       //   socket.emit("getRooms", BasicCompanyData);
+//       // };
+//       // const deleteRoomCb = handleRoomData;
+
+//       socket
+//         .off("addPieceToRoomResponse", addPieceCb)
+//         .on("addPieceToRoomResponse", addPieceCb);
+//       socket
+//         .off("missingPieceResponse", missingPieceCb)
+//         .on("missingPieceResponse", missingPieceCb);
+//       socket
+//         .off("deletePieceResponse", deletePieceCb)
+//         .on("deletePieceResponse", deletePieceCb);
+//       socket
+//         .off("deleteRoomData", deleteRoomCb)
+//         .on("deleteRoomData", deleteRoomCb);
+//     };
+
+//     const emitInitial = () => {
+//       socket.emit("joinBranch", BasicCompanyData);
+//       socket.emit("getBondItems", BasicCompanyData);
+//       socket.emit("getRooms", BasicCompanyData);
+//       socket.emit("getmissingPieces", BasicCompanyData);
+//     };
+
+//     if (socket.connected) {
+//       attachAll();
+//       emitInitial();
+//     } else if (socket.once) {
+//       socket.once("connect", () => {
+//         attachAll();
+//         emitInitial();
+//       });
+//       socket.connect();
+//     } else {
+//       // fallback: try connect then attach
+//       socket.connect();
+//       attachAll();
+//       emitInitial();
+//     }
+
+//     return () => {
+//       if (!socket) return;
+//       socket.off("getBondItemsResponse", handleBondItemsResponse);
+//       socket.off("roomData", handleRoomData);
+//       socket.off("getmissingPieceResponse", handleUnknownIdentitiesData);
+//       socket.off("addPieceToRoomResponse");
+//       socket.off("missingPieceResponse");
+//       socket.off("deletePieceResponse");
+//       socket.off("deleteRoomData");
+//       socket.off("connect");
+//       socket.disconnect();
+//     };
+//   }, [
+//     socket,
+//     BasicCompanyData,
+//     handleBondItemsResponse,
+//     handleRoomData,
+//     handleUnknownIdentitiesData,
+//   ]);
+
+//   // Actions
+//   const addItemToIdentity = useCallback(
+//     (id: string, newItem: Item, isChecked: boolean) => {
+//       const exists = identitiesCheckedItems.some((g: any) => g?._id === id);
+//       if (!exists) {
+//         notify("info", `${t("A group must be created first.")}`);
+//         return;
 //       }
-//       setSearch("");
+//       if (newItem?.is_exist && isChecked) {
+//         // known item
+//         handleCheckedItem(id, newItem);
+//       } else {
+//         handleUnknownItem(newItem);
+//       }
 //     },
-//     enabled: !!search,
-//   });
-
-//   const {
-//     data: nextGroup,
-//     isLoading: isNextGroupLoading,
-//     refetch: refetchNextGroup,
-//   } = useFetch({
-//     endpoint: `/inventory/api/v1/next-group/${userData?.branch_id}/${id}`,
-//     queryKey: ["next-group"],
-//   });
-
-//   const { mutateAsync, isLoading: isLoadingMutate } = useMutate({
-//     mutationFn: mutateData,
-//   });
-
-//   const { mutateAsync: mutateGroupToNodeAsync } = useMutate({
-//     mutationFn: mutateData,
-//   });
-
-//   const handleSuccess = ({ data, dataNode }: SuccessParams): void => {
-//     const currentGroup = { number: data?.id, id: dataNode?.["_id"] };
-//     localStorage.setItem("currentGroup", JSON.stringify(currentGroup));
-
-//     const storedValue = localStorage.getItem("currentGroup");
-//     if (storedValue) {
-//       setCurrenGroup(JSON.parse(storedValue));
-//     }
-
-//     notify("success");
-
-//     setIdentitiesCheckedItems((prev) => {
-//       const updatedItems = [
-//         ...prev,
-//         {
-//           id: currentGroup?.id,
-//           _id: currentGroup?.id,
-//           groupName: data?.group_name || "",
-//           totalItems: 0,
-//           totalWeight: 0,
-//           items: [],
-//         },
-//       ];
-
-//       return updatedItems;
-//     });
-
-//     refetchNextGroup();
-//   };
-
-//   const { mutate: mutateItemIdentity } = useMutate({
-//     mutationFn: mutateData,
-//     onSuccess: () => {
-//       playBeep(200);
-//     },
-//   });
-
-//   const { mutate: mutateItemIdentityNode } = useMutate({
-//     mutationFn: mutateData,
-//   });
-
-//   const handleItemIdentity = async (data) => {
-//     const kitItems = data?.weightitems?.map((item) => ({
-//       category_id: item.category_id,
-//       weight: item.weight,
-//     }));
-
-//     mutateItemIdentity({
-//       endpointName: `/inventory/api/v1/group-item`,
-//       values: {
-//         item_id: data?.item_id,
-//         group_id: currenGroup?.number,
-//         weight: Number(data?.weight),
-//         kitItems: data?.weightitems?.length ? kitItems : null,
-//       },
-//     });
-
-//     // mutateItemIdentityNode({
-//     //   endpointName: `${SOCKET_SERVER_URL}/api/room/${currenGroup?.id}/piece`,
-//     //   values: {
-//     //     karat_name:
-//     //       data.classification_id === 1
-//     //         ? data.karat_name
-//     //         : data.karatmineral_name,
-//     //     diamond_value: data.diamond_value,
-//     //     classification_name: data.classification_name,
-//     //     category_name: data.category_name,
-//     //     weight: data.weight,
-//     //     hwya: data.hwya,
-//     //     itemId: data.id,
-//     //   },
-//     // });
-//   };
-
-//   const handleCreateGroups = async () => {
-//     const groupHasEmptyItems = identitiesCheckedItems.some(
-//       (identity) => identity.items?.length === 0
-//     );
-
-//     if (groupHasEmptyItems) {
-//       notify("info", `${t("Group already created")}`);
-//       return;
-//     }
-
-//     const [response1, response2] = await Promise.all([
-//       mutateAsync({
-//         endpointName: `/inventory/api/v1/inventorygroups`,
-//         values: {
-//           inventory_id: id,
-//           group_name: numbers?.[Number(nextGroup?.group_num - 1)],
-//           employee_id: userData?.id,
-//           branch_id: userData?.branch_id,
-//         },
-//       }),
-//       mutateGroupToNodeAsync({
-//         endpointName: `${SOCKET_SERVER_URL}/api/room`,
-//         values: {
-//           branchId: String(userData?.branch_id),
-//           companyKey: isGetTenantFromUrl,
-//           employeeId: String(userData?.id),
-//           groupId: "0",
-//           groupName: numbers?.[Number(nextGroup?.group_num - 1)],
-//           inventoryId: String(id),
-//         },
-//       }),
-//     ]);
-
-//     handleSuccess({ data: response1, dataNode: response2 });
-//   };
-
-//   // End Of The Inventory Process For Employees
-//   const handleSuccessInventoryData = () => {
-//     notify("success");
-//     ["currenGroup", "unknownIdentities", "identitiesCheckedItems"].forEach(
-//       (key) => localStorage.removeItem(key)
-//     );
-//     navigate("/selling/inventory/view");
-//   };
-
-//   const { mutate: mutateInventoryData, isLoading: isLoadingInventoryData } =
-//     useMutate({
-//       mutationFn: mutateData,
-//       onSuccess: handleSuccessInventoryData,
-//     });
-
-//   const handlePostInventoryData = () => {
-//     const lostItems = unknownIdentities.map((item) => ({
-//       inventory_id: id,
-//       branch_id: userData?.branch_id,
-//       ...item,
-//     }));
-
-//     mutateInventoryData({
-//       endpointName: `/inventory/api/v1/missinginventories`,
-//       values: {
-//         branch_id: userData?.branch_id,
-//         employee_id: userData?.id,
-//         type_employe: true,
-//         inventory_id: id,
-//         lostItems,
-//       },
-//     });
-//   };
-//   // End Of The Inventory Process For Employees
-
-//   return (
-//     <div className="px-10 py-8">
-//       <div className="flex items-center justify-between text-mainGreen border-b-2 pb-3">
-//         <h2 className="text-xl font-semibold ">{t("Inventory")}</h2>
-//         <p className="font-semibold">
-//           {t("Inventory of new gold, diamonds and miscellaneous")}
-//         </p>
-//       </div>
-//       <Formik initialValues={{ search: "" }} onSubmit={(values) => {}}>
-//         {({ values }) => {
-//           return (
-//             <Form>
-//               <div className="flex items-end gap-x-8">
-//                 <Button
-//                   bordered
-//                   className="flex items-center gap-x-2"
-//                   loading={isLoadingMutate}
-//                   action={() => {
-//                     handleCreateGroups();
-//                   }}
-//                 >
-//                   <AddIcon size={22} />
-//                   <span>{t("Create a group")}</span>
-//                 </Button>
-
-//                 <div className="flex gap-2 items-center justify-center rounded-md  p-1">
-//                   <BaseInputField
-//                     id="search"
-//                     name="search"
-//                     autoFocus
-//                     label={`${t("id code")}`}
-//                     type="text"
-//                     value={search}
-//                     onChange={(e) => setSearch(e.target.value)}
-//                     placeholder={`${t("id code")}`}
-//                     className="placeholder-slate-400  w-80 !shadow-transparent focus:border-transparent"
-//                   />
-//                 </div>
-
-//                 <div className="bg-mainGreen rounded-full py-1.5 px-8 text-white">
-//                   <h2>{t("first group")}</h2>
-//                 </div>
-//               </div>
-
-//               <ul className="grid grid-cols-4 gap-6 mb-5 my-5">
-//                 {totals.map(({ name, key, unit, value }) => (
-//                   <BoxesDataBase variant="secondary" key={key}>
-//                     <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl">
-//                       {name}
-//                     </p>
-//                     <p className="bg-white px-2 py-[7px] text-black rounded-b-xl">
-//                       {formatReyal(Number(value))} {t(unit)}
-//                     </p>
-//                   </BoxesDataBase>
-//                 ))}
-//               </ul>
-
-//               <div className="flex items-center gap-x-4 w-full bg-[#295E5608] py-8 rounded-2xl">
-//                 <div className="w-[30%]">
-//                   <AvailableItemsInBranch
-//                     selectedItem={selectedItem}
-//                     setSelectedItem={setSelectedItem}
-//                     availableItems={availableItems}
-//                     setAvailableItems={setAvailableItems}
-//                     setNumberItemsInBranch={setNumberItemsInBranch}
-//                     activeTableId={activeTableId}
-//                     setActiveTableId={setActiveTableId}
-//                     isGetTenantFromUrl={isGetTenantFromUrl}
-//                     SOCKET_SERVER_URL={SOCKET_SERVER_URL}
-//                   />
-//                 </div>
-//                 <div className="w-[30%]">
-//                   <IdentitiesCheckedByBranch
-//                     identitiesCheckedItems={identitiesCheckedItems}
-//                     setIdentitiesCheckedItems={setIdentitiesCheckedItems}
-//                     currenGroup={currenGroup}
-//                     setOpenWeightItem={setOpenWeightItem}
-//                     setEditWeight={setEditWeight}
-//                     setSelectedItem={setSelectedItem}
-//                     activeTableId={activeTableId}
-//                     setActiveTableId={setActiveTableId}
-//                   />
-//                 </div>
-//                 <div className="w-[30%]">
-//                   <UnknownIdentitiesInBranch
-//                     unknownIdentities={unknownIdentities}
-//                     setUnknownIdentities={setUnknownIdentities}
-//                     setOpenDetailsItem={setOpenDetailsItem}
-//                     setUnknownItemDetails={setUnknownItemDetails}
-//                     setSelectedItem={setSelectedItem}
-//                     activeTableId={activeTableId}
-//                     setActiveTableId={setActiveTableId}
-//                   />
-//                 </div>
-//                 <div className="w-[25%]">
-//                   <IdentityInformationInBranch
-//                     selectedItem={selectedItem}
-//                     setSelectedItem={setSelectedItem}
-//                     setOpenDetailsItem={setOpenDetailsItem}
-//                   />
-//                 </div>
-//               </div>
-//             </Form>
-//           );
-//         }}
-//       </Formik>
-
-//       {/* Edit Weight Item */}
-//       <Modal
-//         onClose={() => setOpenWeightItem(false)}
-//         isOpen={openWeightItem}
-//         title={`${t("Enter weight for a piece")}`}
-//       >
-//         <WeightAdjustmentInBranch
-//           editWeight={editWeight}
-//           setIdentitiesCheckedItems={setIdentitiesCheckedItems}
-//           setOpenWeightItem={setOpenWeightItem}
-//           currenGroup={currenGroup}
-//           addItemToIdentity={addItemToIdentity}
-//         />
-//       </Modal>
-
-//       {/* kit Items */}
-//       <Modal
-//         onClose={() => setOpenKitItems(false)}
-//         isOpen={openKitItems}
-//         title={`${t("Enter weight for a piece")}`}
-//       >
-//         <InventoryKitInBranch
-//           selectedItem={selectedItem}
-//           setIdentitiesCheckedItems={setIdentitiesCheckedItems}
-//           kitItemsData={kitItemsData}
-//           setKitItemsData={setKitItemsData}
-//           addItemToIdentity={addItemToIdentity}
-//           currenGroup={currenGroup}
-//           setOpenKitItems={setOpenKitItems}
-//         />
-//       </Modal>
-
-//       {/* Show Details Item */}
-//       <Modal
-//         isOpen={openDetailsItem}
-//         onClose={() => {
-//           setOpenDetailsItem(false);
-//         }}
-//       >
-//         <ShowDetailsItemOfInventory
-//           itemDetails={!!selectedItem ? [selectedItem] : []}
-//         />
-//       </Modal>
-
-//       <div>
-//         {userData?.role_id === 3 ? (
-//           <div className="flex justify-end mt-5">
-//             <Button
-//               action={() => {
-//                 setSteps(2);
-//               }}
-//             >
-//               {t("next")}
-//             </Button>
-//           </div>
-//         ) : (
-//           <div className="flex justify-end mt-5">
-//             <Button
-//               loading={isLoadingInventoryData}
-//               action={handlePostInventoryData}
-//             >
-//               {t("save")}
-//             </Button>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default InventoryNewGoldDiamondsMiscellaneous;
-
-// ---------------------------------------------------------------------------------
-// OLD
-
-// import { Form, Formik } from "formik";
-// import { t } from "i18next";
-// import { useContext, useEffect, useState } from "react";
-// import { Button } from "../../../components/atoms";
-// import { AddIcon } from "../../../components/atoms/icons";
-// import { BaseInputField, Modal } from "../../../components/molecules";
-// import { BoxesDataBase } from "../../../components/atoms/card/BoxesDataBase";
-// import AvailableItemsInBranch from "../../../components/selling/Inventory/AvailableItemsInBranch";
-// import IdentitiesCheckedByBranch from "../../../components/selling/Inventory/IdentitiesCheckedByBranch";
-// import UnknownIdentitiesInBranch from "../../../components/selling/Inventory/UnknownIdentitiesInBranch";
-// import IdentityInformationInBranch from "../../../components/selling/Inventory/IdentityInformationInBranch";
-// import ConvertNumberToWordGroup from "../../../utils/number to arabic words/convertNumToArWordGroup";
-// import { numberContext } from "../../../context/settings/number-formatter";
-// import { useFetch, useMutate } from "../../../hooks";
-// import { notify } from "../../../utils/toast";
-// import { authCtx } from "../../../context/auth-and-perm/auth";
-// import { json, useNavigate, useParams } from "react-router-dom";
-// import { mutateData } from "../../../utils/mutateData";
-// import ShowDetailsItemOfInventory from "./ShowDetailsItemOfInventory";
-// import WeightAdjustmentInBranch from "../../../components/selling/Inventory/WeightAdjustmentInBranch";
-// import InventoryKitInBranch from "../../../components/selling/Inventory/InventoryKitInBranch";
-// import axios from "axios";
-// import { io } from "socket.io-client";
-
-// const playBeep = (frequency: number) => {
-//   const context = new (window.AudioContext || window.webkitAudioContext)();
-//   const oscillator = context.createOscillator();
-//   oscillator.type = "sine";
-//   oscillator.frequency.setValueAtTime(frequency, context.currentTime);
-//   oscillator.connect(context.destination);
-//   oscillator.start();
-//   oscillator.stop(context.currentTime + 0.2);
-// };
-
-// interface Totals {
-//   name: string;
-//   key: string;
-//   unit: string;
-//   value: number;
-// }
-
-// interface Item {
-//   id: string;
-//   weight?: number;
-//   is_exist?: number;
-//   [key: string]: any;
-// }
-
-// interface InventoryNewGoldDiamondsMiscellaneousProps {
-//   currenGroup: number | null;
-//   setCurrenGroup: (value: any) => void;
-//   setSteps: (value: number) => void;
-//   selectedItem: Item | null;
-//   setSelectedItem: (item: any | null) => void;
-//   availableItems: Item[];
-//   setAvailableItems: (items: any[]) => void;
-//   identitiesCheckedItems: any[];
-//   setIdentitiesCheckedItems: (items: any[]) => void;
-//   unknownIdentities: Item[];
-//   setUnknownIdentities: (items: any[]) => void;
-//   numberItemsInBranch: number;
-//   setNumberItemsInBranch: (value: number) => void;
-//   isGetTenantFromUrl?: string;
-//   SOCKET_SERVER_URL?: string;
-// }
-
-// type ResponseData = {
-//   id: string;
-//   group_name?: string;
-// };
-
-// type SuccessParams = {
-//   data?: ResponseData;
-//   dataNode?: ResponseData;
-// };
-
-// const InventoryNewGoldDiamondsMiscellaneous: React.FC<
-//   InventoryNewGoldDiamondsMiscellaneousProps
-// > = ({
-//   setSteps,
-//   currenGroup,
-//   setCurrenGroup,
-//   selectedItem,
-//   setSelectedItem,
-//   availableItems,
-//   setAvailableItems,
-//   identitiesCheckedItems,
-//   setIdentitiesCheckedItems,
-//   unknownIdentities,
-//   setUnknownIdentities,
-//   numberItemsInBranch,
-//   setNumberItemsInBranch,
-//   isGetTenantFromUrl,
-//   SOCKET_SERVER_URL,
-// }) => {
-//   const [search, setSearch] = useState<string>("");
-//   const numbers = ConvertNumberToWordGroup();
-//   const { formatReyal } = numberContext();
-//   const { userData } = useContext(authCtx);
-//   const { id } = useParams<{ id: string }>();
-//   const navigate = useNavigate();
-//   const [openDetailsItem, setOpenDetailsItem] = useState(false);
-//   const [unknownItemDetails, setUnknownItemDetails] = useState<any>({});
-//   const [openWeightItem, setOpenWeightItem] = useState(false);
-//   const [openKitItems, setOpenKitItems] = useState(false);
-//   const [kitItemsData, setKitItemsData] = useState([]);
-//   const [editWeight, setEditWeight] = useState({});
-//   const [activeTableId, setActiveTableId] = useState<string | null>(null);
-
-//   const totalNumberItemsInspected = identitiesCheckedItems?.reduce(
-//     (count, group) => count + group.items.length,
-//     0
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//     [identitiesCheckedItems]
 //   );
 
-//   const totals: Totals[] = [
-//     {
-//       name: t("Number of items in the branch"),
-//       key: "1",
-//       unit: "item",
-//       value: numberItemsInBranch,
+//   const handleAddPieceToRoom = useCallback(
+//     (item: any) => {
+//       if (!currenGroup?.id || !socket) {
+//         notify("info", `${t("Missing room ID")}`);
+//         setIsInputBusy(false);
+//         return;
+//       }
+
+//       const payload = {
+//         roomId: currenGroup.id,
+//         isWeight: item.category_selling_type === "all" ? 1 : 0,
+//         karat_name:
+//           item.classification_id === 1
+//             ? item.karat_name
+//             : item.karatmineral_name,
+//         classification_name: item.classification_name,
+//         category_id: item.category_id,
+//         category_name: item.category_name,
+//         weight: item.weight,
+//         hwya: item.hwya,
+//         itemId: item.id,
+//         diamond_value: item.diamond_value,
+//       };
+
+//       socket.emit("addPieceToRoom", payload);
 //     },
-//     {
-//       name: t("Number of items inspected"),
-//       key: "2",
-//       unit: "item",
-//       value: totalNumberItemsInspected,
+//     [currenGroup?.id, socket]
+//   );
+
+//   const handleAddMissingPieces = useCallback(
+//     (item: any) => {
+//       if (!socket) return;
+
+//       const payload = {
+//         ...BasicCompanyData,
+//         karat_id: item.karat_id,
+//         mineral_id: item.mineral_id,
+//         karat_name:
+//           item.classification_id === 1
+//             ? item.karat_name
+//             : item.karatmineral_name,
+//         classification_id: item.classification_id,
+//         classification_name: item.classification_name,
+//         category_id: item.category_id,
+//         category_name: item.category_name,
+//         weight: item.weight,
+//         hwya: item.hwya,
+//         itemId: item.id,
+//         Iban: item.Iban,
+//         wage: item.wage,
+//         diamond_value: item.diamond_value,
+//       };
+
+//       socket.emit("missingPieces", payload);
 //     },
-//     {
-//       name: t("Uninspected items"),
-//       key: "3",
-//       unit: "item",
-//       value: numberItemsInBranch - totalNumberItemsInspected,
+//     [socket, BasicCompanyData]
+//   );
+
+//   const handleDeleteRoom = useCallback(
+//     (roomId: string) => {
+//       if (!socket || !roomId) return;
+//       setIsInputBusy(true);
+//       setDeletingRoomIds((prev) => new Set(prev).add(roomId));
+
+//       socket.emit("deleteRoom", {
+//         branchId: BasicCompanyData.branchId,
+//         inventoryId: BasicCompanyData.inventoryId,
+//         companyKey: BasicCompanyData.companyKey,
+//         roomId,
+//       });
+
+//       localStorage.removeItem("currentGroup");
+
+//       setIsInputBusy(false);
 //     },
-//     {
-//       name: t("Unidentified items"),
-//       key: "4",
-//       unit: "item",
-//       value: unknownIdentities?.length,
+//     [socket, BasicCompanyData]
+//   );
+
+//   const handleDeleteItemFromRoom = useCallback(
+//     (pieceId: string, roomId: string) => {
+//       if (!socket || !roomId || !pieceId) return;
+//       setIsInputBusy(true);
+//       setDeletingPieceIds((prev) => new Set(prev).add(pieceId));
+
+//       socket.emit("deletePieceFromRoom", {
+//         branchId: BasicCompanyData.branchId,
+//         inventoryId: BasicCompanyData.inventoryId,
+//         companyKey: BasicCompanyData.companyKey,
+//         roomId,
+//         pieceId,
+//       });
+
+//       setIsInputBusy(false);
 //     },
-//   ];
+//     [socket, BasicCompanyData]
+//   );
 
-//   // useEffect(() => {
-//   //   const socket = io(SOCKET_SERVER_URL);
-
-//   //   socket.emit("getRooms", {
-//   //     branchId: userData?.branch_id,
-//   //     inventoryId: id,
-//   //     companyKey: isGetTenantFromUrl,
-//   //   });
-
-//   //   socket.on("roomData", (data) => {
-//   //     setIdentitiesCheckedItems(data.data);
-//   //   });
-
-//   //   socket.on("roomError", (error) => {
-//   //     setIdentitiesCheckedItems(null);
-//   //   });
-//   // }, []);
-
-//   const addItemToIdentity = (id: number, newItem: Item, isChecked: boolean) => {
-//     const groupExists = identitiesCheckedItems.some(
-//       (identity) => identity?.["_id"] == id
-//     );
-//     if (!groupExists) {
-//       notify("info", `${t("A group must be created first.")}`);
-//       return;
-//     }
-
-//     if (newItem?.is_exist && isChecked) {
+//   const handleCheckedItem = useCallback(
+//     (newItemId: string, newItem: Item) => {
 //       const group = identitiesCheckedItems.find(
-//         (identity) => identity?.["_id"] == id
+//         (g: any) => g?._id === newItemId
 //       );
+//       const already = group?.items?.some((it: any) => it.hwya === newItem.hwya);
 
-//       const itemAlreadyExists = group?.items.some(
-//         (item) => item.itemId == newItem.item_id
-//       );
-
-//       if (itemAlreadyExists && newItem?.category_selling_type !== "all") {
+//       if (already && newItem?.category_selling_type === "part") {
 //         notify("info", `${t("This item is already added")}`);
 //         return;
 //       }
 
-//       const updatedIdentities = identitiesCheckedItems.map((identity) => {
-//         if (identity.id !== id) return identity;
-
-//         const updatedItems = [
-//           // Add the new item if it doesn't already exist
-//           ...(!identity.items.some((item) => item.id === newItem.id)
-//             ? [{ ...newItem, status: "Checked" }]
-//             : []),
-//           // Update weight if the item already exists
-//           ...identity.items.map((item) =>
-//             item.id === newItem.id
-//               ? { ...item, weight: Number(newItem.weight), kitItems: newItem }
-//               : item
-//           ),
-//         ];
-
-//         return {
-//           ...identity,
-//           items: updatedItems,
-//           totalItems: updatedItems.length,
-//           totalWeight: updatedItems.reduce(
-//             (sum: number, item: Item) => sum + Number(item.weight),
-//             0
-//           ),
-//         };
-//       });
 //       handleItemIdentity(newItem);
-//       // setIdentitiesCheckedItems(updatedIdentities);
-//       // localStorage.setItem(
-//       //   "identitiesCheckedItems",
-//       //   JSON.stringify(updatedIdentities)
-//       // );
+//       handleAddPieceToRoom(newItem);
+//     },
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//     [identitiesCheckedItems, handleAddPieceToRoom]
+//   );
 
-//       const socket = io(SOCKET_SERVER_URL);
-
-//       socket.emit("getRooms", {
-//         branchId: userData?.branch_id,
-//         inventoryId: id,
-//         companyKey: isGetTenantFromUrl,
-//       });
-
-//       socket.on("roomData", (data) => {
-//         setIdentitiesCheckedItems(data.data);
-//       });
-
-//       // socket.on("roomError", (error) => {
-//       //   setIdentitiesCheckedItems(null);
-//       // });
-
-//       playBeep(200);
-//     } else {
-//       // Check if the item is already in unknown items
-//       const itemAlreadyExistsInUnknowns = unknownIdentities.some(
-//         (item) => item.id === newItem.id
+//   const handleUnknownItem = useCallback(
+//     (newItem: Item) => {
+//       const already = unknownIdentities.some(
+//         (it: any) => it.hwya === newItem.hwya
 //       );
-
-//       if (itemAlreadyExistsInUnknowns) {
+//       if (already) {
 //         notify("info", `${t("This item is already added to unknown items.")}`);
 //         return;
 //       }
-
-//       // Add item to unknown identities
-//       const updatedUnknowns = [
-//         { ...newItem, status: "Unknown" },
-//         ...unknownIdentities,
-//       ];
-
-//       setUnknownIdentities(updatedUnknowns);
-//       localStorage.setItem(
-//         "unknownIdentities",
-//         JSON.stringify(updatedUnknowns)
-//       );
+//       handleAddMissingPieces(newItem);
 //       playBeep(1000);
-//     }
-//   };
+//     },
+//     [unknownIdentities, handleAddMissingPieces, playBeep]
+//   );
 
+//   // Fetch by search
 //   const { data } = useFetch({
 //     queryKey: ["branch-all-accepted-items", search],
 //     pagination: true,
 //     endpoint: `/inventory/api/v1/getItembyhwya/${userData?.branch_id}?hwya[lk]=${search}`,
-//     onSuccess: (data) => {
-//       setSelectedItem(data?.data);
-//       const isKit =
-//         data?.data?.weightitems?.length &&
-//         data?.data?.weightitems?.some((item) => item.status === 1);
+//     enabled: Boolean(search),
+//     onSuccess: (resp) => {
+//       if (!resp?.data) return;
+//       const item = resp.data;
+//       const { weightitems, category_selling_type } = item;
+//       const isKit = Boolean(
+//         weightitems?.length && weightitems.some((i: any) => i.status === 1)
+//       );
 
-//       if (data?.data?.category_selling_type === "all") {
-//         setEditWeight(data?.data);
+//       setSelectedItem(item);
+
+//       if (category_selling_type === "all") {
+//         setEditWeight(item);
 //         setOpenWeightItem(true);
 //       } else if (isKit) {
 //         setOpenKitItems(true);
 //       } else {
-//         addItemToIdentity(currenGroup?.id, data?.data, true);
+//         if (currenGroup?.id) addItemToIdentity(currenGroup.id, item, true);
+//         else notify("info", `${t("A group must be created first.")}`);
 //       }
+
 //       setSearch("");
+//       setIsInputBusy(false);
 //     },
-//     enabled: !!search,
+//     onError: () => {
+//       setIsInputBusy(false);
+//     },
 //   });
 
-//   const {
-//     data: nextGroup,
-//     isLoading: isNextGroupLoading,
-//     refetch: refetchNextGroup,
-//   } = useFetch({
-//     endpoint: `/inventory/api/v1/next-group/${userData?.branch_id}/${id}`,
-//     queryKey: ["next-group"],
-//   });
-
+//   // Mutations
 //   const { mutateAsync, isLoading: isLoadingMutate } = useMutate({
 //     mutationFn: mutateData,
-//     // onSuccess: (response?: ResponseData) => {
-//     //   handleSuccess({ data: response });
-//     // },
+//     onSuccess: () => {
+//       if (socket) socket.emit("getRooms", BasicCompanyData);
+//       notify("success", `${t("The group has been created successfully.")}`);
+//     },
 //   });
 
 //   const { mutateAsync: mutateGroupToNodeAsync } = useMutate({
 //     mutationFn: mutateData,
-//     // onSuccess: (response?: ResponseData) => {
-//     //   handleSuccess({ dataNode: response });
-//     // },
 //   });
 
-//   const handleSuccess = ({ data, dataNode }: SuccessParams): void => {
-//     // localStorage.removeItem("currentGroup")
-//     const currentGroup = { number: data?.id, id: dataNode?.["_id"] };
-//     localStorage.setItem("currentGroup", JSON.stringify(currentGroup));
+//   const handleSuccess = useCallback(
+//     ({ data, dataNode }: SuccessParams) => {
+//       const currentGroup = {
+//         number: data?.id,
+//         id: dataNode?._id || "",
+//         groupName: dataNode?.groupName || data?.group_name || "",
+//       };
+//       localStorage.setItem("currentGroup", JSON.stringify(currentGroup));
 
-//     const storedValue = localStorage.getItem("currentGroup");
-//     if (storedValue) {
-//       setCurrenGroup(JSON.parse(storedValue));
-//     }
+//       const stored = localStorage.getItem("currentGroup");
+//       if (stored) setCurrenGroup(JSON.parse(stored));
 
-//     notify("success");
-
-//     setIdentitiesCheckedItems((prev) => {
-//       const updatedItems = [
+//       setIdentitiesCheckedItems((prev: any[]) => [
 //         ...prev,
 //         {
-//           id: currentGroup?.id,
-//           _id: currentGroup?.id,
-//           groupName: data?.group_name || "",
+//           id: currentGroup.id,
+//           _id: currentGroup.id,
+//           groupName: currentGroup.groupName,
 //           totalItems: 0,
 //           totalWeight: 0,
 //           items: [],
 //         },
-//       ];
-
-//       // localStorage.setItem(
-//       //   "identitiesCheckedItems",
-//       //   JSON.stringify(updatedItems)
-//       // );
-
-//       return updatedItems;
-//     });
-
-//     refetchNextGroup();
-//   };
+//       ]);
+//     },
+//     [setCurrenGroup, setIdentitiesCheckedItems]
+//   );
 
 //   const { mutate: mutateItemIdentity } = useMutate({
 //     mutationFn: mutateData,
+//     onSuccess: () => playBeep(200),
 //   });
 
-//   const { mutate: mutateItemIdentityNode } = useMutate({
-//     mutationFn: mutateData,
-//   });
+//   const handleItemIdentity = useCallback(
+//     (data: any) => {
+//       const kitItems = data?.weightitems?.map((it: any) => ({
+//         category_id: it.category_id,
+//         weight: it.weight,
+//       }));
 
-//   const handleItemIdentity = async (data) => {
-//     const kitItems = data?.weightitems?.map((item) => ({
-//       category_id: item.category_id,
-//       weight: item.weight,
-//     }));
+//       mutateItemIdentity({
+//         endpointName: `/inventory/api/v1/group-item`,
+//         values: {
+//           item_id: data?.item_id,
+//           group_id: currenGroup?.number,
+//           weight: Number(data?.weight),
+//           kitItems: data?.weightitems?.length ? kitItems : null,
+//         },
+//       });
+//     },
+//     [mutateItemIdentity, currenGroup?.number]
+//   );
 
-//     mutateItemIdentity({
-//       endpointName: `/inventory/api/v1/group-item`,
-//       values: {
-//         item_id: data?.item_id,
-//         group_id: currenGroup?.number,
-//         weight: Number(data?.weight),
-//         kitItems: data?.weightitems?.length ? kitItems : null,
-//       },
-//     });
-
-//     mutateItemIdentityNode({
-//       endpointName: `${SOCKET_SERVER_URL}/api/room/${currenGroup?.id}/piece`,
-//       values: {
-//         karat_name:
-//           data.classification_id === 1
-//             ? data.karat_name
-//             : data.karatmineral_name,
-//         diamond_value: data.diamond_value,
-//         classification_name: data.classification_name,
-//         category_name: data.category_name,
-//         weight: data.weight,
-//         hwya: data.hwya,
-//         itemId: data.id,
-//       },
-//     });
-//   };
-
-//   const handleCreateGroups = async () => {
-//     const groupHasEmptyItems = identitiesCheckedItems.some(
-//       (identity) => identity.items?.length === 0
+//   const handleCreateGroups = useCallback(async () => {
+//     const hasEmpty = identitiesCheckedItems.some(
+//       (g: any) => g.items?.length === 0
 //     );
-
-//     if (groupHasEmptyItems) {
+//     if (hasEmpty) {
 //       notify("info", `${t("Group already created")}`);
 //       return;
 //     }
 
-//     const [response1, response2] = await Promise.all([
+//     const [res1, res2] = await Promise.all([
 //       mutateAsync({
 //         endpointName: `/inventory/api/v1/inventorygroups`,
 //         values: {
 //           inventory_id: id,
-//           group_name: numbers?.[Number(nextGroup?.group_num - 1)],
+//           group_name: numbers?.[Number(nextGroup)],
 //           employee_id: userData?.id,
 //           branch_id: userData?.branch_id,
 //         },
@@ -1939,45 +1563,36 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //           companyKey: isGetTenantFromUrl,
 //           employeeId: String(userData?.id),
 //           groupId: "0",
-//           groupName: numbers?.[Number(nextGroup?.group_num - 1)],
+//           groupName: numbers?.[Number(nextGroup)],
 //           inventoryId: String(id),
 //         },
 //       }),
 //     ]);
 
-//     handleSuccess({ data: response1, dataNode: response2 });
+//     handleSuccess({ data: res1, dataNode: res2 });
+//     if (socket) socket.emit("getRooms", BasicCompanyData);
+//   }, [
+//     identitiesCheckedItems,
+//     mutateAsync,
+//     mutateGroupToNodeAsync,
+//     id,
+//     numbers,
+//     nextGroup,
+//     userData?.id,
+//     userData?.branch_id,
+//     isGetTenantFromUrl,
+//     SOCKET_SERVER_URL,
+//     handleSuccess,
+//     socket,
+//     BasicCompanyData,
+//   ]);
 
-//     // mutate({
-//     //   endpointName: `/inventory/api/v1/inventorygroups`,
-//     //   values: {
-//     //     inventory_id: id,
-//     //     group_name: numbers?.[Number(nextGroup?.group_num - 1)],
-//     //     employee_id: userData?.id,
-//     //     branch_id: userData?.branch_id,
-//     //   },
-//     // });
-
-//     // mutateGroupToNode({
-//     //   endpointName: `${SOCKET_SERVER_URL}/api/room`,
-//     //   values: {
-//     //     branchId: String(userData?.branch_id),
-//     //     companyKey: isGetTenantFromUrl,
-//     //     employeeId: String(userData?.id),
-//     //     groupId: "0",
-//     //     groupName: numbers?.[Number(nextGroup?.group_num - 1)],
-//     //     inventoryId: String(id),
-//     //   },
-//     // });
-//   };
-
-//   // End Of The Inventory Process For Employees
-//   const handleSuccessInventoryData = () => {
-//     notify("success");
-//     ["currenGroup", "unknownIdentities", "identitiesCheckedItems"].forEach(
-//       (key) => localStorage.removeItem(key)
-//     );
+//   // Finish inventory
+//   const handleSuccessInventoryData = useCallback(() => {
+//     ["currenGroup", "weightItems"].forEach((k) => localStorage.removeItem(k));
+//     notify("success", `${t("The inventory process has been completed.")}`);
 //     navigate("/selling/inventory/view");
-//   };
+//   }, [navigate]);
 
 //   const { mutate: mutateInventoryData, isLoading: isLoadingInventoryData } =
 //     useMutate({
@@ -1985,25 +1600,17 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //       onSuccess: handleSuccessInventoryData,
 //     });
 
-//   const handlePostInventoryData = () => {
-//     const lostItems = unknownIdentities.map((item) => ({
-//       inventory_id: id,
-//       branch_id: userData?.branch_id,
-//       ...item,
-//     }));
-
+//   const handlePostInventoryData = useCallback(() => {
 //     mutateInventoryData({
-//       endpointName: `/inventory/api/v1/missinginventories`,
+//       endpointName: `/inventory/api/v1/finishedInventories`,
 //       values: {
 //         branch_id: userData?.branch_id,
 //         employee_id: userData?.id,
 //         type_employe: true,
 //         inventory_id: id,
-//         lostItems,
 //       },
 //     });
-//   };
-//   // End Of The Inventory Process For Employees
+//   }, [mutateInventoryData, userData?.branch_id, userData?.id, id]);
 
 //   return (
 //     <div className="px-10 py-8">
@@ -2013,103 +1620,122 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //           {t("Inventory of new gold, diamonds and miscellaneous")}
 //         </p>
 //       </div>
-//       <Formik initialValues={{ search: "" }} onSubmit={(values) => {}}>
-//         {({ values }) => {
-//           return (
-//             <Form>
-//               <div className="flex items-end gap-x-8">
-//                 <Button
-//                   bordered
-//                   className="flex items-center gap-x-2"
-//                   loading={isLoadingMutate}
-//                   action={() => {
-//                     handleCreateGroups();
-//                   }}
-//                 >
-//                   <AddIcon size={22} />
-//                   <span>{t("Create a group")}</span>
-//                 </Button>
 
-//                 <div className="flex gap-2 items-center justify-center rounded-md  p-1">
-//                   <BaseInputField
-//                     id="search"
-//                     name="search"
-//                     autoFocus
-//                     label={`${t("id code")}`}
-//                     type="text"
-//                     value={search}
-//                     onChange={(e) => setSearch(e.target.value)}
-//                     placeholder={`${t("id code")}`}
-//                     className="placeholder-slate-400  w-80 !shadow-transparent focus:border-transparent"
-//                   />
-//                 </div>
+//       <Formik initialValues={{ search: "" }} onSubmit={() => {}}>
+//         <Form>
+//           <div className="flex items-end gap-x-8">
+//             <Button
+//               bordered
+//               className="flex items-center gap-x-2"
+//               loading={isLoadingMutate}
+//               action={handleCreateGroups}
+//             >
+//               <AddIcon size={22} />
+//               <span>{t("Create a group")}</span>
+//             </Button>
 
-//                 <div className="bg-mainGreen rounded-full py-1.5 px-8 text-white">
-//                   <h2>{t("first group")}</h2>
+//             <div className="relative flex gap-2 items-center justify-center rounded-md p-1">
+//               <BaseInputField
+//                 id="search"
+//                 name="search"
+//                 autoFocus
+//                 label={`${t("id code")}`}
+//                 type="text"
+//                 value={search}
+//                 onChange={(e) => {
+//                   const v = e.target.value;
+//                   setSearch(v);
+//                   setIsInputBusy(Boolean(v.trim()));
+//                 }}
+//                 placeholder={
+//                   isInputBusy ? `${t("loading")} ...` : `${t("id code")}`
+//                 }
+//                 disabled={
+//                   isInputBusy || isLoadingMutate || isLoadingInventoryData
+//                 }
+//                 className={`py-1.5 ${
+//                   (isInputBusy || isLoadingMutate || isLoadingInventoryData) &&
+//                   "bg-mainDisabled ps-12"
+//                 }`}
+//               />
+//               {isInputBusy && (
+//                 <div className="absolute right-3.5 top-[3.2rem] -translate-y-1/2">
+//                   <Spinner size="medium" />
 //                 </div>
+//               )}
+//             </div>
+
+//             {!!currenGroup?.groupName && (
+//               <div className="bg-mainGreen rounded-full py-1.5 px-8 text-white">
+//                 <h2>
+//                   {t("group")} {currenGroup?.groupName}
+//                 </h2>
 //               </div>
+//             )}
+//           </div>
 
-//               <ul className="grid grid-cols-4 gap-6 mb-5 my-5">
-//                 {totals.map(({ name, key, unit, value }) => (
-//                   <BoxesDataBase variant="secondary" key={key}>
-//                     <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl">
-//                       {name}
-//                     </p>
-//                     <p className="bg-white px-2 py-[7px] text-black rounded-b-xl">
-//                       {formatReyal(Number(value))} {t(unit)}
-//                     </p>
-//                   </BoxesDataBase>
-//                 ))}
-//               </ul>
+//           <ul className="grid grid-cols-4 gap-6 mb-5 my-5">
+//             {totals.map(({ name, id: key, unit, value }) => (
+//               <BoxesDataBase variant="secondary" key={key}>
+//                 <p className="bg-mainOrange px-2 py-4 flex items-center justify-center rounded-t-xl">
+//                   {name}
+//                 </p>
+//                 <p className="bg-white px-2 py-[7px] text-black rounded-b-xl">
+//                   {formatReyal(Number(value))} {t(unit)}
+//                 </p>
+//               </BoxesDataBase>
+//             ))}
+//           </ul>
 
-//               <div className="flex items-center gap-x-4 w-full bg-[#295E5608] py-8 rounded-2xl">
-//                 <div className="w-[30%]">
-//                   <AvailableItemsInBranch
-//                     selectedItem={selectedItem}
-//                     setSelectedItem={setSelectedItem}
-//                     availableItems={availableItems}
-//                     setAvailableItems={setAvailableItems}
-//                     setNumberItemsInBranch={setNumberItemsInBranch}
-//                     activeTableId={activeTableId}
-//                     setActiveTableId={setActiveTableId}
-//                     isGetTenantFromUrl={isGetTenantFromUrl}
-//                     SOCKET_SERVER_URL={SOCKET_SERVER_URL}
-//                   />
-//                 </div>
-//                 <div className="w-[30%]">
-//                   <IdentitiesCheckedByBranch
-//                     identitiesCheckedItems={identitiesCheckedItems}
-//                     setIdentitiesCheckedItems={setIdentitiesCheckedItems}
-//                     currenGroup={currenGroup}
-//                     setOpenWeightItem={setOpenWeightItem}
-//                     setEditWeight={setEditWeight}
-//                     setSelectedItem={setSelectedItem}
-//                     activeTableId={activeTableId}
-//                     setActiveTableId={setActiveTableId}
-//                   />
-//                 </div>
-//                 <div className="w-[30%]">
-//                   <UnknownIdentitiesInBranch
-//                     unknownIdentities={unknownIdentities}
-//                     setUnknownIdentities={setUnknownIdentities}
-//                     setOpenDetailsItem={setOpenDetailsItem}
-//                     setUnknownItemDetails={setUnknownItemDetails}
-//                     setSelectedItem={setSelectedItem}
-//                     activeTableId={activeTableId}
-//                     setActiveTableId={setActiveTableId}
-//                   />
-//                 </div>
-//                 <div className="w-[25%]">
-//                   <IdentityInformationInBranch
-//                     selectedItem={selectedItem}
-//                     setSelectedItem={setSelectedItem}
-//                     setOpenDetailsItem={setOpenDetailsItem}
-//                   />
-//                 </div>
-//               </div>
-//             </Form>
-//           );
-//         }}
+//           <div className="flex items-center gap-x-4 w-full bg-[#295E5608] py-8 rounded-2xl">
+//             <div className="w-[30%]">
+//               <AvailableItemsInBranch
+//                 selectedItem={selectedItem}
+//                 setSelectedItem={setSelectedItem}
+//                 availableItems={availableItems}
+//                 setAvailableItems={setAvailableItems}
+//                 setNumberItemsInBranch={setNumberItemsInBranch}
+//                 activeTableId={activeTableId}
+//                 setActiveTableId={setActiveTableId}
+//                 isGetTenantFromUrl={isGetTenantFromUrl}
+//                 SOCKET_SERVER_URL={SOCKET_SERVER_URL}
+//               />
+//             </div>
+//             <div className="w-[35%]">
+//               <IdentitiesCheckedByBranch
+//                 identitiesCheckedItems={identitiesCheckedItems}
+//                 setIdentitiesCheckedItems={setIdentitiesCheckedItems}
+//                 currenGroup={currenGroup}
+//                 setOpenWeightItem={setOpenWeightItem}
+//                 setEditWeight={setEditWeight}
+//                 setSelectedItem={setSelectedItem}
+//                 activeTableId={activeTableId}
+//                 setActiveTableId={setActiveTableId}
+//                 handleDeleteRoom={handleDeleteRoom}
+//                 handleDeleteItemFromRoom={handleDeleteItemFromRoom}
+//                 deletingRoomIds={deletingRoomIds}
+//                 deletingPieceIds={deletingPieceIds}
+//               />
+//             </div>
+//             <div className="w-[30%]">
+//               <UnknownIdentitiesInBranch
+//                 unknownIdentities={unknownIdentities}
+//                 setUnknownIdentities={setUnknownIdentities}
+//                 setOpenDetailsItem={setOpenDetailsItem}
+//                 setUnknownItemDetails={() => {}}
+//                 setSelectedItem={setSelectedItem}
+//                 activeTableId={activeTableId}
+//                 setActiveTableId={setActiveTableId}
+//               />
+//             </div>
+//             <div className="w-[25%]">
+//               <IdentityInformationInBranch
+//                 selectedItem={selectedItem}
+//                 setOpenDetailsItem={setOpenDetailsItem}
+//               />
+//             </div>
+//           </div>
+//         </Form>
 //       </Formik>
 
 //       {/* Edit Weight Item */}
@@ -2124,10 +1750,12 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //           setOpenWeightItem={setOpenWeightItem}
 //           currenGroup={currenGroup}
 //           addItemToIdentity={addItemToIdentity}
+//           BasicCompanyData={BasicCompanyData}
+//           socket={socket}
 //         />
 //       </Modal>
 
-//       {/* kit Items */}
+//       {/* Kit Items */}
 //       <Modal
 //         onClose={() => setOpenKitItems(false)}
 //         isOpen={openKitItems}
@@ -2152,20 +1780,14 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //         }}
 //       >
 //         <ShowDetailsItemOfInventory
-//           itemDetails={!!selectedItem ? [selectedItem] : []}
+//           itemDetails={selectedItem ? [selectedItem] : []}
 //         />
 //       </Modal>
 
 //       <div>
 //         {userData?.role_id === 3 ? (
 //           <div className="flex justify-end mt-5">
-//             <Button
-//               action={() => {
-//                 setSteps(2);
-//               }}
-//             >
-//               {t("next")}
-//             </Button>
+//             <Button action={() => setSteps(2)}>{t("next")}</Button>
 //           </div>
 //         ) : (
 //           <div className="flex justify-end mt-5">
@@ -2173,7 +1795,7 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 //               loading={isLoadingInventoryData}
 //               action={handlePostInventoryData}
 //             >
-//               {t("save")}
+//               {t("Finished")}
 //             </Button>
 //           </div>
 //         )}
@@ -2183,15 +1805,3 @@ export default InventoryNewGoldDiamondsMiscellaneous;
 // };
 
 // export default InventoryNewGoldDiamondsMiscellaneous;
-
-// // const response = await axios.get(
-// //   `${SOCKET_SERVER_URL}/api/room/${
-// //     userData?.branch_id
-// //   }/${isGetTenantFromUrl}/${userData?.id}/${0}/${encodeURIComponent(
-// //     numbers?.[Number(nextGroup?.group_num - 1)]
-// //   )}/${id}`
-// // );
-
-// // if (response.status === 200) {
-// //   console.log("API Response:", response.data);
-// // }
