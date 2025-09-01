@@ -9,7 +9,7 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import * as Yup from "yup";
 import { EmployeeMainData } from "..";
 import { useMutate } from "../../../hooks";
-import { formatDate, getDayBefore } from "../../../utils/date";
+import { formatDate, getDayBefore, toDateSafe } from "../../../utils/date";
 import { requiredTranslation } from "../../../utils/helpers";
 import { mutateData } from "../../../utils/mutateData";
 import { notify } from "../../../utils/toast";
@@ -111,7 +111,7 @@ export const AddEmployee = ({
     role_id: editEmployeeData?.role?.id || "",
     role_value: editEmployeeData?.role?.name || "",
     date_of_birth: !!editEmployeeData
-      ? new Date(editEmployeeData?.date_of_birth)
+      ? toDateSafe(editEmployeeData?.date_of_birth)
       : new Date(),
     branch_id: editEmployeeData?.branch?.id || "",
     national_number: editEmployeeData?.national_number || "",

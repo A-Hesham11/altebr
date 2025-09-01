@@ -40,6 +40,7 @@ export const SellingBranchIdentity = () => {
   ///
   const { userData } = useContext(authCtx);
   const [dataSource, setDataSource] = useState({});
+  console.log("🚀 ~ SellingBranchIdentity ~ dataSource:", dataSource)
   const [selectedRowDetailsId, setSelectedRowDetailsId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState<number>(1);
@@ -118,7 +119,7 @@ export const SellingBranchIdentity = () => {
       },
       {
         cell: (info: any) => info.getValue() || "---",
-        accessorKey: "karatmineral_id",
+        accessorKey: "karatmineral_name",
         header: () => <span>{t("mineral karat")}</span>,
       },
       {

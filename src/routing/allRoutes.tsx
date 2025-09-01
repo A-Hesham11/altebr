@@ -219,6 +219,7 @@ export const AllRoutesProvider = () => {
       <Routes>
         <Route path="/" element={<Root />} errorElement={<ErrorPage />}>
           {/* @ts-ignore */}
+
           <Route index element={<Home title={t("home")} />} />
           <Route path="/test" element={<Test />} />
           <Route

@@ -13,6 +13,7 @@ import { PermissionProvider } from "react-permission-role";
 import { GlobalDataProvider } from "./context/settings/GlobalData";
 import { Provider } from "react-redux";
 import store from "./pages/store";
+import { ReactFlowProvider } from '@xyflow/react';
 
 // cloc --by-file --include-lang=JavaScript,TypeScript,jsx,tsx .
 
@@ -38,7 +39,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                 <ProSidebarProvider>
                   <Suspense fallback={<Loading mainTitle="جاري التحميل" />}>
                     <PermissionProvider>
-                      <App />
+                      <ReactFlowProvider>
+                        <App />
+                      </ReactFlowProvider>
                     </PermissionProvider>
                   </Suspense>
                 </ProSidebarProvider>

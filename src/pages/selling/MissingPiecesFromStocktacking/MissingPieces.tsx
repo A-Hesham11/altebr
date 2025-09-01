@@ -108,7 +108,7 @@ function MissingPieces() {
       },
       {
         cell: (info: any) => info.getValue() || "---",
-        accessorKey: "karatmineral_id",
+        accessorKey: "karatmineral_name",
         header: () => <span>{t("mineral karat")}</span>,
       },
       {

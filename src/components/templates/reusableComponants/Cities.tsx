@@ -1,19 +1,19 @@
 /////////// IMPORTS
-import { useQueryClient } from "@tanstack/react-query"
-import { Form, Formik, FormikValues, useFormikContext } from "formik"
-import { t } from "i18next"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { SingleValue } from "react-select"
-import * as Yup from "yup"
-import { useFetch, useMutate } from "../../../hooks"
-import { SelectOption_TP } from "../../../types"
-import { requiredTranslation } from "../../../utils/helpers"
-import { mutateData } from "../../../utils/mutateData"
-import { notify } from "../../../utils/toast"
-import { HandleBackErrors } from "../../../utils/utils-components/HandleBackErrors"
-import { Button } from "../../atoms"
-import { BaseInputField, Select } from "../../molecules"
-import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler"
+import { useQueryClient } from "@tanstack/react-query";
+import { Form, Formik, FormikValues, useFormikContext } from "formik";
+import { t } from "i18next";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { SingleValue } from "react-select";
+import * as Yup from "yup";
+import { useFetch, useMutate } from "../../../hooks";
+import { SelectOption_TP } from "../../../types";
+import { requiredTranslation } from "../../../utils/helpers";
+import { mutateData } from "../../../utils/mutateData";
+import { notify } from "../../../utils/toast";
+import { HandleBackErrors } from "../../../utils/utils-components/HandleBackErrors";
+import { Button } from "../../atoms";
+import { BaseInputField, Select } from "../../molecules";
+import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler";
 ///
 //import classes from './Cities.module.css'
 ///
@@ -21,62 +21,62 @@ import { RefetchErrorHandler } from "../../molecules/RefetchErrorHandler"
 
 type Cities_TP = {
   country: {
-    [key: string]: any
-  }
-  setCityId: Dispatch<SetStateAction<SingleValue<SelectOption_TP>>>
-  editData?: { [key: string]: any }
-  cityName?: string | undefined
-  distractName?: string
-  label?: string
-  fieldKey?: "id" | "value" | undefined
-  isSuccessPost?: boolean
-  resetSelect?: () => void
-  disabled?:boolean
-}
+    [key: string]: any;
+  };
+  setCityId: Dispatch<SetStateAction<SingleValue<SelectOption_TP>>>;
+  editData?: { [key: string]: any };
+  cityName?: string | undefined;
+  distractName?: string;
+  label?: string;
+  fieldKey?: "id" | "value" | undefined;
+  isSuccessPost?: boolean;
+  resetSelect?: () => void;
+  disabled?: boolean;
+};
 type CitiesMutate_TP = {
-  name: string
-  id: string
-  country_id: string
-  country_name: string
-}
+  name: string;
+  id: string;
+  country_id: string;
+  country_name: string;
+};
 type City_TP = {
   cities: {
-    id: string
-    name: string
-    country_id: string
-    country_name: string
-  }[]
-}
+    id: string;
+    name: string;
+    country_id: string;
+    country_name: string;
+  }[];
+};
 /////////// HELPER VARIABLES & FUNCTIONS
 ///
 
 const validationSchema = Yup.object({
   name_ar: Yup.string().trim().required(requiredTranslation),
   name_en: Yup.string().trim().required(requiredTranslation),
-})
+});
 const NewCitiesOptionComponent = ({
   value,
   onAdd,
   countryId,
   country_name,
 }: {
-  value: string
-  onAdd: (value: string) => void
-  countryId: string
-  country_name: string
+  value: string;
+  onAdd: (value: string) => void;
+  countryId: string;
+  country_name: string;
 }) => {
   const initialValues = {
     name_ar: value,
     name_en: "",
     country_id: countryId,
-  }
-  const queryClient = useQueryClient()
+  };
+  const queryClient = useQueryClient();
   const { mutate, error, isLoading } = useMutate<CitiesMutate_TP>({
     mutationFn: mutateData,
     onSuccess: (data) => {
       queryClient.setQueryData([`cities/${countryId}`], (old: any) => {
         if (old && !old.cities) {
-          old.cities = []
+          old.cities = [];
         }
         return {
           ...(old || {
@@ -93,12 +93,12 @@ const NewCitiesOptionComponent = ({
               country_name: data?.country_name,
             },
           ],
-        }
-      })
-      notify("success")
-      onAdd(value)
+        };
+      });
+      notify("success");
+      onAdd(value);
     },
-  })
+  });
   const handleSubmit = (values: FormikValues) => {
     mutate({
       endpointName: "/governorate/api/v1/cities",
@@ -107,14 +107,14 @@ const NewCitiesOptionComponent = ({
         name_en: values.name_en,
         country_id: countryId,
       },
-    })
-  }
+    });
+  };
   return (
     <div className="flex items-center justify-between gap-2">
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          handleSubmit(values)
+          handleSubmit(values);
         }}
         validationSchema={validationSchema}
       >
@@ -151,8 +151,8 @@ const NewCitiesOptionComponent = ({
         </HandleBackErrors>
       </Formik>
     </div>
-  )
-}
+  );
+};
 ///
 export const Cities = ({
   country,
@@ -169,7 +169,7 @@ export const Cities = ({
 }: Cities_TP) => {
   /////////// VARIABLES
   ///
-  const { setFieldValue, values } = useFormikContext()
+  const { setFieldValue, values } = useFormikContext();
   ///
   /////////// CUSTOM HOOKS
   ///
@@ -178,7 +178,7 @@ export const Cities = ({
   /////////// STATES
   ///
   const [newValue, setNewValue] =
-    useState<SingleValue<SelectOption_TP> | null>()
+    useState<SingleValue<SelectOption_TP> | null>();
 
   ///
   /////////// SIDE EFFECTS
@@ -194,13 +194,13 @@ export const Cities = ({
           editData?.nationalAddress?.city?.name ||
           editData?.city_name ||
           "اختر الدوله اولا",
-      })
+      });
     } else {
       setNewValue({
         id: "",
         value: "",
         label: "اختر المدينه ... ",
-      })
+      });
     }
     // setDistrictId({
     //   id: "",
@@ -209,7 +209,7 @@ export const Cities = ({
     // })
     // if (newValue?.id !== editData?.city_id) {
     // }
-  }, [])
+  }, []);
 
   /////////// FUNCTIONS | EVENTS | IF CASES
   ///
@@ -229,18 +229,19 @@ export const Cities = ({
         value: city.name,
         label: city.name,
         country_name: city.country_name,
-      }))
+      }));
     },
-    enabled: editData ? true : !!country?.id,
-  })
+    // enabled: editData ? true : !!country?.id,
+    enabled: !!country?.id,
+  });
 
   useEffect(() => {
     if (cities && !editData) {
-      setNewValue(null)
-      setCityId({ id: "", label: "", value: "", name: "" })
-      setFieldValue(cityName, null)
+      setNewValue(null);
+      setCityId({ id: "", label: "", value: "", name: "" });
+      setFieldValue(cityName, null);
     }
-  }, [JSON.stringify(cities)])
+  }, [JSON.stringify(cities)]);
 
   useEffect(() => {
     if (editData) {
@@ -249,9 +250,9 @@ export const Cities = ({
         label: newValue?.label,
         value: newValue?.value,
         name: newValue?.name,
-      })
+      });
     }
-  }, [newValue])
+  }, [newValue]);
 
   useEffect(() => {
     if (!editData) {
@@ -259,13 +260,13 @@ export const Cities = ({
         id: "",
         value: "",
         label: "اختر الدوله اولا",
-      })
+      });
       if (editData) {
-        setCityId({ id: "", label: "", value: "", name: "" })
+        setCityId({ id: "", label: "", value: "", name: "" });
       }
-      if (resetSelect) resetSelect()
+      if (resetSelect) resetSelect();
     }
-  }, [isSuccessPost])
+  }, [isSuccessPost]);
 
   ///
   return (
@@ -292,15 +293,15 @@ export const Cities = ({
         //@ts-ignore
         onChange={(option: SingleValue<SelectOption_TP>) => {
           if (cityName && editData) {
-            setFieldValue(cityName, option?.id)
+            setFieldValue(cityName, option?.id);
             // setFieldValue('city_value', option!.value)
           }
           if (distractName && editData) {
-            setFieldValue(distractName, editData?.district_id)
+            setFieldValue(distractName, editData?.district_id);
           }
 
-          setNewValue(option)
-          setCityId(option)
+          setNewValue(option);
+          setCityId(option);
         }}
         creatable={true}
         CreateComponent={({ value, onAdd }) => {
@@ -309,7 +310,7 @@ export const Cities = ({
             country_name: country?.name,
             value,
             onAdd,
-          })
+          });
         }}
         fieldKey={fieldKey}
         // {...{...(values?.city_value && { value:{
@@ -323,5 +324,5 @@ export const Cities = ({
         refetch={refetch}
       /> */}
     </div>
-  )
-}
+  );
+};

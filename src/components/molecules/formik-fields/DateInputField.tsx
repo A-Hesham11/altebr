@@ -1,9 +1,10 @@
 import { useFormikContext } from "formik";
-import { ReactNode, forwardRef, useState } from "react";
+import { ReactNode, forwardRef, useCallback, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { tv } from "tailwind-variants";
 import { BaseInput, FormikError, Label } from "../../atoms";
+import { isValidDate } from "@/utils/date";
 
 const dateInputField = tv({
   base: "direction-rtl",
@@ -47,11 +48,32 @@ export const DateInputField = ({
     [key: string]: any;
   };
 }) => {
-  const { setFieldValue, errors, touched, handleBlur, values } =
-    useFormikContext<{
-      [key: string]: any;
-    }>();
+  const {
+    setFieldValue,
+    errors,
+    touched,
+    handleBlur,
+    values,
+    setFieldTouched,
+  } = useFormikContext<{
+    [key: string]: any;
+  }>();
+  console.log("🚀 ~ DateInputField ~ values:", values);
   const [dateActive, setDateActive] = useState(false);
+
+  const selected = isValidDate(values[name]) ? values[name] : null;
+  console.log("🚀 ~ DateInputField ~ selected:", selected);
+
+  const handleChange = useCallback(
+    (date: Date | null) => {
+      setFieldValue(name, date);
+    },
+    [name, setFieldValue]
+  );
+
+  const handleBlurSafe = useCallback(() => {
+    setFieldTouched(name, true, false);
+  }, [name, setFieldTouched]);
 
   return (
     <div className="col-span-1 relative">
@@ -66,13 +88,15 @@ export const DateInputField = ({
         </Label>
         <DatePicker
           disabled={disabled}
-          selected={values[name]}
+          selected={selected}
+          onChange={handleChange}
+          onBlur={handleBlurSafe}
           icon={icon}
           placeholderText={placeholder}
-          onChange={(date: Date) => {
-            setFieldValue(name, date);
-          }}
-          onBlur={handleBlur(name)}
+          // onChange={(date: Date) => {
+          //   setFieldValue(name, date);
+          // }}
+          // onBlur={handleBlur(name)}
           className={dateInputField({
             active: dateActive,
             error: touched[name] && !!errors[name],

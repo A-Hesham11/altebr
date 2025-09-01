@@ -25,3 +25,17 @@ export const formatDateAndTime = (date: Date) => {
     hour12: true,
   }).format(date);
 };
+
+export const isValidDate = (d: unknown): d is Date =>
+  d instanceof Date && !Number.isNaN(d.getTime());
+
+export const toDateSafe = (v: unknown): Date | null => {
+  if (v == null || v === "") return null;
+  if (v instanceof Date) return isValidDate(v) ? v : null;
+  if (typeof v === "string") {
+    // prefer ISO 8601 strings from your API like 2025-08-28
+    const d = new Date(v);
+    return isValidDate(d) ? d : null;
+  }
+  return null;
+};
