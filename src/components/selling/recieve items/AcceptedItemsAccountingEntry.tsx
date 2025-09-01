@@ -45,7 +45,7 @@ export const AcceptedItemsAccountingEntry = ({ sanadId, isInPopup, setStage, isI
         },
         {
             header: () => <span>{t("mineral karat")}</span>,
-            accessorKey: "karatmineral_id",
+            accessorKey: "karatmineral_name",
             cell: (info: any) => info.getValue() || '---',
         },
         {

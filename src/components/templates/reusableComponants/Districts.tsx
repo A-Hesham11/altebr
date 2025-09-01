@@ -218,7 +218,8 @@ export const Districts = ({
         value: district.name,
         label: district.name,
       })),
-    enabled: editData ? true : !!city?.id,
+    // enabled: editData ? true : !!city?.id,
+    enabled: !!city?.id,
   });
 
   //change value

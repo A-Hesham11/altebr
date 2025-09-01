@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+// SellingHome.tsx
+import { useContext, useEffect, useMemo, useState, useCallback } from "react";
 import { BiLogOut } from "react-icons/bi";
 import { authCtx } from "../../context/auth-and-perm/auth";
 import { t } from "i18next";
@@ -21,64 +22,107 @@ import { GlobalDataContext } from "../../context/settings/GlobalData";
 import { BsDatabase } from "react-icons/bs";
 import PremiumImg from "../../assets/premium.svg";
 
+// minimal local types to improve safety without changing your contexts
+type Shift = {
+  id: number;
+  shift_name: string;
+  shift_from: string; // "HH:mm" or "HH:mm:ss"
+  shift_to: string; // "HH:mm" or "HH:mm:ss"
+};
+type UserData = {
+  id: number;
+  name: string;
+  branch_id: number;
+  branch_name: string;
+  is_sellingInvoice?: number;
+  workingshifts?: Shift[];
+};
+
+const timeToMinutes = (time: string) => {
+  // accepts "HH:mm" or "HH:mm:ss"
+  const [h = "0", m = "0", s = "0"] = time.split(":");
+  const hh = Number(h);
+  const mm = Number(m);
+  const ss = Number(s);
+  if ([hh, mm, ss].some(Number.isNaN)) return NaN;
+  return hh * 60 + mm + Math.floor(ss / 60);
+};
+
+const isNowInsideShift = (shift: Shift, nowStr: string) => {
+  const now = timeToMinutes(nowStr);
+  const from = timeToMinutes(shift.shift_from);
+  const to = timeToMinutes(shift.shift_to);
+  if ([now, from, to].some(Number.isNaN)) return false;
+  // normal shift
+  if (from <= to) return now >= from && now <= to;
+  // overnight shift that crosses midnight
+  return now >= from || now <= to;
+};
+
+const getNowHMS = () =>
+  new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).format(new Date());
+
+const readLSBool = (key: string, fallback = false) => {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) === true : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 const SellingHome = () => {
   const { logOutHandler, userData, isLoggingOut, open, setOpen } =
     useContext(authCtx);
+  const typedUser = (userData || {}) as UserData;
 
   const isRTL = useIsRTL();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const isDisabled = userData?.is_sellingInvoice === 1;
 
-  const [audienceButton, setAudienceButton] = useState(
-    localStorage.getItem("audience")
+  const isPremium = typedUser?.is_sellingInvoice === 1;
+
+  const [audienceButton, setAudienceButton] = useState<boolean>(() =>
+    readLSBool("audience", false)
   );
-  const [departureButton, setDepartureButton] = useState(
-    localStorage.getItem("departure")
+  const [departureButton, setDepartureButton] = useState<boolean>(() =>
+    readLSBool("departure", false)
   );
 
   const [isDeparture, setIsDeparture] = useState(false);
 
   const { gold_price } = GlobalDataContext();
 
-  // Assuming currentTime is in the format 'HH:mm:ss'
-  const targetTime = new Date(); // Replace this with the actual current time
-  const currentTime = new Intl.DateTimeFormat("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).format(targetTime);
+  const currentTime = useMemo(getNowHMS, []);
 
-  const shifts = userData?.workingshifts || [];
+  const shifts = typedUser?.workingshifts || [];
 
-  // Function to check if the current time is between shift_from and shift_to
-  function isTimeBetween(shift) {
-    const shiftFrom = new Date(`2000-01-01 ${shift?.shift_from}`);
-    const shiftTo = new Date(`2000-01-01 ${shift?.shift_to}`);
-    const currentTimeDate = new Date(`2000-01-01 ${currentTime}`);
+  const currentShift = useMemo(
+    () => shifts.find((s) => isNowInsideShift(s, currentTime)),
+    [shifts, currentTime]
+  );
 
-    return currentTimeDate >= shiftFrom && currentTimeDate <= shiftTo;
-  }
+  useEffect(() => {
+    localStorage.setItem("audience", JSON.stringify(audienceButton));
+  }, [audienceButton]);
 
-  // Find the shift that matches the condition
-  const currentShift = shifts && shifts?.find(isTimeBetween);
-
-  // Print the result
-  if (currentShift) {
-    console.log("Current shift:", currentShift);
-  } else {
-    console.log("No shift currently");
-  }
+  useEffect(() => {
+    localStorage.setItem("departure", JSON.stringify(departureButton));
+  }, [departureButton]);
 
   const { mutate: mutateAudience, isSuccess: isSuccessAudience } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["Audience"],
-    onSuccess: (data) => {
+    onSuccess: () => {
       notify("success");
-      queryClient.refetchQueries(["all-Audience"]);
+      queryClient.invalidateQueries({ queryKey: ["all-Audience"] });
     },
-    onError: (error) => {
+    onError: () => {
       notify("error");
     },
   });
@@ -86,150 +130,257 @@ const SellingHome = () => {
   const { mutate: mutateDeparture, isSuccess: isSuccessDeparture } = useMutate({
     mutationFn: mutateData,
     mutationKey: ["departure"],
-    onSuccess: (data) => {
+    onSuccess: () => {
       notify("success");
-      queryClient.refetchQueries(["all-departure"]);
+      queryClient.invalidateQueries({ queryKey: ["all-departure"] });
     },
-    onError: (error) => {
+    onError: () => {
       notify("error");
     },
   });
 
-  useEffect(() => {
-    if (isLoggingOut === false) {
-      localStorage.setItem("departure", false);
-      setDepartureButton(localStorage.getItem("departure"));
-    }
-  }, []);
+  const postAudience = useCallback(() => {
+    const now = new Date();
+    const timeStr = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(now);
+    const dayStr = formatDate(now);
 
-  function PostNewCardAudience(values: any) {
+    if (!currentShift) {
+      notify("error", `${t("the period does not match the current time")}`);
+      return;
+    }
+
     mutateAudience({
       endpointName: "/banchSalary/api/v1/presences",
-      values,
+      values: {
+        employee_id: typedUser?.id,
+        branch_id: typedUser?.branch_id,
+        presences: timeStr,
+        day: dayStr,
+        is_presence: 1,
+        shift_id: currentShift.id,
+      },
       method: "post",
     });
-  }
 
-  function PostNewCardDeparture(values: any) {
+    setAudienceButton(true);
+  }, [currentShift, mutateAudience, typedUser?.branch_id, typedUser?.id]);
+
+  const postDeparture = useCallback(() => {
+    const now = new Date();
+    const timeStr = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(now);
+    const dayStr = formatDate(now);
+
+    if (!currentShift) {
+      notify("error", `${t("the period does not match the current time")}`);
+      return;
+    }
+
     mutateDeparture({
       endpointName: "/banchSalary/api/v1/departures",
-      values,
+      values: {
+        employee_id: typedUser?.id,
+        branch_id: typedUser?.branch_id,
+        departure: timeStr,
+        day: dayStr,
+        shift_id: currentShift.id,
+      },
       method: "post",
     });
-  }
+
+    setDepartureButton(true);
+    setAudienceButton(false);
+  }, [currentShift, mutateDeparture, typedUser?.branch_id, typedUser?.id]);
+
+  const openAudienceModal = () => {
+    setIsDeparture(false);
+    setOpen(true);
+  };
+  const openDepartureModal = () => {
+    setIsDeparture(true);
+    setOpen(true);
+  };
+
+  const nf = useMemo(
+    () =>
+      new Intl.NumberFormat(undefined, {
+        maximumFractionDigits: 2,
+      }),
+    []
+  );
 
   return (
-    <div className="selling h-screen pb-8 px-8">
-      <div className="flex justify-between pb-5 items-end px-20">
+    <div className="selling lg:h-screen pb-8 px-4 sm:px-6 lg:px-20">
+      {/* Header */}
+      <div className="flex flex-wrap justify-between items-end gap-4 pb-5">
         <div className="bg-slate-100 pb-4 px-4 rounded-b-xl">
-          <img src={logo} alt="logo" className="w-[50px] mt-5" />
+          <img src={logo} alt="logo" className="w-10 mt-5" />
         </div>
-        {/* <h2 className="text-center font-bold md:text-xl text-white">
-          {t("welcome")}
-          <span className="text-mainOrange">
-            {" "}
-            {t("branch")} {userData?.branch_name}
-          </span>
-        </h2> */}
-        {isDisabled ? (
-          <div className="flex items-center gap-x-2 premiumGoldprice px-6 py-2.5 rounded-xl">
+
+        <div className="hidden lg:block">
+          {isPremium ? (
+            <div className="flex items-center gap-2 premiumGoldprice px-4 py-2 rounded-xl">
+              <img src={PremiumImg} alt="premium" />
+              <h2 className="text-white text-sm font-semibold">
+                {t("daily gold price")}
+              </h2>
+            </div>
+          ) : (
+            gold_price && (
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white text-xs">
+                  <BsDatabase className="fill-white" aria-hidden />
+                  <p className="border-l border-[#FFA34B] px-1">
+                    {t("karat 18")}
+                  </p>
+                  <p className="px-1">
+                    {nf.format(gold_price?.price_gram_18k)}
+                  </p>
+                </div>
+
+                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white text-xs">
+                  <BsDatabase className="fill-white" aria-hidden />
+                  <p className="border-l border-[#FFA34B] px-1">
+                    {t("karat 21")}
+                  </p>
+                  <p className="px-1">
+                    {nf.format(gold_price?.price_gram_21k)}
+                  </p>
+                </div>
+
+                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white text-xs">
+                  <BsDatabase className="fill-white" aria-hidden />
+                  <p className="border-l border-[#FFA34B] px-1">
+                    {t("karat 22")}
+                  </p>
+                  <p className="px-1">
+                    {nf.format(gold_price?.price_gram_22k)}
+                  </p>
+                </div>
+
+                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white text-xs">
+                  <BsDatabase className="fill-white" aria-hidden />
+                  <p className="border-l border-[#FFA34B] px-1">
+                    {t("karat 24")}
+                  </p>
+                  <p className="px-1">
+                    {nf.format(gold_price?.price_gram_24k)}
+                  </p>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+
+        {isPremium && (
+          <div className="flex items-center gap-2 premiumGoldprice px-4 py-2 rounded-xl">
             <img src={PremiumImg} alt="premium" />
             <h2 className="text-white text-sm font-semibold">
               {t("daily gold price")}
             </h2>
           </div>
-        ) : (
-          <>
-            {gold_price && (
-              <div className="flex gap-x-8">
-                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
-                  <BsDatabase className="fill-white" />
-                  <p className=" border-l border-[#FFA34B] px-1">
-                    {t("karat 18")}
-                  </p>
-                  <p className="px-1">{gold_price?.price_gram_18k}</p>
-                </div>
-
-                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
-                  <BsDatabase className="fill-white" />
-                  <p className=" border-l border-[#FFA34B] px-1">
-                    {t("karat 21")}
-                  </p>
-                  <p className="px-1">{gold_price?.price_gram_21k}</p>
-                </div>
-
-                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
-                  <BsDatabase className="fill-white" />
-                  <p className=" border-l border-[#FFA34B] px-1">
-                    {t("karat 22")}
-                  </p>
-                  <p className="px-1">{gold_price?.price_gram_22k}</p>
-                </div>
-
-                <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white font-base text-xs">
-                  <BsDatabase className="fill-white" />
-                  <p className=" border-l border-[#FFA34B] px-1">
-                    {t("karat 24")}
-                  </p>
-                  <p className="px-1">{gold_price?.price_gram_24k}</p>
-                </div>
-              </div>
-            )}
-          </>
         )}
-        <div className="flex justify-end items-center gap-2 ">
-          <span className="text-white">
-            {t("welcome")} {userData?.name}
-          </span>
+
+        <div className="flex flex-col md:flex-row items-start md:gap-2">
+          <div className="flex gap-2">
+            <span className="text-white">
+              {t("welcome")} {typedUser?.name}
+            </span>
+            <BiLogOut
+              className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer block md:hidden"
+              size={30}
+              onClick={logOutHandler}
+            />
+          </div>
           <span className="text-mainOrange">
-            {" "}
-            {t("branch")} {userData?.branch_name}
+            {t("branch")} {typedUser?.branch_name}
           </span>
           <BiLogOut
-            className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
+            className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer hidden md:block"
             size={30}
             onClick={logOutHandler}
           />
         </div>
       </div>
 
-      <div className="flex h-[80%] justify-center py-7 gap-y-8 gap-x-6 lg:gap-x-8">
-        <div className="flex flex-col gap-8 w-40">
+      {!isPremium && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3 lg:hidden">
+          <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white text-xs">
+            <BsDatabase className="fill-white" aria-hidden />
+            <p className="border-l border-[#FFA34B] px-1">{t("karat 18")}</p>
+            <p className="px-1">{nf.format(gold_price?.price_gram_18k)}</p>
+          </div>
+
+          <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white text-xs">
+            <BsDatabase className="fill-white" aria-hidden />
+            <p className="border-l border-[#FFA34B] px-1">{t("karat 21")}</p>
+            <p className="px-1">{nf.format(gold_price?.price_gram_21k)}</p>
+          </div>
+
+          <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white text-xs">
+            <BsDatabase className="fill-white" aria-hidden />
+            <p className="border-l border-[#FFA34B] px-1">{t("karat 22")}</p>
+            <p className="px-1">{nf.format(gold_price?.price_gram_22k)}</p>
+          </div>
+
+          <div className="flex items-center bg-mainOrange p-2 rounded-lg text-white text-xs">
+            <BsDatabase className="fill-white" aria-hidden />
+            <p className="border-l border-[#FFA34B] px-1">{t("karat 24")}</p>
+            <p className="px-1">{nf.format(gold_price?.price_gram_24k)}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Cards */}
+      <div className="py-7 h-4/5 flex flex-col  gap-6 lg:flex-row">
+        <div className="flex gap-4 lg:flex-col w-full lg:w-48">
           {sellingCards.slice(0, 2).map((card) => (
-            <SellingHomeCard
-              icon={card.icon}
-              title={isRTL ? card.title_ar : card.title_en}
-              route={card.route}
-              className=""
-              key={crypto.randomUUID()}
-            />
+            <div
+              key={card.route ?? card.title_en ?? card.title_ar}
+              className="w-full h-24 lg:h-full"
+            >
+              <SellingHomeCard
+                key={card.route ?? card.title_en ?? card.title_ar}
+                icon={card.icon}
+                title={isRTL ? card.title_ar : card.title_en}
+                route={card.route}
+                className=""
+              />
+            </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-3 w-3/4 gap-y-8 gap-x-6 lg:gap-x-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-6 flex-1">
           {sellingCards.slice(2).map((card) => (
             <SellingHomeCard
+              key={card.route ?? card.title_en ?? card.title_ar}
               icon={card.icon}
               title={isRTL ? card.title_ar : card.title_en}
               route={card.route}
               className=""
-              key={crypto.randomUUID()}
             />
           ))}
         </div>
       </div>
 
-      <div className="flex justify-between items-center gap-2 cursor-pointer px-20 bl">
-        <div className="flex gap-8">
+      {/* Footer actions */}
+      <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="flex flex-wrap gap-4">
           <Button
             className="bg-transparent flex items-center gap-3 p-0 disabled:border-none"
-            action={() => {
-              navigate("/selling/branchSetting");
-            }}
-            disabled={userData?.is_sellingInvoice === 1}
+            action={() => navigate("/selling/branchSetting")}
+            disabled={isPremium}
+            ariaLabel="Open settings"
           >
             <IoSettingsOutline
-              className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
+              className="bg-slate-200 rounded p-1 text-slate-600"
               size={30}
             />
             <span className="text-white">{t("settings")}</span>
@@ -237,13 +388,12 @@ const SellingHome = () => {
 
           <Button
             className="bg-transparent flex items-center gap-3 p-0 disabled:border-none"
-            action={() => {
-              navigate("/selling/balances");
-            }}
-            disabled={userData?.is_sellingInvoice === 1}
+            action={() => navigate("/selling/balances")}
+            disabled={isPremium}
+            ariaLabel="Open balances"
           >
             <GiTakeMyMoney
-              className="bg-slate-200 rounded p-1 text-slate-500 cursor-pointer"
+              className="bg-slate-200 rounded p-1 text-slate-600"
               size={30}
             />
             <span className="text-white">{t("balances")}</span>
@@ -251,47 +401,26 @@ const SellingHome = () => {
         </div>
 
         <div className="flex gap-3">
-          {/* <Button
+          <Button
             className="bg-white w-24 flex justify-center items-center"
-            action={() => {
-              const currentDate = new Date();
-              const currentTime = new Intl.DateTimeFormat("en-US", {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-              }).format(currentDate);
-              const currentDay = formatDate(currentDate);
-
-              PostNewCardAudience({
-                employee_id: userData?.id,
-                branch_id: userData?.branch_id,
-                presences: currentTime,
-                day: currentDay,
-                is_presence: 1,
-              });
-
-              localStorage.setItem("audience", true);
-              setAudienceButton(localStorage.getItem("audience"));
-            }}
-            disabled={audienceButton == "true" || departureButton == "true"}
+            action={openAudienceModal}
+            disabled={audienceButton || departureButton || isPremium}
+            ariaLabel="Register attendance"
           >
-            {audienceButton == "true" ? (
+            {audienceButton && isSuccessAudience ? (
               <GiCheckMark size={24} className="fill-mainGreen" />
             ) : (
               <img src={Audience} alt="Audience" />
             )}
-          </Button> */}
+          </Button>
+
           <Button
             className="bg-white w-24 flex justify-center items-center"
-            action={() => {
-              setOpen(true);
-              setIsDeparture(true);
-            }}
-            disabled={
-              departureButton == "true" || userData?.is_sellingInvoice === 1
-            }
+            action={openDepartureModal}
+            disabled={departureButton || isPremium}
+            ariaLabel="Register departure"
           >
-            {departureButton == "true" ? (
+            {departureButton && isSuccessDeparture ? (
               <GiCheckMark size={24} className="fill-mainGreen" />
             ) : (
               <img src={Departure} alt="Departure" />
@@ -300,18 +429,20 @@ const SellingHome = () => {
         </div>
       </div>
 
+      {/* Modal */}
       {!isLoggingOut && (
         <Modal
           isOpen={open}
           onClose={() => setOpen(false)}
-          maxWidth="w-[40%]"
+          maxWidth="w-[95%] sm:w-[70%] lg:w-[40%]"
           blur="backdrop-blur-[1.5px]"
         >
-          <div className="text-center mt-3 ">
-            <h2 className="font-bold text-lg mb-14">
+          <div className="text-center mt-3">
+            <h2 className="font-bold text-lg mb-6">
               {t("Welcome")}{" "}
-              <span className="text-mainGreen">{userData?.name}</span>
+              <span className="text-mainGreen">{typedUser?.name}</span>
             </h2>
+
             {!isDeparture ? (
               <h2 className="font-bold text-lg">
                 {t("Attendance must be registered first")}{" "}
@@ -327,45 +458,18 @@ const SellingHome = () => {
                 </span>
               </h2>
             )}
-            <div className="flex gap-3 mt-5 my-2 w-full m-auto">
+
+            <div className="flex gap-3 mt-8 w-full justify-center">
               {!isDeparture ? (
                 <Button
-                  className="bg-mainGray w-24 flex justify-center items-center shadow mx-auto mt-3"
-                  action={() => {
-                    const currentDate = new Date();
-                    const currentTime = new Intl.DateTimeFormat("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    }).format(currentDate);
-                    const currentDay = formatDate(currentDate);
-
-                    if (!currentShift) {
-                      notify(
-                        "error",
-                        `${t("the period does not match the current time")}`
-                      );
-                      return;
-                    }
-
-                    PostNewCardAudience({
-                      employee_id: userData?.id,
-                      branch_id: userData?.branch_id,
-                      presences: currentTime,
-                      day: currentDay,
-                      is_presence: 1,
-                      shift_id: currentShift?.id,
-                    });
-
-                    localStorage.setItem("audience", true);
-                    setAudienceButton(localStorage.getItem("audience"));
-                  }}
+                  className="bg-mainGray w-24 flex justify-center items-center shadow"
+                  action={postAudience}
                   disabled={
-                    (audienceButton == "true" && !!isSuccessAudience) ||
-                    departureButton == "true"
+                    (audienceButton && isSuccessAudience) || departureButton
                   }
+                  ariaLabel="Confirm attendance"
                 >
-                  {audienceButton == "true" && !!isSuccessAudience ? (
+                  {audienceButton && isSuccessAudience ? (
                     <GiCheckMark size={24} className="fill-mainGreen" />
                   ) : (
                     <img src={Audience} alt="Audience" />
@@ -373,31 +477,12 @@ const SellingHome = () => {
                 </Button>
               ) : (
                 <Button
-                  className="bg-mainGray w-24 flex justify-center items-center shadow mx-auto mt-3"
-                  action={() => {
-                    const currentDate = new Date();
-                    const currentTime = new Intl.DateTimeFormat("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    }).format(currentDate);
-                    const currentDay = formatDate(currentDate);
-
-                    PostNewCardDeparture({
-                      employee_id: userData?.id,
-                      branch_id: userData?.branch_id,
-                      departure: currentTime,
-                      day: currentDay,
-                      shift_id: currentShift?.id,
-                    });
-                    localStorage.setItem("departure", true);
-                    setDepartureButton(localStorage.getItem("departure"));
-                    localStorage.setItem("audience", false);
-                    setAudienceButton(localStorage.getItem("audience"));
-                  }}
-                  disabled={departureButton == "true" && !!isSuccessDeparture}
+                  className="bg-mainGray w-24 flex justify-center items-center shadow"
+                  action={postDeparture}
+                  disabled={departureButton && isSuccessDeparture}
+                  ariaLabel="Confirm departure"
                 >
-                  {departureButton == "true" && !!isSuccessDeparture ? (
+                  {departureButton && isSuccessDeparture ? (
                     <GiCheckMark size={24} className="fill-mainGreen" />
                   ) : (
                     <img src={Departure} alt="Departure" />
