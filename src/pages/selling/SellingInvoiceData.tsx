@@ -248,7 +248,8 @@ const SellingInvoiceData = ({
           <span>{`${t("precious metal weight")} (${t("In grams")})`}</span>
         ),
         accessorKey: "weight",
-        cell: (info) => info.getValue() || `${t("no items")}`,
+        cell: (info) =>
+          formatGram(Number(info.getValue())) || `${t("no items")}`,
       },
       // {
       //   header: () => <span>{`${t("weight")} (${t("In grams")})`}</span>,
@@ -299,7 +300,7 @@ const SellingInvoiceData = ({
           const stoneWeigthByGram = Number(info.getValue()) / 5;
           const weight = Number(info.row.original.weight) * 0.05;
           const result = stoneWeigthByGram > weight;
-          return !!result ? info.getValue() : "---";
+          return !!result ?formatGram(Number(info.getValue())) : "---";
         },
       },
       {
@@ -314,7 +315,7 @@ const SellingInvoiceData = ({
             Number(result ? info.row.original?.stones_weight : 0) +
             Number(info.row.original?.weight);
 
-          return valueOfWeight || "---";
+          return formatGram(Number(valueOfWeight)) || "---";
         },
       },
       // {

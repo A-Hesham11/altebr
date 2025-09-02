@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SellingFirstPage from "../../../../pages/selling/SellingFirstPage";
 import SellingSecondpage from "../SellingSecondpage";
 import SellingInvoiceData from "../../../../pages/selling/SellingInvoiceData";
@@ -12,6 +12,10 @@ import { authCtx } from "../../../../context/auth-and-perm/auth";
 import { Zatca } from "../../../../pages/selling/Zatca";
 import { formatDate } from "../../../../utils/date";
 import { GlobalDataContext } from "../../../../context/settings/GlobalData";
+import { Modal } from "@/components/molecules";
+import { Button } from "@/components/atoms";
+import { t } from "i18next";
+import { useNavigate } from "react-router-dom";
 
 const AddSellingInvoice = () => {
   const [dataSource, setDataSource] = useState<Selling_TP[]>();
@@ -22,8 +26,11 @@ const AddSellingInvoice = () => {
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
   const [invoiceNumber, setInvoiceNumber] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
+  const [isOpenZakat, setIsOpenZakat] = useState(false);
   const { invoice_logo } = GlobalDataContext();
   const { userData } = useContext(authCtx);
+  const navigate = useNavigate();
+  console.log("🚀 ~ AddSellingInvoice ~ userData:", userData);
 
   const initialValues: Selling_TP = {
     item_id: "",
@@ -112,6 +119,12 @@ const AddSellingInvoice = () => {
     client_id: clientData?.client_id,
   };
 
+  useEffect(() => {
+    if (userData?.is_zakat == 0) {
+      setIsOpenZakat(true);
+    }
+  }, [!!userData?.is_zakat]);
+
   return (
     <Formik
       initialValues={initialValues}
@@ -153,6 +166,39 @@ const AddSellingInvoice = () => {
             sellingItemsOfWeigth={sellingItemsOfWeigth}
           />
         )}
+
+        <Modal isOpen={isOpenZakat} onClose={() => {}} maxWidth="2xl">
+          <div>
+            <div className="px-6 py-5">
+              <h3
+                id="modal-title"
+                className="text-lg font-semibold leading-6 text-mainRed text-center"
+              >
+                {t("Integration with Zakat and Income is not enabled.")}
+              </h3>
+
+              <p className="mt-6 mb-2 text-center text-gray-900 text-lg font-semibold">
+                {t("Do you want to continue?")}
+              </p>
+            </div>
+
+            <div className="px-6 pb-6 flex justify-center gap-3">
+              <Button type="button" action={() => setIsOpenZakat(false)}>
+                {t("Continue")}
+              </Button>
+              <Button
+                type="button"
+                bordered
+                action={() => {
+                  navigate(-1);
+                  setIsOpenZakat(false);
+                }}
+              >
+                {t("back")}
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </>
     </Formik>
   );

@@ -13,7 +13,8 @@ import { PermissionProvider } from "react-permission-role";
 import { GlobalDataProvider } from "./context/settings/GlobalData";
 import { Provider } from "react-redux";
 import store from "./pages/store";
-import { ReactFlowProvider } from '@xyflow/react';
+import { ReactFlowProvider } from "@xyflow/react";
+import { ErrorModalProvider } from "./context/modal/ErrorModalProvider";
 
 // cloc --by-file --include-lang=JavaScript,TypeScript,jsx,tsx .
 
@@ -32,23 +33,25 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider store={store}>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthCtxProvider>
-          <NumberFormatterProvider>
-            <GlobalDataProvider>
-              <HelmetProvider>
-                <ProSidebarProvider>
-                  <Suspense fallback={<Loading mainTitle="جاري التحميل" />}>
-                    <PermissionProvider>
-                      <ReactFlowProvider>
-                        <App />
-                      </ReactFlowProvider>
-                    </PermissionProvider>
-                  </Suspense>
-                </ProSidebarProvider>
-              </HelmetProvider>
-            </GlobalDataProvider>
-          </NumberFormatterProvider>
-        </AuthCtxProvider>
+        <ErrorModalProvider>
+          <AuthCtxProvider>
+            <NumberFormatterProvider>
+              <GlobalDataProvider>
+                <HelmetProvider>
+                  <ProSidebarProvider>
+                    <Suspense fallback={<Loading mainTitle="جاري التحميل" />}>
+                      <PermissionProvider>
+                        <ReactFlowProvider>
+                          <App />
+                        </ReactFlowProvider>
+                      </PermissionProvider>
+                    </Suspense>
+                  </ProSidebarProvider>
+                </HelmetProvider>
+              </GlobalDataProvider>
+            </NumberFormatterProvider>
+          </AuthCtxProvider>
+        </ErrorModalProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </Provider>

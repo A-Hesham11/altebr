@@ -52,6 +52,7 @@ const RecentItemsFirstScreen = ({
   const [openModal, setOpenModal] = useState(false);
   const [openMardodModal, setOpenMardodModal] = useState(false);
   const [restrictModal, setOpenRestrictModal] = useState(false);
+
   const { data, isSuccess, refetch, isRefetching, isLoading } = useFetch({
     endpoint:
       search === ""

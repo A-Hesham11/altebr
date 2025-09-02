@@ -111,7 +111,7 @@ const SalesReturnPage = () => {
     bond_title: "bill no",
     invoice_number: invoiceNumber,
     invoice_logo: invoice_logo?.InvoiceCompanyLogo,
-    invoice_text: "simplified tax invoice",
+    invoice_text: "Sales return invoice",
     bond_date: formatDate(clientData?.bond_date),
     client_id: clientData?.client_id,
   };
