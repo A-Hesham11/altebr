@@ -1,9 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { HttpStatusCode } from "axios";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { authCtx } from "../context/auth-and-perm/auth";
 import { CError_TP, MutateDataParameters_TP } from "../types";
 import { notify } from "../utils/toast";
+import { useErrorModal } from "@/context/modal/ErrorModalProvider";
 
 // T => response data type
 type Args_TP<T> = {
@@ -18,6 +19,8 @@ type Args_TP<T> = {
 
 export const useMutate = <T>({ ...args }: Args_TP<T>) => {
   const { logOutHandler, frontLogOutHandler } = useContext(authCtx);
+  const { open: openErrorModal } = useErrorModal();
+  const openedOnceRef = useRef(false);
 
   const { mutationKey, mutationFn, onSuccess, onError } = args;
   // useQuery infers queryFn return type
@@ -27,10 +30,21 @@ export const useMutate = <T>({ ...args }: Args_TP<T>) => {
     mutationFn,
     onSuccess: onSuccess ? onSuccess : () => notify("success"),
     onError: (err: CError_TP) => {
-      if (err.response?.status === HttpStatusCode.Unauthorized) {
+      const status = err?.response?.status;
+
+      if (status === HttpStatusCode.Unauthorized) {
         frontLogOutHandler();
         return;
       }
+
+      if (status === HttpStatusCode.InternalServerError) {
+        if (!openedOnceRef.current) {
+          openErrorModal();
+          openedOnceRef.current = true;
+        }
+        return;
+      }
+
       if (!!onError) {
         onError(err);
       }

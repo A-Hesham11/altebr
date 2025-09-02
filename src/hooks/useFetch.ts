@@ -3,8 +3,9 @@ import { AxiosRequestConfig, HttpStatusCode } from "axios";
 import { request } from "../utils/axios-util";
 import { CError_TP } from "../types";
 import { notify } from "../utils/toast";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { authCtx } from "../context/auth-and-perm/auth";
+import { useErrorModal } from "@/context/modal/ErrorModalProvider";
 
 type AxiosRequestConfig_withoutURL_TP = Omit<AxiosRequestConfig, "url">;
 
@@ -26,6 +27,7 @@ export const useFetch = <T, ComingTP = T>({
   ...args
 }: Args_TP<T, ComingTP>) => {
   const { logOutHandler, frontLogOutHandler } = useContext(authCtx);
+
   const {
     queryKey,
     endpoint,
@@ -46,11 +48,21 @@ export const useFetch = <T, ComingTP = T>({
       request<ComingTP>({ url: endpoint, ...axiosOptions }, pagination),
     enabled,
     onSuccess,
+
+    retry: false,
+    retryOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+
     onError: (err: CError_TP) => {
-      if (err?.response?.status === HttpStatusCode.Unauthorized) {
+      const status = err?.response?.status;
+
+      if (status === HttpStatusCode.Unauthorized) {
         frontLogOutHandler();
         return;
       }
+
       if (!!onError) {
         onError(err);
       } else {

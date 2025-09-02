@@ -1770,5 +1770,11 @@
   "accounts count": "عدد الحسابات",
   "loading expand all": "جاري عرض كافة الحسابات",
   "no results for": "لا يوجد نتائج ل",
-  "Please wait a moment while we fetch all items": "يرجى الانتظار قليلًا حتى يكتمل جلب جميع القطع"
+  "Please wait a moment while we fetch all items": "يرجى الانتظار قليلًا حتى يكتمل جلب جميع القطع",
+  "An unexpected error occurred during processing": "وقع خطأ غير متوقع أثناء المعالجة",
+  "Contact the support team": "تواصل مع فريق الدعم",
+  "Continue": "إستمرار",
+  "Integration with Zakat and Income is not enabled.": "الربط بالزكاة والدخل غير مفعّل",
+  "Do you want to continue?": "هل تريد الاستمرار؟",
+  "Sales return invoice":"فاتورة مردود المبيعات"
 }
