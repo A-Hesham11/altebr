@@ -50,10 +50,10 @@ export const useFetch = <T, ComingTP = T>({
     onSuccess,
 
     retry: false,
-    retryOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    // retryOnMount: false,
+    // refetchOnReconnect: false,
+    // refetchOnWindowFocus: false,
+    // refetchOnMount: false,
 
     onError: (err: CError_TP) => {
       const status = err?.response?.status;

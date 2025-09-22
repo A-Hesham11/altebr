@@ -1,26 +1,61 @@
 import { Formik } from "formik";
 import React, { useContext, useEffect, useState } from "react";
-import SellingFirstPage from "../../../../pages/selling/SellingFirstPage";
-import SellingSecondpage from "../SellingSecondpage";
-import SellingInvoiceData from "../../../../pages/selling/SellingInvoiceData";
-import { ClientData_TP } from "../../SellingClientForm";
-import { Payment_TP } from "../data/PaymentProcessing";
-import * as Yup from "yup";
-import { useFetch } from "../../../../hooks";
-import { authCtx } from "../../../../context/auth-and-perm/auth";
-import { Zatca } from "../../../../pages/selling/Zatca";
-import { formatDate } from "../../../../utils/date";
-import { GlobalDataContext } from "../../../../context/settings/GlobalData";
 import { Modal } from "@/components/molecules";
 import { Button } from "@/components/atoms";
 import { t } from "i18next";
 import { useNavigate } from "react-router-dom";
 import { Selling_TP } from "@/pages/selling/PaymentSellingPage";
+import { ClientData_TP } from "@/components/selling/SellingClientForm";
+import { Payment_TP } from "../Payment/PaymentProccessingToManagement";
+import { GlobalDataContext } from "@/context/settings/GlobalData";
+import { authCtx } from "@/context/auth-and-perm/auth";
+import * as Yup from "yup";
+import { useFetch } from "@/hooks";
+import { formatDate } from "@/utils/date";
+import SellingFirstPageInEdara from "./SellingFirstPageInEdara";
+import SellingSecondpageInEdara from "./SellingSecondpageInEdara";
+import SellingInvoiceDataInEdara from "./SellingInvoiceDataInEdara";
 
-const AddSellingInvoice = () => {
-  const [dataSource, setDataSource] = useState<Selling_TP[]>();
+export type Selling_Invoice_TP = {
+  item_id: string;
+  hwya: string;
+  min_selling: string;
+  min_selling_type: string;
+  classification_id: string;
+  category_id: string;
+  category_selling_type: string;
+  classification_name: string;
+  category_name: string;
+  weight: string;
+  has_selsal: number;
+  remaining_weight: string;
+  sel_weight: string;
+  karat_id: string;
+  karat_name: string;
+  mineral_id: string;
+  karatmineral_id: string;
+  karatmineral_name: string;
+  gold_price: any;
+  karat_price: string;
+  selling_price: string;
+  tax_rate: string;
+  cost: string;
+  wage: string;
+  taklfa: string;
+  wage_total: string;
+  category_type: string;
+  weightitems: any;
+  max_selling_price: string;
+  stones_weight: string;
+  client_id: string;
+  client_value: string;
+  bond_date: Date;
+};
+
+const CreateSellingInvoiceInEdara = () => {
+  const [dataSource, setDataSource] = useState<Selling_Invoice_TP[]>();
   const [stage, setStage] = useState<number>(1);
-  const [clientData, setClientData] = useState<ClientData_TP>();
+  const [clientData, setClientData] = useState<any>();
   const [sellingItemsData, setSellingItemsData] = useState([]);
   const [sellingItemsOfWeigth, setSellingItemsOfWeight] = useState([]);
   const [paymentData, setPaymentData] = useState<Payment_TP[]>([]);
@@ -28,11 +63,10 @@ const AddSellingInvoice = () => {
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
   const [isOpenZakat, setIsOpenZakat] = useState(false);
   const { invoice_logo } = GlobalDataContext();
-  const { userData } = useContext(authCtx);
+  const { userData } = useContext<any>(authCtx);
   const navigate = useNavigate();
-  console.log("🚀 ~ AddSellingInvoice ~ userData:", userData);
 
-  const initialValues: Selling_TP = {
+  const initialValues: Selling_Invoice_TP = {
     item_id: "",
     hwya: "",
     min_selling: "",
@@ -89,9 +123,9 @@ const AddSellingInvoice = () => {
       client_value: Yup.string(),
     });
 
-  const { data } = useFetch<ClientData_TP>({
-    endpoint: `/selling/api/v1/invoices_per_branch/${userData?.branch_id}`,
-    queryKey: [`invoices_data_${userData?.branch_id}`],
+  const { data } = useFetch<any>({
+    endpoint: `/sellingEdaraa/api/v1/invoices`,
+    queryKey: [`edara-invoices-data`],
     onSuccess(data) {
       setInvoiceNumber(data?.total);
     },
@@ -100,7 +134,7 @@ const AddSellingInvoice = () => {
 
   const { data: clientInfo } = useFetch<any>({
     endpoint: `branchManage/api/v1/clients/${clientData?.client_id}`,
-    queryKey: [`clients_info`, clientData?.client_id],
+    queryKey: [`edara_clients_info`, clientData?.client_id],
     enabled: !!clientData?.client_id,
   });
 
@@ -133,7 +167,7 @@ const AddSellingInvoice = () => {
     >
       <>
         {stage === 1 && (
-          <SellingFirstPage
+          <SellingFirstPageInEdara
             invoiceNumber={invoiceNumber}
             dataSource={dataSource}
             setDataSource={setDataSource}
@@ -149,7 +183,7 @@ const AddSellingInvoice = () => {
           />
         )}
         {stage === 2 && (
-          <SellingSecondpage
+          <SellingSecondpageInEdara
             setStage={setStage}
             paymentData={paymentData}
             setPaymentData={setPaymentData}
@@ -157,7 +191,7 @@ const AddSellingInvoice = () => {
           />
         )}
         {stage === 3 && (
-          <SellingInvoiceData
+          <SellingInvoiceDataInEdara
             sellingItemsData={sellingItemsData}
             paymentData={paymentData}
             invoiceHeaderData={invoiceHeaderBasicData}
@@ -204,4 +238,4 @@ const AddSellingInvoice = () => {
   );
 };
 
-export default AddSellingInvoice;
+export default CreateSellingInvoiceInEdara;

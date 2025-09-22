@@ -15,6 +15,7 @@ import { t } from "i18next";
 import { useContext, useState } from "react";
 import { RefetchErrorHandler } from "../../../molecules/RefetchErrorHandler";
 import { BaseInput } from "../../../atoms";
+import { useLocation } from "react-router-dom";
 
 const BillInputs = ({
   dateFieldName,
@@ -28,13 +29,14 @@ const BillInputs = ({
   const [open, setOpen] = useState(false);
   const [model, setModel] = useState(false);
   const { userData } = useContext(authCtx);
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<any>();
+  const location = useLocation();
 
   const { data: clientsNameOptions, isLoading } = useFetch({
     endpoint: `/branchManage/api/v1/all-clients/${userData?.branch_id}?per_page=10000`,
-    queryKey: ["bill-all-client"],
-    select: (clients) =>
-      clients.map((item: any) => ({
+    queryKey: ["edara-bill-all-client"],
+    select: (clients: any) =>
+      clients?.map((item: any) => ({
         id: item.id,
         value: item.name,
         label: item.name,
@@ -51,8 +53,8 @@ const BillInputs = ({
               {invoiceNumberReturnDemo && (
                 <BaseInput
                   name={invoiceNumberReturnDemo}
-                  label={t("invoice number")}
-                  placeholder={t("invoice number")}
+                  label={`${t("invoice number")}`}
+                  placeholder={`${t("invoice number")}`}
                   type="text"
                   onChange={(e) => {
                     setFieldValue(invoiceNumberReturnDemo, e.target.value);
@@ -105,7 +107,7 @@ const BillInputs = ({
                       value: values.client_value,
                     },
                   })}
-                  onChange={(option) => {
+                  onChange={(option: any) => {
                     setFieldValue("client_name", option!.label);
                     setFieldValue("client_id", option!.id);
                     setFieldValue("client_value", option!.label);
@@ -127,7 +129,7 @@ const BillInputs = ({
           <div>
             <DateInputField
               label={`${t("date issuance bill")}`}
-              name={dateFieldName}
+              name={`${dateFieldName}`}
               minDate={new Date()}
               icon={<CiCalendarDate />}
               disabled

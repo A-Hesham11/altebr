@@ -16,6 +16,7 @@ import { useLocation } from "react-router-dom";
 
 export type Payment_TP = {
   id: string;
+  paymentData: any;
   amount: string;
   commission_riyals: string;
   discount_percentage: string;
@@ -48,7 +49,7 @@ const PaymentProcessing = ({
   sellingItemsData,
   totalApproximateCost,
   costRemainingHonest,
-}: Payment_TP) => {
+}: any) => {
   const [card, setCard] = useState<string | undefined>("");
   const [cardImage, setCardImage] = useState<string | undefined>("");
   const [selectedCardId, setSelectedCardId] = useState(null);

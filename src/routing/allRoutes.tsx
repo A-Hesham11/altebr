@@ -210,6 +210,8 @@ import AddManualEntry from "../pages/manualEntry/AddManualEntry";
 import ViewManualEntry from "../pages/manualEntry/ViewManualEntry";
 import ViewReceiptBonds from "../pages/ReceiptBonds/view/ViewReceiptBonds";
 import EdaraTaxReturn from "../pages/Edara-TaxReturn/EdaraTaxReturn";
+import CreateSellingInvoiceInEdara from "@/pages/sellingInEdara/CreateSellingInvoiceInEdara";
+import ShowSellingInvoiceInEdara from "@/pages/sellingInEdara/ShowSellingInvoiceInEdara";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -530,6 +532,9 @@ export const AllRoutesProvider = () => {
             path="/accessory-bonds"
             element={<Bonds title={t("accessory bonds")} />}
           />
+
+          <Route path="/create-invoice" element={<CreateSellingInvoiceInEdara />} />
+          <Route path="/show-invoice" element={<ShowSellingInvoiceInEdara />} />
 
           <Route path="/supplier-payment" element={<SupplierPayment />} />
           <Route path="/missing-pieces" element={<MissingPieces />} />

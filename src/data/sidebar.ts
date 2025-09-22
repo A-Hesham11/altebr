@@ -26,6 +26,9 @@ export type MenuItem_TP = {
   }[];
 };
 
+const host = window.location.hostname;
+const isLocal = host === "localhost" || host.includes("alexon");
+
 export const sideBarItems: MenuItem_TP[] = [
   {
     id: crypto.randomUUID(),
@@ -189,6 +192,30 @@ export const sideBarItems: MenuItem_TP[] = [
       },
     ],
   },
+
+  ...(isLocal
+    ? [
+        {
+          id: crypto.randomUUID(),
+          label: "sales",
+          icon: CiExport,
+          items: [
+            {
+              id: crypto.randomUUID(),
+              label: "Create Invoice",
+              link: "/create-invoice",
+              icon: AiOutlineGold,
+            },
+            {
+              id: crypto.randomUUID(),
+              label: "View Invoices",
+              link: "/show-invoice",
+              icon: AiOutlineGold,
+            },
+          ],
+        } as MenuItem_TP,
+      ]
+    : []),
 
   {
     id: crypto.randomUUID(),
@@ -582,191 +609,4 @@ export const sideBarItems: MenuItem_TP[] = [
     link: "/system",
     icon: CiSettings,
   },
-
-  // {
-  //   id: crypto.randomUUID(),
-  //   label: 'bonds',
-  //   icon: IoDocumentsOutline,
-  //   items: [
-  //     {
-  //       id: crypto.randomUUID(),
-  //       label: 'supply',
-  //       icon: CiExport,
-  //       items: [
-  //         {
-  //           id: crypto.randomUUID(),
-  //           label: 'branch bonds',
-  //           link: "/branch-bonds",
-  //           icon: CiExport,
-  //         },
-  //         {
-  //           id: crypto.randomUUID(),
-  //           label: 'gold bonds',
-  //           link: "/gold-bonds",
-  //           icon: RiVipCrownLine,
-  //         },
-  //         {
-  //           id: crypto.randomUUID(),
-  //           label: 'diamond bonds',
-  //           link: "/diamond-bonds",
-  //           icon: RiVipCrownLine,
-  //         },
-  //         {
-  //           id: crypto.randomUUID(),
-  //           label: 'accessory bonds',
-  //           link: "/accessory-bonds",
-  //           icon: RiVipCrownLine,
-  //         },
-  //         {
-  //           id: crypto.randomUUID(),
-  //           label: 'gold bond supply',
-  //           link: "/bonds/gold",
-  //           icon: AiFillGolden,
-  //         },
-  //         {
-  //           id: crypto.randomUUID(),
-  //           label: 'diamond bond supply',
-  //           link: "/bonds/diamond",
-  //           icon: GiCutDiamond,
-  //         },
-  //         {
-  //           id: crypto.randomUUID(),
-  //           label: 'accessories bond supply',
-  //           link: "/bonds/accessories",
-  //           icon: GiGems,
-  //         },
-  //         // {
-  //         //   id: crypto.randomUUID(),
-  //         //   label: 'accessories bond supply',
-  //         //   link: "accessories",
-  //         //   icon: BiDiamond,
-  //         // },
-  //       ],
-  //     },
-  //     // {1
-  //     //   id: crypto.randomUUID(),
-  //     //   label: 'payment',
-  //     //   icon: MdOutlineAttachMoney,
-
-  //     //   items: [
-  //     //     {
-  //     //       id: crypto.randomUUID(),
-  //     //       label: 'bond payment',
-  //     //       link: "/return-payment",
-  //     //       icon: CiImport,
-  //     //     },
-  //     //   ],
-  //     // },
-  //     // {
-  //     //   id: crypto.randomUUID(),
-  //     //   label: 'payoff',
-  //     //   link: "Return",
-  //     //   icon: MdOutlinePayments,
-  //     //   items: [
-  //     //     {
-  //     //       id: crypto.randomUUID(),
-  //     //       label: 'supply payoff',
-  //     //       link: "return-table",
-  //     //       icon: MdOutlinePayments,
-  //     //     },
-  //     //     {
-  //     //       id: crypto.randomUUID(),
-  //     //       label: 'gold payoff',
-  //     //       link: "return-gold",
-  //     //       icon: AiFillGolden,
-  //     //     },
-  //     //     {
-  //     //       id: crypto.randomUUID(),
-  //     //       label: 'diamond payoff',
-  //     //       link: "return-diamond",
-  //     //       icon: AiFillGolden,
-  //     //     },
-  //     //     {
-  //     //       id: crypto.randomUUID(),
-  //     //       label: 'accessories payoff',
-  //     //       link: "return-accessories",
-  //     //       icon: AiFillGolden,
-  //     //     },
-  //     //   ],
-  //     // },
-  //     // {
-  //     //   id: crypto.randomUUID(),
-  //     //   label: "employees",
-  //     //   link: "/employees",
-  //     //   icon: GrGroup,
-  //     // },
-  //     // {
-  //     //   id: crypto.randomUUID(),
-  //     //   label: 'reserve gold',
-  //     //   link: "accessories",
-  //     //   icon: MdOutlinePayments,
-  //     // },
-  //   ],
-  // },
-
-  // {1
-  //   id: crypto.randomUUID(),
-  //   label: 'payment',
-  //   icon: MdOutlineAttachMoney,
-
-  //   items: [
-  //     {
-  //       id: crypto.randomUUID(),
-  //       label: 'bond payment',
-  //       link: "/return-payment",
-  //       icon: CiImport,
-  //     },
-  //   ],
-  // },
-  // {
-  //   id: crypto.randomUUID(),
-  //   label: 'payoff',
-  //   link: "Return",
-  //   icon: MdOutlinePayments,
-  //   items: [
-  //     {
-  //       id: crypto.randomUUID(),
-  //       label: 'supply payoff',
-  //       link: "return-table",
-  //       icon: MdOutlinePayments,
-  //     },
-  //     {
-  //       id: crypto.randomUUID(),
-  //       label: 'gold payoff',
-  //       link: "return-gold",
-  //       icon: AiFillGolden,
-  //     },
-  //     {
-  //       id: crypto.randomUUID(),
-  //       label: 'diamond payoff',
-  //       link: "return-diamond",
-  //       icon: AiFillGolden,
-  //     },
-  //     {
-  //       id: crypto.randomUUID(),
-  //       label: 'accessories payoff',
-  //       link: "return-accessories",
-  //       icon: AiFillGolden,
-  //     },
-  //   ],
-  // },
-  // {
-  //   id: crypto.randomUUID(),
-  //   label: "employees",
-  //   link: "/employees",
-  //   icon: GrGroup,
-  // },
-  // {
-  //   id: crypto.randomUUID(),
-  //   label: 'reserve gold',
-  //   link: "accessories",
-  //   icon: MdOutlinePayments,
-  // },
-  // Desimal Number
-  // {
-  //   id: crypto.randomUUID(),
-  //   label: 'settings',
-  //   link: "/settings",
-  //   icon: CiSettings,
-  // },
 ];
