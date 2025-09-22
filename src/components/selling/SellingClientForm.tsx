@@ -11,6 +11,7 @@ import { mutateData } from "../../utils/mutateData";
 import { notify } from "../../utils/toast";
 import { Button } from "../atoms";
 import { BaseInputField, PhoneInput } from "../molecules";
+import { useLocation } from "react-router-dom";
 
 export type ClientData_TP = {
   id: number;
@@ -22,6 +23,7 @@ export type ClientData_TP = {
 
 const SellingClientForm = () => {
   const { userData } = useContext(authCtx);
+  const location = useLocation();
 
   const queryClient = useQueryClient();
 
@@ -48,10 +50,6 @@ const SellingClientForm = () => {
       queryClient.refetchQueries(["all-client"]);
     },
     onError: (error) => {
-      console.log(
-        "🚀 ~ SellingClientForm ~ error:",
-        error?.response?.data?.message
-      );
       notify("error", error?.response?.data?.message);
     },
   });

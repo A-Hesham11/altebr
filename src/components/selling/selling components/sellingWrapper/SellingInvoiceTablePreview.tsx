@@ -71,7 +71,7 @@ const SellingInvoiceTablePreview = ({ item }: { item?: {} }) => {
     bond_title: "bill no",
     invoice_number: Number(item?.invoice_number) - 1,
     invoice_logo: invoice_logo?.InvoiceCompanyLogo,
-    invoice_text: "Sales return invoice",
+    invoice_text: "simplified tax invoice",
   };
 
   const paymentData = item?.invoicepayments?.map((item) => ({

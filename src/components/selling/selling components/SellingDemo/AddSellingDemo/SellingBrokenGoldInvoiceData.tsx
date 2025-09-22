@@ -33,6 +33,7 @@ const SellingBrokenGoldInvoiceData = ({
   paymentData,
   invoiceHeaderData,
 }: CreateHonestSanadProps_TP) => {
+  console.log("🚀 ~ SellingBrokenGoldInvoiceData ~ paymentData:", paymentData)
   const { formatGram, formatReyal } = numberContext();
   const contentRef = useRef();
 
