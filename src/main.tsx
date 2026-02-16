@@ -34,25 +34,25 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ErrorModalProvider>
-          <AuthCtxProvider>
-            <NumberFormatterProvider>
-              <GlobalDataProvider>
-                <HelmetProvider>
-                  <ProSidebarProvider>
-                    <Suspense fallback={<Loading mainTitle="جاري التحميل" />}>
-                      <PermissionProvider>
-                        <ReactFlowProvider>
-                          <App />
-                        </ReactFlowProvider>
-                      </PermissionProvider>
-                    </Suspense>
-                  </ProSidebarProvider>
-                </HelmetProvider>
-              </GlobalDataProvider>
-            </NumberFormatterProvider>
-          </AuthCtxProvider>
+            <AuthCtxProvider>
+              <NumberFormatterProvider>
+                <GlobalDataProvider>
+                  <HelmetProvider>
+                    <ProSidebarProvider>
+                      <Suspense fallback={<Loading mainTitle="جاري التحميل" />}>
+                        <PermissionProvider>
+                          <ReactFlowProvider>
+                            <App />
+                          </ReactFlowProvider>
+                        </PermissionProvider>
+                      </Suspense>
+                    </ProSidebarProvider>
+                  </HelmetProvider>
+                </GlobalDataProvider>
+              </NumberFormatterProvider>
+            </AuthCtxProvider>
         </ErrorModalProvider>
       </BrowserRouter>
     </QueryClientProvider>
-  </Provider>
+  </Provider>,
 );

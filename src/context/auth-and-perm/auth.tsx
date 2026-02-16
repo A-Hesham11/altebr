@@ -211,7 +211,8 @@ export const AuthCtxProvider = ({ children }: { children: ReactNode }) => {
     setIsLoggedIn(false);
 
     notify("success", "Good bye, Waiting for you!");
-    navigate("/login");
+    localStorage.removeItem("security_ok");
+    navigate("/security");
   }
   const logOutHandler = () => {
     logoutMutate({

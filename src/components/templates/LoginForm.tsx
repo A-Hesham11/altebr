@@ -299,7 +299,7 @@ export const LoginForm = () => {
 
               <div className="flex justify-between items-center mb-2">
                 <p className=" text-white text-sm font-bold">{`${t(
-                  "did you forget your password ?"
+                  "did you forget your password ?",
                 )}`}</p>
                 <span className="flex items-center ">
                   <CheckBoxField name="remember" id="remember" />

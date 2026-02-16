@@ -45,6 +45,7 @@ import { authCtx } from "../context/auth-and-perm/auth";
 import { PermissionCtxProvider } from "../context/auth-and-perm/permissions";
 import Management from "../pages//selling/Management";
 import { Login } from "../pages/Login";
+import { Auth } from "../pages/Auth";
 import { Settings } from "../pages/Settings";
 import { AdministrativeStructure } from "../pages/administrativeStructure/AdministrativeStructure";
 import { OneAdminRoles } from "../pages/administrativeStructure/OneAdminRoles";
@@ -212,6 +213,7 @@ import ViewReceiptBonds from "../pages/ReceiptBonds/view/ViewReceiptBonds";
 import EdaraTaxReturn from "../pages/Edara-TaxReturn/EdaraTaxReturn";
 import CreateSellingInvoiceInEdara from "@/pages/sellingInEdara/CreateSellingInvoiceInEdara";
 import ShowSellingInvoiceInEdara from "@/pages/sellingInEdara/ShowSellingInvoiceInEdara";
+import { SecurityGate } from "@/context/auth-and-perm/SecurityGate";
 
 export const AllRoutesProvider = () => {
   const { permissions, userData } = useContext(authCtx);
@@ -533,7 +535,10 @@ export const AllRoutesProvider = () => {
             element={<Bonds title={t("accessory bonds")} />}
           />
 
-          <Route path="/create-invoice" element={<CreateSellingInvoiceInEdara />} />
+          <Route
+            path="/create-invoice"
+            element={<CreateSellingInvoiceInEdara />}
+          />
           <Route path="/show-invoice" element={<ShowSellingInvoiceInEdara />} />
 
           <Route path="/supplier-payment" element={<SupplierPayment />} />
@@ -874,14 +879,24 @@ export const AllRoutesProvider = () => {
 
         <Route
           errorElement={<ErrorPage />}
-          path="/login"
-          element={<Login title={t("login")} />}
+          path="/security"
+          element={<Auth title={t("login")} />}
         />
+
+        <Route element={<SecurityGate />}>
+          <Route
+            errorElement={<ErrorPage />}
+            path="/login"
+            element={<Login title={t("login")} />}
+          />
+        </Route>
 
         <Route
           path="/selling/management/edit-items-weight"
           element={<Print />}
         />
+
+        <Route path="*" element={<Auth title={t("login")} />} />
 
         <Route path="/selling/balances" element={<BranchBalancesPage />} />
       </Routes>

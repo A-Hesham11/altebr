@@ -602,7 +602,6 @@ export const sideBarItems: MenuItem_TP[] = [
     link: "/activity-log",
     icon: AiOutlineBars,
   },
-
   {
     id: crypto.randomUUID(),
     label: "system setting",
