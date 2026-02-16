@@ -94,7 +94,7 @@ export const DateInputField = ({
           icon={icon}
           placeholderText={placeholder}
           // onChange={(date: Date) => {
-          //   setFieldValue(name, date);
+          //   setFieldValue(name, date);y
           // }}
           // onBlur={handleBlur(name)}
           className={dateInputField({

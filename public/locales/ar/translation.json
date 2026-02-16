@@ -1776,5 +1776,7 @@
   "Continue": "إستمرار",
   "Integration with Zakat and Income is not enabled.": "الربط بالزكاة والدخل غير مفعّل",
   "Do you want to continue?": "هل تريد الاستمرار؟",
-  "Sales return invoice":"فاتورة مردود المبيعات"
+  "Sales return invoice":"فاتورة مردود المبيعات",
+  "Email":"البريد الإلكتروني",
+  "Password":"رمز الدخول"
 }

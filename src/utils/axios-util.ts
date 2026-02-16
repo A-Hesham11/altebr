@@ -15,11 +15,11 @@ const getTenantFromUrl = (() => {
 })();
 
 const isGetTenantFromUrl =
-  getTenantFromUrl === null ? "alexon" : getTenantFromUrl;
+  getTenantFromUrl === null ? "dev" : getTenantFromUrl;
 
 const baseURL =
   import.meta.env.VITE_BASE_URL ||
-  `https://api-${isGetTenantFromUrl}.altebr.com`;
+  `https://api-${isGetTenantFromUrl}.devox.online`;
 
 const lang = i18n.language.startsWith("ar") ? "ar" : "en";
 
